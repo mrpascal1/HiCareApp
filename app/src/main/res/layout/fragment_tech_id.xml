@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/tab_textColor"
+        tools:context=".fragments.TechIdFragment">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/toolbar"
+            android:layout_centerVertical="true">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:elevation="2dp"
+                app:cardCornerRadius="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="60dp"
+                    android:orientation="vertical">
+
+
+                    <ImageView
+                        android:id="@+id/imgTech"
+                        android:layout_width="130dp"
+                        android:layout_height="170dp"
+                        android:layout_gravity="center_horizontal"
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/black_border"
+                        android:scaleType="center" />
+
+                    <TextView
+                        android:id="@+id/txtTechName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="10dp"
+                        android:text="Arjun K Bhatt"
+                        android:textColor="@color/black"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:id="@+id/lnr_added"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="2dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/lnr_image">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Employee Code"
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=":"
+                            android:layout_marginLeft="7dp"
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/txtCode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="7dp"
+                            android:text="00007"
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="180dp"
+                        android:layout_height="80dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="60dp"
+                        android:layout_marginBottom="20dp"
+                        android:src="@mipmap/splash" />
+
+                    <LinearLayout
+                        android:id="@+id/lnr_email"
+                        android:layout_width="166dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="left"
+                        android:layout_marginLeft="7dp"
+                        android:layout_marginTop="2dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/lnr_image">
+
+                        <TextView
+                            android:layout_width="60dp"
+                            android:layout_height="wrap_content"
+                            android:text="Email ID"
+                            android:textSize="11sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=":"
+                            android:layout_gravity="center"
+                            android:textSize="11sp"
+                            />
+
+                        <TextView
+                            android:id="@+id/txtEmail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="7dp"
+                            android:text="itsupport@hicare.in"
+                            android:textSize="11sp"
+                            />
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/lnr_details"
+                        android:layout_width="166dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="left"
+                        android:layout_marginLeft="7dp"
+                        android:layout_marginTop="1dp"
+                        android:layout_marginBottom="10dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/lnr_image">
+
+                        <TextView
+                            android:layout_width="60dp"
+                            android:layout_height="wrap_content"
+                            android:text="Contact no."
+                            android:textSize="11sp"
+                            />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=":"
+                            android:layout_gravity="center"
+                            android:textSize="11sp"
+                            />
+
+                        <TextView
+                            android:id="@+id/txtContact"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:textSize="11sp"
+                            android:layout_marginLeft="7dp"
+
+                            android:text="8828333888"
+                            />
+
+                    </LinearLayout>
+
+
+
+
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+            </LinearLayout>
+        </ScrollView>
+
+
+    </FrameLayout>
+</layout>
