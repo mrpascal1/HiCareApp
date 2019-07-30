@@ -6,38 +6,38 @@
 
         <item
             android:id="@+id/nav_home"
-            android:title="Home"
+            android:title="@string/home"
             android:icon="@drawable/ic_home"
             />
 
         <item
             android:id="@+id/nav_groom"
-            android:title="Grooming"
+            android:title="@string/grooming"
             android:icon="@drawable/ic_groom"
             />
 
         <item
             android:id="@+id/nav_myid"
-            android:title="My ID Card"
+            android:title="@string/my_id_card"
             android:icon="@drawable/ic_id_card"
             />
 
         <item
             android:id="@+id/nav_notifications"
-            android:title="Notifications"
+            android:title="@string/notifications"
             android:icon="@drawable/ic_bell"
             android:visible="false"
             />
         <item
             android:id="@+id/nav_training"
-            android:title="Training"
+            android:title="@string/training"
             android:icon="@drawable/ic_learn"
 
             />
 
         <item
             android:id="@+id/nav_help"
-            android:title="Help"
+            android:title="@string/help"
             android:icon="@drawable/ic_info"
 
             />
@@ -45,7 +45,7 @@
 
         <item
             android:id="@+id/nav_logout"
-            android:title="Logout"
+            android:title="@string/logout"
             android:icon="@drawable/ic_logout"
            />
     </group>

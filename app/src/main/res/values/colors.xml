@@ -35,7 +35,7 @@
     <color name="transparent_blacke">#b3000000</color>
     <color name="cv_capture_bg">#55000000</color>
     <color name="low">#CCCCCC</color>
-
+    <color name="skyblue">#D9D9F3</color>
 
 
 </resources>

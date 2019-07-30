@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <import type="android.view.View" />
     </data>
 
@@ -42,9 +41,9 @@
                         android:lineSpacingMultiplier="1.2"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
-                        android:text="11:00 AM - 12:00 PM"
+                        android:text="@string/_11_00_am_12_00_pm"
                         android:textColor="@color/black"
-                        android:textSize="16dp"
+                        android:textSize="16sp"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:ignore="MissingConstraints" />
@@ -104,7 +103,7 @@
                     android:inputType="textPersonName"
                     android:lineSpacingMultiplier="1.2"
                     android:text="Mr. Arjun Bhatt"
-                    android:textSize="17dp"
+                    android:textSize="17sp"
                     android:textStyle="bold"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/lnr_time"
@@ -122,24 +121,22 @@
                     <TextView
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
-                        android:text="Service Plan"
+                        android:text="@string/service_plan"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=":"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/txt_service"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="7dp"
-
-                        android:text="Deprected"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
@@ -155,9 +152,9 @@
                     <TextView
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
-                        android:text="Tag"
+                        android:text="@string/tag"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -170,8 +167,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="7dp"
-                        android:text="Deprected"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
@@ -187,23 +183,22 @@
                     <TextView
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
-                        android:text="Sequence No."
+                        android:text="@string/sequence_no"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=":"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/txt_sequence"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="7dp"
-                        android:text="Deprected"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
@@ -219,23 +214,22 @@
                     <TextView
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
-                        android:text="Type"
+                        android:text="@string/type"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=":"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/txt_type"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="7dp"
-                        android:text="Deprected"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
@@ -251,23 +245,22 @@
                     <TextView
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
-                        android:text="Address"
+                        android:text="@string/address"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=":"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/txt_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="7dp"
-                        android:text="402,1st Flr,CityHeights,Null Bazar,Mumbai-400006402,1st Flr,CityHeights,Null Bazar,Mumbai-400006"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
@@ -283,23 +276,22 @@
                     <TextView
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
-                        android:text="Landmark"
+                        android:text="@string/landmark"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=":"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/txt_Landmark"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="7dp"
-                        android:text="Deprected"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
@@ -315,23 +307,22 @@
                     <TextView
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
-                        android:text="Postal Code"
+                        android:text="@string/postal_code"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=":"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/txt_postcode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="7dp"
-                        android:text="Deprected"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
@@ -347,23 +338,22 @@
                     <TextView
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
-                        android:text="Order No."
+                        android:text="@string/order_no"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=":"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/txt_orderno"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="7dp"
-                        android:text="Deprected"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
@@ -381,23 +371,22 @@
                     <TextView
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
-                        android:text="Amount To Collect"
+                        android:text="@string/amount_to_collect"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=":"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/txt_amount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="7dp"
-                        android:text="Deprected"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <LinearLayout
                         android:id="@+id/lnr_timer"
@@ -412,17 +401,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="right"
-                            android:text="Running late!"
                             android:gravity="right"
+                            android:text="@string/running_late"
                             android:textColor="@color/red"
-                            android:textSize="16dp" />
-
-                        <!--<Chronometer-->
-                            <!--android:id="@+id/txt_chromometer"-->
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:gravity="end"-->
-                            <!--android:textColor="@color/red"/>-->
+                            android:textSize="16sp" />
 
 
                     </LinearLayout>
@@ -474,9 +456,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
-                            android:text="Mobile No."
+                            android:text="@string/mobile_no"
                             android:textColor="#fff"
-                            android:textSize="12dp" />
+                            android:textSize="12sp" />
 
                     </LinearLayout>
 
@@ -500,9 +482,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
-                            android:text="Alt. Mobile No."
+                            android:text="@string/alt_mobile_no"
                             android:textColor="#fff"
-                            android:textSize="12dp" />
+                            android:textSize="12sp" />
 
                     </LinearLayout>
 
@@ -527,9 +509,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
-                            android:text="Phone No."
+                            android:text="@string/phone_no"
                             android:textColor="#fff"
-                            android:textSize="12dp" />
+                            android:textSize="12sp" />
 
 
                     </LinearLayout>

@@ -106,14 +106,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         holder.mTaskListAdapterBinding.imgWarning.startAnimation(animation);
         if (items.get(position).getStatus().equals("Completed")) {
             holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
-//            holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#1E90FF"));
             holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#1E90FF"));
         } else if (items.get(position).getStatus().equals("Dispatched")) {
-//            holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#FF8C00"));
             holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#FFA500"));
         } else if (items.get(position).getStatus().equals("On-Site")) {
             holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
-//            holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#ffc40d"));
             holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#e5e112"));
         } else if (items.get(position).getStatus().equals("Incomplete")) {
             holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
@@ -291,34 +288,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         final int year = Integer.parseInt(year_start);
         String isStartDate = AppUtils.compareDates(AppUtils.currentDateTime(), sDate);
 
-//        if (isStartDate.equals("afterdate")) {
-//            conferenceTime.set(second, minute, hour, monthDay, month, year);
-//            holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.VISIBLE);
-//            holder.mTaskListAdapterBinding.txtChronometer.start();
-//            holder.mTaskListAdapterBinding.txtChronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-//                @Override
-//                public void onChronometerTick(Chronometer chronometer) {
-//                    String after15Mins = AppUtils.compareDates(currentdate, sDate);
-//                    if (after15Mins.equals("after15date")) {
-//                        holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
-//                        holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.VISIBLE);
-//                    } else {
-//                        holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.VISIBLE);
-//                        holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
-//                    }
-////                    if (chronometer.getText().toString().equalsIgnoreCase("15:00")) {
-////                        holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
-////                        holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.VISIBLE);
-////                    }
-//                }
-//            });
-//
-//        } else if(isStartDate.equals("afterdate")){
-//            holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
-//        }
-
         if (items.get(position).getStatus().equals("Dispatched")) {
-
 
             if (isStartDate.equals("afterdate")) {
                 conferenceTime.set(second, minute, hour, monthDay, month, year);
@@ -326,11 +296,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                 holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.VISIBLE);
 
             }
-//            else if (isStartDate.equals("after15date")) {
-//                conferenceTime.set(second, minute, hour, monthDay, month, year);
-//                holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
-//                holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.VISIBLE);
-//            }
             else {
                 holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
                 holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
@@ -351,68 +316,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         milli = milliDiff;
         long millis = 900000 - milliDiff;
         timeSwapBuff += timeInMilliseconds;
-
-//        CustomTimerTask myTask = new CustomTimerTask(holder);
-//        Timer myTimer = new Timer();
-//        myTimer.schedule(myTask, millis, 1000);
-
-//        customHandler.removeCallbacks(updateTimerThread);
-
-//        MyCountDownTimer timer = new MyCountDownTimer(millis) {
-//            public void onTick(String Hours, String Minutes, String Seconds) {
-//                holder.mTaskListAdapterBinding.txtTimer.setText(Hours + ":" + Minutes + ":" + Seconds);
-//                String isStartDate = AppUtils.compareDates(AppUtils.currentDateTime(), sDate);
-//                if (isStartDate.equals("after15date")) {
-//                    holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.VISIBLE);
-//                    holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
-//                } else if (isStartDate.equals("afterdate")) {
-//                    holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
-//                    holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
-//                } else {
-//                    holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
-//                    holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
-//                }
-//            }
-//        };
-//
-//        timer.start();
-
-
-//        new CountDownTimer(-milliDiff, 1000) {
-//            @Override
-//            public void onTick(long millisUntilFinished) {
-//
-//                int days = (int) ((millisUntilFinished / 1000) / 86400);
-//                int hours = (int) (((millisUntilFinished / 1000) - (days * 86400)) / 3600);
-//                int minutes = (int) (((millisUntilFinished / 1000) - ((days * 86400) + (hours * 3600))) / 60);
-//                int seconds = (int) ((millisUntilFinished / 1000) % 60);
-//                Animation an = new RotateAnimation(0.0f, 90.0f, 250f, 273f);
-//                an.setInterpolator(new LinearInterpolator());
-//                an.setRepeatCount(Animation.INFINITE); //repeating indefinitely
-//                an.setRepeatMode(Animation.INFINITE); //animation will start from end point once ended.
-//                an.setFillAfter(true);
-//
-//                String Days = String.format("%02d", days);
-//                String Hours = String.format("%02d", hours);
-//                String Minutes = String.format("%02d", minutes);
-//                String Seconds = String.format("%02d", seconds);
-//
-//                holder.mTaskListAdapterBinding.txtTimer.setText(Hours + ":" + Minutes + ":" + Seconds);
-//                conferenceTime.set(second, minute, hour, monthDay, month, year);
-//                String isStartDate = AppUtils.compareDates(currentdate, sDate);
-//
-//                if(isStartDate.equals("after15date")){
-//                    holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.VISIBLE);
-//                    holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onFinish() {
-//            }
-//
-//        }.start();
 
     }
 
@@ -478,8 +381,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         public ViewHolder(TaskListAdapterBinding mTaskListAdapterBinding) {
             super(mTaskListAdapterBinding.getRoot());
             this.mTaskListAdapterBinding = mTaskListAdapterBinding;
-
-            // sequence example
             if (!isShown) {
                 ShowcaseConfig config = new ShowcaseConfig();
                 config.setDelay(500); // half second between each showcase view

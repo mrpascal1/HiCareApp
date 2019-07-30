@@ -16,7 +16,8 @@
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent">
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/constraint2"
@@ -30,6 +31,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -71,7 +73,6 @@
                             android:layout_marginLeft="10dp"
                             android:layout_marginTop="5dp"
                             android:lineSpacingMultiplier="1.2"
-                            android:text="kjhfdkjs/uhfurwf/fufu.jpg"
                             android:maxLines="1"
                             android:ellipsize="end"
                             android:textSize="16dp"
@@ -92,7 +93,7 @@
                             <TextView
                                 android:layout_width="50dp"
                                 android:layout_height="wrap_content"
-                                android:text="Added"
+                                android:text="@string/added"
                                 android:textSize="14dp" />
 
                             <TextView
@@ -106,7 +107,6 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
-                                android:text="13/05/2019 12safsfffafadfdfdfafaf:53 PM"
                                 android:textSize="14dp" />
 
                         </LinearLayout>

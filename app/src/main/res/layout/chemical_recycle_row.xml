@@ -18,7 +18,6 @@
             android:padding = "5dp"
             android:textColor="@color/black"
             android:gravity="center"
-            android:text = "dsds"
             android:singleLine = "true" />
 
         <TextView
@@ -31,7 +30,6 @@
             android:gravity="center"
             android:textColor="@color/black"
             android:padding = "5dp"
-            android:text = "gram"
             android:singleLine = "true" />
 
         <TextView
@@ -44,7 +42,6 @@
             android:gravity="center"
             android:textColor="@color/black"
             android:padding = "5dp"
-            android:text = "10"
             android:singleLine = "true" />
 
         <LinearLayout

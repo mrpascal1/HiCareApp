@@ -31,12 +31,12 @@
                         android:id="@+id/img_profile"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
-                        android:text="Service Plan"
+                        android:text="@string/service_plan"
                         android:layout_gravity="center"
                         android:layout_marginLeft="7dp"
                         android:textColor="@color/colorPrimary"
                         android:src="@drawable/ic_groom"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                     <LinearLayout
                         android:id="@+id/lnrCapture"
@@ -50,7 +50,7 @@
                         android:id="@+id/img_capture"
                         android:layout_width="45dp"
                         android:layout_height="45dp"
-                        android:text="Service Plan"
+                        android:text="@string/service_plan"
                         android:layout_gravity="center"
                         android:src="@drawable/ic_addimage" />
                         </LinearLayout>
@@ -70,7 +70,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="10dp"
-                                android:text="Arjun Bhatt"
+                                android:text="@string/arjun_bhatt"
                                 android:textColor="@color/black"
                                 android:textSize="18dp" />
 
@@ -88,23 +88,22 @@
                             <TextView
                                 android:layout_width="100dp"
                                 android:layout_height="wrap_content"
-                                android:text="Employee Code"
-                                android:textSize="14dp"
+                                android:text="@string/employee_code"
+                                android:textSize="14sp"
                                 />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text=":"
-                                android:textSize="16dp" />
+                                android:textSize="16sp" />
 
                             <TextView
                                 android:id="@+id/txt_code"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:layout_marginLeft="7dp"
-                                android:text=""
-                                android:textSize="14dp" />
+                                android:textSize="14sp" />
 
                         </LinearLayout>
 
@@ -121,23 +120,22 @@
                             <TextView
                                 android:layout_width="100dp"
                                 android:layout_height="wrap_content"
-                                android:text="Mobile No."
-                                android:textSize="14dp"
+                                android:text="@string/mobile_no"
+                                android:textSize="14sp"
                                />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text=":"
-                                android:textSize="16dp" />
+                                android:textSize="16sp" />
 
                             <TextView
                                 android:id="@+id/txtMobile"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="7dp"
-                                android:text="9878765767"
-                                android:textSize="14dp" />
+                                android:textSize="14sp" />
 
                         </LinearLayout>
 

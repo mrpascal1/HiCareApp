@@ -90,7 +90,7 @@
                 android:layout_height="match_parent"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:textAllCaps="false"
-                android:text="Send"/>
+                android:text="@string/send"/>
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/btn_cancel"
@@ -99,7 +99,6 @@
                 android:layout_height="match_parent"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:textAllCaps="false"
-
                 android:text="Cancel"/>
 
         </LinearLayout>

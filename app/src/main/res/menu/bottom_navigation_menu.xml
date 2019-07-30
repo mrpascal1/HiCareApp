@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/nav_general"
-        android:title="General"
+        android:title="@string/general"
         android:icon="@drawable/ic_general"
         app:showAsAction="ifRoom"
         android:enabled="true"
@@ -12,7 +12,7 @@
 
     <item
         android:id="@+id/nav_chemicals"
-        android:title="Chemicals"
+        android:title="@string/chemicals"
         android:icon="@drawable/ic_pesticide"
         app:showAsAction="ifRoom"
         android:enabled="true"
@@ -20,7 +20,7 @@
         />
     <item
         android:id="@+id/nav_referral"
-        android:title="Referral"
+        android:title="@string/referral"
         android:icon="@drawable/ic_referral"
         app:showAsAction="ifRoom"
         android:enabled="true"
@@ -29,7 +29,7 @@
 
     <item
         android:id="@+id/nav_payment"
-        android:title="Payment"
+        android:title="@string/payment"
         android:icon="@drawable/ic_card"
         app:showAsAction="ifRoom"
         android:enabled="true"
@@ -37,7 +37,7 @@
         />
     <item
         android:id="@+id/nav_signature"
-        android:title="Signature"
+        android:title="@string/signature"
         android:icon="@drawable/ic_signature"
         app:showAsAction="ifRoom"
         android:enabled="true"

@@ -39,14 +39,13 @@ public class AttachmentActivity extends BaseActivity implements OnJobCardEventHa
         setSupportActionBar(mActivityAttachmentBinding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
     }
 
 
     @Override
     public void onBackPressed() {
         try {
-            overridePendingTransition(R.anim.stay, R.anim.slide_out_right);  //close animation
+            overridePendingTransition(R.anim.stay, R.anim.slide_out_right);
             super.onBackPressed();
             getAttchmentBack();
         } catch (Exception e) {

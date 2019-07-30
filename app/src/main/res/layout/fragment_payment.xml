@@ -39,7 +39,7 @@
                         android:layout_marginLeft="15dp"
                         android:text="@string/payment_mode"
                         android:textColor="@color/colorPrimaryDark"
-                        android:textSize="15dp"
+                        android:textSize="15sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
@@ -49,7 +49,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=":"
-                        android:textSize="14dp"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toRightOf="@id/payment"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -93,7 +93,7 @@
                         android:layout_marginLeft="15dp"
                         android:text="@string/amount_to_collect"
                         android:textColor="@color/colorPrimaryDark"
-                        android:textSize="15dp"
+                        android:textSize="15sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
@@ -103,7 +103,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=":"
-                        android:textSize="14dp"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toRightOf="@id/collect"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -113,9 +113,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
-                        android:text=""
                         android:textColor="@color/black"
-                        android:textSize="14dp"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -138,7 +137,7 @@
                         android:layout_marginLeft="15dp"
                         android:text="@string/amount_collected"
                         android:textColor="@color/colorPrimaryDark"
-                        android:textSize="15dp"
+                        android:textSize="15sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
@@ -148,7 +147,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=":"
-                        android:textSize="14dp"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toRightOf="@id/collected"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -164,7 +163,7 @@
                         android:gravity="center"
                         android:inputType="number"
                         android:textColor="@color/black"
-                        android:textSize="14dp"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -175,8 +174,8 @@
                     android:id="@+id/lnr_cheque"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <android.support.constraint.ConstraintLayout
                         android:id="@+id/lnr_bankname"
@@ -192,7 +191,7 @@
                             android:layout_marginLeft="15dp"
                             android:text="@string/bank_name"
                             android:textColor="@color/colorPrimaryDark"
-                            android:textSize="15dp"
+                            android:textSize="15sp"
                             android:textStyle="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
@@ -202,7 +201,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text=":"
-                            android:textSize="14dp"
+                            android:textSize="14sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toRightOf="@id/bankname"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -233,9 +232,9 @@
                                 android:ellipsize="end"
                                 android:onClick="@{(view) -> handler.onBankNameClicked(view)}"
                                 android:singleLine="true"
-                                android:text="Select Bank"
+                                android:text="@string/select_bank"
                                 android:textColor="@color/white"
-                                android:textSize="14dp" />
+                                android:textSize="14sp" />
 
                             <android.support.v7.widget.AppCompatImageView
                                 android:id="@+id/img_drop"
@@ -269,7 +268,7 @@
                             android:layout_marginBottom="8dp"
                             android:text="@string/cheque_date"
                             android:textColor="@color/colorPrimaryDark"
-                            android:textSize="15dp"
+                            android:textSize="15sp"
                             android:textStyle="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
@@ -279,7 +278,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text=":"
-                            android:textSize="14dp"
+                            android:textSize="14sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toRightOf="@id/cheque"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -308,9 +307,9 @@
                                 android:ellipsize="end"
                                 android:onClick="@{(view) -> handler.onCalendarClicked(view)}"
                                 android:singleLine="true"
-                                android:text="Select Date"
+                                android:text="@string/select_date"
                                 android:textColor="@color/white"
-                                android:textSize="14dp" />
+                                android:textSize="14sp" />
 
                             <android.support.v7.widget.AppCompatImageView
                                 android:id="@+id/img_cal"
@@ -320,7 +319,6 @@
                                 android:layout_centerVertical="true"
                                 android:layout_gravity="center"
                                 android:layout_marginRight="12dp"
-
                                 android:onClick="@{(view) -> handler.onCalendarClicked(view)}"
                                 android:src="@drawable/ic_calendar"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -347,7 +345,7 @@
                             android:layout_marginBottom="8dp"
                             android:text="@string/cheque_number"
                             android:textColor="@color/colorPrimaryDark"
-                            android:textSize="15dp"
+                            android:textSize="15sp"
                             android:textStyle="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
@@ -357,7 +355,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text=":"
-                            android:textSize="14dp"
+                            android:textSize="14sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toRightOf="@id/chequeno"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -375,7 +373,7 @@
                             android:inputType="number"
                             android:maxLength="6"
                             android:textColor="@color/black"
-                            android:textSize="14dp"
+                            android:textSize="14sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -466,9 +464,9 @@
                                         android:gravity="center"
                                         android:maxLength="20"
                                         android:onClick="@{(view) -> handler.onUploadChequeClicked(view)}"
-                                        android:text="Upload Cheque"
+                                        android:text="@string/upload_cheque"
                                         android:textColor="@color/white"
-                                        android:textSize="14dp" />
+                                        android:textSize="14sp" />
                                 </LinearLayout>
                             </LinearLayout>
 
@@ -487,19 +485,19 @@
                     android:layout_weight="1"
                     android:background="@drawable/button_border"
                     android:onClick="@{(view) -> handler.onSendPaymentLinkClicked(view)}"
-                    android:text="Resend Payment Link"
+                    android:text="@string/resend_payment_link"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:visibility="gone" />
 
                 <android.support.v7.widget.CardView
-                    android:visibility="gone"
                     android:id="@+id/cardScanner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="7dp"
-                    android:layout_marginBottom="7dp">
+                    android:layout_marginBottom="7dp"
+                    android:visibility="gone">
 
                     <ImageView
                         android:id="@+id/img_payscanner"

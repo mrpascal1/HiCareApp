@@ -46,9 +46,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Scratch &amp; Earn points!"
+                        android:text="@string/scratch_amp_earn_points"
                         android:textColor="@color/white"
-                        android:textSize="18dp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -98,9 +98,9 @@
                                 android:layout_centerHorizontal="true"
                                 android:layout_marginTop="10dp"
                                 android:gravity="center"
-                                android:text="You've won"
+                                android:text="@string/you_ve_won"
                                 android:textColor="@color/black"
-                                android:textSize="24dp" />
+                                android:textSize="24sp" />
 
                             <android.support.v7.widget.AppCompatTextView
                                 android:id="@+id/txtIncentive"
@@ -110,9 +110,8 @@
                                 android:layout_centerHorizontal="true"
                                 android:layout_marginTop="5dp"
                                 android:gravity="center"
-                                android:text="0"
                                 android:textColor="@color/black"
-                                android:textSize="24dp" />
+                                android:textSize="24sp" />
 
                             <android.support.v7.widget.AppCompatTextView
                                 android:id="@+id/txtLose"
@@ -122,9 +121,9 @@
                                 android:layout_centerInParent="true"
                                 android:layout_marginTop="5dp"
                                 android:gravity="center"
-                                android:text="Better luck next time!"
+                                android:text="@string/better_luck_next_time"
                                 android:textColor="@color/black"
-                                android:textSize="24dp"
+                                android:textSize="24sp"
                                 android:visibility="gone" />
 
                             <com.ab.hicarerun.utils.notifications.ScratchRelativeLayout
@@ -152,9 +151,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Excellent!"
+                        android:text="@string/excellent"
                         android:textColor="@color/white"
-                        android:textSize="17dp"
+                        android:textSize="17sp"
                         android:visibility="gone"
                         android:textStyle="bold" />
 
@@ -165,9 +164,9 @@
                         android:visibility="gone"
                         android:gravity="center"
                         android:layout_marginTop="7dp"
-                        android:text="You've earned a points!"
+                        android:text="@string/you_ve_earned_a_points"
                         android:textColor="@color/white"
-                        android:textSize="14dp"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
 
                     <android.support.v7.widget.AppCompatTextView
@@ -176,9 +175,9 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:visibility="gone"
-                        android:text="From Hicare"
+                        android:text="@string/from_hicare"
                         android:textColor="@color/white"
-                        android:textSize="14dp"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>

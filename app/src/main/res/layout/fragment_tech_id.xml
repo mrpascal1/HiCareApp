@@ -50,9 +50,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="10dp"
-                        android:text="Arjun K Bhatt"
                         android:textColor="@color/black"
-                        android:textSize="18dp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <LinearLayout
@@ -69,7 +68,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Employee Code"
+                            android:text="@string/employee_code"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
 
@@ -86,7 +85,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="7dp"
-                            android:text="00007"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
 
@@ -114,7 +112,7 @@
                         <TextView
                             android:layout_width="60dp"
                             android:layout_height="wrap_content"
-                            android:text="Email ID"
+                            android:text="@string/email_id"
                             android:textSize="11sp"/>
 
                         <TextView
@@ -130,7 +128,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="7dp"
-                            android:text="itsupport@hicare.in"
+                            android:text="@string/itsupport_hicare_in"
                             android:textSize="11sp"
                             />
 
@@ -152,7 +150,7 @@
                         <TextView
                             android:layout_width="60dp"
                             android:layout_height="wrap_content"
-                            android:text="Contact no."
+                            android:text="@string/contact_no"
                             android:textSize="11sp"
                             />
 
@@ -171,7 +169,7 @@
                             android:textSize="11sp"
                             android:layout_marginLeft="7dp"
 
-                            android:text="8828333888"
+                            android:text="@string/_8828333888"
                             />
 
                     </LinearLayout>

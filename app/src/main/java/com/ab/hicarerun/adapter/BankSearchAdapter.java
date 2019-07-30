@@ -42,7 +42,7 @@ public class BankSearchAdapter extends RecyclerView.Adapter<BankSearchAdapter.Vi
         holder.name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onSelected(name,position);
+                listener.onSelected(name, position);
             }
         });
     }

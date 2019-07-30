@@ -49,6 +49,7 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
     private RealmResults<IncompleteReason> ReasonRealmModel = null;
     private String Selection = "";
     private int radiopos = 0;
+    private String status = "";
 
 
     public GeneralFragment() {
@@ -104,6 +105,7 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
             if ((TaskDetailsActivity) getActivity() != null) {
                 mGeneralRealmModel = getRealm().where(GeneralData.class).findAll();
                 if (mGeneralRealmModel != null && mGeneralRealmModel.size() > 0) {
+                    status = mGeneralRealmModel.get(0).getSchedulingStatus();
                     String order = mGeneralRealmModel.get(0).getOrderNumber();
                     String duration = mGeneralRealmModel.get(0).getDuration();
                     String start = mGeneralRealmModel.get(0).getTaskAssignmentStartTime();
@@ -131,7 +133,7 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
                     setDefaultReason();
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -140,7 +142,6 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
     private void setDefaultReason() {
         try {
             ReasonRealmModel = getRealm().where(IncompleteReason.class).findAll().sort("reason");
-            String Reason = ReasonRealmModel.get(0).getReason();
             String res = mGeneralRealmModel.get(0).getIncompleteReason();
             if (res == null || res.length() == 0) {
                 mFragmentGeneralBinding.txtReason.setText("Select Reason");
@@ -157,7 +158,7 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
 
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -208,7 +209,7 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
                         mCallback.isGeneralChanged(false);
                         mCallback.status(generalTaskRealmModel.get(position).getStatus());
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -231,42 +232,43 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
 
     @Override
     public void onReasonClicked(View view) {
+        if (!status.equalsIgnoreCase("Incomplete")) {
+            if ((TaskDetailsActivity) getActivity() != null) {
 
-        if ((TaskDetailsActivity) getActivity() != null) {
-
-            mGeneralRealmModel = getRealm().where(GeneralData.class).findAll();
-            if (mGeneralRealmModel != null && mGeneralRealmModel.size() > 0) {
-                final ArrayList<String> type = new ArrayList<>();
-                type.add("Select Reason");
-                for (IncompleteReason incompleteReason : ReasonRealmModel) {
-                    type.add(incompleteReason.getReason());
-                }
-                arrayReason = new String[type.size()];
-                arrayReason = type.toArray(arrayReason);
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-                builder.setTitle("Incomplete Reason");
-                builder.setIcon(R.mipmap.logo);
-                builder.setSingleChoiceItems(arrayReason, radiopos, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        radiopos = which;
-                        Selection = arrayReason[which];
-                        mFragmentGeneralBinding.txtReason.setText(Selection);
-                        if (mFragmentGeneralBinding.txtReason.getText().toString().equals("Select Reason")) {
-                            mCallback.getIncompleteReason("");
-                            mCallback.isIncompleteReason(true);
-                        } else {
-                            mCallback.getIncompleteReason(mFragmentGeneralBinding.txtReason.getText().toString());
-                            mCallback.isIncompleteReason(false);
-                        }
-                        mAlertDialog.dismiss();
+                mGeneralRealmModel = getRealm().where(GeneralData.class).findAll();
+                if (mGeneralRealmModel != null && mGeneralRealmModel.size() > 0) {
+                    final ArrayList<String> type = new ArrayList<>();
+                    type.add("Select Reason");
+                    for (IncompleteReason incompleteReason : ReasonRealmModel) {
+                        type.add(incompleteReason.getReason());
                     }
-                });
-                mAlertDialog = builder.create();
-                mAlertDialog.show();
-            }
+                    arrayReason = new String[type.size()];
+                    arrayReason = type.toArray(arrayReason);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
+                    builder.setTitle("Incomplete Reason");
+                    builder.setIcon(R.mipmap.logo);
+                    builder.setSingleChoiceItems(arrayReason, radiopos, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            radiopos = which;
+                            Selection = arrayReason[which];
+                            mFragmentGeneralBinding.txtReason.setText(Selection);
+                            if (mFragmentGeneralBinding.txtReason.getText().toString().equals("Select Reason")) {
+                                mCallback.getIncompleteReason("");
+                                mCallback.isIncompleteReason(true);
+                            } else {
+                                mCallback.getIncompleteReason(mFragmentGeneralBinding.txtReason.getText().toString());
+                                mCallback.isIncompleteReason(false);
+                            }
+                            mAlertDialog.dismiss();
+                        }
+                    });
+                    mAlertDialog = builder.create();
+                    mAlertDialog.show();
+                }
+
+            }
         }
     }
 

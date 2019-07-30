@@ -26,7 +26,6 @@
                 android:textColor="@color/colorPrimary"
                 android:textSize="14dp"
                 android:layout_gravity="center_horizontal"
-                android:text=" Mark your attendance with the biometric authentication."
                 />
         </LinearLayout>
 
@@ -59,7 +58,7 @@
                 android:layout_height="match_parent"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:textAllCaps="false"
-                android:text="Mark Attendance"/>
+                android:text="@string/mark_attendance"/>
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/btn_cancel"
@@ -68,8 +67,7 @@
                 android:layout_height="match_parent"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:textAllCaps="false"
-
-                android:text="Skip"/>
+                android:text="@string/skip"/>
 
         </LinearLayout>
 

@@ -9,7 +9,6 @@
         <variable
             name="handler"
             type="com.ab.hicarerun.handler.UserOtpLoginClickHandler" />
-
     </data>
 
     <android.support.design.widget.CoordinatorLayout
@@ -44,7 +43,6 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
                 android:gravity="bottom"
-
                 android:orientation="vertical">
 
 
@@ -68,8 +66,8 @@
                     android:layout_marginBottom="20dp"
                     android:background="@drawable/shape_rounded_corner_btn_green"
                     android:onClick="@{(view) -> handler.onEnterMobileClicked(view)}"
-                    android:text="MOBILE NUMBER"
-                    android:textSize="18dp" />
+                    android:text="@string/mobile_number"
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -96,21 +94,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="3dp"
-                    android:text="LOGIN"
+                    android:text="@string/login"
                     android:textColor="@color/black"
-                    android:textSize="18dp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="14dp"
-                    android:text="Enter your phone number to proceed" />
+                    android:layout_marginBottom="14sp"
+                    android:text="@string/enter_your_phone_number_to_proceed" />
 
                 <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/edtMobile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="10 digit mobile number"
+                    android:hint="@string/_10_digit_mobile_number"
                     android:textColor="@android:color/black"
                     android:digits="0123456789"
                     android:maxLength="10"
@@ -129,18 +127,13 @@
                         android:layout_height="wrap_content"
                         android:alpha="0.5"
                         android:background="@drawable/shape_rounded_corner_btn_green"
-                        android:text="ENTER PHONE NUMBER"
+                        android:text="@string/enter_phone_number"
                         android:enabled="false"
                         android:onClick="@{(view) -> handler.onSendOtpClicked(view)}"
                         android:textColor="@android:color/white" />
 
-
                 </LinearLayout>
-
             </LinearLayout>
-
         </android.support.v4.widget.NestedScrollView>
-
-
     </android.support.design.widget.CoordinatorLayout>
 </layout>

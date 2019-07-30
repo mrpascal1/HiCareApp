@@ -32,9 +32,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="No Notifications Yet"
+                android:text="@string/no_notifications_yet"
                 android:textColor="@color/black"
-                android:textSize="24dp"
+                android:textSize="24sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/img_cart" />
@@ -45,25 +45,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:gravity="center"
-                android:text="Look like you have no notifications at the moment"
+                android:text="@string/look_like_you_have_no_notifications_at_the_moment"
                 android:textColor="@color/colorAccentDrawerPrimaryLight"
-                android:textSize="16dp"
+                android:textSize="16sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txt_empty_cart" />
 
-            <!--<Button-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginTop="7dp"-->
-                <!--android:background="@drawable/round_border"-->
-                <!--android:text="GO TO HOME PAGE"-->
-                <!--android:padding="20dp"-->
-                <!--android:textColor="@color/colorPrimaryDark"-->
-                <!--app:layout_constraintLeft_toLeftOf="parent"-->
-                <!--app:layout_constraintRight_toRightOf="parent"-->
-                <!--android:onClick="@{(view) -> handler.onGoToHomeClicked(view)}"-->
-                <!--app:layout_constraintTop_toBottomOf="@id/txt_cart_details" />-->
         </android.support.constraint.ConstraintLayout>
 
 

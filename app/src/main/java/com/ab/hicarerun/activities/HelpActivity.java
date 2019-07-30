@@ -34,10 +34,10 @@ public class HelpActivity extends AppCompatActivity implements UserHelpClickHand
             Intent callIntent = new Intent(Intent.ACTION_CALL);
             callIntent.setData(Uri.parse("tel:" + number));
             startActivity(callIntent);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs( e.toString(), getClass().getSimpleName(), "onContactNoClicked", lineNo);
+            AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "onContactNoClicked", lineNo);
         }
 
     }
@@ -47,13 +47,11 @@ public class HelpActivity extends AppCompatActivity implements UserHelpClickHand
         try {
             String mail = mActivityHelpBinding.txtMail.getText().toString();
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:" + mail));
-//            intent.putExtra(Intent.EXTRA_SUBJECT, "your_subject");
-//            intent.putExtra(Intent.EXTRA_TEXT, "your_text");
             startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
             String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs( e.toString(), getClass().getSimpleName(), "onEmailClicked", lineNo);
+            AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "onEmailClicked", lineNo);
         }
     }
 }

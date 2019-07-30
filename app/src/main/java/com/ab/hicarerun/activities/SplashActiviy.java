@@ -30,7 +30,6 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
     private Location mLocation;
     private LocationManagerListner mListner;
     private android.location.LocationManager locationManager;
-    LocationManager manager;
     private static int SPLASH_TIME_OUT = 3000;
 
 
@@ -92,22 +91,5 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
             mListner.locationFetched(mLocation, oldLocation, time, locationProvider);
         }
     }
-
-
-    public Location getmLocation() {
-        return mLocation;
-    }
-
-    public void showLocationPopUp() {
-
-        LocationManager.Builder builder = new LocationManager.Builder(this);
-        builder.setLocationListner(this);
-        builder.build();
-    }
-
-    public void setLocationListner(LocationManagerListner locationListner) {
-        this.mListner = locationListner;
-    }
-
 
 }

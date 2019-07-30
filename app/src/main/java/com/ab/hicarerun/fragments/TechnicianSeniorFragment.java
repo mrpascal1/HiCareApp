@@ -155,8 +155,6 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
 
     private void getGroomingDetails() {
         try {
-
-
             if ((TechnicianSeniorActivity) getActivity() != null) {
                 RealmResults<LoginResponse> LoginRealmModels =
                         BaseApplication.getRealm().where(LoginResponse.class).findAll();
@@ -234,23 +232,12 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
             Item prescriptionImage;
             Bitmap selectedImageBitmap = null;
 
-//            Bitmap image = (Bitmap) data.getExtras().get("data");
-//            Bitmap newImage = getResizedBitmap(image, 2000);
-//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//            image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-//            byte[] b = baos.toByteArray();
-//            String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-//            uploadCapturedImage(encodedImage);
-
-
             try {
                 prescriptionImage = getCapturedImage(requestCode);
                 Log.i("presImage", String.valueOf(prescriptionImage));
                 if (prescriptionImage.getPath().length() > 0) {
                     Uri mImageUri = Uri.fromFile(new File(prescriptionImage.getPath()));
                     Log.i("imagepath", String.valueOf(mImageUri));
-
-//                    String path = prescriptionImage.getPath();
                     try {
                         selectedImageBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mImageUri);
                         selectedImageBitmap = getResizedBitmap(selectedImageBitmap, 1000);
@@ -296,11 +283,7 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
             } catch (Exception ignored) {
                 ignored.printStackTrace();
             }
-
-
         }
-
-
     }
 
 
@@ -333,7 +316,6 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
     }
 
 
-
     private void uploadCapturedImage(String encodedImage) {
         NetworkCallController controller = new NetworkCallController(this);
         TechGroomingRequest request = new TechGroomingRequest();
@@ -347,7 +329,6 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
             public void onResponse(int requestCode, Object data) {
                 BasicResponse response = (BasicResponse) data;
                 if (response.getSuccess()) {
-//                    Toast.makeText(getActivity(), "Image uploaded successfully.", Toast.LENGTH_SHORT).show();
                     Toasty.success(getActivity(),"Image uploaded successfully.",Toasty.LENGTH_SHORT).show();
                     getGroomingDetails();
                 } else {
@@ -365,9 +346,7 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
     }
 
     @Override
-    public void onItemClick(int positon) {
-
-    }
+    public void onItemClick(int positon) {}
 
     public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
         int width = image.getWidth();

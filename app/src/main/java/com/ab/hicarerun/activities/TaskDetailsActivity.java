@@ -289,12 +289,8 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
 
     private void setupNavigationView() {
         if (mActivityTaskDetailsBinding.bottomNavigation != null) {
-
-            // Select first menu item by default and show Fragment accordingly.
             Menu menu = mActivityTaskDetailsBinding.bottomNavigation.getMenu();
-
             selectFragment(menu.getItem(0));
-
             MenuItem chemical = menu.findItem(R.id.nav_chemicals);
             MenuItem referral = menu.findItem(R.id.nav_referral);
             MenuItem payment = menu.findItem(R.id.nav_payment);
@@ -311,7 +307,6 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                 payment.setEnabled(true);
                 signature.setEnabled(true);
             }
-
 
             // Set action to perform when any menu-item is selected.
             mActivityTaskDetailsBinding.bottomNavigation.setOnNavigationItemSelectedListener(
@@ -330,24 +325,18 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     private void selectFragment(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_general:
-//                getSupportFragmentManager().beginTransaction().replace(mActivityTaskDetailsBinding.container.getId(), GeneralFragment.newInstance(model.getTaskId(), model.getStatus())).addToBackStack(null).commit();
                 mActivityTaskDetailsBinding.viewpager.setCurrentItem(0);
                 break;
-
             case R.id.nav_chemicals:
-//                getSupportFragmentManager().beginTransaction().replace(mActivityTaskDetailsBinding.container.getId(), ChemicalFragment.newInstance(model.getTaskId())).addToBackStack(null).commit();
                 mActivityTaskDetailsBinding.viewpager.setCurrentItem(1);
                 break;
             case R.id.nav_referral:
-//                getSupportFragmentManager().beginTransaction().replace(mActivityTaskDetailsBinding.container.getId(), ReferralFragment.newInstance(model.getTaskId())).addToBackStack(null).commit();
                 mActivityTaskDetailsBinding.viewpager.setCurrentItem(2);
                 break;
             case R.id.nav_payment:
-//                getSupportFragmentManager().beginTransaction().replace(mActivityTaskDetailsBinding.container.getId(), PaymentFragment.newInstance()).addToBackStack(null).commit();
                 mActivityTaskDetailsBinding.viewpager.setCurrentItem(3);
                 break;
             case R.id.nav_signature:
-//                getSupportFragmentManager().beginTransaction().replace(mActivityTaskDetailsBinding.container.getId(), SignatureFragment.newInstance(model.getTaskId())).addToBackStack(null).commit();
                 mActivityTaskDetailsBinding.viewpager.setCurrentItem(4);
                 break;
         }
@@ -371,7 +360,6 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                 menu.findItem(R.id.menu_save).setVisible(true);
             }
         }
-
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -502,7 +490,6 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                                     UpdateTaskResponse updateResponse = (UpdateTaskResponse) response;
                                     if (updateResponse.getSuccess() == true) {
                                         progress.dismiss();
-//                                        Toast.makeText(TaskDetailsActivity.this, "Data successfully saved.", Toast.LENGTH_LONG).show();
                                         Toasty.success(TaskDetailsActivity.this, "Task changed successfully.", Toast.LENGTH_SHORT).show();
 
                                         if (isIncentiveEnable && Status.equals("Completed")) {
@@ -551,13 +538,10 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                 (AppCompatTextView) view.findViewById(R.id.txtIncentive);
         final AppCompatTextView txtLose =
                 (AppCompatTextView) view.findViewById(R.id.txtLose);
-//        final ScratchView scratchCard =
-//                (ScratchView) view.findViewById(R.id.scratch_view);
         final AppCompatImageView imgAward =
                 (AppCompatImageView) view.findViewById(R.id.imgAward);
         final AppCompatImageView imgNoAward =
                 (AppCompatImageView) view.findViewById(R.id.imgNoAward);
-
         final AppCompatImageView imgCancel =
                 (AppCompatImageView) view.findViewById(R.id.imgCancel);
         final ScratchRelativeLayout scratch =
@@ -710,17 +694,6 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     public void amountToCollect(String s) {
         Amount_To_Collected = s;
     }
-//
-//    @Override
-//    public void actualPropertySize(String s) {
-//        Actual_Size = s;
-//    }
-//
-//    @Override
-//    public void standardPropertySize(String s) {
-//        Standard_Size = s;
-//    }
-
     @Override
     public void feedbackCode(String s) {
         Feedback_Code = s;

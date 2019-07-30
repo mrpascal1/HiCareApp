@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <import type="android.view.View" />
     </data>
 
@@ -15,8 +13,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/tab_textColor"
-           >
+            android:background="@color/tab_textColor">
 
             <android.support.v4.widget.SwipeRefreshLayout
                 android:id="@+id/swipeRefreshLayout"
@@ -48,8 +45,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:visibility="gone"
-                android:layout_gravity="center">
+                android:layout_gravity="center"
+                android:visibility="gone">
 
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/img_cart"
@@ -66,9 +63,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="No Tasks Found!"
+                    android:text="@string/no_tasks_found"
                     android:textColor="@color/transparent_blacke"
-                    android:textSize="24dp"
+                    android:textSize="24sp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/img_cart" />
@@ -79,22 +76,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:gravity="center"
-                    android:text="Look like you have no tasks at the moment."
+                    android:text="@string/look_like_you_have_no_tasks_at_the_moment"
                     android:textColor="@color/grey"
-                    android:textSize="16dp"
+                    android:textSize="16sp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/txt_empty_cart" />
 
-
             </android.support.constraint.ConstraintLayout>
-
-
         </RelativeLayout>
-
-
-
     </FrameLayout>
-
-
 </layout>

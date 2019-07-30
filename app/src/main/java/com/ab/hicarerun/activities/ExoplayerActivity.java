@@ -46,6 +46,11 @@ public class ExoplayerActivity extends BaseActivity implements Player.EventListe
     SimpleExoPlayer player;
     Handler mHandler;
     Runnable mRunnable;
+    private int MIN_BUFF_MS = 3000;
+    private int MAX_BUFF_MS = 5000;
+    private int BUFF_PLAYBACK_MS = 5000;
+    private int REBUFF_MS = 2500;
+    private int TARGET_BUFF_BYTES = -1;
 
 
     @Override
@@ -55,7 +60,6 @@ public class ExoplayerActivity extends BaseActivity implements Player.EventListe
                 DataBindingUtil.setContentView(this, R.layout.exoplayer_layout);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 //        getSupportActionBar().hide();
-
         if (getIntent().hasExtra(VIDEO_URI)) {
             videoUri = getIntent().getStringExtra(VIDEO_URI);
         }
@@ -86,11 +90,11 @@ public class ExoplayerActivity extends BaseActivity implements Player.EventListe
                 // 1. Create a default TrackSelector
                 LoadControl loadControl = new DefaultLoadControl(
                         new DefaultAllocator(true, 16),
-                        3000,
-                        5000,
-                        1500,
-                        2500,
-                        -1,
+                        MIN_BUFF_MS,
+                        MAX_BUFF_MS,
+                        BUFF_PLAYBACK_MS,
+                        REBUFF_MS,
+                        TARGET_BUFF_BYTES,
                         true);
 
                 BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
@@ -104,7 +108,7 @@ public class ExoplayerActivity extends BaseActivity implements Player.EventListe
             }
         } catch (Exception e) {
             String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs( e.toString(), getClass().getSimpleName(), "initializePlayer", lineNo);
+            AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "initializePlayer", lineNo);
         }
 
     }

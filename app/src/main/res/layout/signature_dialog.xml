@@ -26,8 +26,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:hint="SIGN HERE"
-                android:textSize="30dp" />
+                android:hint="@string/sign_here"
+                android:textSize="30sp" />
         </RelativeLayout>
 
         <View
@@ -91,7 +91,7 @@
         android:layout_marginTop="2dp"
         android:background="@drawable/button_border"
         android:text="@string/close"
-        android:textSize="16dp"
+        android:textSize="16sp"
         android:textColor="@color/white"
         app:layout_constraintLeft_toLeftOf="parent"
         android:textAllCaps="false"

@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout
         android:id="@+id/rel"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-
-
 
 
             <SurfaceView
@@ -55,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="@color/white"
-                android:text="Please Upload your photo to complete the Registration."
+                android:text="@string/please_upload_your_photo_to_complete_the_registration"
                 android:textStyle="bold"
                 />
         </LinearLayout>
@@ -73,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="@color/white"
-                android:text="Position your head within the circle to take a photo of yourself when you are ready."/>
+                android:text="@string/position_your_head_within_the_circle_to_take_a_photo_of_yourself_when_you_are_ready"/>
         </LinearLayout>
     </RelativeLayout>
 </layout>

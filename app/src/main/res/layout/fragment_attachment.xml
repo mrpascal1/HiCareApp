@@ -47,7 +47,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:layout_margin="10dp"
-                        android:text="No Items"
+                        android:text="@string/no_items"
                         android:textSize="14dp" />
 
                     <ProgressBar

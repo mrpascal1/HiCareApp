@@ -87,9 +87,6 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
         } catch (Exception e) {
             e.printStackTrace();
-            String error = e.toString();
-            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs(error, getClass().getSimpleName(), "loginClicked", lineNo);
         }
 
         locationManager =
@@ -218,7 +215,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         } catch (Exception e) {
             String error = e.toString();
             String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs( error, getClass().getSimpleName(), "getServiceCalled", lineNo);
+            AppUtils.sendErrorLogs(error, getClass().getSimpleName(), "getServiceCalled", lineNo);
         }
 
     }
@@ -232,7 +229,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
             String isTsEnable = LoginRealmModels.get(0).getIsTechnician();
             Menu menu = navigationView.getMenu();
             MenuItem groom = menu.findItem(R.id.nav_groom);
-            if (isTsEnable.equals("1")) {
+            if (isTsEnable.equals("0")) {
                 groom.setVisible(true);
             } else {
                 groom.setVisible(false);
@@ -302,7 +299,6 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                         mActivityHomeBinding.drawer.closeDrawers();
 
                         final AlertDialog.Builder dialog = new AlertDialog.Builder(HomeActivity.this);
-//                        final android.support.v7.app.AlertDialog.Builder dialog = new android.support.v7.app.AlertDialog.Builder(this);
                         dialog.setTitle("Logout");
                         dialog.setMessage("Do you want to logout?");
                         dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -406,18 +402,6 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
     public Location getmLocation() {
         return mLocation;
-    }
-
-    public void showLocationPopUp() {
-
-        LocationManager.Builder builder = new LocationManager.Builder(this);
-        builder.setLocationListner(this);
-        builder.build();
-        setLocationListner(this);
-    }
-
-    public void setLocationListner(LocationManagerListner locationListner) {
-        this.mListner = locationListner;
     }
 
 }
