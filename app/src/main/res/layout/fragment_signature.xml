@@ -335,8 +335,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
-                            android:text="TAP HERE TO SIGN"
-                            android:textSize="25dp" />
+                            android:text="@string/tap_here_to_sign"
+                            android:textSize="25sp" />
 
                     </RelativeLayout>
                 <LinearLayout

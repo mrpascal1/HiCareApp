@@ -8,7 +8,6 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="save">Save</string>
     <string name="upload_job_card">Upload Job Card</string>
     <string name="send_feedback_link">Send Feedback Link</string>
     <string name="contact"><u>8828333888</u></string>
@@ -19,19 +18,14 @@
     <string name="start_time">Start Time</string>
     <string name="duration">Duration</string>
     <string name="deprected">Deprected</string>
-    <string name="type">Type</string>
-    <string name="order_no">Order No.</string>
-    <string name="mobile_no">Mobile No.</string>
+
     <string name="customer_name">Customer Name</string>
     <string name="payment_mode">Payment Mode</string>
-    <string name="amount_to_collect">Amount To Collect</string>
     <string name="bank_name">Bank Name</string>
     <string name="cheque_date">Cheque Date</string>
     <string name="cheque_number">Cheque Number</string>
-    <string name="upload_cheque">Upload Cheque</string>
     <string name="otp">OTP</string>
     <string name="signatory">Signatory</string>
-    <string name="signature">Signature</string>
     <string name="amount_collected">Amount Collected</string>
     <string name="payment_link">Hicare will send a payment link to your phone number and email-id.</string>
     <string name="feedback_link">Hicare will send a feedback link to your phone number and email-id.</string>
@@ -41,10 +35,7 @@
     <string name="consumption">Consumption</string>
     <string name="name">Name</string>
     <string name="chemical_verified">Chemical Verified</string>
-    <string name="name">Name</string>
     <string name="last_name">Last Name</string>
-    <string name="mobile_no">Mobile No.</string>
-    <string name="alt_mobile_no">Alt. Mobile No.</string>
     <string name="email">Email</string>
     <string name="interested_service">Interested Service</string>
     <string name="cancel">CANCEL</string>
@@ -69,7 +60,6 @@
     <string name="enter_phone_number">ENTER PHONE NUMBER</string>
     <string name="select_bank">Select Bank</string>
     <string name="select_date">Select Date</string>
-    <string name="upload_cheque">Upload Cheque</string>
     <string name="resend_payment_link">Resend Payment Link</string>
     <string name="better_luck_next_time">Better luck next time!</string>
     <string name="from_hicare">From Hicare</string>
@@ -85,20 +75,14 @@
     <string name="_8828333888">8828333888</string>
     <string name="verify_details">VERIFY DETAILS</string>
     <string name="otp_sent_to">OTP sent to</string>
-    <string name="enter_otp">ENTER OTP</string>
     <string name="did_nt_receive_the_otp_resend">Did\'nt receive the OTP? RESEND</string>
-    <string name="enter_otp">ENTER OTP</string>
     <string name="loading">Loading...</string>
     <string name="send">Send</string>
     <string name="excellent">Excellent!</string>
     <string name="you_ve_earned_a_points">You\'ve earned a points!</string>
-    <string name="service_plan">Service Plan</string>
-    <string name="service_plan">Service Plan</string>
     <string name="arjun_bhatt">Arjun Bhatt</string>
-    <string name="mobile_no">Mobile No.</string>
     <string name="sign_here">SIGN HERE</string>
     <string name="_11_00_am_12_00_pm">11:00 AM - 12:00 PM</string>
-    <string name="service_plan">Service Plan</string>
     <string name="tag">Tag</string>
     <string name="sequence_no">Sequence No.</string>
     <string name="type">Type</string>
@@ -124,6 +108,10 @@
     <string name="help">Help</string>
     <string name="logout">Logout</string>
     <string name="save">Save</string>
+    <string name="service_plan">Service Plan</string>
+    <string name="enter_otp">ENTER OTP</string>
+    <string name="tap_here_to_sign">TAP HERE TO SIGN</string>
+    <string name="upload_cheque">Upload cheque</string>
 
     <string-array name="randomApplause">
         <item>Excellent!</item>
