@@ -10,6 +10,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +53,10 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
     private String Selection = "";
     private int radiopos = 0;
     private String status = "";
+    private Boolean isFeedback = false;
+    private String mode = "";
+    private String OnSiteOtp = "";
+    private String ScOtp = "";
 
 
     public GeneralFragment() {
@@ -97,8 +104,25 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
 
         mFragmentGeneralBinding.spnStatus.getBackground().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
 
+        mFragmentGeneralBinding.txtOtp.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                getValidated();
+            }
+        });
         getGeneralData();
     }
+
 
     private void getGeneralData() {
         try {
@@ -185,6 +209,9 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 AppUtils.statusCheck(getActivity());
+                mode = mFragmentGeneralBinding.spnStatus.getSelectedItem().toString();
+                isFeedback = mGeneralRealmModel.get(0).getFeedBack();
+
                 try {
                     mCallback.status(generalTaskRealmModel.get(position).getStatus());
                     if (generalTaskRealmModel.get(position).getStatus().equals("Incomplete")) {
@@ -201,6 +228,7 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
                         mFragmentGeneralBinding.cardReason.setVisibility(View.GONE);
                     }
 
+
                     mCallback.duration(mGeneralRealmModel.get(0).getDuration());
                     if (selectedStatus.equals(generalTaskRealmModel.get(position).getStatus())) {
                         mCallback.isGeneralChanged(true);
@@ -209,6 +237,7 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
                         mCallback.isGeneralChanged(false);
                         mCallback.status(generalTaskRealmModel.get(position).getStatus());
                     }
+                    getValidated();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -269,6 +298,36 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
                 }
 
             }
+        }
+    }
+
+    private void getValidated() {
+        if (mode.equals("On-Site")) {
+            Log.i("isFeedback", String.valueOf(isFeedback));
+            if (isFeedback && mGeneralRealmModel.get(0).getOnsite_OTP() != null && !mGeneralRealmModel.get(0).getOnsite_OTP().equals("")) {
+                if (status.equals("Dispatched")) {
+                    mFragmentGeneralBinding.cardOtp.setVisibility(View.VISIBLE);
+                } else {
+                    mFragmentGeneralBinding.cardOtp.setVisibility(View.GONE);
+                }
+                OnSiteOtp = mGeneralRealmModel.get(0).getOnsite_OTP();
+                ScOtp = mGeneralRealmModel.get(0).getSc_OTP();
+                String otp = mFragmentGeneralBinding.txtOtp.getText().toString();
+                if (otp.length() != 0) {
+                    mCallback.isEmptyOnsiteOtp(false);
+                    if (otp.equals(OnSiteOtp) || otp.equals(ScOtp)) {
+                        mCallback.isOnsiteOtp(false);
+                    } else {
+                        mCallback.isOnsiteOtp(true);
+                    }
+                } else {
+                    mCallback.isEmptyOnsiteOtp(true);
+                }
+            }
+        } else {
+            mCallback.isEmptyOnsiteOtp(false);
+            mCallback.isOnsiteOtp(false);
+            mFragmentGeneralBinding.cardOtp.setVisibility(View.GONE);
         }
     }
 

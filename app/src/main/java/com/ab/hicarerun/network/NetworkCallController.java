@@ -17,6 +17,9 @@ import com.ab.hicarerun.network.models.GeneralModel.GeneralResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeRequest;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShakeResponse;
+import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyRequest;
+import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyResponse;
+import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonModel;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
@@ -77,7 +80,7 @@ public class NetworkCallController {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "getHandShake", lineNo);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getHandShake", lineNo);
 
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -111,7 +114,8 @@ public class NetworkCallController {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "getContinueHandShake", lineNo);                                } catch (Exception e) {
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getContinueHandShake", lineNo);
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
@@ -144,7 +148,7 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     mContext.showServerError(jObjError.getString("Message"));
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "sendOtp", lineNo);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "sendOtp", lineNo);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -182,7 +186,7 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     mContext.showServerError(response.errorBody().string());
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "login", lineNo);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "login", lineNo);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -264,7 +268,7 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     mContext.showServerError(jObjError.getString("Message"));
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "getTasksList", lineNo);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getTasksList", lineNo);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -319,7 +323,8 @@ public class NetworkCallController {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "getTaskDetailById", lineNo);                                } catch (Exception e) {
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getTaskDetailById", lineNo);
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
@@ -351,7 +356,7 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     mContext.showServerError(jObjError.getString("ErrorMessage"));
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "postReferrals", lineNo);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "postReferrals", lineNo);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -409,7 +414,7 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     mContext.showServerError(jObjError.getString("ErrorMessage"));
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "getReferrals", lineNo);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getReferrals", lineNo);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -442,7 +447,7 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     mContext.showServerError(jObjError.getString("ErrorMessage"));
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "getDeleteReferrals", lineNo);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getDeleteReferrals", lineNo);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -462,11 +467,13 @@ public class NetworkCallController {
 
 
     public void postFeedbackLink(final int requestCode, FeedbackRequest request) {
+        mContext.showProgressDialog();
         BaseApplication.getRetrofitAPI(true)
                 .postFeedBackLink(request)
                 .enqueue(new Callback<FeedbackResponse>() {
                     @Override
                     public void onResponse(Call<FeedbackResponse> call, Response<FeedbackResponse> response) {
+                        mContext.dismissProgressDialog();
                         if (response != null) {
                             if (response.body() != null) {
                                 mListner.onResponse(requestCode, response.body());
@@ -474,7 +481,8 @@ public class NetworkCallController {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "postFeedbackLink", lineNo);                                } catch (Exception e) {
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "postFeedbackLink", lineNo);
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
@@ -483,6 +491,7 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<FeedbackResponse> call, Throwable t) {
+                        mContext.dismissProgressDialog();
                     }
                 });
     }
@@ -501,7 +510,7 @@ public class NetworkCallController {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "postAttachments", lineNo);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "postAttachments", lineNo);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -556,7 +565,7 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     mContext.showServerError(jObjError.getString("ErrorMessage"));
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "getAttachments", lineNo);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getAttachments", lineNo);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -589,7 +598,7 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     mContext.showServerError(jObjError.getString("ErrorMessage"));
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "getDeleteAttachments", lineNo);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getDeleteAttachments", lineNo);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -621,7 +630,7 @@ public class NetworkCallController {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "updateTasks", lineNo);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "updateTasks", lineNo);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -650,7 +659,7 @@ public class NetworkCallController {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "getExotelCalled", lineNo);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getExotelCalled", lineNo);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -681,7 +690,7 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     mContext.showServerError(jObjError.getString("ErrorMessage"));
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "getChemicals", lineNo);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getChemicals", lineNo);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -713,7 +722,7 @@ public class NetworkCallController {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "getLogout", lineNo);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getLogout", lineNo);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -769,7 +778,8 @@ public class NetworkCallController {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "postResourceProfilePic", lineNo);                                } catch (Exception e) {
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "postResourceProfilePic", lineNo);
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
@@ -821,7 +831,7 @@ public class NetworkCallController {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "getTechAttendance", lineNo);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getTechAttendance", lineNo);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -851,7 +861,7 @@ public class NetworkCallController {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "getTrainingVideos", lineNo);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getTrainingVideos", lineNo);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -885,7 +895,7 @@ public class NetworkCallController {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "sendErrorLog", lineNo);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "sendErrorLog", lineNo);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -916,20 +926,18 @@ public class NetworkCallController {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "getUpdateApp", lineNo);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getUpdateApp", lineNo);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
                         } else {
-//                            mContext.showServerError();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<UpdateResponse> call, Throwable t) {
-//                        mContext.dismissProgressDialog();
-//                        mContext.showServerError("Please try again !!!");
+
                     }
                 });
     }
@@ -937,12 +945,15 @@ public class NetworkCallController {
     /*[Send Payment Link]*/
 
     public void sendPaymentLink(final int requestCode, final PaymentLinkRequest request) {
+        mContext.showProgressDialog();
         BaseApplication.getRetrofitAPI(true)
                 .sendPaymentLink(request)
                 .enqueue(new Callback<PaymentLinkResponse>() {
                     @Override
                     public void onResponse(Call<PaymentLinkResponse> call,
                                            Response<PaymentLinkResponse> response) {
+                        mContext.dismissProgressDialog();
+
                         if (response != null) {
                             if (response.body() != null) {
                                 mListner.onResponse(requestCode, response.body());
@@ -950,7 +961,7 @@ public class NetworkCallController {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "sendPaymentLink", lineNo);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "sendPaymentLink", lineNo);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -962,6 +973,7 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<PaymentLinkResponse> call, Throwable t) {
+                        mContext.dismissProgressDialog();
                     }
                 });
     }
@@ -1005,7 +1017,7 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     mContext.showServerError(jObjError.getString("ErrorMessage"));
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "getGroomingTechnicians", lineNo);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getGroomingTechnicians", lineNo);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -1058,14 +1070,13 @@ public class NetworkCallController {
                                     }
                                 });
                                 controller.refreshToken(100, getRefreshToken());
-                            }
-                           else if (response.body() != null) {
+                            } else if (response.body() != null) {
                                 mListner.onResponse(requestCode, response.body());
                             } else if (response.errorBody() != null) {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "postGroomingImage", lineNo);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "postGroomingImage", lineNo);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -1078,7 +1089,7 @@ public class NetworkCallController {
                     @Override
                     public void onFailure(Call<BasicResponse> call, Throwable t) {
                         mContext.dismissProgressDialog();
-mContext.showServerError();
+                        mContext.showServerError();
                     }
                 });
     }
@@ -1125,7 +1136,7 @@ mContext.showServerError();
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     mContext.showServerError(jObjError.getString("ErrorMessage"));
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs( response.errorBody().string(), "", "getTechnicianProfile", lineNo);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getTechnicianProfile", lineNo);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -1138,6 +1149,77 @@ mContext.showServerError();
                     @Override
                     public void onFailure(Call<TechnicianProfileDetails> call, Throwable t) {
                         mContext.showServerError("Please try again !!!");
+                    }
+                });
+    }
+
+    /*[Get Jeopardy Reasons]*/
+
+    public void getJeopardyReasons(final int requestCode) {
+        BaseApplication.getExotelApi()
+                .getJeopardyReasons()
+                .enqueue(new Callback<JeopardyReasonModel>() {
+                    @Override
+                    public void onResponse(Call<JeopardyReasonModel> call,
+                                           Response<JeopardyReasonModel> response) {
+                        if (response != null) {
+                            if (response.body() != null) {
+                                mListner.onResponse(requestCode, response.body().getData());
+
+                            } else if (response.errorBody() != null) {
+                                try {
+                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                    mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                    String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getJeopardyReasons", lineNo);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        } else {
+                            mContext.showServerError();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<JeopardyReasonModel> call, Throwable t) {
+                        mContext.showServerError("Please try again !!!");
+                    }
+                });
+    }
+
+    /*[CWF JEOPARDY ]*/
+
+    public void postCWFJepoardy(final int requestCode, final CWFJeopardyRequest request) {
+        mContext.showProgressDialog();
+        BaseApplication.getJeopardyApi()
+                .postCWFJeopardy(request)
+                .enqueue(new Callback<CWFJeopardyResponse>() {
+                    @Override
+                    public void onResponse(Call<CWFJeopardyResponse> call,
+                                           Response<CWFJeopardyResponse> response) {
+                        mContext.dismissProgressDialog();
+                        if (response != null) {
+                            if (response.body() != null) {
+                                mListner.onResponse(requestCode, response.body());
+                            } else if (response.errorBody() != null) {
+                                try {
+                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                    String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "postCWFJepoardy", lineNo);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        } else {
+                            mContext.showServerError();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<CWFJeopardyResponse> call, Throwable t) {
+                        mContext.dismissProgressDialog();
+                        mContext.showServerError();
                     }
                 });
     }

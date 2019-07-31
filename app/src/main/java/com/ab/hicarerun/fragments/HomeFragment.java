@@ -30,6 +30,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.ab.hicarerun.BaseApplication;
@@ -43,9 +45,15 @@ import com.ab.hicarerun.handler.OnCallListItemClickHandler;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
+import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentList;
 import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
 import com.ab.hicarerun.network.models.ExotelModel.ExotelResponse;
+import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
+import com.ab.hicarerun.network.models.GeneralModel.IncompleteReason;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeResponse;
+import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyRequest;
+import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyResponse;
+import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonsList;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.TaskModel.TaskListResponse;
 import com.ab.hicarerun.network.models.TaskModel.Tasks;
@@ -53,6 +61,11 @@ import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.google.android.gms.tasks.Task;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
@@ -73,6 +86,8 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     private static final int EXOTEL_REQ = 2000;
     private static final int CALL_REQUEST = 3000;
     private static final int CAM_REQUEST = 4000;
+    private static final int JEOPARDY_REQUEST = 5000;
+    private static final int CWF_REQUEST = 6000;
     private boolean isBack = false;
     private boolean isSkip = false;
     private Integer pageNumber = 1;
@@ -80,6 +95,8 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     private String activityName = "";
     private String methodName = "";
     private NavigationView navigationView = null;
+    private String taskId = "";
+    List<Tasks> items = null;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -173,7 +190,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
             String error = e.toString();
             methodName = "PhoneCallListener";
             String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs( error, activityName, methodName, lineNo);
+            AppUtils.sendErrorLogs(error, activityName, methodName, lineNo);
         }
 
     }
@@ -211,7 +228,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
             String error = e.toString();
             methodName = "getAllTasks";
             String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs( error, activityName, methodName, lineNo);
+            AppUtils.sendErrorLogs(error, activityName, methodName, lineNo);
         }
 
     }
@@ -225,7 +242,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
         } else {
             mFragmentHomeBinding.swipeRefreshLayout.setRefreshing(false);
-            final List<Tasks> items = data.getData();
+            items = data.getData();
             if (items != null) {
                 if (pageNumber == 1 && items.size() > 0) {
                     mAdapter.setData(items);
@@ -313,7 +330,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                 public void onResponse(int requestCode, Object data) {
                                     ContinueHandShakeResponse response = (ContinueHandShakeResponse) data;
                                     if (response.getSuccess()) {
-                                        Toasty.success(getActivity(),"Attendance marked successfully.",Toast.LENGTH_SHORT).show();
+                                        Toasty.success(getActivity(), "Attendance marked successfully.", Toasty.LENGTH_SHORT).show();
                                         replaceFragment(HomeFragment.newInstance(), "FaceRecognizationFragment-HomeFragment");
                                     } else {
                                         Toast.makeText(getActivity(), "Attendance Failed, please try again.", Toast.LENGTH_SHORT).show();
@@ -486,17 +503,19 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     public void onTrackLocationIconClicked(int position) {
         try {
             if ((HomeActivity) getActivity() != null) {
-//            if (((HomeActivity) getActivity()).getmLocation() != null) {
-                if (mAdapter.getItem(position).getCustomerLat() != null && !mAdapter.getItem(position).getCustomerLat().equals("")) {
-                    double latitude = Double.parseDouble(mAdapter.getItem(position).getCustomerLat());
-                    double longitude = Double.parseDouble(mAdapter.getItem(position).getCustomerLong());
-                    String uri = "http://maps.google.com/maps?f=d&hl=en&saddr=" + ((HomeActivity) getActivity()).getmLocation().getLatitude() + "," + ((HomeActivity) getActivity()).getmLocation().getLongitude() + "&daddr=" + latitude + "," + longitude;
-                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
-                    startActivity(Intent.createChooser(intent, "Hicare Run"));
+                if (((HomeActivity) getActivity()).getmLocation() != null) {
+                    if (mAdapter.getItem(position).getCustomerLat() != null && !mAdapter.getItem(position).getCustomerLat().equals("") && !mAdapter.getItem(position).getCustomerLat().equals("0.0")) {
+                        double latitude = Double.parseDouble(mAdapter.getItem(position).getCustomerLat());
+                        double longitude = Double.parseDouble(mAdapter.getItem(position).getCustomerLong());
+                        String uri = "http://maps.google.com/maps?f=d&hl=en&saddr=" + ((HomeActivity) getActivity()).getmLocation().getLatitude() + "," + ((HomeActivity) getActivity()).getmLocation().getLongitude() + "&daddr=" + latitude + "," + longitude;
+                        Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
+                        startActivity(Intent.createChooser(intent, "HiCare Run"));
+                    } else {
+                        Toast.makeText(getActivity(), "Customer location not found!", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "Customer location not found!", Toast.LENGTH_SHORT).show();
                 }
-//            }else {
-//                Toast.makeText(getActivity(), "location not found", Toast.LENGTH_SHORT).show();
-//            }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -506,6 +525,107 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
             AppUtils.sendErrorLogs(error, activityName, methodName, lineNo);
         }
 
+    }
+
+    @Override
+    public void onTechnicianHelplineClicked(final int position) {
+
+        NetworkCallController controller = new NetworkCallController(this);
+        controller.setListner(new NetworkResponseListner() {
+            @Override
+            public void onResponse(int requestCode, Object response) {
+                try {
+                    List<JeopardyReasonsList> list = (List<JeopardyReasonsList>) response;
+                    dismissProgressDialog();
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    LayoutInflater inflater = LayoutInflater.from(getActivity());
+                    final View v = inflater.inflate(R.layout.jeopardy_reasons_layout, null, false);
+                    final RadioGroup radioGroup = (RadioGroup) v.findViewById(R.id.radiogrp);
+
+                    if (list != null) {
+                        for (int i = 0; i < list.size(); i++) {
+                            final RadioButton rbn = new RadioButton(getActivity());
+                            rbn.setId(i);
+                            rbn.setText(list.get(i).getResonName());
+                            rbn.setTextSize(15);
+                            RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
+                            params.setMargins(10, 10, 2, 1);
+                            radioGroup.addView(rbn, params);
+                        }
+                    }
+
+
+                    builder.setView(v);
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            RadioButton radioButton = (RadioButton) v.findViewById(radioGroup.getCheckedRadioButtonId());
+                            if (radioGroup.getCheckedRadioButtonId() == -1) {
+                                Toast.makeText(getActivity(), "Please select at least one reason...", Toast.LENGTH_SHORT).show();
+                                builder.setCancelable(false);
+                            } else {
+                                if (items != null) {
+                                    Log.i("taskId", items.get(position).getTaskId());
+                                    techHelpline(items.get(position).getTaskId(), "Technician Helpline", "Technician_HelpLine"
+                                            , radioButton.getText().toString());
+                                }
+                                dialogInterface.dismiss();
+                            }
+                        }
+                    });
+
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+
+                        }
+                    });
+                    final AlertDialog dialog = builder.create();
+                    dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation_2;
+
+                    dialog.show();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    dismissProgressDialog();
+                }
+
+            }
+
+            @Override
+            public void onFailure(int requestCode) {
+
+            }
+        });
+        controller.getJeopardyReasons(JEOPARDY_REQUEST);
+    }
+
+    private void techHelpline(String taskId, String jeopardyText, String batchName, String remark) {
+        NetworkCallController controller = new NetworkCallController(this);
+        CWFJeopardyRequest request = new CWFJeopardyRequest();
+        request.setTaskId(taskId);
+        request.setJeopardyText(jeopardyText);
+        request.setBatchName(batchName);
+        request.setRemark(remark);
+        controller.setListner(new NetworkResponseListner() {
+            @Override
+            public void onResponse(int requestCode, Object data) {
+                CWFJeopardyResponse response = (CWFJeopardyResponse) data;
+                if (response.getSuccess()) {
+                    Toasty.success(getActivity(), response.getResponseMessage(), Toasty.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), response.getResponseMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(int requestCode) {
+
+            }
+        });
+        controller.postCWFJepoardy(CWF_REQUEST, request);
     }
 
     @Override
@@ -554,7 +674,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
                         System.out.println("The line number is " + new Exception().getStackTrace()[0].getLineNumber());
                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                        AppUtils.sendErrorLogs( error, activityName, methodName, lineNo);
+                        AppUtils.sendErrorLogs(error, activityName, methodName, lineNo);
                     }
 
                 } else {

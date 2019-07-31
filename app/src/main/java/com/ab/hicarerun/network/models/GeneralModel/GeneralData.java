@@ -63,6 +63,10 @@ public class GeneralData implements RealmModel {
     @Expose
     private String Sc_OTP;
 
+    @SerializedName("Onsite_OTP")
+    @Expose
+    private String Onsite_OTP;
+
     @SerializedName("Customer_OTP")
     @Expose
     private String Customer_OTP;
@@ -176,6 +180,7 @@ public class GeneralData implements RealmModel {
         NumberOfBhk = "NA";
         TechnicianOTP = "NA";
         Sc_OTP = "NA";
+        Onsite_OTP = "NA";
         Customer_OTP = "NA";
         Signatory = "NA";
         SignatureUrl = "NA";
@@ -502,5 +507,13 @@ public class GeneralData implements RealmModel {
 
     public void setChequeDate(String chequeDate) {
         ChequeDate = chequeDate;
+    }
+
+    public String getOnsite_OTP() {
+        return Onsite_OTP;
+    }
+
+    public void setOnsite_OTP(String onsite_OTP) {
+        Onsite_OTP = onsite_OTP;
     }
 }

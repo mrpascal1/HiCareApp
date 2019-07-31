@@ -5,9 +5,6 @@
     <string name="invalid_userid">Invalid UserId</string>
     <string name="invalid_password">Invalid Password</string>
     <string name="runtime_permissions_txt">Permissions</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="upload_job_card">Upload Job Card</string>
     <string name="send_feedback_link">Send Feedback Link</string>
     <string name="contact"><u>8828333888</u></string>
@@ -112,6 +109,10 @@
     <string name="enter_otp">ENTER OTP</string>
     <string name="tap_here_to_sign">TAP HERE TO SIGN</string>
     <string name="upload_cheque">Upload cheque</string>
+    <string name="no_videos_found">No Videos Found!</string>
+    <string name="look_like_you_no_videos_at_the_moment">Look like you no videos at the moment.</string>
+    <string name="technician_helpline">Technician Helpline</string>
+    <string name="on_site_otp">On-Site OTP</string>
 
     <string-array name="randomApplause">
         <item>Excellent!</item>

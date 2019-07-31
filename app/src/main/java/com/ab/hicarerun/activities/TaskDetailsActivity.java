@@ -88,6 +88,8 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     private boolean isIncentiveEnable = false;
     private boolean isOTPValidated = false;
     private boolean isOTPRequired = false;
+    private boolean isOnsiteOtpValidated = false;
+    private boolean isOnsiteOtpRequired = false;
     private boolean isTechnicianFeedbackEnable = false;
     private int Incentive = 0;
     private int TechnicianRating = 0;
@@ -381,12 +383,21 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     private void getSaveMenu() {
         try {
             progress.show();
+            Log.i("Status",Status);
             isAttachment = SharedPreferencesUtility.getPrefBoolean(this, SharedPreferencesUtility.PREF_ATTACHMENT);
             if (isGeneralChanged) {
                 mActivityTaskDetailsBinding.viewpager.setCurrentItem(0);
                 Toasty.error(this, "Please change status", Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
 
+            } else if (isOnsiteOtpRequired && Status.equals("On-Site")) {
+                mActivityTaskDetailsBinding.viewpager.setCurrentItem(0);
+                Toasty.error(this, "On-Site OTP is required", Toast.LENGTH_SHORT, true).show();
+                progress.dismiss();
+            } else if (isOnsiteOtpValidated && Status.equals("On-Site")) {
+                mActivityTaskDetailsBinding.viewpager.setCurrentItem(0);
+                Toasty.error(this, "Invalid On-Site OTP", Toast.LENGTH_SHORT, true).show();
+                progress.dismiss();
             } else if (isIncompleteReason && Status.equals("Incomplete")) {
                 mActivityTaskDetailsBinding.viewpager.setCurrentItem(0);
                 Toasty.error(this, "Please select incomplete reason", Toast.LENGTH_SHORT, true).show();
@@ -694,6 +705,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     public void amountToCollect(String s) {
         Amount_To_Collected = s;
     }
+
     @Override
     public void feedbackCode(String s) {
         Feedback_Code = s;
@@ -837,6 +849,16 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     @Override
     public void isACEquals(Boolean b) {
         isAmountCollectedEquals = b;
+    }
+
+    @Override
+    public void isOnsiteOtp(Boolean b) {
+        isOnsiteOtpValidated = b;
+    }
+
+    @Override
+    public void isEmptyOnsiteOtp(Boolean b) {
+        isOnsiteOtpRequired = b;
     }
 
     public void onSaveClick(MenuItem item) {

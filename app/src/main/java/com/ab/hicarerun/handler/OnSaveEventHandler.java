@@ -71,4 +71,8 @@ public interface OnSaveEventHandler {
     public void isChequeImageRequired(Boolean b);
 
     public void isACEquals(Boolean b);
+
+    public  void isOnsiteOtp(Boolean b);
+
+    public void isEmptyOnsiteOtp(Boolean b);
 }

@@ -15,6 +15,9 @@ import com.ab.hicarerun.network.models.GeneralModel.GeneralResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeRequest;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShakeResponse;
+import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyRequest;
+import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyResponse;
+import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonModel;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
@@ -48,9 +51,11 @@ import retrofit2.http.Query;
 public interface IRetrofit {
     //    String BASE_URL = "http://52.74.65.15/mobileapi/api/";
     //    String ERROR_LOG_URL = "http://52.74.65.15/logging/api/";
+    //    http://apps.hicare.in/cwf/datasync/InsertRenewalAppJeopardy
     String BASE_URL = "http://run.hicare.in/mobile/api/";
     String EXOTEL_URL = "http://apps.hicare.in/api/api/";
     String ERROR_LOG_URL = "http://run.hicare.in/logging/api/";
+    String JEOPARDY_URL = "http://apps.hicare.in/cwf/";
 
     /*[Verify User]*/
 
@@ -191,5 +196,14 @@ public interface IRetrofit {
     @GET("ResourceActivity/GetResourceProfileDetails")
     Call<TechnicianProfileDetails> getTechnicianProfile(@Query("resourceId") String customerNo);
 
+    /*[Get Jeopardy Reasons]*/
+
+    @GET("applicationlogic/GetJeopardyReasons")
+    Call<JeopardyReasonModel> getJeopardyReasons();
+
+    /*[CWF JEOPARDY ]*/
+
+    @POST("datasync/InsertRenewalAppJeopardy")
+    Call<CWFJeopardyResponse> postCWFJeopardy(@Body CWFJeopardyRequest request);
 
 }

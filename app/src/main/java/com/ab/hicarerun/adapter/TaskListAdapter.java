@@ -190,6 +190,13 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             }
         });
 
+        holder.mTaskListAdapterBinding.btnHelpline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onCallListItemClickHandler.onTechnicianHelplineClicked(position);
+            }
+        });
+
 
         final Handler ha = new Handler();
         ha.postDelayed(new Runnable() {
@@ -398,6 +405,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
                 sequence.addSequenceItem(mTaskListAdapterBinding.txtStatus,
                         "You can check your task status here.", "GOT IT");
+
+                sequence.addSequenceItem(mTaskListAdapterBinding.helpline,
+                        "This is technician helpline number.", "GOT IT");
 
                 sequence.start();
                 isShown = true;

@@ -431,7 +431,7 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                     request.setFeedback_code(customer_otp);
                     request.setOrder_number(Order_Number);
                     request.setService_name(Service_Name);
-                    NetworkCallController controller = new NetworkCallController();
+                    NetworkCallController controller = new NetworkCallController(SignatureFragment.this);
                     controller.setListner(new NetworkResponseListner() {
                         @Override
                         public void onResponse(int requestCode, Object response) {

@@ -114,12 +114,18 @@ FragmentTrainingBinding mFragmentTrainingBinding;
                         if (pageNumber == 1 && items.size() > 0) {
                             mAdapter.setData(items);
                             mAdapter.notifyDataSetChanged();
+                            mFragmentTrainingBinding.emptyVideos.setVisibility(View.GONE);
                         } else if (items.size() > 0) {
                             mAdapter.addData(items);
                             mAdapter.notifyDataSetChanged();
+                            mFragmentTrainingBinding.emptyVideos.setVisibility(View.GONE);
                         } else {
                             pageNumber--;
+                            mFragmentTrainingBinding.emptyVideos.setVisibility(View.VISIBLE);
                         }
+                    }else {
+                        mFragmentTrainingBinding.emptyVideos.setVisibility(View.VISIBLE);
+
                     }
                 }
 

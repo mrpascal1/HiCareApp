@@ -79,7 +79,6 @@ public class TechIdFragment extends BaseFragment {
                         @Override
                         public void onResponse(int requestCode, Object data) {
                             Profile response = (Profile) data;
-                            String base64 = response.getProfilePic();
                             String TechName = response.getFirstName();
                             if (response.getEmployeeCode() != null) {
                                 String EmpCode = response.getEmployeeCode();
@@ -89,11 +88,15 @@ public class TechIdFragment extends BaseFragment {
                                 mFragmentTechIdBinding.lnrAdded.setVisibility(View.GONE);
                             }
                             mFragmentTechIdBinding.txtTechName.setText(TechName);
-                            byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
-                            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                            if (base64.length() > 0) {
-                                mFragmentTechIdBinding.imgTech.setImageBitmap(decodedByte);
+                            if(response.getProfilePic()!= null){
+                                String base64 = response.getProfilePic();
+                                byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
+                                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                if (base64.length() > 0) {
+                                    mFragmentTechIdBinding.imgTech.setImageBitmap(decodedByte);
+                                }
                             }
+
                         }
 
                         @Override
