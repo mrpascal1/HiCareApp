@@ -75,4 +75,8 @@ public interface OnSaveEventHandler {
     public  void isOnsiteOtp(Boolean b);
 
     public void isEmptyOnsiteOtp(Boolean b);
+
+    public void onSiteOtp(String s);
+
+    public void isEarlyCompletion(Boolean b);
 }

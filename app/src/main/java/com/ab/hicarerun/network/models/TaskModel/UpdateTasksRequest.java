@@ -105,7 +105,9 @@ public class UpdateTasksRequest {
     @SerializedName("Comment")
     @Expose
     private String Comment;
-
+    @SerializedName("TechnicianOnsiteOTP")
+    @Expose
+    private String TechnicianOnsiteOTP;
     @SerializedName("ChemicalList")
     @Expose
     private List<TaskChemicalList> ChemicalList = null;
@@ -147,6 +149,7 @@ public class UpdateTasksRequest {
         StandardPropertySize = "";
         ChemicalList = null;
         TechnicianRating = 0;
+        TechnicianOnsiteOTP = "";
     }
 
     public String getUserId() {
@@ -421,5 +424,13 @@ public class UpdateTasksRequest {
 
     public void setChequeImage(String chequeImage) {
         ChequeImage = chequeImage;
+    }
+
+    public String getTechnicianOnsiteOTP() {
+        return TechnicianOnsiteOTP;
+    }
+
+    public void setTechnicianOnsiteOTP(String technicianOnsiteOTP) {
+        TechnicianOnsiteOTP = technicianOnsiteOTP;
     }
 }

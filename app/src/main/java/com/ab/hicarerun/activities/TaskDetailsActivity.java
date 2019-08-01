@@ -77,7 +77,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     private String taskId = "";
     private static final int TASK_BY_ID_REQUEST = 1000;
     private Location mLocation;
-    private String Status = "", Payment_Mode = "", Amount_Collected = "", Amount_To_Collected = "", Actual_Size = "", Standard_Size = "", Feedback_Code = "", signatory = "", Signature = "", Duration = "";
+    private String Status = "", Payment_Mode = "", Amount_Collected = "", Amount_To_Collected = "", Actual_Size = "", Standard_Size = "", Feedback_Code = "", signatory = "", Signature = "", Duration = "", OnsiteOTP = "";
     private boolean isGeneralChanged = false;
     private boolean isChemicalChanged = false;
     private boolean isChemicalVerified = false;
@@ -118,6 +118,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     private boolean isChequeNumberRequired = false;
     private boolean isInvalidChequeNumber = false;
     private boolean isChequeImageRequired = false;
+    private boolean isEarlyCompletion = false;
     private android.location.LocationManager locationManager;
 
 
@@ -383,13 +384,17 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     private void getSaveMenu() {
         try {
             progress.show();
-            Log.i("Status",Status);
+            Log.i("Status", Status);
             isAttachment = SharedPreferencesUtility.getPrefBoolean(this, SharedPreferencesUtility.PREF_ATTACHMENT);
             if (isGeneralChanged) {
                 mActivityTaskDetailsBinding.viewpager.setCurrentItem(0);
                 Toasty.error(this, "Please change status", Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
 
+            }else if (isEarlyCompletion && Status.equals("Completed")) {
+                mActivityTaskDetailsBinding.viewpager.setCurrentItem(0);
+                Toasty.error(this, "You are not allowed to close the job as you have not spent adequate time. Please follow the correct procedure and deliver the job properly", Toast.LENGTH_LONG, true).show();
+                progress.dismiss();
             } else if (isOnsiteOtpRequired && Status.equals("On-Site")) {
                 mActivityTaskDetailsBinding.viewpager.setCurrentItem(0);
                 Toasty.error(this, "On-Site OTP is required", Toast.LENGTH_SHORT, true).show();
@@ -487,11 +492,14 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                             request.setTaskId(model.getTaskId());
                             request.setDuration(Duration);
                             request.setResourceId(UserId);
+                            request.setTechnicianOnsiteOTP(OnsiteOTP);
                             request.setChemicalList(ChemReqList);
                             request.setIncompleteReason(incompleteReason);
                             request.setChequeImage(chequeImage);
                             Log.i("incompleteReason", incompleteReason);
                             Log.i("chequeImage", chequeImage);
+                            Log.i("savelat", String.valueOf(getmLocation().getLatitude())+String.valueOf(getmLocation().getLongitude()));
+                            Log.i("savelong", String.valueOf(getmLocation().getLongitude()));
 
 
                             NetworkCallController controller = new NetworkCallController();
@@ -499,9 +507,9 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                                 @Override
                                 public void onResponse(int requestCode, Object response) {
                                     UpdateTaskResponse updateResponse = (UpdateTaskResponse) response;
-                                    if (updateResponse.getSuccess() == true) {
+                                    if (updateResponse.getSuccess()) {
                                         progress.dismiss();
-                                        Toasty.success(TaskDetailsActivity.this, "Task changed successfully.", Toast.LENGTH_SHORT).show();
+                                        Toasty.success(TaskDetailsActivity.this, updateResponse.getErrorMessage(), Toast.LENGTH_SHORT).show();
 
                                         if (isIncentiveEnable && Status.equals("Completed")) {
                                             showIncentiveDialog();
@@ -511,7 +519,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
 
                                     } else {
                                         progress.dismiss();
-                                        Toast.makeText(TaskDetailsActivity.this, "Failed.", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(TaskDetailsActivity.this, updateResponse.getErrorMessage(), Toast.LENGTH_LONG).show();
                                     }
                                 }
 
@@ -859,6 +867,16 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     @Override
     public void isEmptyOnsiteOtp(Boolean b) {
         isOnsiteOtpRequired = b;
+    }
+
+    @Override
+    public void onSiteOtp(String s) {
+        OnsiteOTP = s;
+    }
+
+    @Override
+    public void isEarlyCompletion(Boolean b) {
+        isEarlyCompletion = b;
     }
 
     public void onSaveClick(MenuItem item) {

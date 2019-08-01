@@ -67,6 +67,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
@@ -263,10 +264,15 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
             mAdapter.setOnItemClickHandler(new OnListItemClickHandler() {
                 @Override
                 public void onItemClick(int positon) {
-                    AppUtils.getDataClean();
-                    Intent intent = new Intent(getActivity(), TaskDetailsActivity.class);
-                    intent.putExtra(TaskDetailsActivity.ARGS_TASKS, items.get(positon));
-                    startActivity(intent);
+                    if (items.get(positon).getDetailVisible()) {
+                        AppUtils.getDataClean();
+                        Intent intent = new Intent(getActivity(), TaskDetailsActivity.class);
+                        intent.putExtra(TaskDetailsActivity.ARGS_TASKS, items.get(positon));
+                        startActivity(intent);
+                    } else {
+                        Toasty.info(getActivity(), "Please complete your previous job first.", Toasty.LENGTH_SHORT).show();
+                    }
+
 
                 }
             });
@@ -529,77 +535,81 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
     @Override
     public void onTechnicianHelplineClicked(final int position) {
+        if (items.get(position).getDetailVisible()) {
+            NetworkCallController controller = new NetworkCallController(this);
+            controller.setListner(new NetworkResponseListner() {
+                @Override
+                public void onResponse(int requestCode, Object response) {
+                    try {
+                        List<JeopardyReasonsList> list = (List<JeopardyReasonsList>) response;
+                        dismissProgressDialog();
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        LayoutInflater inflater = LayoutInflater.from(getActivity());
+                        final View v = inflater.inflate(R.layout.jeopardy_reasons_layout, null, false);
+                        final RadioGroup radioGroup = (RadioGroup) v.findViewById(R.id.radiogrp);
 
-        NetworkCallController controller = new NetworkCallController(this);
-        controller.setListner(new NetworkResponseListner() {
-            @Override
-            public void onResponse(int requestCode, Object response) {
-                try {
-                    List<JeopardyReasonsList> list = (List<JeopardyReasonsList>) response;
-                    dismissProgressDialog();
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    LayoutInflater inflater = LayoutInflater.from(getActivity());
-                    final View v = inflater.inflate(R.layout.jeopardy_reasons_layout, null, false);
-                    final RadioGroup radioGroup = (RadioGroup) v.findViewById(R.id.radiogrp);
-
-                    if (list != null) {
-                        for (int i = 0; i < list.size(); i++) {
-                            final RadioButton rbn = new RadioButton(getActivity());
-                            rbn.setId(i);
-                            rbn.setText(list.get(i).getResonName());
-                            rbn.setTextSize(15);
-                            RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
-                            params.setMargins(10, 10, 2, 1);
-                            radioGroup.addView(rbn, params);
-                        }
-                    }
-
-
-                    builder.setView(v);
-                    builder.setCancelable(false);
-                    builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            RadioButton radioButton = (RadioButton) v.findViewById(radioGroup.getCheckedRadioButtonId());
-                            if (radioGroup.getCheckedRadioButtonId() == -1) {
-                                Toast.makeText(getActivity(), "Please select at least one reason...", Toast.LENGTH_SHORT).show();
-                                builder.setCancelable(false);
-                            } else {
-                                if (items != null) {
-                                    Log.i("taskId", items.get(position).getTaskId());
-                                    techHelpline(items.get(position).getTaskId(), "Technician Helpline", "Technician_HelpLine"
-                                            , radioButton.getText().toString());
-                                }
-                                dialogInterface.dismiss();
+                        if (list != null) {
+                            for (int i = 0; i < list.size(); i++) {
+                                final RadioButton rbn = new RadioButton(getActivity());
+                                rbn.setId(i);
+                                rbn.setText(list.get(i).getResonName());
+                                rbn.setTextSize(15);
+                                RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
+                                params.setMargins(10, 10, 2, 1);
+                                radioGroup.addView(rbn, params);
                             }
                         }
-                    });
 
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.cancel();
 
-                        }
-                    });
-                    final AlertDialog dialog = builder.create();
-                    dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation_2;
+                        builder.setView(v);
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                RadioButton radioButton = (RadioButton) v.findViewById(radioGroup.getCheckedRadioButtonId());
+                                if (radioGroup.getCheckedRadioButtonId() == -1) {
+                                    Toast.makeText(getActivity(), "Please select at least one reason...", Toast.LENGTH_SHORT).show();
+                                    builder.setCancelable(false);
+                                } else {
+                                    if (items != null) {
+                                        Log.i("taskId", items.get(position).getTaskId());
+                                        techHelpline(items.get(position).getTaskId(), "Technician Helpline", "Technician_HelpLine"
+                                                , radioButton.getText().toString());
+                                    }
+                                    dialogInterface.dismiss();
+                                }
+                            }
+                        });
 
-                    dialog.show();
+                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    dismissProgressDialog();
+                            }
+                        });
+                        final AlertDialog dialog = builder.create();
+                        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation_2;
+
+                        dialog.show();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        dismissProgressDialog();
+                    }
+
                 }
 
-            }
+                @Override
+                public void onFailure(int requestCode) {
 
-            @Override
-            public void onFailure(int requestCode) {
+                }
+            });
+            controller.getJeopardyReasons(JEOPARDY_REQUEST);
+        }else{
+            Toasty.info(getActivity(), "Please complete your previous job first.", Toasty.LENGTH_SHORT).show();
+        }
 
-            }
-        });
-        controller.getJeopardyReasons(JEOPARDY_REQUEST);
     }
 
     private void techHelpline(String taskId, String jeopardyText, String batchName, String remark) {
@@ -712,11 +722,19 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                     Log.i(LOG_TAG, "IDLE");
                     if (isPhoneCalling) {
                         Log.i(LOG_TAG, "restart app");
-                        Intent i = getActivity().getPackageManager()
-                                .getLaunchIntentForPackage(
-                                        getActivity().getPackageName());
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        getActivity().startActivity(i);
+                        Intent i = null;
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+                            i = Objects.requireNonNull(getActivity()).getPackageManager()
+                                    .getLaunchIntentForPackage(
+                                            getActivity().getPackageName());
+                            if (i != null) {
+                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            }
+                            getActivity().startActivity(i);
+                        } else {
+                            Toast.makeText(getActivity(), "Not able to make call!", Toast.LENGTH_SHORT).show();
+                        }
+
                         isPhoneCalling = false;
                     }
 

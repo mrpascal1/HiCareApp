@@ -17,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.HomeActivity;
@@ -165,21 +166,21 @@ public class AppUtils {
 
 
                 date_result = "afterdate";
-                System.out.println("Date1 is after Date2");
+                Log.i("date","afterdate");
 
 
             }
             if (date1.before(date2)) {
 
                 date_result = "beforedate";
-                System.out.println("Date1 is before Date2");
+                Log.i("date","beforedate");
 
             }
 
             if (date1.equals(date2)) {
 
                 date_result = "equalsdate";
-                System.out.println("Date1 is equal Date2");
+                Log.i("date","equalsdate");
 
             }
             System.out.println(date_result);
@@ -187,6 +188,28 @@ public class AppUtils {
             ex.printStackTrace();
         }
         return date_result;
+    }
+
+
+    private boolean checkDuration(String time, String endtime) {
+
+        String pattern = "HH:mm";
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+
+        try {
+            Date date1 = sdf.parse(time);
+            Date date2 = sdf.parse(endtime);
+
+            if(date1.before(date2)) {
+                return true;
+            } else {
+
+                return false;
+            }
+        } catch (ParseException e){
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public static String currentDateTime() {

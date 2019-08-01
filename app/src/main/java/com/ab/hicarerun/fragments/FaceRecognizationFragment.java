@@ -14,6 +14,7 @@ import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.location.Location;
 import android.os.Build;
@@ -72,6 +73,8 @@ import java.util.List;
 import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -79,6 +82,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
     FragmentFaceRecognizationBinding mFragmentFaceRecognizationBinding;
 
     private SurfaceHolder surfaceHolder;
+    SurfaceTexture surfceTexture;
     private Camera camera;
     private int cameraId;
     private static final String ARG_ATTENDANCE = "ARG_ATTENDANCE";
@@ -163,7 +167,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
 
     private void alertCameraDialog() {
         AlertDialog.Builder dialog = createAlert(getActivity(),
-                "Camera info", "error to open camera");
+                "Camera info", "Unable to open camera...");
         dialog.setNegativeButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -208,9 +212,10 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
 
                     @Override
                     public void onError(int error, Camera camera) {
-//to show the error message.
                     }
                 });
+                surfceTexture = new SurfaceTexture(MODE_PRIVATE);
+                camera.setPreviewTexture(surfceTexture);
                 camera.setPreviewDisplay(surfaceHolder);
                 camera.startPreview();
                 result = true;
@@ -292,8 +297,6 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
         try {
             camera.takePicture(null, null, new Camera.PictureCallback() {
 
-                private File imageFile;
-
                 @Override
                 public void onPictureTaken(byte[] data, Camera camera) {
                     try {
@@ -328,7 +331,6 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                                         public void onResponse(int requestCode, Object data) {
                                             ContinueHandShakeResponse response = (ContinueHandShakeResponse) data;
                                             if (response.getSuccess()) {
-//                                                Toast.makeText(getActivity(), "Attendance marked successfully.", Toast.LENGTH_LONG).show();
                                                 Toasty.success(getActivity(),"Attendance marked successfully.",Toast.LENGTH_SHORT).show();
                                                 replaceFragment(HomeFragment.newInstance(), "FaceRecognizationFragment-HomeFragment");
                                             } else {
@@ -384,7 +386,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                         e.printStackTrace();
                         Log.i("error1", e.getMessage());
                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                        AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "takeImage", lineNo);
+                        AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "onPictureTaken", lineNo);
                     }
 
                 }

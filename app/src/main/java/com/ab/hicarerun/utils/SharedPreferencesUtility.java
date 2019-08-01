@@ -20,6 +20,7 @@ public class SharedPreferencesUtility {
     public static final String PREF_USERID = "PREF_USERID";
     public static final String PREF_ATTACHMENT = "PREF_ATTACHMENT";
     public static final String PREF_REFRESH = "PREF_REFRESH";
+    public static final String PREF_RESTRICT = "PREF_RESTRICT";
 
     public static boolean getPrefBoolean(Context context, String key) {
         SharedPreferences prefs =

@@ -7,40 +7,41 @@ import com.ab.hicarerun.network.models.TaskModel.Tasks;
 import com.google.android.gms.tasks.Task;
 
 public class TaskViewModel implements Parcelable {
-private String AccountName;
-private String WingFlatOrUnitNumber;
-private String BuildingName;
-private String Locality;
-private String Landmark;
-private String Street;
-private String District;
-private String Country;
-private String Amount;
-private String PostalCode;
-private String OrderNumber;
-private String TaskAssignmentStartDate;
-private String TaskAssignmentStartTime;
-private String TaskAssignmentEndDate;
-private String TaskAssignmentEndTime;
-private String AssignmentStartDate;
-private String AssignmentEndDate;
-private String Status;
-private String TaskId;
-private String ServicePlan;
-private String ServiceType;
-private String primaryMobile;
-private String altMobile;
-private String techMobile;
-private String AccountLat;
-private String AccountLong;
-private String OnsiteLat;
-private String OnsiteLong;
-private String CompletedLat;
-private String CompletedLong;
-private String CustomerLat;
-private String CustomerLong;
-private String Tag;
-private int SequenceNumber;
+    private String AccountName;
+    private String WingFlatOrUnitNumber;
+    private String BuildingName;
+    private String Locality;
+    private String Landmark;
+    private String Street;
+    private String District;
+    private String Country;
+    private String Amount;
+    private String PostalCode;
+    private String OrderNumber;
+    private String TaskAssignmentStartDate;
+    private String TaskAssignmentStartTime;
+    private String TaskAssignmentEndDate;
+    private String TaskAssignmentEndTime;
+    private String AssignmentStartDate;
+    private String AssignmentEndDate;
+    private String Status;
+    private String TaskId;
+    private String ServicePlan;
+    private String ServiceType;
+    private String primaryMobile;
+    private String altMobile;
+    private String techMobile;
+    private String AccountLat;
+    private String AccountLong;
+    private String OnsiteLat;
+    private String OnsiteLong;
+    private String CompletedLat;
+    private String CompletedLong;
+    private String CustomerLat;
+    private String CustomerLong;
+    private String Tag;
+    private int SequenceNumber;
+    private Boolean IsDetailVisible;
 
     public TaskViewModel() {
         AccountName = "NA";
@@ -67,16 +68,17 @@ private int SequenceNumber;
         primaryMobile = "NA";
         altMobile = "NA";
         techMobile = "NA";
-        AccountLat ="NA";
+        AccountLat = "NA";
         AccountLong = "NA";
         OnsiteLat = "NA";
         OnsiteLong = "NA";
         CompletedLat = "NA";
-        CompletedLong ="NA";
-        CustomerLat ="NA";
-        CustomerLong ="NA";
+        CompletedLong = "NA";
+        CustomerLat = "NA";
+        CustomerLong = "NA";
         Tag = "NA";
         SequenceNumber = 0;
+        IsDetailVisible = false;
     }
 
 
@@ -115,6 +117,8 @@ private int SequenceNumber;
         CustomerLong = in.readString();
         Tag = in.readString();
         SequenceNumber = in.readInt();
+        byte tmpIsDetailVisible = in.readByte();
+        IsDetailVisible = tmpIsDetailVisible == 0 ? null : tmpIsDetailVisible == 1;
     }
 
     public static final Creator<TaskViewModel> CREATOR = new Creator<TaskViewModel>() {
@@ -401,12 +405,20 @@ private int SequenceNumber;
         SequenceNumber = sequenceNumber;
     }
 
+    public Boolean getDetailVisible() {
+        return IsDetailVisible;
+    }
+
+    public void setDetailVisible(Boolean detailVisible) {
+        IsDetailVisible = detailVisible;
+    }
+
     public void clone(Tasks tasks) {
         this.AccountName = tasks.getAccountName();
         this.BuildingName = tasks.getBuildingName();
         this.Country = tasks.getCountry();
         this.District = tasks.getDistrict();
-        this.WingFlatOrUnitNumber= tasks.getWingFlatOrUnitNumber();
+        this.WingFlatOrUnitNumber = tasks.getWingFlatOrUnitNumber();
         this.Locality = tasks.getLocality();
         this.Landmark = tasks.getLandmark();
         this.Street = tasks.getStreet();
@@ -436,6 +448,7 @@ private int SequenceNumber;
         this.CustomerLong = tasks.getCustomerLongitude();
         this.Tag = tasks.getTag();
         this.SequenceNumber = tasks.getSequenceNumber();
+        this.IsDetailVisible = tasks.getDetailVisible();
     }
 
 
@@ -445,39 +458,42 @@ private int SequenceNumber;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(AccountName);
-        dest.writeString(WingFlatOrUnitNumber);
-        dest.writeString(BuildingName);
-        dest.writeString(Locality);
-        dest.writeString(Landmark);
-        dest.writeString(Street);
-        dest.writeString(District);
-        dest.writeString(Country);
-        dest.writeString(Amount);
-        dest.writeString(PostalCode);
-        dest.writeString(OrderNumber);
-        dest.writeString(TaskAssignmentStartDate);
-        dest.writeString(TaskAssignmentStartTime);
-        dest.writeString(TaskAssignmentEndDate);
-        dest.writeString(TaskAssignmentEndTime);
-        dest.writeString(AssignmentStartDate);
-        dest.writeString(AssignmentEndDate);
-        dest.writeString(Status);
-        dest.writeString(TaskId);
-        dest.writeString(ServicePlan);
-        dest.writeString(ServiceType);
-        dest.writeString(primaryMobile);
-        dest.writeString(altMobile);
-        dest.writeString(techMobile);
-        dest.writeString(AccountLat);
-        dest.writeString(AccountLong);
-        dest.writeString(OnsiteLat);
-        dest.writeString(OnsiteLong);
-        dest.writeString(CompletedLat);
-        dest.writeString(CompletedLong);
-        dest.writeString(CustomerLat);
-        dest.writeString(CustomerLong);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(AccountName);
+        parcel.writeString(WingFlatOrUnitNumber);
+        parcel.writeString(BuildingName);
+        parcel.writeString(Locality);
+        parcel.writeString(Landmark);
+        parcel.writeString(Street);
+        parcel.writeString(District);
+        parcel.writeString(Country);
+        parcel.writeString(Amount);
+        parcel.writeString(PostalCode);
+        parcel.writeString(OrderNumber);
+        parcel.writeString(TaskAssignmentStartDate);
+        parcel.writeString(TaskAssignmentStartTime);
+        parcel.writeString(TaskAssignmentEndDate);
+        parcel.writeString(TaskAssignmentEndTime);
+        parcel.writeString(AssignmentStartDate);
+        parcel.writeString(AssignmentEndDate);
+        parcel.writeString(Status);
+        parcel.writeString(TaskId);
+        parcel.writeString(ServicePlan);
+        parcel.writeString(ServiceType);
+        parcel.writeString(primaryMobile);
+        parcel.writeString(altMobile);
+        parcel.writeString(techMobile);
+        parcel.writeString(AccountLat);
+        parcel.writeString(AccountLong);
+        parcel.writeString(OnsiteLat);
+        parcel.writeString(OnsiteLong);
+        parcel.writeString(CompletedLat);
+        parcel.writeString(CompletedLong);
+        parcel.writeString(CustomerLat);
+        parcel.writeString(CustomerLong);
+        parcel.writeString(Tag);
+        parcel.writeInt(SequenceNumber);
+        parcel.writeByte((byte) (IsDetailVisible == null ? 0 : IsDetailVisible ? 1 : 2));
     }
 }
 

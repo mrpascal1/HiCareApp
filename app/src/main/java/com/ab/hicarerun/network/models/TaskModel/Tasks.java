@@ -142,6 +142,10 @@ public class Tasks implements Parcelable {
     @Expose
     private String CustomerLongitude;
 
+    @SerializedName("IsDetailVisible")
+    @Expose
+    private Boolean IsDetailVisible;
+
     public Tasks() {
         AccountName = "NA";
         ServicePlan = "NA";
@@ -177,6 +181,7 @@ public class Tasks implements Parcelable {
         CustomerLongitude = "NA";
         Tag = "NA";
         SequenceNumber = 0;
+        IsDetailVisible = false;
     }
 
 
@@ -215,6 +220,8 @@ public class Tasks implements Parcelable {
         CompletedLong = in.readString();
         CustomerLatitude = in.readString();
         CustomerLongitude = in.readString();
+        byte tmpIsDetailVisible = in.readByte();
+        IsDetailVisible = tmpIsDetailVisible == 0 ? null : tmpIsDetailVisible == 1;
     }
 
     public static final Creator<Tasks> CREATOR = new Creator<Tasks>() {
@@ -501,46 +508,55 @@ public class Tasks implements Parcelable {
         SequenceNumber = sequenceNumber;
     }
 
+    public Boolean getDetailVisible() {
+        return IsDetailVisible;
+    }
+
+    public void setDetailVisible(Boolean detailVisible) {
+        IsDetailVisible = detailVisible;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(AccountName);
-        dest.writeString(ServicePlan);
-        dest.writeString(ServiceType);
-        dest.writeString(Tag);
-        dest.writeInt(SequenceNumber);
-        dest.writeString(Status);
-        dest.writeString(TaskId);
-        dest.writeString(WingFlatOrUnitNumber);
-        dest.writeString(BuildingName);
-        dest.writeString(Locality);
-        dest.writeString(Landmark);
-        dest.writeString(Street);
-        dest.writeString(District);
-        dest.writeString(Country);
-        dest.writeString(Amount);
-        dest.writeString(PostalCode);
-        dest.writeString(OrderNumber);
-        dest.writeString(TaskAssignmentStartDate);
-        dest.writeString(TaskAssignmentStartTime);
-        dest.writeString(TaskAssignmentEndDate);
-        dest.writeString(TaskAssignmentEndTime);
-        dest.writeString(AssignmentStartDate);
-        dest.writeString(AssignmentEndDate);
-        dest.writeString(MobileNo);
-        dest.writeString(AlternateMobileNo);
-        dest.writeString(TechnicianMobileNo);
-        dest.writeString(AccountLat);
-        dest.writeString(AccountLong);
-        dest.writeString(OnsiteLat);
-        dest.writeString(OnsiteLong);
-        dest.writeString(CompletedLat);
-        dest.writeString(CompletedLong);
-        dest.writeString(CustomerLatitude);
-        dest.writeString(CustomerLongitude);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(AccountName);
+        parcel.writeString(ServicePlan);
+        parcel.writeString(ServiceType);
+        parcel.writeString(Tag);
+        parcel.writeInt(SequenceNumber);
+        parcel.writeString(Status);
+        parcel.writeString(TaskId);
+        parcel.writeString(WingFlatOrUnitNumber);
+        parcel.writeString(BuildingName);
+        parcel.writeString(Locality);
+        parcel.writeString(Landmark);
+        parcel.writeString(Street);
+        parcel.writeString(District);
+        parcel.writeString(Country);
+        parcel.writeString(Amount);
+        parcel.writeString(PostalCode);
+        parcel.writeString(OrderNumber);
+        parcel.writeString(TaskAssignmentStartDate);
+        parcel.writeString(TaskAssignmentStartTime);
+        parcel.writeString(TaskAssignmentEndDate);
+        parcel.writeString(TaskAssignmentEndTime);
+        parcel.writeString(AssignmentStartDate);
+        parcel.writeString(AssignmentEndDate);
+        parcel.writeString(MobileNo);
+        parcel.writeString(AlternateMobileNo);
+        parcel.writeString(TechnicianMobileNo);
+        parcel.writeString(AccountLat);
+        parcel.writeString(AccountLong);
+        parcel.writeString(OnsiteLat);
+        parcel.writeString(OnsiteLong);
+        parcel.writeString(CompletedLat);
+        parcel.writeString(CompletedLong);
+        parcel.writeString(CustomerLatitude);
+        parcel.writeString(CustomerLongitude);
+        parcel.writeByte((byte) (IsDetailVisible == null ? 0 : IsDetailVisible ? 1 : 2));
     }
 }

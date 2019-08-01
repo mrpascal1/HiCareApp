@@ -165,6 +165,14 @@ public class GeneralData implements RealmModel {
     @SerializedName("IncompleteReasonList")
     @Expose
     private RealmList<IncompleteReason> IncompleteReasonList = null;
+    @SerializedName("ActualCompletionDateTime")
+    @Expose
+    private String ActualCompletionDateTime;
+    @SerializedName("Restrict_Early_Completion")
+    @Expose
+    private Boolean Restrict_Early_Completion;
+
+    private Boolean showFeedback;
 
     public GeneralData() {
         SchedulingStatus = "NA";
@@ -203,6 +211,10 @@ public class GeneralData implements RealmModel {
         ChequeNo = "NA";
         ChequeDate = "NA";
         ChequeImageUrl = "NA";
+        ActualCompletionDateTime = "NA";
+        Restrict_Early_Completion = false;
+
+
     }
 
     public String getOrderNumber() {
@@ -515,5 +527,21 @@ public class GeneralData implements RealmModel {
 
     public void setOnsite_OTP(String onsite_OTP) {
         Onsite_OTP = onsite_OTP;
+    }
+
+    public String getActualCompletionDateTime() {
+        return ActualCompletionDateTime;
+    }
+
+    public void setActualCompletionDateTime(String actualCompletionDateTime) {
+        ActualCompletionDateTime = actualCompletionDateTime;
+    }
+
+    public Boolean getRestrict_Early_Completion() {
+        return Restrict_Early_Completion;
+    }
+
+    public void setRestrict_Early_Completion(Boolean restrict_Early_Completion) {
+        Restrict_Early_Completion = restrict_Early_Completion;
     }
 }

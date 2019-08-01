@@ -423,8 +423,8 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
             btn_send.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String customer_otp = mGeneralRealmData.get(0).getCustomer_OTP();
 
+                    String customer_otp = mGeneralRealmData.get(0).getCustomer_OTP();
                     FeedbackRequest request = new FeedbackRequest();
                     request.setName(name);
                     request.setTask_id(taskId);
@@ -602,7 +602,6 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
     }
 
     public void getValidate() {
-
 
         if (isFeedBack) {
             mFragmentSignatureBinding.lnrOtp.setVisibility(View.VISIBLE);

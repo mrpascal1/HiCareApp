@@ -352,6 +352,7 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
 
                         if(mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString().equals("Online Payment Link")){
                             getValidated(amounttocollect);
+                            mFragmentPaymentBinding.txtCollected.setText("");
                             mFragmentPaymentBinding.txtCollected.setEnabled(false);
                         }
 

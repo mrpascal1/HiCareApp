@@ -78,6 +78,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
     private int time = 20;
     private Timer timer;
+    private String Flat = "";
 
     public TaskListAdapter(Activity context) {
         if (items == null) {
@@ -117,17 +118,17 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#FF69B4"));
         }
 
-        if(items.get(0).getTag()!=null){
+        if (items.get(0).getTag() != null) {
             holder.mTaskListAdapterBinding.lnrTag.setVisibility(View.VISIBLE);
             holder.mTaskListAdapterBinding.txtTag.setText(items.get(0).getTag());
-        }else {
+        } else {
             holder.mTaskListAdapterBinding.lnrTag.setVisibility(View.GONE);
         }
 
-        if( items.get(0).getSequenceNumber() != 0){
+        if (items.get(0).getSequenceNumber() != 0) {
             holder.mTaskListAdapterBinding.lnrSequence.setVisibility(View.VISIBLE);
             holder.mTaskListAdapterBinding.txtSequence.setText(String.valueOf(items.get(0).getSequenceNumber()));
-        }else {
+        } else {
             holder.mTaskListAdapterBinding.lnrSequence.setVisibility(View.GONE);
         }
 
@@ -139,7 +140,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
         if (items.get(position).getBuildingName().trim().length() != 0) {
             holder.mTaskListAdapterBinding.lnrAddress.setVisibility(View.VISIBLE);
-            holder.mTaskListAdapterBinding.txtAddress.setText(items.get(position).getBuildingName() + ", "
+            if (items.get(position).getWingFlatOrUnitNumber() != null && !items.get(position).getWingFlatOrUnitNumber().equals("")) {
+                Flat = items.get(position).getWingFlatOrUnitNumber() + ", ";
+            }
+            holder.mTaskListAdapterBinding.txtAddress.setText(Flat + items.get(position).getBuildingName() + ", "
                     + items.get(position).getLocality() + ", "
                     + street);
         } else {
@@ -207,7 +211,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
                 if (items.get(position).getStatus().equals("Dispatched")) {
                     startCountUpTimer(holder, position);
-                }else {
+                } else {
                     holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
                 }
                 ha.postDelayed(this, 1000);
@@ -236,7 +240,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
                     startCountUpTimer(holder, position);
                     String time = AppUtils.millisTOHr(milli);
-                    getErrorDialog(ssBuilder, "You're running late by " + time + "." );
+                    getErrorDialog(ssBuilder, "You're running late by " + time + ".");
 
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -302,14 +306,13 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                 holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
                 holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.VISIBLE);
 
-            }
-            else {
+            } else {
                 holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
                 holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
                 conferenceTime.set(second, minute, hour, monthDay, month, year);
             }
 
-        }else {
+        } else {
             holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
         }
 
