@@ -48,6 +48,7 @@ import net.igenius.customcheckbox.CustomCheckBox;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.text.ParseException;
 
 import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
@@ -159,6 +160,7 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
         mFragmentSignatureBinding.setHandler(this);
         return mFragmentSignatureBinding.getRoot();
     }
+
 
     @Override
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
@@ -272,7 +274,7 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                 }
                 getValidate();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
             AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "getSignature", lineNo);
         }
@@ -320,7 +322,7 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
             final AppCompatTextView txt_hint =
                     (AppCompatTextView) promptsView.findViewById(R.id.txt_hint);
             img_right.setEnabled(false);
-            dv = new DrawingView(getActivity(), txt_hint ,img_right);
+            dv = new DrawingView(getActivity(), txt_hint, img_right);
             lnr_screen.addView(dv);
 
             img_right.setOnClickListener(new View.OnClickListener() {
@@ -393,78 +395,106 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
 
     @Override
     public void onSendLinkClicked(View view) {
-        if (isFeedBack) {
-            LayoutInflater li = LayoutInflater.from(getActivity());
+        if (isFeedBack && status.equals("On-Site") && mGeneralRealmData.get(0).getRestrict_Early_Completion()) {
 
-            View promptsView = li.inflate(R.layout.link_confirm_dialog, null);
+            String Duration = mGeneralRealmData.get(0).getActualCompletionDateTime();
+            String newFormat = "yyyy-MM-dd HH:mm:ss";
+            try {
+                String DurationDate = AppUtils.reFormatDurationTime(Duration, newFormat);
+                String isStartDate = AppUtils.compareDates(AppUtils.currentDateTime(), DurationDate);
+                Log.i("isFeedbackEarly", isStartDate);
+                if (isStartDate.equals("afterdate") || isStartDate.equals("equalsdate")) {
+                    mFragmentSignatureBinding.txtFeedback.setEnabled(true);
+                    mFragmentSignatureBinding.btnSendlink.setVisibility(View.VISIBLE);
+                    sendFeedBackLink();
 
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-
-            alertDialogBuilder.setView(promptsView);
-
-            alertDialogBuilder.setTitle("Feedback Link");
-
-            // create alert dialog
-            final AlertDialog alertDialog = alertDialogBuilder.create();
-
-            final AppCompatEditText edtmobile =
-                    (AppCompatEditText) promptsView.findViewById(R.id.edtmobile);
-            final AppCompatEditText edtemail =
-                    (AppCompatEditText) promptsView.findViewById(R.id.edtemail);
-            final AppCompatButton btn_send =
-                    (AppCompatButton) promptsView.findViewById(R.id.btn_send);
-            final AppCompatButton btn_cancel =
-                    (AppCompatButton) promptsView.findViewById(R.id.btn_cancel);
-            edtemail.setEnabled(false);
-            edtmobile.setEnabled(false);
-            edtemail.setText(Email);
-            edtmobile.setText(mask);
-
-            btn_send.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    String customer_otp = mGeneralRealmData.get(0).getCustomer_OTP();
-                    FeedbackRequest request = new FeedbackRequest();
-                    request.setName(name);
-                    request.setTask_id(taskId);
-                    request.setFeedback_code(customer_otp);
-                    request.setOrder_number(Order_Number);
-                    request.setService_name(Service_Name);
-                    NetworkCallController controller = new NetworkCallController(SignatureFragment.this);
-                    controller.setListner(new NetworkResponseListner() {
-                        @Override
-                        public void onResponse(int requestCode, Object response) {
-                            FeedbackResponse refResponse = (FeedbackResponse) response;
-                            if (refResponse.getSuccess()) {
-                                Toasty.success(getActivity(), "Feedback link sent successfully.", Toasty.LENGTH_LONG).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(int requestCode) {
-
-                        }
-                    });
-                    controller.postFeedbackLink(POST_FEEDBACK_LINK, request);
-
-                    alertDialog.dismiss();
+                } else {
+                    mFragmentSignatureBinding.txtFeedback.setEnabled(false);
+                    Toasty.error(getActivity(),
+                            "You are not allowed to send feedback link as you have not spent adequate time. Please follow the correct procedure and deliver the job properly",
+                            Toasty.LENGTH_LONG).show();
+                    getValidate();
                 }
-            });
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
-            btn_cancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    alertDialog.dismiss();
-                }
-            });
-            alertDialog.setIcon(R.mipmap.logo);
-            alertDialog.show();
 
         } else {
-            mFragmentSignatureBinding.btnSendlink.setEnabled(false);
+            sendFeedBackLink();
+            getValidate();
         }
 
+    }
+
+    private void sendFeedBackLink() {
+        LayoutInflater li = LayoutInflater.from(getActivity());
+
+        View promptsView = li.inflate(R.layout.link_confirm_dialog, null);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+
+        alertDialogBuilder.setView(promptsView);
+
+        alertDialogBuilder.setTitle("Feedback Link");
+
+        // create alert dialog
+        final AlertDialog alertDialog = alertDialogBuilder.create();
+
+        final AppCompatEditText edtmobile =
+                (AppCompatEditText) promptsView.findViewById(R.id.edtmobile);
+        final AppCompatEditText edtemail =
+                (AppCompatEditText) promptsView.findViewById(R.id.edtemail);
+        final AppCompatButton btn_send =
+                (AppCompatButton) promptsView.findViewById(R.id.btn_send);
+        final AppCompatButton btn_cancel =
+                (AppCompatButton) promptsView.findViewById(R.id.btn_cancel);
+        edtemail.setEnabled(false);
+        edtmobile.setEnabled(false);
+        edtemail.setText(Email);
+        edtmobile.setText(mask);
+
+        btn_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String customer_otp = mGeneralRealmData.get(0).getCustomer_OTP();
+                FeedbackRequest request = new FeedbackRequest();
+                request.setName(name);
+                request.setTask_id(taskId);
+                request.setFeedback_code(customer_otp);
+                request.setOrder_number(Order_Number);
+                request.setService_name(Service_Name);
+                NetworkCallController controller = new NetworkCallController(SignatureFragment.this);
+                controller.setListner(new NetworkResponseListner() {
+                    @Override
+                    public void onResponse(int requestCode, Object response) {
+                        FeedbackResponse refResponse = (FeedbackResponse) response;
+                        if (refResponse.getSuccess()) {
+                            Toasty.success(getActivity(), "Feedback link sent successfully.", Toasty.LENGTH_LONG).show();
+                            getValidate();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int requestCode) {
+
+                    }
+                });
+                controller.postFeedbackLink(POST_FEEDBACK_LINK, request);
+
+                alertDialog.dismiss();
+            }
+        });
+
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.setIcon(R.mipmap.logo);
+        alertDialog.show();
     }
 
     @Override
@@ -478,20 +508,20 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
     private void onCallBack(Bitmap bmp) {
         if (bmp != null) {
 
-                mFragmentSignatureBinding.txtHint.setVisibility(GONE);
+            mFragmentSignatureBinding.txtHint.setVisibility(GONE);
 //                path = mFile.getAbsolutePath();
 //                Bitmap myBitmap = BitmapFactory.decodeFile(mFile.getAbsolutePath());
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                byte[] b = baos.toByteArray();
-                String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-                signature = encodedImage;
-                mCallback.signature(encodedImage);
-                mCallback.signatory(mFragmentSignatureBinding.txtSignatory.getText().toString());
-                mFragmentSignatureBinding.imgSign.setImageBitmap(bmp);
-                getValidate();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] b = baos.toByteArray();
+            String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+            signature = encodedImage;
+            mCallback.signature(encodedImage);
+            mCallback.signatory(mFragmentSignatureBinding.txtSignatory.getText().toString());
+            mFragmentSignatureBinding.imgSign.setImageBitmap(bmp);
+            getValidate();
 
-            }
+        }
 
     }
 

@@ -335,27 +335,34 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
         if (mode.equals("Completed")) {
             if (mGeneralRealmModel.get(0).getRestrict_Early_Completion()) {
                 String Duration = mGeneralRealmModel.get(0).getActualCompletionDateTime();
-                String oldFormat= "yyyy-MM-dd hh:mm aa";
+//                String oldFormat= "yyyy-MM-dd hh:mm aa";
                 String newFormat= "yyyy-MM-dd HH:mm:ss";
+//
+//                String formatedDate = "";
+//                SimpleDateFormat dateFormat = new SimpleDateFormat(oldFormat);
+//                Date myDate = null;
+//                try {
+//                    myDate = dateFormat.parse(Duration);
+//                } catch (java.text.ParseException e) {
+//                    e.printStackTrace();
+//                }
 
-                String formatedDate = "";
-                SimpleDateFormat dateFormat = new SimpleDateFormat(oldFormat);
-                Date myDate = null;
                 try {
-                    myDate = dateFormat.parse(Duration);
-                } catch (java.text.ParseException e) {
+                    String DurationDate = AppUtils.reFormatDurationTime(Duration, newFormat);
+                    String isStartDate = AppUtils.compareDates(AppUtils.currentDateTime(), DurationDate);
+                    Log.i("isEarlyDuration",isStartDate);
+                    if (isStartDate.equals("afterdate") || isStartDate.equals("equalsdate")) {
+                        mCallback.isEarlyCompletion(false);
+                    }else {
+                        mCallback.isEarlyCompletion(true);
+                    }
+                } catch (ParseException e) {
                     e.printStackTrace();
                 }
+//
+//                SimpleDateFormat timeFormat = new SimpleDateFormat(newFormat);
+//                formatedDate = timeFormat.format(myDate);
 
-                SimpleDateFormat timeFormat = new SimpleDateFormat(newFormat);
-                formatedDate = timeFormat.format(myDate);
-                String isStartDate = AppUtils.compareDates(AppUtils.currentDateTime(), formatedDate);
-                Log.i("isEarlyDuration",isStartDate);
-                if (isStartDate.equals("afterdate") || isStartDate.equals("equalsdate")) {
-                    mCallback.isEarlyCompletion(false);
-                }else {
-                    mCallback.isEarlyCompletion(true);
-                }
 
             }
         }

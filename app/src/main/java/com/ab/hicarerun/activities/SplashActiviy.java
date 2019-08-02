@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.location.Location;
 import android.os.Bundle;
@@ -45,6 +47,16 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
         Mint.initAndStartSession(this.getApplication(), "5623ed44");
         Picasso.with(getApplicationContext()).load(R.mipmap.splash).into(mActivitySplashBinding.imgSplash);
         splashScreen();
+        PackageInfo pInfo = null;
+
+        try {
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            String mobileVersion = pInfo.versionName;
+            mActivitySplashBinding.txtVersion.setText("V " + mobileVersion);
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.splash);
         mActivitySplashBinding.imgSplash.startAnimation(animation);
         SharedPreferencesUtility.savePrefBoolean(SplashActiviy.this, SharedPreferencesUtility.PREF_REFRESH, false);
@@ -78,7 +90,7 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
             }, SPLASH_TIME_OUT);
         } catch (Exception e) {
             String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs( e.toString(), getClass().getSimpleName(), "splashScreen", lineNo);
+            AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "splashScreen", lineNo);
         }
 
     }

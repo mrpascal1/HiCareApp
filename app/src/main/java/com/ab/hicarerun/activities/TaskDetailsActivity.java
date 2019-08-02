@@ -159,6 +159,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     private void getTaskDetailsById() {
         try {
             if (this != null) {
+                AppUtils.getDataClean();
                 RealmResults<LoginResponse> LoginRealmModels =
                         getRealm().where(LoginResponse.class).findAll();
 
@@ -391,7 +392,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                 Toasty.error(this, "Please change status", Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
 
-            }else if (isEarlyCompletion && Status.equals("Completed")) {
+            } else if (isEarlyCompletion && Status.equals("Completed")) {
                 mActivityTaskDetailsBinding.viewpager.setCurrentItem(0);
                 Toasty.error(this, "You are not allowed to close the job as you have not spent adequate time. Please follow the correct procedure and deliver the job properly", Toast.LENGTH_LONG, true).show();
                 progress.dismiss();
@@ -498,7 +499,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                             request.setChequeImage(chequeImage);
                             Log.i("incompleteReason", incompleteReason);
                             Log.i("chequeImage", chequeImage);
-                            Log.i("savelat", String.valueOf(getmLocation().getLatitude())+String.valueOf(getmLocation().getLongitude()));
+                            Log.i("savelat", String.valueOf(getmLocation().getLatitude()) + String.valueOf(getmLocation().getLongitude()));
                             Log.i("savelong", String.valueOf(getmLocation().getLongitude()));
 
 
@@ -773,6 +774,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     public void isSignatureValidated(Boolean b) {
         isSignatureValidated = b;
     }
+
 
     @Override
     public void isOTPValidated(Boolean b) {

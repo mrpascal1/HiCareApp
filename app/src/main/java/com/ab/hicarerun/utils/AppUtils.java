@@ -191,26 +191,12 @@ public class AppUtils {
     }
 
 
-    private boolean checkDuration(String time, String endtime) {
-
-        String pattern = "HH:mm";
-        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-
-        try {
-            Date date1 = sdf.parse(time);
-            Date date2 = sdf.parse(endtime);
-
-            if(date1.before(date2)) {
-                return true;
-            } else {
-
-                return false;
-            }
-        } catch (ParseException e){
-            e.printStackTrace();
-        }
-        return false;
-    }
+  public static String reFormatDurationTime(String dateIn, String format) throws ParseException{
+      SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm aa");
+      Date date = simpleDateFormat.parse(dateIn);
+      simpleDateFormat = new SimpleDateFormat(format);
+      return simpleDateFormat.format(date);
+  }
 
     public static String currentDateTime() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

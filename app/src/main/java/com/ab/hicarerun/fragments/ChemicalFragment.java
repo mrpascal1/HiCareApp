@@ -143,7 +143,7 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
                             map.remove(position);
                         }
                         ChemList.clear();
-                        for(int i=0;i<map.size();i++) {
+                        for (int i = 0; i < map.size(); i++) {
                             TaskChemicalList ChemModel = new TaskChemicalList();
                             ChemModel.setId(mAdapter.getItem(i).getId());
                             ChemModel.setCWFProductName(mAdapter.getItem(i).getName());
@@ -176,7 +176,7 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
                     isChemicalChecked = isChecked;
                     for (int i = 0; i < mAdapter.getItemCount(); i++)
                         getValidation(i);
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -204,7 +204,7 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
                 callAfterResponse();
 
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
             AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "setChemicals", lineNo);
@@ -241,19 +241,23 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
                     getRealm().where(GeneralData.class).findAll();
 
             if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
+                if (map.containsValue("")) {
+                    map.remove(position);
+                }
                 isVerified = mGeneralRealmData.get(0).getAutoSubmitChemicals();
+                Log.i("chemicalcount", String.valueOf(mAdapter.getItemCount()));
+                Log.i("mapcount", String.valueOf(map.size()));
 
                 if (!isVerified) {
-                    Log.i("count", String.valueOf(mAdapter.getItemCount()));
                     if (map.size() == mAdapter.getItemCount()) {
                         mCallback.isChemicalChanged(false);
                     } else {
                         mCallback.isChemicalChanged(true);
                     }
 
-                    if(isChemicalChecked){
+                    if (isChemicalChecked) {
                         mCallback.isChemicalVerified(false);
-                    }else {
+                    } else {
                         mCallback.isChemicalVerified(true);
                     }
 
@@ -270,7 +274,7 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
             if (isVerified || ActualStatus.equals("Completed") || ActualStatus.equals("Incomplete")) {
                 mFragmentChemicalBinding.checkChemVerified.setEnabled(false);
                 mFragmentChemicalBinding.checkChemVerified.setChecked(true);
-            }  else {
+            } else {
                 mFragmentChemicalBinding.relChemicals.setVisibility(View.VISIBLE);
                 mFragmentChemicalBinding.checkChemVerified.setEnabled(true);
                 mFragmentChemicalBinding.checkChemVerified.setChecked(false);
@@ -279,7 +283,7 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
             for (int i = 0; i < mAdapter.getItemCount(); i++) {
                 getValidation(i);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -364,6 +364,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         if (backStackEntryCount == 0) {
             showExitAlert();
         } else {
+            getSupportFragmentManager().popBackStackImmediate();
             super.onBackPressed();
         }
     }

@@ -48,7 +48,7 @@ public class DownloadApk extends AsyncTask<String, Void, Void> {
             File sdcard = Environment.getExternalStorageDirectory();
             File myDir = new File(sdcard, "Download");
             myDir.mkdirs();
-            File outputFile = new File(myDir, "app-debug.apk");
+            File outputFile = new File(myDir, "hicarerun.apk");
             if (outputFile.exists()) {
                 outputFile.delete();
             }
@@ -70,7 +70,7 @@ public class DownloadApk extends AsyncTask<String, Void, Void> {
 //            intent.setDataAndType(FileProvider.getUriForFile(context,"com.ab.hicarerun.utils.DownloadFileProvider",sdcard));
 //            Uri apkURI = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".utils.DownloadFileProvider", sdcard);
 //            intent.setDataAndType(apkURI,"application/vnd.android.package-archive");
-            Uri uri=FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID+".provider", new File(sdcard, "Download/app-debug.apk"));
+            Uri uri=FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID+".provider", new File(sdcard, "Download/hicarerun.apk"));
             intent.setDataAndType(uri,"application/vnd.android.package-archive");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_GRANT_READ_URI_PERMISSION); // without this flag android returned a intent error!
             SharedPreferencesUtility.savePrefBoolean(context, SharedPreferencesUtility.IS_USER_LOGIN,
