@@ -98,6 +98,8 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     private NavigationView navigationView = null;
     private String taskId = "";
     List<Tasks> items = null;
+    RealmResults<LoginResponse> LoginRealmModels = null;
+    private boolean isParam = false;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -183,15 +185,24 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         mFragmentHomeBinding.swipeRefreshLayout.setRefreshing(true);
         try {
             PhoneCallListener phoneListener = new PhoneCallListener();
-            TelephonyManager telephonyManager = (TelephonyManager)
-                    getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-            telephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
+            TelephonyManager telephonyManager = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+                telephonyManager = (TelephonyManager)
+                        Objects.requireNonNull(getActivity()).getSystemService(Context.TELEPHONY_SERVICE);
+            }
+            if (telephonyManager != null) {
+                telephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
+            } else {
+                Toast.makeText(getActivity(), "Unable to make call.", Toast.LENGTH_SHORT).show();
+            }
         } catch (Exception e) {
-            e.printStackTrace();
-            String error = e.toString();
-            methodName = "PhoneCallListener";
-            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs(error, activityName, methodName, lineNo);
+            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "PhoneCallListener", lineNo, userName, DeviceName);
+            }
         }
 
     }
@@ -225,11 +236,13 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            String error = e.toString();
-            methodName = "getAllTasks";
-            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs(error, activityName, methodName, lineNo);
+            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getAllTasks", lineNo, userName, DeviceName);
+            }
         }
 
     }
@@ -238,6 +251,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     public void onResponse(int requestCode, TaskListResponse data) {
         AppUtils.getDataClean();
         if (data.getErrorMessage().equals("Absent") && !isSkip) {
+            isParam = data.getParam();
             mFragmentHomeBinding.swipeRefreshLayout.setRefreshing(false);
             getAttendanceDialog();
 
@@ -300,8 +314,14 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 (AppCompatTextView) promptsView.findViewById(R.id.txt_head);
         final AppCompatButton btn_send =
                 (AppCompatButton) promptsView.findViewById(R.id.btn_send);
-        final AppCompatButton btn_cancel =
-                (AppCompatButton) promptsView.findViewById(R.id.btn_cancel);
+        final AppCompatButton btnSkip =
+                (AppCompatButton) promptsView.findViewById(R.id.btn_skip);
+
+        if (isParam) {
+            btnSkip.setVisibility(View.VISIBLE);
+        } else {
+            btnSkip.setVisibility(View.GONE);
+        }
 
         txt_head.setText("Welcome " + UserName + ", please mark your attendance with the face recognization.");
 
@@ -318,7 +338,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         });
 
 
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
+        btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
@@ -355,11 +375,13 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                         }
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    String error = e.toString();
-                    methodName = "getAttendanceDialog";
-                    String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                    AppUtils.sendErrorLogs(error, activityName, methodName, lineNo);
+                    RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                    if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                        AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getAttendanceDialog", lineNo, userName, DeviceName);
+                    }
                 }
 
 
@@ -380,7 +402,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
     @Override
     public void onPrimaryMobileClicked(int position) {
-        if (AppUtils.checkConnection(getActivity()) == true) {
+        if (AppUtils.checkConnection(getActivity())) {
             String primaryNumber = mAdapter.getItem(position).getPrimaryMobile();
             String techNumber = "";
 
@@ -422,7 +444,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
     @Override
     public void onAlternateMobileClicked(int position) {
-        if (AppUtils.checkConnection(getActivity()) == true) {
+        if (AppUtils.checkConnection(getActivity())) {
             String secondaryNumber = mAdapter.getItem(position).getAltMobile();
             String techNumber = "";
 
@@ -465,7 +487,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     @Override
     public void onTelePhoneClicked(int position) {
 
-        if (AppUtils.checkConnection(getActivity()) == true) {
+        if (AppUtils.checkConnection(getActivity())) {
             String secondaryNumber = mAdapter.getItem(position).getAltMobile();
             String techNumber = "";
 
@@ -524,11 +546,13 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            String error = e.toString();
-            methodName = "onTrackLocationIconClicked";
-            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs(error, activityName, methodName, lineNo);
+            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "onTrackLocationIconClicked", lineNo, userName, DeviceName);
+            }
         }
 
     }
@@ -606,7 +630,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 }
             });
             controller.getJeopardyReasons(JEOPARDY_REQUEST);
-        }else{
+        } else {
             Toasty.info(getActivity(), "Please complete your previous job first.", Toasty.LENGTH_SHORT).show();
         }
 
@@ -650,7 +674,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
             public void onResponse(int requestCode, Object data) {
                 ExotelResponse exotelResponse = (ExotelResponse) data;
 
-                if (exotelResponse.getSuccess() == true) {
+                if (exotelResponse.getSuccess()) {
                     try {
                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                             Intent intent = new Intent(Intent.ACTION_CALL, Uri.fromParts("tel:", exotelResponse.getResponseMessage() + "," + exotelResponse.getData(), null));
@@ -677,14 +701,14 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
                         }
 
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        String error = ex.toString();
-                        methodName = "getExotelCalled()";
-
-                        System.out.println("The line number is " + new Exception().getStackTrace()[0].getLineNumber());
-                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                        AppUtils.sendErrorLogs(error, activityName, methodName, lineNo);
+                    } catch (Exception e) {
+                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                            AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getExotelCalled", lineNo, userName, DeviceName);
+                        }
                     }
 
                 } else {
@@ -729,8 +753,10 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                             getActivity().getPackageName());
                             if (i != null) {
                                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                getActivity().startActivity(i);
+                            } else {
+                                Toast.makeText(getActivity(), "Not able to make call!", Toast.LENGTH_SHORT).show();
                             }
-                            getActivity().startActivity(i);
                         } else {
                             Toast.makeText(getActivity(), "Not able to make call!", Toast.LENGTH_SHORT).show();
                         }
@@ -741,10 +767,13 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
                 }
             } catch (Exception e) {
-                String error = e.toString();
-                methodName = "PhoneCallListener";
-                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                AppUtils.sendErrorLogs(error, activityName, methodName, lineNo);
+                RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                    String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                    String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                    String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                    AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "onCallStateChanged", lineNo, userName, DeviceName);
+                }
             }
 
 

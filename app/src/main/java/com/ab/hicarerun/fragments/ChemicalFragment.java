@@ -6,6 +6,7 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,6 +29,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.adapter.ChemicalRecycleAdapter;
@@ -39,6 +41,7 @@ import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.ChemicalModel.ChemicalResponse;
 import com.ab.hicarerun.network.models.ChemicalModel.Chemicals;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
+import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
 import com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;
 import com.ab.hicarerun.utils.AppUtils;
@@ -160,9 +163,13 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
 
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                    AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "ChemicalFragment", lineNo);
+                    RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                    if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
+                        AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "chemicalFragmentonViewCreated", lineNo,userName,DeviceName);
+                    }
                 }
 
             }
@@ -205,9 +212,13 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "setChemicals", lineNo);
+            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "setChemicals", lineNo,userName,DeviceName);
+            }
         }
 
     }

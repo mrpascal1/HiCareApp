@@ -36,6 +36,7 @@ import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.OtpModel.SendOtpResponse;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SMSListener;
+import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.ab.hicarerun.utils.notifications.OneSIgnalHelper;
 import com.ab.hicarerun.viewmodel.UserLoginViewModel;
 
@@ -188,7 +189,8 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
         } catch (Exception e) {
             Log.i("LoginError", e.getMessage());
             String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs( e.getMessage(), "", "onResendOtpClicked", lineNo);
+            String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
+            AppUtils.sendErrorLogs( e.getMessage(), "", "onResendOtpClicked", lineNo,"",DeviceName);
         }
     }
 
@@ -250,6 +252,7 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
                         getRealm().commitTransaction();
                         if (isVisible()) {
                             isGetInside = true;
+
                             new VerifyOtpFragment.UserLoginTask(isGetInside).execute((Void) null);
                         }
                     }
@@ -269,7 +272,8 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
         } catch (Exception e) {
             Log.i("LoginError", e.getMessage());
             String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs( e.getMessage(), "", "Login", lineNo);
+            String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
+            AppUtils.sendErrorLogs( e.getMessage(), "", "Login", lineNo,"",DeviceName);
         }
     }
 
@@ -300,6 +304,7 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
             mAuthTask = null;
 
             if (success) {
+                SharedPreferencesUtility.savePrefString(getActivity(),SharedPreferencesUtility.PREF_LOGOUT,AppUtils.currentDate());
                 if (profilePic.trim().length() == 0) {
                     replaceFragment(FaceRecognizationFragment.newInstance(false, mobile), "VerifyOtpFragment-FaceRecognizationFragment");
                 } else {

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -141,8 +142,13 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
                 controller.getAttachments(GET_ATTACHMENT_REQ, taskId, UserId);
             }
         } catch (Exception e) {
-            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs( e.toString(), getClass().getSimpleName(), "getAttachmentList", lineNo);
+            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getAttachmentList", lineNo,userName,DeviceName);
+            }
         }
 
     }
@@ -218,8 +224,13 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
                 }
             }
         } catch (Exception e) {
-            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "onAddImageClicked", lineNo);
+            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "onAddImageClicked", lineNo,userName,DeviceName);
+            }
         }
 
     }
@@ -250,10 +261,13 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
                         request.setFile(mAdapter.getItem(i).getFile());
                         model.add(request);
                     } catch (Exception e) {
-                        Log.i("e", e.toString());
-                        Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_SHORT);
-                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                        AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "onDeleteImageClicked", lineNo);
+                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                            String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                            String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
+                            AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "onDeleteImageClicked", lineNo,userName,DeviceName);
+                        }
                     }
                 }
             }
@@ -261,8 +275,13 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
             controller.setListner(this);
             controller.getDeleteAttachments(DELETE_ATTACHMENT_REQ, model);
         }catch (Exception e){
-            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "onDeleteImageClicked", lineNo);
+            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "onDeleteImageClicked", lineNo,userName,DeviceName);
+            }
         }
 
     }

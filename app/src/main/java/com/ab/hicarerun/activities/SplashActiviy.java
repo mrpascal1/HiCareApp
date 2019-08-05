@@ -8,10 +8,12 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -40,7 +42,6 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
         super.onCreate(savedInstanceState);
         mActivitySplashBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_splash_activiy);
-
         LocationManager.Builder builder = new LocationManager.Builder(this);
         builder.setLocationListner(this);
         builder.build();
@@ -74,15 +75,34 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
                     if (locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
                             && locationManager.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER)) {
 
+
                         if (SharedPreferencesUtility.getPrefBoolean(SplashActiviy.this, SharedPreferencesUtility.IS_USER_LOGIN)) {
-                            startActivity(new Intent(SplashActiviy.this, HomeActivity.class).putExtra(HomeActivity.ARG_EVENT, "false"));
-                            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                            finish();
+                            if (SharedPreferencesUtility.getPrefString(SplashActiviy.this, SharedPreferencesUtility.PREF_LOGOUT) != null) {
+                                String PreviousLoginDate = SharedPreferencesUtility.getPrefString(SplashActiviy.this, SharedPreferencesUtility.PREF_LOGOUT);
+                                String ComparePreviousLogin = AppUtils.compareLoginDates(PreviousLoginDate, AppUtils.currentDate());
+                                Log.i("LoginDates", AppUtils.compareLoginDates(PreviousLoginDate, AppUtils.currentDate()));
+                                Log.i("CurrentDate",AppUtils.currentDate());
+                                if (ComparePreviousLogin.equals("equal")) {
+                                    startActivity(new Intent(SplashActiviy.this, HomeActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                                    finish();
+                                } else {
+                                    startActivity(new Intent(SplashActiviy.this, LoginActivity.class));
+                                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                                    finish();
+                                }
+                            } else {
+                                startActivity(new Intent(SplashActiviy.this, LoginActivity.class));
+                                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                                finish();
+                            }
                         } else {
                             startActivity(new Intent(SplashActiviy.this, LoginActivity.class));
                             overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                             finish();
                         }
+
+
                     } else {
                         AppUtils.statusCheck(SplashActiviy.this);
                     }
@@ -90,7 +110,8 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
             }, SPLASH_TIME_OUT);
         } catch (Exception e) {
             String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "splashScreen", lineNo);
+            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+            AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "splashScreen", lineNo, "", DeviceName);
         }
 
     }

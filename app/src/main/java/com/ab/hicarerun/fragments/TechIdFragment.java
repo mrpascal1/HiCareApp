@@ -4,6 +4,7 @@ package com.ab.hicarerun.fragments;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -108,8 +109,13 @@ public class TechIdFragment extends BaseFragment {
                 }
             }
         }catch (Exception e){
-            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "getTechnicianProfile", lineNo);
+            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getTechnicianProfile", lineNo,userName,DeviceName);
+            }
         }
     }
 

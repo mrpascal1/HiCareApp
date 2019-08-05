@@ -118,7 +118,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#FF69B4"));
         }
 
-        if (items.get(0).getTag() != null) {
+        if (items.get(0).getTag() != null && items.get(0).getTag().length() > 0) {
             holder.mTaskListAdapterBinding.lnrTag.setVisibility(View.VISIBLE);
             holder.mTaskListAdapterBinding.txtTag.setText(items.get(0).getTag());
         } else {
@@ -138,7 +138,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             street = items.get(position).getStreet();
         }
 
-        if (items.get(position).getBuildingName().trim().length() != 0) {
+        if (items.get(position).getBuildingName() != null && items.get(position).getBuildingName().trim().length() != 0 ) {
             holder.mTaskListAdapterBinding.lnrAddress.setVisibility(View.VISIBLE);
             if (items.get(position).getWingFlatOrUnitNumber() != null && !items.get(position).getWingFlatOrUnitNumber().equals("")) {
                 Flat = items.get(position).getWingFlatOrUnitNumber() + ", ";

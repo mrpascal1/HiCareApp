@@ -238,11 +238,13 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                 camera = null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            Log.e("error", e.toString());
-            camera = null;
-            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "releaseCamera", lineNo);
+            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "releaseCamera", lineNo,userName,DeviceName);
+            }
         }
     }
 
@@ -383,19 +385,25 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
 
 
                     } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.i("error1", e.getMessage());
-                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                        AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "onPictureTaken", lineNo);
+                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                            String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                            String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
+                            AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "takePicture", lineNo,userName,DeviceName);
+                        }
                     }
 
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
-            Log.i("error2", e.getMessage());
-            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "takeImage", lineNo);
+            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "takeImage", lineNo,userName,DeviceName);
+            }
         }
 
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -12,8 +13,10 @@ import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
 
 import com.ab.hicarerun.BaseActivity;
+import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ExoplayerLayoutBinding;
+import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.utils.AppUtils;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
@@ -38,6 +41,8 @@ import com.google.android.exoplayer2.upstream.DefaultAllocator;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+
+import io.realm.RealmResults;
 
 public class ExoplayerActivity extends BaseActivity implements Player.EventListener {
     ExoplayerLayoutBinding mExoplayerLayoutBinding;
@@ -107,8 +112,14 @@ public class ExoplayerActivity extends BaseActivity implements Player.EventListe
                 mExoplayerLayoutBinding.videoFullScreenPlayer.setPlayer(player);
             }
         } catch (Exception e) {
-            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "initializePlayer", lineNo);
+            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                String DeviceName = "DEVICE_NAME : "+Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "initializePlayer", lineNo,userName,DeviceName);
+            }
+
         }
 
     }
@@ -128,8 +139,13 @@ public class ExoplayerActivity extends BaseActivity implements Player.EventListe
             player.setPlayWhenReady(true);
             player.addListener(this);
         } catch (Exception e) {
-            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "buildMediaSource", lineNo);
+            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                String DeviceName = "DEVICE_NAME : "+Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "buildMediaSource", lineNo,userName,DeviceName);
+            }
         }
 
     }

@@ -10,6 +10,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,6 +36,7 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.adapter.BankSearchAdapter;
@@ -47,6 +49,7 @@ import com.ab.hicarerun.network.models.FeedbackModel.FeedbackRequest;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackResponse;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralPaymentMode;
+import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
 import com.ab.hicarerun.utils.AppUtils;
@@ -363,8 +366,13 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
                             getValidated(amounttocollect);
                         }
                     } catch (Exception e) {
-                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                        AppUtils.sendErrorLogs(e.getMessage(), getActivity().getClass().getSimpleName(), "spinnerPaymentMode", lineNo);
+                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                            String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                            String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
+                            AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getPaymentData", lineNo,userName,DeviceName);
+                        }
                     }
 
 

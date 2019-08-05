@@ -2,6 +2,8 @@ package com.ab.hicarerun.utils;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -42,6 +44,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.realm.Realm;
+
+import static android.content.Context.ALARM_SERVICE;
 
 
 public class AppUtils {
@@ -144,46 +148,51 @@ public class AppUtils {
 
 
     public static String compareDates(String d1, String d2) {
-
-
         String date_result = "";
         try {
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date1 = sdf.parse(d1);
             Date date2 = sdf.parse(d2);
-
 //            Calendar cal = Calendar.getInstance();
 //            cal.setTime(date2);
 //            cal.add(Calendar.MINUTE, 15);
 //            Date dateAfter = cal.getTime();
-
-            System.out.println("Date1" + sdf.format(date1));
-            System.out.println("Date2" + sdf.format(date2));
-            System.out.println();
-
             if (date1.after(date2)) {
-
-
                 date_result = "afterdate";
-                Log.i("date","afterdate");
-
+                Log.i("date", "afterdate");
 
             }
             if (date1.before(date2)) {
-
                 date_result = "beforedate";
-                Log.i("date","beforedate");
-
+                Log.i("date", "beforedate");
             }
 
             if (date1.equals(date2)) {
-
                 date_result = "equalsdate";
-                Log.i("date","equalsdate");
-
+                Log.i("date", "equalsdate");
             }
-            System.out.println(date_result);
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+        return date_result;
+    }
+
+    public static String compareLoginDates(String d1,String d2){
+        String date_result = "";
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date date1 = sdf.parse(d1);
+            Date date2 = sdf.parse(d2);
+            if (date1.after(date2)) {
+                date_result = "after";
+            }
+            if (date1.before(date2)) {
+                date_result = "before";
+            }
+            if (date1.equals(date2)) {
+                date_result = "equal";
+            }
         } catch (ParseException ex) {
             ex.printStackTrace();
         }
@@ -191,15 +200,21 @@ public class AppUtils {
     }
 
 
-  public static String reFormatDurationTime(String dateIn, String format) throws ParseException{
-      SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm aa");
-      Date date = simpleDateFormat.parse(dateIn);
-      simpleDateFormat = new SimpleDateFormat(format);
-      return simpleDateFormat.format(date);
-  }
+    public static String reFormatDurationTime(String dateIn, String format) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm aa");
+        Date date = simpleDateFormat.parse(dateIn);
+        simpleDateFormat = new SimpleDateFormat(format);
+        return simpleDateFormat.format(date);
+    }
 
     public static String currentDateTime() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date1 = new Date();
+        return dateFormat.format(date1);
+    }
+
+    public static String currentDate(){
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date1 = new Date();
         return dateFormat.format(date1);
     }
@@ -374,7 +389,7 @@ public class AppUtils {
         alert.show();
     }
 
-    public static void sendErrorLogs( String error, String activityName, String methodName, String lineNo) {
+    public static void sendErrorLogs(String error, String activityName, String methodName, String lineNo, String userName, String deviceName) {
         try {
             Gson gson = new Gson();
             Date currentTime = Calendar.getInstance().getTime();
@@ -414,40 +429,6 @@ public class AppUtils {
         }
     }
 
-//    private void checkCurrentVersion(final String apkurl, String version) {
-//        PackageInfo pInfo = null;
-//        try {
-//            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-//        } catch (PackageManager.NameNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        String mobileVersion = pInfo.versionName;
-//
-//        if (Float.parseFloat(mobileVersion) < Float.parseFloat(version)) {
-//            String messageAlert = "<html><body><p>Please update your app to new version.<br><br>Current app version: " + mobileVersion + "<br><br>New version: " + version + "</p></body></html>";
-//            AppUtils.showDownloadActionAlertBox(HomeActivity.this, String.valueOf(Html.fromHtml(messageAlert)), new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialogInterface, int i) {
-//                    if (AppUtils.checkConnection(HomeActivity.this)) {
-//                        ProgressDialog progress = new ProgressDialog(HomeActivity.this);
-//                        DownloadApk downloadAndInstall = new DownloadApk();
-//                        progress.setCancelable(false);
-//                        progress.setMessage("Downloading...");
-//                        downloadAndInstall.setContext(getApplicationContext(), progress);
-//                        downloadAndInstall.execute(apkurl);
-//                    } else {
-//                        AppUtils.showOkActionAlertBox(HomeActivity.this, "No Internet Found.", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialogInterface, int i) {
-//                                finish();
-//                            }
-//                        });
-//                    }
-//                }
-//            });
-//
-//        }
-//    }
 
     public static String getCurrentTimeStamp() {
         String s = "";
@@ -463,5 +444,26 @@ public class AppUtils {
         return s;
     }
 
+    public static void getAutoLogout(Activity context) {
+        try {
+            Intent alaramIntent = new Intent(context, AutoLogoutReceiver.class);
+            alaramIntent.setAction("LogOutAction");
+            Log.i("MethodCall", "AutoLogOutCall");
+            alaramIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, alaramIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.set(Calendar.HOUR_OF_DAY, 14);
+            calendar.set(Calendar.MINUTE, 32);
+            calendar.set(Calendar.SECOND, 0);
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+            Log.i("Logout", "Auto Logout set at..!" + calendar.getTime());
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i("AutoLogout", e.getMessage());
+        }
+
+    }
 
 }

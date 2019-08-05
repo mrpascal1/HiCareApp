@@ -4,14 +4,19 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ActivityHelpBinding;
 import com.ab.hicarerun.handler.UserHelpClickHandler;
+import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.utils.AppUtils;
+
+import io.realm.RealmResults;
 
 public class HelpActivity extends AppCompatActivity implements UserHelpClickHandler {
     ActivityHelpBinding mActivityHelpBinding;
@@ -35,9 +40,13 @@ public class HelpActivity extends AppCompatActivity implements UserHelpClickHand
             callIntent.setData(Uri.parse("tel:" + number));
             startActivity(callIntent);
         } catch (Exception e) {
-            e.printStackTrace();
-            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "onContactNoClicked", lineNo);
+            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "onContactNoClicked", lineNo,userName,DeviceName);
+            }
         }
 
     }
@@ -49,9 +58,13 @@ public class HelpActivity extends AppCompatActivity implements UserHelpClickHand
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:" + mail));
             startActivity(intent);
         } catch (Exception e) {
-            e.printStackTrace();
-            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "onEmailClicked", lineNo);
+            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "onEmailClicked", lineNo,userName,DeviceName);
+            }
         }
     }
 }

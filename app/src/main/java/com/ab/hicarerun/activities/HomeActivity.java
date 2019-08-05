@@ -11,11 +11,13 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,7 +41,9 @@ import com.ab.hicarerun.service.LocationManager;
 import com.ab.hicarerun.service.ServiceLocationSend;
 import com.ab.hicarerun.service.listner.LocationManagerListner;
 import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.utils.AutoLogoutReceiver;
 import com.ab.hicarerun.utils.DownloadApk;
+import com.ab.hicarerun.utils.HandShakeReceiver;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 
 import java.util.Calendar;
@@ -106,10 +110,10 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     @Override
     protected void onResume() {
         super.onResume();
-        if (AppUtils.checkConnection(HomeActivity.this) == true) {
+        if (AppUtils.checkConnection(HomeActivity.this)) {
             getVersionFromApi();
         } else {
-            AppUtils.showOkActionAlertBox(HomeActivity.this, "No internet found, please check your internet connection", new DialogInterface.OnClickListener() {
+            AppUtils.showOkActionAlertBox(HomeActivity.this, "Something went wrong! please check your internet connection.", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     finish();
@@ -184,38 +188,58 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_TIME, time);
                 if (items.get(0).getText().equals("EnableTrace")) {
                     if (items.get(0).getValue().equals("true")) {
-                        Intent itAlarm = new Intent(this, ServiceLocationSend.class);
-                        PendingIntent pendingIntent = PendingIntent.getService(this, 0, itAlarm, 0);
+//                        Intent itAlarm = new Intent(this, ServiceLocationSend.class);
+//                        PendingIntent pendingIntent = PendingIntent.getService(this, 0, itAlarm, 0);
+//                        Calendar calendar = Calendar.getInstance();
+//                        calendar.setTimeInMillis(System.currentTimeMillis());
+//                        calendar.add(Calendar.SECOND, 0);
+//                        AlarmManager alarme = (AlarmManager) getSystemService(ALARM_SERVICE);
+//                        alarme.setRepeating(AlarmManager.RTC_WAKEUP,
+//                                calendar.getTimeInMillis(),
+//                                1000 * 60 * Integer.parseInt(items.get(1).getValue()),
+//                                pendingIntent);
+//                    alarme.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, 1000 * 60 * Integer.parseInt(items.get(1).getValue()), pendingIntent);
+
+
+                        Intent alaramIntent = new Intent(HomeActivity.this, HandShakeReceiver.class);
+                        alaramIntent.setAction("HandshakeAction");
+                        alaramIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(HomeActivity.this, 0, alaramIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTimeInMillis(System.currentTimeMillis());
-                        calendar.add(Calendar.SECOND, 3);
-                        AlarmManager alarme = (AlarmManager) getSystemService(ALARM_SERVICE);
-                        alarme.setRepeating(AlarmManager.RTC_WAKEUP,
+                        calendar.add(Calendar.SECOND, 0);
+                        AlarmManager alarmManager = (AlarmManager) this.getSystemService(ALARM_SERVICE);
+                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
                                 calendar.getTimeInMillis(),
                                 1000 * 60 * Integer.parseInt(items.get(1).getValue()),
                                 pendingIntent);
-//                    alarme.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, 1000 * 60 * Integer.parseInt(items.get(1).getValue()), pendingIntent);
                     }
                 }
             } else {
                 items = (List<HandShake>) getIntent().getSerializableExtra(ARG_HANDSHAKE);
                 String time = SharedPreferencesUtility.getPrefString(HomeActivity.this, SharedPreferencesUtility.PREF_TIME);
-                Intent itAlarm = new Intent(this, ServiceLocationSend.class);
-                PendingIntent pendingIntent = PendingIntent.getService(this, 0, itAlarm, 0);
+                Intent alaramIntent = new Intent(HomeActivity.this, HandShakeReceiver.class);
+                alaramIntent.setAction("HandshakeAction");
+                alaramIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(HomeActivity.this, 0, alaramIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(System.currentTimeMillis());
-                calendar.add(Calendar.SECOND, 3);
-                AlarmManager alarme = (AlarmManager) getSystemService(ALARM_SERVICE);
-                alarme.setRepeating(AlarmManager.RTC_WAKEUP,
+                calendar.add(Calendar.SECOND, 0);
+                AlarmManager alarmManager = (AlarmManager) this.getSystemService(ALARM_SERVICE);
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
                         calendar.getTimeInMillis(),
                         1000 * 60 * Integer.parseInt(time),
                         pendingIntent);
 //            alarme.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, 1000 * 60 * Integer.parseInt(items.get(1).getValue()), pendingIntent);
             }
         } catch (Exception e) {
-            String error = e.toString();
-            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs(error, getClass().getSimpleName(), "getServiceCalled", lineNo);
+            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getServiceCalled", lineNo, userName, DeviceName);
+            }
         }
 
     }
@@ -267,7 +291,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
                     case R.id.nav_groom:
                         mActivityHomeBinding.drawer.closeDrawers();
-                        startActivity(new Intent(HomeActivity.this, TechnicianSeniorActivity.class).putExtra(HomeActivity.ARG_EVENT, "false"));
+                        startActivity(new Intent(HomeActivity.this, TechnicianSeniorActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
                         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                         break;
 
@@ -279,19 +303,19 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
                     case R.id.nav_training:
                         mActivityHomeBinding.drawer.closeDrawers();
-                        startActivity(new Intent(HomeActivity.this, TrainingActivity.class).putExtra(HomeActivity.ARG_EVENT, "false"));
+                        startActivity(new Intent(HomeActivity.this, TrainingActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
                         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                         break;
 
                     case R.id.nav_help:
                         mActivityHomeBinding.drawer.closeDrawers();
-                        startActivity(new Intent(HomeActivity.this, HelpActivity.class).putExtra(HomeActivity.ARG_EVENT, "false"));
+                        startActivity(new Intent(HomeActivity.this, HelpActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
                         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                         break;
 
                     case R.id.nav_myid:
                         mActivityHomeBinding.drawer.closeDrawers();
-                        startActivity(new Intent(HomeActivity.this, TechIdActivity.class).putExtra(HomeActivity.ARG_EVENT, "false"));
+                        startActivity(new Intent(HomeActivity.this, TechIdActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
                         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                         break;
 
@@ -313,7 +337,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                                     public void onResponse(int requestCode, Object response) {
                                         LogoutResponse logres = (LogoutResponse) response;
 
-                                        if (logres.getSuccess() == true) {
+                                        if (logres.getSuccess()) {
                                             SharedPreferencesUtility.savePrefBoolean(getApplicationContext(), SharedPreferencesUtility.IS_USER_LOGIN,
                                                     false);
                                             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
@@ -364,7 +388,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         if (backStackEntryCount == 0) {
             showExitAlert();
         } else {
-            getSupportFragmentManager().popBackStackImmediate();
+//            getSupportFragmentManager().popBackStackImmediate();
             super.onBackPressed();
         }
     }

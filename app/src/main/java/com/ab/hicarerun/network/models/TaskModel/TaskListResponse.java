@@ -18,6 +18,10 @@ public class TaskListResponse {
     @Expose
     private String ErrorMessage;
 
+    @SerializedName("Param1")
+    @Expose
+    private Boolean Param;
+
     public Boolean getSuccess() {
         return isSuccess;
     }
@@ -40,5 +44,13 @@ public class TaskListResponse {
 
     public void setErrorMessage(String errorMessage) {
         ErrorMessage = errorMessage;
+    }
+
+    public Boolean getParam() {
+        return Param;
+    }
+
+    public void setParam(Boolean param) {
+        Param = param;
     }
 }

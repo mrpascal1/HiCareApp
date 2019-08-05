@@ -51,11 +51,16 @@ public class TechnicianGroomingAdapter extends RecyclerView.Adapter<TechnicianGr
     @Override
     public void onBindViewHolder(TechnicianGroomingAdapter.ViewHolder holder, final int position) {
         holder.mOnJobTechniciansListBinding.txtTechnician.setText(items.get(position).getTechnicianName());
-        holder.mOnJobTechniciansListBinding.txtMobile.setText(items.get(position).getMobileNo());
         if(items.get(position).getEmployeeCode()!= null && items.get(position).getEmployeeCode().length() !=0){
             holder.mOnJobTechniciansListBinding.txtCode.setText(items.get(position).getEmployeeCode());
         }else {
             holder.mOnJobTechniciansListBinding.txtCode.setText("NA");
+        }
+
+        if(items.get(position).getMobileNo()!= null && items.get(position).getMobileNo().length() !=0){
+            holder.mOnJobTechniciansListBinding.txtMobile.setText(items.get(position).getMobileNo());
+        }else {
+            holder.mOnJobTechniciansListBinding.txtMobile.setText("NA");
         }
         if (items.get(position).getImageUrl() != null) {
             Glide.with(mContext).load(items.get(position).getImageUrl()).placeholder(R.drawable.ic_groom).into(holder.mOnJobTechniciansListBinding.imgProfile);

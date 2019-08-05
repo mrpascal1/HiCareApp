@@ -127,6 +127,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".utils.HandShakeReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
         <provider
             android:name="com.ezetap.sdk.EzetapFileProvider"
             android:authorities="com.ezeapi.sample.EzetapFileProvider"

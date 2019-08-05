@@ -2,6 +2,7 @@ package com.ab.hicarerun.fragments;
 
 
 import android.databinding.DataBindingUtil;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.TrainingActivity;
@@ -21,6 +23,7 @@ import com.ab.hicarerun.adapter.VideoPlayerAdapter;
 import com.ab.hicarerun.databinding.FragmentTrainingBinding;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
+import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.TrainingModel.Videos;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.VerticalSpacingItemDecorator;
@@ -29,6 +32,8 @@ import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
+
+import io.realm.RealmResults;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -135,8 +140,13 @@ FragmentTrainingBinding mFragmentTrainingBinding;
             });
             controller.getTrainingVideos(VIDEO_REQUEST);
         }catch (Exception e){
-            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-            AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "getTrainingVideos", lineNo);
+            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getTrainingVideos", lineNo,userName,DeviceName);
+            }
         }
 
     }

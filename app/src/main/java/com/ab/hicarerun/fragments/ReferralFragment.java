@@ -2,6 +2,7 @@ package com.ab.hicarerun.fragments;
 
 
 import android.databinding.DataBindingUtil;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.TaskDetailsActivity;
@@ -30,6 +32,7 @@ import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.AttachmentModel.PostAttachmentResponse;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackRequest;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackResponse;
+import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralDeleteRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralListResponse;
@@ -42,6 +45,7 @@ import com.ab.hicarerun.viewmodel.UserLoginViewModel;
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
+import io.realm.RealmResults;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -133,84 +137,95 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
 
     @Override
     public void onAddReferralClicked(View view) {
-        LayoutInflater li = LayoutInflater.from(getActivity());
+        try{
+            LayoutInflater li = LayoutInflater.from(getActivity());
 
-        View promptsView = li.inflate(R.layout.add_referral_dialog, null);
+            View promptsView = li.inflate(R.layout.add_referral_dialog, null);
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
 
-        alertDialogBuilder.setView(promptsView);
+            alertDialogBuilder.setView(promptsView);
 
-        alertDialogBuilder.setTitle("Add Referral");
-        final AlertDialog alertDialog = alertDialogBuilder.create();
-        final AppCompatEditText edt_fname =
-                (AppCompatEditText) promptsView.findViewById(R.id.edt_firstname);
-        final AppCompatEditText edt_lname =
-                (AppCompatEditText) promptsView.findViewById(R.id.edt_lastname);
-        final AppCompatEditText edt_contact =
-                (AppCompatEditText) promptsView.findViewById(R.id.edtmobile);
-        final AppCompatEditText edt_alt_contact =
-                (AppCompatEditText) promptsView.findViewById(R.id.edt_alt_mobile);
-        final AppCompatEditText edt_interested =
-                (AppCompatEditText) promptsView.findViewById(R.id.edt_interested);
-        final AppCompatEditText edt_email =
-                (AppCompatEditText) promptsView.findViewById(R.id.edtemail);
-        final AppCompatButton btn_send =
-                (AppCompatButton) promptsView.findViewById(R.id.btn_send);
-        final AppCompatButton btn_cancel =
-                (AppCompatButton) promptsView.findViewById(R.id.btn_cancel);
+            alertDialogBuilder.setTitle("Add Referral");
+            final AlertDialog alertDialog = alertDialogBuilder.create();
+            final AppCompatEditText edt_fname =
+                    (AppCompatEditText) promptsView.findViewById(R.id.edt_firstname);
+            final AppCompatEditText edt_lname =
+                    (AppCompatEditText) promptsView.findViewById(R.id.edt_lastname);
+            final AppCompatEditText edt_contact =
+                    (AppCompatEditText) promptsView.findViewById(R.id.edtmobile);
+            final AppCompatEditText edt_alt_contact =
+                    (AppCompatEditText) promptsView.findViewById(R.id.edt_alt_mobile);
+            final AppCompatEditText edt_interested =
+                    (AppCompatEditText) promptsView.findViewById(R.id.edt_interested);
+            final AppCompatEditText edt_email =
+                    (AppCompatEditText) promptsView.findViewById(R.id.edtemail);
+            final AppCompatButton btn_send =
+                    (AppCompatButton) promptsView.findViewById(R.id.btn_send);
+            final AppCompatButton btn_cancel =
+                    (AppCompatButton) promptsView.findViewById(R.id.btn_cancel);
 
-        btn_send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validateSaveReferral(edt_fname, edt_lname, edt_contact, edt_email)) {
-                    NetworkCallController controller = new NetworkCallController();
-                    ReferralRequest request = new ReferralRequest();
+            btn_send.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (validateSaveReferral(edt_fname, edt_lname, edt_contact, edt_email)) {
+                        NetworkCallController controller = new NetworkCallController();
+                        ReferralRequest request = new ReferralRequest();
 
-                    request.setTaskId(taskId);
-                    request.setFirstName(edt_fname.getText().toString());
-                    request.setLastName("");
-                    request.setMobileNo(edt_contact.getText().toString());
-                    request.setAlternateMobileNo("");
-                    request.setEmail("");
-                    request.setInterestedService("");
+                        request.setTaskId(taskId);
+                        request.setFirstName(edt_fname.getText().toString());
+                        request.setLastName("");
+                        request.setMobileNo(edt_contact.getText().toString());
+                        request.setAlternateMobileNo("");
+                        request.setEmail("");
+                        request.setInterestedService("");
 
-                    controller.setListner(new NetworkResponseListner() {
-                        @Override
-                        public void onResponse(int requestCode, Object response) {
-                            ReferralResponse refResponse = (ReferralResponse) response;
-                            if (refResponse.getSuccess()) {
-                                mAdapter.notifyDataSetChanged();
-                                Toasty.success(getActivity(),"Referral added successfully.",Toast.LENGTH_SHORT).show();
-                                getReferralList();
+                        controller.setListner(new NetworkResponseListner() {
+                            @Override
+                            public void onResponse(int requestCode, Object response) {
+                                ReferralResponse refResponse = (ReferralResponse) response;
+                                if (refResponse.getSuccess()) {
+                                    mAdapter.notifyDataSetChanged();
+                                    Toasty.success(getActivity(),"Referral added successfully.",Toast.LENGTH_SHORT).show();
+                                    getReferralList();
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onFailure(int requestCode) {
+                            @Override
+                            public void onFailure(int requestCode) {
 
-                        }
-                    });
-                    controller.postReferrals(POST_REFERRAL_REQUEST, request);
+                            }
+                        });
+                        controller.postReferrals(POST_REFERRAL_REQUEST, request);
 
 
-                    alertDialog.dismiss();
-                    mAdapter.notifyDataSetChanged();
+                        alertDialog.dismiss();
+                        mAdapter.notifyDataSetChanged();
 
+                    }
                 }
+            });
+
+
+            btn_cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+            alertDialog.setIcon(R.mipmap.logo);
+
+            alertDialog.show();
+        }catch (Exception e){
+            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "onAddReferralClicked", lineNo,userName,DeviceName);
             }
-        });
+        }
 
-
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-            }
-        });
-        alertDialog.setIcon(R.mipmap.logo);
-
-        alertDialog.show();
     }
 
     @Override
