@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.ab.hicarerun.activities.LoginActivity;
 import com.ab.hicarerun.service.ServiceLocationSend;
 
 public class HandShakeReceiver extends BroadcastReceiver {
@@ -19,13 +18,11 @@ public class HandShakeReceiver extends BroadcastReceiver {
             try {
                 Log.i("AutoHandshake", intent.getAction());
 
-                context.startService(new Intent(context,ServiceLocationSend.class));
+                context.startService(new Intent(context, ServiceLocationSend.class));
 
             } catch (Exception e) {
                 Log.i("onRecieveHandshake", e.getMessage());
             }
-
-
         }
     }
 }

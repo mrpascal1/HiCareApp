@@ -22,12 +22,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ActivityHomeBinding;
-import com.ab.hicarerun.fragments.FaceRecognizationFragment;
 import com.ab.hicarerun.fragments.HomeFragment;
 import com.ab.hicarerun.fragments.NotificationFragment;
 import com.ab.hicarerun.network.NetworkCallController;
@@ -36,12 +36,10 @@ import com.ab.hicarerun.network.models.HandShakeModel.HandShake;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
 import com.ab.hicarerun.network.models.UpdateAppModel.UpdateData;
-import com.ab.hicarerun.network.models.UpdateAppModel.UpdateResponse;
 import com.ab.hicarerun.service.LocationManager;
 import com.ab.hicarerun.service.ServiceLocationSend;
 import com.ab.hicarerun.service.listner.LocationManagerListner;
 import com.ab.hicarerun.utils.AppUtils;
-import com.ab.hicarerun.utils.AutoLogoutReceiver;
 import com.ab.hicarerun.utils.DownloadApk;
 import com.ab.hicarerun.utils.HandShakeReceiver;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
@@ -67,6 +65,8 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     String userName = "";
     String userId = "";
     private android.location.LocationManager locationManager;
+    private AlarmManager mAlarmManager = null;
+    private PendingIntent pendingUpdateIntent = null;
 
 
     @Override
@@ -184,10 +184,40 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 userName = getIntent().getStringExtra(ARG_USER);
                 SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_USERNAME, userName);
                 items = (List<HandShake>) getIntent().getSerializableExtra(ARG_HANDSHAKE);
-                String time = items.get(1).getValue();
-                SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_TIME, time);
+                int time = Integer.parseInt(items.get(1).getValue());
+//                long REPEATED_TIME = Long.parseLong(items.get(1).getValue());
+                long REPEATED_TIME = 1000 * 60 * Integer.parseInt(items.get(1).getValue());
+                SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_INTERVAL, String.valueOf(REPEATED_TIME));
+                Log.i("callHandshake", String.valueOf(REPEATED_TIME));
+                SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_TIME, items.get(1).getValue());
                 if (items.get(0).getText().equals("EnableTrace")) {
                     if (items.get(0).getValue().equals("true")) {
+//                        Context ctx = getApplicationContext();
+///** this gives us the time for the first trigger.  */
+//                        Calendar cal = Calendar.getInstance();
+//                        mAlarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+//                        long interval = 1000 * 60 * 5; // 5 minutes in milliseconds
+//                        Intent serviceIntent = new Intent(ctx, ServiceLocationSend.class);
+//// make sure you **don't** use *PendingIntent.getBroadcast*, it wouldn't work
+//                        pendingUpdateIntent =
+//                                PendingIntent.getService(ctx,
+//                                        0, // integer constant used to identify the service
+//                                        serviceIntent,
+//                                        PendingIntent.FLAG_CANCEL_CURRENT);  // FLAG to avoid creating a second service if there's already one running
+//// there are other options like setInexactRepeating, check the docs
+//
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                            mAlarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, interval, pendingUpdateIntent);
+//                        } else {
+//                            mAlarmManager.setRepeating(
+//                                    AlarmManager.RTC_WAKEUP,//type of alarm. This one will wake up the device when it goes off, but there are others, check the docs
+//                                    cal.getTimeInMillis(),
+//                                    interval,
+//                                    pendingUpdateIntent
+//                            );
+//                        }
+
+
 //                        Intent itAlarm = new Intent(this, ServiceLocationSend.class);
 //                        PendingIntent pendingIntent = PendingIntent.getService(this, 0, itAlarm, 0);
 //                        Calendar calendar = Calendar.getInstance();
@@ -198,40 +228,67 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 //                                calendar.getTimeInMillis(),
 //                                1000 * 60 * Integer.parseInt(items.get(1).getValue()),
 //                                pendingIntent);
-//                    alarme.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, 1000 * 60 * Integer.parseInt(items.get(1).getValue()), pendingIntent);
+//                        alarme.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, 1000 * 60 * Integer.parseInt(items.get(1).getValue()), pendingIntent);
 
 
-                        Intent alaramIntent = new Intent(HomeActivity.this, HandShakeReceiver.class);
-                        alaramIntent.setAction("HandshakeAction");
-                        alaramIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-                        PendingIntent pendingIntent = PendingIntent.getBroadcast(HomeActivity.this, 0, alaramIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.setTimeInMillis(System.currentTimeMillis());
-                        calendar.add(Calendar.SECOND, 0);
-                        AlarmManager alarmManager = (AlarmManager) this.getSystemService(ALARM_SERVICE);
-                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-                                calendar.getTimeInMillis(),
-                                1000 * 60 * Integer.parseInt(items.get(1).getValue()),
-                                pendingIntent);
+//                        Intent alaramIntent = new Intent(HomeActivity.this, HandShakeReceiver.class);
+//                        alaramIntent.setAction("HandshakeAction");
+//                        alaramIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+//                        PendingIntent pendingIntent = PendingIntent.getBroadcast(HomeActivity.this, 0, alaramIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//                        Calendar calendar = Calendar.getInstance();
+//                        calendar.setTimeInMillis(System.currentTimeMillis());
+//                        calendar.add(Calendar.SECOND, 0);
+//                        AlarmManager alarmManager = (AlarmManager) this.getSystemService(ALARM_SERVICE);
+//                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+//                                calendar.getTimeInMillis(),
+//                                1000 * 60 * Integer.parseInt(items.get(1).getValue()),
+//                                pendingIntent);
+                        Intent intent = new Intent(getApplicationContext(), HandShakeReceiver.class);
+                        intent.setAction("HandshakeAction");
+                        pendingUpdateIntent = PendingIntent.getBroadcast(getApplicationContext(),
+                                0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        Calendar futureDate = Calendar.getInstance();
+                        mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+                        if (android.os.Build.VERSION.SDK_INT >= 19) {
+                            mAlarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, futureDate.getTime().getTime(), REPEATED_TIME, pendingUpdateIntent);
+                        } else {
+                            mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, futureDate.getTime().getTime(), REPEATED_TIME, pendingUpdateIntent);
+                        }
                     }
                 }
-            } else {
-                items = (List<HandShake>) getIntent().getSerializableExtra(ARG_HANDSHAKE);
-                String time = SharedPreferencesUtility.getPrefString(HomeActivity.this, SharedPreferencesUtility.PREF_TIME);
-                Intent alaramIntent = new Intent(HomeActivity.this, HandShakeReceiver.class);
-                alaramIntent.setAction("HandshakeAction");
-                alaramIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(HomeActivity.this, 0, alaramIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(System.currentTimeMillis());
-                calendar.add(Calendar.SECOND, 0);
-                AlarmManager alarmManager = (AlarmManager) this.getSystemService(ALARM_SERVICE);
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-                        calendar.getTimeInMillis(),
-                        1000 * 60 * Integer.parseInt(time),
-                        pendingIntent);
-//            alarme.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, 1000 * 60 * Integer.parseInt(items.get(1).getValue()), pendingIntent);
             }
+//            else {
+//                items = (List<HandShake>) getIntent().getSerializableExtra(ARG_HANDSHAKE);
+//                String time = SharedPreferencesUtility.getPrefString(HomeActivity.this, SharedPreferencesUtility.PREF_TIME);
+//                Intent itAlarm = new Intent(this, ServiceLocationSend.class);
+//                PendingIntent pendingIntent = PendingIntent.getService(this, 0, itAlarm, 0);
+//                Calendar calendar = Calendar.getInstance();
+//                calendar.setTimeInMillis(System.currentTimeMillis());
+//                calendar.add(Calendar.SECOND, 0);
+//                AlarmManager alarme = (AlarmManager) getSystemService(ALARM_SERVICE);
+//                alarme.setRepeating(AlarmManager.RTC_WAKEUP,
+//                        calendar.getTimeInMillis(),
+//                        1000 * 60 * Integer.parseInt(time),
+//                        pendingIntent);
+
+//                alarme.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, 1000 * 60 * Integer.parseInt(time), pendingIntent);
+
+
+//                Intent alaramIntent = new Intent(HomeActivity.this, HandShakeReceiver.class);
+//                alaramIntent.setAction("HandshakeAction");
+//                alaramIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+//                PendingIntent pendingIntent = PendingIntent.getBroadcast(HomeActivity.this, 0, alaramIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//                Calendar calendar = Calendar.getInstance();
+//                calendar.setTimeInMillis(System.currentTimeMillis());
+//                calendar.add(Calendar.SECOND, 3);
+//                AlarmManager alarmManager = (AlarmManager) this.getSystemService(ALARM_SERVICE);
+//                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+//                        calendar.getTimeInMillis(),
+//                        1000 * 60 * Integer.parseInt(time),
+//                        pendingIntent);
+//            alarme.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, 1000 * 60 * Integer.parseInt(items.get(1).getValue()), pendingIntent);
+//            }
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
@@ -338,10 +395,16 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                                         LogoutResponse logres = (LogoutResponse) response;
 
                                         if (logres.getSuccess()) {
+                                            if (pendingUpdateIntent != null) {
+                                                mAlarmManager.cancel(pendingUpdateIntent);
+                                            }
+                                            getApplicationContext().stopService(new Intent(HomeActivity.this, ServiceLocationSend.class));
                                             SharedPreferencesUtility.savePrefBoolean(getApplicationContext(), SharedPreferencesUtility.IS_USER_LOGIN,
                                                     false);
                                             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                                             finish();
+                                        } else {
+                                            Toast.makeText(HomeActivity.this, "Logout failed! try again.", Toast.LENGTH_SHORT).show();
                                         }
                                     }
 

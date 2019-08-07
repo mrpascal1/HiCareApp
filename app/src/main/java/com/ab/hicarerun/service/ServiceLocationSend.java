@@ -13,6 +13,9 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,10 +32,13 @@ import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeRequest;
 import com.ab.hicarerun.network.models.LoginResponse;
+import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.utils.HandShakeReceiver;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 
 
 import java.security.Provider;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -48,6 +54,9 @@ public class ServiceLocationSend extends Service implements LocationListener {
     private static final int CONTINUT_HANDSHAKE_REQUEST = 1000;
     LocationManager locationManager;
     Location location;
+    String highestSpeed = "-";
+    String lowestSpeed = "-";
+
 
     @Nullable
     @Override
@@ -123,17 +132,30 @@ public class ServiceLocationSend extends Service implements LocationListener {
 //        alarme.cancel(pendingIntent);
 
 
-            Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
-            restartServiceIntent.setPackage(getPackageName());
+//            Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
+//            restartServiceIntent.setPackage(getPackageName());
+//
+//            PendingIntent restartServicePendingIntent = PendingIntent.getService(getApplicationContext(), 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT);
+//            AlarmManager alarmService = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+//            alarmService.set(
+//                    AlarmManager.ELAPSED_REALTIME,
+//                    SystemClock.elapsedRealtime() + 3000,
+//                    restartServicePendingIntent);
+        String time = SharedPreferencesUtility.getPrefString(getApplicationContext(), SharedPreferencesUtility.PREF_INTERVAL);
+        long REPEATED_TIME = Long.parseLong(time);
+        Intent intent = new Intent(getApplicationContext(), HandShakeReceiver.class);
+        intent.setAction("HandshakeAction");
+        PendingIntent pendingUpdateIntent = PendingIntent.getBroadcast(getApplicationContext(),
+                0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Calendar futureDate = Calendar.getInstance();
+        AlarmManager mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= 19) {
+            mAlarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, futureDate.getTime().getTime(), REPEATED_TIME, pendingUpdateIntent);
+        } else {
+            mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, futureDate.getTime().getTime(), REPEATED_TIME, pendingUpdateIntent);
+        }
 
-            PendingIntent restartServicePendingIntent = PendingIntent.getService(getApplicationContext(), 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT);
-            AlarmManager alarmService = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-            alarmService.set(
-                    AlarmManager.ELAPSED_REALTIME,
-                    SystemClock.elapsedRealtime() + 3000,
-                    restartServicePendingIntent);
-
-            super.onTaskRemoved(rootIntent);
+        super.onTaskRemoved(rootIntent);
 
 
     }
@@ -210,6 +232,7 @@ public class ServiceLocationSend extends Service implements LocationListener {
     }
 
 
+
     void getContinueHandShake(Context context) {
 
         try {
@@ -227,6 +250,25 @@ public class ServiceLocationSend extends Service implements LocationListener {
             Log.e("TAG", "isLogeedinnn: " + IsLoggedIn);
             Log.e("TAG", "GPS: " + IsGPSConnected);
 
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo netInfo = cm.getActiveNetworkInfo();
+            //should check null because in airplane mode it will be null
+            if (netInfo != null) {
+                String hrSize = null;
+                NetworkCapabilities nc = null;
+                Log.e("TAG", "Internet Conection: " + netInfo.isConnected());
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    nc = cm.getNetworkCapabilities(cm.getActiveNetwork());
+                    int downSpeed = nc.getLinkDownstreamBandwidthKbps();
+                    int upSpeed = nc.getLinkUpstreamBandwidthKbps();
+                    highestSpeed = AppUtils.checkConnectionSpeed(upSpeed);
+                    lowestSpeed = AppUtils.checkConnectionSpeed(downSpeed);
+                    Log.e("TAG", "Internet Speed: " + "--DownSpeed :- " + lowestSpeed + "--UpSpeed :- " + highestSpeed);
+                }
+            } else {
+                Log.e("TAG", "Internet Conection: " + false);
+            }
+
 
             NetworkCallController controller = new NetworkCallController();
             ContinueHandShakeRequest request = new ContinueHandShakeRequest();
@@ -242,6 +284,13 @@ public class ServiceLocationSend extends Service implements LocationListener {
             request.setDeviceName(DeviceName);
             request.setLoggedIn(IsLoggedIn);
             request.setGPSConnected(IsGPSConnected);
+            request.setConnectionSpeed("Highest Speed : " + highestSpeed + " Lowest Speed : " + lowestSpeed);
+            if (netInfo != null) {
+                request.setConnected(netInfo.isConnected());
+            } else {
+                request.setConnected(false);
+            }
+
             controller.setListner(new NetworkResponseListner() {
                 @Override
                 public void onResponse(int requestCode, Object response) {
@@ -256,6 +305,13 @@ public class ServiceLocationSend extends Service implements LocationListener {
             controller.getContinueHandShake(CONTINUT_HANDSHAKE_REQUEST, request);
 
         } catch (Exception e) {
+            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getContinueHandShake", lineNo, userName, DeviceName);
+            }
             e.printStackTrace();
         }
     }

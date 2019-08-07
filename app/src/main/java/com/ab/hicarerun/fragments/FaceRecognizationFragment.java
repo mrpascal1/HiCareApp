@@ -129,8 +129,8 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
             mFragmentFaceRecognizationBinding.txtReason.setText("Please upload your photo to mark attendance.");
             Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
             toolbar.setVisibility(View.GONE);
-        }else {
-            if((VerifyOtpActivity) getActivity() != null){
+        } else {
+            if ((VerifyOtpActivity) getActivity() != null) {
                 mFragmentFaceRecognizationBinding.txtReason.setText("Please upload your photo to complete the registration.");
                 Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
                 toolbar.setVisibility(View.GONE);
@@ -240,10 +240,10 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "releaseCamera", lineNo,userName,DeviceName);
+                String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "releaseCamera", lineNo, userName, DeviceName);
             }
         }
     }
@@ -313,7 +313,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                         Bitmap rotatedBitmap = Bitmap.createBitmap(loadedImage, 0,
                                 0, loadedImage.getWidth(), loadedImage.getHeight(),
                                 rotateMatrix, false);
-                      Bitmap convertedImage =   getResizedBitmap(rotatedBitmap, 500);
+                        Bitmap convertedImage = getResizedBitmap(rotatedBitmap, 500);
 
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         convertedImage.compress(Bitmap.CompressFormat.JPEG, 100, baos);
@@ -333,7 +333,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                                         public void onResponse(int requestCode, Object data) {
                                             ContinueHandShakeResponse response = (ContinueHandShakeResponse) data;
                                             if (response.getSuccess()) {
-                                                Toasty.success(getActivity(),"Attendance marked successfully.",Toast.LENGTH_SHORT).show();
+                                                Toasty.success(getActivity(), "Attendance marked successfully.", Toast.LENGTH_SHORT).show();
                                                 replaceFragment(HomeFragment.newInstance(), "FaceRecognizationFragment-HomeFragment");
                                             } else {
                                                 getErrorDialog("Attendance Failed", response.getErrorMessage());
@@ -385,13 +385,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
 
 
                     } catch (Exception e) {
-                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
-                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                            String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
-                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                            String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                            AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "takePicture", lineNo,userName,DeviceName);
-                        }
+                        e.printStackTrace();
                     }
 
                 }
@@ -399,16 +393,15 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "takeImage", lineNo,userName,DeviceName);
+                String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "takeImage", lineNo, userName, DeviceName);
             }
         }
 
 
     }
-
 
 
     @Override
@@ -465,8 +458,6 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
             Log.i("handshake", e.getMessage());
         }
     }
-
-
 
 
 }

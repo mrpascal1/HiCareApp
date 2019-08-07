@@ -90,15 +90,12 @@ public class NetworkCallController {
                                     e.printStackTrace();
                                 }
                             }
-                        } else {
-//                            mContext.showServerError();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<HandShakeResponse> call, Throwable t) {
-//                        mContext.dismissProgressDialog();
-//                        mContext.showServerError("Please try again !!!");
+
                     }
                 });
     }

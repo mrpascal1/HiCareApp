@@ -22,6 +22,7 @@ public class SharedPreferencesUtility {
     public static final String PREF_REFRESH = "PREF_REFRESH";
     public static final String PREF_RESTRICT = "PREF_RESTRICT";
     public static final String PREF_LOGOUT = "PREF_LOGOUT";
+    public static final String PREF_INTERVAL = "PREF_INTERVAL";
 
     public static boolean getPrefBoolean(Context context, String key) {
         SharedPreferences prefs =

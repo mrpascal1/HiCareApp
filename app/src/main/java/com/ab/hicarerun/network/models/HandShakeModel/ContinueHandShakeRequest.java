@@ -18,6 +18,8 @@ public class ContinueHandShakeRequest {
     @SerializedName("BatteryStatistics") @Expose private String BatteryStatistics;
     @SerializedName("PhoneMake") @Expose private String PhoneMake;
     @SerializedName("DeviceName") @Expose private String DeviceName;
+    @SerializedName("IsConnected") @Expose private Boolean IsConnected;
+    @SerializedName("ConnectionSpeed") @Expose private String ConnectionSpeed ;
     @SerializedName("IsLoggedIn") @Expose private Boolean IsLoggedIn;
     @SerializedName("IsGPSConnected") @Expose private Boolean IsGPSConnected;
 
@@ -38,6 +40,8 @@ public class ContinueHandShakeRequest {
         DeviceName = "";
         IsLoggedIn = false;
         IsGPSConnected = false;
+        IsConnected = false;
+        ConnectionSpeed = "";
     }
 
     public String getTechId() {
@@ -167,5 +171,21 @@ public class ContinueHandShakeRequest {
 
     public void setGPSConnected(Boolean GPSConnected) {
         IsGPSConnected = GPSConnected;
+    }
+
+    public Boolean getConnected() {
+        return IsConnected;
+    }
+
+    public void setConnected(Boolean connected) {
+        IsConnected = connected;
+    }
+
+    public String getConnectionSpeed() {
+        return ConnectionSpeed;
+    }
+
+    public void setConnectionSpeed(String connectionSpeed) {
+        ConnectionSpeed = connectionSpeed;
     }
 }

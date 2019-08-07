@@ -36,6 +36,7 @@ import com.google.gson.Gson;
 
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -178,7 +179,7 @@ public class AppUtils {
         return date_result;
     }
 
-    public static String compareLoginDates(String d1,String d2){
+    public static String compareLoginDates(String d1, String d2) {
         String date_result = "";
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -213,7 +214,7 @@ public class AppUtils {
         return dateFormat.format(date1);
     }
 
-    public static String currentDate(){
+    public static String currentDate() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date1 = new Date();
         return dateFormat.format(date1);
@@ -285,6 +286,39 @@ public class AppUtils {
         }
 
 
+    }
+
+
+
+    public static String checkConnectionSpeed(long size) {
+        try {
+            String hrSize = null;
+
+            double b = size;
+            double k = size/1024.0;
+            double m = ((size/1024.0)/1024.0);
+            double g = (((size/1024.0)/1024.0)/1024.0);
+            double t = ((((size/1024.0)/1024.0)/1024.0)/1024.0);
+
+            DecimalFormat dec = new DecimalFormat("0.00");
+
+            if ( t>1 ) {
+                hrSize = dec.format(t).concat(" TB");
+            } else if ( g>1 ) {
+                hrSize = dec.format(g).concat(" GB");
+            } else if ( m>1 ) {
+                hrSize = dec.format(m).concat(" MB");
+            } else if ( k>1 ) {
+                hrSize = dec.format(k).concat(" KB");
+            } else {
+                hrSize = dec.format(b).concat(" Bytes");
+            }
+
+            return hrSize;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return "-";
     }
 
 
@@ -399,7 +433,7 @@ public class AppUtils {
             data.setApplicationName("HicareRun Mobile");
             data.setApplicationType("Mobile");
             data.setLevel("Error");
-            data.setLogMessage(error);
+            data.setLogMessage(error + userName + deviceName);
             data.setSource("HiCareRun");
             data.setType("Mobile");
             data.setUserId(0);
@@ -444,26 +478,5 @@ public class AppUtils {
         return s;
     }
 
-    public static void getAutoLogout(Activity context) {
-        try {
-            Intent alaramIntent = new Intent(context, AutoLogoutReceiver.class);
-            alaramIntent.setAction("LogOutAction");
-            Log.i("MethodCall", "AutoLogOutCall");
-            alaramIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, alaramIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(System.currentTimeMillis());
-            calendar.set(Calendar.HOUR_OF_DAY, 14);
-            calendar.set(Calendar.MINUTE, 32);
-            calendar.set(Calendar.SECOND, 0);
-            AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-            Log.i("Logout", "Auto Logout set at..!" + calendar.getTime());
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.i("AutoLogout", e.getMessage());
-        }
-
-    }
 
 }

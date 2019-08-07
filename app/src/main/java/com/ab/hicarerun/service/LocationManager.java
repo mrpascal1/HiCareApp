@@ -28,9 +28,7 @@ import java.text.DateFormat;
 import java.util.Date;
 
 public class LocationManager implements GoogleApiClient.ConnectionCallbacks,
-        com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener, LocationListener
-
-{
+        com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private static final String TAG = LocationManager.class.getSimpleName();
 
     private static final int MINUTE = 1000 * 60;
@@ -83,7 +81,7 @@ public class LocationManager implements GoogleApiClient.ConnectionCallbacks,
         initSmartLocationManager();
     }
 
-    public LocationManager(Activity activity){
+    public LocationManager(Activity activity) {
         this.mActivity = activity;
         initSmartLocationManager();
     }
@@ -277,6 +275,7 @@ public class LocationManager implements GoogleApiClient.ConnectionCallbacks,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(mActivity.getApplicationContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -428,7 +427,6 @@ public class LocationManager implements GoogleApiClient.ConnectionCallbacks,
         final AlertDialog alert = builder.create();
         alert.show();
     }
-
 
 
     public Location getLastKnownLocation() {

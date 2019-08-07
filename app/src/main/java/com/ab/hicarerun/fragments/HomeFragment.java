@@ -196,13 +196,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 Toast.makeText(getActivity(), "Unable to make call.", Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
-            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
-            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
-                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
-                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "PhoneCallListener", lineNo, userName, DeviceName);
-            }
+            e.printStackTrace();
         }
 
     }
@@ -767,13 +761,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
                 }
             } catch (Exception e) {
-                RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
-                if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                    String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
-                    String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                    String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
-                    AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "onCallStateChanged", lineNo, userName, DeviceName);
-                }
+                e.printStackTrace();
             }
 
 

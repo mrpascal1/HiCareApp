@@ -2,6 +2,8 @@ package com.ab.hicarerun.activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -22,8 +24,10 @@ import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ActivitySplashActiviyBinding;
 import com.ab.hicarerun.fragments.LoginFragment;
 import com.ab.hicarerun.service.LocationManager;
+import com.ab.hicarerun.service.ServiceLocationSend;
 import com.ab.hicarerun.service.listner.LocationManagerListner;
 import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.utils.HandShakeReceiver;
 import com.ab.hicarerun.utils.RuntimePermissionsActivity;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.splunk.mint.Mint;
@@ -35,6 +39,8 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
     private LocationManagerListner mListner;
     private android.location.LocationManager locationManager;
     private static int SPLASH_TIME_OUT = 3000;
+    private PendingIntent pendingIntent = null;
+    private AlarmManager mAlarmManager = null;
 
 
     @Override
@@ -42,6 +48,7 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
         super.onCreate(savedInstanceState);
         mActivitySplashBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_splash_activiy);
+        mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         LocationManager.Builder builder = new LocationManager.Builder(this);
         builder.setLocationListner(this);
         builder.build();
@@ -81,22 +88,35 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
                                 String PreviousLoginDate = SharedPreferencesUtility.getPrefString(SplashActiviy.this, SharedPreferencesUtility.PREF_LOGOUT);
                                 String ComparePreviousLogin = AppUtils.compareLoginDates(PreviousLoginDate, AppUtils.currentDate());
                                 Log.i("LoginDates", AppUtils.compareLoginDates(PreviousLoginDate, AppUtils.currentDate()));
-                                Log.i("CurrentDate",AppUtils.currentDate());
+                                Log.i("CurrentDate", AppUtils.currentDate());
                                 if (ComparePreviousLogin.equals("equal")) {
                                     startActivity(new Intent(SplashActiviy.this, HomeActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
                                     overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                                     finish();
                                 } else {
+
+                                    Intent myIntent = new Intent(SplashActiviy.this, HandShakeReceiver.class);
+                                    pendingIntent = PendingIntent.getActivity(getApplicationContext(),
+                                            0, myIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                                    mAlarmManager.cancel(pendingIntent);
+                                    getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
                                     startActivity(new Intent(SplashActiviy.this, LoginActivity.class));
                                     overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                                     finish();
                                 }
                             } else {
+                                Intent myIntent = new Intent(SplashActiviy.this, HandShakeReceiver.class);
+                                pendingIntent = PendingIntent.getActivity(getApplicationContext(),
+                                        0, myIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                                pendingIntent.cancel();
+                                mAlarmManager.cancel(pendingIntent);
+                                getApplicationContext().stopService(new Intent(SplashActiviy.this, ServiceLocationSend.class));
                                 startActivity(new Intent(SplashActiviy.this, LoginActivity.class));
                                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                                 finish();
                             }
                         } else {
+                            getApplicationContext().stopService(new Intent(SplashActiviy.this, ServiceLocationSend.class));
                             startActivity(new Intent(SplashActiviy.this, LoginActivity.class));
                             overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                             finish();
