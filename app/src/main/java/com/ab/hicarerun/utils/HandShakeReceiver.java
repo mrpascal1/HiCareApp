@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -18,7 +19,14 @@ public class HandShakeReceiver extends BroadcastReceiver {
             try {
                 Log.i("AutoHandshake", intent.getAction());
 
-                context.startService(new Intent(context, ServiceLocationSend.class));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(new Intent(context, ServiceLocationSend.class));
+                    Log.e("TAG", "Service Restarted");
+                } else {
+                    context.startService(new Intent(context, ServiceLocationSend.class));
+                    Log.e("TAG", "Service Restarted");
+                }
+
 
             } catch (Exception e) {
                 Log.i("onRecieveHandshake", e.getMessage());

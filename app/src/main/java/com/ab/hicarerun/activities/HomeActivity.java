@@ -28,6 +28,7 @@ import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ActivityHomeBinding;
+import com.ab.hicarerun.fragments.FaceRecognizationFragment;
 import com.ab.hicarerun.fragments.HomeFragment;
 import com.ab.hicarerun.fragments.NotificationFragment;
 import com.ab.hicarerun.network.NetworkCallController;
@@ -184,9 +185,8 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 userName = getIntent().getStringExtra(ARG_USER);
                 SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_USERNAME, userName);
                 items = (List<HandShake>) getIntent().getSerializableExtra(ARG_HANDSHAKE);
-                int time = Integer.parseInt(items.get(1).getValue());
-//                long REPEATED_TIME = Long.parseLong(items.get(1).getValue());
                 long REPEATED_TIME = 1000 * 60 * Integer.parseInt(items.get(1).getValue());
+//                long REPEATED_TIME = 60000;
                 SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_INTERVAL, String.valueOf(REPEATED_TIME));
                 Log.i("callHandshake", String.valueOf(REPEATED_TIME));
                 SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_TIME, items.get(1).getValue());
@@ -242,7 +242,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 //                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
 //                                calendar.getTimeInMillis(),
 //                                1000 * 60 * Integer.parseInt(items.get(1).getValue()),
-//                                pendingIntent);
+//                                pendingInten
                         Intent intent = new Intent(getApplicationContext(), HandShakeReceiver.class);
                         intent.setAction("HandshakeAction");
                         pendingUpdateIntent = PendingIntent.getBroadcast(getApplicationContext(),
@@ -256,6 +256,26 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                             mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, futureDate.getTime().getTime(), REPEATED_TIME, pendingUpdateIntent);
                         }
                     }
+                }
+            } else {
+                if (pendingUpdateIntent != null) {
+                    mAlarmManager.cancel(pendingUpdateIntent);
+                    getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
+                }
+                String time = SharedPreferencesUtility.getPrefString(HomeActivity.this, SharedPreferencesUtility.PREF_TIME);
+                long REPEATED_TIME = 1000 * 60 * Integer.parseInt(time);
+//                long REPEATED_TIME = 60000;
+                Intent intent = new Intent(getApplicationContext(), HandShakeReceiver.class);
+                intent.setAction("HandshakeAction");
+                pendingUpdateIntent = PendingIntent.getBroadcast(getApplicationContext(),
+                        0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                Calendar futureDate = Calendar.getInstance();
+                mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+                if (android.os.Build.VERSION.SDK_INT >= 19) {
+                    mAlarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, futureDate.getTime().getTime(), REPEATED_TIME, pendingUpdateIntent);
+                } else {
+                    mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, futureDate.getTime().getTime(), REPEATED_TIME, pendingUpdateIntent);
                 }
             }
 //            else {
@@ -397,8 +417,8 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                                         if (logres.getSuccess()) {
                                             if (pendingUpdateIntent != null) {
                                                 mAlarmManager.cancel(pendingUpdateIntent);
+                                                getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
                                             }
-                                            getApplicationContext().stopService(new Intent(HomeActivity.this, ServiceLocationSend.class));
                                             SharedPreferencesUtility.savePrefBoolean(getApplicationContext(), SharedPreferencesUtility.IS_USER_LOGIN,
                                                     false);
                                             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
@@ -448,10 +468,11 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     @Override
     public void onBackPressed() {
         int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
+        getSupportFragmentManager().beginTransaction().remove(FaceRecognizationFragment.newInstance(false, "avatar")).commit();
+        getSupportFragmentManager().popBackStack();
         if (backStackEntryCount == 0) {
             showExitAlert();
         } else {
-//            getSupportFragmentManager().popBackStackImmediate();
             super.onBackPressed();
         }
     }

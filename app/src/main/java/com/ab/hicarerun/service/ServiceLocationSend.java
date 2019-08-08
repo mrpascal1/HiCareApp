@@ -2,14 +2,19 @@ package com.ab.hicarerun.service;
 
 import android.Manifest;
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -23,7 +28,9 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -66,8 +73,34 @@ public class ServiceLocationSend extends Service implements LocationListener {
 
     @Override
     public void onCreate() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O)
+            startMyOwnForeground();
+        else
+            startForeground(1, new Notification());
         super.onCreate();
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private void startMyOwnForeground() {
+        String NOTIFICATION_CHANNEL_ID = "com.hicarerun";
+        String channelName = "Background Service";
+        NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
+        chan.setLightColor(Color.BLUE);
+        chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        assert manager != null;
+        manager.createNotificationChannel(chan);
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
+        Notification notification = notificationBuilder.setOngoing(true)
+                .setContentTitle("Hicare Run is running in background")
+                .setPriority(NotificationManager.IMPORTANCE_MIN)
+                .setCategory(Notification.CATEGORY_SERVICE)
+                .build();
+        startForeground(2, notification);
+    }
+
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
@@ -120,8 +153,10 @@ public class ServiceLocationSend extends Service implements LocationListener {
         super.onDestroy();
     }
 
+
     @Override
     public void onTaskRemoved(Intent rootIntent) {
+
 
 //        Intent itAlarm = new Intent(this, ServiceLocationSend.class);
 //        PendingIntent pendingIntent = PendingIntent.getService(this, 0, itAlarm, 0);
@@ -143,13 +178,16 @@ public class ServiceLocationSend extends Service implements LocationListener {
 //                    restartServicePendingIntent);
         String time = SharedPreferencesUtility.getPrefString(getApplicationContext(), SharedPreferencesUtility.PREF_INTERVAL);
         long REPEATED_TIME = Long.parseLong(time);
+//        long REPEATED_TIME = 60000;
+        getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
+        Log.e("TAG", "Service Killed");
         Intent intent = new Intent(getApplicationContext(), HandShakeReceiver.class);
         intent.setAction("HandshakeAction");
         PendingIntent pendingUpdateIntent = PendingIntent.getBroadcast(getApplicationContext(),
-                0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                0, intent, PendingIntent.FLAG_ONE_SHOT);
         Calendar futureDate = Calendar.getInstance();
         AlarmManager mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        if (android.os.Build.VERSION.SDK_INT >= 19) {
+        if (Build.VERSION.SDK_INT >= 19) {
             mAlarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, futureDate.getTime().getTime(), REPEATED_TIME, pendingUpdateIntent);
         } else {
             mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, futureDate.getTime().getTime(), REPEATED_TIME, pendingUpdateIntent);
@@ -230,7 +268,6 @@ public class ServiceLocationSend extends Service implements LocationListener {
         Log.e("TAG", "GPS: " + IsGPSConnected);
 
     }
-
 
 
     void getContinueHandShake(Context context) {
