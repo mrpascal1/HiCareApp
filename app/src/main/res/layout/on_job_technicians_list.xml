@@ -4,17 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="2dp">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -30,6 +30,7 @@
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/img_profile"
                         android:layout_width="60dp"
+                        android:clickable="true"
                         android:layout_height="60dp"
                         android:text="@string/service_plan"
                         android:layout_gravity="center"
@@ -152,12 +153,12 @@
                     app:layout_constraintBottom_toBottomOf="@id/lnr_image"/>
 
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </layout>

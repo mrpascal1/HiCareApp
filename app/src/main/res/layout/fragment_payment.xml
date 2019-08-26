@@ -17,7 +17,7 @@
         android:background="@color/white"
         tools:context=".fragments.PaymentFragment">
 
-        <android.support.v4.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -26,7 +26,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <android.support.constraint.ConstraintLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/lnr_payment"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
@@ -63,12 +63,13 @@
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
 
-                        <android.support.v7.widget.AppCompatSpinner
+                        <androidx.appcompat.widget.AppCompatSpinner
                             android:id="@+id/spn_ptmmode"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:backgroundTint="@color/white"
                             android:ems="10"
+                            android:clickable="true"
                             android:popupBackground="@color/colorTextDrawerSecondary"
                             android:spinnerMode="dialog"
                             android:textSize="20sp" />
@@ -76,10 +77,10 @@
                     </LinearLayout>
 
 
-                </android.support.constraint.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-                <android.support.constraint.ConstraintLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/lnr_collect"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
@@ -108,7 +109,7 @@
                         app:layout_constraintLeft_toRightOf="@id/collect"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txt_collect"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -119,9 +120,9 @@
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                </android.support.constraint.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <android.support.constraint.ConstraintLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/lnr_collected"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
@@ -152,7 +153,7 @@
                         app:layout_constraintLeft_toRightOf="@id/collected"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <android.support.v7.widget.AppCompatEditText
+                    <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/txt_collected"
                         android:layout_width="100dp"
                         android:layout_height="26dp"
@@ -168,7 +169,7 @@
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                </android.support.constraint.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
                     android:id="@+id/lnr_cheque"
@@ -177,7 +178,7 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <android.support.constraint.ConstraintLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/lnr_bankname"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
@@ -236,7 +237,7 @@
                                 android:textColor="@color/white"
                                 android:textSize="14sp" />
 
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/img_drop"
                                 android:layout_width="10dp"
                                 android:layout_height="10dp"
@@ -251,9 +252,9 @@
                         </RelativeLayout>
 
 
-                    </android.support.constraint.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <android.support.constraint.ConstraintLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/lnr_chequedt"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
@@ -311,7 +312,7 @@
                                 android:textColor="@color/white"
                                 android:textSize="14sp" />
 
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/img_cal"
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
@@ -326,9 +327,9 @@
                         </RelativeLayout>
 
 
-                    </android.support.constraint.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <android.support.constraint.ConstraintLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/lnr_chequeno"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
@@ -360,7 +361,7 @@
                             app:layout_constraintLeft_toRightOf="@id/chequeno"
                             app:layout_constraintTop_toTopOf="parent" />
 
-                        <android.support.v7.widget.AppCompatEditText
+                        <androidx.appcompat.widget.AppCompatEditText
                             android:id="@+id/txt_chequeNo"
                             android:layout_width="100dp"
                             android:layout_height="26dp"
@@ -379,7 +380,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
 
-                    </android.support.constraint.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <View
                         android:layout_width="match_parent"
@@ -392,7 +393,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <android.support.v7.widget.AppCompatTextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/signature"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -415,7 +416,7 @@
                             android:orientation="vertical"
                             app:layout_constraintTop_toBottomOf="@id/signature">
 
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/img_upload_cheque"
                                 android:layout_width="200dp"
                                 android:layout_height="140dp"
@@ -435,7 +436,7 @@
                                 android:onClick="@{(view) -> handler.onUploadChequeClicked(view)}"
                                 android:orientation="vertical">
 
-                                <android.support.v7.widget.AppCompatImageView
+                                <androidx.appcompat.widget.AppCompatImageView
                                     android:layout_width="70dp"
                                     android:layout_height="70dp"
                                     android:src="@drawable/ic_upload" />
@@ -476,7 +477,7 @@
 
                 </LinearLayout>
 
-                <android.support.v7.widget.AppCompatButton
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_sendlink"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -490,7 +491,7 @@
                     android:textColor="@color/white"
                     android:visibility="gone" />
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:id="@+id/cardScanner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -504,9 +505,9 @@
                         android:layout_width="250dp"
                         android:layout_height="250dp" />
 
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
             </LinearLayout>
-        </android.support.v4.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
     </FrameLayout>
 </layout>

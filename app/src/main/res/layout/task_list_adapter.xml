@@ -9,12 +9,12 @@
         <import type="android.view.View" />
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="2dp">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/ripplle_effect"
@@ -22,7 +22,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -58,13 +58,13 @@
                     android:layout_height="40dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="2dp"
+                    android:clickable="true"
                     android:gravity="center_horizontal"
-
                     app:layout_constraintLeft_toRightOf="@id/lnr_time"
                     app:layout_constraintTop_toTopOf="parent">
 
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/img_tracklocation"
                         android:layout_width="31dp"
                         android:layout_height="31dp"
@@ -89,7 +89,7 @@
                     app:primaryText="InComplete"
                     app:primaryTextSize="12sp" />
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/img_warning"
                     android:layout_width="22dp"
                     android:layout_height="22dp"
@@ -427,7 +427,7 @@
                                 android:orientation="horizontal"
                                 android:visibility="gone">
 
-                                <android.support.v7.widget.AppCompatTextView
+                                <androidx.appcompat.widget.AppCompatTextView
                                     android:id="@+id/txt_timer"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -459,6 +459,7 @@
                             android:layout_centerHorizontal="true"
                             android:gravity="center"
                             android:paddingRight="7dp"
+                            android:clickable="true"
                             android:paddingBottom="10dp">
 
                             <ImageView
@@ -508,6 +509,7 @@
                         android:layout_height="30dp"
                         android:background="@drawable/shape_rounded_corner_btn_green"
                         android:gravity="center"
+                        android:clickable="true"
                         android:orientation="horizontal">
 
 
@@ -532,6 +534,7 @@
                         android:layout_width="110dp"
                         android:layout_height="30dp"
                         android:layout_marginLeft="8dp"
+                        android:clickable="true"
                         android:background="@drawable/shape_rounded_corner_btn_green"
                         android:gravity="center"
                         android:orientation="horizontal">
@@ -559,6 +562,7 @@
                         android:layout_height="30dp"
                         android:layout_gravity="right"
                         android:layout_marginLeft="8dp"
+                        android:clickable="true"
                         android:background="@drawable/shape_rounded_corner_btn_green"
                         android:gravity="center"
                         android:orientation="horizontal">
@@ -584,10 +588,10 @@
                 </LinearLayout>
 
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

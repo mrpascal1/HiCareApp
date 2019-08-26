@@ -1,26 +1,10 @@
 package com.ab.hicarerun.activities;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.databinding.DataBindingUtil;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
-import android.text.Editable;
-import android.text.Html;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
+
+
+import androidx.databinding.DataBindingUtil;
 
 import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.R;
@@ -28,15 +12,7 @@ import com.ab.hicarerun.databinding.ActivityVerifyOtpBinding;
 import com.ab.hicarerun.fragments.FaceRecognizationFragment;
 import com.ab.hicarerun.fragments.LoginFragment;
 import com.ab.hicarerun.fragments.VerifyOtpFragment;
-import com.ab.hicarerun.network.NetworkCallController;
-import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.network.models.OtpModel.SendOtpResponse;
-import com.ab.hicarerun.utils.AppUtils;
-import com.ab.hicarerun.utils.notifications.OneSIgnalHelper;
-import com.ab.hicarerun.viewmodel.UserLoginViewModel;
 
-import static com.ab.hicarerun.BaseApplication.getRealm;
 
 public class VerifyOtpActivity extends BaseActivity {
     ActivityVerifyOtpBinding mActivityVerifyOtpBinding;

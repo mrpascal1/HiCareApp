@@ -17,8 +17,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.StringDef;
+
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -93,8 +92,8 @@ public class ScratchRelativeLayout extends View {
         typedArray.recycle();
 
         mMaskPaint = new Paint();
-        mMaskPaint.setAntiAlias(true);//抗锯齿
-        mMaskPaint.setDither(true);//防抖
+        mMaskPaint.setAntiAlias(true);
+        mMaskPaint.setDither(true);
         setMaskColor(maskColor);
 
         mBitmapPaint = new Paint();
@@ -229,8 +228,6 @@ public class ScratchRelativeLayout extends View {
     }
 
     /**
-     * 擦除
-     *
      * @param x
      * @param y
      */

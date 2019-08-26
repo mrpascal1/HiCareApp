@@ -26,13 +26,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.os.SystemClock;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationCompat;
+
 import android.telephony.TelephonyManager;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.network.NetworkCallController;
@@ -272,25 +273,25 @@ public class ServiceLocationSend extends Service implements LocationListener {
 
     void getContinueHandShake(Context context) {
 
-        try {
 
-            Log.e("TAG", "Lat" + str_lat);
-            Log.e("TAG", "Long" + str_lng);
-            Log.e("TAG", "tech_id: " + userId);
-            Log.e("TAG", "UserId: " + userId);
-            Log.e("TAG", "str_Username: " + strUsername);
-            Log.e("TAG", "IMEI: " + DeviceIMEINumber);
-            Log.e("TAG", "Battery: " + BatteryStatistics);
-            Log.e("TAG", "Phone Make: " + PhoneMake);
-            Log.e("TAG", "Device Name: " + DeviceName);
-            Log.e("TAG", "Device Time: " + DeviceTime);
-            Log.e("TAG", "isLogeedinnn: " + IsLoggedIn);
-            Log.e("TAG", "GPS: " + IsGPSConnected);
+        Log.e("TAG", "Lat" + str_lat);
+        Log.e("TAG", "Long" + str_lng);
+        Log.e("TAG", "tech_id: " + userId);
+        Log.e("TAG", "UserId: " + userId);
+        Log.e("TAG", "str_Username: " + strUsername);
+        Log.e("TAG", "IMEI: " + DeviceIMEINumber);
+        Log.e("TAG", "Battery: " + BatteryStatistics);
+        Log.e("TAG", "Phone Make: " + PhoneMake);
+        Log.e("TAG", "Device Name: " + DeviceName);
+        Log.e("TAG", "Device Time: " + DeviceTime);
+        Log.e("TAG", "isLogeedinnn: " + IsLoggedIn);
+        Log.e("TAG", "GPS: " + IsGPSConnected);
 
-            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo netInfo = cm.getActiveNetworkInfo();
-            //should check null because in airplane mode it will be null
-            if (netInfo != null) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        //should check null because in airplane mode it will be null
+        if (netInfo != null) {
+            try {
                 String hrSize = null;
                 NetworkCapabilities nc = null;
                 Log.e("TAG", "Internet Conection: " + netInfo.isConnected());
@@ -302,11 +303,16 @@ public class ServiceLocationSend extends Service implements LocationListener {
                     lowestSpeed = AppUtils.checkConnectionSpeed(downSpeed);
                     Log.e("TAG", "Internet Speed: " + "--DownSpeed :- " + lowestSpeed + "--UpSpeed :- " + highestSpeed);
                 }
-            } else {
-                Log.e("TAG", "Internet Conection: " + false);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
+        } else {
+            Log.e("TAG", "Internet Conection: " + false);
+        }
 
+
+        try {
             NetworkCallController controller = new NetworkCallController();
             ContinueHandShakeRequest request = new ContinueHandShakeRequest();
             request.setLatitude(str_lat);
@@ -349,7 +355,6 @@ public class ServiceLocationSend extends Service implements LocationListener {
                 String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
                 AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getContinueHandShake", lineNo, userName, DeviceName);
             }
-            e.printStackTrace();
         }
     }
 

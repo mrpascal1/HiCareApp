@@ -2,14 +2,7 @@ package com.ab.hicarerun.fragments;
 
 
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -19,6 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
@@ -32,10 +29,8 @@ import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.OtpModel.OtpData;
 import com.ab.hicarerun.network.models.OtpModel.SendOtpResponse;
 import com.ab.hicarerun.viewmodel.UserLoginViewModel;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class OTP_LoginFragment extends BaseFragment implements UserOtpLoginClickHandler {
     FragmentOtpLoginBinding mFragmentOtpLoginBinding;
     private BottomSheetBehavior mBottomSheetBehaviour;

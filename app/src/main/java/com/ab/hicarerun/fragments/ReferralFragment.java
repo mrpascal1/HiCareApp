@@ -1,22 +1,22 @@
 package com.ab.hicarerun.fragments;
 
 
-import android.databinding.DataBindingUtil;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
@@ -47,9 +47,6 @@ import java.util.List;
 import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class ReferralFragment extends BaseFragment implements UserReferralClickHandler, OnDeleteListItemClickHandler, NetworkResponseListner {
 
     FragmentReferralBinding mfragmentReferralBinding;
@@ -169,7 +166,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                 @Override
                 public void onClick(View v) {
                     if (validateSaveReferral(edt_fname, edt_lname, edt_contact, edt_email)) {
-                        NetworkCallController controller = new NetworkCallController();
+                        NetworkCallController controller = new NetworkCallController(ReferralFragment.this);
                         ReferralRequest request = new ReferralRequest();
 
                         request.setTaskId(taskId);

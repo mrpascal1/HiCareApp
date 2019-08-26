@@ -1,16 +1,17 @@
 package com.ab.hicarerun.adapter;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.TrainingActivity;
 import com.ab.hicarerun.network.models.TrainingModel.Videos;
 import com.bumptech.glide.RequestManager;
-import java.util.ArrayList;
+
 import java.util.List;
 
 

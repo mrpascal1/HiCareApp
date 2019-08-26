@@ -2,7 +2,6 @@ package com.ab.hicarerun.fragments;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +9,7 @@ import android.view.ViewGroup;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class NotificationFragment extends BaseFragment {
 
 

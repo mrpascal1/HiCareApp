@@ -1,8 +1,6 @@
 package com.ab.hicarerun.activities;
 
-import android.databinding.DataBindingUtil;
 import android.graphics.Color;
-import android.media.ImageReader;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -10,10 +8,11 @@ import android.view.ScaleGestureDetector;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.databinding.DataBindingUtil;
+
 import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ActivityGrommingGalleryBinding;
-import com.bogdwellers.pinchtozoom.ImageMatrixTouchHandler;
 import com.bumptech.glide.Glide;
 
 public class GrommingGalleryActivity extends BaseActivity {

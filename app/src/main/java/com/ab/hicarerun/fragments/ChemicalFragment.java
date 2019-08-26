@@ -3,17 +3,11 @@ package com.ab.hicarerun.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
 import android.text.InputType;
 import android.util.Log;
 import android.util.TypedValue;
@@ -28,6 +22,12 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
@@ -56,9 +56,7 @@ import java.util.List;
 
 import io.realm.RealmResults;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class ChemicalFragment extends BaseFragment implements NetworkResponseListner {
     FragmentChemicalBinding mFragmentChemicalBinding;
     private static final String ARG_ISVERIFIED = "ARG_ISVERIFIED";
@@ -127,48 +125,48 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
     }
 
     @Override
+
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mFragmentChemicalBinding.recycleView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mFragmentChemicalBinding.recycleView.setNestedScrollingEnabled(false);
         mFragmentChemicalBinding.recycleView.setLayoutManager(layoutManager);
-
-        // specify an adapter (see also next example)
+        mGeneralRealmData =
+                getRealm().where(GeneralData.class).findAll();
         mAdapter = new ChemicalRecycleAdapter(getActivity(), new ChemicalRecycleAdapter.OnEditTextChanged() {
             @Override
             public void onTextChanged(int position, String charSeq) {
                 try {
                     if (charSeq != null && map != null) {
                         map.put(position, charSeq);
-
+                        Log.i("MAP_VALUE", map.get(position));
                         if (map.containsValue("")) {
                             map.remove(position);
+                        } else {
+                            ChemList.clear();
+                            for (int i = 0; i < map.size(); i++) {
+                                TaskChemicalList ChemModel = new TaskChemicalList();
+                                ChemModel.setId(mAdapter.getItem(i).getId());
+                                ChemModel.setCWFProductName(mAdapter.getItem(i).getName());
+                                ChemModel.setConsumption(mAdapter.getItem(i).getConsumption());
+                                ChemModel.setStandard(mAdapter.getItem(i).getStandard());
+                                ChemModel.setActual(map.get(i));
+                                ChemList.add(ChemModel);
+                            }
+                            mCallback.chemReqList(ChemList);
+
                         }
-                        ChemList.clear();
-                        for (int i = 0; i < map.size(); i++) {
-                            TaskChemicalList ChemModel = new TaskChemicalList();
-                            ChemModel.setId(mAdapter.getItem(i).getId());
-                            ChemModel.setCWFProductName(mAdapter.getItem(i).getName());
-                            ChemModel.setConsumption(mAdapter.getItem(i).getConsumption());
-                            ChemModel.setStandard(mAdapter.getItem(i).getStandard());
-                            ChemModel.setActual(map.get(i));
-                            ChemList.add(ChemModel);
-                        }
-                        mCallback.chemReqList(ChemList);
-                        mGeneralRealmData =
-                                getRealm().where(GeneralData.class).findAll();
                         for (int i = 0; i < mAdapter.getItemCount(); i++)
                             getValidation(i);
-
                     }
                 } catch (Exception e) {
                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                        AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "chemicalFragmentonViewCreated", lineNo,userName,DeviceName);
+                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                        AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "chemicalFragmentonViewCreated", lineNo, userName, DeviceName);
                     }
                 }
 
@@ -196,8 +194,8 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
 
     private void setChemicals() {
         try {
-            mGeneralRealmData =
-                    getRealm().where(GeneralData.class).findAll();
+//            mGeneralRealmData =
+//                    getRealm().where(GeneralData.class).findAll();
 
             if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
                 isVerified = mGeneralRealmData.get(0).getAutoSubmitChemicals();
@@ -212,7 +210,7 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
 
             }
         } catch (Exception e) {
-           e.printStackTrace();
+            e.printStackTrace();
         }
 
     }
@@ -242,13 +240,9 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
 
     public void getValidation(int position) {
         try {
-            mGeneralRealmData =
-                    getRealm().where(GeneralData.class).findAll();
-
+//            mGeneralRealmData =
+//                    getRealm().where(GeneralData.class).findAll();
             if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
-                if (map.containsValue("")) {
-                    map.remove(position);
-                }
                 isVerified = mGeneralRealmData.get(0).getAutoSubmitChemicals();
                 Log.i("chemicalcount", String.valueOf(mAdapter.getItemCount()));
                 Log.i("mapcount", String.valueOf(map.size()));

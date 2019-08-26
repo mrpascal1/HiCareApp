@@ -3,7 +3,6 @@ package com.ab.hicarerun.fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
@@ -12,16 +11,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
@@ -33,8 +22,20 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
@@ -71,9 +72,7 @@ import io.realm.RealmResults;
 
 import static android.view.View.GONE;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class PaymentFragment extends BaseFragment implements UserPaymentClickHandler, FragmentDatePicker.onDatePickerListener {
 
     FragmentPaymentBinding mFragmentPaymentBinding;
@@ -353,7 +352,7 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
                             mFragmentPaymentBinding.txtCollected.setEnabled(false);
                         }
 
-                        if(mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString().equals("Online Payment Link")){
+                        if (mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString().equals("Online Payment Link")) {
                             getValidated(amounttocollect);
                             mFragmentPaymentBinding.txtCollected.setText("");
                             mFragmentPaymentBinding.txtCollected.setEnabled(false);
@@ -368,10 +367,10 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
                     } catch (Exception e) {
                         RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                         if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                            String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                             String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                            String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                            AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getPaymentData", lineNo,userName,DeviceName);
+                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                            AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getPaymentData", lineNo, userName, DeviceName);
                         }
                     }
 
@@ -392,14 +391,14 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
 
         View promptsView = li.inflate(R.layout.payment_link_dialog, null);
 
-        android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
 
         alertDialogBuilder.setView(promptsView);
 
         alertDialogBuilder.setTitle("Payment Link");
 
         // create alert dialog
-        final android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+        final AlertDialog alertDialog = alertDialogBuilder.create();
 
         final AppCompatEditText edtmobile =
                 (AppCompatEditText) promptsView.findViewById(R.id.edtmobile);
@@ -650,7 +649,7 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
     private void getValidated(int amounttocollect) {
         if (isTrue) {
             if (amounttocollect > 0) {
-                Log.i("paymentMode",mode);
+                Log.i("paymentMode", mode);
                 mFragmentPaymentBinding.txtCollected.setEnabled(true);
                 if (mFragmentPaymentBinding.txtCollected.getText().toString().trim().length() == 0) {
                     mCallback.isPaymentChanged(true);
@@ -689,7 +688,7 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
 
                 }
             } else {
-                Log.i("paymentMode",mode);
+                Log.i("paymentMode", mode);
                 mFragmentPaymentBinding.txtCollected.setEnabled(false);
                 if (mode.equalsIgnoreCase("Online Payment Link")) {
                     mCallback.isAmountCollectedRequired(false);
@@ -700,7 +699,7 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
 
         } else {
             if (amounttocollect > 0) {
-                Log.i("paymentMode",mode);
+                Log.i("paymentMode", mode);
                 mFragmentPaymentBinding.txtCollected.setEnabled(true);
                 if (mFragmentPaymentBinding.txtCollected.getText().toString().trim().length() == 0) {
                     mCallback.isPaymentChanged(true);

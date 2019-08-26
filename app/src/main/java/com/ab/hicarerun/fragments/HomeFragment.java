@@ -7,24 +7,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,6 +19,18 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
@@ -60,6 +58,7 @@ import com.ab.hicarerun.network.models.TaskModel.Tasks;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -74,9 +73,6 @@ import io.realm.RealmResults;
 
 import static android.app.Activity.RESULT_OK;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class HomeFragment extends BaseFragment implements NetworkResponseListner<TaskListResponse>, OnCallListItemClickHandler {
     FragmentHomeBinding mFragmentHomeBinding;
     RecyclerView.LayoutManager layoutManager;
@@ -183,21 +179,21 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
         getAllTasks();
         mFragmentHomeBinding.swipeRefreshLayout.setRefreshing(true);
-        try {
-            PhoneCallListener phoneListener = new PhoneCallListener();
-            TelephonyManager telephonyManager = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-                telephonyManager = (TelephonyManager)
-                        Objects.requireNonNull(getActivity()).getSystemService(Context.TELEPHONY_SERVICE);
-            }
-            if (telephonyManager != null) {
-                telephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
-            } else {
-                Toast.makeText(getActivity(), "Unable to make call.", Toast.LENGTH_SHORT).show();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            PhoneCallListener phoneListener = new PhoneCallListener();
+//            TelephonyManager telephonyManager = null;
+//            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+//                telephonyManager = (TelephonyManager)
+//                        Objects.requireNonNull(getActivity()).getSystemService(Context.TELEPHONY_SERVICE);
+//            }
+//            if (telephonyManager != null) {
+//                telephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
+//            } else {
+//                Toast.makeText(getActivity(), "Unable to make call.", Toast.LENGTH_SHORT).show();
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
     }
 
@@ -344,7 +340,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                         if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
                             String BatteryStatistics = String.valueOf(AppUtils.getMyBatteryLevel(getActivity()));
                             AttendanceRequest request = AppUtils.getDeviceInfo(getActivity(), "", BatteryStatistics, true);
-                            NetworkCallController controller = new NetworkCallController();
+                            NetworkCallController controller = new NetworkCallController(HomeFragment.this);
                             controller.setListner(new NetworkResponseListner() {
                                 @Override
                                 public void onResponse(int requestCode, Object data) {
@@ -670,30 +666,22 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
                 if (exotelResponse.getSuccess()) {
                     try {
-                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                            Intent intent = new Intent(Intent.ACTION_CALL, Uri.fromParts("tel:", exotelResponse.getResponseMessage() + "," + exotelResponse.getData(), null));
-                            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        String number = exotelResponse.getResponseMessage() + "," + exotelResponse.getData();
 
-                                ActivityCompat.requestPermissions((Activity) getActivity(), new String[]{Manifest.permission.CALL_PHONE}, CALL_REQUEST);
-                                return;
-                            }
+//                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+//                            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel:", number, null));
+//                            getActivity().startActivity(intent);
+//                        }
+//
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                            Intent callIntent = new Intent(Intent.ACTION_DIAL);
+//                            callIntent.setData(Uri.parse("tel:" + number));
+//                            getActivity().startActivity(callIntent);
+//                        }
 
-                            getActivity().startActivity(intent);
-                        }
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            Intent callIntent = new Intent(Intent.ACTION_CALL);
-                            callIntent.setData(Uri.parse("tel:" + exotelResponse.getResponseMessage() + "," + exotelResponse.getData()));
-                            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                                // TODO: Consider calling
-
-                                ActivityCompat.requestPermissions((Activity) getActivity(), new String[]{Manifest.permission.CALL_PHONE}, CALL_REQUEST);
-
-                                return;
-                            }
-                            getActivity().startActivity(callIntent);
-
-                        }
+                        Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                        callIntent.setData(Uri.parse("tel:" + number));
+                        startActivity(callIntent);
 
                     } catch (Exception e) {
                         RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
@@ -718,55 +706,55 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         controller.getExotelCalled(EXOTEL_REQ, customerNumber, techNumber);
     }
 
-    class PhoneCallListener extends PhoneStateListener {
-
-        private boolean isPhoneCalling = false;
-
-        String LOG_TAG = "RENEWAL_CALL";
-
-        @Override
-        public void onCallStateChanged(int state, String incomingNumber) {
-
-            try {
-                if (TelephonyManager.CALL_STATE_RINGING == state) {
-                    // phone ringing
-                    Log.i(LOG_TAG, "RINGING, number: " + incomingNumber);
-                }
-                if (TelephonyManager.CALL_STATE_OFFHOOK == state) {
-                    Log.i(LOG_TAG, "OFFHOOK");
-                    isPhoneCalling = true;
-                }
-                if (TelephonyManager.CALL_STATE_IDLE == state) {
-                    Log.i(LOG_TAG, "IDLE");
-                    if (isPhoneCalling) {
-                        Log.i(LOG_TAG, "restart app");
-                        Intent i = null;
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-                            i = Objects.requireNonNull(getActivity()).getPackageManager()
-                                    .getLaunchIntentForPackage(
-                                            getActivity().getPackageName());
-                            if (i != null) {
-                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                getActivity().startActivity(i);
-                            } else {
-                                Toast.makeText(getActivity(), "Not able to make call!", Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            Toast.makeText(getActivity(), "Not able to make call!", Toast.LENGTH_SHORT).show();
-                        }
-
-                        isPhoneCalling = false;
-                    }
-
-
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-
-        }
-    }
+//    class PhoneCallListener extends PhoneStateListener {
+//
+//        private boolean isPhoneCalling = false;
+//
+//        String LOG_TAG = "RENEWAL_CALL";
+//
+//        @Override
+//        public void onCallStateChanged(int state, String incomingNumber) {
+//
+//            try {
+//                if (TelephonyManager.CALL_STATE_RINGING == state) {
+//                    // phone ringing
+//                    Log.i(LOG_TAG, "RINGING, number: " + incomingNumber);
+//                }
+//                if (TelephonyManager.CALL_STATE_OFFHOOK == state) {
+//                    Log.i(LOG_TAG, "OFFHOOK");
+//                    isPhoneCalling = true;
+//                }
+//                if (TelephonyManager.CALL_STATE_IDLE == state) {
+//                    Log.i(LOG_TAG, "IDLE");
+//                    if (isPhoneCalling) {
+//                        Log.i(LOG_TAG, "restart app");
+//                        Intent i = null;
+//                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+//                            i = Objects.requireNonNull(getActivity()).getPackageManager()
+//                                    .getLaunchIntentForPackage(
+//                                            getActivity().getPackageName());
+//                            if (i != null) {
+//                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                                getActivity().startActivity(i);
+//                            } else {
+//                                Toast.makeText(getActivity(), "Not able to make call!", Toast.LENGTH_SHORT).show();
+//                            }
+//                        } else {
+//                            Toast.makeText(getActivity(), "Not able to make call!", Toast.LENGTH_SHORT).show();
+//                        }
+//
+//                        isPhoneCalling = false;
+//                    }
+//
+//
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//
+//        }
+//    }
 
     @Override
     public void onPause() {

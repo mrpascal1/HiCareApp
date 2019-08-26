@@ -35,14 +35,14 @@
                 android:layout_height="match_parent"
                 android:background="@color/tab_textColor"
                 >
-                <android.support.v4.widget.SwipeRefreshLayout
+                <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                     android:id="@+id/swipeRefreshLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_above="@+id/progressBar"
                     >
 
-                    <android.support.v7.widget.RecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycleView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -52,8 +52,8 @@
                         />
 
 
-                </android.support.v4.widget.SwipeRefreshLayout>
-                <android.support.v7.widget.AppCompatTextView
+                </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txt_data"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
         </LinearLayout>
 
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -86,6 +86,7 @@
             android:tint="@color/white"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="10dp"
+            android:clickable="true"
             android:onClick="@{(view) -> handler.onAddReferralClicked(view)}"
             android:src="@drawable/ic_add" />
 

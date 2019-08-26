@@ -1,14 +1,12 @@
 package com.ab.hicarerun.activities;
 
 import android.content.res.Resources;
-import android.databinding.DataBindingUtil;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+
+import androidx.databinding.DataBindingUtil;
 
 import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.R;

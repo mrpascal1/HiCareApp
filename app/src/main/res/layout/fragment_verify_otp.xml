@@ -29,7 +29,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp">
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txt_verify"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
 
                     />
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txt_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                 android:layout_marginRight="10dp"
                 android:orientation="vertical">
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Enter OTP"
@@ -95,7 +95,7 @@
                     app:lineWidth="1dp"
                     app:viewType="line" />
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtResend"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -116,6 +116,7 @@
                     android:background="@drawable/shape_rounded_corner_btn_green"
                     android:enabled="false"
                     android:text="@string/enter_otp"
+                    android:clickable="true"
                     android:onClick="@{(view) -> handler.onVerifyOtpClicked(view)}"
                     android:textColor="@android:color/white" />
 

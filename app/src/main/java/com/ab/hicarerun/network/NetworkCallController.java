@@ -1,11 +1,16 @@
 package com.ab.hicarerun.network;
 
-import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Build;
+import android.util.Log;
+import android.widget.Toast;
 
-import com.ab.hicarerun.BaseActivity;
+import androidx.appcompat.app.AlertDialog;
+
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
+import com.ab.hicarerun.activities.HomeActivity;
+import com.ab.hicarerun.activities.TaskDetailsActivity;
 import com.ab.hicarerun.network.models.AttachmentModel.AttachmentDeleteRequest;
 import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentResponse;
 import com.ab.hicarerun.network.models.AttachmentModel.PostAttachmentRequest;
@@ -85,8 +90,8 @@ public class NetworkCallController {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getHandShake", lineNo,"",DeviceName);
+                                    String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getHandShake", lineNo, "", DeviceName);
 
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -103,13 +108,11 @@ public class NetworkCallController {
     }
 
     public void getContinueHandShake(final int requestCode, ContinueHandShakeRequest request) {
-//        mContext.showProgressDialog();
         BaseApplication.getRetrofitAPI(true)
                 .getContinueHandShake(request)
                 .enqueue(new Callback<ContinueHandShakeResponse>() {
                     @Override
                     public void onResponse(Call<ContinueHandShakeResponse> call, Response<ContinueHandShakeResponse> response) {
-//                        mContext.dismissProgressDialog();
                         if (response != null) {
                             if (response.body() != null) {
                                 mListner.onResponse(requestCode, response.body());
@@ -117,8 +120,10 @@ public class NetworkCallController {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getContinueHandShake", lineNo,"",DeviceName);
+                                    String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                    Log.e( "Error Log", "Arjun Bhatt "+ lineNo + DeviceName);
+
+//                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getContinueHandShake", lineNo, "", DeviceName);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -128,6 +133,10 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<ContinueHandShakeResponse> call, Throwable t) {
+                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                        Log.e( "Error Log", "Arjun Bhatt "+ lineNo + DeviceName);
+//                        AppUtils.sendErrorLogs(t.getMessage(), "", "getContinueHandShake", lineNo, "", DeviceName);
                     }
                 });
     }
@@ -151,9 +160,9 @@ public class NetworkCallController {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     mContext.showServerError(jObjError.getString("Message"));
-                                    String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
+                                    String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "sendOtp", lineNo,"",DeviceName);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "sendOtp", lineNo, "", DeviceName);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -166,7 +175,7 @@ public class NetworkCallController {
                     @Override
                     public void onFailure(Call<SendOtpResponse> call, Throwable t) {
                         mContext.dismissProgressDialog();
-                        mContext.showServerError("Please try again !!!");
+                        mContext.showServerError("Something went wrong, please try again !!!");
                     }
                 });
     }
@@ -190,9 +199,9 @@ public class NetworkCallController {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     mContext.showServerError(response.errorBody().string());
-                                    String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
+                                    String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "login", lineNo,"",DeviceName);
+                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "login", lineNo, "", DeviceName);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -205,7 +214,7 @@ public class NetworkCallController {
                     @Override
                     public void onFailure(Call<LoginResponse> call, Throwable t) {
                         mContext.dismissProgressDialog();
-                        mContext.showServerError("Please try again !!!");
+                        mContext.showServerError("Something went wrong, please try again !!!");
                     }
                 });
     }
@@ -236,12 +245,14 @@ public class NetworkCallController {
 
 
     public void getTasksList(final int requestCode, final String userId, final String IMEI) {
+        mContext.showProgressDialog();
         BaseApplication.getRetrofitAPI(true)
                 .getTasksList(userId, IMEI)
                 .enqueue(new Callback<TaskListResponse>() {
                     @Override
                     public void onResponse(Call<TaskListResponse> call,
                                            Response<TaskListResponse> response) {
+                        mContext.dismissProgressDialog();
                         if (response != null) {
                             if (response.code() == 401) { // Unauthorised Access
                                 NetworkCallController controller = new NetworkCallController();
@@ -275,10 +286,10 @@ public class NetworkCallController {
                                     mContext.showServerError(jObjError.getString("Message"));
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getTasksList", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getTasksList", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -291,12 +302,12 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<TaskListResponse> call, Throwable t) {
-                        mContext.showServerError("Please try again !!!");
-                    }
+                        mContext.dismissProgressDialog();
+                        mContext.showServerError("Something went wrong, please try again !!!");                    }
                 });
     }
 
-    public void getTaskDetailById(final int requestCode, final String userId, final String taskId) {
+    public void getTaskDetailById(final int requestCode, final String userId, final String taskId, final TaskDetailsActivity context) {
         BaseApplication.getRetrofitAPI(true)
                 .getTasksDetailById(userId, taskId)
                 .enqueue(new Callback<GeneralResponse>() {
@@ -318,7 +329,7 @@ public class NetworkCallController {
                                         Realm.getDefaultInstance().beginTransaction();
                                         Realm.getDefaultInstance().copyToRealmOrUpdate(response);
                                         Realm.getDefaultInstance().commitTransaction();
-                                        getTaskDetailById(requestCode, userId, taskId);
+                                        getTaskDetailById(requestCode, userId, taskId, context);
                                     }
 
                                     @Override
@@ -335,35 +346,43 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getTaskDetailById", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getTaskDetailById", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
-                        } else {
-//                            mContext.showServerError();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<GeneralResponse> call, Throwable t) {
-//                        mContext.showServerError("Please try again !!!");
-                    }
+                        try {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                            builder.setMessage("Something went wrong, please try again!");
+                            builder.setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            }).create().show();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }                    }
                 });
     }
 
     public void postReferrals(final int requestCode, ReferralRequest request) {
-//        mContext.showProgressDialog();
+        mContext.showProgressDialog();
         BaseApplication.getRetrofitAPI(true)
                 .postReferrals(request)
                 .enqueue(new Callback<ReferralResponse>() {
                     @Override
                     public void onResponse(Call<ReferralResponse> call, Response<ReferralResponse> response) {
-//                        mContext.dismissProgressDialog();
+                        mContext.dismissProgressDialog();
                         if (response != null) {
                             if (response.body() != null) {
                                 mListner.onResponse(requestCode, response.body());
@@ -373,10 +392,10 @@ public class NetworkCallController {
                                     mContext.showServerError(jObjError.getString("ErrorMessage"));
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "postReferrals", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "postReferrals", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -389,20 +408,22 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<ReferralResponse> call, Throwable t) {
-//                        mContext.dismissProgressDialog();
-                        mContext.showServerError("Please try again !!!");
+                        mContext.dismissProgressDialog();
+                        mContext.showServerError("Something went wrong, please try again !!!");
                     }
                 });
     }
 
 
     public void getReferrals(final int requestCode, final String taskId) {
+        mContext.showProgressDialog();
         BaseApplication.getRetrofitAPI(true)
                 .getReferrals(taskId)
                 .enqueue(new Callback<ReferralListResponse>() {
                     @Override
                     public void onResponse(Call<ReferralListResponse> call,
                                            Response<ReferralListResponse> response) {
+                        mContext.dismissProgressDialog();
                         if (response != null) {
                             if (response.code() == 401) { // Unauthorised Access
                                 NetworkCallController controller = new NetworkCallController();
@@ -436,10 +457,10 @@ public class NetworkCallController {
                                     mContext.showServerError(jObjError.getString("ErrorMessage"));
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getReferrals", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getReferrals", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -452,8 +473,8 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<ReferralListResponse> call, Throwable t) {
-                        mContext.showServerError("Please try again !!!");
-                    }
+                        mContext.dismissProgressDialog();
+                        mContext.showServerError("Something went wrong, please try again !!!");                    }
                 });
     }
 
@@ -474,10 +495,10 @@ public class NetworkCallController {
                                     mContext.showServerError(jObjError.getString("ErrorMessage"));
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getDeleteReferrals", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getDeleteReferrals", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -491,7 +512,7 @@ public class NetworkCallController {
                     @Override
                     public void onFailure(Call<ReferralResponse> call, Throwable t) {
                         mContext.dismissProgressDialog();
-                        mContext.showServerError("Please try again !!!");
+                        mContext.showServerError("Something went wrong, please try again !!!");
                     }
                 });
     }
@@ -513,10 +534,10 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "postFeedbackLink", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "postFeedbackLink", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -528,7 +549,7 @@ public class NetworkCallController {
                     @Override
                     public void onFailure(Call<FeedbackResponse> call, Throwable t) {
                         mContext.dismissProgressDialog();
-                    }
+                        mContext.showServerError("Something went wrong, please try again !!!");                    }
                 });
     }
 
@@ -547,10 +568,10 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "postAttachments", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "postAttachments", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -568,12 +589,14 @@ public class NetworkCallController {
     }
 
     public void getAttachments(final int requestCode, final String taskId, final String userId) {
+mContext.showProgressDialog();
         BaseApplication.getRetrofitAPI(true)
                 .getAttachments(userId, taskId)
                 .enqueue(new Callback<GetAttachmentResponse>() {
                     @Override
                     public void onResponse(Call<GetAttachmentResponse> call,
                                            Response<GetAttachmentResponse> response) {
+                        mContext.dismissProgressDialog();
                         if (response != null) {
                             if (response.code() == 401) { // Unauthorised Access
                                 NetworkCallController controller = new NetworkCallController();
@@ -589,7 +612,7 @@ public class NetworkCallController {
                                         Realm.getDefaultInstance().beginTransaction();
                                         Realm.getDefaultInstance().copyToRealmOrUpdate(response);
                                         Realm.getDefaultInstance().commitTransaction();
-                                        getTaskDetailById(requestCode, userId, taskId);
+                                        getAttachments(requestCode, userId, taskId);
                                     }
 
                                     @Override
@@ -607,10 +630,10 @@ public class NetworkCallController {
                                     mContext.showServerError(jObjError.getString("ErrorMessage"));
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getAttachments", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getAttachments", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -623,7 +646,7 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<GetAttachmentResponse> call, Throwable t) {
-                        mContext.showServerError("Please try again !!!");
+                        mContext.showServerError("Something went wrong, please try again !!!");
                     }
                 });
     }
@@ -645,10 +668,10 @@ public class NetworkCallController {
                                     mContext.showServerError(jObjError.getString("ErrorMessage"));
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getDeleteAttachments", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getDeleteAttachments", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -662,13 +685,13 @@ public class NetworkCallController {
                     @Override
                     public void onFailure(Call<PostAttachmentResponse> call, Throwable t) {
                         mContext.dismissProgressDialog();
-                        mContext.showServerError("Please try again !!!");
+                        mContext.showServerError("Something went wrong, please try again !!!");
                     }
                 });
     }
 
 
-    public void updateTasks(final int requestCode, UpdateTasksRequest request) {
+    public void updateTasks(final int requestCode, UpdateTasksRequest request, final TaskDetailsActivity context) {
         BaseApplication.getRetrofitAPI(true)
                 .updateTasks(request)
                 .enqueue(new Callback<UpdateTaskResponse>() {
@@ -682,10 +705,10 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "updateTasks", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "updateTasks", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -696,7 +719,21 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<UpdateTaskResponse> call, Throwable t) {
-
+                        try {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                            builder.setMessage("Something went wrong, please try again!");
+                            builder.setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            }).create().show();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                        AppUtils.sendErrorLogs(t.getMessage(), "", "getContinueHandShake", lineNo, "", DeviceName);
                     }
                 });
     }
@@ -716,10 +753,10 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getExotelCalled", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getExotelCalled", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -752,10 +789,10 @@ public class NetworkCallController {
                                     mContext.showServerError(jObjError.getString("ErrorMessage"));
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getChemicals", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getChemicals", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -769,13 +806,13 @@ public class NetworkCallController {
                     @Override
                     public void onFailure(Call<ChemicalResponse> call, Throwable t) {
                         mContext.dismissProgressDialog();
-                        mContext.showServerError("Please try again !!!");
+                        mContext.showServerError("Something went wrong, please try again !!!");
                     }
                 });
     }
 
 
-    public void getLogout(final int requestCode, final String UserId) {
+    public void getLogout(final int requestCode, final String UserId, final HomeActivity context) {
         BaseApplication.getRetrofitAPI(true)
                 .getLogout(UserId)
                 .enqueue(new Callback<LogoutResponse>() {
@@ -789,10 +826,10 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getLogout", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getLogout", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -803,7 +840,7 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<LogoutResponse> call, Throwable t) {
-
+                        Toast.makeText(context, "Logout failed! please try again...", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -850,32 +887,35 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "postResourceProfilePic", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "postResourceProfilePic", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
-                        } else {
                         }
                     }
 
                     @Override
                     public void onFailure(Call<HandShakeResponse> call, Throwable t) {
+                        mContext.dismissProgressDialog();
+                        mContext.showServerError("Something went wrong, please try again !!!");
                     }
                 });
     }
 
     public void getTechAttendance(final int requestCode, final AttendanceRequest request) {
+        mContext.showProgressDialog();
         BaseApplication.getRetrofitAPI(true)
                 .getTechAttendance(request)
                 .enqueue(new Callback<ContinueHandShakeResponse>() {
                     @Override
                     public void onResponse(Call<ContinueHandShakeResponse> call,
                                            Response<ContinueHandShakeResponse> response) {
+                        mContext.dismissProgressDialog();
                         if (response != null) {
                             if (response.code() == 401) { // Unauthorised Access
                                 NetworkCallController controller = new NetworkCallController();
@@ -908,21 +948,23 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = " TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getTechAttendance", lineNo,userName,DeviceName);
+                                        String DeviceName = " DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        Log.e( "Error Log", userName+ lineNo + DeviceName);
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getTechAttendance", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
-                        } else {
                         }
                     }
 
                     @Override
                     public void onFailure(Call<ContinueHandShakeResponse> call, Throwable t) {
+                        mContext.dismissProgressDialog();
+                        mContext.showServerError("Something went wrong, please try again !!!");
                     }
                 });
     }
@@ -943,10 +985,10 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getTrainingVideos", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getTrainingVideos", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -960,7 +1002,7 @@ public class NetworkCallController {
                     @Override
                     public void onFailure(Call<TrainingResponse> call, Throwable t) {
                         mContext.dismissProgressDialog();
-                        mContext.showServerError("Please try again !!!");
+                        mContext.showServerError("Something went wrong, please try again !!!");
                     }
                 });
     }
@@ -982,17 +1024,15 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "sendErrorLog", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "sendErrorLog", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
-                        } else {
-//                            mContext.showServerError();
                         }
                     }
 
@@ -1018,10 +1058,10 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getUpdateApp", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getUpdateApp", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -1058,10 +1098,10 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "sendPaymentLink", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "sendPaymentLink", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -1075,17 +1115,19 @@ public class NetworkCallController {
                     @Override
                     public void onFailure(Call<PaymentLinkResponse> call, Throwable t) {
                         mContext.dismissProgressDialog();
-                    }
+                        mContext.showServerError("Something went wrong, please try again !!!");                    }
                 });
     }
 
     public void getGroomingTechnicians(final int requestCode, final String userId) {
+        mContext.showProgressDialog();
         BaseApplication.getRetrofitAPI(true)
                 .getGroomingTechnicians(userId)
                 .enqueue(new Callback<TechGroomingResponse>() {
                     @Override
                     public void onResponse(Call<TechGroomingResponse> call,
                                            Response<TechGroomingResponse> response) {
+                        mContext.dismissProgressDialog();
                         if (response != null) {
                             if (response.code() == 401) { // Unauthorised Access
                                 NetworkCallController controller = new NetworkCallController();
@@ -1119,24 +1161,22 @@ public class NetworkCallController {
                                     mContext.showServerError(jObjError.getString("ErrorMessage"));
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getGroomingTechnicians", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getGroomingTechnicians", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
-                        } else {
-                            mContext.showServerError();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<TechGroomingResponse> call, Throwable t) {
-                        mContext.showServerError("Please try again !!!");
-                    }
+                        mContext.dismissProgressDialog();
+                        mContext.showServerError("Something went wrong, please try again !!!");                    }
                 });
     }
 
@@ -1183,10 +1223,10 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "postGroomingImage", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "postGroomingImage", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -1200,7 +1240,7 @@ public class NetworkCallController {
                     @Override
                     public void onFailure(Call<BasicResponse> call, Throwable t) {
                         mContext.dismissProgressDialog();
-                        mContext.showServerError();
+                        mContext.showServerError("Something went wrong, please try again !!!");
                     }
                 });
     }
@@ -1209,12 +1249,14 @@ public class NetworkCallController {
     /*[Resource Profile]*/
 
     public void getTechnicianProfile(final int requestCode, final String userId) {
+        mContext.showProgressDialog();
         BaseApplication.getRetrofitAPI(true)
                 .getTechnicianProfile(userId)
                 .enqueue(new Callback<TechnicianProfileDetails>() {
                     @Override
                     public void onResponse(Call<TechnicianProfileDetails> call,
                                            Response<TechnicianProfileDetails> response) {
+                        mContext.dismissProgressDialog();
                         if (response != null) {
                             if (response.code() == 401) { // Unauthorised Access
                                 NetworkCallController controller = new NetworkCallController();
@@ -1245,39 +1287,38 @@ public class NetworkCallController {
                             } else if (response.errorBody() != null) {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                    mContext.showServerError(jObjError.getString("ErrorMessage"));
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getTechnicianProfile", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getTechnicianProfile", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
-                        } else {
-                            mContext.showServerError();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<TechnicianProfileDetails> call, Throwable t) {
-                        mContext.showServerError("Please try again !!!");
-                    }
+                        mContext.dismissProgressDialog();
+                        mContext.showServerError("Something went wrong, please try again !!!");                    }
                 });
     }
 
     /*[Get Jeopardy Reasons]*/
 
     public void getJeopardyReasons(final int requestCode) {
+        mContext.showProgressDialog();
         BaseApplication.getExotelApi()
                 .getJeopardyReasons()
                 .enqueue(new Callback<JeopardyReasonModel>() {
                     @Override
                     public void onResponse(Call<JeopardyReasonModel> call,
                                            Response<JeopardyReasonModel> response) {
+                        mContext.dismissProgressDialog();
                         if (response != null) {
                             if (response.body() != null) {
                                 mListner.onResponse(requestCode, response.body().getData());
@@ -1288,10 +1329,10 @@ public class NetworkCallController {
                                     mContext.showServerError(jObjError.getString("ErrorMessage"));
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getJeopardyReasons", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getJeopardyReasons", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -1304,8 +1345,8 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<JeopardyReasonModel> call, Throwable t) {
-                        mContext.showServerError("Please try again !!!");
-                    }
+                        mContext.dismissProgressDialog();
+                        mContext.showServerError("Something went wrong, please try again !!!");                    }
                 });
     }
 
@@ -1328,10 +1369,10 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                     if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                        String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "postCWFJepoardy", lineNo,userName,DeviceName);
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "postCWFJepoardy", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -1345,7 +1386,7 @@ public class NetworkCallController {
                     @Override
                     public void onFailure(Call<CWFJeopardyResponse> call, Throwable t) {
                         mContext.dismissProgressDialog();
-                        mContext.showServerError();
+                        mContext.showServerError("Something went wrong, please try again !!!");
                     }
                 });
     }

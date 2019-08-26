@@ -1,10 +1,11 @@
 package com.ab.hicarerun.activities;
 
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+
+import androidx.databinding.DataBindingUtil;
 
 import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.R;

@@ -5,19 +5,11 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -30,6 +22,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.databinding.DataBindingUtil;
+import androidx.viewpager.widget.ViewPager;
 
 import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.BaseApplication;
@@ -56,6 +56,7 @@ import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.ab.hicarerun.utils.notifications.ScratchRelativeLayout;
 import com.clock.scratch.ScratchView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 //import com.goibibo.libs.views.ScratchRelativeLayoutView;
 
 import java.util.HashMap;
@@ -188,7 +189,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                         public void onFailure(int requestCode) {
                         }
                     });
-                    controller.getTaskDetailById(TASK_BY_ID_REQUEST, UserId, model.getTaskId());
+                    controller.getTaskDetailById(TASK_BY_ID_REQUEST, UserId, model.getTaskId(),TaskDetailsActivity.this);
                 }
             }
         } catch (Exception e) {
@@ -399,7 +400,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
 
             } else if (isEarlyCompletion && Status.equals("Completed")) {
                 mActivityTaskDetailsBinding.viewpager.setCurrentItem(0);
-                Toasty.error(this, "You are not allowed to close the job as you have not spent adequate time. Please follow the correct procedure and deliver the job properly", Toast.LENGTH_LONG, true).show();
+                Toasty.error(this, "You are not allowed to close the job as you have not spent adequate time. Please follow the correct procedure and deliver the job properly", 6000, true).show();
                 progress.dismiss();
             } else if (isOnsiteOtpRequired && Status.equals("On-Site")) {
                 mActivityTaskDetailsBinding.viewpager.setCurrentItem(0);
@@ -531,10 +532,10 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
 
                                 @Override
                                 public void onFailure(int requestCode) {
-
+                                    progress.dismiss();
                                 }
                             });
-                            controller.updateTasks(UPDATE_REQUEST, request);
+                            controller.updateTasks(UPDATE_REQUEST, request,TaskDetailsActivity.this);
                         }
                     }
                 }

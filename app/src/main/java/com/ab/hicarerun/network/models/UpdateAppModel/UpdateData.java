@@ -13,6 +13,9 @@ public class UpdateData {
     @SerializedName("apkurl")
     @Expose
     private String apkurl;
+    @SerializedName("apktype")
+    @Expose
+    private String apktype;
 
     public String getVersion() {
         return version;
@@ -28,5 +31,13 @@ public class UpdateData {
 
     public void setApkurl(String apkurl) {
         this.apkurl = apkurl;
+    }
+
+    public String getApktype() {
+        return apktype;
+    }
+
+    public void setApktype(String apktype) {
+        this.apktype = apktype;
     }
 }

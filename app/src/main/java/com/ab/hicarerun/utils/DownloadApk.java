@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
-import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.core.content.FileProvider;
 
 import com.ab.hicarerun.BuildConfig;
 
@@ -23,7 +25,7 @@ import java.net.URL;
 public class DownloadApk extends AsyncTask<String, Void, Void> {
     ProgressDialog progressDialog;
     int status = 0;
-
+    String apktype = "";
     private Context context;
 
     public void setContext(Context context, ProgressDialog progress) {
@@ -42,13 +44,12 @@ public class DownloadApk extends AsyncTask<String, Void, Void> {
             HttpURLConnection c = (HttpURLConnection) url.openConnection();
             c.setRequestMethod("GET");
 
-            // c.setDoOutput(true);
             c.connect();
 
             File sdcard = Environment.getExternalStorageDirectory();
             File myDir = new File(sdcard, "Download");
             myDir.mkdirs();
-            File outputFile = new File(myDir, "hicarerun.apk");
+            File outputFile = new File(myDir, "app_debug.apk");
             if (outputFile.exists()) {
                 outputFile.delete();
             }
@@ -65,17 +66,22 @@ public class DownloadApk extends AsyncTask<String, Void, Void> {
             fos.close();
             is.close();
 
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-//            intent.setDataAndType(Uri.fromFile(new File(sdcard, "Download/app-debug.apk")), "application/vnd.android.package-archive");
-//            intent.setDataAndType(FileProvider.getUriForFile(context,"com.ab.hicarerun.utils.DownloadFileProvider",sdcard));
-//            Uri apkURI = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".utils.DownloadFileProvider", sdcard);
-//            intent.setDataAndType(apkURI,"application/vnd.android.package-archive");
-            Uri uri=FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID+".provider", new File(sdcard, "Download/hicarerun.apk"));
-            intent.setDataAndType(uri,"application/vnd.android.package-archive");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_GRANT_READ_URI_PERMISSION); // without this flag android returned a intent error!
             SharedPreferencesUtility.savePrefBoolean(context, SharedPreferencesUtility.IS_USER_LOGIN,
                     false);
-            context.startActivity(intent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Uri uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", new File(sdcard, "Download/app_debug.apk"));
+                Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+                intent.setData(uri);
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                context.startActivity(intent);
+            } else {
+                Uri apkUri = Uri.fromFile(new File(sdcard, "Download/app_debug.apk"));
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
 
 
         } catch (FileNotFoundException fnfe) {

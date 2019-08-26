@@ -9,13 +9,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.databinding.DataBindingUtil;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarDrawerToggle;
+
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
@@ -23,6 +21,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.FragmentManager;
 
 import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.BaseApplication;
@@ -44,6 +46,7 @@ import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.DownloadApk;
 import com.ab.hicarerun.utils.HandShakeReceiver;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.Calendar;
 import java.util.List;
@@ -132,7 +135,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
             @Override
             public void onResponse(int requestCode, Object response) {
                 UpdateData data = (UpdateData) response;
-                checkCurrentVersion(data.getApkurl(), data.getVersion());
+                checkCurrentVersion(data.getApkurl(), data.getVersion(), data.getApktype());
             }
 
             @Override
@@ -143,7 +146,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         controller.getUpdateApp(UPDATE_REQ);
     }
 
-    private void checkCurrentVersion(final String apkurl, String version) {
+    private void checkCurrentVersion(final String apkurl, String version, final String apktype) {
         PackageInfo pInfo = null;
         try {
             pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -160,11 +163,21 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 public void onClick(DialogInterface dialogInterface, int i) {
                     if (AppUtils.checkConnection(HomeActivity.this)) {
                         ProgressDialog progress = new ProgressDialog(HomeActivity.this);
-                        DownloadApk downloadAndInstall = new DownloadApk();
-                        progress.setCancelable(false);
-                        progress.setMessage("Downloading...");
-                        downloadAndInstall.setContext(HomeActivity.this, progress);
-                        downloadAndInstall.execute(apkurl);
+                        if(apktype.equalsIgnoreCase("url")){
+                            final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+                            try {
+                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                            } catch (android.content.ActivityNotFoundException anfe) {
+                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                            }
+                        }else{
+                            DownloadApk downloadAndInstall = new DownloadApk();
+                            progress.setCancelable(false);
+                            progress.setMessage("Downloading...");
+                            downloadAndInstall.setContext(HomeActivity.this, progress);
+                            downloadAndInstall.execute(apkurl);
+                        }
+
                     } else {
                         AppUtils.showOkActionAlertBox(HomeActivity.this, "No Internet Found.", new DialogInterface.OnClickListener() {
                             @Override
@@ -192,57 +205,6 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_TIME, items.get(1).getValue());
                 if (items.get(0).getText().equals("EnableTrace")) {
                     if (items.get(0).getValue().equals("true")) {
-//                        Context ctx = getApplicationContext();
-///** this gives us the time for the first trigger.  */
-//                        Calendar cal = Calendar.getInstance();
-//                        mAlarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
-//                        long interval = 1000 * 60 * 5; // 5 minutes in milliseconds
-//                        Intent serviceIntent = new Intent(ctx, ServiceLocationSend.class);
-//// make sure you **don't** use *PendingIntent.getBroadcast*, it wouldn't work
-//                        pendingUpdateIntent =
-//                                PendingIntent.getService(ctx,
-//                                        0, // integer constant used to identify the service
-//                                        serviceIntent,
-//                                        PendingIntent.FLAG_CANCEL_CURRENT);  // FLAG to avoid creating a second service if there's already one running
-//// there are other options like setInexactRepeating, check the docs
-//
-//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                            mAlarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, interval, pendingUpdateIntent);
-//                        } else {
-//                            mAlarmManager.setRepeating(
-//                                    AlarmManager.RTC_WAKEUP,//type of alarm. This one will wake up the device when it goes off, but there are others, check the docs
-//                                    cal.getTimeInMillis(),
-//                                    interval,
-//                                    pendingUpdateIntent
-//                            );
-//                        }
-
-
-//                        Intent itAlarm = new Intent(this, ServiceLocationSend.class);
-//                        PendingIntent pendingIntent = PendingIntent.getService(this, 0, itAlarm, 0);
-//                        Calendar calendar = Calendar.getInstance();
-//                        calendar.setTimeInMillis(System.currentTimeMillis());
-//                        calendar.add(Calendar.SECOND, 0);
-//                        AlarmManager alarme = (AlarmManager) getSystemService(ALARM_SERVICE);
-//                        alarme.setRepeating(AlarmManager.RTC_WAKEUP,
-//                                calendar.getTimeInMillis(),
-//                                1000 * 60 * Integer.parseInt(items.get(1).getValue()),
-//                                pendingIntent);
-//                        alarme.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, 1000 * 60 * Integer.parseInt(items.get(1).getValue()), pendingIntent);
-
-
-//                        Intent alaramIntent = new Intent(HomeActivity.this, HandShakeReceiver.class);
-//                        alaramIntent.setAction("HandshakeAction");
-//                        alaramIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-//                        PendingIntent pendingIntent = PendingIntent.getBroadcast(HomeActivity.this, 0, alaramIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//                        Calendar calendar = Calendar.getInstance();
-//                        calendar.setTimeInMillis(System.currentTimeMillis());
-//                        calendar.add(Calendar.SECOND, 0);
-//                        AlarmManager alarmManager = (AlarmManager) this.getSystemService(ALARM_SERVICE);
-//                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-//                                calendar.getTimeInMillis(),
-//                                1000 * 60 * Integer.parseInt(items.get(1).getValue()),
-//                                pendingInten
                         Intent intent = new Intent(getApplicationContext(), HandShakeReceiver.class);
                         intent.setAction("HandshakeAction");
                         pendingUpdateIntent = PendingIntent.getBroadcast(getApplicationContext(),
@@ -278,37 +240,6 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                     mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, futureDate.getTime().getTime(), REPEATED_TIME, pendingUpdateIntent);
                 }
             }
-//            else {
-//                items = (List<HandShake>) getIntent().getSerializableExtra(ARG_HANDSHAKE);
-//                String time = SharedPreferencesUtility.getPrefString(HomeActivity.this, SharedPreferencesUtility.PREF_TIME);
-//                Intent itAlarm = new Intent(this, ServiceLocationSend.class);
-//                PendingIntent pendingIntent = PendingIntent.getService(this, 0, itAlarm, 0);
-//                Calendar calendar = Calendar.getInstance();
-//                calendar.setTimeInMillis(System.currentTimeMillis());
-//                calendar.add(Calendar.SECOND, 0);
-//                AlarmManager alarme = (AlarmManager) getSystemService(ALARM_SERVICE);
-//                alarme.setRepeating(AlarmManager.RTC_WAKEUP,
-//                        calendar.getTimeInMillis(),
-//                        1000 * 60 * Integer.parseInt(time),
-//                        pendingIntent);
-
-//                alarme.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, 1000 * 60 * Integer.parseInt(time), pendingIntent);
-
-
-//                Intent alaramIntent = new Intent(HomeActivity.this, HandShakeReceiver.class);
-//                alaramIntent.setAction("HandshakeAction");
-//                alaramIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-//                PendingIntent pendingIntent = PendingIntent.getBroadcast(HomeActivity.this, 0, alaramIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//                Calendar calendar = Calendar.getInstance();
-//                calendar.setTimeInMillis(System.currentTimeMillis());
-//                calendar.add(Calendar.SECOND, 3);
-//                AlarmManager alarmManager = (AlarmManager) this.getSystemService(ALARM_SERVICE);
-//                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-//                        calendar.getTimeInMillis(),
-//                        1000 * 60 * Integer.parseInt(time),
-//                        pendingIntent);
-//            alarme.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, 1000 * 60 * Integer.parseInt(items.get(1).getValue()), pendingIntent);
-//            }
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
@@ -434,7 +365,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                                     }
                                 });
 
-                                controller.getLogout(LOGOUT_REQ, UserId);
+                                controller.getLogout(LOGOUT_REQ, UserId,HomeActivity.this);
 
                             }
                         });
@@ -467,9 +398,9 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
     @Override
     public void onBackPressed() {
-        int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
         getSupportFragmentManager().beginTransaction().remove(FaceRecognizationFragment.newInstance(false, "avatar")).commit();
         getSupportFragmentManager().popBackStack();
+        int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
         if (backStackEntryCount == 0) {
             showExitAlert();
         } else {

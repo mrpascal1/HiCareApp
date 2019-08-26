@@ -3,15 +3,11 @@ package com.ab.hicarerun.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.hardware.Camera;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -29,6 +25,10 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.Chronometer;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.R;
@@ -118,9 +118,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#FF69B4"));
         }
 
-        if (items.get(0).getTag() != null && items.get(0).getTag().length() > 0) {
+        if (items.get(position).getTag() != null && items.get(position).getTag().length() > 0) {
             holder.mTaskListAdapterBinding.lnrTag.setVisibility(View.VISIBLE);
-            holder.mTaskListAdapterBinding.txtTag.setText(items.get(0).getTag());
+            holder.mTaskListAdapterBinding.txtTag.setText(items.get(position).getTag());
         } else {
             holder.mTaskListAdapterBinding.lnrTag.setVisibility(View.GONE);
         }

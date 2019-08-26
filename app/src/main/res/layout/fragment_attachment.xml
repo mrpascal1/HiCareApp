@@ -10,7 +10,7 @@
             type="com.ab.hicarerun.handler.UserAttachmentClickHandler" />
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".activities.AttachmentActivity">
@@ -32,7 +32,7 @@
                     android:layout_height="match_parent">
 
 
-                    <android.support.v7.widget.RecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycleView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
                         android:layout_alignParentTop="true" />
 
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txt_data"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -79,10 +79,11 @@
                         android:layout_weight="1"
                         android:gravity="center">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/img_add"
                             android:layout_width="22dp"
                             android:layout_height="16dp"
+                            android:clickable="true"
                             android:onClick="@{(view) -> handler.onAddImageClicked(view)}"
                             android:src="@drawable/ic_add" />
                     </LinearLayout>
@@ -93,10 +94,11 @@
                         android:layout_weight="1"
                         android:gravity="center">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/img_select"
                             android:layout_width="22dp"
                             android:layout_height="16dp"
+                            android:clickable="true"
                             android:layout_centerInParent="true"
                             android:onClick="@{(view) -> handler.onSelectImageClicked(view)}"
                             android:src="@drawable/ic_deselect" />
@@ -110,15 +112,16 @@
                         android:gravity="center"
                         android:orientation="horizontal">
 
-                        <android.support.v7.widget.AppCompatImageView
+                        <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/img_delete"
                             android:layout_width="22dp"
                             android:layout_height="18dp"
                             android:layout_centerInParent="true"
+                            android:clickable="true"
                             android:onClick="@{(view) -> handler.onDeleteImageClicked(view)}"
                             android:src="@drawable/ic_delete" />
 
-                        <android.support.v7.widget.AppCompatTextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/txt_delcount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -135,5 +138,5 @@
             </LinearLayout>
         </LinearLayout>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

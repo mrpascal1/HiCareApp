@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -17,14 +18,14 @@
             android:paddingTop="4dp"
             android:paddingBottom="4dp">
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:padding="10dp"
                 app:srcCompat="@drawable/ic_user" />
 
-            <android.support.v7.widget.AppCompatEditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/edt_firstname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -41,14 +42,14 @@
             android:visibility="gone"
             android:paddingBottom="4dp">
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:padding="10dp"
                 app:srcCompat="@drawable/ic_user" />
 
-            <android.support.v7.widget.AppCompatEditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/edt_lastname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -67,14 +68,14 @@
             android:paddingTop="4dp"
             android:paddingBottom="4dp">
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:padding="10dp"
                 app:srcCompat="@drawable/ic_phone" />
 
-            <android.support.v7.widget.AppCompatEditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/edtmobile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -94,14 +95,14 @@
             android:visibility="gone"
             android:paddingBottom="4dp">
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:padding="10dp"
                 app:srcCompat="@drawable/ic_phone" />
 
-            <android.support.v7.widget.AppCompatEditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/edt_alt_mobile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -122,14 +123,14 @@
             android:visibility="gone"
             android:paddingBottom="4dp">
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:padding="10dp"
                 app:srcCompat="@drawable/ic_email" />
 
-            <android.support.v7.widget.AppCompatEditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/edtemail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -148,14 +149,14 @@
             android:paddingTop="4dp"
             android:paddingBottom="4dp">
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:padding="10dp"
                 app:srcCompat="@drawable/ic_user" />
 
-            <android.support.v7.widget.AppCompatEditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/edt_interested"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -172,19 +173,21 @@
             android:layout_height="50dp"
             android:weightSum="2">
 
-            <android.support.v7.widget.AppCompatButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_send"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:clickable="true"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:text="@string/save"/>
 
-            <android.support.v7.widget.AppCompatButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_cancel"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:clickable="true"
                 style="@style/Widget.AppCompat.Button.Colored"
 
                 android:text="@string/cancel"/>
@@ -194,4 +197,4 @@
 
     </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

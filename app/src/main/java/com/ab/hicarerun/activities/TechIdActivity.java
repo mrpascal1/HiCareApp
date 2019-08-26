@@ -1,10 +1,10 @@
 package com.ab.hicarerun.activities;
 
-import android.databinding.DataBindingUtil;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+
+import androidx.databinding.DataBindingUtil;
 
 import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.R;

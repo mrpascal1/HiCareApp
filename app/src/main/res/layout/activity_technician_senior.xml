@@ -9,7 +9,7 @@
         android:orientation="vertical"
         tools:context=".activities.AttachmentActivity">
 
-        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             style="@style/ToolBarStyle.Event"
             android:layout_width="match_parent"

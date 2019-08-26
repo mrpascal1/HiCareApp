@@ -10,8 +10,9 @@ public class ContinueHandShakeResponse {
     @SerializedName("IsSuccess")
     @Expose
     private Boolean isSuccess;
-    @SerializedName("Data") @Expose
-    private List<Tasks> data = null;
+    @SerializedName("Data")
+    @Expose
+    private Boolean data;
     @SerializedName("ErrorMessage")
     @Expose
     private String ErrorMessage;
@@ -24,11 +25,11 @@ public class ContinueHandShakeResponse {
         isSuccess = success;
     }
 
-    public List<Tasks> getData() {
+    public Boolean getData() {
         return data;
     }
 
-    public void setData(List<Tasks> data) {
+    public void setData(Boolean data) {
         this.data = data;
     }
 

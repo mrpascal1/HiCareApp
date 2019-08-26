@@ -1,16 +1,15 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
-import android.databinding.DataBindingUtil;
 import android.graphics.Color;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.AttachmentListAdapterBinding;

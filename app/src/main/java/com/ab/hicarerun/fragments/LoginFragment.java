@@ -7,17 +7,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
+
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
@@ -28,6 +21,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.databinding.DataBindingUtil;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
@@ -47,17 +45,8 @@ import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.ab.hicarerun.utils.notifications.OneSIgnalHelper;
 import com.ab.hicarerun.viewmodel.UserLoginViewModel;
-import com.onesignal.OneSignalDbHelper;
 
-import java.io.Serializable;
-import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Response;
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class LoginFragment extends BaseFragment implements UserLoginClickHandler {
     FragmentLoginBinding mFragmentLoginBinding;
     private static final int LOGIN_REQUEST = 1000;

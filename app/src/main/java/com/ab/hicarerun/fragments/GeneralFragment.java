@@ -3,13 +3,8 @@ package com.ab.hicarerun.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.databinding.DataBindingUtil;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -18,6 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.databinding.DataBindingUtil;
 
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
@@ -37,9 +37,7 @@ import java.util.Date;
 
 import io.realm.RealmResults;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class GeneralFragment extends BaseFragment implements UserGeneralClickHandler {
     FragmentGeneralBinding mFragmentGeneralBinding;
     RealmResults<GeneralData> mGeneralRealmModel;

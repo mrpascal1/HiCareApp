@@ -60,14 +60,14 @@
                             android:paddingRight="10dp"
                             android:paddingBottom="4dp">
 
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:padding="10dp"
                                 app:srcCompat="@drawable/ic_user" />
 
-                            <android.support.v7.widget.AppCompatEditText
+                            <androidx.appcompat.widget.AppCompatEditText
                                 android:id="@+id/edtusername"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -86,14 +86,14 @@
                             android:paddingRight="10dp"
                             android:paddingBottom="4dp">
 
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:padding="10dp"
                                 app:srcCompat="@drawable/ic_password" />
 
-                            <android.support.v7.widget.AppCompatEditText
+                            <androidx.appcompat.widget.AppCompatEditText
                                 android:id="@+id/edtpassword"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -120,7 +120,7 @@
 
                         </RelativeLayout>
 
-                        <android.support.v7.widget.AppCompatButton
+                        <androidx.appcompat.widget.AppCompatButton
                             android:id="@+id/btnlogin"
                             style="@style/Widget.AppCompat.Button.Colored"
                             android:layout_width="match_parent"

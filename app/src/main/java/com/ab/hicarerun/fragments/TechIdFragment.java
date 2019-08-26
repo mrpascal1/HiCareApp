@@ -1,18 +1,18 @@
 package com.ab.hicarerun.fragments;
 
 
-import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
@@ -31,9 +31,6 @@ import java.io.ByteArrayOutputStream;
 
 import io.realm.RealmResults;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class TechIdFragment extends BaseFragment {
 
     FragmentTechIdBinding mFragmentTechIdBinding;

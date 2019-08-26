@@ -8,11 +8,11 @@
         android:layout_height="match_parent"
         tools:context=".activities.ScratchCardActivity">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imgCancel"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
@@ -42,25 +42,25 @@
                     android:gravity="center">
 
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Scratch &amp; Earn points!"
+                        android:text="@string/scratch_amp_earn_points"
                         android:textColor="@color/white"
-                        android:textSize="18dp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
 
 
                 <LinearLayout
-                    android:layout_width="320dp"
-                    android:layout_height="320dp"
+                    android:layout_width="255dp"
+                    android:layout_height="255dp"
                     android:layout_margin="10dp"
                     android:gravity="center">
 
-                    <android.support.v7.widget.CardView
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_margin="15dp"
@@ -71,7 +71,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
 
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/imgAward"
                                 android:layout_width="120dp"
                                 android:layout_height="120dp"
@@ -80,7 +80,7 @@
                                 android:foregroundGravity="center"
                                 android:src="@drawable/ic_trophy" />
 
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/imgNoAward"
                                 android:layout_width="90dp"
                                 android:layout_height="90dp"
@@ -90,7 +90,7 @@
                                 android:src="@drawable/ic_losstrophy"
                                 android:visibility="invisible" />
 
-                            <android.support.v7.widget.AppCompatTextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/txtReward"
                                 android:layout_width="180dp"
                                 android:layout_height="wrap_content"
@@ -98,11 +98,11 @@
                                 android:layout_centerHorizontal="true"
                                 android:layout_marginTop="10dp"
                                 android:gravity="center"
-                                android:text="You've won"
+                                android:text="@string/you_ve_won"
                                 android:textColor="@color/black"
                                 android:textSize="24dp" />
 
-                            <android.support.v7.widget.AppCompatTextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/txtIncentive"
                                 android:layout_width="180dp"
                                 android:layout_height="wrap_content"
@@ -110,11 +110,10 @@
                                 android:layout_centerHorizontal="true"
                                 android:layout_marginTop="5dp"
                                 android:gravity="center"
-                                android:text="0"
                                 android:textColor="@color/black"
-                                android:textSize="24dp" />
+                                android:textSize="24sp" />
 
-                            <android.support.v7.widget.AppCompatTextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/txtLose"
                                 android:layout_width="180dp"
                                 android:layout_height="wrap_content"
@@ -122,9 +121,9 @@
                                 android:layout_centerInParent="true"
                                 android:layout_marginTop="5dp"
                                 android:gravity="center"
-                                android:text="Better luck next time!"
+                                android:text="@string/better_luck_next_time"
                                 android:textColor="@color/black"
-                                android:textSize="24dp"
+                                android:textSize="24sp"
                                 android:visibility="gone" />
 
                             <com.clock.scratch.ScratchView
@@ -132,13 +131,13 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 app:maxPercent="60"
-                                app:watermark="@drawable/scratch_small"
+                                app:watermark="@drawable/scratch_normal"
 
                                 />
 
 
                         </RelativeLayout>
-                    </android.support.v7.widget.CardView>
+                    </androidx.cardview.widget.CardView>
 
 
                 </LinearLayout>
@@ -150,13 +149,13 @@
                     android:gravity="center">
 
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="From Hicare"
+                        android:text="@string/from_hicare"
                         android:textColor="@color/white"
-                        android:textSize="14dp"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -165,12 +164,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
-                    <android.support.v7.widget.AppCompatButton
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/btnOk"
                         style="@style/Widget.AppCompat.Button.Colored"
                         android:layout_width="200dp"
                         android:layout_height="45dp"
-                        android:text="Ok"
+                        android:text="@string/ok"
                         android:textAllCaps="false"
                         android:visibility="gone" />
                 </LinearLayout>
@@ -178,7 +177,7 @@
             </LinearLayout>
 
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </FrameLayout>
 </layout>

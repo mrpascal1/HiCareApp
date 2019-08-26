@@ -15,11 +15,13 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
+
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.HomeActivity;
@@ -120,7 +122,7 @@ public class AppUtils {
     }
 
     public static void showOkActionAlertBox(Context context, String mStrMessage, DialogInterface.OnClickListener mClickListener) {
-        android.support.v7.app.AlertDialog.Builder mBuilder = new android.support.v7.app.AlertDialog.Builder(context);
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
 
         mBuilder.setMessage(mStrMessage);
         mBuilder.setPositiveButton("ok", mClickListener);
@@ -130,7 +132,7 @@ public class AppUtils {
 
 
     public static void showDownloadActionAlertBox(Context context, String title, String mStrMessage, DialogInterface.OnClickListener mClickListener) {
-        android.support.v7.app.AlertDialog.Builder mBuilder = new android.support.v7.app.AlertDialog.Builder(context);
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
         mBuilder.setIcon(R.mipmap.logo);
         mBuilder.setTitle(title);
         mBuilder.setMessage(mStrMessage);
@@ -210,6 +212,7 @@ public class AppUtils {
 
     public static String currentDateTime() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        0001-01-01 00:00:00
         Date date1 = new Date();
         return dateFormat.format(date1);
     }
@@ -271,6 +274,7 @@ public class AppUtils {
                     intent.putExtra(HomeActivity.ARG_HANDSHAKE, (Serializable) items);
                     intent.putExtra(HomeActivity.ARG_EVENT, true);
                     intent.putExtra(HomeActivity.ARG_USER, username);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     context.startActivity(intent);
                     context.finish();
                 }
@@ -289,33 +293,32 @@ public class AppUtils {
     }
 
 
-
     public static String checkConnectionSpeed(long size) {
         try {
             String hrSize = null;
 
             double b = size;
-            double k = size/1024.0;
-            double m = ((size/1024.0)/1024.0);
-            double g = (((size/1024.0)/1024.0)/1024.0);
-            double t = ((((size/1024.0)/1024.0)/1024.0)/1024.0);
+            double k = size / 1024.0;
+            double m = ((size / 1024.0) / 1024.0);
+            double g = (((size / 1024.0) / 1024.0) / 1024.0);
+            double t = ((((size / 1024.0) / 1024.0) / 1024.0) / 1024.0);
 
             DecimalFormat dec = new DecimalFormat("0.00");
 
-            if ( t>1 ) {
+            if (t > 1) {
                 hrSize = dec.format(t).concat(" TB");
-            } else if ( g>1 ) {
+            } else if (g > 1) {
                 hrSize = dec.format(g).concat(" GB");
-            } else if ( m>1 ) {
+            } else if (m > 1) {
                 hrSize = dec.format(m).concat(" MB");
-            } else if ( k>1 ) {
+            } else if (k > 1) {
                 hrSize = dec.format(k).concat(" KB");
             } else {
                 hrSize = dec.format(b).concat(" Bytes");
             }
 
             return hrSize;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return "-";
@@ -356,7 +359,7 @@ public class AppUtils {
         }
         String version = pInfo.versionName;
 
-        String DeviceTime = dateformat.format(c.getTime());
+        String DeviceTime = currentDateTime();
         String PhoneMake = Build.VERSION.SDK_INT + "," + Build.MODEL + "," + Build.PRODUCT + "," + Build.MANUFACTURER + "," + version;
         String DeviceName = Build.DEVICE;
         AttendanceRequest request = new AttendanceRequest();

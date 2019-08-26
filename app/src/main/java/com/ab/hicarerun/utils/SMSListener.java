@@ -5,8 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.ab.hicarerun.handler.Common;
+import com.ab.hicarerun.handler.OtpReceivedInterface;
+import com.google.android.gms.auth.api.phone.SmsRetriever;
+import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.common.api.Status;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,44 +21,43 @@ import java.util.regex.Pattern;
  * Created by Arjun Bhatt on 6/24/2019.
  */
 public class SMSListener extends BroadcastReceiver {
-    private static Common.OTPListener mListener; // this listener will do the magic of throwing the extracted OTP to all the bound views.
+    private static final String TAG = "SmsBroadcastReceiver";
+    OtpReceivedInterface otpReceiveInterface = null;
 
-    @Override
+    public void setOnOtpListeners(OtpReceivedInterface otpReceiveInterface) {
+        this.otpReceiveInterface = otpReceiveInterface;
+    }
+
     public void onReceive(Context context, Intent intent) {
+        try{
+            if(SmsRetriever.SMS_RETRIEVED_ACTION.equals(intent.getAction())) {
+                Bundle extras = intent.getExtras();
+                Status status = (Status) extras.get(SmsRetriever.EXTRA_STATUS);
 
-        // this function is trigged when each time a new SMS is received on device.
-
-        Bundle data = intent.getExtras();
-
-        Object[] pdus = new Object[0];
-        if (data != null) {
-            pdus = (Object[]) data.get("pdus"); // the pdus key will contain the newly received SMS
-        }
-
-        if (pdus != null) {
-            Pattern p = Pattern.compile("(|^)\\d{6}");
-
-            for (Object pdu : pdus) { // loop through and pick up the SMS of interest
-                SmsMessage smsMessage = SmsMessage.createFromPdu((byte[]) pdu);
-                String messageBody = smsMessage.getMessageBody();
-                // your custom logic to filter and extract the OTP from relevant SMS - with regex or any other way.
-//                Matcher m = p.matcher(messageBody);
-//                if (m.find()) {
-//                     otp = messageBody.replace("is your HiCare verification code", "");
-                String otp = messageBody.substring(0,6);
-//                }
-                if (mListener!=null)
-                mListener.onOTPReceived(otp);
-                break;
+                switch (status.getStatusCode()) {
+                    case CommonStatusCodes.SUCCESS:
+                        // Get SMS message contents
+                        String message =
+                                (String)extras.get(SmsRetriever.EXTRA_SMS_MESSAGE);
+                        // Extract one-time code as per the message
+                        if (otpReceiveInterface != null) {
+//                        String otp = message.replace("<#> is Your HiCare verification code.", "");
+                            String otp = message.substring(4,10);
+                            otpReceiveInterface.onOtpReceived(otp);
+                        }
+                        break;
+                    case CommonStatusCodes.TIMEOUT:
+                        // Waiting for SMS timed out (5 minutes)
+                        //Send your message to the respected activity
+                        if (otpReceiveInterface != null) {
+                            otpReceiveInterface.onOtpTimeout();
+                        }
+                        break;
+                }
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
-    }
 
-    public static void bindListener(Common.OTPListener listener) {
-        mListener = listener;
-    }
-
-    public static void unbindListener() {
-        mListener = null;
     }
 }
