@@ -172,8 +172,6 @@ public class GeneralData implements RealmModel {
     @Expose
     private Boolean Restrict_Early_Completion;
 
-    private Boolean showFeedback;
-
     public GeneralData() {
         SchedulingStatus = "NA";
         PaymentMode = "NA";
@@ -213,8 +211,6 @@ public class GeneralData implements RealmModel {
         ChequeImageUrl = "NA";
         ActualCompletionDateTime = "NA";
         Restrict_Early_Completion = false;
-
-
     }
 
     public String getOrderNumber() {

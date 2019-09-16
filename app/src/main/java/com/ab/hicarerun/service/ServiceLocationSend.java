@@ -76,8 +76,9 @@ public class ServiceLocationSend extends Service implements LocationListener {
     public void onCreate() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O)
             startMyOwnForeground();
-        else
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR) {
             startForeground(1, new Notification());
+        }
         super.onCreate();
     }
 

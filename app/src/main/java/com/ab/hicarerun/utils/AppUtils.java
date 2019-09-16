@@ -31,6 +31,7 @@ import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralPaymentMode;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralTaskStatus;
+import com.ab.hicarerun.network.models.GeneralModel.IncompleteReason;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShake;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLog;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
@@ -229,7 +230,7 @@ public class AppUtils {
             Realm.getDefaultInstance().where(GeneralData.class).findAll().deleteAllFromRealm();
             Realm.getDefaultInstance().where(GeneralTaskStatus.class).findAll().deleteAllFromRealm();
             Realm.getDefaultInstance().where(GeneralPaymentMode.class).findAll().deleteAllFromRealm();
-            Realm.getDefaultInstance().where(com.ab.hicarerun.network.models.GeneralModel.IncompleteReason.class).findAll().deleteAllFromRealm();
+            Realm.getDefaultInstance().where(IncompleteReason.class).findAll().deleteAllFromRealm();
             Realm.getDefaultInstance().commitTransaction();
         } catch (Exception e) {
             e.printStackTrace();
@@ -382,17 +383,36 @@ public class AppUtils {
     }
 
     public static int getMyBatteryLevel(Context context) {
+
         Intent batteryIntent = context.registerReceiver(null,
                 new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         return batteryIntent.getIntExtra("level", -1);
     }
 
     public static void statusCheck(Context context) {
+        try {
+            final LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+            if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                buildAlertMessageNoGps(context);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static boolean isGpsEnabled(Context context) {
+
         final LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             buildAlertMessageNoGps(context);
+            return false;
+        } else {
+            return true;
         }
+
     }
 
     private static void buildAlertMessageNoGps(final Context context) {

@@ -22,7 +22,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +29,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.SearchView;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -143,7 +143,12 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
     @Override
     public void onResume() {
         super.onResume();
-        AppUtils.statusCheck(getActivity());
+        try {
+            AppUtils.statusCheck(getActivity());
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override

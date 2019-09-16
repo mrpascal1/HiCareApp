@@ -124,7 +124,11 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
 
 
                     } else {
-                        AppUtils.statusCheck(SplashActiviy.this);
+                        try {
+                            AppUtils.statusCheck(SplashActiviy.this);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
                 }
             }, SPLASH_TIME_OUT);
@@ -145,4 +149,9 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
+    }
 }

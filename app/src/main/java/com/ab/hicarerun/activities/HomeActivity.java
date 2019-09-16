@@ -104,7 +104,12 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
             getServiceCalled();
             addFragment(HomeFragment.newInstance(), "HomeActivity - HomeFragment");
         } else {
-            AppUtils.statusCheck(HomeActivity.this);
+
+            try {
+                AppUtils.statusCheck(HomeActivity.this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
 
@@ -124,8 +129,11 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 }
             });
         }
-
-        AppUtils.statusCheck(HomeActivity.this);
+        try {
+            AppUtils.statusCheck(HomeActivity.this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -163,14 +171,14 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 public void onClick(DialogInterface dialogInterface, int i) {
                     if (AppUtils.checkConnection(HomeActivity.this)) {
                         ProgressDialog progress = new ProgressDialog(HomeActivity.this);
-                        if(apktype.equalsIgnoreCase("url")){
+                        if (apktype.equalsIgnoreCase("url")) {
                             final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
                             try {
                                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
                             } catch (android.content.ActivityNotFoundException anfe) {
                                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
                             }
-                        }else{
+                        } else {
                             DownloadApk downloadAndInstall = new DownloadApk();
                             progress.setCancelable(false);
                             progress.setMessage("Downloading...");
@@ -365,7 +373,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                                     }
                                 });
 
-                                controller.getLogout(LOGOUT_REQ, UserId,HomeActivity.this);
+                                controller.getLogout(LOGOUT_REQ, UserId, HomeActivity.this);
 
                             }
                         });
@@ -443,5 +451,6 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     public Location getmLocation() {
         return mLocation;
     }
+
 
 }

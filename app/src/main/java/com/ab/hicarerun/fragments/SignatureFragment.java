@@ -125,7 +125,11 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
     public void onResume() {
         super.onResume();
         getValidate();
-        AppUtils.statusCheck(getActivity());
+        try{
+            AppUtils.statusCheck(getActivity());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -305,7 +309,9 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
 
             View promptsView = li.inflate(R.layout.signature_dialog, null);
 
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+//            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.MyAlertDialogTheme);
+
 
             alertDialogBuilder.setView(promptsView);
 
@@ -403,32 +409,33 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
     public void onSendLinkClicked(View view) {
         if (isFeedBack && status.equals("On-Site") && mGeneralRealmData.get(0).getRestrict_Early_Completion()) {
 
-            String Duration = mGeneralRealmData.get(0).getActualCompletionDateTime();
-            String newFormat = "yyyy-MM-dd HH:mm:ss";
             try {
+                String Duration = mGeneralRealmData.get(0).getActualCompletionDateTime();
+                String newFormat = "yyyy-MM-dd HH:mm:ss";
                 String DurationDate = AppUtils.reFormatDurationTime(Duration, newFormat);
                 String isStartDate = AppUtils.compareDates(AppUtils.currentDateTime(), DurationDate);
                 Log.i("isFeedbackEarly", isStartDate);
                 if (isStartDate.equals("afterdate") || isStartDate.equals("equalsdate")) {
-                    mFragmentSignatureBinding.txtFeedback.setEnabled(true);
-                    mFragmentSignatureBinding.btnSendlink.setVisibility(View.VISIBLE);
+//                    mFragmentSignatureBinding.txtFeedback.setEnabled(true);
+//                    mFragmentSignatureBinding.btnSendlink.setVisibility(View.VISIBLE);
                     sendFeedBackLink();
 
                 } else {
-                    mFragmentSignatureBinding.txtFeedback.setEnabled(false);
+//                    mFragmentSignatureBinding.txtFeedback.setEnabled(false);
                     Toasty.error(getActivity(),
                             "You are not allowed to send feedback link as you have not spent adequate time. Please follow the correct procedure and deliver the job properly",
                             Toasty.LENGTH_LONG).show();
                     getValidate();
                 }
             } catch (ParseException e) {
-                RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
-                if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                    String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
-                    String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                    String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                    AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "onSendLinkClicked", lineNo,userName,DeviceName);
-                }
+                e.printStackTrace();
+//                RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+//                if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+//                    String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+//                    String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+//                    String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
+//                    AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "onSendLinkClicked", lineNo,userName,DeviceName);
+//                }
             }
 
 

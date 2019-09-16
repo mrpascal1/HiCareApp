@@ -30,12 +30,16 @@ import com.ab.hicarerun.viewmodel.UserLoginViewModel;
 public class LoginActivity extends BaseActivity {
     ActivityLoginBinding mActivityLoginBinding;
     private static final int PERMISSION_REQUEST_CODE = 1000;
+    AlertDialog alert;
 
     @Override
     protected void onResume() {
         super.onResume();
-        AppUtils.statusCheck(LoginActivity.this);
-
+        try {
+            AppUtils.statusCheck(LoginActivity.this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -118,7 +122,7 @@ public class LoginActivity extends BaseActivity {
                                     // Permission denied
                                 }
                             });
-                    final AlertDialog alert = builder.create();
+                    alert = builder.create();
                     alert.show();
                 } else {
                     ActivityCompat.requestPermissions(this, new String[]{
@@ -132,6 +136,5 @@ public class LoginActivity extends BaseActivity {
             }
         }
     }
-
 
 }

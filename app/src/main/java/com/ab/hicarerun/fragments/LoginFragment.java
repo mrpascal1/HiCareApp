@@ -234,6 +234,7 @@ public class LoginFragment extends BaseFragment implements UserLoginClickHandler
         protected void onCancelled() {
             mAuthTask = null;
         }
+
     }
 
 

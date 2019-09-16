@@ -54,7 +54,6 @@ public class OTP_LoginFragment extends BaseFragment implements UserOtpLoginClick
         mFragmentOtpLoginBinding =
                 DataBindingUtil.inflate(inflater, R.layout.fragment_otp_login, container, false);
         mBottomSheetBehaviour = BottomSheetBehavior.from(mFragmentOtpLoginBinding.nestedScrollView);
-
         mFragmentOtpLoginBinding.setHandler(this);
 
         mFragmentOtpLoginBinding.bannerSlider.setAdapter(new MainSliderAdapter());

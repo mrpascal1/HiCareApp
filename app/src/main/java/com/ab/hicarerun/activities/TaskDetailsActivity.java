@@ -127,7 +127,11 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     @Override
     protected void onResume() {
         super.onResume();
-        AppUtils.statusCheck(TaskDetailsActivity.this);
+        try {
+            AppUtils.statusCheck(TaskDetailsActivity.this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -153,7 +157,11 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                 && locationManager.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER)) {
             getTaskDetailsById();
         } else {
-            AppUtils.statusCheck(TaskDetailsActivity.this);
+            try {
+                AppUtils.statusCheck(TaskDetailsActivity.this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
     }
@@ -161,7 +169,11 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     private void getTaskDetailsById() {
         try {
             if (this != null) {
-                AppUtils.getDataClean();
+                try {
+                    AppUtils.getDataClean();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 RealmResults<LoginResponse> LoginRealmModels =
                         getRealm().where(LoginResponse.class).findAll();
 
@@ -189,16 +201,16 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                         public void onFailure(int requestCode) {
                         }
                     });
-                    controller.getTaskDetailById(TASK_BY_ID_REQUEST, UserId, model.getTaskId(),TaskDetailsActivity.this);
+                    controller.getTaskDetailById(TASK_BY_ID_REQUEST, UserId, model.getTaskId(), TaskDetailsActivity.this);
                 }
             }
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getTaskDetailsById", lineNo,userName,DeviceName);
+                String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getTaskDetailsById", lineNo, userName, DeviceName);
             }
         }
 
@@ -287,7 +299,9 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
             public void onClick(View v) {
                 Rate = (int) ratingBar.getRating();
                 alertDialog.dismiss();
-                getSaveMenu();
+                if(AppUtils.isGpsEnabled(TaskDetailsActivity.this)) {
+                    getSaveMenu();
+                }
             }
 
         });
@@ -361,7 +375,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (Build.VERSION.SDK_INT > 11) {
+        if (Build.VERSION.SDK_INT >= 16) {
             if (sta.equals("Completed") || sta.equals("Incomplete")) {
                 invalidateOptionsMenu();
                 menu.findItem(R.id.menu_save).setVisible(false);
@@ -382,7 +396,9 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                 onBackPressed();
                 break;
             case R.id.menu_save:
-                getSaveMenu();
+                if(AppUtils.isGpsEnabled(TaskDetailsActivity.this)){
+                    getSaveMenu();
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -535,7 +551,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                                     progress.dismiss();
                                 }
                             });
-                            controller.updateTasks(UPDATE_REQUEST, request,TaskDetailsActivity.this);
+                            controller.updateTasks(UPDATE_REQUEST, request, TaskDetailsActivity.this);
                         }
                     }
                 }
@@ -544,10 +560,10 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getSaveMenu", lineNo,userName,DeviceName);
+                String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getSaveMenu", lineNo, userName, DeviceName);
             }
         }
 
@@ -592,7 +608,11 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                 @Override
                 public void onClick(View v) {
                     onBackPressed();
-                    AppUtils.getDataClean();
+                    try {
+                        AppUtils.getDataClean();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     dialog.dismiss();
                 }
             });
@@ -663,7 +683,11 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
         try {
             Log.i("incompleteReason", incompleteReason);
             if (mActivityTaskDetailsBinding.viewpager.getCurrentItem() == 0) {
-                AppUtils.getDataClean();
+                try {
+                    AppUtils.getDataClean();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 passData();
                 finish();
                 super.onBackPressed();
@@ -687,7 +711,11 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                     mActivityTaskDetailsBinding.viewpager.setCurrentItem(0, true);
                 } else {
                     passData();
-                    AppUtils.getDataClean();
+                    try {
+                        AppUtils.getDataClean();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     finish();
                 }
             } catch (Exception e) {
@@ -893,6 +921,10 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     }
 
     public void onSaveClick(MenuItem item) {
-        getSaveMenu();
+        if(AppUtils.isGpsEnabled(TaskDetailsActivity.this)) {
+            getSaveMenu();
+        }
     }
+
+
 }

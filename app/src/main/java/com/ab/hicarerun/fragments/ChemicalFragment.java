@@ -1,6 +1,5 @@
 package com.ab.hicarerun.fragments;
 
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -16,12 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
-import android.widget.Toast;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -93,7 +87,11 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
     @Override
     public void onResume() {
         super.onResume();
-        AppUtils.statusCheck(getActivity());
+        try {
+            AppUtils.statusCheck(getActivity());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -129,8 +127,9 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mFragmentChemicalBinding.recycleView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        mFragmentChemicalBinding.recycleView.setNestedScrollingEnabled(false);
+        layoutManager = new LinearLayoutManager(getActivity());
+//        layoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
+//        mFragmentChemicalBinding.recycleView.setNestedScrollingEnabled(false);
         mFragmentChemicalBinding.recycleView.setLayoutManager(layoutManager);
         mGeneralRealmData =
                 getRealm().where(GeneralData.class).findAll();
@@ -161,13 +160,14 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
                             getValidation(i);
                     }
                 } catch (Exception e) {
-                    RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
-                    if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
-                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
-                        AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "chemicalFragmentonViewCreated", lineNo, userName, DeviceName);
-                    }
+                    e.printStackTrace();
+//                    RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+//                    if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+//                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+//                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+//                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+//                        AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "chemicalFragmentonViewCreated", lineNo, userName, DeviceName);
+//                    }
                 }
 
             }

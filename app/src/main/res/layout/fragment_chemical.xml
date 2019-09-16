@@ -57,6 +57,7 @@
                         android:padding="5dp"
                         android:ellipsize = "end"
                         android:singleLine="true"
+                        android:visibility="gone"
                         android:text="@string/standard"
                         android:textColor="#ffffff" />
 

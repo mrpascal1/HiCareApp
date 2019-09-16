@@ -65,7 +65,11 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
     @Override
     public void onResume() {
         super.onResume();
-        AppUtils.statusCheck(getActivity());
+        try {
+            AppUtils.statusCheck(getActivity());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public static GeneralFragment newInstance(String taskId, String status) {
@@ -207,7 +211,11 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
         mFragmentGeneralBinding.spnStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                AppUtils.statusCheck(getActivity());
+                try {
+                    AppUtils.statusCheck(getActivity());
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 mode = mFragmentGeneralBinding.spnStatus.getSelectedItem().toString();
                 isFeedback = mGeneralRealmModel.get(0).getFeedBack();
 

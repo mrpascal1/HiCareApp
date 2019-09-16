@@ -77,7 +77,12 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
     @Override
     public void onResume() {
         super.onResume();
-        AppUtils.statusCheck(getActivity());
+        try {
+            AppUtils.statusCheck(getActivity());
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override

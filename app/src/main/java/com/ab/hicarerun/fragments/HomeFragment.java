@@ -121,13 +121,13 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         activityName = getActivity().getClass().getSimpleName();
         apply();
 
-        timerRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mAdapter.notifyDataSetChanged();
-                timerHandler.postDelayed(this, 60000); //run every minute
-            }
-        };
+//        timerRunnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                mAdapter.notifyDataSetChanged();
+//                timerHandler.postDelayed(this, 60000); //run every minute
+//            }
+//        };
         return mFragmentHomeBinding.getRoot();
     }
 
@@ -135,16 +135,21 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     @Override
     public void onResume() {
         super.onResume();
-        timerHandler.postDelayed(timerRunnable, 500);
-        isBack = SharedPreferencesUtility.getPrefBoolean(getActivity(), SharedPreferencesUtility.PREF_REFRESH);
-        if (isBack) {
-            getAllTasks();
-            AppUtils.getDataClean();
-            SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_REFRESH, false);
-        } else {
-            AppUtils.getDataClean();
+//        timerHandler.postDelayed(timerRunnable, 500);
+        try {
+            isBack = SharedPreferencesUtility.getPrefBoolean(getActivity(), SharedPreferencesUtility.PREF_REFRESH);
+            if (isBack) {
+                getAllTasks();
+                AppUtils.getDataClean();
+                SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_REFRESH, false);
+            } else {
+                AppUtils.getDataClean();
+            }
+            apply();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        apply();
+
     }
 
 
@@ -239,7 +244,11 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
     @Override
     public void onResponse(int requestCode, TaskListResponse data) {
-        AppUtils.getDataClean();
+        try {
+            AppUtils.getDataClean();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (data.getErrorMessage().equals("Absent") && !isSkip) {
             isParam = data.getParam();
             mFragmentHomeBinding.swipeRefreshLayout.setRefreshing(false);
@@ -269,7 +278,11 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 @Override
                 public void onItemClick(int positon) {
                     if (items.get(positon).getDetailVisible()) {
-                        AppUtils.getDataClean();
+                        try{
+                            AppUtils.getDataClean();
+                        }catch (Exception e){
+
+                        }
                         Intent intent = new Intent(getActivity(), TaskDetailsActivity.class);
                         intent.putExtra(TaskDetailsActivity.ARGS_TASKS, items.get(positon));
                         startActivity(intent);
