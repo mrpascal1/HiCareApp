@@ -53,7 +53,7 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
         builder.setLocationListner(this);
         builder.build();
         Mint.initAndStartSession(this.getApplication(), "5623ed44");
-        Picasso.with(getApplicationContext()).load(R.mipmap.splash).into(mActivitySplashBinding.imgSplash);
+        Picasso.get().load(R.mipmap.splash).into(mActivitySplashBinding.imgSplash);
         splashScreen();
         PackageInfo pInfo = null;
 

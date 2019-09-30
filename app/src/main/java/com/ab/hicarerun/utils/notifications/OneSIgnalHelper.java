@@ -25,8 +25,6 @@ public class OneSIgnalHelper {
                     Logger.d("OneSignal", "registrationId:" + registrationId);
             }
         });
-
-
     }
 
     public synchronized String fetchPlayerID(OneSignal.IdsAvailableHandler mOneSIgnalIdshandler){
@@ -44,5 +42,4 @@ public class OneSIgnalHelper {
     public synchronized void setmStrUserID(String mStrUserID) {
         this.mStrUserID = mStrUserID;
     }
-
 }

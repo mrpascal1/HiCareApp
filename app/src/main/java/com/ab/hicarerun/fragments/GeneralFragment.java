@@ -1,10 +1,16 @@
 package com.ab.hicarerun.fragments;
 
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -13,10 +19,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.ab.hicarerun.BaseFragment;
@@ -29,6 +37,19 @@ import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralTaskStatus;
 import com.ab.hicarerun.network.models.GeneralModel.IncompleteReason;
 import com.ab.hicarerun.utils.AppUtils;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,7 +59,7 @@ import java.util.Date;
 import io.realm.RealmResults;
 
 
-public class GeneralFragment extends BaseFragment implements UserGeneralClickHandler {
+public class GeneralFragment extends BaseFragment implements UserGeneralClickHandler, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, OnMapReadyCallback {
     FragmentGeneralBinding mFragmentGeneralBinding;
     RealmResults<GeneralData> mGeneralRealmModel;
     private String selectedStatus = "";
@@ -56,6 +77,23 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
     private String mode = "";
     private String OnSiteOtp = "";
     private String ScOtp = "";
+    private static final String TAG = "MainActivity";
+    private GoogleMap mGoogleMap;
+    SupportMapFragment mapFragment;
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLocation;
+    private LocationRequest mLocationRequest;
+    private LocationManager locationManager;
+
+    private com.google.android.gms.location.LocationListener listener;
+    private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
+    private long FASTEST_INTERVAL = 2000; /* 2 sec */
+    private int unicode = 0x2736;
+    private LocationManager mLocationManager;
+
+    MarkerOptions options;
+
+    Marker mCurrLocationMarker;
 
 
     public GeneralFragment() {
@@ -67,7 +105,7 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
         super.onResume();
         try {
             AppUtils.statusCheck(getActivity());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -104,6 +142,23 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mFragmentGeneralBinding.setHandler(this);
+
+        mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+        options = new MarkerOptions();
+
+        mFragmentGeneralBinding.txtStar.setText(String.valueOf(Character.toChars(unicode)));
+
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+
+        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+
+        checkLocation(); //check whether location service is enable or not in your  phone
 
         mFragmentGeneralBinding.spnStatus.getBackground().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
 
@@ -213,7 +268,7 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 try {
                     AppUtils.statusCheck(getActivity());
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 mode = mFragmentGeneralBinding.spnStatus.getSelectedItem().toString();
@@ -342,7 +397,7 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
             if (mGeneralRealmModel.get(0).getRestrict_Early_Completion()) {
                 String Duration = mGeneralRealmModel.get(0).getActualCompletionDateTime();
 //                String oldFormat= "yyyy-MM-dd hh:mm aa";
-                String newFormat= "yyyy-MM-dd HH:mm:ss";
+                String newFormat = "yyyy-MM-dd HH:mm:ss";
 //
 //                String formatedDate = "";
 //                SimpleDateFormat dateFormat = new SimpleDateFormat(oldFormat);
@@ -356,10 +411,10 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
                 try {
                     String DurationDate = AppUtils.reFormatDurationTime(Duration, newFormat);
                     String isStartDate = AppUtils.compareDates(AppUtils.currentDateTime(), DurationDate);
-                    Log.i("isEarlyDuration",isStartDate);
+                    Log.i("isEarlyDuration", isStartDate);
                     if (isStartDate.equals("afterdate") || isStartDate.equals("equalsdate")) {
                         mCallback.isEarlyCompletion(false);
-                    }else {
+                    } else {
                         mCallback.isEarlyCompletion(true);
                     }
                 } catch (ParseException e) {
@@ -374,5 +429,202 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
         }
     }
 
+    @Override
+    public void onConnected(Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+
+        startLocationUpdates();
+
+        mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+        if (mLocation == null) {
+            startLocationUpdates();
+        }
+        if (mLocation != null) {
+
+        } else {
+            Toast.makeText(getActivity(), "Location not Detected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.i(TAG, "Connection Suspended");
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.i(TAG, "Connection failed. Error: " + connectionResult.getErrorCode());
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        changeMap(location.getLatitude(), location.getLongitude());
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mGoogleMap = googleMap;
+    }
+
+    private void changeMap(Double lat, Double lon) {
+
+        Log.d(TAG, "Reaching map" + mGoogleMap);
+
+        if (mCurrLocationMarker != null) {
+            mCurrLocationMarker.remove();
+        }
+
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+
+        // check if map is created successfully or not
+        if (mGoogleMap != null) {
+
+            LatLng latLong = new LatLng(lat, lon);
+
+//            CameraPosition cameraPosition = new CameraPosition.Builder()
+//                    .target(latLong).zoom(19f).tilt(70).build();
+            mGoogleMap.setMyLocationEnabled(true);
+            mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            mGoogleMap.setTrafficEnabled(false);
+            mGoogleMap.setIndoorEnabled(false);
+            mGoogleMap.setBuildingsEnabled(false);
+            mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
+            mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+//            options.position(latLong).title("you are here")
+//                    .flat(false)
+//                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.add_marker));
+//            mGoogleMap.addMarker(options);
+//            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLong));
+//            mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder()
+//                    .zoom(17)
+//                    .bearing(30)
+//                    .tilt(45)
+//                    .build()));
+
+
+//            mGoogleMap.setMyLocationEnabled(true);
+//            mGoogleMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder()
+//                    .target(latLong)
+//                    .zoom(15.5f)
+//                    .build()));
+//            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLong));
+//            mGoogleMap.animateCamera(CameraUpdateFactory
+//                    .newCameraPosition(cameraPosition));
+
+
+            //Place current location marker
+//            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLong);
+            markerOptions.title("you are here");
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+
+            //move map camera
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLong, 17));
+
+        } else {
+            Toast.makeText(getActivity(),
+                    "Sorry! unable to create maps", Toast.LENGTH_SHORT)
+                    .show();
+        }
+
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    protected void startLocationUpdates() {
+        // Create the location request
+        mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(UPDATE_INTERVAL)
+                .setFastestInterval(FASTEST_INTERVAL);
+        // Request location updates
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+                mLocationRequest, this);
+        Log.d("reque", "--->>>>");
+    }
+
+
+    private boolean checkLocation() {
+        if (!isLocationEnabled())
+            showAlert();
+        return isLocationEnabled();
+    }
+
+    private void showAlert() {
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        dialog.setTitle("Enable Location")
+                .setMessage("Your Locations Settings is set to 'Off'.\nPlease Enable Location to " +
+                        "use this app")
+                .setPositiveButton("Location Settings", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+
+                        Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(myIntent);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+
+                    }
+                });
+        dialog.show();
+    }
+
+    private boolean isLocationEnabled() {
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
 }
 
