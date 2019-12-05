@@ -166,13 +166,12 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
                             if (pickResult.getError() == null) {
                                 images.add(pickResult.getPath());
                                 imgFile = new File(pickResult.getPath());
-
                                 selectedImagePath = pickResult.getPath();
                                 if (selectedImagePath != null) {
                                     Bitmap bit = new BitmapDrawable(getActivity().getResources(),
                                             selectedImagePath).getBitmap();
-                                    int i = (int) (bit.getHeight() * (512.0 / bit.getWidth()));
-                                    bitmap = Bitmap.createScaledBitmap(bit, 512, i, true);
+                                    int i = (int) (bit.getHeight() * (1024.0 / bit.getWidth()));
+                                    bitmap = Bitmap.createScaledBitmap(bit, 1024, i, true);
                                 }
 
                                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -185,7 +184,7 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
                                 if (pickResult.getPath() != null) {
                                     if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
                                         UserId = LoginRealmModels.get(0).getUserID();
-                                        NetworkCallController controller = new NetworkCallController();
+                                        NetworkCallController controller = new NetworkCallController(AttachmentFragment.this);
                                         PostAttachmentRequest request = new PostAttachmentRequest();
                                         request.setFile(encodedImage);
                                         request.setResourceId(UserId);
@@ -235,9 +234,7 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
 
     @Override
     public void onSelectImageClicked(View view) {
-
     }
-
 
     @Override
     public void onDeleteImageClicked(View view) {
@@ -269,7 +266,7 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
                     }
                 }
             }
-            NetworkCallController controller = new NetworkCallController(this);
+            NetworkCallController controller = new NetworkCallController(AttachmentFragment.this);
             controller.setListner(this);
             controller.getDeleteAttachments(DELETE_ATTACHMENT_REQ, model);
         }catch (Exception e){
@@ -289,8 +286,6 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
         switch (requestCode) {
             case GET_ATTACHMENT_REQ:
                 List<GetAttachmentList> items = (List<GetAttachmentList>) data;
-
-
                 if (items != null) {
                     if (pageNumber == 1 && items.size() > 0) {
                         mFragmentAttachmentBinding.txtData.setVisibility(View.GONE);

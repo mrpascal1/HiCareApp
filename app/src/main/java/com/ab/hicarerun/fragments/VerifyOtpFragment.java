@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,6 +42,7 @@ import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.OtpModel.SendOtpResponse;
+import com.ab.hicarerun.network.models.TrainingModel.Videos;
 import com.ab.hicarerun.utils.AppSignatureHelper;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SMSListener;
@@ -58,6 +60,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.List;
+
 
 public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClickHandler, GoogleApiClient.ConnectionCallbacks,
         OtpReceivedInterface, GoogleApiClient.OnConnectionFailedListener {
@@ -67,11 +71,14 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
     private static final String ARG_USER = "ARG_USER";
     private static final int LOGIN_REQUEST = 2000;
     private String mobile = "", otp = "", user = "";
+    private static final int VIDEO_REQUEST = 2000;
+
     private static final int OTP_REQUEST = 1000;
     private int RESOLVE_HINT = 2;
     private Boolean isGetInside = false;
     private LoginFragment.UserLoginTask mAuthTask = null;
     private String profilePic = "";
+    private String video_url = "";
     GoogleApiClient mGoogleApiClient;
     //    private SMSListener reciever;
     SMSListener mSmsBroadcastReceiver;
@@ -126,23 +133,10 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
         intentFilter.addAction(SmsRetriever.SMS_RETRIEVED_ACTION);
         getActivity().registerReceiver(mSmsBroadcastReceiver, intentFilter);
         getActivity().setTitle("");
-//        getHintPhoneNumber();
         startSMSListener();
+        getStartTrainingVideos();
         return mFragmentVerifyOtpBinding.getRoot();
     }
-
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        mGoogleApiClient.connect();
-//    }
-//
-//
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        mGoogleApiClient.disconnect();
-//    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -150,21 +144,6 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
         String text = "<font color=#000000>Didn't get the OTP?</font> <font color=#2bb77a> RESEND</font>";
         mFragmentVerifyOtpBinding.txtResend.setText(Html.fromHtml(text));
         mFragmentVerifyOtpBinding.txtNumber.setText("OTP sent to " + mobile);
-
-//        SMSListener.bindListener(new Common.OTPListener() {
-//            @Override
-//            public void onOTPReceived(String otp) {
-//                Log.d("Text", otp);
-//                mFragmentVerifyOtpBinding.otpView.setText(otp);
-//                if (mFragmentVerifyOtpBinding.otpView.length() == 6) {
-//                    attemptLogin();
-//                }
-//
-//            }
-//
-//        });
-
-
         mFragmentVerifyOtpBinding.otpView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -243,14 +222,12 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
         if (mFragmentVerifyOtpBinding.otpView.length() == 6) {
             attemptLogin();
         }
-
     }
 
     private void attemptLogin() {
         if (mAuthTask != null) {
             return;
         }
-
 
         String imei = "", device_info = "";
 
@@ -424,12 +401,18 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
             mAuthTask = null;
 
             if (success) {
-                SharedPreferencesUtility.savePrefString(getActivity(), SharedPreferencesUtility.PREF_LOGOUT, AppUtils.currentDate());
-                if (profilePic.trim().length() == 0) {
-                    replaceFragment(FaceRecognizationFragment.newInstance(false, mobile), "VerifyOtpFragment-FaceRecognizationFragment");
+                if (video_url.trim().length() != 0) {
+                    replaceFragment(VideoPlayerFragment.newInstance(profilePic, mobile, video_url), "LoginTrealActivity-VideoPlayerFragment");
+                    getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                 } else {
-                    AppUtils.getHandShakeCall(mobile, getActivity());
+                    if (profilePic.trim().length() == 0) {
+                        replaceFragment(FaceRecognizationFragment.newInstance(false, mobile), "VerifyOtpFragment-FaceRecognizationFragment");
+                    } else {
+                        AppUtils.getHandShakeCall(mobile, getActivity());
+                    }
                 }
+
+
             } else {
                 mFragmentVerifyOtpBinding.otpView.setError("Invalid OTP!");
             }
@@ -439,6 +422,38 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
         protected void onCancelled() {
             mAuthTask = null;
         }
+    }
+
+    private void getStartTrainingVideos() {
+
+        NetworkCallController controller = new NetworkCallController(this);
+        controller.setListner(new NetworkResponseListner() {
+            @Override
+            public void onResponse(int requestCode, Object response) {
+                Videos items = (Videos) response;
+                if (items != null) {
+                    video_url = items.getVideoUrl();
+//                    replaceFragment(VideoPlayerFragment.newInstance(profilePic, mobile, items.getVideoUrl()), "LoginTrealActivity-VideoPlayerFragment");
+//                    getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+//                } else {
+//                        replaceFragment(FaceRecognizationFragment.newInstance(false, mobile), "VerifyOtpFragment-FaceRecognizationFragment");
+//                        SharedPreferencesUtility.savePrefString(getActivity(), SharedPreferencesUtility.PREF_LOGOUT, AppUtils.currentDate());
+//                    if (profilePic.trim().length() == 0) {
+//                        replaceFragment(FaceRecognizationFragment.newInstance(false, mobile), "VerifyOtpFragment-FaceRecognizationFragment");
+//                    } else {
+//                        AppUtils.getHandShakeCall(mobile, getActivity());
+//                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(int requestCode) {
+
+            }
+        });
+        controller.getStartingVideos(VIDEO_REQUEST);
+
     }
 
     @Override

@@ -288,8 +288,6 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
             TextView version = (TextView) header.findViewById(R.id.txtVersion);
             name.setText("Hi, " + Uname);
             version.setText("V " + mobileVersion);
-
-
         }
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -305,6 +303,18 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                         break;
 
 
+                    case R.id.nav_incentive:
+                        mActivityHomeBinding.drawer.closeDrawers();
+                        startActivity(new Intent(HomeActivity.this, IncentivesActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                        break;
+
+                    case R.id.nav_attendance:
+                        mActivityHomeBinding.drawer.closeDrawers();
+                        startActivity(new Intent(HomeActivity.this, AttendanceActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                        break;
+
                     case R.id.nav_groom:
                         mActivityHomeBinding.drawer.closeDrawers();
                         startActivity(new Intent(HomeActivity.this, TechnicianSeniorActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
@@ -313,7 +323,6 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
                     case R.id.nav_notifications:
                         getSupportFragmentManager().beginTransaction().replace(mActivityHomeBinding.container.getId(), NotificationFragment.newInstance()).addToBackStack(null).commit();
-
                         mActivityHomeBinding.drawer.closeDrawers();
                         break;
 
@@ -322,6 +331,13 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                         startActivity(new Intent(HomeActivity.this, TrainingActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
                         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                         break;
+
+                    case R.id.nav_voucher:
+                        mActivityHomeBinding.drawer.closeDrawers();
+                        startActivity(new Intent(HomeActivity.this, VoucherActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                        break;
+
 
                     case R.id.nav_help:
                         mActivityHomeBinding.drawer.closeDrawers();
@@ -337,7 +353,6 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
                     case R.id.nav_logout:
                         mActivityHomeBinding.drawer.closeDrawers();
-
                         final AlertDialog.Builder dialog = new AlertDialog.Builder(HomeActivity.this);
                         dialog.setTitle("Logout");
                         dialog.setMessage("Do you want to logout?");

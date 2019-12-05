@@ -27,7 +27,6 @@ public class VerifyOtpActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         mActivityVerifyOtpBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_verify_otp);
-
         setSupportActionBar(mActivityVerifyOtpBinding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mobile = getIntent().getStringExtra(ARGS_MOBILE);

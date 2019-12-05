@@ -16,7 +16,6 @@
         android:background="@color/white"
         android:orientation="horizontal">
 
-
         <LinearLayout
             android:id="@+id/lnr_list"
             android:layout_width="300dp"

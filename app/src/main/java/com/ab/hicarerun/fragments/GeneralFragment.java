@@ -19,23 +19,35 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 
+import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.TaskDetailsActivity;
 import com.ab.hicarerun.databinding.FragmentGeneralBinding;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
 import com.ab.hicarerun.handler.UserGeneralClickHandler;
+import com.ab.hicarerun.network.NetworkCallController;
+import com.ab.hicarerun.network.NetworkResponseListner;
+import com.ab.hicarerun.network.models.BasicResponse;
+import com.ab.hicarerun.network.models.FeedbackModel.FeedbackRequest;
+import com.ab.hicarerun.network.models.FeedbackModel.FeedbackResponse;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralTaskStatus;
 import com.ab.hicarerun.network.models.GeneralModel.IncompleteReason;
+import com.ab.hicarerun.network.models.GeneralModel.OnSiteOtpResponse;
+import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.utils.AppUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -56,6 +68,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
 
 
@@ -90,8 +103,10 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
     private int unicode = 0x2736;
     private LocationManager mLocationManager;
-
-    MarkerOptions options;
+    private static final int ONSITE_REQUEST = 1000;
+    private static final int COMPLETION_REQUEST = 2000;
+    private static final String ARG_TASK = "ARG_TASK";
+    private String taskId = "";
 
     Marker mCurrLocationMarker;
 
@@ -112,6 +127,7 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
 
     public static GeneralFragment newInstance(String taskId, String status) {
         Bundle args = new Bundle();
+        args.putString(ARG_TASK, taskId);
         GeneralFragment fragment = new GeneralFragment();
         fragment.setArguments(args);
         return fragment;
@@ -128,6 +144,13 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
         }
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            taskId = getArguments().getString(ARG_TASK);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -145,7 +168,6 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
 
         mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        options = new MarkerOptions();
 
         mFragmentGeneralBinding.txtStar.setText(String.valueOf(Character.toChars(unicode)));
 
@@ -179,6 +201,13 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
             }
         });
         getGeneralData();
+
+        mFragmentGeneralBinding.btnOnsiteOtp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getCommercialDialog();
+            }
+        });
     }
 
 
@@ -254,7 +283,6 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
         for (GeneralTaskStatus generalTaskStatus : generalTaskRealmModel) {
             type.add(generalTaskStatus.getStatus());
         }
-
         arrayStatus = new String[type.size()];
         arrayStatus = type.toArray(arrayStatus);
 
@@ -273,7 +301,6 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
                 }
                 mode = mFragmentGeneralBinding.spnStatus.getSelectedItem().toString();
                 isFeedback = mGeneralRealmModel.get(0).getFeedBack();
-
                 try {
                     mCallback.status(generalTaskRealmModel.get(position).getStatus());
                     if (generalTaskRealmModel.get(position).getStatus().equals("Incomplete")) {
@@ -366,11 +393,14 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
     private void getValidated() {
         if (mode.equals("On-Site")) {
             Log.i("isFeedback", String.valueOf(isFeedback));
+
             if (isFeedback && mGeneralRealmModel.get(0).getOnsite_OTP() != null && !mGeneralRealmModel.get(0).getOnsite_OTP().equals("")) {
                 if (status.equals("Dispatched")) {
                     mFragmentGeneralBinding.cardOtp.setVisibility(View.VISIBLE);
+                    mFragmentGeneralBinding.btnOnsiteOtp.setVisibility(View.VISIBLE);
                 } else {
                     mFragmentGeneralBinding.cardOtp.setVisibility(View.GONE);
+                    mFragmentGeneralBinding.btnOnsiteOtp.setVisibility(View.GONE);
                 }
                 OnSiteOtp = mGeneralRealmModel.get(0).getOnsite_OTP();
                 ScOtp = mGeneralRealmModel.get(0).getSc_OTP();
@@ -386,46 +416,135 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
                 } else {
                     mCallback.isEmptyOnsiteOtp(true);
                 }
+            } else {
+                mCallback.isEmptyOnsiteOtp(false);
+                mCallback.isOnsiteOtp(false);
+                mFragmentGeneralBinding.cardOtp.setVisibility(View.GONE);
             }
-        } else {
-            mCallback.isEmptyOnsiteOtp(false);
-            mCallback.isOnsiteOtp(false);
-            mFragmentGeneralBinding.cardOtp.setVisibility(View.GONE);
+
         }
 
         if (mode.equals("Completed")) {
             if (mGeneralRealmModel.get(0).getRestrict_Early_Completion()) {
-                String Duration = mGeneralRealmModel.get(0).getActualCompletionDateTime();
+//                String Duration = mGeneralRealmModel.get(0).getActualCompletionDateTime();
 //                String oldFormat= "yyyy-MM-dd hh:mm aa";
-                String newFormat = "yyyy-MM-dd HH:mm:ss";
-//
-//                String formatedDate = "";
-//                SimpleDateFormat dateFormat = new SimpleDateFormat(oldFormat);
-//                Date myDate = null;
+//                String newFormat = "yyyy-MM-dd HH:mm:ss";
 //                try {
-//                    myDate = dateFormat.parse(Duration);
-//                } catch (java.text.ParseException e) {
+//                    String DurationDate = AppUtils.reFormatDurationTime(Duration, newFormat);
+//                    String currentDate = AppUtils.currentDateTime();
+//                    String isStartDate = AppUtils.compareDates(AppUtils.currentDateTime(), DurationDate);
+//                    if (isStartDate.equals("afterdate") || isStartDate.equals("equalsdate")) {
+//                        mCallback.isEarlyCompletion(false);
+//                    } else {
+//                        mCallback.isEarlyCompletion(true);
+//                    }
+//                } catch (ParseException e) {
 //                    e.printStackTrace();
 //                }
-
-                try {
-                    String DurationDate = AppUtils.reFormatDurationTime(Duration, newFormat);
-                    String isStartDate = AppUtils.compareDates(AppUtils.currentDateTime(), DurationDate);
-                    Log.i("isEarlyDuration", isStartDate);
-                    if (isStartDate.equals("afterdate") || isStartDate.equals("equalsdate")) {
-                        mCallback.isEarlyCompletion(false);
-                    } else {
-                        mCallback.isEarlyCompletion(true);
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
 //
 //                SimpleDateFormat timeFormat = new SimpleDateFormat(newFormat);
 //                formatedDate = timeFormat.format(myDate);
+                NetworkCallController controller = new NetworkCallController(this);
+                controller.setListner(new NetworkResponseListner() {
+                    @Override
+                    public void onResponse(int requestCode, Object data) {
+                        BasicResponse response = (BasicResponse) data;
+                        if(response.getSuccess()){
+                            mCallback.isEarlyCompletion(false);
+                        }else {
+                            mCallback.isEarlyCompletion(true);
+                        }
+                    }
 
+                    @Override
+                    public void onFailure(int requestCode) {
 
+                    }
+                });
+                controller.getValidateCompletionTime(COMPLETION_REQUEST,mGeneralRealmModel.get(0).getActualCompletionDateTime(),taskId);
             }
+        }
+    }
+
+    private void getCommercialDialog() {
+
+        if ((TaskDetailsActivity) getActivity() != null) {
+            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+
+                LayoutInflater li = LayoutInflater.from(getActivity());
+
+                View promptsView = li.inflate(R.layout.layout_commercial_dialog, null);
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+
+                alertDialogBuilder.setView(promptsView);
+                final AlertDialog alertDialog = alertDialogBuilder.create();
+
+                final AppCompatEditText edtmobile =
+                        (AppCompatEditText) promptsView.findViewById(R.id.edtmobile);
+                final AppCompatEditText edtName =
+                        (AppCompatEditText) promptsView.findViewById(R.id.edtName);
+                final AppCompatButton btn_send =
+                        (AppCompatButton) promptsView.findViewById(R.id.btn_send);
+                final AppCompatButton btn_cancel =
+                        (AppCompatButton) promptsView.findViewById(R.id.btn_cancel);
+                final String resourceId = mLoginRealmModels.get(0).getUserID();
+                final String mobileNo = mLoginRealmModels.get(0).getPhoneNumber();
+
+                btn_send.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (isOnSiteValidate(edtmobile, edtName)) {
+                            if (!mobileNo.equalsIgnoreCase(edtmobile.getText().toString())) {
+                                NetworkCallController controller = new NetworkCallController(GeneralFragment.this);
+                                controller.setListner(new NetworkResponseListner() {
+                                    @Override
+                                    public void onResponse(int requestCode, Object data) {
+                                        OnSiteOtpResponse response = (OnSiteOtpResponse) data;
+                                        if (response.getSuccess()) {
+                                            Toasty.success(getActivity(), "OTP send successfully");
+                                            alertDialog.dismiss();
+                                        } else {
+                                            Toasty.success(getActivity(), response.getErrorMessage());
+                                            alertDialog.dismiss();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(int requestCode) {
+                                    }
+                                });
+                                controller.getOnSiteOTP(ONSITE_REQUEST, resourceId, taskId, edtName.getText().toString(), edtmobile.getText().toString());
+                            } else {
+                                Toasty.error(getActivity(), "Invalid mobile no.").show();
+                            }
+                        }
+                    }
+                });
+                btn_cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.dismiss();
+                    }
+                });
+                alertDialog.show();
+            }
+        }
+    }
+
+    private boolean isOnSiteValidate(EditText edtmobile, EditText edtName) {
+        if (edtName.getText().toString().length() == 0) {
+            edtName.setError("This field is required");
+            return false;
+        } else if (edtmobile.getText().toString().length() == 0) {
+            edtmobile.setError("This field is required");
+            return false;
+        } else if (edtmobile.getText().toString().length() < 10) {
+            edtmobile.setError("Invalid mobile no.");
+            return false;
+        } else {
+            return true;
         }
     }
 
@@ -552,7 +671,6 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
         }
 
     }
-
 
     @Override
     public void onStart() {

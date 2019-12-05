@@ -35,6 +35,10 @@ public class GeneralData implements RealmModel {
     @Expose
     private String MobileNumber;
 
+    @SerializedName("AlternateMobileNumber")
+    @Expose
+    private String AlternateMobileNumber;
+
     @SerializedName("CustomerName")
     @Expose
     private String CustName;
@@ -147,6 +151,10 @@ public class GeneralData implements RealmModel {
     @Expose
     private String ChequeNo;
 
+    @SerializedName("AccountType")
+    @Expose
+    private String AccountType;
+
     @SerializedName("ChequeDate")
     @Expose
     private String ChequeDate;
@@ -188,6 +196,7 @@ public class GeneralData implements RealmModel {
         Sc_OTP = "NA";
         Onsite_OTP = "NA";
         Customer_OTP = "NA";
+        AccountType = "NA";
         Signatory = "NA";
         SignatureUrl = "NA";
         ServicePlan = "NA";
@@ -539,5 +548,21 @@ public class GeneralData implements RealmModel {
 
     public void setRestrict_Early_Completion(Boolean restrict_Early_Completion) {
         Restrict_Early_Completion = restrict_Early_Completion;
+    }
+
+    public String getAccountType() {
+        return AccountType;
+    }
+
+    public void setAccountType(String accountType) {
+        AccountType = accountType;
+    }
+
+    public String getAlternateMobileNumber() {
+        return AlternateMobileNumber;
+    }
+
+    public void setAlternateMobileNumber(String alternateMobileNumber) {
+        AlternateMobileNumber = alternateMobileNumber;
     }
 }

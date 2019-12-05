@@ -9,8 +9,9 @@
     <color name="lightorange">#ffff8800</color>
     <color name="maroon">#8B0000</color>
     <color name="bggrey">#FFDDDDDD</color>
-    <color name="link">#0766da</color>
+    <color name="link">#0000FF</color>
     <color name="red">#ff0000</color>
+    <color name="pink">#ffc0cb</color>
 
     <color name="colorAccentDrawerPrimaryDark">#24272c</color>
     <color name="colorAccentDrawerPrimary">#27313d</color>
@@ -34,8 +35,14 @@
     <color name="transparent_black">#66000000</color>
     <color name="transparent_blacke">#b3000000</color>
     <color name="cv_capture_bg">#55000000</color>
+    <color name="black_shade">#0d0c0a</color>
+    <color name="metal_gray">#2C3539</color>
+    <color name="video_gray">#333333</color>
     <color name="low">#CCCCCC</color>
+    <color name="yellow">#fce903</color>
     <color name="skyblue">#D9D9F3</color>
+    <color name="smoke_gray">#F5F5F5</color>
+    <color name="late_pink">#eb9605</color>
 
 
 </resources>

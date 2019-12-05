@@ -4,6 +4,7 @@ import com.ab.hicarerun.network.models.AttachmentModel.AttachmentDeleteRequest;
 import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentResponse;
 import com.ab.hicarerun.network.models.AttachmentModel.PostAttachmentRequest;
 import com.ab.hicarerun.network.models.AttachmentModel.PostAttachmentResponse;
+import com.ab.hicarerun.network.models.AttendanceModel.AttendanceDetailResponse;
 import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
 import com.ab.hicarerun.network.models.AttendanceModel.ProfilePicRequest;
 import com.ab.hicarerun.network.models.BasicResponse;
@@ -12,9 +13,12 @@ import com.ab.hicarerun.network.models.ExotelModel.ExotelResponse;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackRequest;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackResponse;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralResponse;
+import com.ab.hicarerun.network.models.GeneralModel.OnSiteOtp;
+import com.ab.hicarerun.network.models.GeneralModel.OnSiteOtpResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeRequest;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShakeResponse;
+import com.ab.hicarerun.network.models.IncentiveModel.IncentiveResponse;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyRequest;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyResponse;
 import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonModel;
@@ -22,6 +26,7 @@ import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
 import com.ab.hicarerun.network.models.OtpModel.SendOtpResponse;
+import com.ab.hicarerun.network.models.PayementModel.BankResponse;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
 import com.ab.hicarerun.network.models.ProfileModel.TechnicianProfileDetails;
@@ -35,7 +40,10 @@ import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
 import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingRequest;
 import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingResponse;
 import com.ab.hicarerun.network.models.TrainingModel.TrainingResponse;
+import com.ab.hicarerun.network.models.TrainingModel.WelcomeVideoResponse;
 import com.ab.hicarerun.network.models.UpdateAppModel.UpdateResponse;
+import com.ab.hicarerun.network.models.voucher.VoucherRequest;
+import com.ab.hicarerun.network.models.voucher.VoucherResponseMain;
 
 import java.util.List;
 
@@ -49,7 +57,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface IRetrofit {
-//        String BASE_URL = "http://52.74.65.15/mobileapi/api/";
+    //        String BASE_URL = "http://52.74.65.15/mobileapi/api/";
     //    String ERROR_LOG_URL = "http://52.74.65.15/logging/api/";
     //    http://apps.hicare.in/cwf/datasync/InsertRenewalAppJeopardy
     String BASE_URL = "http://run.hicare.in/mobile/api/";
@@ -205,5 +213,46 @@ public interface IRetrofit {
 
     @POST("datasync/InsertRenewalAppJeopardy")
     Call<CWFJeopardyResponse> postCWFJeopardy(@Body CWFJeopardyRequest request);
+
+    /*[Resource Incentive]*/
+
+    @GET("ResourceActivity/GetResourceIncentive")
+    Call<IncentiveResponse> getTechnicianIncentive(@Query("resourceId") String customerNo);
+
+    /*[getAttendanceDetail]*/
+
+    @GET("ResourceActivity/GetResourceAttendenceStatistics")
+    Call<AttendanceDetailResponse> getAttendanceDetail(@Query("resourceId") String resourceId);
+
+    /*[Voucher Code]*/
+
+    @GET("ResourceActivity/GetTechnicianReferralCode")
+    Call<VoucherResponseMain> getTechnicianReferralCode(@Query("resourceId") String resourceId);
+
+
+    /*[GetWelcomeVideo]*/
+
+    @GET("VideoUploader/GetWelcomeVideo")
+    Call<WelcomeVideoResponse> getStartingVideos();
+
+
+    /*[ResendOnsiteOTP]*/
+
+    @GET("Task/ResendOnsiteOTP")
+    Call<OnSiteOtpResponse> getOnsiteOTP(@Query("resourceId") String resourceId,
+                                         @Query("taskId") String taskId,
+                                         @Query("customername") String customername,
+                                         @Query("customermobile") String customermobile);
+
+    /*[Task/ValidateCompletionTime]*/
+
+    @GET("Task/ValidateCompletionTime")
+    Call<BasicResponse> getValidateCompletionTime(@Query("completionDateTime") String resourceId,
+                                                  @Query("taskId") String taskId);
+
+    /*[Payment/GetBanksName]*/
+
+    @GET("Payment/GetBankList")
+    Call<BankResponse> getBanksName();
 
 }

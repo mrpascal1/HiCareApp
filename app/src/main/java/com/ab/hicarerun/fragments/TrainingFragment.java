@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,6 +35,8 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import io.realm.RealmResults;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class TrainingFragment extends BaseFragment {
 FragmentTrainingBinding mFragmentTrainingBinding;
@@ -67,6 +70,8 @@ FragmentTrainingBinding mFragmentTrainingBinding;
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        InputMethodManager imm =(InputMethodManager)getActivity().getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         mFragmentTrainingBinding.swipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override

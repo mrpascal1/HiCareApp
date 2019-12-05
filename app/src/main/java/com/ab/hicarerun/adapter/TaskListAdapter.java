@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.hardware.Camera;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -90,6 +91,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     }
 
 
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         TaskListAdapterBinding mTaskListAdapterBinding =
@@ -102,20 +104,29 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.mTaskListAdapterBinding.txtTime.setText(items.get(position).getTaskAssignmentStartTime() + " - " + items.get(position).getTaskAssignmentEndTime());
         holder.mTaskListAdapterBinding.txtName.setText(items.get(position).getAccountName());
-        holder.mTaskListAdapterBinding.txtStatus.setPrimaryText(items.get(position).getStatus());
+        holder.mTaskListAdapterBinding.status.setText(items.get(position).getStatus());
+        holder.mTaskListAdapterBinding.status.setTypeface(Typeface.DEFAULT_BOLD, Typeface.NORMAL);
         Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.blink);
         holder.mTaskListAdapterBinding.imgWarning.startAnimation(animation);
-        if (items.get(position).getStatus().equals("Completed")) {
+        if (items.get(position).getStatus().equalsIgnoreCase("Completed")) {
             holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
-            holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#1E90FF"));
-        } else if (items.get(position).getStatus().equals("Dispatched")) {
-            holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#FFA500"));
-        } else if (items.get(position).getStatus().equals("On-Site")) {
+            holder.mTaskListAdapterBinding.warning.setVisibility(View.GONE);
+//            holder.mTaskListAdapterBinding.status.setTextColor(Color.parseColor("#1E90FF"));
+            holder.mTaskListAdapterBinding.lnrStatus.setBackgroundColor(Color.parseColor("#1E90FF"));
+        } else if (items.get(position).getStatus().equalsIgnoreCase("Dispatched")) {
+//            holder.mTaskListAdapterBinding.status.setTextColor(Color.parseColor("#ff6700"));
+            holder.mTaskListAdapterBinding.lnrStatus.setBackgroundColor(Color.parseColor("#ff6700"));
+        } else if (items.get(position).getStatus().equalsIgnoreCase("On-Site")) {
             holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
-            holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#e5e112"));
-        } else if (items.get(position).getStatus().equals("Incomplete")) {
+            holder.mTaskListAdapterBinding.warning.setVisibility(View.GONE);
+//            holder.mTaskListAdapterBinding.status.setTextColor(Color.parseColor("#e1ad01"));
+            holder.mTaskListAdapterBinding.lnrStatus.setBackgroundColor(Color.parseColor("#e1ad01"));
+        } else if (items.get(position).getStatus().equalsIgnoreCase("Incomplete")) {
             holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
-            holder.mTaskListAdapterBinding.txtStatus.setTriangleBackgroundColor(Color.parseColor("#FF69B4"));
+            holder.mTaskListAdapterBinding.warning.setVisibility(View.GONE);
+//            holder.mTaskListAdapterBinding.status.setTextColor(Color.parseColor("#FF69B4"));
+            holder.mTaskListAdapterBinding.lnrStatus.setBackgroundColor(Color.parseColor("#FF69B4"));
+
         }
 
         if (items.get(position).getTag() != null && items.get(position).getTag().length() > 0) {
@@ -125,20 +136,20 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             holder.mTaskListAdapterBinding.lnrTag.setVisibility(View.GONE);
         }
 
-        if (items.get(0).getSequenceNumber() != 0) {
+        if (items.get(position).getSequenceNumber() != 0) {
             holder.mTaskListAdapterBinding.lnrSequence.setVisibility(View.VISIBLE);
-            holder.mTaskListAdapterBinding.txtSequence.setText(String.valueOf(items.get(0).getSequenceNumber()));
+            holder.mTaskListAdapterBinding.txtSequence.setText(String.valueOf(items.get(position).getSequenceNumber()));
         } else {
             holder.mTaskListAdapterBinding.lnrSequence.setVisibility(View.GONE);
         }
 
         holder.mTaskListAdapterBinding.txtService.setText(items.get(position).getServicePlan());
         holder.mTaskListAdapterBinding.txtType.setText(items.get(position).getServiceType());
-        if (items.get(position).getStreet() != null) {
+        if (items.get(position).getStreet() != null){
             street = items.get(position).getStreet();
         }
 
-        if (items.get(position).getBuildingName() != null && items.get(position).getBuildingName().trim().length() != 0 ) {
+        if (items.get(position).getBuildingName() != null && items.get(position).getBuildingName().trim().length() != 0) {
             holder.mTaskListAdapterBinding.lnrAddress.setVisibility(View.VISIBLE);
             if (items.get(position).getWingFlatOrUnitNumber() != null && !items.get(position).getWingFlatOrUnitNumber().equals("")) {
                 Flat = items.get(position).getWingFlatOrUnitNumber() + ", ";
@@ -209,10 +220,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             public void run() {
                 //call function
 
-                if (items.get(position).getStatus().equals("Dispatched")) {
+                if (items.get(position).getStatus().equalsIgnoreCase("Dispatched")) {
                     startCountUpTimer(holder, position);
                 } else {
                     holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
+                    holder.mTaskListAdapterBinding.warning.setVisibility(View.GONE);
                 }
                 ha.postDelayed(this, 1000);
             }
@@ -299,21 +311,22 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         final int year = Integer.parseInt(year_start);
         String isStartDate = AppUtils.compareDates(AppUtils.currentDateTime(), sDate);
 
-        if (items.get(position).getStatus().equals("Dispatched")) {
-
-            if (isStartDate.equals("afterdate")) {
+        if (items.get(position).getStatus().equalsIgnoreCase("Dispatched")) {
+            if (isStartDate.equalsIgnoreCase("afterdate")) {
                 conferenceTime.set(second, minute, hour, monthDay, month, year);
                 holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
                 holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.VISIBLE);
+                holder.mTaskListAdapterBinding.warning.setVisibility(View.VISIBLE);
 
             } else {
                 holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
                 holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
+                holder.mTaskListAdapterBinding.warning.setVisibility(View.GONE);
                 conferenceTime.set(second, minute, hour, monthDay, month, year);
             }
-
         } else {
             holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
+            holder.mTaskListAdapterBinding.warning.setVisibility(View.GONE);
         }
 
         conferenceTime.normalize(true);
@@ -326,7 +339,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         milli = milliDiff;
         long millis = 900000 - milliDiff;
         timeSwapBuff += timeInMilliseconds;
-
     }
 
 
@@ -406,7 +418,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                 sequence.addSequenceItem(mTaskListAdapterBinding.dispatchTaskMobileNo,
                         "Using this you can call customer.", "GOT IT");
 
-                sequence.addSequenceItem(mTaskListAdapterBinding.txtStatus,
+                sequence.addSequenceItem(mTaskListAdapterBinding.status,
                         "You can check your task status here.", "GOT IT");
 
                 sequence.addSequenceItem(mTaskListAdapterBinding.helpline,

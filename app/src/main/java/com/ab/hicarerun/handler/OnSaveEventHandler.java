@@ -1,5 +1,6 @@
 package com.ab.hicarerun.handler;
 
+import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentList;
 import com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;
 
 import java.util.HashMap;
@@ -79,4 +80,8 @@ public interface OnSaveEventHandler {
     public void onSiteOtp(String s);
 
     public void isEarlyCompletion(Boolean b);
+
+    public void isJobCardEnable(Boolean b);
+
+    public void AttachmentList(List<GetAttachmentList> mList);
 }

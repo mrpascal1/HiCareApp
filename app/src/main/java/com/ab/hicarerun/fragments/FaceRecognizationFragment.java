@@ -27,11 +27,17 @@ import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 
@@ -44,6 +50,7 @@ import com.ab.hicarerun.activities.VerifyOtpActivity;
 import com.ab.hicarerun.databinding.FragmentFaceRecognizationBinding;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
+import com.ab.hicarerun.network.models.AttendanceModel.AttendanceDetail;
 import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
 import com.ab.hicarerun.network.models.AttendanceModel.ProfilePicRequest;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeResponse;
@@ -84,8 +91,14 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
     private int rotation;
     private String encodedImage = "";
     private static final int CAM_REQ = 1000;
+    private static final int ATTENDANCE_REQ = 3000;
     private static final int HANDSHAKE_REQUEST = 2000;
     private String username = "";
+    private int Days = 0;
+    private int PresentDays = 0;
+    private int AbsentDays = 0;
+    private int LateDays = 0;
+
 
 
     public FaceRecognizationFragment() {
@@ -148,6 +161,32 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                 takeImage();
             }
         });
+    }
+
+    private void getAttendanceDetails() {
+        RealmResults<LoginResponse> LoginRealmModels =
+                BaseApplication.getRealm().where(LoginResponse.class).findAll();
+        if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+            String resourceId = LoginRealmModels.get(0).getUserID();
+            NetworkCallController controller = new NetworkCallController(this);
+            controller.setListner(new NetworkResponseListner() {
+                @Override
+                public void onResponse(int requestCode, Object response) {
+                    AttendanceDetail data = (AttendanceDetail) response;
+                   LateDays = data.getTotalDaysLateCome();
+                   Days = data.getTotalNoOfDays();
+                   PresentDays = data.getTotalNoOfDaysPresent();
+                   AbsentDays = Days-PresentDays;
+                    getAttendanceSheetDialog();
+                }
+
+                @Override
+                public void onFailure(int requestCode) {
+
+                }
+            });
+            controller.getAttendanceDetail(ATTENDANCE_REQ,resourceId);
+        }
     }
 
 
@@ -326,6 +365,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                                         public void onResponse(int requestCode, Object data) {
                                             ContinueHandShakeResponse response = (ContinueHandShakeResponse) data;
                                             if (response.getSuccess()) {
+                                                getAttendanceDetails();
                                                 Toasty.success(getActivity(), "Attendance marked successfully.", Toast.LENGTH_SHORT).show();
                                                 replaceFragment(HomeFragment.newInstance(), "FaceRecognizationFragment-HomeFragment");
                                             } else {
@@ -338,7 +378,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
 
                                         }
                                     });
-                                    controller.getTechAttendance(CAM_REQ, request);
+                                    controller.getTechAttendance(ATTENDANCE_REQ, request);
 
                                 }
                             }
@@ -387,6 +427,33 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
             e.printStackTrace();
         }
 
+
+    }
+
+    private void getAttendanceSheetDialog() {
+        LayoutInflater li = LayoutInflater.from(getActivity());
+
+        View promptsView = li.inflate(R.layout.layout_view_attendance, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        TextView txtDays = promptsView.findViewById(R.id.txtDays);
+        TextView txtPresent = promptsView.findViewById(R.id.txtPresent);
+        TextView txtAbsent = promptsView.findViewById(R.id.txtAbsent);
+        TextView txtLate = promptsView.findViewById(R.id.txtLate);
+        txtDays.setText(String.valueOf(Days));
+        txtPresent.setText(String.valueOf(PresentDays));
+        txtAbsent.setText(String.valueOf(AbsentDays));
+        txtLate.setText(String.valueOf(LateDays));
+        alertDialogBuilder.setView(promptsView);
+        final AlertDialog alertDialog = alertDialogBuilder.create();
+        LinearLayout btnOk = promptsView.findViewById(R.id.lnrOk);
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.setCancelable(false);
+        alertDialog.show();
 
     }
 

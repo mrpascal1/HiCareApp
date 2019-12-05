@@ -6,47 +6,58 @@
 
         <item
             android:id="@+id/nav_home"
-            android:title="@string/home"
             android:icon="@drawable/ic_home"
-            />
+            android:title="@string/home" />
+
+
+        <item
+            android:id="@+id/nav_incentive"
+            android:icon="@drawable/ic_incentive"
+            android:title="@string/incentive" />
+
+        <item
+            android:id="@+id/nav_attendance"
+            android:icon="@drawable/ic_icon"
+            android:title="@string/your_attendance" />
 
         <item
             android:id="@+id/nav_groom"
-            android:title="@string/grooming"
             android:icon="@drawable/ic_groom"
-            />
+            android:title="@string/grooming" />
 
         <item
             android:id="@+id/nav_myid"
-            android:title="@string/my_id_card"
             android:icon="@drawable/ic_id_card"
-            />
+            android:title="@string/my_id_card" />
 
         <item
             android:id="@+id/nav_notifications"
-            android:title="@string/notifications"
             android:icon="@drawable/ic_bell"
-            android:visible="false"
-            />
+            android:title="@string/notifications"
+            android:visible="false" />
         <item
             android:id="@+id/nav_training"
-            android:title="@string/training"
             android:icon="@drawable/ic_learn"
-
+            android:title="@string/training"
+            android:visible="false"
             />
+
+        <item
+            android:id="@+id/nav_voucher"
+            android:icon="@drawable/ic_voucher"
+            android:title="@string/referral_code" />
 
         <item
             android:id="@+id/nav_help"
-            android:title="@string/help"
             android:icon="@drawable/ic_info"
+            android:title="@string/help"
 
             />
 
 
         <item
             android:id="@+id/nav_logout"
-            android:title="@string/logout"
             android:icon="@drawable/ic_logout"
-           />
+            android:title="@string/logout" />
     </group>
 </menu>

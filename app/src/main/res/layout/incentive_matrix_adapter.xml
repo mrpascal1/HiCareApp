@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout  xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <LinearLayout
+        android:id = "@+id/relativeLayout1"
+        android:layout_width = "fill_parent"
+        android:layout_height = "35dp"
+        android:weightSum="2"
+        android:gravity="center">
+
+        <TextView
+            android:id = "@+id/txtMatrix"
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1"
+            android:background = "@drawable/chemical_cells"
+            android:ellipsize = "end"
+            android:padding = "5dp"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:singleLine = "true" />
+
+        <TextView
+            android:id = "@+id/txtIncentive"
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1"
+            android:background = "@drawable/chemical_cells"
+            android:ellipsize = "end"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:padding = "5dp"
+            android:singleLine = "true" />
+
+
+    </LinearLayout>
+
+
+</layout>

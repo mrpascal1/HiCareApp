@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Build;
@@ -44,6 +45,7 @@ import com.ab.hicarerun.fragments.SignatureFragment;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
+import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentList;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralResponse;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;
@@ -143,12 +145,14 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
 
         setSupportActionBar(mActivityTaskDetailsBinding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mActivityTaskDetailsBinding.viewpager.setOffscreenPageLimit(5);
+
+//        mActivityTaskDetailsBinding.viewpager.setOffscreenPageLimit(5);
         model = getIntent().getParcelableExtra(ARGS_TASKS);
 
         LocationManager.Builder builder = new LocationManager.Builder(this);
         builder.setLocationListner(this);
         builder.build();
+
         progress = new ProgressDialog(this, R.style.TransparentProgressDialog);
         progress.setCancelable(false);
         locationManager =
@@ -216,22 +220,20 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
 
     }
 
-
     private void setViewPagerView() {
 
         mAdapter = new TaskViewPagerAdapter(getSupportFragmentManager());
+
         if (sta.equals("Dispatched") || sta.equals("Incomplete")) {
             mAdapter.addFragment(GeneralFragment.newInstance(model.getTaskId(), model.getStatus()), "General");
         } else {
             mAdapter.addFragment(GeneralFragment.newInstance(model.getTaskId(), model.getStatus()), "General");
             mAdapter.addFragment(ChemicalFragment.newInstance(model.getTaskId()), "Chemical Required");
-            mAdapter.addFragment(ReferralFragment.newInstance(model.getTaskId()), "Customer Referrals");
+            mAdapter.addFragment(ReferralFragment.newInstance(model), "Customer Referrals");
             mAdapter.addFragment(PaymentFragment.newInstance(model.getTaskId()), "Payment");
             mAdapter.addFragment(SignatureFragment.newInstance(model.getTaskId()), "Customer Signature");
         }
-
         mActivityTaskDetailsBinding.viewpager.setAdapter(mAdapter);
-
         mActivityTaskDetailsBinding.viewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float v, int i1) {
@@ -272,8 +274,6 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
 
             }
         });
-
-
     }
 
     private void showRatingDialog() {
@@ -555,7 +555,6 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                         }
                     }
                 }
-
             }
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
@@ -918,6 +917,16 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     @Override
     public void isEarlyCompletion(Boolean b) {
         isEarlyCompletion = b;
+    }
+
+    @Override
+    public void isJobCardEnable(Boolean b) {
+
+    }
+
+    @Override
+    public void AttachmentList(List<GetAttachmentList> mList) {
+
     }
 
     public void onSaveClick(MenuItem item) {

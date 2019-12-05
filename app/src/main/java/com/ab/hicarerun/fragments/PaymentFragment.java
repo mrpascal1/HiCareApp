@@ -46,11 +46,14 @@ import com.ab.hicarerun.handler.OnSaveEventHandler;
 import com.ab.hicarerun.handler.UserPaymentClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
+import com.ab.hicarerun.network.models.BasicResponse;
+import com.ab.hicarerun.network.models.ChemicalModel.Chemicals;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackRequest;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackResponse;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralPaymentMode;
 import com.ab.hicarerun.network.models.LoginResponse;
+import com.ab.hicarerun.network.models.PayementModel.BankNames;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
 import com.ab.hicarerun.utils.AppUtils;
@@ -86,11 +89,10 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
     private String AmountCollected = "";
     private ArrayList<String> type = null;
     private RealmResults<GeneralData> mGeneralRealmData = null;
-
     private OnSaveEventHandler mCallback;
-
     private String[] bankNames;
     List<String> bankList;
+
     private BankSearchAdapter mAdapter;
     private AlertDialog alertDialog;
     private String[] arrayMode = null;
@@ -102,6 +104,7 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
     private String Email = "";
     private String mask = "";
     private static final int POST_PAYMENT_LINK = 1000;
+    private static final int REQUEST_BANK = 2000;
     private static final String ARG_TASK = "ARG_TASK";
     private String taskId = "";
     private String mobile = "";
@@ -146,7 +149,7 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
         try {
             AppUtils.statusCheck(getActivity());
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -156,8 +159,9 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentPaymentBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_payment, container, false);
-        bankNames = getResources().getStringArray(R.array.bank_name);
-        bankList = new ArrayList<String>(Arrays.asList(bankNames));
+//        bankNames = getResources().getStringArray(R.array.bank_name);
+//        bankList = new ArrayList<String>(Arrays.asList(bankNames));
+        bankList = new ArrayList<String>();
         mFragmentPaymentBinding.setHandler(this);
         return mFragmentPaymentBinding.getRoot();
     }
@@ -209,8 +213,6 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
     private void getPaymentData() {
         mGeneralRealmData =
                 getRealm().where(GeneralData.class).findAll();
-
-
         if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
             mobile = mGeneralRealmData.get(0).getMobileNumber();
             Email = mGeneralRealmData.get(0).getEmail();
@@ -378,7 +380,6 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
                             AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getPaymentData", lineNo, userName, DeviceName);
                         }
                     }
-
 
                 }
 
@@ -574,9 +575,7 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
 
     }
 
-
     private void showBankDialog() {
-
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.bank_custom_dialog, null);
@@ -586,51 +585,106 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
         final TextView txt_close = (TextView) dialogView.findViewById(R.id.txt_close);
         final SearchView search = (SearchView) dialogView.findViewById(R.id.search);
 
-        RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity());
-        recycle.setLayoutManager(lm);
-        recycle.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new BankSearchAdapter(getActivity(), bankList);
-        recycle.setAdapter(mAdapter);
 
+        if (bankList == null || bankList.size() == 0) {
+            NetworkCallController controller = new NetworkCallController(PaymentFragment.this);
+            controller.setListner(new NetworkResponseListner() {
+                @Override
+                public void onResponse(int requestCode, Object data) {
+                    List<String> items = (List<String>) data;
 
-        recycle.addItemDecoration(new MyDividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL, 10));
+                    if (items != null) {
+                        RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity());
+                        recycle.setLayoutManager(lm);
+                        recycle.setItemAnimator(new DefaultItemAnimator());
+                        mAdapter = new BankSearchAdapter(getActivity(), items);
+                        recycle.setAdapter(mAdapter);
+                        recycle.addItemDecoration(new MyDividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL, 10));
+                        mAdapter.onBankSelected(new BankSearchAdapter.BankAdapterListener() {
+                            @Override
+                            public void onSelected(String item, int position) {
+                                mFragmentPaymentBinding.txtBankname.setText(item);
+                                mCallback.bankName(item);
+                                mGeneralRealmData =
+                                        getRealm().where(GeneralData.class).findAll();
 
-        mAdapter.onBankSelected(new BankSearchAdapter.BankAdapterListener() {
-            @Override
-            public void onSelected(String item, int position) {
-                mFragmentPaymentBinding.txtBankname.setText(item);
-                mCallback.bankName(item);
-                mGeneralRealmData =
-                        getRealm().where(GeneralData.class).findAll();
+                                if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
+                                    try {
+                                        String amountToCollect = mGeneralRealmData.get(0).getAmountToCollect();
+                                        int amount = Integer.parseInt(amountToCollect);
+                                        getValidated(amount);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                alertDialog.dismiss();
+                            }
+                        });
+                        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                            @Override
+                            public boolean onQueryTextSubmit(String query) {
+                                mAdapter.getFilter().filter(query);
+                                return false;
+                            }
 
+                            @Override
+                            public boolean onQueryTextChange(String query) {
+                                mAdapter.getFilter().filter(query);
+                                return false;
+                            }
+                        });
+                    } else {
+                        RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity());
+                        recycle.setLayoutManager(lm);
+                        recycle.setItemAnimator(new DefaultItemAnimator());
+                        mAdapter = new BankSearchAdapter(getActivity(), bankList);
+                        recycle.setAdapter(mAdapter);
+                        recycle.addItemDecoration(new MyDividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL, 10));
+                        mAdapter.onBankSelected(new BankSearchAdapter.BankAdapterListener() {
+                            @Override
+                            public void onSelected(String item, int position) {
+                                mFragmentPaymentBinding.txtBankname.setText(item);
+                                mCallback.bankName(item);
+                                mGeneralRealmData =
+                                        getRealm().where(GeneralData.class).findAll();
 
-                if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
-                    try {
-                        String amountToCollect = mGeneralRealmData.get(0).getAmountToCollect();
-                        int amount = Integer.parseInt(amountToCollect);
-                        getValidated(amount);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                                if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
+                                    try {
+                                        String amountToCollect = mGeneralRealmData.get(0).getAmountToCollect();
+                                        int amount = Integer.parseInt(amountToCollect);
+                                        getValidated(amount);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                alertDialog.dismiss();
+                            }
+
+                        });
+                        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                            @Override
+                            public boolean onQueryTextSubmit(String query) {
+                                mAdapter.getFilter().filter(query);
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onQueryTextChange(String query) {
+                                mAdapter.getFilter().filter(query);
+                                return false;
+                            }
+                        });
                     }
                 }
-                alertDialog.dismiss();
-            }
 
-        });
-        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                mAdapter.getFilter().filter(query);
-                return false;
-            }
+                @Override
+                public void onFailure(int requestCode) {
 
-            @Override
-            public boolean onQueryTextChange(String query) {
-                mAdapter.getFilter().filter(query);
-                return false;
-            }
-        });
-
+                }
+            });
+            controller.getBanksName(REQUEST_BANK);
+        } else {
+        }
 
         txt_close.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -638,7 +692,6 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
                 alertDialog.dismiss();
             }
         });
-
         dialogBuilder.setCancelable(false);
         alertDialog = dialogBuilder.create();
         alertDialog.setCanceledOnTouchOutside(true);
@@ -676,7 +729,6 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
                                 mCallback.isPaymentChanged(true);
                                 mCallback.isACEquals(true);
                             }
-
                         } catch (Exception e) {
                             e.getMessage();
                             Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -690,7 +742,6 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
                             mCallback.isAmountCollectedRequired(true);
                         }
                     }
-
                 }
             } else {
                 Log.i("paymentMode", mode);
@@ -716,7 +767,6 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
                 } else {
                     mCallback.isPaymentChanged(false);
                     mCallback.isAmountCollectedRequired(false);
-
                 }
             } else {
                 mFragmentPaymentBinding.txtCollected.setEnabled(false);
@@ -724,7 +774,6 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
                 mCallback.isAmountCollectedRequired(false);
             }
         }
-
 
         if (mFragmentPaymentBinding.spnPtmmode.getSelectedItem().toString().equals("Cheque")) {
             mFragmentPaymentBinding.lnrCheque.setVisibility(View.VISIBLE);
@@ -759,7 +808,6 @@ public class PaymentFragment extends BaseFragment implements UserPaymentClickHan
                             mCallback.isPaymentChanged(true);
                             mCallback.isAmountCollectedRequired(true);
                         }
-
                     }
                 } else {
                     mCallback.isPaymentChanged(true);

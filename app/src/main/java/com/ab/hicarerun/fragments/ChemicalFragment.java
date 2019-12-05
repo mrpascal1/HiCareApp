@@ -128,8 +128,6 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
         super.onViewCreated(view, savedInstanceState);
         mFragmentChemicalBinding.recycleView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
-//        layoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
-//        mFragmentChemicalBinding.recycleView.setNestedScrollingEnabled(false);
         mFragmentChemicalBinding.recycleView.setLayoutManager(layoutManager);
         mGeneralRealmData =
                 getRealm().where(GeneralData.class).findAll();

@@ -1,6 +1,7 @@
 package com.ab.hicarerun.fragments;
 
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -15,10 +17,13 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -40,6 +45,7 @@ import com.ab.hicarerun.handler.OnSaveEventHandler;
 import com.ab.hicarerun.handler.UserSignatureClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
+import com.ab.hicarerun.network.models.BasicResponse;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackRequest;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackResponse;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
@@ -65,27 +71,21 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
     private static final int POST_FEEDBACK_LINK = 1000;
     private static final String ARG_TASK = "ARG_TASK";
     private static final String ARG_VAR = "ARG_VAR";
-
+    private static final int COMPLETION_REQUEST = 2000;
     private String status = "";
     private String state = "";
     static String mFeedback = "";
-    static String mSignatory = "";
-    static String mSignature = "";
-    static String mActualProperty = "";
-    static Boolean isCheck = false;
-    private String path = "";
-    private boolean jobCard = false;
     private boolean isAttachment = false;
     private OnSaveEventHandler mCallback;
     private DrawingView dv;
     private Paint mPaint;
     private Bitmap bmp;
-    private File file, mFile;
     private String Email = "", mobile = "", Order_Number = "", Service_Name = "", mask = "", UserId = "", name = "", code = "";
     private String taskId = "";
     private String actual_property = "", feedback_code = "", signatory = "", signature = "";
     private Boolean isJobcardEnable = false;
     private Boolean isFeedBack = false;
+    private String accountType = "";
     private RealmResults<GeneralData> mGeneralRealmData = null;
 
 
@@ -97,7 +97,6 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
         args.putString(ARG_TASK, taskId);
         SignatureFragment fragment = new SignatureFragment();
         fragment.setArguments(args);
-
         return fragment;
     }
 
@@ -118,16 +117,15 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
         if (getArguments() != null) {
             taskId = getArguments().getString(ARG_TASK);
         }
-
     }
 
     @Override
     public void onResume() {
         super.onResume();
         getValidate();
-        try{
+        try {
             AppUtils.statusCheck(getActivity());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -208,9 +206,9 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
         });
     }
 
+
     private void getSignature() {
         try {
-
             mGeneralRealmData =
                     getRealm().where(GeneralData.class).findAll();
 
@@ -271,7 +269,7 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                 signatory = mFragmentSignatureBinding.txtSignatory.getText().toString();
                 isJobcardEnable = mGeneralRealmData.get(0).getJobCardRequired();
                 isFeedBack = mGeneralRealmData.get(0).getFeedBack();
-
+                accountType = mGeneralRealmData.get(0).getAccountType();
                 if (isJobcardEnable) {
                     mFragmentSignatureBinding.btnUpload.setVisibility(View.VISIBLE);
                 } else {
@@ -282,10 +280,10 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getSignature", lineNo,userName,DeviceName);
+                String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getSignature", lineNo, userName, DeviceName);
             }
         }
     }
@@ -293,7 +291,6 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
 
     @Override
     public void onSignatureClicked(View view) {
-
         if (status.equals("Completed") || status.equals("Incomplete")) {
             Log.v("state", status);
         } else {
@@ -304,31 +301,27 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
     private void getSignatureDialog() {
 
         if (mFragmentSignatureBinding.imgSign.getDrawable() == null) {
-            LayoutInflater li = LayoutInflater.from(getActivity());
-
-
-            View promptsView = li.inflate(R.layout.signature_dialog, null);
-
-//            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.MyAlertDialogTheme);
-
-
-            alertDialogBuilder.setView(promptsView);
-
-            // set dialog message
-
-            alertDialogBuilder.setTitle("Signature");
-
-            // create alert dialog
-            final AlertDialog alertDialog = alertDialogBuilder.create();
-
+//            LayoutInflater li = LayoutInflater.from(getActivity());
+//            View promptsView = li.inflate(R.layout.signature_dialog, null);
+            View promptsView = getLayoutInflater().inflate(R.layout.signature_dialog, null);
+            final Dialog dialog = new Dialog(getActivity(), android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+            Window window = dialog.getWindow();
+            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            window.setBackgroundDrawableResource(R.color.darkblack);
+            dialog.setContentView(promptsView);
+            dialog.setCancelable(false);
+            dialog.show();
+//            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.MyAlertDialogTheme);
+//            alertDialogBuilder.setView(promptsView);
+//            alertDialogBuilder.setTitle("Signature");
+//            final AlertDialog alertDialog = alertDialogBuilder.create();
             final RelativeLayout lnr_screen =
                     (RelativeLayout) promptsView.findViewById(R.id.lnr_screen);
             final AppCompatImageView img_right =
                     (AppCompatImageView) promptsView.findViewById(R.id.img_right);
             final AppCompatImageView img_wrong =
                     (AppCompatImageView) promptsView.findViewById(R.id.img_wrong);
-
             final AppCompatButton btn_close =
                     (AppCompatButton) promptsView.findViewById(R.id.btn_close);
             final AppCompatTextView txt_hint =
@@ -337,15 +330,20 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
             dv = new DrawingView(getActivity(), txt_hint, img_right);
             lnr_screen.addView(dv);
 
-            img_right.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            if (dialog != null) {
+                int width = ViewGroup.LayoutParams.MATCH_PARENT;
+                int height = ViewGroup.LayoutParams.MATCH_PARENT;
+                dialog.getWindow().setLayout(width, height);
+                dialog.getWindow().setGravity(Gravity.CENTER);
 
-                    View view = lnr_screen;
-                    view.setDrawingCacheEnabled(true);
-                    bmp = Bitmap.createBitmap(view.getDrawingCache());
-                    view.setDrawingCacheEnabled(false);
+                img_right.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
+                        View view = lnr_screen;
+                        view.setDrawingCacheEnabled(true);
+                        bmp = Bitmap.createBitmap(view.getDrawingCache());
+                        view.setDrawingCacheEnabled(false);
 //                    try {
 //                        file = new File(Environment.getExternalStorageDirectory().toString(), "SCREEN"
 //                                + System.currentTimeMillis() + ".png");
@@ -361,45 +359,52 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
 //                    } catch (IOException e) {
 //                        e.printStackTrace();
 //                    }
-                    onCallBack(bmp);
-                    alertDialog.dismiss();
+                        onCallBack(bmp);
+                        dialog.dismiss();
 
-                }
+                    }
 
-            });
+                });
 
-            img_wrong.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    lnr_screen.removeAllViews();
-                    dv = new DrawingView(getActivity(), txt_hint, img_right);
-                    mPaint = new Paint();
-                    mPaint.setAntiAlias(true);
-                    mPaint.setDither(true);
-                    mPaint.setColor(Color.BLACK);
-                    mPaint.setStyle(Paint.Style.STROKE);
-                    mPaint.setStrokeJoin(Paint.Join.ROUND);
-                    mPaint.setStrokeCap(Paint.Cap.ROUND);
-                    mPaint.setStrokeWidth(8);
-                    lnr_screen.addView(dv);
-                    txt_hint.setVisibility(View.VISIBLE);
-                    getValidate();
-                }
-            });
+                img_wrong.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        lnr_screen.removeAllViews();
+                        dv = new DrawingView(getActivity(), txt_hint, img_right);
+                        mPaint = new Paint();
+                        mPaint.setAntiAlias(true);
+                        mPaint.setDither(true);
+                        mPaint.setColor(Color.BLACK);
+                        mPaint.setStyle(Paint.Style.STROKE);
+                        mPaint.setStrokeJoin(Paint.Join.ROUND);
+                        mPaint.setStrokeCap(Paint.Cap.ROUND);
+                        mPaint.setStrokeWidth(8);
+                        lnr_screen.addView(dv);
+                        txt_hint.setVisibility(View.VISIBLE);
+                        getValidate();
+                    }
+                });
 
-            btn_close.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    alertDialog.dismiss();
-                    getValidate();
+                btn_close.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        getValidate();
 
-                }
-            });
+                    }
+                });
 
-            alertDialog.setCancelable(false);
-            alertDialog.setIcon(R.mipmap.logo);
-            // show it
-            alertDialog.show();
+            }
+
+
+//            dialog.setIcon(R.mipmap.logo);
+//            Window window = alertDialog.getWindow();
+//            WindowManager.LayoutParams wlp = window.getAttributes();
+//            wlp.gravity = Gravity.CENTER;
+//            wlp.flags &= ~WindowManager.LayoutParams.FLAG_BLUR_BEHIND;
+//            window.setAttributes(wlp);
+//            alertDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
         }
 
 
@@ -408,27 +413,26 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
     @Override
     public void onSendLinkClicked(View view) {
         if (isFeedBack && status.equals("On-Site") && mGeneralRealmData.get(0).getRestrict_Early_Completion()) {
-
-            try {
-                String Duration = mGeneralRealmData.get(0).getActualCompletionDateTime();
-                String newFormat = "yyyy-MM-dd HH:mm:ss";
-                String DurationDate = AppUtils.reFormatDurationTime(Duration, newFormat);
-                String isStartDate = AppUtils.compareDates(AppUtils.currentDateTime(), DurationDate);
-                Log.i("isFeedbackEarly", isStartDate);
-                if (isStartDate.equals("afterdate") || isStartDate.equals("equalsdate")) {
-//                    mFragmentSignatureBinding.txtFeedback.setEnabled(true);
-//                    mFragmentSignatureBinding.btnSendlink.setVisibility(View.VISIBLE);
-                    sendFeedBackLink();
-
-                } else {
-//                    mFragmentSignatureBinding.txtFeedback.setEnabled(false);
-                    Toasty.error(getActivity(),
-                            "You are not allowed to send feedback link as you have not spent adequate time. Please follow the correct procedure and deliver the job properly",
-                            Toasty.LENGTH_LONG).show();
-                    getValidate();
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
+//            try {
+//                String Duration = mGeneralRealmData.get(0).getActualCompletionDateTime();
+//                String newFormat = "yyyy-MM-dd HH:mm:ss";
+//                String DurationDate = AppUtils.reFormatDurationTime(Duration, newFormat);
+//                String isStartDate = AppUtils.compareDates(AppUtils.currentDateTime(), DurationDate);
+//                Log.i("isFeedbackEarly", isStartDate);
+//                if (isStartDate.equals("afterdate") || isStartDate.equals("equalsdate")) {
+////                    mFragmentSignatureBinding.txtFeedback.setEnabled(true);
+////                    mFragmentSignatureBinding.btnSendlink.setVisibility(View.VISIBLE);
+//                    sendFeedBackLink();
+//
+//                } else {
+////                    mFragmentSignatureBinding.txtFeedback.setEnabled(false);
+//                    Toasty.error(getActivity(),
+//                            "You are not allowed to send feedback link as you have not spent adequate time. Please follow the correct procedure and deliver the job properly",
+//                            Toasty.LENGTH_LONG).show();
+//                    getValidate();
+//                }
+//            } catch (ParseException e) {
+//                e.printStackTrace();
 //                RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
 //                if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
 //                    String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
@@ -436,8 +440,29 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
 //                    String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
 //                    AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "onSendLinkClicked", lineNo,userName,DeviceName);
 //                }
-            }
+//            }
 
+            NetworkCallController controller = new NetworkCallController(this);
+            controller.setListner(new NetworkResponseListner() {
+                @Override
+                public void onResponse(int requestCode, Object data) {
+                    BasicResponse response = (BasicResponse) data;
+                    if (response.getSuccess()) {
+                        sendFeedBackLink();
+                    } else {
+                        Toasty.error(getActivity(),
+                                "You are not allowed to send feedback link as you have not spent adequate time. Please follow the correct procedure and deliver the job properly",
+                                Toasty.LENGTH_LONG).show();
+                        getValidate();
+                    }
+                }
+
+                @Override
+                public void onFailure(int requestCode) {
+
+                }
+            });
+            controller.getValidateCompletionTime(COMPLETION_REQUEST, mGeneralRealmData.get(0).getActualCompletionDateTime(), taskId);
 
         } else {
             sendFeedBackLink();
@@ -446,7 +471,7 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
 
     }
 
-    private void sendFeedBackLink() {
+    public void sendFeedBackLink() {
         LayoutInflater li = LayoutInflater.from(getActivity());
 
         View promptsView = li.inflate(R.layout.link_confirm_dialog, null);
@@ -526,10 +551,7 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
 
     private void onCallBack(Bitmap bmp) {
         if (bmp != null) {
-
             mFragmentSignatureBinding.txtHint.setVisibility(GONE);
-//                path = mFile.getAbsolutePath();
-//                Bitmap myBitmap = BitmapFactory.decodeFile(mFile.getAbsolutePath());
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] b = baos.toByteArray();
@@ -587,6 +609,7 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
         @Override
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
+            canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
             canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
             canvas.drawPath(mPath, mPaint);
             canvas.drawPath(circlePath, circlePaint);
@@ -652,7 +675,7 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
 
     public void getValidate() {
 
-        if (isFeedBack) {
+        if (isFeedBack && accountType.equals("Individual")) {
             mFragmentSignatureBinding.lnrOtp.setVisibility(View.VISIBLE);
             String otp = mFragmentSignatureBinding.txtFeedback.getText().toString().trim();
             String sc_otp = mGeneralRealmData.get(0).getSc_OTP();
@@ -688,8 +711,6 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                 } else {
                     mCallback.isSignatureValidated(false);
                 }
-
-
             }
         } else {
             mFragmentSignatureBinding.txtFeedback.setEnabled(false);

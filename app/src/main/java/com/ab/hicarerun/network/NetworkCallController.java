@@ -1,5 +1,6 @@
 package com.ab.hicarerun.network;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.util.Log;
@@ -15,6 +16,7 @@ import com.ab.hicarerun.network.models.AttachmentModel.AttachmentDeleteRequest;
 import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentResponse;
 import com.ab.hicarerun.network.models.AttachmentModel.PostAttachmentRequest;
 import com.ab.hicarerun.network.models.AttachmentModel.PostAttachmentResponse;
+import com.ab.hicarerun.network.models.AttendanceModel.AttendanceDetailResponse;
 import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
 import com.ab.hicarerun.network.models.AttendanceModel.ProfilePicRequest;
 import com.ab.hicarerun.network.models.BasicResponse;
@@ -23,9 +25,11 @@ import com.ab.hicarerun.network.models.ExotelModel.ExotelResponse;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackRequest;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackResponse;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralResponse;
+import com.ab.hicarerun.network.models.GeneralModel.OnSiteOtpResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeRequest;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShakeResponse;
+import com.ab.hicarerun.network.models.IncentiveModel.IncentiveResponse;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyRequest;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyResponse;
 import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonModel;
@@ -33,6 +37,7 @@ import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
 import com.ab.hicarerun.network.models.OtpModel.SendOtpResponse;
+import com.ab.hicarerun.network.models.PayementModel.BankResponse;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
 import com.ab.hicarerun.network.models.ProfileModel.TechnicianProfileDetails;
@@ -46,7 +51,10 @@ import com.ab.hicarerun.network.models.TaskModel.UpdateTaskResponse;
 import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingRequest;
 import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingResponse;
 import com.ab.hicarerun.network.models.TrainingModel.TrainingResponse;
+import com.ab.hicarerun.network.models.TrainingModel.WelcomeVideoResponse;
 import com.ab.hicarerun.network.models.UpdateAppModel.UpdateResponse;
+import com.ab.hicarerun.network.models.voucher.VoucherRequest;
+import com.ab.hicarerun.network.models.voucher.VoucherResponseMain;
 import com.ab.hicarerun.utils.AppUtils;
 
 import org.json.JSONObject;
@@ -121,7 +129,7 @@ public class NetworkCallController {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
                                     String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
-                                    Log.e( "Error Log", "Arjun Bhatt "+ lineNo + DeviceName);
+                                    Log.e("Error Log", "Arjun Bhatt " + lineNo + DeviceName);
 
 //                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getContinueHandShake", lineNo, "", DeviceName);
                                 } catch (Exception e) {
@@ -135,7 +143,7 @@ public class NetworkCallController {
                     public void onFailure(Call<ContinueHandShakeResponse> call, Throwable t) {
                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
                         String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
-                        Log.e( "Error Log", "Arjun Bhatt "+ lineNo + DeviceName);
+                        Log.e("Error Log", "Arjun Bhatt " + lineNo + DeviceName);
 //                        AppUtils.sendErrorLogs(t.getMessage(), "", "getContinueHandShake", lineNo, "", DeviceName);
                     }
                 });
@@ -303,11 +311,12 @@ public class NetworkCallController {
                     @Override
                     public void onFailure(Call<TaskListResponse> call, Throwable t) {
                         mContext.dismissProgressDialog();
-                        mContext.showServerError("Something went wrong, please try again !!!");                    }
+                        mContext.showServerError("Something went wrong, please try again !!!");
+                    }
                 });
     }
 
-    public void getTaskDetailById(final int requestCode, final String userId, final String taskId, final TaskDetailsActivity context) {
+    public void getTaskDetailById(final int requestCode, final String userId, final String taskId, final Activity context) {
         BaseApplication.getRetrofitAPI(true)
                 .getTasksDetailById(userId, taskId)
                 .enqueue(new Callback<GeneralResponse>() {
@@ -371,7 +380,8 @@ public class NetworkCallController {
                             }).create().show();
                         } catch (Exception e) {
                             e.printStackTrace();
-                        }                    }
+                        }
+                    }
                 });
     }
 
@@ -474,7 +484,8 @@ public class NetworkCallController {
                     @Override
                     public void onFailure(Call<ReferralListResponse> call, Throwable t) {
                         mContext.dismissProgressDialog();
-                        mContext.showServerError("Something went wrong, please try again !!!");                    }
+                        mContext.showServerError("Something went wrong, please try again !!!");
+                    }
                 });
     }
 
@@ -549,17 +560,19 @@ public class NetworkCallController {
                     @Override
                     public void onFailure(Call<FeedbackResponse> call, Throwable t) {
                         mContext.dismissProgressDialog();
-                        mContext.showServerError("Something went wrong, please try again !!!");                    }
+                        mContext.showServerError("Something went wrong, please try again !!!");
+                    }
                 });
     }
 
     public void postAttachments(final int requestCode, PostAttachmentRequest request) {
-
+        mContext.showProgressDialog();
         BaseApplication.getRetrofitAPI(true)
                 .postAttachments(request)
                 .enqueue(new Callback<PostAttachmentResponse>() {
                     @Override
                     public void onResponse(Call<PostAttachmentResponse> call, Response<PostAttachmentResponse> response) {
+                        mContext.dismissProgressDialog();
                         if (response != null) {
                             if (response.body() != null) {
                                 mListner.onResponse(requestCode, response.body());
@@ -578,18 +591,20 @@ public class NetworkCallController {
                                 }
                             }
                         } else {
+                            mContext.showProgressDialog();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<PostAttachmentResponse> call, Throwable t) {
-
+                        mContext.showProgressDialog();
+                        mContext.showServerError("Something went wrong, please try again !!!");
                     }
                 });
     }
 
     public void getAttachments(final int requestCode, final String taskId, final String userId) {
-mContext.showProgressDialog();
+        mContext.showProgressDialog();
         BaseApplication.getRetrofitAPI(true)
                 .getAttachments(userId, taskId)
                 .enqueue(new Callback<GetAttachmentResponse>() {
@@ -691,7 +706,7 @@ mContext.showProgressDialog();
     }
 
 
-    public void updateTasks(final int requestCode, UpdateTasksRequest request, final TaskDetailsActivity context) {
+    public void updateTasks(final int requestCode, UpdateTasksRequest request, final Activity context) {
         BaseApplication.getRetrofitAPI(true)
                 .updateTasks(request)
                 .enqueue(new Callback<UpdateTaskResponse>() {
@@ -951,7 +966,7 @@ mContext.showProgressDialog();
                                         String userName = " TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                         String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
                                         String DeviceName = " DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
-                                        Log.e( "Error Log", userName+ lineNo + DeviceName);
+                                        Log.e("Error Log", userName + lineNo + DeviceName);
                                         AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getTechAttendance", lineNo, userName, DeviceName);
                                     }
                                 } catch (Exception e) {
@@ -1115,7 +1130,8 @@ mContext.showProgressDialog();
                     @Override
                     public void onFailure(Call<PaymentLinkResponse> call, Throwable t) {
                         mContext.dismissProgressDialog();
-                        mContext.showServerError("Something went wrong, please try again !!!");                    }
+                        mContext.showServerError("Something went wrong, please try again !!!");
+                    }
                 });
     }
 
@@ -1176,7 +1192,8 @@ mContext.showProgressDialog();
                     @Override
                     public void onFailure(Call<TechGroomingResponse> call, Throwable t) {
                         mContext.dismissProgressDialog();
-                        mContext.showServerError("Something went wrong, please try again !!!");                    }
+                        mContext.showServerError("Something went wrong, please try again !!!");
+                    }
                 });
     }
 
@@ -1304,7 +1321,72 @@ mContext.showProgressDialog();
                     @Override
                     public void onFailure(Call<TechnicianProfileDetails> call, Throwable t) {
                         mContext.dismissProgressDialog();
-                        mContext.showServerError("Something went wrong, please try again !!!");                    }
+                        mContext.showServerError("Something went wrong, please try again !!!");
+                    }
+                });
+    }
+
+
+    /*[Resource Incentive]*/
+
+    public void getTechnicianIncentive(final int requestCode, final String userId) {
+        mContext.showProgressDialog();
+        BaseApplication.getRetrofitAPI(true)
+                .getTechnicianIncentive(userId)
+                .enqueue(new Callback<IncentiveResponse>() {
+                    @Override
+                    public void onResponse(Call<IncentiveResponse> call,
+                                           Response<IncentiveResponse> response) {
+                        mContext.dismissProgressDialog();
+                        if (response != null) {
+                            if (response.code() == 401) { // Unauthorised Access
+                                NetworkCallController controller = new NetworkCallController();
+                                controller.setListner(new NetworkResponseListner<LoginResponse>() {
+                                    @Override
+                                    public void onResponse(int reqCode, LoginResponse response) {
+                                        // delete all previous record
+                                        Realm.getDefaultInstance().beginTransaction();
+                                        Realm.getDefaultInstance().deleteAll();
+                                        Realm.getDefaultInstance().commitTransaction();
+
+                                        // add new record
+                                        Realm.getDefaultInstance().beginTransaction();
+                                        Realm.getDefaultInstance().copyToRealmOrUpdate(response);
+                                        Realm.getDefaultInstance().commitTransaction();
+                                        getTechnicianProfile(requestCode, userId);
+                                    }
+
+                                    @Override
+                                    public void onFailure(int requestCode) {
+
+                                    }
+                                });
+                                controller.refreshToken(100, getRefreshToken());
+                            } else if (response.body() != null) {
+                                mListner.onResponse(requestCode, response.body().getData());
+
+                            } else if (response.errorBody() != null) {
+                                try {
+                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                    RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                    if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getTechnicianProfile", lineNo, userName, DeviceName);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<IncentiveResponse> call, Throwable t) {
+                        mContext.dismissProgressDialog();
+                        mContext.showServerError("Something went wrong, please try again !!!");
+                    }
                 });
     }
 
@@ -1346,7 +1428,8 @@ mContext.showProgressDialog();
                     @Override
                     public void onFailure(Call<JeopardyReasonModel> call, Throwable t) {
                         mContext.dismissProgressDialog();
-                        mContext.showServerError("Something went wrong, please try again !!!");                    }
+                        mContext.showServerError("Something went wrong, please try again !!!");
+                    }
                 });
     }
 
@@ -1385,6 +1468,266 @@ mContext.showProgressDialog();
 
                     @Override
                     public void onFailure(Call<CWFJeopardyResponse> call, Throwable t) {
+                        mContext.dismissProgressDialog();
+                        mContext.showServerError("Something went wrong, please try again !!!");
+                    }
+                });
+    }
+
+    public void getAttendanceDetail(final int requestCode, final String resourceId) {
+        mContext.showProgressDialog();
+        BaseApplication.getRetrofitAPI(true)
+                .getAttendanceDetail(resourceId)
+                .enqueue(new Callback<AttendanceDetailResponse>() {
+                    @Override
+                    public void onResponse(Call<AttendanceDetailResponse> call, Response<AttendanceDetailResponse> response) {
+                        mContext.dismissProgressDialog();
+                        if (response != null) {
+                            if (response.body() != null) {
+                                mListner.onResponse(requestCode, response.body().getData());
+                            } else if (response.errorBody() != null) {
+                                try {
+                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                    mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                    RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                    if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getChemicals", lineNo, userName, DeviceName);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        } else {
+                            mContext.showServerError();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<AttendanceDetailResponse> call, Throwable t) {
+                        mContext.dismissProgressDialog();
+                        mContext.showServerError("Something went wrong, please try again !!!");
+                    }
+                });
+    }
+
+
+    public void getVoucherCode(final int requestCode, final String resourceId) {
+        mContext.showProgressDialog();
+
+        BaseApplication.getRetrofitAPI(true)
+                .getTechnicianReferralCode(resourceId)
+                .enqueue(new Callback<VoucherResponseMain>() {
+                    @Override
+                    public void onResponse(Call<VoucherResponseMain> call,
+                                           Response<VoucherResponseMain> response) {
+                        mContext.dismissProgressDialog();
+                        if (response != null) {
+                            if (response.code() == 401) { // Unauthorised Access
+                                NetworkCallController controller = new NetworkCallController();
+                                controller.setListner(new NetworkResponseListner<LoginResponse>() {
+                                    @Override
+                                    public void onResponse(int reqCode, LoginResponse response) {
+                                        // delete all previous record
+                                        Realm.getDefaultInstance().beginTransaction();
+                                        Realm.getDefaultInstance().deleteAll();
+                                        Realm.getDefaultInstance().commitTransaction();
+
+                                        // add new record
+                                        Realm.getDefaultInstance().beginTransaction();
+                                        Realm.getDefaultInstance().copyToRealmOrUpdate(response);
+                                        Realm.getDefaultInstance().commitTransaction();
+                                        getVoucherCode(requestCode, resourceId);
+                                    }
+
+                                    @Override
+                                    public void onFailure(int requestCode) {
+
+                                    }
+                                });
+                                controller.refreshToken(100, getRefreshToken());
+                            } else if (response.body() != null) {
+                                mListner.onResponse(requestCode, response.body().getData());
+                            } else {
+                                if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        mContext.showServerError(jObjError.getString("Message"));
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        } else {
+                            mContext.showServerError("error");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<VoucherResponseMain> call, Throwable t) {
+                        mContext.dismissProgressDialog();
+                        mContext.showServerError("Please try again !!!");
+                    }
+                });
+    }
+
+
+    public void getStartingVideos(final int requestCode) {
+        mContext.showProgressDialog();
+        BaseApplication.getRetrofitAPI(true)
+                .getStartingVideos()
+                .enqueue(new Callback<WelcomeVideoResponse>() {
+                    @Override
+                    public void onResponse(Call<WelcomeVideoResponse> call, Response<WelcomeVideoResponse> response) {
+                        mContext.dismissProgressDialog();
+                        if (response != null) {
+                            if (response.body() != null) {
+                                mListner.onResponse(requestCode, response.body().getData());
+                            } else if (response.errorBody() != null) {
+                                try {
+                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                    mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                    RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                    if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getChemicals", lineNo, userName, DeviceName);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        } else {
+                            mContext.showServerError();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<WelcomeVideoResponse> call, Throwable t) {
+                        mContext.dismissProgressDialog();
+                        mContext.showServerError("Something went wrong, please try again !!!");
+                    }
+                });
+    }
+
+    public void getOnSiteOTP(final int requestCode, final String resourceId,
+                             final String taskId, final String userName,
+                             final String mobileNo) {
+        mContext.showProgressDialog();
+        BaseApplication.getRetrofitAPI(true)
+                .getOnsiteOTP(resourceId, taskId, userName, mobileNo)
+                .enqueue(new Callback<OnSiteOtpResponse>() {
+                    @Override
+                    public void onResponse(Call<OnSiteOtpResponse> call, Response<OnSiteOtpResponse> response) {
+                        mContext.dismissProgressDialog();
+                        if (response != null) {
+                            if (response.body() != null) {
+                                mListner.onResponse(requestCode, response.body());
+                            } else if (response.errorBody() != null) {
+                                try {
+                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                    mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                    RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                    if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getChemicals", lineNo, userName, DeviceName);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        } else {
+                            mContext.showServerError();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<OnSiteOtpResponse> call, Throwable t) {
+                        mContext.dismissProgressDialog();
+                        mContext.showServerError("Something went wrong, please try again !!!");
+                    }
+                });
+    }
+
+    public void getValidateCompletionTime(final int requestCode, final String date_time,
+                                          final String taskId) {
+        mContext.showProgressDialog();
+        BaseApplication.getRetrofitAPI(true)
+                .getValidateCompletionTime(date_time, taskId)
+                .enqueue(new Callback<BasicResponse>() {
+                    @Override
+                    public void onResponse(Call<BasicResponse> call, Response<BasicResponse> response) {
+                        mContext.dismissProgressDialog();
+                        if (response != null) {
+                            if (response.body() != null) {
+                                mListner.onResponse(requestCode, response.body());
+                            } else if (response.errorBody() != null) {
+                                try {
+                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                    mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                    RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                    if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getChemicals", lineNo, userName, DeviceName);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        } else {
+                            mContext.showServerError();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BasicResponse> call, Throwable t) {
+                        mContext.dismissProgressDialog();
+                        mContext.showServerError("Something went wrong, please try again !!!");
+                    }
+                });
+    }
+
+
+    public void getBanksName(final int requestCode) {
+        mContext.showProgressDialog();
+        BaseApplication.getRetrofitAPI(true)
+                .getBanksName()
+                .enqueue(new Callback<BankResponse>() {
+                    @Override
+                    public void onResponse(Call<BankResponse> call, Response<BankResponse> response) {
+                        mContext.dismissProgressDialog();
+                        if (response != null) {
+                            if (response.body() != null) {
+                                mListner.onResponse(requestCode, response.body().getData());
+                            } else if (response.errorBody() != null) {
+                                try {
+                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                    mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                    RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                    if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getChemicals", lineNo, userName, DeviceName);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        } else {
+                            mContext.showServerError();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BankResponse> call, Throwable t) {
                         mContext.dismissProgressDialog();
                         mContext.showServerError("Something went wrong, please try again !!!");
                     }

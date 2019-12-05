@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -36,6 +38,7 @@ import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.HomeActivity;
+import com.ab.hicarerun.activities.NewTaskDetailsActivity;
 import com.ab.hicarerun.activities.TaskDetailsActivity;
 import com.ab.hicarerun.adapter.TaskListAdapter;
 import com.ab.hicarerun.databinding.FragmentHomeBinding;
@@ -184,22 +187,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
         getAllTasks();
         mFragmentHomeBinding.swipeRefreshLayout.setRefreshing(true);
-//        try {
-//            PhoneCallListener phoneListener = new PhoneCallListener();
-//            TelephonyManager telephonyManager = null;
-//            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-//                telephonyManager = (TelephonyManager)
-//                        Objects.requireNonNull(getActivity()).getSystemService(Context.TELEPHONY_SERVICE);
-//            }
-//            if (telephonyManager != null) {
-//                telephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
-//            } else {
-//                Toast.makeText(getActivity(), "Unable to make call.", Toast.LENGTH_SHORT).show();
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
     }
 
 
@@ -276,27 +263,29 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
             mAdapter.setOnItemClickHandler(new OnListItemClickHandler() {
                 @Override
-                public void onItemClick(int positon) {
-                    if (items.get(positon).getDetailVisible()) {
-                        try{
+                public void onItemClick(int position) {
+                    if (items.get(position).getDetailVisible()) {
+                        try {
                             AppUtils.getDataClean();
-                        }catch (Exception e){
-
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                         Intent intent = new Intent(getActivity(), TaskDetailsActivity.class);
-                        intent.putExtra(TaskDetailsActivity.ARGS_TASKS, items.get(positon));
+                        intent.putExtra(TaskDetailsActivity.ARGS_TASKS, items.get(position));
                         startActivity(intent);
+
+//                        Intent intent = new Intent(getActivity(), NewTaskDetailsActivity.class);
+//                        intent.putExtra(NewTaskDetailsActivity.ARGS_TASKS, items.get(position));
+//                        startActivity(intent);
+//                        getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+
+
                     } else {
                         Toasty.info(getActivity(), "Please complete your previous job first.", Toasty.LENGTH_SHORT).show();
                     }
-
-
                 }
             });
-
         }
-
-
     }
 
 
@@ -331,10 +320,8 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 alertDialog.dismiss();
                 replaceFragment(FaceRecognizationFragment.newInstance(true, ""), "HomeFragment-FaceRecognizationFragment");
-                alertDialog.dismiss();
             }
 
 

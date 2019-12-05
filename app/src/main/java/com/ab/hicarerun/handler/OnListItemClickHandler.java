@@ -5,5 +5,5 @@ package com.ab.hicarerun.handler;
  */
 
 public interface OnListItemClickHandler {
-  void onItemClick(int positon);
+  void onItemClick(int position);
 }

@@ -3,11 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ab.hicarerun"
     tools:ignore="GoogleAppIndexingWarning">
-
-    <!--<permission-->
-    <!--android:name="android.permission.CALL_PRIVILEGED"-->
-    <!--android:protectionLevel="signature|privileged" />-->
-
+    <!-- <permission -->
+    <!-- android:name="android.permission.CALL_PRIVILEGED" -->
+    <!-- android:protectionLevel="signature|privileged" /> -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -16,13 +14,12 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    <!--<uses-permission-->
-    <!--android:name="android.permission.RECEIVE_SMS"-->
-    <!--tools:node="remove" />-->
-    <!--<uses-permission-->
-    <!--android:name="android.permission.CALL_PHONE"-->
-    <!--tools:node="remove" />-->
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" /> <!-- <uses-permission -->
+    <!-- android:name="android.permission.RECEIVE_SMS" -->
+    <!-- tools:node="remove" /> -->
+    <!-- <uses-permission -->
+    <!-- android:name="android.permission.CALL_PHONE" -->
+    <!-- tools:node="remove" /> -->
     <uses-permission
         android:name="android.permission.BATTERY_STATS"
         tools:ignore="ProtectedPermissions" />
@@ -54,30 +51,31 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-
-
-        <!--<activity-->
-        <!--android:name="com.ab.hicarerun.activities.SplashActiviy"-->
-        <!--android:label="@string/app_name"-->
-        <!--android:exported="true"-->
-        <!--android:screenOrientation="portrait">-->
-        <!--<intent-filter>-->
-        <!--<action android:name="android.intent.action.MAIN" />-->
-
-        <!--<category android:name="android.intent.category.LAUNCHER" />-->
-
-        <!--<action android:name="android.intent.action.VIEW" />-->
-
-        <!--<category android:name="android.intent.category.DEFAULT" />-->
-        <!--<category android:name="android.intent.category.BROWSABLE" />-->
-
-
-        <!--<data-->
-        <!--android:host="hicare"-->
-        <!--android:scheme="hicare-technician-app" />-->
-        <!--</intent-filter>-->
-        <!--</activity>-->
-
+        <activity android:name=".activities.NewTaskDetailsActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:parentActivityName=".activities.HomeActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".activities.VoucherActivity" />
+        <activity android:name=".activities.AttendanceActivity" />
+        <activity android:name=".activities.IncentivesActivity" />
+        <!-- <activity -->
+        <!-- android:name="com.ab.hicarerun.activities.SplashActiviy" -->
+        <!-- android:label="@string/app_name" -->
+        <!-- android:exported="true" -->
+        <!-- android:screenOrientation="portrait"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.MAIN" /> -->
+        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+        <!-- <action android:name="android.intent.action.VIEW" /> -->
+        <!-- <category android:name="android.intent.category.DEFAULT" /> -->
+        <!-- <category android:name="android.intent.category.BROWSABLE" /> -->
+        <!-- <data -->
+        <!-- android:host="hicare" -->
+        <!-- android:scheme="hicare-technician-app" /> -->
+        <!-- </intent-filter> -->
+        <!-- </activity> -->
         <activity
             android:name=".activities.TechIdActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -86,11 +84,13 @@
         <activity
             android:name=".activities.GrommingGalleryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:parentActivityName=".activities.TechnicianSeniorActivity" />
+            android:parentActivityName=".activities.TechnicianSeniorActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.TechnicianSeniorActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:parentActivityName=".activities.HomeActivity" />
+            android:parentActivityName=".activities.HomeActivity"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -100,27 +100,34 @@
         <activity
             android:name=".activities.VerifyOtpActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:parentActivityName=".activities.LoginActivity" />
+            android:parentActivityName=".activities.LoginActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.TrainingActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:parentActivityName=".activities.HomeActivity" />
+            android:parentActivityName=".activities.HomeActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.HelpActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:parentActivityName=".activities.HomeActivity" />
+            android:parentActivityName=".activities.HomeActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.LoginActivity"
             android:configChanges="keyboardHidden|orientation|screenSize" />
-        <activity android:name=".BaseApplication" />
+        <activity
+            android:name=".BaseApplication"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.HomeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.SplashActiviy"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -131,7 +138,8 @@
             android:name=".activities.TaskDetailsActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
-            android:parentActivityName=".activities.HomeActivity" />
+            android:parentActivityName=".activities.HomeActivity"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".service.ServiceLocationSend"
@@ -153,14 +161,11 @@
 
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
-            android:value="face" />
-
-        <!--<receiver android:name=".utils.SMSListener">-->
-        <!--<intent-filter>-->
-        <!--<action android:name="android.provider.Telephony.SMS_RECEIVED" />-->
-        <!--</intent-filter>-->
-        <!--</receiver>-->
-
+            android:value="face" /> <!-- <receiver android:name=".utils.SMSListener"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.provider.Telephony.SMS_RECEIVED" /> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
         <receiver
             android:name=".utils.SMSListener"
             android:exported="true">
@@ -168,22 +173,18 @@
                 <action android:name="com.google.android.gms.auth.api.phone.SMS_RETRIEVE" />
             </intent-filter>
         </receiver>
-
         <receiver android:name=".utils.HandShakeReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
-
         <receiver android:name=".utils.notifications.CallServiceAfterReboot">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
@@ -215,6 +216,17 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyCUIlD8EdLLTp5VtyZl1ZOprbq_7az3zIM" />
+
+        <provider
+            android:name=".utils.ShareFileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/image_path"/>
+        </provider>
+
     </application>
 
 </manifest>

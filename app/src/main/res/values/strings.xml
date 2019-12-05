@@ -113,6 +113,7 @@
     <string name="look_like_you_no_videos_at_the_moment">Look like you no videos at the moment.</string>
     <string name="technician_helpline">Technician Helpline</string>
     <string name="on_site_otp">On-Site OTP</string>
+    <string name="incentive">Incentive</string>
 
     <string-array name="randomApplause">
         <item>Excellent!</item>
@@ -208,6 +209,7 @@
         <item>Rabobank</item>
         <item>Doha bank</item>
         <item>Sberbank</item>
+        <item>Saraswat Bank</item>
         <item>VTB</item>
         <item>HSBC Bank Oman</item>
         <item>DBS Bank United Overseas Bank</item>
@@ -262,6 +264,7 @@
         <item>KBC Bank</item>
         <item>Royal Bank of Canada</item>
         <item>Toronto Dominion Bank</item>
+        <item>Thane Janta State Bank</item>
         <item>Credit Industriel et Commercial</item>
         <item>Natixis</item>
         <item>Commerzbank</item>
@@ -329,6 +332,7 @@
         <item>Manipur Rural Bank</item>
         <item>Meghalaya Rural Bank</item>
         <item>Mizoram Rural Bank</item>
+        <item>IDFC Bank</item>
         <item>Nagaland Rural Bank</item>
         <item>Odisha Gramya Bank</item>
         <item>Utkal Grameen Bank</item>
@@ -354,4 +358,12 @@
         <item>Paschim Banga Gramin Bank</item>
         <item>Uttarbanga Kshetriya Gramin Bank</item>
     </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="estimated">*Estimated (अनुमानित)</string>
+    <string name="matrix_metro">Point Slabs</string>
+    <string name="your_attendance">Your Attendance</string>
+    <string name="referral_code">Referral Code</string>
+    <string name="click_here_if_customer_is_not_available">(Click here if customer is not available)</string>
 </resources>

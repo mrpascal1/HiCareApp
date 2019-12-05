@@ -19,8 +19,8 @@
             android:paddingBottom="4dp">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:layout_gravity="center_vertical"
                 android:padding="10dp"
                 app:srcCompat="@drawable/ic_user" />
@@ -69,8 +69,8 @@
             android:paddingBottom="4dp">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:layout_gravity="center_vertical"
                 android:padding="10dp"
                 app:srcCompat="@drawable/ic_phone" />
@@ -84,7 +84,7 @@
                 android:digits="0123456789"
                 android:maxLength="10"
                 android:hint="@string/mobile_no"
-                android:imeOptions="actionNext"
+                android:imeOptions="actionDone"
                 android:inputType="number" />
         </LinearLayout>
         <LinearLayout

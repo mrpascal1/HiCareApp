@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
@@ -44,6 +45,13 @@ public class AttachmentListAdapter extends RecyclerView.Adapter<AttachmentListAd
         this.mContext = context;
         this.imgSelect = imgSelect;
         this.txtDelcount = txtDelcount;
+    }
+
+    public AttachmentListAdapter(Context context) {
+        if (items == null) {
+            items = new ArrayList<>();
+        }
+        this.mContext = context;
     }
 
 

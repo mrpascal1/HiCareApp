@@ -20,6 +20,7 @@ import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ActivityLoginBinding;
 import com.ab.hicarerun.fragments.LoginFragment;
 import com.ab.hicarerun.fragments.OTP_LoginFragment;
+import com.ab.hicarerun.fragments.VideoPlayerFragment;
 import com.ab.hicarerun.handler.UserLoginClickHandler;
 import com.ab.hicarerun.service.LocationManager;
 import com.ab.hicarerun.service.listner.LocationManagerListner;
@@ -51,14 +52,8 @@ public class LoginActivity extends BaseActivity {
         addFragment(OTP_LoginFragment.newInstance(), "LoginTrealActivity-CreateRealFragment");
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 
-//        if (SharedPreferencesUtility.getPrefBoolean(this, SharedPreferencesUtility.IS_USER_LOGIN)) {
-//            askPermissions();
-//            startActivity(new Intent(this, HomeActivity.class));
-//            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-//            finish();
-//        } else {
-//
-//        }
+//        addFragment(VideoPlayerFragment.newInstance(), "LoginTrealActivity-VideoPlayerFragment");
+//        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
     @Override

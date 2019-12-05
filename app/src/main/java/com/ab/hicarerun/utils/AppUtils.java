@@ -45,6 +45,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import io.realm.Realm;
@@ -154,7 +155,6 @@ public class AppUtils {
     public static String compareDates(String d1, String d2) {
         String date_result = "";
         try {
-
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date1 = sdf.parse(d1);
             Date date2 = sdf.parse(d2);
@@ -205,14 +205,14 @@ public class AppUtils {
 
 
     public static String reFormatDurationTime(String dateIn, String format) throws ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm aa");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm aa",Locale.ENGLISH);
         Date date = simpleDateFormat.parse(dateIn);
         simpleDateFormat = new SimpleDateFormat(format);
         return simpleDateFormat.format(date);
     }
 
     public static String currentDateTime() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss",Locale.ENGLISH);
 //        0001-01-01 00:00:00
         Date date1 = new Date();
         return dateFormat.format(date1);

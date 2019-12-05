@@ -92,6 +92,7 @@
                     app:itemCount="6"
                     app:itemSpacing="10dp"
                     app:lineColor="@color/colorPrimary"
+                    android:imeOptions="actionDone"
                     app:lineWidth="1dp"
                     app:viewType="line" />
 

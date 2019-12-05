@@ -36,7 +36,6 @@ public class AttachmentActivity extends BaseActivity implements OnJobCardEventHa
                 DataBindingUtil.setContentView(this, R.layout.activity_attachment);
         taskId = getIntent().getStringExtra(ARGS_TASKS);
         addFragment(AttachmentFragment.newInstance(taskId), "AttachmentActivity - AttachmentFragment");
-
         setSupportActionBar(mActivityAttachmentBinding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

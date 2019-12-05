@@ -58,6 +58,7 @@
                         android:text="@string/service_plan"
                         android:layout_gravity="center"
                         android:textColor="@color/colorPrimary"
+                        android:src="@drawable/sample"
                         android:textSize="14sp" />
 
 
