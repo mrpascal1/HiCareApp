@@ -75,15 +75,24 @@ public interface IRetrofit {
     @FormUrlEncoded
     @POST("Login")
     Call<LoginResponse> login(@Field("grant_type") String grantType,
-                              @Field("UserName") String username, @Field("Password") String password,
+                              @Field("UserName") String username,
+                              @Field("Password") String password,
                               @Header("Content-Type") String content_type,
-                              @Header("IMEINo") String imei, @Header("AppVersion") String version, @Header("DeviceInfo") String deviceinfo, @Header("PlayerId") String mStrPlayerId);
+                              @Header("IMEINo") String imei,
+                              @Header("AppVersion") String version,
+                              @Header("DeviceInfo") String deviceinfo,
+                              @Header("PlayerId") String mStrPlayerId);
     /*[Refresh Token]*/
 
     @FormUrlEncoded
     @POST("login")
     Call<LoginResponse> refreshToken(@Field("grant_type") String grantType,
-                                     @Field("refresh_token") String refreshToken);
+                                     @Field("refresh_token") String refreshToken,
+                                     @Header("Content-Type") String content_type,
+                                     @Header("IMEINo") String imei,
+                                     @Header("AppVersion") String version,
+                                     @Header("DeviceInfo") String deviceinfo,
+                                     @Header("PlayerId") String mStrPlayerId);
 
     /*[Task Details]*/
 

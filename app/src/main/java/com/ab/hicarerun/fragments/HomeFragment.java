@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,6 +41,7 @@ import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.activities.NewTaskDetailsActivity;
 import com.ab.hicarerun.activities.TaskDetailsActivity;
+import com.ab.hicarerun.activities.WelcomeVideoActivity;
 import com.ab.hicarerun.adapter.TaskListAdapter;
 import com.ab.hicarerun.databinding.FragmentHomeBinding;
 import com.ab.hicarerun.handler.OnCallListItemClickHandler;
@@ -226,7 +228,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getAllTasks", lineNo, userName, DeviceName);
             }
         }
-
     }
 
     @Override
@@ -270,13 +271,13 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        Intent intent = new Intent(getActivity(), TaskDetailsActivity.class);
-                        intent.putExtra(TaskDetailsActivity.ARGS_TASKS, items.get(position));
-                        startActivity(intent);
-
-//                        Intent intent = new Intent(getActivity(), NewTaskDetailsActivity.class);
-//                        intent.putExtra(NewTaskDetailsActivity.ARGS_TASKS, items.get(position));
+//                        Intent intent = new Intent(getActivity(), TaskDetailsActivity.class);
+//                        intent.putExtra(TaskDetailsActivity.ARGS_TASKS, items.get(position));
 //                        startActivity(intent);
+
+                        Intent intent = new Intent(getActivity(), NewTaskDetailsActivity.class);
+                        intent.putExtra(NewTaskDetailsActivity.ARGS_TASKS, items.get(position));
+                        startActivity(intent);
 //                        getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 
 
@@ -347,7 +348,10 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                     ContinueHandShakeResponse response = (ContinueHandShakeResponse) data;
                                     if (response.getSuccess()) {
                                         Toasty.success(getActivity(), "Attendance marked successfully.", Toasty.LENGTH_SHORT).show();
-                                        replaceFragment(HomeFragment.newInstance(), "FaceRecognizationFragment-HomeFragment");
+//                                        startActivity(new Intent(getActivity(), WelcomeVideoActivity.class));
+//                                        getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                                        replaceFragment(HomeFragment.newInstance(), "HomeFragment-HomeFragment");
+//                                        getAttendanceDialog();
                                     } else {
                                         Toast.makeText(getActivity(), "Attendance Failed, please try again.", Toast.LENGTH_SHORT).show();
                                         getAttendanceDialog();
@@ -666,24 +670,22 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
                 if (exotelResponse.getSuccess()) {
                     try {
-                        String number = exotelResponse.getResponseMessage() + "," + exotelResponse.getData();
-
-//                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-//                            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel:", number, null));
-//                            getActivity().startActivity(intent);
-//                        }
-//
-//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                            Intent callIntent = new Intent(Intent.ACTION_DIAL);
-//                            callIntent.setData(Uri.parse("tel:" + number));
-//                            getActivity().startActivity(callIntent);
-//                        }
-
+                        String number = exotelResponse.getResponseMessage().concat(exotelResponse.getData());
+                        String pause = String.valueOf(PhoneNumberUtils.PAUSE);
+                        String postNo = String.valueOf(PhoneNumberUtils.extractPostDialPortion(exotelResponse.getData()));
+                        Log.i("num", pause);
+                        String comma = Uri.encode(" ");
+                        StringBuilder build = new StringBuilder();
+                        build.append(exotelResponse.getResponseMessage());
+                        build.append(pause);
+                        build.append(exotelResponse.getData());
                         Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                        callIntent.setData(Uri.parse("tel:" + number));
+                        callIntent.setData(Uri.parse("tel:" + build.toString()));
                         startActivity(callIntent);
+                        Log.i("num", build.toString());
 
                     } catch (Exception e) {
+                        Log.i("num", e.getMessage());
                         RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                         if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
                             String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
@@ -705,56 +707,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         });
         controller.getExotelCalled(EXOTEL_REQ, customerNumber, techNumber);
     }
-
-//    class PhoneCallListener extends PhoneStateListener {
-//
-//        private boolean isPhoneCalling = false;
-//
-//        String LOG_TAG = "RENEWAL_CALL";
-//
-//        @Override
-//        public void onCallStateChanged(int state, String incomingNumber) {
-//
-//            try {
-//                if (TelephonyManager.CALL_STATE_RINGING == state) {
-//                    // phone ringing
-//                    Log.i(LOG_TAG, "RINGING, number: " + incomingNumber);
-//                }
-//                if (TelephonyManager.CALL_STATE_OFFHOOK == state) {
-//                    Log.i(LOG_TAG, "OFFHOOK");
-//                    isPhoneCalling = true;
-//                }
-//                if (TelephonyManager.CALL_STATE_IDLE == state) {
-//                    Log.i(LOG_TAG, "IDLE");
-//                    if (isPhoneCalling) {
-//                        Log.i(LOG_TAG, "restart app");
-//                        Intent i = null;
-//                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-//                            i = Objects.requireNonNull(getActivity()).getPackageManager()
-//                                    .getLaunchIntentForPackage(
-//                                            getActivity().getPackageName());
-//                            if (i != null) {
-//                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                                getActivity().startActivity(i);
-//                            } else {
-//                                Toast.makeText(getActivity(), "Not able to make call!", Toast.LENGTH_SHORT).show();
-//                            }
-//                        } else {
-//                            Toast.makeText(getActivity(), "Not able to make call!", Toast.LENGTH_SHORT).show();
-//                        }
-//
-//                        isPhoneCalling = false;
-//                    }
-//
-//
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//
-//
-//        }
-//    }
 
     @Override
     public void onPause() {

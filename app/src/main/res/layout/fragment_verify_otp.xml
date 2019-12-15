@@ -90,6 +90,8 @@
                     android:inputType="number"
                     android:textColor="@android:color/black"
                     app:itemCount="6"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_horizontal"
                     app:itemSpacing="10dp"
                     app:lineColor="@color/colorPrimary"
                     android:imeOptions="actionDone"

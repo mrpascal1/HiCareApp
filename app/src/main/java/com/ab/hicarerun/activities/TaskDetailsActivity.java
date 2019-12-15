@@ -146,7 +146,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
         setSupportActionBar(mActivityTaskDetailsBinding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-//        mActivityTaskDetailsBinding.viewpager.setOffscreenPageLimit(5);
+        mActivityTaskDetailsBinding.viewpager.setOffscreenPageLimit(5);
         model = getIntent().getParcelableExtra(ARGS_TASKS);
 
         LocationManager.Builder builder = new LocationManager.Builder(this);
@@ -413,7 +413,6 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                 mActivityTaskDetailsBinding.viewpager.setCurrentItem(0);
                 Toasty.error(this, "Please change status", Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
-
             } else if (isEarlyCompletion && Status.equals("Completed")) {
                 mActivityTaskDetailsBinding.viewpager.setCurrentItem(0);
                 Toasty.error(this, "You are not allowed to close the job as you have not spent adequate time. Please follow the correct procedure and deliver the job properly", 6000, true).show();
@@ -487,7 +486,6 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                 progress.dismiss();
                 Toasty.error(this, "Please upload your job card", Toast.LENGTH_SHORT, true).show();
             } else {
-
                 if (isTechnicianFeedbackEnable && Rate == 0 && Status.equals("Completed")) {
                     showRatingDialog();
                 } else {
@@ -924,10 +922,10 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
 
     }
 
-    @Override
-    public void AttachmentList(List<GetAttachmentList> mList) {
-
-    }
+//    @Override
+//    public void AttachmentList(List<GetAttachmentList> mList) {
+//
+//    }
 
     public void onSaveClick(MenuItem item) {
         if(AppUtils.isGpsEnabled(TaskDetailsActivity.this)) {

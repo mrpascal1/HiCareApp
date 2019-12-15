@@ -46,7 +46,10 @@ import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.activities.LoginActivity;
+import com.ab.hicarerun.activities.SplashActiviy;
+import com.ab.hicarerun.activities.StartVideoActivity;
 import com.ab.hicarerun.activities.VerifyOtpActivity;
+import com.ab.hicarerun.activities.WelcomeVideoActivity;
 import com.ab.hicarerun.databinding.FragmentFaceRecognizationBinding;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
@@ -100,7 +103,6 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
     private int LateDays = 0;
 
 
-
     public FaceRecognizationFragment() {
         // Required empty public constructor
     }
@@ -143,9 +145,9 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
             }
         }
 
-        FocusView view = new FocusView(getActivity());
-        mFragmentFaceRecognizationBinding.focusView.addView(view);
-        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+//        FocusView view = new FocusView(getActivity());
+//        mFragmentFaceRecognizationBinding.focusView.addView(view);
+//        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         return mFragmentFaceRecognizationBinding.getRoot();
     }
 
@@ -173,10 +175,10 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                 @Override
                 public void onResponse(int requestCode, Object response) {
                     AttendanceDetail data = (AttendanceDetail) response;
-                   LateDays = data.getTotalDaysLateCome();
-                   Days = data.getTotalNoOfDays();
-                   PresentDays = data.getTotalNoOfDaysPresent();
-                   AbsentDays = Days-PresentDays;
+                    LateDays = data.getTotalDaysLateCome();
+                    Days = data.getTotalNoOfDays();
+                    PresentDays = data.getTotalNoOfDaysPresent();
+                    AbsentDays = Days - PresentDays;
                     getAttendanceSheetDialog();
                 }
 
@@ -185,7 +187,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
 
                 }
             });
-            controller.getAttendanceDetail(ATTENDANCE_REQ,resourceId);
+            controller.getAttendanceDetail(ATTENDANCE_REQ, resourceId);
         }
     }
 
@@ -368,6 +370,8 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                                                 getAttendanceDetails();
                                                 Toasty.success(getActivity(), "Attendance marked successfully.", Toast.LENGTH_SHORT).show();
                                                 replaceFragment(HomeFragment.newInstance(), "FaceRecognizationFragment-HomeFragment");
+//                                                startActivity(new Intent(getActivity(), WelcomeVideoActivity.class));
+//                                                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                                             } else {
                                                 getErrorDialog("Attendance Failed", response.getErrorMessage());
                                             }
@@ -399,7 +403,13 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                                         public void onResponse(int requestCode, Object data) {
                                             HandShakeResponse response = (HandShakeResponse) data;
                                             if (response.getSuccess()) {
-                                                AppUtils.getHandShakeCall(username, getActivity());
+//                                                AppUtils.getHandShakeCall(username, getActivity());
+                                                if(SharedPreferencesUtility.getPrefBoolean(getActivity(),SharedPreferencesUtility.IS_SKIP_VIDEO)){
+                                                    AppUtils.getHandShakeCall(username, getActivity());
+                                                }else {
+                                                    startActivity(new Intent(getActivity(), StartVideoActivity.class));
+                                                    getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                                                }
                                             } else {
                                                 getErrorDialog("Error", "Unable to capture your photo, please try again.");
                                             }

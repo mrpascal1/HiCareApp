@@ -82,6 +82,6 @@ public interface OnSaveEventHandler {
     public void isEarlyCompletion(Boolean b);
 
     public void isJobCardEnable(Boolean b);
-
-    public void AttachmentList(List<GetAttachmentList> mList);
+//
+//    public void AttachmentList(List<GetAttachmentList> mList);
 }

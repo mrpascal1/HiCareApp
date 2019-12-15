@@ -115,14 +115,38 @@ public class NetworkCallController {
                 });
     }
 
-    public void getContinueHandShake(final int requestCode, ContinueHandShakeRequest request) {
+    public void getContinueHandShake(final int requestCode, final ContinueHandShakeRequest request) {
         BaseApplication.getRetrofitAPI(true)
                 .getContinueHandShake(request)
                 .enqueue(new Callback<ContinueHandShakeResponse>() {
                     @Override
                     public void onResponse(Call<ContinueHandShakeResponse> call, Response<ContinueHandShakeResponse> response) {
                         if (response != null) {
-                            if (response.body() != null) {
+
+                            if (response.code() == 401) { // Unauthorised Access
+                                NetworkCallController controller = new NetworkCallController();
+                                controller.setListner(new NetworkResponseListner<LoginResponse>() {
+                                    @Override
+                                    public void onResponse(int reqCode, LoginResponse response) {
+                                        // delete all previous record
+                                        Realm.getDefaultInstance().beginTransaction();
+                                        Realm.getDefaultInstance().deleteAll();
+                                        Realm.getDefaultInstance().commitTransaction();
+
+                                        // add new record
+                                        Realm.getDefaultInstance().beginTransaction();
+                                        Realm.getDefaultInstance().copyToRealmOrUpdate(response);
+                                        Realm.getDefaultInstance().commitTransaction();
+                                        getContinueHandShake(requestCode, request);
+                                    }
+
+                                    @Override
+                                    public void onFailure(int requestCode) {
+
+                                    }
+                                });
+                                controller.refreshToken(100, getRefreshToken());
+                            } else if (response.body() != null) {
                                 mListner.onResponse(requestCode, response.body());
                             } else if (response.errorBody() != null) {
                                 try {
@@ -229,7 +253,7 @@ public class NetworkCallController {
 
     public void refreshToken(final int requestCode, final String refreshToken) {
         BaseApplication.getRetrofitAPI(false)
-                .refreshToken("refresh_token", refreshToken)
+                .refreshToken("refresh_token", refreshToken, "", "", "", "", "")
                 .enqueue(new Callback<LoginResponse>() {
                     @Override
                     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {

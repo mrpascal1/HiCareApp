@@ -49,6 +49,7 @@ public class LoginActivity extends BaseActivity {
         mActivityLoginBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_login);
         askPermissions();
+
         addFragment(OTP_LoginFragment.newInstance(), "LoginTrealActivity-CreateRealFragment");
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 

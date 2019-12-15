@@ -35,6 +35,13 @@ public class Videos {
     @Expose
     private Integer createdBy;
 
+//    @SerializedName("VideoDuration")
+//    @Expose
+//    private Integer videoDuration;
+//    @SerializedName("IsVideoSkip")
+//    @Expose
+//    private Boolean isVideoSkip;
+
     public Integer getId() {
         return id;
     }
@@ -107,4 +114,19 @@ public class Videos {
         this.createdBy = createdBy;
     }
 
+//    public Integer getVideoDuration() {
+//        return videoDuration;
+//    }
+//
+//    public void setVideoDuration(Integer videoDuration) {
+//        this.videoDuration = videoDuration;
+//    }
+//
+//    public Boolean getVideoSkip() {
+//        return isVideoSkip;
+//    }
+//
+//    public void setVideoSkip(Boolean videoSkip) {
+//        isVideoSkip = videoSkip;
+//    }
 }

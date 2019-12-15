@@ -169,10 +169,14 @@ public class GeneralData implements RealmModel {
 
     @SerializedName("PaymentModeList")
     @Expose
+
     private RealmList<GeneralPaymentMode> PaymentModeList = null;
     @SerializedName("IncompleteReasonList")
     @Expose
     private RealmList<IncompleteReason> IncompleteReasonList = null;
+
+    private RealmList<GeneralData> MSTList = null;
+
     @SerializedName("ActualCompletionDateTime")
     @Expose
     private String ActualCompletionDateTime;
@@ -564,5 +568,13 @@ public class GeneralData implements RealmModel {
 
     public void setAlternateMobileNumber(String alternateMobileNumber) {
         AlternateMobileNumber = alternateMobileNumber;
+    }
+
+    public RealmList<GeneralData> getMSTList() {
+        return MSTList;
+    }
+
+    public void setMSTList(RealmList<GeneralData> MSTList) {
+        this.MSTList = MSTList;
     }
 }

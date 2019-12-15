@@ -81,8 +81,6 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
                             (android.location.LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
                     if (locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
                             && locationManager.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER)) {
-
-
                         if (SharedPreferencesUtility.getPrefBoolean(SplashActiviy.this, SharedPreferencesUtility.IS_USER_LOGIN)) {
                             if (SharedPreferencesUtility.getPrefString(SplashActiviy.this, SharedPreferencesUtility.PREF_LOGOUT) != null) {
                                 String PreviousLoginDate = SharedPreferencesUtility.getPrefString(SplashActiviy.this, SharedPreferencesUtility.PREF_LOGOUT);
@@ -91,7 +89,7 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
                                 Log.i("CurrentDate", AppUtils.currentDate());
                                 if (ComparePreviousLogin.equals("equal")) {
                                     startActivity(new Intent(SplashActiviy.this, HomeActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
-                                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+//                                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                                     finish();
                                 } else {
                                     Intent myIntent = new Intent(SplashActiviy.this, HandShakeReceiver.class);
@@ -100,7 +98,7 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
                                     mAlarmManager.cancel(pendingIntent);
                                     getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
                                     startActivity(new Intent(SplashActiviy.this, LoginActivity.class));
-                                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+//                                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                                     finish();
                                 }
                             } else {
@@ -111,13 +109,13 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
                                 mAlarmManager.cancel(pendingIntent);
                                 getApplicationContext().stopService(new Intent(SplashActiviy.this, ServiceLocationSend.class));
                                 startActivity(new Intent(SplashActiviy.this, LoginActivity.class));
-                                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+//                                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                                 finish();
                             }
                         } else {
                             getApplicationContext().stopService(new Intent(SplashActiviy.this, ServiceLocationSend.class));
                             startActivity(new Intent(SplashActiviy.this, LoginActivity.class));
-                            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+//                            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                             finish();
                         }
 
@@ -136,7 +134,6 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
             String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
             AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "splashScreen", lineNo, "", DeviceName);
         }
-
     }
 
     @Override

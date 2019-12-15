@@ -69,9 +69,7 @@ public class ExoplayerActivity extends BaseActivity implements Player.EventListe
         if (getIntent().hasExtra(VIDEO_URI)) {
             videoUri = getIntent().getStringExtra(VIDEO_URI);
         }
-
         setUp();
-
         mExoplayerLayoutBinding.imageViewExit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

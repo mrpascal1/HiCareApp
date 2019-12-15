@@ -32,6 +32,8 @@ import androidx.databinding.DataBindingUtil;
 
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
+import com.ab.hicarerun.activities.HomeActivity;
+import com.ab.hicarerun.activities.StartVideoActivity;
 import com.ab.hicarerun.activities.VerifyOtpActivity;
 import com.ab.hicarerun.databinding.FragmentOtpLoginBinding;
 import com.ab.hicarerun.databinding.FragmentVerifyOtpBinding;
@@ -78,7 +80,6 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
     private Boolean isGetInside = false;
     private LoginFragment.UserLoginTask mAuthTask = null;
     private String profilePic = "";
-    private String video_url = "";
     GoogleApiClient mGoogleApiClient;
     //    private SMSListener reciever;
     SMSListener mSmsBroadcastReceiver;
@@ -117,9 +118,6 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
 
         AppSignatureHelper appSignatureHelper = new AppSignatureHelper(getActivity());
         appSignatureHelper.getAppSignatures();
-
-//        reciever = new SMSListener();
-
         mSmsBroadcastReceiver = new SMSListener();
         //set google api client for hint request
         mGoogleApiClient = new GoogleApiClient.Builder(getContext())
@@ -134,7 +132,6 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
         getActivity().registerReceiver(mSmsBroadcastReceiver, intentFilter);
         getActivity().setTitle("");
         startSMSListener();
-        getStartTrainingVideos();
         return mFragmentVerifyOtpBinding.getRoot();
     }
 
@@ -170,19 +167,19 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
             }
         });
 
-        mFragmentVerifyOtpBinding.txtResend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        mFragmentVerifyOtpBinding.btnVerify.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+//        mFragmentVerifyOtpBinding.txtResend.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
+//
+//        mFragmentVerifyOtpBinding.btnVerify.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
 
     }
 
@@ -326,19 +323,6 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
     }
 
 
-    public void getHintPhoneNumber() {
-        HintRequest hintRequest =
-                new HintRequest.Builder()
-                        .setPhoneNumberIdentifierSupported(true)
-                        .build();
-        PendingIntent mIntent = Auth.CredentialsApi.getHintPickerIntent(mGoogleApiClient, hintRequest);
-        try {
-            getActivity().startIntentSenderForResult(mIntent.getIntentSender(), RESOLVE_HINT, null, 0, 0, 0);
-        } catch (IntentSender.SendIntentException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -399,61 +383,66 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-
             if (success) {
-                if (video_url.trim().length() != 0) {
-                    replaceFragment(VideoPlayerFragment.newInstance(profilePic, mobile, video_url), "LoginTrealActivity-VideoPlayerFragment");
-                    getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                } else {
-                    if (profilePic.trim().length() == 0) {
-                        replaceFragment(FaceRecognizationFragment.newInstance(false, mobile), "VerifyOtpFragment-FaceRecognizationFragment");
-                    } else {
-                        AppUtils.getHandShakeCall(mobile, getActivity());
-                    }
-                }
 
+//                    if (profilePic.trim().length() == 0) {
+//                        replaceFragment(FaceRecognizationFragment.newInstance(false, mobile), "VerifyOtpFragment-FaceRecognizationFragment");
+//                    } else {
+//                        if(SharedPreferencesUtility.getPrefBoolean(getActivity(),SharedPreferencesUtility.IS_SKIP_VIDEO)){
+//                            AppUtils.getHandShakeCall(mobile, getActivity());
+//                        }else {
+//                            startActivity(new Intent(getActivity(), StartVideoActivity.class).putExtra(StartVideoActivity.ARG_USER,mobile));
+//                            getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+//                        }
+//                    }
+                getWelcomeVideo();
+                SharedPreferencesUtility.savePrefString(getActivity(), SharedPreferencesUtility.PREF_LOGOUT, AppUtils.currentDate());
 
             } else {
                 mFragmentVerifyOtpBinding.otpView.setError("Invalid OTP!");
             }
         }
 
+
+        private void getWelcomeVideo() {
+            NetworkCallController controller = new NetworkCallController(VerifyOtpFragment.this);
+            controller.setListner(new NetworkResponseListner() {
+                @Override
+                public void onResponse(int requestCode, Object response) {
+                    Videos items = (Videos) response;
+                    if (items != null) {
+
+                        if (profilePic.trim().length() == 0) {
+                            replaceFragment(FaceRecognizationFragment.newInstance(false, mobile), "VerifyOtpFragment-FaceRecognizationFragment");
+                        } else {
+                            if (items.getVideoUrl().length() > 0) {
+                                if (SharedPreferencesUtility.getPrefBoolean(getActivity(), SharedPreferencesUtility.IS_SKIP_VIDEO)) {
+                                    AppUtils.getHandShakeCall(mobile, getActivity());
+                                } else {
+                                    startActivity(new Intent(getActivity(), StartVideoActivity.class)
+                                            .putExtra(StartVideoActivity.ARG_USER, mobile)
+                                            .putExtra(StartVideoActivity.ARG_URL, items.getVideoUrl()));
+                                }
+                            } else {
+                                AppUtils.getHandShakeCall(mobile, getActivity());
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(int requestCode) {
+
+                }
+            });
+            controller.getStartingVideos(VIDEO_REQUEST);
+        }
+
+
         @Override
         protected void onCancelled() {
             mAuthTask = null;
         }
-    }
-
-    private void getStartTrainingVideos() {
-
-        NetworkCallController controller = new NetworkCallController(this);
-        controller.setListner(new NetworkResponseListner() {
-            @Override
-            public void onResponse(int requestCode, Object response) {
-                Videos items = (Videos) response;
-                if (items != null) {
-                    video_url = items.getVideoUrl();
-//                    replaceFragment(VideoPlayerFragment.newInstance(profilePic, mobile, items.getVideoUrl()), "LoginTrealActivity-VideoPlayerFragment");
-//                    getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-//                } else {
-//                        replaceFragment(FaceRecognizationFragment.newInstance(false, mobile), "VerifyOtpFragment-FaceRecognizationFragment");
-//                        SharedPreferencesUtility.savePrefString(getActivity(), SharedPreferencesUtility.PREF_LOGOUT, AppUtils.currentDate());
-//                    if (profilePic.trim().length() == 0) {
-//                        replaceFragment(FaceRecognizationFragment.newInstance(false, mobile), "VerifyOtpFragment-FaceRecognizationFragment");
-//                    } else {
-//                        AppUtils.getHandShakeCall(mobile, getActivity());
-//                    }
-
-                }
-            }
-
-            @Override
-            public void onFailure(int requestCode) {
-
-            }
-        });
-        controller.getStartingVideos(VIDEO_REQUEST);
-
     }
 
     @Override

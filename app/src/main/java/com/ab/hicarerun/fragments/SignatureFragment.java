@@ -742,7 +742,6 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
             SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_ATTACHMENT, false);
         }
 
-
     }
 
 

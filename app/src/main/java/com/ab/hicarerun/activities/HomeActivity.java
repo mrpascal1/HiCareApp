@@ -33,11 +33,13 @@ import com.ab.hicarerun.databinding.ActivityHomeBinding;
 import com.ab.hicarerun.fragments.FaceRecognizationFragment;
 import com.ab.hicarerun.fragments.HomeFragment;
 import com.ab.hicarerun.fragments.NotificationFragment;
+import com.ab.hicarerun.fragments.VideoPlayerFragment;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShake;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
+import com.ab.hicarerun.network.models.TrainingModel.Videos;
 import com.ab.hicarerun.network.models.UpdateAppModel.UpdateData;
 import com.ab.hicarerun.service.LocationManager;
 import com.ab.hicarerun.service.ServiceLocationSend;
@@ -71,6 +73,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     private android.location.LocationManager locationManager;
     private AlarmManager mAlarmManager = null;
     private PendingIntent pendingUpdateIntent = null;
+    private String video_url = "http://apps.hicare.in/video1.mp4";
 
 
     @Override
@@ -80,6 +83,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 DataBindingUtil.setContentView(this, R.layout.activity_home);
         setSupportActionBar(mActivityHomeBinding.toolbar);
         initNavigationDrawer();
+
 
         try {
             isClicked = getIntent().getExtras().getBoolean(ARG_EVENT, false);
@@ -120,7 +124,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     protected void onResume() {
         super.onResume();
         if (AppUtils.checkConnection(HomeActivity.this)) {
-            getVersionFromApi();
+//            getVersionFromApi();
         } else {
             AppUtils.showOkActionAlertBox(HomeActivity.this, "Something went wrong! please check your internet connection.", new DialogInterface.OnClickListener() {
                 @Override
@@ -374,6 +378,8 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                                                 getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
                                             }
                                             SharedPreferencesUtility.savePrefBoolean(getApplicationContext(), SharedPreferencesUtility.IS_USER_LOGIN,
+                                                    false);
+                                            SharedPreferencesUtility.savePrefBoolean(getApplicationContext(), SharedPreferencesUtility.IS_SKIP_VIDEO,
                                                     false);
                                             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                                             finish();

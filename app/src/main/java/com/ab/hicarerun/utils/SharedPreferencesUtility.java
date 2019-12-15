@@ -23,6 +23,10 @@ public class SharedPreferencesUtility {
     public static final String PREF_RESTRICT = "PREF_RESTRICT";
     public static final String PREF_LOGOUT = "PREF_LOGOUT";
     public static final String PREF_INTERVAL = "PREF_INTERVAL";
+    public static final String IS_SKIP_VIDEO = "IS_SKIP_VIDEO";
+    public static final String PREF_VIDEO_URL = "PREF_VIDEO_URL";
+    public static final String PREF_PROFILE = "PREF_PROFILE";
+    public static final String PREF_MOBILE = "PREF_MOBILE";
 
     public static boolean getPrefBoolean(Context context, String key) {
         SharedPreferences prefs =
