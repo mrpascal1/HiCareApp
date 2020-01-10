@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="handler"
+            type="com.ab.hicarerun.handler.UserTaskDetailsClickListener" />
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+                <com.sothree.slidinguppanel.SlidingUpPanelLayout
+                    xmlns:sothree="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/sliding_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="bottom"
+                    android:shadowColor="@color/black"
+                    sothree:umanoPanelHeight="250dp"
+                    sothree:umanoShadowHeight="4dp">
+
+                    <fragment
+                        android:id="@+id/map"
+                        android:name="com.google.android.gms.maps.SupportMapFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                        <RelativeLayout
+                            android:id="@+id/bottom_sheet"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@color/white"
+                            android:orientation="vertical"
+                            app:behavior_hideable="true">
+
+                            <LinearLayout
+                                android:id="@+id/tray"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_centerHorizontal="true"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="7dp"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:id="@+id/imgSheet"
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_up" />
+
+                            </LinearLayout>
+
+                            <com.ogaclejapan.smarttablayout.SmartTabLayout
+                                android:id="@+id/viewpagertab"
+                                android:layout_width="match_parent"
+                                android:layout_height="48dp"
+                                android:layout_below="@id/tray"
+                                android:layout_marginTop="7dp"
+                                android:background="@color/white"
+                                app:stl_clickable="true"
+                                app:stl_defaultTabBackground="?attr/selectableItemBackground"
+                                app:stl_defaultTabTextAllCaps="false"
+                                app:stl_defaultTabTextColor="@color/black"
+                                app:stl_defaultTabTextHorizontalPadding="10dp"
+                                app:stl_defaultTabTextMinWidth="0dp"
+                                app:stl_defaultTabTextSize="12sp"
+                                app:stl_distributeEvenly="false"
+                                app:stl_dividerColor="@color/white"
+                                app:stl_dividerThickness="0dp"
+                                app:stl_drawDecorationAfterTab="false"
+                                app:stl_indicatorAlwaysInCenter="false"
+                                app:stl_indicatorColor="@color/colorPrimary"
+                                app:stl_indicatorCornerRadius="15dp"
+                                app:stl_indicatorInFront="false"
+                                app:stl_indicatorInterpolation="smart"
+                                app:stl_indicatorThickness="3dp"
+                                app:stl_indicatorWidth="auto"
+                                app:stl_indicatorWithoutPadding="false"
+                                app:stl_overlineColor="@color/white"
+                                app:stl_overlineThickness="0dp"
+                                app:stl_titleOffset="24dp"
+                                app:stl_underlineColor="@color/white"
+                                app:stl_underlineThickness="1dp" />
+
+
+                            <androidx.viewpager.widget.ViewPager
+                                android:id="@+id/pager"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_above="@id/lnrSave"
+                                android:layout_below="@id/viewpagertab"
+                                android:background="@color/white" />
+
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="4dp"
+                                android:layout_above="@id/lnrSave"
+                                android:background="@drawable/shadow" />
+
+                            <LinearLayout
+                                android:id="@+id/lnrSave"
+                                android:layout_width="match_parent"
+                                android:layout_height="45dp"
+                                android:onClick="@{(view) -> handler.onSaveTaskClick(view)}"
+                                android:layout_alignParentBottom="true"
+                                android:background="@color/colorPrimary"
+                                android:gravity="center">
+
+                                <TextView
+                                    android:id="@+id/save"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:text="SAVE"
+                                    android:textColor="@color/white"
+                                    android:textSize="18sp" />
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+
+                </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                style="@style/ToolBarStyle.Event"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/transparent"
+                android:minHeight="?attr/actionBarSize"
+                app:title="" />
+
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+    </RelativeLayout>
+
+
+</layout>
