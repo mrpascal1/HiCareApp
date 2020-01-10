@@ -27,6 +27,7 @@ public class SharedPreferencesUtility {
     public static final String PREF_VIDEO_URL = "PREF_VIDEO_URL";
     public static final String PREF_PROFILE = "PREF_PROFILE";
     public static final String PREF_MOBILE = "PREF_MOBILE";
+    public static final String PREF_SUB_AREA = "PREF_SUB_AREA";
 
     public static boolean getPrefBoolean(Context context, String key) {
         SharedPreferences prefs =

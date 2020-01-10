@@ -68,25 +68,19 @@ public class FocusView extends View {
     @Override
 
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+        try {
+            super.onDraw(canvas);
+            mPath.reset();
+            mPath.addCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, 380, Path.Direction.CW);
+            mPath.setFillType(Path.FillType.INVERSE_WINDING);
+            canvas.drawCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, 380, mTransparentPaint);
+            canvas.drawPath(mPath, mSemiBlackPaint);
+            canvas.clipPath(mPath);
+            canvas.drawColor(Color.parseColor("#A6000000"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-
-        mPath.reset();
-
-
-        mPath.addCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, 380, Path.Direction.CW);
-
-        mPath.setFillType(Path.FillType.INVERSE_WINDING);
-
-
-        canvas.drawCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, 380, mTransparentPaint);
-
-
-        canvas.drawPath(mPath, mSemiBlackPaint);
-
-        canvas.clipPath(mPath);
-
-        canvas.drawColor(Color.parseColor("#A6000000"));
     }
 
 }

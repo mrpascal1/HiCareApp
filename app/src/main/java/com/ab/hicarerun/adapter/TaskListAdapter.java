@@ -3,6 +3,7 @@ package com.ab.hicarerun.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.hardware.Camera;
@@ -91,7 +92,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     }
 
 
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         TaskListAdapterBinding mTaskListAdapterBinding =
@@ -105,9 +105,42 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         holder.mTaskListAdapterBinding.txtTime.setText(items.get(position).getTaskAssignmentStartTime() + " - " + items.get(position).getTaskAssignmentEndTime());
         holder.mTaskListAdapterBinding.txtName.setText(items.get(position).getAccountName());
         holder.mTaskListAdapterBinding.status.setText(items.get(position).getStatus());
+
+        int[] attrs = new int[]{R.attr.selectableItemBackground};
+        TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
+        int backgroundResource = typedArray.getResourceId(0, 0);
+        holder.mTaskListAdapterBinding.dispatchTaskAltMobileNo.setBackgroundResource(backgroundResource);
+        holder.mTaskListAdapterBinding.dispatchTaskMobileNo.setBackgroundResource(backgroundResource);
+        holder.mTaskListAdapterBinding.dispatchTaskPhoneNo.setBackgroundResource(backgroundResource);
+        holder.mTaskListAdapterBinding.lnrDetail.setBackgroundResource(backgroundResource);
+        holder.mTaskListAdapterBinding.constraint.setBackgroundResource(backgroundResource);
+        holder.mTaskListAdapterBinding.constraint2.setBackgroundResource(backgroundResource);
+        holder.mTaskListAdapterBinding.lnrMap.setBackgroundResource(backgroundResource);
+        holder.mTaskListAdapterBinding.btnHelpline.setBackgroundResource(backgroundResource);
+
+
+        try {
+            String mDate = AppUtils.reFormatDateTime(items.get(position).getTaskAssignmentStartDate(), "dd MMM, yyyy");
+            holder.mTaskListAdapterBinding.txtDate.setText(mDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         holder.mTaskListAdapterBinding.status.setTypeface(Typeface.DEFAULT_BOLD, Typeface.NORMAL);
         Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.blink);
         holder.mTaskListAdapterBinding.imgWarning.startAnimation(animation);
+//        if (items.get(position).getSequenceNumber() == 1) {
+//            holder.mTaskListAdapterBinding.cardTasks.setCardBackgroundColor(Color.parseColor("#ffe76e54"));
+//        }else {
+//            holder.mTaskListAdapterBinding.cardTasks.setCardBackgroundColor(Color.parseColor("#ffffff"));
+//
+//        }
+        if (items.get(position).getSequenceNumber() == 1 && items.get(position).getAccountType().equals("Individual")) {
+            holder.mTaskListAdapterBinding.lnrTask.setBackgroundColor(Color.parseColor("#ffc0cb"));
+        } else {
+            holder.mTaskListAdapterBinding.lnrTask.setBackgroundColor(Color.parseColor("#ffffff"));
+        }
+
         if (items.get(position).getStatus().equalsIgnoreCase("Completed")) {
             holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
             holder.mTaskListAdapterBinding.warning.setVisibility(View.GONE);
@@ -143,9 +176,15 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             holder.mTaskListAdapterBinding.lnrSequence.setVisibility(View.GONE);
         }
 
-        holder.mTaskListAdapterBinding.txtService.setText(items.get(position).getServicePlan());
-        holder.mTaskListAdapterBinding.txtType.setText(items.get(position).getServiceType());
-        if (items.get(position).getStreet() != null){
+        if (items.get(position).getCombineTaskType() != null && !items.get(position).getCombineTaskType().equals("")) {
+            holder.mTaskListAdapterBinding.txtService.setText(items.get(position).getCombineTaskType());
+            holder.mTaskListAdapterBinding.txtType.setText(items.get(position).getCombineTaskType());
+        } else {
+            holder.mTaskListAdapterBinding.txtService.setText(items.get(position).getServicePlan());
+            holder.mTaskListAdapterBinding.txtType.setText(items.get(position).getServiceType());
+        }
+
+        if (items.get(position).getStreet() != null) {
             street = items.get(position).getStreet();
         }
 
@@ -170,12 +209,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         holder.mTaskListAdapterBinding.txtPostcode.setText(items.get(position).getPostalCode());
         holder.mTaskListAdapterBinding.txtOrderno.setText(items.get(position).getOrderNumber());
         holder.mTaskListAdapterBinding.txtAmount.setText(items.get(position).getAmount());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onItemClickHandler.onItemClick(position);
-            }
-        });
+        holder.itemView.setOnClickListener(v -> onItemClickHandler.onItemClick(position));
 
 
         holder.mTaskListAdapterBinding.dispatchTaskMobileNo.setOnClickListener(new View.OnClickListener() {

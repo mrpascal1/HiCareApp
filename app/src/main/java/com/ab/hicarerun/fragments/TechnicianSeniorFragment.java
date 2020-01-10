@@ -134,13 +134,11 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
             File[] contents = directory.listFiles();
             if (contents != null) {
                 if (contents.length > 0) {
-
                     for (File content : contents) {
                         if (content.isFile()) {
                             File sourceFile = new File(content.toString());
                             sourceFile.delete();
                         }
-
                     }
                 }
             }

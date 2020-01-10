@@ -22,6 +22,9 @@ public class GetAttachmentList {
     @SerializedName("Created_On")
     @Expose
     private String Created_On;
+    @SerializedName("File")
+    @Expose
+    private String File;
 
     public Integer getId() {
         return Id;
@@ -69,5 +72,13 @@ public class GetAttachmentList {
 
     public void setCreated_On(String created_On) {
         Created_On = created_On;
+    }
+
+    public String getFile() {
+        return File;
+    }
+
+    public void setFile(String file) {
+        File = file;
     }
 }

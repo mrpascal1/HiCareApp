@@ -14,6 +14,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -21,6 +22,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
+import com.ab.hicarerun.activities.NewTaskDetailsActivity;
 import com.ab.hicarerun.activities.TaskDetailsActivity;
 import com.ab.hicarerun.adapter.ReferralListAdapter;
 import com.ab.hicarerun.adapter.TaskListAdapter;
@@ -41,6 +43,8 @@ import com.ab.hicarerun.network.models.ReferralModel.ReferralRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralResponse;
 import com.ab.hicarerun.network.models.TaskModel.Tasks;
 import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.utils.SwipeToDeleteCallBack;
+import com.ab.hicarerun.viewmodel.AttachmentListViewModel;
 import com.ab.hicarerun.viewmodel.ReferralViewModel;
 import com.ab.hicarerun.viewmodel.UserLoginViewModel;
 
@@ -134,17 +138,72 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
 
     }
 
+    private void enableSwipeToDeleteAndUndo() {
+        try {
+            SwipeToDeleteCallBack swipeToDeleteCallback = new SwipeToDeleteCallBack(getActivity()) {
+                @Override
+                public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+                    final int position = viewHolder.getAdapterPosition();
+//                final AttachmentListViewModel item = mAdapter.getItem(position);
+//                mAdapter.removeItem(position);
+                    getReferralDeleted(position);
+//                Snackbar snackbar = Snackbar
+//                        .make(mFragmentSignatureInfoBinding.idScroll, "Item was removed from the list.", Snackbar.LENGTH_LONG);
+//
+//                snackbar.setAction("UNDO", new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        mAdapter.restoreItem(item, position);
+//                        mFragmentSignatureInfoBinding.recycleView.scrollToPosition(position);
+//                    }
+//                });
+//
+//                snackbar.setActionTextColor(Color.YELLOW);
+//                snackbar.show();
+                }
+            };
+            ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeToDeleteCallback);
+            itemTouchhelper.attachToRecyclerView(mfragmentReferralBinding.recycleView);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void getReferralDeleted(int position) {
+        try {
+            ReferralDeleteRequest request = new ReferralDeleteRequest();
+            request.setId(mAdapter.getItem(position).getId());
+            request.setTaskId(mAdapter.getItem(position).getTaskId());
+            request.setFirstName(mAdapter.getItem(position).getFirstName());
+            request.setLastName(mAdapter.getItem(position).getLastName());
+            request.setMobileNo(mAdapter.getItem(position).getMobileNo());
+            request.setAlternateMobileNo(mAdapter.getItem(position).getAlternateMobileNo());
+            request.setEmail(mAdapter.getItem(position).getEmail());
+            request.setInterestedService(mAdapter.getItem(position).getInterestedService());
+            NetworkCallController controller = new NetworkCallController(this);
+            controller.setListner(this);
+            controller.getDeleteReferrals(DELETE_REFERRAL_REQUEST, request);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
     private void getReferralList() {
-        NetworkCallController controller = new NetworkCallController(this);
-        controller.setListner(this);
-        controller.getReferrals(GET_REFERRAL_REQUEST, tasks.getTaskId());
+        try {
+            NetworkCallController controller = new NetworkCallController(this);
+            controller.setListner(this);
+            controller.getReferrals(GET_REFERRAL_REQUEST, tasks.getTaskId());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 
     @Override
     public void onAddReferralClicked(View view) {
         try {
-            if ((TaskDetailsActivity) getActivity() != null) {
+            if ((NewTaskDetailsActivity) getActivity() != null) {
                 mGeneralRealmModel = getRealm().where(GeneralData.class).findAll();
                 if (mGeneralRealmModel != null && mGeneralRealmModel.size() > 0) {
                     LayoutInflater li = LayoutInflater.from(getActivity());
@@ -253,18 +312,22 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
 
     @Override
     public void onDeleteItemClicked(int position) {
-        ReferralDeleteRequest request = new ReferralDeleteRequest();
-        request.setId(mAdapter.getItem(position).getId());
-        request.setTaskId(mAdapter.getItem(position).getTaskId());
-        request.setFirstName(mAdapter.getItem(position).getFirstName());
-        request.setLastName(mAdapter.getItem(position).getLastName());
-        request.setMobileNo(mAdapter.getItem(position).getMobileNo());
-        request.setAlternateMobileNo(mAdapter.getItem(position).getAlternateMobileNo());
-        request.setEmail(mAdapter.getItem(position).getEmail());
-        request.setInterestedService(mAdapter.getItem(position).getInterestedService());
-        NetworkCallController controller = new NetworkCallController(this);
-        controller.setListner(this);
-        controller.getDeleteReferrals(DELETE_REFERRAL_REQUEST, request);
+        try {
+            ReferralDeleteRequest request = new ReferralDeleteRequest();
+            request.setId(mAdapter.getItem(position).getId());
+            request.setTaskId(mAdapter.getItem(position).getTaskId());
+            request.setFirstName(mAdapter.getItem(position).getFirstName());
+            request.setLastName(mAdapter.getItem(position).getLastName());
+            request.setMobileNo(mAdapter.getItem(position).getMobileNo());
+            request.setAlternateMobileNo(mAdapter.getItem(position).getAlternateMobileNo());
+            request.setEmail(mAdapter.getItem(position).getEmail());
+            request.setInterestedService(mAdapter.getItem(position).getInterestedService());
+            NetworkCallController controller = new NetworkCallController(this);
+            controller.setListner(this);
+            controller.getDeleteReferrals(DELETE_REFERRAL_REQUEST, request);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 
@@ -277,38 +340,47 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
     public void onResponse(int requestCode, Object data) {
         switch (requestCode) {
             case GET_REFERRAL_REQUEST:
-                List<ReferralList> items = (List<ReferralList>) data;
-                mfragmentReferralBinding.swipeRefreshLayout.setRefreshing(false);
-                if (items != null) {
-                    if (pageNumber == 1 && items.size() > 0) {
-                        mfragmentReferralBinding.txtData.setVisibility(View.GONE);
-                        mAdapter.setData(items);
-                        mAdapter.notifyDataSetChanged();
-                    } else if (items.size() > 0) {
-                        mfragmentReferralBinding.txtData.setVisibility(View.GONE);
-                        mAdapter.addData(items);
-                        mAdapter.notifyDataSetChanged();
+                try {
+                    List<ReferralList> items = (List<ReferralList>) data;
+                    mfragmentReferralBinding.swipeRefreshLayout.setRefreshing(false);
+                    if (items != null) {
+                        if (pageNumber == 1 && items.size() > 0) {
+                            mfragmentReferralBinding.emptyTask.setVisibility(View.GONE);
+                            mAdapter.setData(items);
+                            mAdapter.notifyDataSetChanged();
+                            enableSwipeToDeleteAndUndo();
+                        } else if (items.size() > 0) {
+                            mfragmentReferralBinding.emptyTask.setVisibility(View.GONE);
+                            mAdapter.addData(items);
+                            mAdapter.notifyDataSetChanged();
+                            enableSwipeToDeleteAndUndo();
+                        } else {
+                            pageNumber--;
+                        }
                     } else {
-                        pageNumber--;
+                        mfragmentReferralBinding.emptyTask.setVisibility(View.VISIBLE);
                     }
-                } else {
-                    mfragmentReferralBinding.txtData.setVisibility(View.VISIBLE);
+                }catch (Exception e){
+                   e.printStackTrace();
                 }
+
                 break;
 
             case DELETE_REFERRAL_REQUEST:
-                ReferralResponse DeleteResponse = (ReferralResponse) data;
-
-                if (DeleteResponse.getSuccess()) {
-                    mAdapter.removeAll();
-                    getReferralList();
+                try {
+                    ReferralResponse DeleteResponse = (ReferralResponse) data;
+                    if (DeleteResponse.getSuccess()) {
+                        mAdapter.removeAll();
+                        getReferralList();
 //                    Toast.makeText(getActivity(), "Deleted Successfully.", Toast.LENGTH_LONG).show();
-                    Toasty.success(getActivity(), "Deleted successfully.", Toast.LENGTH_SHORT).show();
+                        Toasty.success(getActivity(), "Deleted successfully.", Toast.LENGTH_SHORT).show();
 
-                    mAdapter.notifyDataSetChanged();
-                } else {
-                    Toast.makeText(getActivity(), "Failed.", Toast.LENGTH_LONG).show();
-
+                        mAdapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(getActivity(), "Failed.", Toast.LENGTH_LONG).show();
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
                 break;
         }

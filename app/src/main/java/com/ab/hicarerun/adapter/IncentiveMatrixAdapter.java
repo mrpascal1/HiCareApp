@@ -55,7 +55,6 @@ public class IncentiveMatrixAdapter extends RecyclerView.Adapter<IncentiveMatrix
     @Override
     public int getItemCount() {
         return items.size();
-
     }
 
     public void setData(List<Matrix> data) {

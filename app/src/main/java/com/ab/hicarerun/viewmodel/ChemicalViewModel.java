@@ -1,15 +1,12 @@
 package com.ab.hicarerun.viewmodel;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentList;
 import com.ab.hicarerun.network.models.ChemicalModel.Chemicals;
 
 import java.util.HashMap;
 import java.util.List;
 
-public class ChemicalViewModel implements Parcelable {
+public class ChemicalViewModel {
     private String id;
     private String name;
     private String consumption;
@@ -17,6 +14,7 @@ public class ChemicalViewModel implements Parcelable {
     private String actual;
     private String edtActual;
     private HashMap<Integer, String> actualList;
+    private String chemType;
 
     public ChemicalViewModel() {
         this.id = "NA";
@@ -25,29 +23,9 @@ public class ChemicalViewModel implements Parcelable {
         this.standard = "NA";
         this.actual = "NA";
         this.edtActual = "NA";
+        this.chemType = "NA";
     }
 
-    protected ChemicalViewModel(Parcel in) {
-        id = in.readString();
-        name = in.readString();
-        consumption = in.readString();
-        standard = in.readString();
-        actual = in.readString();
-        edtActual = in.readString();
-    }
-
-
-    public static final Creator<ChemicalViewModel> CREATOR = new Creator<ChemicalViewModel>() {
-        @Override
-        public ChemicalViewModel createFromParcel(Parcel in) {
-            return new ChemicalViewModel(in);
-        }
-
-        @Override
-        public ChemicalViewModel[] newArray(int size) {
-            return new ChemicalViewModel[size];
-        }
-    };
 
     public String getId() {
         return id;
@@ -105,26 +83,21 @@ public class ChemicalViewModel implements Parcelable {
         this.actualList = actualList;
     }
 
+    public String getChemType() {
+        return chemType;
+    }
+
+    public void setChemType(String chemType) {
+        this.chemType = chemType;
+    }
+
     public void clone(Chemicals chemicals) {
         this.id = chemicals.getId();
         this.name = chemicals.getCWFProductName();
         this.consumption = chemicals.getConsumption();
         this.standard = chemicals.getStandard_Usage();
         this.edtActual = chemicals.getActual_Usage();
+        this.chemType = chemicals.getChemType();
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(name);
-        dest.writeString(consumption);
-        dest.writeString(standard);
-        dest.writeString(actual);
-        dest.writeString(edtActual);
-    }
 }

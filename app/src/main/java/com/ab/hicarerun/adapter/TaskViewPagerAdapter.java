@@ -16,7 +16,6 @@ import java.util.List;
 public class TaskViewPagerAdapter extends FragmentPagerAdapter {
     private final List<Fragment> mFragmentList = new ArrayList<>();
     private final ArrayList<String> mFragmentTitle = new ArrayList<>();
-
     public TaskViewPagerAdapter(FragmentManager manager) {
         super(manager);
     }

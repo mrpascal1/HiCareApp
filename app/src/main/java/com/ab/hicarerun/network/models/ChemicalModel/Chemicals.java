@@ -19,6 +19,8 @@ public class Chemicals {
     @SerializedName("CWFProductName__c") @Expose
     private String CWFProductName;
 
+    @SerializedName("Task_Type__c") @Expose
+    private String ChemType;
 
     public Chemicals() {
         Id = "NA";
@@ -26,6 +28,7 @@ public class Chemicals {
         Actual_Usage = "NA";
         Consumption = "NA";
         CWFProductName = "NA";
+        ChemType = "NA";
     }
 
     public String getId() {
@@ -66,5 +69,13 @@ public class Chemicals {
 
     public void setCWFProductName(String CWFProductName) {
         this.CWFProductName = CWFProductName;
+    }
+
+    public String getChemType() {
+        return ChemType;
+    }
+
+    public void setChemType(String chemType) {
+        ChemType = chemType;
     }
 }

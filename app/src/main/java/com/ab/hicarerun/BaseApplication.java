@@ -19,6 +19,9 @@ import com.onesignal.OneSignal;
 
 import java.util.concurrent.TimeUnit;
 
+import io.github.inflationx.calligraphy3.CalligraphyConfig;
+import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
+import io.github.inflationx.viewpump.ViewPump;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
@@ -29,7 +32,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ss.com.bannerslider.Slider;
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+
 
 public class BaseApplication extends Application {
 
@@ -106,11 +109,13 @@ public class BaseApplication extends Application {
     public static IRetrofit getExotelApi() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setExclusionStrategies(new ExclusionStrategy() {
-            @Override public boolean shouldSkipField(FieldAttributes f) {
+            @Override
+            public boolean shouldSkipField(FieldAttributes f) {
                 return f.getDeclaringClass().equals(RealmObject.class);
             }
 
-            @Override public boolean shouldSkipClass(Class<?> clazz) {
+            @Override
+            public boolean shouldSkipClass(Class<?> clazz) {
                 return false;
             }
         });
@@ -139,11 +144,13 @@ public class BaseApplication extends Application {
     public static IRetrofit getLoggerApi() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setExclusionStrategies(new ExclusionStrategy() {
-            @Override public boolean shouldSkipField(FieldAttributes f) {
+            @Override
+            public boolean shouldSkipField(FieldAttributes f) {
                 return f.getDeclaringClass().equals(RealmObject.class);
             }
 
-            @Override public boolean shouldSkipClass(Class<?> clazz) {
+            @Override
+            public boolean shouldSkipClass(Class<?> clazz) {
                 return false;
             }
         });
@@ -173,11 +180,13 @@ public class BaseApplication extends Application {
     public static IRetrofit getJeopardyApi() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setExclusionStrategies(new ExclusionStrategy() {
-            @Override public boolean shouldSkipField(FieldAttributes f) {
+            @Override
+            public boolean shouldSkipField(FieldAttributes f) {
                 return f.getDeclaringClass().equals(RealmObject.class);
             }
 
-            @Override public boolean shouldSkipClass(Class<?> clazz) {
+            @Override
+            public boolean shouldSkipClass(Class<?> clazz) {
                 return false;
             }
         });
@@ -222,10 +231,17 @@ public class BaseApplication extends Application {
 
         // configuring the font for calligraphy
         try {
-            CalligraphyConfig.initDefault(
-                    new CalligraphyConfig.Builder().setDefaultFontPath("fonts/font.ttf")
-                            .setFontAttrId(R.attr.fontPath)
-                            .build());
+//            CalligraphyConfig.initDefault(
+//                    new CalligraphyConfig.Builder().setDefaultFontPath("fonts/font.ttf")
+//                            .setFontAttrId(R.attr.fontPath)
+//                            .build());
+            ViewPump.init(ViewPump.builder()
+                    .addInterceptor(new CalligraphyInterceptor(
+                            new CalligraphyConfig.Builder()
+                                    .setDefaultFontPath("fonts/font.ttf")
+                                    .setFontAttrId(R.attr.fontPath)
+                                    .build()))
+                    .build());
         } catch (Exception e) {
             e.printStackTrace();
         }

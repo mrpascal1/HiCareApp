@@ -51,6 +51,10 @@ android {
     dataBinding {
         enabled = true
     }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
     }
@@ -64,7 +68,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.google.android.material:material:1.0.0'
-    implementation 'uk.co.chrisjenx:calligraphy:2.2.0'
+//    implementation 'uk.co.chrisjenx:calligraphy:2.2.0'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
@@ -74,10 +78,14 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.sothree.slidinguppanel:library:3.4.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'io.github.inflationx:calligraphy3:3.1.1'
+    implementation 'io.github.inflationx:viewpump:2.0.3'
+    implementation 'com.thoughtbot:expandablerecyclerview:1.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation('com.onesignal:OneSignal:[3.11.4, 3.99.99]') {
         exclude group: 'com.google.android.gms'
     }
+    implementation 'com.weiwangcn.betterspinner:library-material:1.1.0'
     implementation 'com.orhanobut:logger:2.2.0'
     implementation 'net.igenius:customcheckbox:1.3'
     implementation 'com.github.jrvansuita:PickImage:+'
@@ -98,7 +106,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
     implementation 'com.bogdwellers:pinchtozoom:0.1'
     implementation 'com.ogaclejapan.smarttablayout:library:2.0.0@aar'
-
+    implementation "com.daimajia.swipelayout:library:1.2.0@aar"
     // ExoPlayer
     implementation 'com.google.android.exoplayer:exoplayer:2.8.4' // 2.9.0 has min sdk 26
     // lib for SMS verification (Phone Auth)
@@ -106,6 +114,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-identity:17.0.0'
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
     implementation 'com.google.android.gms:play-services-auth-api-phone:17.3.0'
+    implementation 'com.karumi:dexter:4.2.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

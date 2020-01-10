@@ -1,6 +1,8 @@
 package com.ab.hicarerun.network;
 
+import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.network.models.AttachmentModel.AttachmentDeleteRequest;
+import com.ab.hicarerun.network.models.AttachmentModel.AttachmentMSTResponse;
 import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentResponse;
 import com.ab.hicarerun.network.models.AttachmentModel.PostAttachmentRequest;
 import com.ab.hicarerun.network.models.AttachmentModel.PostAttachmentResponse;
@@ -8,6 +10,7 @@ import com.ab.hicarerun.network.models.AttendanceModel.AttendanceDetailResponse;
 import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
 import com.ab.hicarerun.network.models.AttendanceModel.ProfilePicRequest;
 import com.ab.hicarerun.network.models.BasicResponse;
+import com.ab.hicarerun.network.models.ChemicalModel.ChemicalMSTResponse;
 import com.ab.hicarerun.network.models.ChemicalModel.ChemicalResponse;
 import com.ab.hicarerun.network.models.ExotelModel.ExotelResponse;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackRequest;
@@ -25,6 +28,11 @@ import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonModel;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
+import com.ab.hicarerun.network.models.OnSiteModel.OnSiteAccountResponse;
+import com.ab.hicarerun.network.models.OnSiteModel.OnSiteAreaResponse;
+import com.ab.hicarerun.network.models.OnSiteModel.OnSiteRecentResponse;
+import com.ab.hicarerun.network.models.OnSiteModel.SaveAccountAreaRequest;
+import com.ab.hicarerun.network.models.OnSiteModel.SaveAccountAreaResponse;
 import com.ab.hicarerun.network.models.OtpModel.SendOtpResponse;
 import com.ab.hicarerun.network.models.PayementModel.BankResponse;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
@@ -60,7 +68,7 @@ public interface IRetrofit {
     //        String BASE_URL = "http://52.74.65.15/mobileapi/api/";
     //    String ERROR_LOG_URL = "http://52.74.65.15/logging/api/";
     //    http://apps.hicare.in/cwf/datasync/InsertRenewalAppJeopardy
-    String BASE_URL = "http://run.hicare.in/mobile/api/";
+    String BASE_URL = "http://api.hicare.in/mobile/api/";
     String EXOTEL_URL = "http://apps.hicare.in/api/api/";
     String ERROR_LOG_URL = "http://run.hicare.in/logging/api/";
     String JEOPARDY_URL = "http://apps.hicare.in/cwf/";
@@ -102,7 +110,7 @@ public interface IRetrofit {
     /*[Task Details By ID]*/
 
     @GET("Task/GetTaskDetailsById")
-    Call<GeneralResponse> getTasksDetailById(@Query("resourceId") String resourceId, @Query("taskId") String taskId);
+    Call<GeneralResponse> getTasksDetailById(@Query("resourceId") String resourceId, @Query("taskId") String taskId, @Query("IsCombinedTask") Boolean isCombinedTask);
 
     /*[Save Referral]*/
 
@@ -139,6 +147,12 @@ public interface IRetrofit {
     @GET("Attachment/GetAttachmentDetailsByTaskId")
     Call<GetAttachmentResponse> getAttachments(@Query("resourceId") String resourceId, @Query("taskId") String taskId);
 
+    /*[Attachment MST Details*/
+
+    @GET("Attachment/GetAttachmentDetailsByTaskIdForMST")
+    Call<AttachmentMSTResponse> getMSTAttachments(@Query("resourceId") String resourceId, @Query("taskIds") String taskId,
+                                                  @Query("serviceTypes") String serviceTypes);
+
     /*[Update Tasks]*/
 
     @POST("Task/UpdateTaskDetails")
@@ -158,6 +172,11 @@ public interface IRetrofit {
 
     @GET("ChemicalConsumption/GetChemimcalDetails")
     Call<ChemicalResponse> getChemicals(@Query("taskId") String taskId);
+
+    /*[Chemicals Details]*/
+
+    @GET("ChemicalConsumption/GetChemimcalDetailsForMST")
+    Call<ChemicalResponse> getMSTChemicals(@Query("taskId") String taskId);
 
     /*[Logout]*/
 
@@ -240,13 +259,11 @@ public interface IRetrofit {
 
 
     /*[GetWelcomeVideo]*/
-
     @GET("VideoUploader/GetWelcomeVideo")
     Call<WelcomeVideoResponse> getStartingVideos();
 
 
     /*[ResendOnsiteOTP]*/
-
     @GET("Task/ResendOnsiteOTP")
     Call<OnSiteOtpResponse> getOnsiteOTP(@Query("resourceId") String resourceId,
                                          @Query("taskId") String taskId,
@@ -260,8 +277,34 @@ public interface IRetrofit {
                                                   @Query("taskId") String taskId);
 
     /*[Payment/GetBanksName]*/
-
     @GET("Payment/GetBankList")
     Call<BankResponse> getBanksName();
 
+    /*[AreaActivity/GetOnSiteAccount]*/
+    @GET("AreaActivity/GetOnsiteAccounts")
+    Call<OnSiteAccountResponse> getOnsiteAccounts(@Query("resourceId") String resourceId);
+
+    /*[AreaActivity/GetAccountAreaActivity]*/
+    @GET("AreaActivity/GetAccountAreaActivity")
+    Call<OnSiteAreaResponse> getAccountAreaActivity(@Query("accountId") String accountId,
+                                                    @Query("resourceId") String resourceId);
+    /*[AreaActivity/SaveAccountAreaActivity]*/
+
+    @POST("AreaActivity/SaveAccountAreaActivity")
+    Call<SaveAccountAreaResponse> getSaveAccountAreaActivity(@Body SaveAccountAreaRequest request);
+
+    /*[AreaActivity/GetAccountAreaActivity]*/
+    @GET("AreaActivity/GetRecentAccountAreaActivity")
+    Call<OnSiteRecentResponse> getRecentAccountAreaActivity(@Query("accountId") String accountId,
+                                                            @Query("resourceId") String resourceId,
+                                                            @Query("isGrouped") Boolean isGrouped);
+
+    /*[Payment/GetBanksName]*/
+    @GET("AreaActivity/GetNotDoneReasons")
+    Call<BankResponse> getNotDoneReasons();
+
+    /*[AreaActivity/DeleteAccountAreaActivity]*/
+
+    @GET("AreaActivity/DeleteAccountAreaActivity")
+    Call<SaveAccountAreaResponse> getDeleteOnSiteTasks(@Query("activityId") Integer activityId);
 }

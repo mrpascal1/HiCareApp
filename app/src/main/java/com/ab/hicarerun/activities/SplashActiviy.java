@@ -76,7 +76,7 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
             new Handler().postDelayed(new Runnable() {
 
                 @Override
-                    public void run() {
+                public void run() {
                     locationManager =
                             (android.location.LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
                     if (locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
@@ -118,12 +118,10 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
 //                            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                             finish();
                         }
-
-
                     } else {
                         try {
                             AppUtils.statusCheck(SplashActiviy.this);
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }

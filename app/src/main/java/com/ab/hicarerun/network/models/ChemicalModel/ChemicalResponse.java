@@ -15,8 +15,6 @@ public class ChemicalResponse {
     @SerializedName("ErrorMessage") @Expose
     private String ErrorMessage;
 
-
-
     public ChemicalResponse() {
         IsSuccess = "NA";
         ErrorMessage = "NA";

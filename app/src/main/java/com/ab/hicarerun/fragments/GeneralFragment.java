@@ -484,7 +484,7 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
                 final AppCompatEditText edtmobile =
                         (AppCompatEditText) promptsView.findViewById(R.id.edtmobile);
                 final AppCompatEditText edtName =
-                        (AppCompatEditText) promptsView.findViewById(R.id.edtName);
+                        (AppCompatEditText) promptsView.findViewById(R.id.edtusername);
                 final AppCompatButton btn_send =
                         (AppCompatButton) promptsView.findViewById(R.id.btn_send);
                 final AppCompatButton btn_cancel =

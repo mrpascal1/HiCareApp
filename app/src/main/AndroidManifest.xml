@@ -14,7 +14,11 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" /> <!-- <uses-permission -->
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <!-- <uses-permission -->
     <!-- android:name="android.permission.RECEIVE_SMS" -->
     <!-- tools:node="remove" /> -->
     <!-- <uses-permission -->
@@ -51,7 +55,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.OnSiteTaskActivity"></activity>
+        <activity android:name=".activities.OnSiteAccountDetailsActivity"/>
+
+        <activity android:name=".activities.OnSiteTaskActivity" />
         <activity
             android:name=".activities.StartVideoActivity"
             android:configChanges="orientation|screenSize|layoutDirection" />
@@ -60,28 +66,20 @@
             android:configChanges="orientation|screenSize" />
         <activity
             android:name=".activities.NewTaskDetailsActivity"
+            android:windowSoftInputMode="adjustPan"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activities.VoucherActivity" />
-        <activity android:name=".activities.AttendanceActivity" />
-        <activity android:name=".activities.IncentivesActivity" /> <!-- <activity -->
-        <!-- android:name="com.ab.hicarerun.activities.SplashActiviy" -->
-        <!-- android:label="@string/app_name" -->
-        <!-- android:exported="true" -->
-        <!-- android:screenOrientation="portrait"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.MAIN" /> -->
-        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-        <!-- <action android:name="android.intent.action.VIEW" /> -->
-        <!-- <category android:name="android.intent.category.DEFAULT" /> -->
-        <!-- <category android:name="android.intent.category.BROWSABLE" /> -->
-        <!-- <data -->
-        <!-- android:host="hicare" -->
-        <!-- android:scheme="hicare-technician-app" /> -->
-        <!-- </intent-filter> -->
-        <!-- </activity> -->
+        <activity
+            android:name=".activities.VoucherActivity"
+            android:parentActivityName=".activities.HomeActivity" />
+        <activity
+            android:name=".activities.AttendanceActivity"
+            android:parentActivityName=".activities.HomeActivity" />
+        <activity
+            android:name=".activities.IncentivesActivity"
+            android:parentActivityName=".activities.HomeActivity" /> <!-- <activity -->
         <activity
             android:name=".activities.TechIdActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

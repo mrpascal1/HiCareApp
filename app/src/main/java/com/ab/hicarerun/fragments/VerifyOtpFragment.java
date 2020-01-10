@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.Html;
@@ -63,6 +64,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import java.util.List;
+import java.util.UUID;
 
 
 public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClickHandler, GoogleApiClient.ConnectionCallbacks,
@@ -240,7 +242,21 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        imei = telephonyManager.getDeviceId();
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            try {
+////                imei = telephonyManager.getImei();
+//                imei = UUID.randomUUID().toString();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        } else {
+//            try {
+////                imei = telephonyManager.getDeviceId();
+//                imei = UUID.randomUUID().toString();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
         PackageInfo pinfo = null;
         try {
             pinfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
@@ -250,6 +266,10 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
         String versionName = pinfo.versionName;
         OneSIgnalHelper oneSIgnalHelper = new OneSIgnalHelper(getActivity());
         String mStrPlayerId = oneSIgnalHelper.getmStrUserID();
+//        imei = oneSIgnalHelper.getmStrUserID();
+        imei = Settings.Secure.getString(getActivity().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+
 
         try {
             if (mFragmentVerifyOtpBinding.otpView.getText().toString().equals(otp)) {
@@ -270,7 +290,7 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
                         getRealm().commitTransaction();
                         if (isVisible()) {
                             isGetInside = true;
-                            new VerifyOtpFragment.UserLoginTask(isGetInside).execute((Void) null);
+                            new UserLoginTask(isGetInside).execute((Void) null);
                         }
                     }
 
@@ -384,7 +404,6 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             if (success) {
-
 //                    if (profilePic.trim().length() == 0) {
 //                        replaceFragment(FaceRecognizationFragment.newInstance(false, mobile), "VerifyOtpFragment-FaceRecognizationFragment");
 //                    } else {
@@ -413,7 +432,7 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
                     if (items != null) {
 
                         if (profilePic.trim().length() == 0) {
-                            replaceFragment(FaceRecognizationFragment.newInstance(false, mobile), "VerifyOtpFragment-FaceRecognizationFragment");
+                            replaceFragment(FaceRecognizationFragment.newInstance(false, mobile, items.getVideoUrl()), "VerifyOtpFragment-FaceRecognizationFragment");
                         } else {
                             if (items.getVideoUrl().length() > 0) {
                                 if (SharedPreferencesUtility.getPrefBoolean(getActivity(), SharedPreferencesUtility.IS_SKIP_VIDEO)) {

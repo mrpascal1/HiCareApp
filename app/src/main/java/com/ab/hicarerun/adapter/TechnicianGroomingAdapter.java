@@ -1,6 +1,7 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,10 @@ public class TechnicianGroomingAdapter extends RecyclerView.Adapter<TechnicianGr
 
     @Override
     public void onBindViewHolder(TechnicianGroomingAdapter.ViewHolder holder, final int position) {
+        int[] attrs = new int[]{R.attr.selectableItemBackground};
+        TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
+        int backgroundResource = typedArray.getResourceId(0, 0);
+        holder.mOnJobTechniciansListBinding.constraint2.setBackgroundResource(backgroundResource);
         holder.mOnJobTechniciansListBinding.txtTechnician.setText(items.get(position).getTechnicianName());
         if(items.get(position).getEmployeeCode()!= null && items.get(position).getEmployeeCode().length() !=0){
             holder.mOnJobTechniciansListBinding.txtCode.setText(items.get(position).getEmployeeCode());

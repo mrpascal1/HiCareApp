@@ -117,7 +117,6 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mFragmentChemicalBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_chemical, container, false);
-
         mProgressBar = new ProgressDialog(getActivity());
         return mFragmentChemicalBinding.getRoot();
     }
@@ -131,7 +130,7 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
         mFragmentChemicalBinding.recycleView.setLayoutManager(layoutManager);
         mGeneralRealmData =
                 getRealm().where(GeneralData.class).findAll();
-        mAdapter = new ChemicalRecycleAdapter(getActivity(), new ChemicalRecycleAdapter.OnEditTextChanged() {
+        mAdapter = new ChemicalRecycleAdapter(getActivity(),false, new ChemicalRecycleAdapter.OnEditTextChanged() {
             @Override
             public void onTextChanged(int position, String charSeq) {
                 try {
@@ -198,8 +197,6 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
             if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
                 isVerified = mGeneralRealmData.get(0).getAutoSubmitChemicals();
                 ActualStatus = mGeneralRealmData.get(0).getSchedulingStatus();
-
-
                 NetworkCallController controller = new NetworkCallController(this);
                 controller.setListner(this);
                 controller.getChemicals(CHEMICAL_REQ, taskId);

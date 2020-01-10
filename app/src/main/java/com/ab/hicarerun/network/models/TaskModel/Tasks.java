@@ -142,10 +142,25 @@ public class Tasks implements Parcelable {
     @Expose
     private String CustomerLongitude;
 
+    @SerializedName("AccountType")
+    @Expose
+    private String AccountType;
+
+    @SerializedName("CombinedServiceType")
+    @Expose
+    private String CombinedServiceType;
+
+    @SerializedName("CombinedTaskId")
+    @Expose
+    private String CombinedTaskId;
+
     @SerializedName("IsDetailVisible")
     @Expose
     private Boolean IsDetailVisible;
 
+    @SerializedName("IsCombinedTask")
+    @Expose
+    private Boolean IsCombinedTask;
     public Tasks() {
         AccountName = "NA";
         ServicePlan = "NA";
@@ -179,9 +194,13 @@ public class Tasks implements Parcelable {
         CompletedLong = "NA";
         CustomerLatitude = "NA";
         CustomerLongitude = "NA";
+        CombinedServiceType = "NA";
         Tag = "NA";
         SequenceNumber = 0;
         IsDetailVisible = false;
+        IsCombinedTask = false;
+        AccountType = "NA";
+        CombinedTaskId = "NA";
     }
 
 
@@ -220,8 +239,13 @@ public class Tasks implements Parcelable {
         CompletedLong = in.readString();
         CustomerLatitude = in.readString();
         CustomerLongitude = in.readString();
+        AccountType = in.readString();
+        CombinedServiceType = in.readString();
+        CombinedTaskId = in.readString();
         byte tmpIsDetailVisible = in.readByte();
         IsDetailVisible = tmpIsDetailVisible == 0 ? null : tmpIsDetailVisible == 1;
+        byte tmpIsCombinedTask = in.readByte();
+        IsCombinedTask = tmpIsCombinedTask == 0 ? null : tmpIsCombinedTask == 1;
     }
 
     public static final Creator<Tasks> CREATOR = new Creator<Tasks>() {
@@ -516,6 +540,38 @@ public class Tasks implements Parcelable {
         IsDetailVisible = detailVisible;
     }
 
+    public Boolean getCombinedTask() {
+        return IsCombinedTask;
+    }
+
+    public void setCombinedTask(Boolean combinedTask) {
+        IsCombinedTask = combinedTask;
+    }
+
+    public String getAccountType() {
+        return AccountType;
+    }
+
+    public void setAccountType(String accountType) {
+        AccountType = accountType;
+    }
+
+    public String getCombinedServiceType() {
+        return CombinedServiceType;
+    }
+
+    public void setCombinedServiceType(String combinedServiceType) {
+        CombinedServiceType = combinedServiceType;
+    }
+
+    public String getCombinedTaskId() {
+        return CombinedTaskId;
+    }
+
+    public void setCombinedTaskId(String combinedTaskId) {
+        CombinedTaskId = combinedTaskId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -557,6 +613,10 @@ public class Tasks implements Parcelable {
         parcel.writeString(CompletedLong);
         parcel.writeString(CustomerLatitude);
         parcel.writeString(CustomerLongitude);
+        parcel.writeString(AccountType);
+        parcel.writeString(CombinedServiceType);
+        parcel.writeString(CombinedTaskId);
         parcel.writeByte((byte) (IsDetailVisible == null ? 0 : IsDetailVisible ? 1 : 2));
+        parcel.writeByte((byte) (IsCombinedTask == null ? 0 : IsCombinedTask ? 1 : 2));
     }
 }

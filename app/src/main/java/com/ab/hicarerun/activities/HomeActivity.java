@@ -33,13 +33,11 @@ import com.ab.hicarerun.databinding.ActivityHomeBinding;
 import com.ab.hicarerun.fragments.FaceRecognizationFragment;
 import com.ab.hicarerun.fragments.HomeFragment;
 import com.ab.hicarerun.fragments.NotificationFragment;
-import com.ab.hicarerun.fragments.VideoPlayerFragment;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShake;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
-import com.ab.hicarerun.network.models.TrainingModel.Videos;
 import com.ab.hicarerun.network.models.UpdateAppModel.UpdateData;
 import com.ab.hicarerun.service.LocationManager;
 import com.ab.hicarerun.service.ServiceLocationSend;
@@ -82,6 +80,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         mActivityHomeBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_home);
         setSupportActionBar(mActivityHomeBinding.toolbar);
+
         initNavigationDrawer();
 
 
@@ -310,19 +309,22 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                     case R.id.nav_incentive:
                         mActivityHomeBinding.drawer.closeDrawers();
                         startActivity(new Intent(HomeActivity.this, IncentivesActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
-                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                         break;
 
                     case R.id.nav_attendance:
                         mActivityHomeBinding.drawer.closeDrawers();
                         startActivity(new Intent(HomeActivity.this, AttendanceActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
-                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                        break;
+
+
+                    case R.id.nav_onsite:
+                        mActivityHomeBinding.drawer.closeDrawers();
+                        startActivity(new Intent(HomeActivity.this, OnSiteTaskActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
                         break;
 
                     case R.id.nav_groom:
                         mActivityHomeBinding.drawer.closeDrawers();
                         startActivity(new Intent(HomeActivity.this, TechnicianSeniorActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
-                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                         break;
 
                     case R.id.nav_notifications:
@@ -333,26 +335,22 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                     case R.id.nav_training:
                         mActivityHomeBinding.drawer.closeDrawers();
                         startActivity(new Intent(HomeActivity.this, TrainingActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
-                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                         break;
 
                     case R.id.nav_voucher:
                         mActivityHomeBinding.drawer.closeDrawers();
                         startActivity(new Intent(HomeActivity.this, VoucherActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
-                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                         break;
 
 
                     case R.id.nav_help:
                         mActivityHomeBinding.drawer.closeDrawers();
                         startActivity(new Intent(HomeActivity.this, HelpActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
-                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                         break;
 
                     case R.id.nav_myid:
                         mActivityHomeBinding.drawer.closeDrawers();
                         startActivity(new Intent(HomeActivity.this, TechIdActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
-                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                         break;
 
                     case R.id.nav_logout:
@@ -427,7 +425,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
     @Override
     public void onBackPressed() {
-        getSupportFragmentManager().beginTransaction().remove(FaceRecognizationFragment.newInstance(false, "avatar")).commit();
+        getSupportFragmentManager().beginTransaction().remove(FaceRecognizationFragment.newInstance(false, "avatar", "")).commit();
         getSupportFragmentManager().popBackStack();
         int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
         if (backStackEntryCount == 0) {
@@ -441,12 +439,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("Exit");
         dialog.setMessage("Do you want to exit?");
-        dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                finishAffinity();
-            }
-        });
+        dialog.setPositiveButton("Yes", (dialogInterface, i) -> finishAffinity());
         dialog.setNegativeButton("No", null);
         dialog.show();
     }

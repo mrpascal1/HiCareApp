@@ -125,7 +125,6 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     private boolean isEarlyCompletion = false;
     private android.location.LocationManager locationManager;
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -141,18 +140,13 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
         super.onCreate(savedInstanceState);
         mActivityTaskDetailsBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_task_details);
-
-
         setSupportActionBar(mActivityTaskDetailsBinding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         mActivityTaskDetailsBinding.viewpager.setOffscreenPageLimit(5);
         model = getIntent().getParcelableExtra(ARGS_TASKS);
-
         LocationManager.Builder builder = new LocationManager.Builder(this);
         builder.setLocationListner(this);
         builder.build();
-
         progress = new ProgressDialog(this, R.style.TransparentProgressDialog);
         progress.setCancelable(false);
         locationManager =
@@ -167,7 +161,6 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                 e.printStackTrace();
             }
         }
-
     }
 
     private void getTaskDetailsById() {
@@ -180,7 +173,6 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                 }
                 RealmResults<LoginResponse> LoginRealmModels =
                         getRealm().where(LoginResponse.class).findAll();
-
                 if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
                     UserId = LoginRealmModels.get(0).getUserID();
                     NetworkCallController controller = new NetworkCallController();
@@ -205,7 +197,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                         public void onFailure(int requestCode) {
                         }
                     });
-                    controller.getTaskDetailById(TASK_BY_ID_REQUEST, UserId, model.getTaskId(), TaskDetailsActivity.this);
+                    controller.getTaskDetailById(TASK_BY_ID_REQUEST, UserId, model.getTaskId(), false, TaskDetailsActivity.this);
                 }
             }
         } catch (Exception e) {
@@ -221,9 +213,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     }
 
     private void setViewPagerView() {
-
         mAdapter = new TaskViewPagerAdapter(getSupportFragmentManager());
-
         if (sta.equals("Dispatched") || sta.equals("Incomplete")) {
             mAdapter.addFragment(GeneralFragment.newInstance(model.getTaskId(), model.getStatus()), "General");
         } else {
@@ -299,7 +289,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
             public void onClick(View v) {
                 Rate = (int) ratingBar.getRating();
                 alertDialog.dismiss();
-                if(AppUtils.isGpsEnabled(TaskDetailsActivity.this)) {
+                if (AppUtils.isGpsEnabled(TaskDetailsActivity.this)) {
                     getSaveMenu();
                 }
             }
@@ -396,7 +386,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                 onBackPressed();
                 break;
             case R.id.menu_save:
-                if(AppUtils.isGpsEnabled(TaskDetailsActivity.this)){
+                if (AppUtils.isGpsEnabled(TaskDetailsActivity.this)) {
                     getSaveMenu();
                 }
                 return true;
@@ -928,7 +918,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
 //    }
 
     public void onSaveClick(MenuItem item) {
-        if(AppUtils.isGpsEnabled(TaskDetailsActivity.this)) {
+        if (AppUtils.isGpsEnabled(TaskDetailsActivity.this)) {
             getSaveMenu();
         }
     }

@@ -2,23 +2,22 @@ package com.ab.hicarerun.fragments;
 
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -40,19 +39,14 @@ import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.activities.NewTaskDetailsActivity;
-import com.ab.hicarerun.activities.TaskDetailsActivity;
-import com.ab.hicarerun.activities.WelcomeVideoActivity;
 import com.ab.hicarerun.adapter.TaskListAdapter;
 import com.ab.hicarerun.databinding.FragmentHomeBinding;
 import com.ab.hicarerun.handler.OnCallListItemClickHandler;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentList;
 import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
 import com.ab.hicarerun.network.models.ExotelModel.ExotelResponse;
-import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
-import com.ab.hicarerun.network.models.GeneralModel.IncompleteReason;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeResponse;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyRequest;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyResponse;
@@ -62,21 +56,13 @@ import com.ab.hicarerun.network.models.TaskModel.TaskListResponse;
 import com.ab.hicarerun.network.models.TaskModel.Tasks;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.UUID;
 
 import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
-
-import static android.app.Activity.RESULT_OK;
 
 public class HomeFragment extends BaseFragment implements NetworkResponseListner<TaskListResponse>, OnCallListItemClickHandler {
     FragmentHomeBinding mFragmentHomeBinding;
@@ -126,13 +112,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         activityName = getActivity().getClass().getSimpleName();
         apply();
 
-//        timerRunnable = new Runnable() {
-//            @Override
-//            public void run() {
-//                mAdapter.notifyDataSetChanged();
-//                timerHandler.postDelayed(this, 60000); //run every minute
-//            }
-//        };
         return mFragmentHomeBinding.getRoot();
     }
 
@@ -154,17 +133,18 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        int[] attrs = new int[]{R.attr.selectableItemBackground};
+        TypedArray typedArray = getActivity().obtainStyledAttributes(attrs);
+        int backgroundResource = typedArray.getResourceId(0, 0);
+        view.setBackgroundResource(backgroundResource);
         mFragmentHomeBinding.recycleView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
-
         mFragmentHomeBinding.swipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
@@ -174,7 +154,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 });
 
         mFragmentHomeBinding.recycleView.setLayoutManager(layoutManager);
-
 
         mFragmentHomeBinding.swipeRefreshLayout.setColorSchemeResources(
                 android.R.color.holo_blue_dark, android.R.color.holo_blue_light,
@@ -195,7 +174,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     private void getAllTasks() {
         try {
             SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_REFRESH, false);
-            if ((HomeActivity) getActivity() != null) {
+            if (getActivity() != null) {
                 RealmResults<LoginResponse> LoginRealmModels =
                         BaseApplication.getRealm().where(LoginResponse.class).findAll();
                 if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
@@ -211,7 +190,10 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                         // for ActivityCompat#requestPermissions for more details.
                         return;
                     }
-                    IMEI = telephonyManager.getDeviceId();
+//                    IMEI = telephonyManager.getDeviceId();
+//                    IMEI = UUID.randomUUID().toString();
+                    IMEI = Settings.Secure.getString(getActivity().getContentResolver(),
+                            Settings.Secure.ANDROID_ID);
                     UserId = LoginRealmModels.get(0).getUserID();
                     NetworkCallController controller = new NetworkCallController(this);
                     controller.setListner(this);
@@ -262,28 +244,25 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
             }
 
 
-            mAdapter.setOnItemClickHandler(new OnListItemClickHandler() {
-                @Override
-                public void onItemClick(int position) {
-                    if (items.get(position).getDetailVisible()) {
-                        try {
-                            AppUtils.getDataClean();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+            mAdapter.setOnItemClickHandler(position -> {
+                if (items.get(position).getDetailVisible()) {
+                    try {
+                        AppUtils.getDataClean();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 //                        Intent intent = new Intent(getActivity(), TaskDetailsActivity.class);
 //                        intent.putExtra(TaskDetailsActivity.ARGS_TASKS, items.get(position));
 //                        startActivity(intent);
 
-                        Intent intent = new Intent(getActivity(), NewTaskDetailsActivity.class);
-                        intent.putExtra(NewTaskDetailsActivity.ARGS_TASKS, items.get(position));
-                        startActivity(intent);
+                    Intent intent = new Intent(getActivity(), NewTaskDetailsActivity.class);
+                    intent.putExtra(NewTaskDetailsActivity.ARGS_TASKS, items.get(position));
+                    startActivity(intent);
 //                        getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 
 
-                    } else {
-                        Toasty.info(getActivity(), "Please complete your previous job first.", Toasty.LENGTH_SHORT).show();
-                    }
+                } else {
+                    Toasty.info(getActivity(), "Please complete your previous job first.", Toasty.LENGTH_SHORT).show();
                 }
             });
         }
@@ -322,7 +301,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
-                replaceFragment(FaceRecognizationFragment.newInstance(true, ""), "HomeFragment-FaceRecognizationFragment");
+                replaceFragment(FaceRecognizationFragment.newInstance(true, "", ""), "HomeFragment-FaceRecognizationFragment");
             }
 
 

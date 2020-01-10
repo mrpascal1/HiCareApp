@@ -27,6 +27,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -43,6 +44,7 @@ import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.HandShakeReceiver;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
+import com.ab.hicarerun.utils.notifications.OneSIgnalHelper;
 
 
 import java.security.Provider;
@@ -50,6 +52,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
 import io.realm.RealmResults;
 
@@ -96,7 +99,7 @@ public class ServiceLocationSend extends Service implements LocationListener {
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
         Notification notification = notificationBuilder.setOngoing(true)
-                .setContentTitle("Hicare Run is running in background")
+                .setContentTitle("HiCare is running in background")
                 .setPriority(NotificationManager.IMPORTANCE_MIN)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .build();
@@ -151,124 +154,127 @@ public class ServiceLocationSend extends Service implements LocationListener {
     @Override
     public void onDestroy() {
         Log.e("onDestroy", "onDestroy Call");
-
         super.onDestroy();
     }
 
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
+        try {
+            String time = SharedPreferencesUtility.getPrefString(getApplicationContext(), SharedPreferencesUtility.PREF_INTERVAL);
+            long REPEATED_TIME = Long.parseLong(time);
+            getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
+            Log.e("TAG", "Service Killed");
+            Intent intent = new Intent(getApplicationContext(), HandShakeReceiver.class);
+            intent.setAction("HandshakeAction");
+            PendingIntent pendingUpdateIntent = PendingIntent.getBroadcast(getApplicationContext(),
+                    0, intent, PendingIntent.FLAG_ONE_SHOT);
+            Calendar futureDate = Calendar.getInstance();
+            AlarmManager mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+            if (Build.VERSION.SDK_INT >= 19) {
+                mAlarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, futureDate.getTime().getTime(), REPEATED_TIME, pendingUpdateIntent);
+            } else {
+                mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, futureDate.getTime().getTime(), REPEATED_TIME, pendingUpdateIntent);
+            }
 
-
-//        Intent itAlarm = new Intent(this, ServiceLocationSend.class);
-//        PendingIntent pendingIntent = PendingIntent.getService(this, 0, itAlarm, 0);
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTimeInMillis(System.currentTimeMillis());
-//        calendar.add(Calendar.SECOND, 3);
-//        AlarmManager alarme = (AlarmManager) getSystemService(ALARM_SERVICE);
-//        alarme.cancel(pendingIntent);
-
-
-//            Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
-//            restartServiceIntent.setPackage(getPackageName());
-//
-//            PendingIntent restartServicePendingIntent = PendingIntent.getService(getApplicationContext(), 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT);
-//            AlarmManager alarmService = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-//            alarmService.set(
-//                    AlarmManager.ELAPSED_REALTIME,
-//                    SystemClock.elapsedRealtime() + 3000,
-//                    restartServicePendingIntent);
-        String time = SharedPreferencesUtility.getPrefString(getApplicationContext(), SharedPreferencesUtility.PREF_INTERVAL);
-        long REPEATED_TIME = Long.parseLong(time);
-//        long REPEATED_TIME = 60000;
-        getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
-        Log.e("TAG", "Service Killed");
-        Intent intent = new Intent(getApplicationContext(), HandShakeReceiver.class);
-        intent.setAction("HandshakeAction");
-        PendingIntent pendingUpdateIntent = PendingIntent.getBroadcast(getApplicationContext(),
-                0, intent, PendingIntent.FLAG_ONE_SHOT);
-        Calendar futureDate = Calendar.getInstance();
-        AlarmManager mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        if (Build.VERSION.SDK_INT >= 19) {
-            mAlarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, futureDate.getTime().getTime(), REPEATED_TIME, pendingUpdateIntent);
-        } else {
-            mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, futureDate.getTime().getTime(), REPEATED_TIME, pendingUpdateIntent);
+            super.onTaskRemoved(rootIntent);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        super.onTaskRemoved(rootIntent);
-
 
     }
 
     void getDeviceDetails(Context context, Boolean isloggedInsuccess, Boolean isGPSEnabled) {
 
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss aa");
-
-
-        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-        if (ActivityCompat.checkSelfPermission(ServiceLocationSend.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            //return;
-        }
-        str_lat = String.valueOf(lat);
-        str_lng = String.valueOf(lng);
-
-        strUsername = SharedPreferencesUtility.getPrefString(context, SharedPreferencesUtility.PREF_USERNAME);
-        userId = SharedPreferencesUtility.getPrefString(context, SharedPreferencesUtility.PREF_USERID);
-
         try {
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss aa");
 
-            DeviceIMEINumber = telephonyManager.getDeviceId();
 
+            TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+            if (ActivityCompat.checkSelfPermission(ServiceLocationSend.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                //return;
+            }
+            str_lat = String.valueOf(lat);
+            str_lng = String.valueOf(lng);
+
+            strUsername = SharedPreferencesUtility.getPrefString(context, SharedPreferencesUtility.PREF_USERNAME);
+            userId = SharedPreferencesUtility.getPrefString(context, SharedPreferencesUtility.PREF_USERID);
+
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    try {
+//                    DeviceIMEINumber = telephonyManager.getImei();
+//                        DeviceIMEINumber = UUID.randomUUID().toString();
+//                        OneSIgnalHelper oneSIgnalHelper = new OneSIgnalHelper(this);
+//                        DeviceIMEINumber = oneSIgnalHelper.getmStrUserID();
+                        DeviceIMEINumber = Settings.Secure.getString(context.getContentResolver(),
+                                Settings.Secure.ANDROID_ID);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+//                    DeviceIMEINumber = telephonyManager.getDeviceId();
+//                        DeviceIMEINumber = UUID.randomUUID().toString();
+//                        OneSIgnalHelper oneSIgnalHelper = new OneSIgnalHelper(this);
+//                        DeviceIMEINumber = oneSIgnalHelper.getmStrUserID();
+                        DeviceIMEINumber = Settings.Secure.getString(context.getContentResolver(),
+                                Settings.Secure.ANDROID_ID);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            PackageInfo pInfo = null;
+            try {
+                pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+                String version = pInfo.versionName;
+                DeviceTime = dateformat.format(c.getTime());
+                BatteryStatistics = String.valueOf(getMyBatteryLevel(ServiceLocationSend.this));
+                PhoneMake = Build.VERSION.SDK_INT + "," + Build.MODEL + "," + Build.PRODUCT + "," + Build.MANUFACTURER + "," + version;
+                DeviceName = Build.DEVICE;
+
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            if (isloggedInsuccess) {
+                IsLoggedIn = true;
+            } else {
+                IsLoggedIn = false;
+            }
+
+            if (isGPSEnabled) {
+                IsGPSConnected = true;
+            } else {
+                IsGPSConnected = false;
+            }
+
+            Log.e("TAG", "Lat" + str_lat);
+            Log.e("TAG", "Long" + str_lng);
+            Log.e("TAG", "str_Username: " + strUsername);
+            Log.e("TAG", "IMEI: " + DeviceIMEINumber);
+            Log.e("TAG", "Battery: " + BatteryStatistics);
+            Log.e("TAG", "Phone Make: " + PhoneMake);
+            Log.e("TAG", "Device Name: " + DeviceName);
+            Log.e("TAG", "isLogeedinnn: " + IsLoggedIn);
+            Log.e("TAG", "GPS: " + IsGPSConnected);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        PackageInfo pInfo = null;
-        try {
-            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        String version = pInfo.versionName;
-        System.out.print(version);
-
-        DeviceTime = dateformat.format(c.getTime());
-        BatteryStatistics = String.valueOf(getMyBatteryLevel(ServiceLocationSend.this));
-        PhoneMake = Build.VERSION.SDK_INT + "," + Build.MODEL + "," + Build.PRODUCT + "," + Build.MANUFACTURER + "," + version;
-        DeviceName = Build.DEVICE;
-
-        if (isloggedInsuccess) {
-            IsLoggedIn = true;
-        } else {
-            IsLoggedIn = false;
-        }
-
-
-        if (isGPSEnabled) {
-            IsGPSConnected = true;
-        } else {
-            IsGPSConnected = false;
-        }
-
-
-        Log.e("TAG", "Lat" + str_lat);
-        Log.e("TAG", "Long" + str_lng);
-        Log.e("TAG", "str_Username: " + strUsername);
-        Log.e("TAG", "IMEI: " + DeviceIMEINumber);
-        Log.e("TAG", "Battery: " + BatteryStatistics);
-        Log.e("TAG", "Phone Make: " + PhoneMake);
-        Log.e("TAG", "Device Name: " + DeviceName);
-        Log.e("TAG", "isLogeedinnn: " + IsLoggedIn);
-        Log.e("TAG", "GPS: " + IsGPSConnected);
-
     }
 
 

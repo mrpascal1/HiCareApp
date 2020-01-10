@@ -29,7 +29,6 @@ public class TechIdActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         try {
-            overridePendingTransition(R.anim.stay, R.anim.slide_out_right);  //close animation
             getBack();
             super.onBackPressed();
         } catch (Exception e) {

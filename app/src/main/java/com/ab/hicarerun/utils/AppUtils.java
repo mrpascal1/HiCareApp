@@ -35,6 +35,7 @@ import com.ab.hicarerun.network.models.GeneralModel.IncompleteReason;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShake;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLog;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
+import com.ab.hicarerun.utils.notifications.OneSIgnalHelper;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
@@ -46,6 +47,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import io.realm.Realm;
@@ -203,17 +205,29 @@ public class AppUtils {
         return date_result;
     }
 
+    public static String formatTime(String dateIn, String format) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm aa", Locale.ENGLISH);
+        Date date = simpleDateFormat.parse(dateIn);
+        simpleDateFormat = new SimpleDateFormat(format);
+        return simpleDateFormat.format(date);
+    }
 
     public static String reFormatDurationTime(String dateIn, String format) throws ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm aa",Locale.ENGLISH);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm aa", Locale.ENGLISH);
+        Date date = simpleDateFormat.parse(dateIn);
+        simpleDateFormat = new SimpleDateFormat(format);
+        return simpleDateFormat.format(date);
+    }
+
+    public static String reFormatDateAndTime(String dateIn, String format) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm aa", Locale.ENGLISH);
         Date date = simpleDateFormat.parse(dateIn);
         simpleDateFormat = new SimpleDateFormat(format);
         return simpleDateFormat.format(date);
     }
 
     public static String currentDateTime() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss",Locale.ENGLISH);
-//        0001-01-01 00:00:00
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", Locale.ENGLISH);
         Date date1 = new Date();
         return dateFormat.format(date1);
     }
@@ -347,7 +361,29 @@ public class AppUtils {
                 // for ActivityCompat#requestPermissions for more details.
 
             }
-            DeviceIMEINumber = telephonyManager.getDeviceId();
+//            DeviceIMEINumber = telephonyManager.getDeviceId();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                try {
+//                    DeviceIMEINumber = UUID.randomUUID().toString();
+//                    OneSIgnalHelper oneSIgnalHelper = new OneSIgnalHelper(context);
+//                    DeviceIMEINumber = oneSIgnalHelper.getmStrUserID();
+                    DeviceIMEINumber = Settings.Secure.getString(context.getContentResolver(),
+                            Settings.Secure.ANDROID_ID);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+//                    Device
+//                    Number = UUID.randomUUID().toString();
+//                    OneSIgnalHelper oneSIgnalHelper = new OneSIgnalHelper(context);
+//                    DeviceIMEINumber = oneSIgnalHelper.getmStrUserID();
+                    DeviceIMEINumber = Settings.Secure.getString(context.getContentResolver(),
+                            Settings.Secure.ANDROID_ID);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -419,28 +455,24 @@ public class AppUtils {
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        try {
-                            Intent mIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(mIntent);
-                            dialog.dismiss();
-                            Activity activity = (Activity) context;
-                            activity.finishAffinity();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-
-                    }
-                })
-                .setNegativeButton("No, thanks", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        dialog.cancel();
+                .setPositiveButton("Yes", (dialog, id) -> {
+                    try {
+                        Intent mIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(mIntent);
+                        dialog.dismiss();
                         Activity activity = (Activity) context;
                         activity.finishAffinity();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+
+
+                })
+                .setNegativeButton("No, thanks", (dialog, id) -> {
+                    dialog.cancel();
+                    Activity activity = (Activity) context;
+                    activity.finishAffinity();
                 });
         final AlertDialog alert = builder.create();
         alert.show();

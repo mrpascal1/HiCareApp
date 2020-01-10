@@ -1,6 +1,7 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,13 +40,12 @@ public class BankSearchAdapter extends RecyclerView.Adapter<BankSearchAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final String name = itemsFiltered.get(position);
+        int[] attrs = new int[]{R.attr.selectableItemBackground};
+        TypedArray typedArray = context.obtainStyledAttributes(attrs);
+        int backgroundResource = typedArray.getResourceId(0, 0);
+        holder.layout.setBackgroundResource(backgroundResource);
         holder.name.setText(name);
-        holder.name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onSelected(name, position);
-            }
-        });
+        holder.name.setOnClickListener(v -> listener.onSelected(name, position));
     }
 
     @Override

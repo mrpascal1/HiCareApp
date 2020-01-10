@@ -51,7 +51,6 @@ public class LoginActivity extends BaseActivity {
         askPermissions();
 
         addFragment(OTP_LoginFragment.newInstance(), "LoginTrealActivity-CreateRealFragment");
-        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 
 //        addFragment(VideoPlayerFragment.newInstance(), "LoginTrealActivity-VideoPlayerFragment");
 //        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
@@ -70,6 +69,8 @@ public class LoginActivity extends BaseActivity {
                     != PackageManager.PERMISSION_GRANTED
                     || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED
+                    || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED
                     || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
                     != PackageManager.PERMISSION_GRANTED
                     || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -82,11 +83,14 @@ public class LoginActivity extends BaseActivity {
                     != PackageManager.PERMISSION_GRANTED
                     || ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
                     != PackageManager.PERMISSION_GRANTED
+
             ) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                         Manifest.permission.ACCESS_FINE_LOCATION)
                         || ActivityCompat.shouldShowRequestPermissionRationale(this,
                         Manifest.permission.ACCESS_COARSE_LOCATION)
+                        || ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.ACCESS_BACKGROUND_LOCATION)
                         || ActivityCompat.shouldShowRequestPermissionRationale(this,
                         Manifest.permission.READ_PHONE_STATE)
                         || ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -126,7 +130,7 @@ public class LoginActivity extends BaseActivity {
                             Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE,
                             Manifest.permission.RECEIVE_SMS, Manifest.permission.INTERNET,
                             Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,
-                            Manifest.permission.CALL_PHONE
+                            Manifest.permission.ACCESS_BACKGROUND_LOCATION, Manifest.permission.CALL_PHONE
                     }, PERMISSION_REQUEST_CODE);
                 }
             }

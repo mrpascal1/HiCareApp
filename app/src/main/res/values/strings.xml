@@ -44,7 +44,7 @@
     <string name="submit">Submit</string>
     <string name="no_items">No Items</string>
     <string name="please_upload_your_photo_to_complete_the_registration">Please Upload your photo to complete the Registration.</string>
-    <string name="position_your_head_within_the_circle_to_take_a_photo_of_yourself_when_you_are_ready">Position your head within the circle to take a photo of yourself when you are ready.</string>
+    <string name="position_your_head_within_the_circle_to_take_a_photo_of_yourself_when_you_are_ready">Position your head within the outline to take a photo of yourself when you are ready.</string>
     <string name="incomplete_reason">Incomplete Reason</string>
     <string name="no_tasks_found">No Tasks Found!</string>
     <string name="look_like_you_have_no_tasks_at_the_moment">Look like you have no tasks at the moment.</string>

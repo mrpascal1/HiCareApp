@@ -49,7 +49,6 @@ public class TrainingActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         try {
-            overridePendingTransition(R.anim.stay, R.anim.slide_out_right);  //close animation
             getTrainingBack();
             super.onBackPressed();
         } catch (Exception e) {

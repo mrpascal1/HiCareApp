@@ -35,20 +35,6 @@ public class HelpActivity extends AppCompatActivity implements UserHelpClickHand
 
     @Override
     public void onContactNoClicked(View view) {
-//        try {
-//            String number = mActivityHelpBinding.txtNumber.getText().toString();
-//            Intent callIntent = new Intent(Intent.ACTION_CALL);
-//            callIntent.setData(Uri.parse("tel:" + number));
-//            startActivity(callIntent);
-//        } catch (Exception e) {
-//            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
-//            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-//                String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
-//                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-//                String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-//                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "onContactNoClicked", lineNo,userName,DeviceName);
-//            }
-//        }
 
         try{
             String number = mActivityHelpBinding.txtNumber.getText().toString();

@@ -21,6 +21,11 @@
             android:title="@string/your_attendance" />
 
         <item
+            android:id="@+id/nav_onsite"
+            android:icon="@drawable/ic_onsite"
+            android:title="On-Site Tasks" />
+
+        <item
             android:id="@+id/nav_groom"
             android:icon="@drawable/ic_groom"
             android:title="@string/grooming" />
@@ -39,8 +44,7 @@
             android:id="@+id/nav_training"
             android:icon="@drawable/ic_learn"
             android:title="@string/training"
-            android:visible="false"
-            />
+            android:visible="false" />
 
         <item
             android:id="@+id/nav_voucher"

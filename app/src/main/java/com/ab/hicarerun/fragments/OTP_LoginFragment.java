@@ -164,13 +164,14 @@ public class OTP_LoginFragment extends BaseFragment implements UserOtpLoginClick
 
     @Override
     public void onEnterMobileClicked(View view) {
-        PackageInfo pInfo = null;
         try {
-            pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        String mobileVersion = pInfo.versionName;
+            PackageInfo pInfo = null;
+            try {
+                pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+            String mobileVersion = pInfo.versionName;
             if (Float.parseFloat(mobileVersion) < Float.parseFloat(Version)) {
                 String title = "New update available";
                 String messageAlert = "<html><body><p>Please update your app to new version.<br><br>Current app version: " + mobileVersion + "<br><br>New version: " + Version + "</p></body></html>";
@@ -210,6 +211,10 @@ public class OTP_LoginFragment extends BaseFragment implements UserOtpLoginClick
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
                 imm.showSoftInput(mFragmentOtpLoginBinding.edtMobile, InputMethodManager.SHOW_IMPLICIT);
             }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     @Override

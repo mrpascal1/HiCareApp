@@ -6,7 +6,7 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 /**
  * Created by arjun on 03/05/19.
@@ -16,7 +16,7 @@ public abstract class BaseActivity extends AppCompatActivity {
   private ProgressDialog mProgressDialog;
   @Override protected void attachBaseContext(Context context) {
     try {
-      super.attachBaseContext(CalligraphyContextWrapper.wrap(context));
+      super.attachBaseContext(ViewPumpContextWrapper.wrap(context));
     } catch (Exception e) {
       e.printStackTrace();
     }

@@ -114,7 +114,12 @@ public class UpdateTasksRequest {
     @SerializedName("TechnicianRating")
     @Expose
     private Integer TechnicianRating;
-
+    @SerializedName("IsCombinedTask")
+    @Expose
+    private Boolean IsCombinedTask;
+    @SerializedName("CombinedTaskId")
+    @Expose
+    private String CombinedTaskId;
     public UpdateTasksRequest() {
         UserId = "";
         ResourceId = "";
@@ -150,6 +155,8 @@ public class UpdateTasksRequest {
         ChemicalList = null;
         TechnicianRating = 0;
         TechnicianOnsiteOTP = "";
+        IsCombinedTask = false;
+        CombinedTaskId = "";
     }
 
     public String getUserId() {
@@ -432,5 +439,21 @@ public class UpdateTasksRequest {
 
     public void setTechnicianOnsiteOTP(String technicianOnsiteOTP) {
         TechnicianOnsiteOTP = technicianOnsiteOTP;
+    }
+
+    public Boolean getCombinedTask() {
+        return IsCombinedTask;
+    }
+
+    public void setCombinedTask(Boolean combinedTask) {
+        IsCombinedTask = combinedTask;
+    }
+
+    public String getCombinedTaskId() {
+        return CombinedTaskId;
+    }
+
+    public void setCombinedTaskId(String combinedTaskId) {
+        CombinedTaskId = combinedTaskId;
     }
 }

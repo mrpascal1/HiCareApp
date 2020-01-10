@@ -3,8 +3,6 @@ package com.ab.hicarerun.fragments;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -12,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 
 import android.telephony.TelephonyManager;
-import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -20,29 +17,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 
-import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.activities.HomeActivity;
-import com.ab.hicarerun.activities.LoginActivity;
-import com.ab.hicarerun.activities.TaskDetailsActivity;
 import com.ab.hicarerun.databinding.FragmentLoginBinding;
 import com.ab.hicarerun.handler.UserLoginClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.HandShakeModel.HandShake;
 import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
-import com.ab.hicarerun.service.LocationManager;
 import com.ab.hicarerun.utils.AppUtils;
-import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.ab.hicarerun.utils.notifications.OneSIgnalHelper;
 import com.ab.hicarerun.viewmodel.UserLoginViewModel;
 
@@ -221,7 +209,7 @@ public class LoginFragment extends BaseFragment implements UserLoginClickHandler
 
             if (success) {
                 if (profilePic.trim().length() == 0) {
-                    replaceFragment(FaceRecognizationFragment.newInstance(false, model.getUsername()), "LoginFragment-FaceRecognizationFragment");
+                    replaceFragment(FaceRecognizationFragment.newInstance(false, model.getUsername(), ""), "LoginFragment-FaceRecognizationFragment");
                 } else {
                     AppUtils.getHandShakeCall(model.getUsername(), getActivity());
                 }

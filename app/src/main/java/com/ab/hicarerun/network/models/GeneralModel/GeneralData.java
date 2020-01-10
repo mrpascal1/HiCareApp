@@ -175,7 +175,9 @@ public class GeneralData implements RealmModel {
     @Expose
     private RealmList<IncompleteReason> IncompleteReasonList = null;
 
-    private RealmList<GeneralData> MSTList = null;
+    @SerializedName("RelatedTasks")
+    @Expose
+    private RealmList<MSTTasks> MSTList = null;
 
     @SerializedName("ActualCompletionDateTime")
     @Expose
@@ -570,11 +572,11 @@ public class GeneralData implements RealmModel {
         AlternateMobileNumber = alternateMobileNumber;
     }
 
-    public RealmList<GeneralData> getMSTList() {
+    public RealmList<MSTTasks> getMSTList() {
         return MSTList;
     }
 
-    public void setMSTList(RealmList<GeneralData> MSTList) {
+    public void setMSTList(RealmList<MSTTasks> MSTList) {
         this.MSTList = MSTList;
     }
 }

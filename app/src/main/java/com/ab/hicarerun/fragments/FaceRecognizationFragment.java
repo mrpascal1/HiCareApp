@@ -1,21 +1,14 @@
 package com.ab.hicarerun.fragments;
 
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
@@ -26,18 +19,13 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 
@@ -45,11 +33,8 @@ import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.HomeActivity;
-import com.ab.hicarerun.activities.LoginActivity;
-import com.ab.hicarerun.activities.SplashActiviy;
 import com.ab.hicarerun.activities.StartVideoActivity;
 import com.ab.hicarerun.activities.VerifyOtpActivity;
-import com.ab.hicarerun.activities.WelcomeVideoActivity;
 import com.ab.hicarerun.databinding.FragmentFaceRecognizationBinding;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
@@ -57,23 +42,13 @@ import com.ab.hicarerun.network.models.AttendanceModel.AttendanceDetail;
 import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
 import com.ab.hicarerun.network.models.AttendanceModel.ProfilePicRequest;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeResponse;
-import com.ab.hicarerun.network.models.HandShakeModel.HandShake;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShakeResponse;
 import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.service.ServiceLocationSend;
-import com.ab.hicarerun.service.listner.LocationManagerListner;
 import com.ab.hicarerun.utils.AppUtils;
-import com.ab.hicarerun.utils.FocusView;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
@@ -90,6 +65,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
     private int cameraId;
     private static final String ARG_ATTENDANCE = "ARG_ATTENDANCE";
     private static final String ARG_USER = "ARG_USER";
+    private static final String ARG_URL = "ARG_URL";
     private boolean isAttendance = false;
     private int rotation;
     private String encodedImage = "";
@@ -101,16 +77,18 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
     private int PresentDays = 0;
     private int AbsentDays = 0;
     private int LateDays = 0;
+    private String uri = "";
 
 
     public FaceRecognizationFragment() {
         // Required empty public constructor
     }
 
-    public static FaceRecognizationFragment newInstance(boolean isAttendance, String username) {
+    public static FaceRecognizationFragment newInstance(boolean isAttendance, String username, String videoUrl) {
         Bundle args = new Bundle();
         args.putBoolean(ARG_ATTENDANCE, isAttendance);
         args.putString(ARG_USER, username);
+        args.putString(ARG_URL, videoUrl);
         FaceRecognizationFragment fragment = new FaceRecognizationFragment();
         fragment.setArguments(args);
         return fragment;
@@ -123,6 +101,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
         if (getArguments() != null) {
             isAttendance = getArguments().getBoolean(ARG_ATTENDANCE);
             username = getArguments().getString(ARG_USER);
+            uri = getArguments().getString(ARG_URL);
         }
     }
 
@@ -407,8 +386,11 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                                                 if(SharedPreferencesUtility.getPrefBoolean(getActivity(),SharedPreferencesUtility.IS_SKIP_VIDEO)){
                                                     AppUtils.getHandShakeCall(username, getActivity());
                                                 }else {
-                                                    startActivity(new Intent(getActivity(), StartVideoActivity.class));
-                                                    getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                                                    if(uri.length()>0){
+                                                        startActivity(new Intent(getActivity(), StartVideoActivity.class));
+                                                    }else {
+                                                        AppUtils.getHandShakeCall(username, getActivity());
+                                                    }
                                                 }
                                             } else {
                                                 getErrorDialog("Error", "Unable to capture your photo, please try again.");

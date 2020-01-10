@@ -9,6 +9,18 @@
         android:gravity="center">
 
         <TextView
+            android:id="@+id/chemType"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:background = "@drawable/chemical_cells"
+            android:padding="5dp"
+            android:singleLine="true"
+            android:textColor="@color/black" />
+
+        <TextView
             android:id = "@+id/chem_name"
             android:layout_width = "0dp"
             android:layout_height = "match_parent"
@@ -58,6 +70,7 @@
                 android:layout_height = "match_parent"
                 android:inputType="number"
                 android:textSize="15dp"
+                android:focusableInTouchMode="true"
                 android:textColor="@color/black"
                 android:background="@drawable/edit_border"
                 android:focusable="true"

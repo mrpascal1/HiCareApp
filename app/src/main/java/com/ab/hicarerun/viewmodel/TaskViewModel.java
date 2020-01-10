@@ -40,8 +40,11 @@ public class TaskViewModel implements Parcelable {
     private String CustomerLat;
     private String CustomerLong;
     private String Tag;
+    private String AccountType;
     private int SequenceNumber;
     private Boolean IsDetailVisible;
+    private Boolean IsCombineTask;
+    private String CombineTaskType;
 
     public TaskViewModel() {
         AccountName = "NA";
@@ -79,6 +82,9 @@ public class TaskViewModel implements Parcelable {
         Tag = "NA";
         SequenceNumber = 0;
         IsDetailVisible = false;
+        AccountType = "NA";
+        IsCombineTask = false;
+        CombineTaskType = "NA";
     }
 
 
@@ -116,9 +122,13 @@ public class TaskViewModel implements Parcelable {
         CustomerLat = in.readString();
         CustomerLong = in.readString();
         Tag = in.readString();
+        AccountType = in.readString();
         SequenceNumber = in.readInt();
         byte tmpIsDetailVisible = in.readByte();
         IsDetailVisible = tmpIsDetailVisible == 0 ? null : tmpIsDetailVisible == 1;
+        byte tmpIsCombineTask = in.readByte();
+        IsCombineTask = tmpIsCombineTask == 0 ? null : tmpIsCombineTask == 1;
+        CombineTaskType = in.readString();
     }
 
     public static final Creator<TaskViewModel> CREATOR = new Creator<TaskViewModel>() {
@@ -413,6 +423,30 @@ public class TaskViewModel implements Parcelable {
         IsDetailVisible = detailVisible;
     }
 
+    public String getAccountType() {
+        return AccountType;
+    }
+
+    public void setAccountType(String accountType) {
+        AccountType = accountType;
+    }
+
+    public Boolean getCombineTask() {
+        return IsCombineTask;
+    }
+
+    public void setCombineTask(Boolean combineTask) {
+        IsCombineTask = combineTask;
+    }
+
+    public String getCombineTaskType() {
+        return CombineTaskType;
+    }
+
+    public void setCombineTaskType(String combineTaskType) {
+        CombineTaskType = combineTaskType;
+    }
+
     public void clone(Tasks tasks) {
         this.AccountName = tasks.getAccountName();
         this.BuildingName = tasks.getBuildingName();
@@ -449,6 +483,9 @@ public class TaskViewModel implements Parcelable {
         this.Tag = tasks.getTag();
         this.SequenceNumber = tasks.getSequenceNumber();
         this.IsDetailVisible = tasks.getDetailVisible();
+        this.AccountType = tasks.getAccountType();
+        this.IsCombineTask = tasks.getCombinedTask();
+        this.CombineTaskType =  tasks.getCombinedServiceType();
     }
 
 
@@ -492,8 +529,11 @@ public class TaskViewModel implements Parcelable {
         parcel.writeString(CustomerLat);
         parcel.writeString(CustomerLong);
         parcel.writeString(Tag);
+        parcel.writeString(AccountType);
         parcel.writeInt(SequenceNumber);
         parcel.writeByte((byte) (IsDetailVisible == null ? 0 : IsDetailVisible ? 1 : 2));
+        parcel.writeByte((byte) (IsCombineTask == null ? 0 : IsCombineTask ? 1 : 2));
+        parcel.writeString(CombineTaskType);
     }
 }
 

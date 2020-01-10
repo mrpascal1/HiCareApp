@@ -327,7 +327,6 @@
                             android:freezesText="true"
                             android:onClick="@{(view) -> handler.onSignatureClicked(view)}"
                             android:orientation="vertical"
-
                             >
 
                         </androidx.appcompat.widget.AppCompatImageView>

@@ -6,6 +6,7 @@
         <import type="android.view.View" />
     </data>
 
+
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer"
         android:layout_width="match_parent"

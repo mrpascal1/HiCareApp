@@ -169,16 +169,13 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getSignature();
-
         mFragmentSignatureBinding.txtFeedback.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
@@ -237,8 +234,6 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                     mFragmentSignatureBinding.imgSign.setEnabled(true);
                     mFragmentSignatureBinding.txtHint.setVisibility(View.VISIBLE);
                 }
-
-
                 String amount = mGeneralRealmData.get(0).getAmountToCollect();
                 mobile = mGeneralRealmData.get(0).getMobileNumber();
                 Order_Number = mGeneralRealmData.get(0).getOrderNumber();
@@ -287,8 +282,6 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
             }
         }
     }
-
-
     @Override
     public void onSignatureClicked(View view) {
         if (status.equals("Completed") || status.equals("Incomplete")) {
@@ -336,14 +329,12 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                 dialog.getWindow().setLayout(width, height);
                 dialog.getWindow().setGravity(Gravity.CENTER);
 
-                img_right.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                img_right.setOnClickListener(v -> {
 
-                        View view = lnr_screen;
-                        view.setDrawingCacheEnabled(true);
-                        bmp = Bitmap.createBitmap(view.getDrawingCache());
-                        view.setDrawingCacheEnabled(false);
+                    View view = lnr_screen;
+                    view.setDrawingCacheEnabled(true);
+                    bmp = Bitmap.createBitmap(view.getDrawingCache());
+                    view.setDrawingCacheEnabled(false);
 //                    try {
 //                        file = new File(Environment.getExternalStorageDirectory().toString(), "SCREEN"
 //                                + System.currentTimeMillis() + ".png");
@@ -359,43 +350,34 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
 //                    } catch (IOException e) {
 //                        e.printStackTrace();
 //                    }
-                        onCallBack(bmp);
-                        dialog.dismiss();
-
-                    }
+                    onCallBack(bmp);
+                    dialog.dismiss();
 
                 });
 
-                img_wrong.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        lnr_screen.removeAllViews();
-                        dv = new DrawingView(getActivity(), txt_hint, img_right);
-                        mPaint = new Paint();
-                        mPaint.setAntiAlias(true);
-                        mPaint.setDither(true);
-                        mPaint.setColor(Color.BLACK);
-                        mPaint.setStyle(Paint.Style.STROKE);
-                        mPaint.setStrokeJoin(Paint.Join.ROUND);
-                        mPaint.setStrokeCap(Paint.Cap.ROUND);
-                        mPaint.setStrokeWidth(8);
-                        lnr_screen.addView(dv);
-                        txt_hint.setVisibility(View.VISIBLE);
-                        getValidate();
-                    }
+                img_wrong.setOnClickListener(v -> {
+                    lnr_screen.removeAllViews();
+                    dv = new DrawingView(getActivity(), txt_hint, img_right);
+                    mPaint = new Paint();
+                    mPaint.setAntiAlias(true);
+                    mPaint.setDither(true);
+                    mPaint.setColor(Color.BLACK);
+                    mPaint.setStyle(Paint.Style.STROKE);
+                    mPaint.setStrokeJoin(Paint.Join.ROUND);
+                    mPaint.setStrokeCap(Paint.Cap.ROUND);
+                    mPaint.setStrokeWidth(8);
+                    lnr_screen.addView(dv);
+                    txt_hint.setVisibility(View.VISIBLE);
+                    getValidate();
                 });
 
-                btn_close.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                        getValidate();
+                btn_close.setOnClickListener(v -> {
+                    dialog.dismiss();
+                    getValidate();
 
-                    }
                 });
 
             }
-
 
 //            dialog.setIcon(R.mipmap.logo);
 //            Window window = alertDialog.getWindow();
@@ -501,7 +483,6 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 String customer_otp = mGeneralRealmData.get(0).getCustomer_OTP();
                 FeedbackRequest request = new FeedbackRequest();
                 request.setName(name);
@@ -560,8 +541,8 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
             mCallback.signature(encodedImage);
             mCallback.signatory(mFragmentSignatureBinding.txtSignatory.getText().toString());
             mFragmentSignatureBinding.imgSign.setImageBitmap(bmp);
+            mFragmentSignatureBinding.imgSign.setVisibility(View.VISIBLE);
             getValidate();
-
         }
 
     }
@@ -632,7 +613,6 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                 mPath.quadTo(mX, mY, (x + mX) / 2, (y + mY) / 2);
                 mX = x;
                 mY = y;
-
                 circlePath.reset();
                 circlePath.addCircle(mX, mY, 30, Path.Direction.CW);
             }
@@ -684,7 +664,6 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
                 mCallback.isFeedbackRequired(false);
                 mFragmentSignatureBinding.txtFeedback.setEnabled(false);
                 mFragmentSignatureBinding.btnSendlink.setVisibility(View.GONE);
-
             } else {
                 mFragmentSignatureBinding.txtFeedback.setEnabled(true);
                 mFragmentSignatureBinding.btnSendlink.setVisibility(View.VISIBLE);

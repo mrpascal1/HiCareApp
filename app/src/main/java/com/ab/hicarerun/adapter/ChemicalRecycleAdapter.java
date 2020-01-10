@@ -42,15 +42,16 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
     private OnEditTextChanged onEditTextChanged;
     private int ChemicalNo = 0;
     private int standardChem = 0;
+    private Boolean isCombined = false;
 
 
-    public ChemicalRecycleAdapter(Context context, OnEditTextChanged onEditTextChanged) {
+    public ChemicalRecycleAdapter(Context context, Boolean isCombined, OnEditTextChanged onEditTextChanged) {
         if (items == null) {
             items = new ArrayList<>();
         }
         this.mContext = context;
         this.onEditTextChanged = onEditTextChanged;
-
+        this.isCombined = isCombined;
     }
 
 
@@ -69,11 +70,15 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
         holder.mChemicalRecycleRowBinding.chemName.setText(model.getName());
         holder.mChemicalRecycleRowBinding.chemConsumption.setText(model.getConsumption());
         holder.mChemicalRecycleRowBinding.chemStandard.setText(model.getStandard());
+        if (isCombined) {
+            holder.mChemicalRecycleRowBinding.chemType.setVisibility(View.VISIBLE);
+            holder.mChemicalRecycleRowBinding.chemType.setText(model.getChemType());
+        } else {
+            holder.mChemicalRecycleRowBinding.chemType.setVisibility(View.GONE);
+        }
 
         RealmResults<GeneralData> mGeneralRealmData =
                 getRealm().where(GeneralData.class).findAll();
-
-
         if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
             isVerified = mGeneralRealmData.get(0).getAutoSubmitChemicals();
             String status = mGeneralRealmData.get(0).getSchedulingStatus();
@@ -103,25 +108,13 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
                     @Override
                     public void afterTextChanged(Editable s) {
                         try {
-//                            if (s.toString().length() != 0) {
-//                                ChemicalNo = Integer.parseInt(s.toString().trim());
-//                                double v = Double.parseDouble(model.getStandard());
-//                                standardChem = (int) v;
-//                                if (ChemicalNo > standardChem) {
-//                                    holder.mChemicalRecycleRowBinding.edtActual.setError("Actual value should not be greater than standard value.");
-//                                } else {
-//                                    onEditTextChanged.onTextChanged(position, s.toString());
-//                                }
-//                            } else {
                             onEditTextChanged.onTextChanged(position, s.toString());
-//                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
 
                     }
                 });
-//                model.setActualList(map);
             }
         }
 

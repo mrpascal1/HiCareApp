@@ -31,7 +31,6 @@ public class TechnicianSeniorActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         try {
-            overridePendingTransition(R.anim.stay, R.anim.slide_out_right);  //close animation
             getGroomingBack();
             super.onBackPressed();
         } catch (Exception e) {

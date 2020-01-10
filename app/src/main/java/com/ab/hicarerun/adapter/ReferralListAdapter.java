@@ -1,6 +1,7 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,11 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
 
     @Override
     public void onBindViewHolder(ReferralListAdapter.ViewHolder holder, final int position) {
+        int[] attrs = new int[]{R.attr.selectableItemBackground};
+        TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
+        int backgroundResource = typedArray.getResourceId(0, 0);
+        holder.mReferralListAdapterBinding.lnrRef.setBackgroundResource(backgroundResource);
+        holder.mReferralListAdapterBinding.imgDelete.setBackgroundResource(backgroundResource);
         holder.mReferralListAdapterBinding.txtName.setText(items.get(position).getFirstName() + " " + items.get(position).getLastName());
         holder.mReferralListAdapterBinding.txtMobile.setText(items.get(position).getMobileNo());
         holder.mReferralListAdapterBinding.txtAltMobile.setText(items.get(position).getAlternateMobileNo());
