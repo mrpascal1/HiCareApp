@@ -268,7 +268,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                 public void onResponse(int requestCode, Object data) {
                                     OnSiteOtpResponse response = (OnSiteOtpResponse) data;
                                     if (response.getSuccess()) {
-                                        Toasty.success(getActivity(), "OTP send successfully").show();
+                                        Toasty.success(getActivity(), "On-Site OTP is sent successfully").show();
                                         alertDialog.dismiss();
                                     } else {
                                         Toasty.error(getActivity(), response.getErrorMessage()).show();
@@ -520,7 +520,12 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     } else {
                         mFragmentServiceInfoBinding.txtDuration.setText(duration + " hr");
                     }
-                    mFragmentServiceInfoBinding.txtOrder.setText("Order# " + order);
+                    if(model.getCombinedTask()){
+                        mFragmentServiceInfoBinding.txtOrder.setText("Order# " + model.getCombinedOrderNumber());
+                    }else {
+                        mFragmentServiceInfoBinding.txtOrder.setText("Order# " + order);
+                    }
+
                     mFragmentServiceInfoBinding.txtStartTime.setText(start);
 
                     getStatus();

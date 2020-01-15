@@ -105,10 +105,10 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         // Inflate the layout for this fragment
         mFragmentHomeBinding =
                 DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
-        getActivity().setTitle("Home");
+//        getActivity().setTitle("Home");
         navigationView = getActivity().findViewById(R.id.navigation_view);
-        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-        toolbar.setVisibility(View.VISIBLE);
+//        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+//        toolbar.setVisibility(View.VISIBLE);
         activityName = getActivity().getClass().getSimpleName();
         apply();
 
@@ -146,12 +146,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         mFragmentHomeBinding.recycleView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         mFragmentHomeBinding.swipeRefreshLayout.setOnRefreshListener(
-                new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        getAllTasks();
-                    }
-                });
+                () -> getAllTasks());
 
         mFragmentHomeBinding.recycleView.setLayoutManager(layoutManager);
 

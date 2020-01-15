@@ -74,6 +74,10 @@ public class Tasks implements Parcelable {
     @Expose
     private String OrderNumber;
 
+    @SerializedName("CombinedOrderNumber")
+    @Expose
+    private String CombinedOrderNumber;
+
     @SerializedName("TaskAssignmentStartDate")
     @Expose
     private String TaskAssignmentStartDate;
@@ -201,6 +205,7 @@ public class Tasks implements Parcelable {
         IsCombinedTask = false;
         AccountType = "NA";
         CombinedTaskId = "NA";
+        CombinedOrderNumber = "NA";
     }
 
 
@@ -242,6 +247,7 @@ public class Tasks implements Parcelable {
         AccountType = in.readString();
         CombinedServiceType = in.readString();
         CombinedTaskId = in.readString();
+        CombinedOrderNumber = in.readString();
         byte tmpIsDetailVisible = in.readByte();
         IsDetailVisible = tmpIsDetailVisible == 0 ? null : tmpIsDetailVisible == 1;
         byte tmpIsCombinedTask = in.readByte();
@@ -572,6 +578,14 @@ public class Tasks implements Parcelable {
         CombinedTaskId = combinedTaskId;
     }
 
+    public String getCombinedOrderNumber() {
+        return CombinedOrderNumber;
+    }
+
+    public void setCombinedOrderNumber(String combinedOrderNumber) {
+        CombinedOrderNumber = combinedOrderNumber;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -616,6 +630,7 @@ public class Tasks implements Parcelable {
         parcel.writeString(AccountType);
         parcel.writeString(CombinedServiceType);
         parcel.writeString(CombinedTaskId);
+        parcel.writeString(CombinedOrderNumber);
         parcel.writeByte((byte) (IsDetailVisible == null ? 0 : IsDetailVisible ? 1 : 2));
         parcel.writeByte((byte) (IsCombinedTask == null ? 0 : IsCombinedTask ? 1 : 2));
     }

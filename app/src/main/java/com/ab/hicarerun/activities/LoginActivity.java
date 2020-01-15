@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ActivityLoginBinding;
 import com.ab.hicarerun.fragments.LoginFragment;
+import com.ab.hicarerun.fragments.NewLoginFragment;
 import com.ab.hicarerun.fragments.OTP_LoginFragment;
 import com.ab.hicarerun.fragments.VideoPlayerFragment;
 import com.ab.hicarerun.handler.UserLoginClickHandler;
@@ -49,19 +52,43 @@ public class LoginActivity extends BaseActivity {
         mActivityLoginBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_login);
         askPermissions();
-
-        addFragment(OTP_LoginFragment.newInstance(), "LoginTrealActivity-CreateRealFragment");
-
-//        addFragment(VideoPlayerFragment.newInstance(), "LoginTrealActivity-VideoPlayerFragment");
-//        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+        addFragment(NewLoginFragment.newInstance(), "LoginTrealActivity-CreateRealFragment");
     }
+
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+        try {
+            getBack();
+            super.onBackPressed();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
+    private void getBack() {
+        int fragment = getSupportFragmentManager().getBackStackEntryCount();
+        Log.e("fragments", String.valueOf(fragment));
+        if (fragment < 1) {
+            finish();
+        } else {
+            getFragmentManager().popBackStack();
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                getBack();
+                break;
+        }
+
+        return true;
+    }
     public void askPermissions() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -110,17 +137,9 @@ public class LoginActivity extends BaseActivity {
                     builder.setMessage(
                             "Please allow all permissions in App Settings for additional functionality.")
                             .setCancelable(false)
-                            .setPositiveButton("Allow", new DialogInterface.OnClickListener() {
-                                public void onClick(@SuppressWarnings("unused") final DialogInterface dialog,
-                                                    @SuppressWarnings("unused") final int id) {
-                                    Toast.makeText(LoginActivity.this, "Welcome", Toast.LENGTH_SHORT).show();
-                                }
-                            })
-                            .setNegativeButton("Deny", new DialogInterface.OnClickListener() {
-                                public void onClick(final DialogInterface dialog,
-                                                    @SuppressWarnings("unused") final int id) {
-                                    // Permission denied
-                                }
+                            .setPositiveButton("Allow", (dialog, id) -> Toast.makeText(LoginActivity.this, "Welcome", Toast.LENGTH_SHORT).show())
+                            .setNegativeButton("Deny", (dialog, id) -> {
+                                // Permission denied
                             });
                     alert = builder.create();
                     alert.show();

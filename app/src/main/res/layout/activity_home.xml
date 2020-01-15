@@ -21,14 +21,18 @@
             android:orientation="vertical"
             >
 
-            <androidx.appcompat.widget.Toolbar
+            <include
                 android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                android:minHeight="?attr/actionBarSize"
-                style="@style/ToolBarStyle.Event"
-                />
+                layout="@layout/layout_custom_toolbar" />
+
+            <!--<androidx.appcompat.widget.Toolbar-->
+                <!--android:id="@+id/toolbar"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="?attr/actionBarSize"-->
+                <!--android:background="?attr/colorPrimary"-->
+                <!--android:minHeight="?attr/actionBarSize"-->
+                <!--style="@style/ToolBarStyle.Event"-->
+                <!--/>-->
 
             <FrameLayout
                 android:id="@+id/container"

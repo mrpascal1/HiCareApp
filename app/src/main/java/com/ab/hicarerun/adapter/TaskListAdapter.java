@@ -117,7 +117,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         holder.mTaskListAdapterBinding.constraint2.setBackgroundResource(backgroundResource);
         holder.mTaskListAdapterBinding.lnrMap.setBackgroundResource(backgroundResource);
         holder.mTaskListAdapterBinding.btnHelpline.setBackgroundResource(backgroundResource);
-
+        if (items.get(position).getCombineTask()) {
+            holder.mTaskListAdapterBinding.txtOrderno.setText(items.get(position).getCombineOrderNumber());
+        } else {
+            holder.mTaskListAdapterBinding.txtOrderno.setText(items.get(position).getOrderNumber());
+        }
 
         try {
             String mDate = AppUtils.reFormatDateTime(items.get(position).getTaskAssignmentStartDate(), "dd MMM, yyyy");
@@ -207,7 +211,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             holder.mTaskListAdapterBinding.lnrLandmark.setVisibility(View.GONE);
         }
         holder.mTaskListAdapterBinding.txtPostcode.setText(items.get(position).getPostalCode());
-        holder.mTaskListAdapterBinding.txtOrderno.setText(items.get(position).getOrderNumber());
         holder.mTaskListAdapterBinding.txtAmount.setText(items.get(position).getAmount());
         holder.itemView.setOnClickListener(v -> onItemClickHandler.onItemClick(position));
 

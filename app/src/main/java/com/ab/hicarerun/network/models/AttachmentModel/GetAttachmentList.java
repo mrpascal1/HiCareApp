@@ -19,6 +19,9 @@ public class GetAttachmentList {
     @SerializedName("FileName")
     @Expose
     private String FileName;
+    @SerializedName("TaskType")
+    @Expose
+    private String TaskType;
     @SerializedName("Created_On")
     @Expose
     private String Created_On;
@@ -80,5 +83,13 @@ public class GetAttachmentList {
 
     public void setFile(String file) {
         File = file;
+    }
+
+    public String getTaskType() {
+        return TaskType;
+    }
+
+    public void setTaskType(String taskType) {
+        TaskType = taskType;
     }
 }

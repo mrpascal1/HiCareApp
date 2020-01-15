@@ -398,6 +398,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             markerOptions.title("Customer's Location");
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
             mCustomerMarker = mGoogleMap.addMarker(markerOptions);
+            mCustomerMarker.showInfoWindow();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -436,8 +438,10 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLong);
             markerOptions.title("you are here");
+
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
             mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+            mCurrLocationMarker.showInfoWindow();
             //move map camera
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLong, 15));
         } else {

@@ -136,6 +136,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     private Integer pageNumber = 1;
     private Tasks model;
     List<String> expandableListTitle;
+    List<MSTAttachment> listTitle;
     List<MSTAttachment> mstAttachments;
     HashMap<String, List<GetAttachmentList>> expandableListDetail;
     List<MSTAttachment> items = null;
@@ -656,6 +657,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                         items = (List<MSTAttachment>) data;
                         expandableListDetail = new HashMap<>();
                         expandableListTitle = new ArrayList<>(expandableListDetail.keySet());
+                        listTitle = new ArrayList<>();
                         mstAttachments = new ArrayList<>();
                         if (isJobcardEnable) {
                             if (isListContainJobCard(items)) {
@@ -670,14 +672,19 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
 
                         if (items.size() > 0) {
                             for (int i = 0; i < items.size(); i++) {
-                                expandableListTitle.add(items.get(i).getTaskType());
-                                expandableListDetail.put(items.get(i).getTaskType(), items.get(i).getAttachmentList());
+                                MSTAttachment request = new MSTAttachment();
+                                request.setTaskType(items.get(i).getTaskType());
+                                request.setTaskNo(items.get(i).getTaskNo());
+                                request.setAttachmentList(items.get(i).getAttachmentList());
+                                listTitle.add(request);
+                                expandableListTitle.add(items.get(i).getTaskNo());
+                                expandableListDetail.put(items.get(i).getTaskNo(), items.get(i).getAttachmentList());
                                 hashJob.put(items.get(i).getTaskNo(), items.get(i).getAttachmentList());
                                 mstAttachments = items;
 
 //                                SubItems = expandableListDetail.get(expandableListTitle);
                             }
-                            mJobCardAdapter = new JobCardMSTAdapter(getActivity(), expandableListTitle, expandableListDetail, mFragmentSignatureInfoBinding.expandableListView, status);
+                            mJobCardAdapter = new JobCardMSTAdapter(getActivity(), expandableListTitle, expandableListDetail, mFragmentSignatureInfoBinding.expandableListView, status, listTitle);
                             mFragmentSignatureInfoBinding.expandableListView.setAdapter(mJobCardAdapter);
                             mJobCardAdapter.setOnItemClickHandler(SignatureMSTInfoFragment.this);
                             mJobCardAdapter.setOnDeleteItemClickHandler(SignatureMSTInfoFragment.this);
@@ -808,7 +815,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
 //            jobCardId = mGeneralRealmData.get(0).getMSTList().get(parent).getTaskId();
             jobCardId = mstAttachments.get(parent).getTaskNo();
 
-            Toast.makeText(getActivity(), String.valueOf(jobCardId), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getActivity(), String.valueOf(jobCardId), Toast.LENGTH_SHORT).show();
 
             LayoutInflater li = LayoutInflater.from(getActivity());
 
@@ -845,7 +852,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                 cardSelected.setVisibility(GONE);
             }
 
-            selectedImg.setOnClickListener(view -> {
+            cardSelected.setOnClickListener(view -> {
                 if (selectedBmp != null) {
                     alertDialog.dismiss();
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();

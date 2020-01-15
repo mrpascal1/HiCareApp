@@ -237,7 +237,7 @@ public class NetworkCallController {
                             } else if (response.errorBody() != null) {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                    mContext.showServerError(response.errorBody().string());
+                                    mContext.showServerError("Invalid OTP!");
                                     String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
                                     String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
                                     AppUtils.sendErrorLogs(response.errorBody().string(), "", "login", lineNo, "", DeviceName);
@@ -246,7 +246,7 @@ public class NetworkCallController {
                                 }
                             }
                         } else {
-                            mContext.showServerError();
+                            mContext.showServerError("Invalid OTP!");
                         }
                     }
 
@@ -1401,6 +1401,7 @@ public class NetworkCallController {
     /*[Resource Profile]*/
 
     public void getTechnicianProfile(final int requestCode, final String userId) {
+        if(mContext!=null)
         mContext.showProgressDialog();
         BaseApplication.getRetrofitAPI(true)
                 .getTechnicianProfile(userId)
@@ -1408,6 +1409,7 @@ public class NetworkCallController {
                     @Override
                     public void onResponse(Call<TechnicianProfileDetails> call,
                                            Response<TechnicianProfileDetails> response) {
+                        if(mContext!=null)
                         mContext.dismissProgressDialog();
                         if (response != null) {
                             if (response.code() == 401) { // Unauthorised Access
@@ -1455,8 +1457,10 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<TechnicianProfileDetails> call, Throwable t) {
+                        if(mContext!=null){
                         mContext.dismissProgressDialog();
                         mContext.showServerError("Something went wrong, please try again !!!");
+                        }
                     }
                 });
     }
@@ -1465,14 +1469,17 @@ public class NetworkCallController {
     /*[Resource Incentive]*/
 
     public void getTechnicianIncentive(final int requestCode, final String userId) {
-        mContext.showProgressDialog();
+        if(mContext!=null)
+            mContext.showProgressDialog();
+
         BaseApplication.getRetrofitAPI(true)
                 .getTechnicianIncentive(userId)
                 .enqueue(new Callback<IncentiveResponse>() {
                     @Override
                     public void onResponse(Call<IncentiveResponse> call,
                                            Response<IncentiveResponse> response) {
-                        mContext.dismissProgressDialog();
+                        if(mContext!=null)
+                            mContext.dismissProgressDialog();
                         if (response != null) {
                             if (response.code() == 401) { // Unauthorised Access
                                 NetworkCallController controller = new NetworkCallController();
@@ -1519,8 +1526,10 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<IncentiveResponse> call, Throwable t) {
-                        mContext.dismissProgressDialog();
-                        mContext.showServerError("Something went wrong, please try again !!!");
+                        if(mContext!=null) {
+                            mContext.dismissProgressDialog();
+                            mContext.showServerError("Something went wrong, please try again !!!");
+                        }
                     }
                 });
     }

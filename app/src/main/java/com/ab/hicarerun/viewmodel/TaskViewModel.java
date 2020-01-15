@@ -45,6 +45,7 @@ public class TaskViewModel implements Parcelable {
     private Boolean IsDetailVisible;
     private Boolean IsCombineTask;
     private String CombineTaskType;
+    private String CombineOrderNumber;
 
     public TaskViewModel() {
         AccountName = "NA";
@@ -85,6 +86,7 @@ public class TaskViewModel implements Parcelable {
         AccountType = "NA";
         IsCombineTask = false;
         CombineTaskType = "NA";
+        CombineOrderNumber = "NA";
     }
 
 
@@ -129,6 +131,7 @@ public class TaskViewModel implements Parcelable {
         byte tmpIsCombineTask = in.readByte();
         IsCombineTask = tmpIsCombineTask == 0 ? null : tmpIsCombineTask == 1;
         CombineTaskType = in.readString();
+        CombineOrderNumber = in.readString();
     }
 
     public static final Creator<TaskViewModel> CREATOR = new Creator<TaskViewModel>() {
@@ -447,6 +450,14 @@ public class TaskViewModel implements Parcelable {
         CombineTaskType = combineTaskType;
     }
 
+    public String getCombineOrderNumber() {
+        return CombineOrderNumber;
+    }
+
+    public void setCombineOrderNumber(String combineOrderNumber) {
+        CombineOrderNumber = combineOrderNumber;
+    }
+
     public void clone(Tasks tasks) {
         this.AccountName = tasks.getAccountName();
         this.BuildingName = tasks.getBuildingName();
@@ -486,6 +497,7 @@ public class TaskViewModel implements Parcelable {
         this.AccountType = tasks.getAccountType();
         this.IsCombineTask = tasks.getCombinedTask();
         this.CombineTaskType =  tasks.getCombinedServiceType();
+        this.CombineOrderNumber= tasks.getCombinedOrderNumber();
     }
 
 
@@ -534,6 +546,7 @@ public class TaskViewModel implements Parcelable {
         parcel.writeByte((byte) (IsDetailVisible == null ? 0 : IsDetailVisible ? 1 : 2));
         parcel.writeByte((byte) (IsCombineTask == null ? 0 : IsCombineTask ? 1 : 2));
         parcel.writeString(CombineTaskType);
+        parcel.writeString(CombineOrderNumber);
     }
 }
 

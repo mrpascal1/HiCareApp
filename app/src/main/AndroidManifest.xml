@@ -67,32 +67,35 @@
         <activity
             android:name=".activities.NewTaskDetailsActivity"
             android:windowSoftInputMode="adjustPan"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboardHidden"
             android:exported="true"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.VoucherActivity"
-            android:parentActivityName=".activities.HomeActivity" />
+            android:parentActivityName=".activities.HomeActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.AttendanceActivity"
-            android:parentActivityName=".activities.HomeActivity" />
+            android:parentActivityName=".activities.HomeActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.IncentivesActivity"
-            android:parentActivityName=".activities.HomeActivity" /> <!-- <activity -->
+            android:parentActivityName=".activities.HomeActivity"
+            android:screenOrientation="portrait"/> <!-- <activity -->
         <activity
             android:name=".activities.TechIdActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboardHidden"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.GrommingGalleryActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboardHidden"
             android:parentActivityName=".activities.TechnicianSeniorActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.TechnicianSeniorActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboardHidden"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait" />
 
@@ -103,33 +106,33 @@
         <activity android:name=".activities.ExoplayerActivity" />
         <activity
             android:name=".activities.VerifyOtpActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboardHidden"
             android:parentActivityName=".activities.LoginActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.TrainingActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboardHidden"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.HelpActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboardHidden"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.LoginActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".BaseApplication"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.HomeActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboardHidden"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.SplashActiviy"
-            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -140,7 +143,7 @@
         </activity>
         <activity
             android:name=".activities.TaskDetailsActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboardHidden"
             android:exported="true"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait" />

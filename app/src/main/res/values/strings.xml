@@ -366,4 +366,8 @@
     <string name="your_attendance">Your Attendance</string>
     <string name="referral_code">Referral Code</string>
     <string name="click_here_if_customer_is_not_available">(Click here if customer is not available)</string>
+    <string name="by_proceeding_you_agree_to_hicare_s">By proceeding, you agree to HiCare\'s </string>
+    <string name="terms_of_services">Terms of Services</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="enter_your_mobile_number">Enter your mobile number</string>
 </resources>

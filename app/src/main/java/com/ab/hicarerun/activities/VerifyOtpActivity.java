@@ -1,6 +1,7 @@
 package com.ab.hicarerun.activities;
 
 
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 
 
@@ -11,6 +12,7 @@ import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ActivityVerifyOtpBinding;
 import com.ab.hicarerun.fragments.FaceRecognizationFragment;
 import com.ab.hicarerun.fragments.LoginFragment;
+import com.ab.hicarerun.fragments.VerifyMobileOTPFragment;
 import com.ab.hicarerun.fragments.VerifyOtpFragment;
 
 
@@ -29,10 +31,11 @@ public class VerifyOtpActivity extends BaseActivity {
                 DataBindingUtil.setContentView(this, R.layout.activity_verify_otp);
         setSupportActionBar(mActivityVerifyOtpBinding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mActivityVerifyOtpBinding.toolbar.getNavigationIcon().setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
         mobile = getIntent().getStringExtra(ARGS_MOBILE);
         otp = getIntent().getStringExtra(ARGS_OTP);
         user = getIntent().getStringExtra(ARGS_USER);
-        addFragment(VerifyOtpFragment.newInstance(mobile, otp, user), "verifyotpactivity - verifyotpFragment");
+        addFragment(VerifyMobileOTPFragment.newInstance(mobile, otp, user), "VerifyOTPActivity - VerifyMobileOTPFragment");
     }
 
 

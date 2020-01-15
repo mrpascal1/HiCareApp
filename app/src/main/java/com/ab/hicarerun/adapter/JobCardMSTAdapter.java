@@ -19,6 +19,7 @@ import com.ab.hicarerun.handler.OnDeleteListItemClickHandler;
 import com.ab.hicarerun.handler.OnJobCardDeleteClickHandler;
 import com.ab.hicarerun.handler.OnRecentTaskClickHandler;
 import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentList;
+import com.ab.hicarerun.network.models.AttachmentModel.MSTAttachment;
 import com.ab.hicarerun.network.models.OnSiteModel.OnSiteRecent;
 import com.ab.hicarerun.utils.AppUtils;
 import com.bumptech.glide.Glide;
@@ -39,14 +40,16 @@ public class JobCardMSTAdapter extends BaseExpandableListAdapter {
     private HashMap<String, List<GetAttachmentList>> expandableListDetail;
     private ExpandableListView mExpandableListView;
     private String status;
+    private List<MSTAttachment> listMSTTitle;
 
     public JobCardMSTAdapter(Context context, List<String> expandableListTitle,
-                             HashMap<String, List<GetAttachmentList>> expandableListDetail, ExpandableListView expandableListView, String schedulingStatus) {
+                             HashMap<String, List<GetAttachmentList>> expandableListDetail, ExpandableListView expandableListView, String schedulingStatus, List<MSTAttachment> listTitle) {
         this.context = context;
         this.expandableListTitle = expandableListTitle;
         this.expandableListDetail = expandableListDetail;
         this.mExpandableListView = expandableListView;
         this.status = schedulingStatus;
+        this.listMSTTitle = listTitle;
     }
 
     @Override
@@ -73,9 +76,9 @@ public class JobCardMSTAdapter extends BaseExpandableListAdapter {
         TextView txtCreatedDate = convertView.findViewById(R.id.txtCreatedDate);
         ImageView imgJob = convertView.findViewById(R.id.imgJob);
         ImageView imgDelete = convertView.findViewById(R.id.imgDelete);
-        if(status.equalsIgnoreCase("Completed")){
+        if (status.equalsIgnoreCase("Completed")) {
             imgDelete.setVisibility(View.GONE);
-        }else {
+        } else {
             imgDelete.setVisibility(View.VISIBLE);
         }
         LinearLayout lnrAttachment = convertView.findViewById(R.id.lnrAttachment);
@@ -132,6 +135,7 @@ public class JobCardMSTAdapter extends BaseExpandableListAdapter {
     public View getGroupView(int listPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
         String listTitle = (String) getGroup(listPosition);
+        String title = listMSTTitle.get(listPosition).getTaskType();
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context.
                     getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -140,12 +144,12 @@ public class JobCardMSTAdapter extends BaseExpandableListAdapter {
         TextView listTitleTextView = convertView
                 .findViewById(R.id.txtHeader);
         LinearLayout lnrAdd = convertView.findViewById(R.id.addCard);
-        if(status.equalsIgnoreCase("Completed")){
+        if (status.equalsIgnoreCase("Completed")) {
             lnrAdd.setVisibility(View.GONE);
-        }else {
+        } else {
             lnrAdd.setVisibility(View.VISIBLE);
         }
-        listTitleTextView.setText(listTitle);
+        listTitleTextView.setText(title);
         lnrAdd.setOnClickListener(view -> onItemClickHandler.onAddJobCardClicked(listPosition));
         return convertView;
     }

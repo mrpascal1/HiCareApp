@@ -169,19 +169,6 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
             }
         });
 
-//        mFragmentVerifyOtpBinding.txtResend.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
-//
-//        mFragmentVerifyOtpBinding.btnVerify.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
 
     }
 

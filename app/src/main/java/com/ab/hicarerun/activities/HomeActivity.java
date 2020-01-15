@@ -9,12 +9,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import android.text.Html;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 
@@ -36,8 +40,10 @@ import com.ab.hicarerun.fragments.NotificationFragment;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShake;
+import com.ab.hicarerun.network.models.IncentiveModel.Incentive;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
+import com.ab.hicarerun.network.models.ProfileModel.Profile;
 import com.ab.hicarerun.network.models.UpdateAppModel.UpdateData;
 import com.ab.hicarerun.service.LocationManager;
 import com.ab.hicarerun.service.ServiceLocationSend;
@@ -58,6 +64,8 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
     private static final int LOGOUT_REQ = 1000;
     private static final int UPDATE_REQ = 2000;
+    private static final int REQ_PROFILE = 3000;
+    private static final int REQ_INCENTIVE = 4000;
     private Location mLocation;
     private LocationManagerListner mListner;
     public static final String ARG_HANDSHAKE = "ARG_HANDSHAKE";
@@ -79,10 +87,14 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         super.onCreate(savedInstanceState);
         mActivityHomeBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_home);
-        setSupportActionBar(mActivityHomeBinding.toolbar);
-
+//        setSupportActionBar(mActivityHomeBinding.toolbar)
+        mActivityHomeBinding.toolbar.lnrDrawer.setOnClickListener(view -> mActivityHomeBinding.drawer.openDrawer(GravityCompat.START));
         initNavigationDrawer();
+        getTechDeails();
+        getIncentiveDetails();
 
+        mActivityHomeBinding.toolbar.lnrUser.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, TechIdActivity.class).putExtra(HomeActivity.ARG_EVENT, false)));
+        mActivityHomeBinding.toolbar.lnrWallet.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, IncentivesActivity.class).putExtra(HomeActivity.ARG_EVENT, false)));
 
         try {
             isClicked = getIntent().getExtras().getBoolean(ARG_EVENT, false);
@@ -107,7 +119,6 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
             getServiceCalled();
             addFragment(HomeFragment.newInstance(), "HomeActivity - HomeFragment");
         } else {
-
             try {
                 AppUtils.statusCheck(HomeActivity.this);
             } catch (Exception e) {
@@ -263,6 +274,65 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
     }
 
+    private void getTechDeails(){
+        try {
+
+                RealmResults<LoginResponse> LoginRealmModels =
+                        BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                String userId = LoginRealmModels.get(0).getUserID();
+                if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                    NetworkCallController controller = new NetworkCallController();
+                    controller.setListner(new NetworkResponseListner() {
+                        @Override
+                        public void onResponse(int requestCode, Object data) {
+                            Profile response = (Profile) data;
+
+                            if (response.getProfilePic() != null) {
+                                String base64 = response.getProfilePic();
+                                byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
+                                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                if (base64.length() > 0) {
+                                    mActivityHomeBinding.toolbar.imgUser.setImageBitmap(decodedByte);
+                                }
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(int requestCode) {
+
+                        }
+                    });
+                    controller.getTechnicianProfile(REQ_PROFILE, userId);
+            }
+        } catch (Exception e) {
+
+        }
+    }
+
+    private void getIncentiveDetails() {
+
+            RealmResults<LoginResponse> LoginRealmModels =
+                    BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            String userId = LoginRealmModels.get(0).getUserID();
+            if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                NetworkCallController controller = new NetworkCallController();
+                controller.setListner(new NetworkResponseListner() {
+                    @Override
+                    public void onResponse(int requestCode, Object data) {
+                        Incentive response = (Incentive) data;
+                        mActivityHomeBinding.toolbar.txtIncentive.setText("\u20B9" +" "+ response.getTotalIncentive());
+                    }
+
+                    @Override
+                    public void onFailure(int requestCode) {
+
+                    }
+                });
+                controller.getTechnicianIncentive(REQ_INCENTIVE, userId);
+            }
+    }
+
 
     public void initNavigationDrawer() {
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
@@ -292,134 +362,130 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
             name.setText("Hi, " + Uname);
             version.setText("V " + mobileVersion);
         }
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
+        navigationView.setNavigationItemSelectedListener(menuItem -> {
 
-                int id = menuItem.getItemId();
+            int id = menuItem.getItemId();
 
-                switch (id) {
+            switch (id) {
 
-                    case R.id.nav_home:
-                        getSupportFragmentManager().beginTransaction().replace(mActivityHomeBinding.container.getId(), HomeFragment.newInstance()).addToBackStack(null).commit();
-                        mActivityHomeBinding.drawer.closeDrawers();
-                        break;
+                case R.id.nav_home:
+                    getSupportFragmentManager().beginTransaction().replace(mActivityHomeBinding.container.getId(), HomeFragment.newInstance()).addToBackStack(null).commit();
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    break;
 
 
-                    case R.id.nav_incentive:
-                        mActivityHomeBinding.drawer.closeDrawers();
-                        startActivity(new Intent(HomeActivity.this, IncentivesActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
-                        break;
+                case R.id.nav_incentive:
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, IncentivesActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                    break;
 
-                    case R.id.nav_attendance:
-                        mActivityHomeBinding.drawer.closeDrawers();
-                        startActivity(new Intent(HomeActivity.this, AttendanceActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
-                        break;
-
-
-                    case R.id.nav_onsite:
-                        mActivityHomeBinding.drawer.closeDrawers();
-                        startActivity(new Intent(HomeActivity.this, OnSiteTaskActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
-                        break;
-
-                    case R.id.nav_groom:
-                        mActivityHomeBinding.drawer.closeDrawers();
-                        startActivity(new Intent(HomeActivity.this, TechnicianSeniorActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
-                        break;
-
-                    case R.id.nav_notifications:
-                        getSupportFragmentManager().beginTransaction().replace(mActivityHomeBinding.container.getId(), NotificationFragment.newInstance()).addToBackStack(null).commit();
-                        mActivityHomeBinding.drawer.closeDrawers();
-                        break;
-
-                    case R.id.nav_training:
-                        mActivityHomeBinding.drawer.closeDrawers();
-                        startActivity(new Intent(HomeActivity.this, TrainingActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
-                        break;
-
-                    case R.id.nav_voucher:
-                        mActivityHomeBinding.drawer.closeDrawers();
-                        startActivity(new Intent(HomeActivity.this, VoucherActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
-                        break;
+                case R.id.nav_attendance:
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, AttendanceActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                    break;
 
 
-                    case R.id.nav_help:
-                        mActivityHomeBinding.drawer.closeDrawers();
-                        startActivity(new Intent(HomeActivity.this, HelpActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
-                        break;
+                case R.id.nav_onsite:
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, OnSiteTaskActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                    break;
 
-                    case R.id.nav_myid:
-                        mActivityHomeBinding.drawer.closeDrawers();
-                        startActivity(new Intent(HomeActivity.this, TechIdActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
-                        break;
+                case R.id.nav_groom:
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, TechnicianSeniorActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                    break;
 
-                    case R.id.nav_logout:
-                        mActivityHomeBinding.drawer.closeDrawers();
-                        final AlertDialog.Builder dialog = new AlertDialog.Builder(HomeActivity.this);
-                        dialog.setTitle("Logout");
-                        dialog.setMessage("Do you want to logout?");
-                        dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                case R.id.nav_notifications:
+                    getSupportFragmentManager().beginTransaction().replace(mActivityHomeBinding.container.getId(), NotificationFragment.newInstance()).addToBackStack(null).commit();
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    break;
+
+                case R.id.nav_training:
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, TrainingActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                    break;
+
+                case R.id.nav_voucher:
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, VoucherActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                    break;
+
+
+                case R.id.nav_help:
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, HelpActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                    break;
+
+                case R.id.nav_myid:
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, TechIdActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                    break;
+
+                case R.id.nav_logout:
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    final AlertDialog.Builder dialog = new AlertDialog.Builder(HomeActivity.this);
+                    dialog.setTitle("Logout");
+                    dialog.setMessage("Do you want to logout?");
+                    dialog.setPositiveButton("Yes", (dialogInterface, i) -> {
+
+                        NetworkCallController controller = new NetworkCallController();
+                        String UserId = SharedPreferencesUtility.getPrefString(HomeActivity.this, SharedPreferencesUtility.PREF_USERID);
+
+                        controller.setListner(new NetworkResponseListner() {
                             @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
+                            public void onResponse(int requestCode, Object response) {
+                                LogoutResponse logres = (LogoutResponse) response;
 
-                                NetworkCallController controller = new NetworkCallController();
-                                String UserId = SharedPreferencesUtility.getPrefString(HomeActivity.this, SharedPreferencesUtility.PREF_USERID);
-
-                                controller.setListner(new NetworkResponseListner() {
-                                    @Override
-                                    public void onResponse(int requestCode, Object response) {
-                                        LogoutResponse logres = (LogoutResponse) response;
-
-                                        if (logres.getSuccess()) {
-                                            if (pendingUpdateIntent != null) {
-                                                mAlarmManager.cancel(pendingUpdateIntent);
-                                                getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
-                                            }
-                                            SharedPreferencesUtility.savePrefBoolean(getApplicationContext(), SharedPreferencesUtility.IS_USER_LOGIN,
-                                                    false);
-                                            SharedPreferencesUtility.savePrefBoolean(getApplicationContext(), SharedPreferencesUtility.IS_SKIP_VIDEO,
-                                                    false);
-                                            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                                            finish();
-                                        } else {
-                                            Toast.makeText(HomeActivity.this, "Logout failed! try again.", Toast.LENGTH_SHORT).show();
-                                        }
+                                if (logres.getSuccess()) {
+                                    if (pendingUpdateIntent != null) {
+                                        mAlarmManager.cancel(pendingUpdateIntent);
+                                        getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
                                     }
+                                    SharedPreferencesUtility.savePrefBoolean(getApplicationContext(), SharedPreferencesUtility.IS_USER_LOGIN,
+                                            false);
+                                    SharedPreferencesUtility.savePrefBoolean(getApplicationContext(), SharedPreferencesUtility.IS_SKIP_VIDEO,
+                                            false);
+                                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                                    finish();
+                                } else {
+                                    Toast.makeText(HomeActivity.this, "Logout failed! try again.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
 
-                                    @Override
-                                    public void onFailure(int requestCode) {
-
-                                    }
-                                });
-
-                                controller.getLogout(LOGOUT_REQ, UserId, HomeActivity.this);
+                            @Override
+                            public void onFailure(int requestCode) {
 
                             }
                         });
-                        dialog.setNegativeButton("No", null);
-                        dialog.show();
 
-                        break;
+                        controller.getLogout(LOGOUT_REQ, UserId, HomeActivity.this);
 
-                }
-                return true;
+                    });
+                    dialog.setNegativeButton("No", null);
+                    dialog.show();
+
+                    break;
+
             }
+            return true;
         });
 
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, mActivityHomeBinding.drawer, mActivityHomeBinding.toolbar, R.string.openDrawer, R.string.closeDrawer) {
 
-            @Override
-            public void onDrawerClosed(View v) {
-                super.onDrawerClosed(v);
-            }
 
-            @Override
-            public void onDrawerOpened(View v) {
-                super.onDrawerOpened(v);
-            }
-        };
-        mActivityHomeBinding.drawer.addDrawerListener(actionBarDrawerToggle);
-        actionBarDrawerToggle.syncState();
+//        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, mActivityHomeBinding.drawer, mActivityHomeBinding.toolbar, R.string.openDrawer, R.string.closeDrawer) {
+//
+//            @Override
+//            public void onDrawerClosed(View v) {
+//                super.onDrawerClosed(v);
+//            }
+//
+//            @Override
+//            public void onDrawerOpened(View v) {
+//                super.onDrawerOpened(v);
+//            }
+//        };
+//        mActivityHomeBinding.drawer.addDrawerListener(actionBarDrawerToggle);
+//        actionBarDrawerToggle.syncState();
 
     }
 

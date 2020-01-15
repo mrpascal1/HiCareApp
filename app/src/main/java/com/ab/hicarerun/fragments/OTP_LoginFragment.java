@@ -69,9 +69,7 @@ public class OTP_LoginFragment extends BaseFragment implements UserOtpLoginClick
                 DataBindingUtil.inflate(inflater, R.layout.fragment_otp_login, container, false);
         mBottomSheetBehaviour = BottomSheetBehavior.from(mFragmentOtpLoginBinding.nestedScrollView);
         mFragmentOtpLoginBinding.setHandler(this);
-
         mFragmentOtpLoginBinding.bannerSlider.setAdapter(new MainSliderAdapter());
-
         mFragmentOtpLoginBinding.edtMobile.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -102,7 +100,7 @@ public class OTP_LoginFragment extends BaseFragment implements UserOtpLoginClick
     }
 
     private void getVersionFromApi() {
-        NetworkCallController controller = new NetworkCallController();
+        NetworkCallController controller = new NetworkCallController(this);
         controller.setListner(new NetworkResponseListner() {
             @Override
             public void onResponse(int requestCode, Object response) {
