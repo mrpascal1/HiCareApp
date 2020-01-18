@@ -2,21 +2,29 @@ package com.ab.hicarerun.adapter;
 
 
 
+import android.app.Activity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
 
-import com.ab.hicarerun.handler.OnSaveEventHandler;
-import com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;
+import com.ab.hicarerun.R;
+import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-public class TaskViewPagerAdapter extends FragmentPagerAdapter {
+public class TaskViewPagerAdapter extends FragmentPagerAdapter  {
     private final List<Fragment> mFragmentList = new ArrayList<>();
     private final ArrayList<String> mFragmentTitle = new ArrayList<>();
-    public TaskViewPagerAdapter(FragmentManager manager) {
+
+    public TaskViewPagerAdapter(FragmentManager manager, Activity mContext) {
         super(manager);
     }
 

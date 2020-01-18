@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,9 +55,11 @@ import com.ab.hicarerun.utils.HandShakeReceiver;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.google.android.material.navigation.NavigationView;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.RealmResults;
 
 public class HomeActivity extends BaseActivity implements FragmentManager.OnBackStackChangedListener, LocationManagerListner {
@@ -80,6 +83,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     private AlarmManager mAlarmManager = null;
     private PendingIntent pendingUpdateIntent = null;
     private String video_url = "http://apps.hicare.in/video1.mp4";
+    private Bitmap bitUser = null;
 
 
     @Override
@@ -89,9 +93,20 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 DataBindingUtil.setContentView(this, R.layout.activity_home);
 //        setSupportActionBar(mActivityHomeBinding.toolbar)
         mActivityHomeBinding.toolbar.lnrDrawer.setOnClickListener(view -> mActivityHomeBinding.drawer.openDrawer(GravityCompat.START));
-        initNavigationDrawer();
-        getTechDeails();
-        getIncentiveDetails();
+        locationManager =
+                (android.location.LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
+                && locationManager.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER)) {
+            getServiceCalled();
+            getTechDeails();
+            getIncentiveDetails();
+        } else {
+            try {
+                AppUtils.statusCheck(HomeActivity.this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         mActivityHomeBinding.toolbar.lnrUser.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, TechIdActivity.class).putExtra(HomeActivity.ARG_EVENT, false)));
         mActivityHomeBinding.toolbar.lnrWallet.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, IncentivesActivity.class).putExtra(HomeActivity.ARG_EVENT, false)));
@@ -110,20 +125,6 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-        locationManager =
-                (android.location.LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
-                && locationManager.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER)) {
-            getServiceCalled();
-            addFragment(HomeFragment.newInstance(), "HomeActivity - HomeFragment");
-        } else {
-            try {
-                AppUtils.statusCheck(HomeActivity.this);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
 
 
@@ -274,43 +275,8 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
     }
 
-    private void getTechDeails(){
+    private void getTechDeails() {
         try {
-
-                RealmResults<LoginResponse> LoginRealmModels =
-                        BaseApplication.getRealm().where(LoginResponse.class).findAll();
-                String userId = LoginRealmModels.get(0).getUserID();
-                if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-                    NetworkCallController controller = new NetworkCallController();
-                    controller.setListner(new NetworkResponseListner() {
-                        @Override
-                        public void onResponse(int requestCode, Object data) {
-                            Profile response = (Profile) data;
-
-                            if (response.getProfilePic() != null) {
-                                String base64 = response.getProfilePic();
-                                byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
-                                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                                if (base64.length() > 0) {
-                                    mActivityHomeBinding.toolbar.imgUser.setImageBitmap(decodedByte);
-                                }
-                            }
-
-                        }
-
-                        @Override
-                        public void onFailure(int requestCode) {
-
-                        }
-                    });
-                    controller.getTechnicianProfile(REQ_PROFILE, userId);
-            }
-        } catch (Exception e) {
-
-        }
-    }
-
-    private void getIncentiveDetails() {
 
             RealmResults<LoginResponse> LoginRealmModels =
                     BaseApplication.getRealm().where(LoginResponse.class).findAll();
@@ -320,8 +286,49 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 controller.setListner(new NetworkResponseListner() {
                     @Override
                     public void onResponse(int requestCode, Object data) {
+                        Profile response = (Profile) data;
+                        if (response.getProfilePic() != null) {
+                            String base64 = response.getProfilePic();
+                            byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
+                            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                            if (base64.length() > 0) {
+                                mActivityHomeBinding.toolbar.imgUser.setImageBitmap(decodedByte);
+                                bitUser = decodedByte;
+                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                bitUser.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                                byte[] byteArray = stream.toByteArray();
+                                addFragment(HomeFragment.newInstance(byteArray), "HomeActivity - HomeFragment");
+
+                            }
+                        }
+                        initNavigationDrawer();
+                    }
+
+                    @Override
+                    public void onFailure(int requestCode) {
+
+                    }
+                });
+                controller.getTechnicianProfile(REQ_PROFILE, userId);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void getIncentiveDetails() {
+        try {
+            RealmResults<LoginResponse> LoginRealmModels =
+                    BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            String userId = LoginRealmModels.get(0).getUserID();
+            if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                NetworkCallController controller = new NetworkCallController();
+                controller.setListner(new NetworkResponseListner() {
+                    @Override
+                    public void onResponse(int requestCode, Object data) {
                         Incentive response = (Incentive) data;
-                        mActivityHomeBinding.toolbar.txtIncentive.setText("\u20B9" +" "+ response.getTotalIncentive());
+                        mActivityHomeBinding.toolbar.txtIncentive.setText("\u20B9" + " " + response.getTotalIncentive());
                     }
 
                     @Override
@@ -331,6 +338,9 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 });
                 controller.getTechnicianIncentive(REQ_INCENTIVE, userId);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -359,17 +369,19 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
             View header = navigationView.getHeaderView(0);
             TextView name = (TextView) header.findViewById(R.id.drawer_name);
             TextView version = (TextView) header.findViewById(R.id.txtVersion);
+            ImageView imgUser = header.findViewById(R.id.navUser);
             name.setText("Hi, " + Uname);
             version.setText("V " + mobileVersion);
+            if (bitUser != null) {
+                imgUser.setImageBitmap(bitUser);
+            }
         }
         navigationView.setNavigationItemSelectedListener(menuItem -> {
-
             int id = menuItem.getItemId();
-
             switch (id) {
 
                 case R.id.nav_home:
-                    getSupportFragmentManager().beginTransaction().replace(mActivityHomeBinding.container.getId(), HomeFragment.newInstance()).addToBackStack(null).commit();
+//                    getSupportFragmentManager().beginTransaction().replace(mActivityHomeBinding.container.getId(), HomeFragment.newInstance()).addToBackStack(null).commit();
                     mActivityHomeBinding.drawer.closeDrawers();
                     break;
 
@@ -471,7 +483,6 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         });
 
 
-
 //        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, mActivityHomeBinding.drawer, mActivityHomeBinding.toolbar, R.string.openDrawer, R.string.closeDrawer) {
 //
 //            @Override
@@ -491,8 +502,8 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
     @Override
     public void onBackPressed() {
-        getSupportFragmentManager().beginTransaction().remove(FaceRecognizationFragment.newInstance(false, "avatar", "")).commit();
-        getSupportFragmentManager().popBackStack();
+//        getSupportFragmentManager().beginTransaction().remove(FaceRecognizationFragment.newInstance(false, "avatar", "")).commit();
+//        getSupportFragmentManager().popBackStack();
         int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
         if (backStackEntryCount == 0) {
             showExitAlert();

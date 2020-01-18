@@ -2,14 +2,15 @@ package com.ab.hicarerun.utils;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Typeface;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -18,10 +19,17 @@ import android.provider.Settings;
 
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.HomeActivity;
@@ -35,7 +43,6 @@ import com.ab.hicarerun.network.models.GeneralModel.IncompleteReason;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShake;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLog;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
-import com.ab.hicarerun.utils.notifications.OneSIgnalHelper;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
@@ -47,12 +54,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
-
-import static android.content.Context.ALARM_SERVICE;
 
 
 public class AppUtils {
@@ -81,6 +86,42 @@ public class AppUtils {
         public static final String LOCATION_DATA_STREET = PACKAGE_NAME + ".LOCATION_DATA_STREET";
 
 
+    }
+
+
+    public static Bitmap createCustomMarker(Context context, Bitmap resource, String accountName, String _name) {
+
+        View marker = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.layout_custom_marker, null);
+        RelativeLayout relMarker = (RelativeLayout) marker.findViewById(R.id.marker);
+        CircleImageView markerImage = (CircleImageView) marker.findViewById(R.id.user_dp);
+        markerImage.setImageBitmap(resource);
+        TextView txt_name = (TextView) marker.findViewById(R.id.name);
+        txt_name.setTypeface(txt_name.getTypeface(), Typeface.BOLD);
+        txt_name.setText(accountName);
+        if (_name.equalsIgnoreCase("Customer")) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                relMarker.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.pink_sec));
+//                txt_name.setTextColor(context.getResources().getColor(R.color.pink_sec));
+            }
+
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                relMarker.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.colorPrimary));
+//                txt_name.setTextColor(context.getResources().getColor(R.color.white));
+
+            }
+        }
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        marker.setLayoutParams(new ViewGroup.LayoutParams(52, ViewGroup.LayoutParams.WRAP_CONTENT));
+        marker.measure(displayMetrics.widthPixels, displayMetrics.heightPixels);
+        marker.layout(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels);
+        marker.buildDrawingCache();
+        Bitmap bitmap = Bitmap.createBitmap(marker.getMeasuredWidth(), marker.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        marker.draw(canvas);
+
+        return bitmap;
     }
 
 

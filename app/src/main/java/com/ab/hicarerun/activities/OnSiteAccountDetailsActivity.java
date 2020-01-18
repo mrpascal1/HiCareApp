@@ -33,7 +33,7 @@ public class OnSiteAccountDetailsActivity extends BaseActivity {
 
     private void setViewPagerView() {
         mActivityOnSiteAccountDetailsBinding.viewpager.setOffscreenPageLimit(0);
-        mAdapter = new TaskViewPagerAdapter(getSupportFragmentManager());
+        mAdapter = new TaskViewPagerAdapter(getSupportFragmentManager(), this);
         mAdapter.addFragment(OnSiteTaskFragment.newInstance(model), "On-Site");
         mAdapter.addFragment(RecentOnsiteTaskFragment.newInstance(model), "Completed");
 //        mActivityOnSiteAccountDetailsBinding.viewpagertab.setDistributeEvenly(true);

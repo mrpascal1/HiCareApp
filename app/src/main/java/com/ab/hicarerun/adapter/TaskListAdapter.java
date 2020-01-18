@@ -113,14 +113,18 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         holder.mTaskListAdapterBinding.dispatchTaskMobileNo.setBackgroundResource(backgroundResource);
         holder.mTaskListAdapterBinding.dispatchTaskPhoneNo.setBackgroundResource(backgroundResource);
         holder.mTaskListAdapterBinding.lnrDetail.setBackgroundResource(backgroundResource);
+        holder.mTaskListAdapterBinding.lnrMain.setBackgroundResource(backgroundResource);
         holder.mTaskListAdapterBinding.constraint.setBackgroundResource(backgroundResource);
         holder.mTaskListAdapterBinding.constraint2.setBackgroundResource(backgroundResource);
         holder.mTaskListAdapterBinding.lnrMap.setBackgroundResource(backgroundResource);
         holder.mTaskListAdapterBinding.btnHelpline.setBackgroundResource(backgroundResource);
         if (items.get(position).getCombineTask()) {
-            holder.mTaskListAdapterBinding.txtOrderno.setText(items.get(position).getCombineOrderNumber());
+            String order = items.get(position).getCombineOrderNumber().replace(",", ", ");
+            holder.mTaskListAdapterBinding.txtOrderno.setText(order);
+            holder.mTaskListAdapterBinding.lnrMST.setVisibility(View.VISIBLE);
         } else {
             holder.mTaskListAdapterBinding.txtOrderno.setText(items.get(position).getOrderNumber());
+            holder.mTaskListAdapterBinding.lnrMST.setVisibility(View.GONE);
         }
 
         try {
@@ -140,9 +144,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 //
 //        }
         if (items.get(position).getSequenceNumber() == 1 && items.get(position).getAccountType().equals("Individual")) {
-            holder.mTaskListAdapterBinding.lnrTask.setBackgroundColor(Color.parseColor("#ffc0cb"));
+            holder.mTaskListAdapterBinding.lnrMain.setBackgroundColor(Color.parseColor("#ffc0cb"));
         } else {
-            holder.mTaskListAdapterBinding.lnrTask.setBackgroundColor(Color.parseColor("#ffffff"));
+            holder.mTaskListAdapterBinding.lnrMain.setBackgroundColor(Color.parseColor("#ffffff"));
         }
 
         if (items.get(position).getStatus().equalsIgnoreCase("Completed")) {
@@ -180,9 +184,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             holder.mTaskListAdapterBinding.lnrSequence.setVisibility(View.GONE);
         }
 
-        if (items.get(position).getCombineTaskType() != null && !items.get(position).getCombineTaskType().equals("")) {
-            holder.mTaskListAdapterBinding.txtService.setText(items.get(position).getCombineTaskType());
-            holder.mTaskListAdapterBinding.txtType.setText(items.get(position).getCombineTaskType());
+        if (items.get(position).getCombineTask()) {
+            String service = items.get(position).getCombineTaskType().replace(",", ", ");
+            holder.mTaskListAdapterBinding.txtService.setText(service);
+            holder.mTaskListAdapterBinding.txtType.setText(service);
         } else {
             holder.mTaskListAdapterBinding.txtService.setText(items.get(position).getServicePlan());
             holder.mTaskListAdapterBinding.txtType.setText(items.get(position).getServiceType());
@@ -211,43 +216,23 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             holder.mTaskListAdapterBinding.lnrLandmark.setVisibility(View.GONE);
         }
         holder.mTaskListAdapterBinding.txtPostcode.setText(items.get(position).getPostalCode());
-        holder.mTaskListAdapterBinding.txtAmount.setText(items.get(position).getAmount());
+        if (items.get(position).getAmount().equals("0")) {
+            holder.mTaskListAdapterBinding.lnrAmount.setVisibility(View.GONE);
+        } else {
+            holder.mTaskListAdapterBinding.lnrAmount.setVisibility(View.VISIBLE);
+            holder.mTaskListAdapterBinding.txtAmount.setText(items.get(position).getAmount());
+        }
         holder.itemView.setOnClickListener(v -> onItemClickHandler.onItemClick(position));
 
 
-        holder.mTaskListAdapterBinding.dispatchTaskMobileNo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onCallListItemClickHandler.onPrimaryMobileClicked(position);
-            }
-        });
+        holder.mTaskListAdapterBinding.dispatchTaskMobileNo.setOnClickListener(v -> onCallListItemClickHandler.onPrimaryMobileClicked(position));
 
-        holder.mTaskListAdapterBinding.dispatchTaskAltMobileNo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onCallListItemClickHandler.onAlternateMobileClicked(position);
-            }
-        });
+        holder.mTaskListAdapterBinding.dispatchTaskAltMobileNo.setOnClickListener(v -> onCallListItemClickHandler.onAlternateMobileClicked(position));
 
-        holder.mTaskListAdapterBinding.dispatchTaskPhoneNo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onCallListItemClickHandler.onTelePhoneClicked(position);
-            }
-        });
-        holder.mTaskListAdapterBinding.lnrMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onCallListItemClickHandler.onTrackLocationIconClicked(position);
-            }
-        });
+        holder.mTaskListAdapterBinding.dispatchTaskPhoneNo.setOnClickListener(v -> onCallListItemClickHandler.onTelePhoneClicked(position));
+        holder.mTaskListAdapterBinding.lnrMap.setOnClickListener(v -> onCallListItemClickHandler.onTrackLocationIconClicked(position));
 
-        holder.mTaskListAdapterBinding.btnHelpline.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onCallListItemClickHandler.onTechnicianHelplineClicked(position);
-            }
-        });
+        holder.mTaskListAdapterBinding.btnHelpline.setOnClickListener(view -> onCallListItemClickHandler.onTechnicianHelplineClicked(position));
 
 
         final Handler ha = new Handler();
@@ -268,32 +253,27 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         }, 1000);
 
 
-        holder.mTaskListAdapterBinding.imgWarning.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
+        holder.mTaskListAdapterBinding.imgWarning.setOnClickListener(v -> {
+            try {
 
-                    String titleText = "Running Late...";
+                String titleText = "Running Late...";
+                // Initialize a new foreground color span instance
+                ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(Color.BLACK);
+                // Initialize a new spannable string builder instance
+                SpannableStringBuilder ssBuilder = new SpannableStringBuilder(titleText);
+                // Apply the text color span
+                ssBuilder.setSpan(
+                        foregroundColorSpan,
+                        0,
+                        titleText.length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+                startCountUpTimer(holder, position);
+                String time = AppUtils.millisTOHr(milli);
+                getErrorDialog(ssBuilder, "You're running late by " + time + ".");
 
-                    // Initialize a new foreground color span instance
-                    ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(Color.BLACK);
-                    // Initialize a new spannable string builder instance
-                    SpannableStringBuilder ssBuilder = new SpannableStringBuilder(titleText);
-                    // Apply the text color span
-                    ssBuilder.setSpan(
-                            foregroundColorSpan,
-                            0,
-                            titleText.length(),
-                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                    );
-
-                    startCountUpTimer(holder, position);
-                    String time = AppUtils.millisTOHr(milli);
-                    getErrorDialog(ssBuilder, "You're running late by " + time + ".");
-
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
         });
     }

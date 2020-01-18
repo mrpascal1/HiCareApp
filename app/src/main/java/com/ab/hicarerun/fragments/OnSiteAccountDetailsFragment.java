@@ -64,7 +64,7 @@ public class OnSiteAccountDetailsFragment extends BaseFragment {
     }
 
     private void setViewPagerView() {
-        mAdapter = new TaskViewPagerAdapter(getActivity().getSupportFragmentManager());
+        mAdapter = new TaskViewPagerAdapter(getActivity().getSupportFragmentManager(), getActivity());
         mAdapter.addFragment(OnSiteTaskFragment.newInstance(model), "On-Site Tasks");
         mAdapter.addFragment(RecentOnsiteTaskFragment.newInstance(model), "Recent Tasks");
         mFragmentOnSiteAccountDetailsBinding.viewpagertab.setDistributeEvenly(true);

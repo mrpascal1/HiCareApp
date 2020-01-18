@@ -60,7 +60,7 @@
                         android:gravity="center"
                         android:padding="5dp"
                         android:singleLine="true"
-                        android:text="No"
+                        android:text="Yes"
                         android:textColor="@color/white" />
 
                     <TextView
@@ -72,7 +72,7 @@
                         android:gravity="center"
                         android:padding="5dp"
                         android:singleLine="true"
-                        android:text="Yes"
+                        android:text="No"
                         android:textColor="@color/white" />
 
                 </LinearLayout>

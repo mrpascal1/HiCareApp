@@ -15,6 +15,7 @@ public class ChemicalViewModel {
     private String edtActual;
     private HashMap<Integer, String> actualList;
     private String chemType;
+    private String serviceArea;
 
     public ChemicalViewModel() {
         this.id = "NA";
@@ -24,6 +25,7 @@ public class ChemicalViewModel {
         this.actual = "NA";
         this.edtActual = "NA";
         this.chemType = "NA";
+        this.serviceArea = "NA";
     }
 
 
@@ -91,6 +93,14 @@ public class ChemicalViewModel {
         this.chemType = chemType;
     }
 
+    public String getServiceArea() {
+        return serviceArea;
+    }
+
+    public void setServiceArea(String serviceArea) {
+        this.serviceArea = serviceArea;
+    }
+
     public void clone(Chemicals chemicals) {
         this.id = chemicals.getId();
         this.name = chemicals.getCWFProductName();
@@ -98,6 +108,7 @@ public class ChemicalViewModel {
         this.standard = chemicals.getStandard_Usage();
         this.edtActual = chemicals.getActual_Usage();
         this.chemType = chemicals.getChemType();
+        this.serviceArea = chemicals.getServiceArea();
     }
 
 }

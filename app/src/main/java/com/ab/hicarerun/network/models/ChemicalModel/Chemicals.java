@@ -22,6 +22,9 @@ public class Chemicals {
     @SerializedName("Task_Type__c") @Expose
     private String ChemType;
 
+    @SerializedName("Service_Area__c") @Expose
+    private String ServiceArea;
+
     public Chemicals() {
         Id = "NA";
         Standard_Usage = "NA";
@@ -29,6 +32,7 @@ public class Chemicals {
         Consumption = "NA";
         CWFProductName = "NA";
         ChemType = "NA";
+        ServiceArea = "NA";
     }
 
     public String getId() {
@@ -77,5 +81,13 @@ public class Chemicals {
 
     public void setChemType(String chemType) {
         ChemType = chemType;
+    }
+
+    public String getServiceArea() {
+        return ServiceArea;
+    }
+
+    public void setServiceArea(String serviceArea) {
+        ServiceArea = serviceArea;
     }
 }

@@ -275,6 +275,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                         alertDialog.dismiss();
                                     }
                                 }
+
                                 @Override
                                 public void onFailure(int requestCode) {
                                 }
@@ -504,7 +505,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     String duration = mTaskDetailsData.get(0).getDuration();
                     String start = mTaskDetailsData.get(0).getTaskAssignmentStartTime();
                     if (model.getCombinedTask()) {
-                        String type = model.getCombinedServiceType();
+                        String type = model.getCombinedServiceType().replace(",", ", ");
                         mFragmentServiceInfoBinding.txtType.setText(type);
                     } else {
                         String type = mTaskDetailsData.get(0).getServiceType();
@@ -520,9 +521,10 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     } else {
                         mFragmentServiceInfoBinding.txtDuration.setText(duration + " hr");
                     }
-                    if(model.getCombinedTask()){
-                        mFragmentServiceInfoBinding.txtOrder.setText("Order# " + model.getCombinedOrderNumber());
-                    }else {
+                    if (model.getCombinedTask()) {
+                        String service = model.getCombinedOrderNumber().replace(",", ", ");
+                        mFragmentServiceInfoBinding.txtOrder.setText("Order# " + service);
+                    } else {
                         mFragmentServiceInfoBinding.txtOrder.setText("Order# " + order);
                     }
 

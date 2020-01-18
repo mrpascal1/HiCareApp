@@ -71,10 +71,11 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
         holder.mChemicalRecycleRowBinding.chemConsumption.setText(model.getConsumption());
         holder.mChemicalRecycleRowBinding.chemStandard.setText(model.getStandard());
         if (isCombined) {
-            holder.mChemicalRecycleRowBinding.chemType.setVisibility(View.VISIBLE);
+            holder.mChemicalRecycleRowBinding.lnrType.setVisibility(View.VISIBLE);
             holder.mChemicalRecycleRowBinding.chemType.setText(model.getChemType());
+            holder.mChemicalRecycleRowBinding.serviceArea.setText("(" + model.getServiceArea() + ")");
         } else {
-            holder.mChemicalRecycleRowBinding.chemType.setVisibility(View.GONE);
+            holder.mChemicalRecycleRowBinding.lnrType.setVisibility(View.GONE);
         }
 
         RealmResults<GeneralData> mGeneralRealmData =

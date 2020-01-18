@@ -8,6 +8,8 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.slidingpanelayout.widget.SlidingPaneLayout;
+import androidx.viewpager.widget.PagerAdapter;
 
 import android.Manifest;
 import android.animation.Animator;
@@ -19,21 +21,31 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ab.hicarerun.BaseActivity;
@@ -66,16 +78,23 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -85,21 +104,25 @@ import hyogeun.github.com.colorratingbarlib.ColorRatingBar;
 import io.realm.RealmResults;
 
 import static com.ab.hicarerun.BaseApplication.getRealm;
+import static com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState.EXPANDED;
 
 public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, OnMapReadyCallback, UserTaskDetailsClickListener, OnSaveEventHandler {
     ActivityNewTaskDetailsBinding mActivityNewTaskDetailsBinding;
     private static final int TASK_BY_ID_REQUEST = 1000;
     private static final int UPDATE_REQUEST = 1000;
+    int height = 100;
+    int width = 100;
     private ProgressDialog progress;
     SupportMapFragment mapFragment;
     private GoogleApiClient mGoogleApiClient;
     private GoogleMap mGoogleMap;
     private LocationManager mLocationManager;
     public static final String ARGS_TASKS = "ARGS_TASKS";
+    public static final String ARG_USER = "ARG_USER";
     public static final String LAT_LONG = "LAT_LONG";
     private static final String TAG = "NewTaskDetailsActivity";
     private Location mLocation;
-    private long UPDATE_INTERVAL = 2 * 10000;  /* 10 secs */
+    private long UPDATE_INTERVAL = 20 * 10000;  /* 10 secs */
     private long FASTEST_INTERVAL = 20000; /* 2 sec */
     private LocationRequest mLocationRequest;
     private LocationManager locationManager;
@@ -113,6 +136,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private int Incentive = 0;
     private boolean isTechnicianFeedbackEnable = false;
     private int TechnicianRating = 0;
+    private int referralDiscount = 0;
     private Double Lat = 0.0;
     private Double Lon = 0.0;
     private String Status = "", Payment_Mode = "", Amount_Collected = "", Amount_To_Collected = "", Actual_Size = "", Standard_Size = "", Feedback_Code = "", signatory = "", Signature = "", Duration = "", OnsiteOTP = "";
@@ -146,6 +170,13 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private HashMap<Integer, String> mMap = null;
     private List<TaskChemicalList> ChemReqList = null;
     private int Rate = 0;
+    private Circle mCircle;
+    private Toasty mToastToShow;
+    private double mCircleRadius = 150;
+    private byte[] bitUser = null;
+
+    LatLngBounds.Builder builder;
+    CameraUpdate cu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,6 +195,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         mActivityNewTaskDetailsBinding.pager.setOffscreenPageLimit(4);
         setTitle("");
         model = getIntent().getParcelableExtra(ARGS_TASKS);
+        bitUser = getIntent().getByteArrayExtra(ARG_USER);
         mActivityNewTaskDetailsBinding.toolbar.getNavigationIcon().setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -179,6 +211,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             public void onPanelSlide(View panel, float slideOffset) {
 
             }
+
 
             @Override
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
@@ -251,6 +284,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         Incentive = Integer.parseInt(response.getData().getIncentivePoint());
                         isTechnicianFeedbackEnable = response.getData().getTechnicianFeedbackRequired();
                         TechnicianRating = Integer.parseInt(response.getData().getTechnicianRating());
+                        referralDiscount = Integer.parseInt(response.getData().getReferralDiscount());
                         setViewPagerView();
                     }
 
@@ -273,37 +307,89 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     }
 
     private void setViewPagerView() {
-        mAdapter = new TaskViewPagerAdapter(getSupportFragmentManager());
-        if (sta.equals("Dispatched") || sta.equals("Incomplete")) {
-            mAdapter.addFragment(ServiceInfoFragment.newInstance(model), "Service Info");
-            mActivityNewTaskDetailsBinding.viewpagertab.setDistributeEvenly(false);
-        } else {
-            mAdapter.addFragment(ServiceInfoFragment.newInstance(model), "Service Info");
-            mAdapter.addFragment(ChemicalInfoFragment.newInstance(model), "Chemicals");
-            mAdapter.addFragment(ReferralFragment.newInstance(model), "Referrals");
-            if (model.getCombinedTask()) {
-                mAdapter.addFragment(SignatureMSTInfoFragment.newInstance(model), "Signature");
+        try {
+            mAdapter = new TaskViewPagerAdapter(getSupportFragmentManager(), this);
+
+            if (sta.equals("Dispatched") || sta.equals("Incomplete")) {
+                mAdapter.addFragment(ServiceInfoFragment.newInstance(model), "Service Info");
+                mActivityNewTaskDetailsBinding.viewpagertab.setDistributeEvenly(false);
             } else {
-                mAdapter.addFragment(SignatureInfoFragment.newInstance(model), "Signature");
+                mAdapter.addFragment(ServiceInfoFragment.newInstance(model), "Service Info");
+                mAdapter.addFragment(ChemicalInfoFragment.newInstance(model), "Chemicals");
+                mAdapter.addFragment(ReferralFragment.newInstance(model), "Referrals");
+                if (model.getCombinedTask()) {
+                    mAdapter.addFragment(SignatureMSTInfoFragment.newInstance(model), "Signature");
+                } else {
+                    mAdapter.addFragment(SignatureInfoFragment.newInstance(model), "Signature");
+                }
+                mActivityNewTaskDetailsBinding.viewpagertab.setDistributeEvenly(true);
             }
-            mActivityNewTaskDetailsBinding.viewpagertab.setDistributeEvenly(true);
+
+            if (sta.equals("Dispatched")) {
+                mActivityNewTaskDetailsBinding.slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                mActivityNewTaskDetailsBinding.slidingLayout.setTouchEnabled(true);
+            } else {
+                mActivityNewTaskDetailsBinding.slidingLayout.setTouchEnabled(false);
+                mActivityNewTaskDetailsBinding.tray.setOnClickListener(view -> {
+                    if (mActivityNewTaskDetailsBinding.slidingLayout.getPanelState() == EXPANDED) {
+                        mActivityNewTaskDetailsBinding.slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    } else {
+                        mActivityNewTaskDetailsBinding.slidingLayout.setPanelState(EXPANDED);
+                    }
+                });
+                mActivityNewTaskDetailsBinding.slidingLayout.getChildAt(1).setOnClickListener(null);
+                mActivityNewTaskDetailsBinding.slidingLayout.setPanelState(EXPANDED);
+            }
+
+            if (sta.equals("Completed") || sta.equals("Incomplete")) {
+                mActivityNewTaskDetailsBinding.save.setText(sta);
+                mActivityNewTaskDetailsBinding.lnrSave.setEnabled(false);
+            } else {
+                mActivityNewTaskDetailsBinding.lnrSave.setVisibility(View.VISIBLE);
+                mActivityNewTaskDetailsBinding.lnrSave.setEnabled(true);
+            }
+            mActivityNewTaskDetailsBinding.pager.setAdapter(mAdapter);
+            final LayoutInflater inflater = LayoutInflater.from(this);
+            final Resources res = getResources();
+
+            mActivityNewTaskDetailsBinding.viewpagertab.setCustomTabView((container, position, adapter) -> {
+                View itemView = inflater.inflate(R.layout.layout_task_tabs, container, false);
+                TextView text = (TextView) itemView.findViewById(R.id.custom_tab_text);
+                text.setText(adapter.getPageTitle(position));
+                text.setTypeface(text.getTypeface(), Typeface.BOLD);
+                LinearLayout lnrOffer = (LinearLayout) itemView.findViewById(R.id.lnrOffer);
+                TextView txtDiscount = (TextView) itemView.findViewById(R.id.txtDiscount);
+
+
+                switch (position) {
+                    case 0:
+                        lnrOffer.setVisibility(View.INVISIBLE);
+                        break;
+                    case 1:
+                        lnrOffer.setVisibility(View.INVISIBLE);
+                        break;
+                    case 2:
+                        lnrOffer.setVisibility(View.VISIBLE);
+                        if (referralDiscount > 0) {
+                            txtDiscount.setText(String.valueOf(referralDiscount));
+                        } else {
+                            lnrOffer.setVisibility(View.INVISIBLE);
+                        }
+                        break;
+                    case 3:
+                        lnrOffer.setVisibility(View.INVISIBLE);
+                        break;
+                    default:
+                        throw new IllegalStateException("Invalid position: " + position);
+                }
+
+                return itemView;
+            });
+            mActivityNewTaskDetailsBinding.viewpagertab.setViewPager(mActivityNewTaskDetailsBinding.pager);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        if (sta.equals("Dispatched")) {
-            mActivityNewTaskDetailsBinding.slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-        } else {
-            mActivityNewTaskDetailsBinding.slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-        }
-
-        if (sta.equals("Completed") || sta.equals("Incomplete")) {
-            mActivityNewTaskDetailsBinding.save.setText(sta);
-            mActivityNewTaskDetailsBinding.lnrSave.setEnabled(false);
-        } else {
-            mActivityNewTaskDetailsBinding.lnrSave.setVisibility(View.VISIBLE);
-            mActivityNewTaskDetailsBinding.lnrSave.setEnabled(true);
-        }
-        mActivityNewTaskDetailsBinding.pager.setAdapter(mAdapter);
-        mActivityNewTaskDetailsBinding.viewpagertab.setViewPager(mActivityNewTaskDetailsBinding.pager);
     }
 
     @Override
@@ -391,18 +477,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
-        try {
-            LatLng latLong = new LatLng(Double.parseDouble(model.getCustomerLatitude()), Double.valueOf(model.getCustomerLongitude()));
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(latLong);
-            markerOptions.title("Customer's Location");
-            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
-            mCustomerMarker = mGoogleMap.addMarker(markerOptions);
-            mCustomerMarker.showInfoWindow();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 
@@ -432,18 +506,11 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             mGoogleMap.setMyLocationEnabled(false);
             mGoogleMap.setTrafficEnabled(false);
             mGoogleMap.setIndoorEnabled(false);
+            mGoogleMap.getUiSettings().setCompassEnabled(false);
             mGoogleMap.setBuildingsEnabled(false);
             mGoogleMap.getUiSettings().setZoomControlsEnabled(false);
             mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(latLong);
-            markerOptions.title("you are here");
-
-            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
-            mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
-            mCurrLocationMarker.showInfoWindow();
-            //move map camera
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLong, 15));
+            setBounds(latLong);
         } else {
             Toast.makeText(this,
                     "Sorry! unable to create maps", Toast.LENGTH_SHORT)
@@ -451,6 +518,96 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         }
 
     }
+
+    private void setBounds(LatLng latLong) {
+        try {
+            if (mGoogleMap != null) {
+                mGoogleMap.clear();
+                RealmResults<LoginResponse> LoginRealmModels =
+                        getRealm().where(LoginResponse.class).findAll();
+
+                if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                    LatLng latLongc = new LatLng(Double.parseDouble(model.getCustomerLatitude()), Double.valueOf(model.getCustomerLongitude()));
+                    Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.customer_marker);
+                    List<Marker> markersList = new ArrayList<>();
+                    BitmapDescriptor CustomerMarkerIcon = BitmapDescriptorFactory.fromBitmap(AppUtils.createCustomMarker(this, b, model.getAccountName(), "Customer"));
+                    MarkerOptions markerOptionsCust = new MarkerOptions();
+                    markerOptionsCust.position(latLongc);
+                    markerOptionsCust.title("Customer's Location");
+                    markerOptionsCust.icon(CustomerMarkerIcon);
+
+                    Bitmap bmp = BitmapFactory.decodeByteArray(bitUser, 0, bitUser.length);
+                    BitmapDescriptor homeMarkerIcon = BitmapDescriptorFactory.fromBitmap(AppUtils.createCustomMarker(this, bmp, LoginRealmModels.get(0).getUserName(), "Resource"));
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(latLong);
+                    markerOptions.title("You are here");
+                    markerOptions.icon(homeMarkerIcon);
+
+                    Location locationA = new Location("Technicain");
+
+                    locationA.setLatitude(latLong.latitude);
+                    locationA.setLongitude(latLong.longitude);
+
+                    Location locationB = new Location("Customer");
+
+                    locationB.setLatitude(latLongc.latitude);
+                    locationB.setLongitude(latLongc.longitude);
+                    float distanceRange = locationA.distanceTo(locationB);
+
+                    mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+                    markersList.add(mCurrLocationMarker);
+                    mCustomerMarker = mGoogleMap.addMarker(markerOptionsCust);
+                    markersList.add(mCustomerMarker);
+
+                    mCircle = mGoogleMap.addCircle(new CircleOptions()
+                            .strokeWidth(1)
+                            .radius(1000)
+                            .center(mCurrLocationMarker.getPosition())
+                            .strokeColor(Color.parseColor("#55000000"))
+                            .fillColor(Color.parseColor("#55000000")));
+
+
+                    mCircle.setRadius(distanceRange+2000);
+                    float[] distance = new float[2];
+                    for (int m = 0; m < markersList.size(); m++) {
+                        Marker marker = markersList.get(m);
+                        LatLng position = marker.getPosition();
+                        double lat = position.latitude;
+                        double lon = position.longitude;
+
+                        Location.distanceBetween(lat, lon, latLong.latitude,
+                                latLong.longitude, distance);
+
+                        boolean inCircle = distance[0] <= distanceRange;
+                        marker.setVisible(inCircle);
+                    }
+
+
+                    /**create for loop for get the latLngbuilder from the marker list*/
+                    builder = new LatLngBounds.Builder();
+                    for (Marker m : markersList) {
+                        builder.include(m.getPosition());
+                    }
+                    /**initialize the padding for map boundary*/
+                    /**create the bounds from latlngBuilder to set into map camera*/
+                    LatLngBounds bounds = builder.build();
+                    /**create the camera with bounds and padding to set into map*/
+                    cu = CameraUpdateFactory.newLatLngBounds(bounds, 50);
+                    /**call the map call back to know map is loaded or not*/
+                    mGoogleMap.setOnMapLoadedCallback(() -> {
+                        /**set animated zoom camera into map*/
+                        mGoogleMap.animateCamera(cu);
+
+                    });
+
+                }
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public void onStart() {
@@ -502,13 +659,10 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         dialog.setTitle("Enable Location")
                 .setMessage("Your Locations Settings is set to 'Off'.\nPlease Enable Location to " +
                         "use this app")
-                .setPositiveButton("Location Settings", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                .setPositiveButton("Location Settings", (paramDialogInterface, paramInt) -> {
 
-                        Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivity(myIntent);
-                    }
+                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(myIntent);
                 })
                 .setNegativeButton("Cancel", (paramDialogInterface, paramInt) -> {
 
@@ -538,7 +692,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 progress.dismiss();
             } else if (isEarlyCompletion && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
-                Toasty.error(this, "You are not allowed to close the job as you have not spent adequate time. Please follow the correct procedure and deliver the job properly", 6000, true).show();
+                Toasty.error(this, "You are not allowed to close the job as you have not spent adequate time. Please follow the correct procedure and deliver the job properly", Toasty.LENGTH_LONG, true).show();
                 progress.dismiss();
             } else if (isOnsiteOtpRequired && Status.equals("On-Site")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
@@ -664,6 +818,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                                     Toast.makeText(NewTaskDetailsActivity.this, updateResponse.getErrorMessage(), Toast.LENGTH_LONG).show();
                                 }
                             }
+
                             @Override
                             public void onFailure(int requestCode) {
                                 progress.dismiss();
@@ -686,6 +841,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
     }
 
+
     private void showIncentiveDialog() {
         View view = getLayoutInflater().inflate(R.layout.new_scratchcard_layout, null);
         final Dialog dialog = new Dialog(this, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
@@ -697,41 +853,38 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         dialog.show();
 
         final AppCompatTextView txtReward =
-                (AppCompatTextView) view.findViewById(R.id.txtReward);
+                view.findViewById(R.id.txtReward);
         final AppCompatTextView txtIncentive =
-                (AppCompatTextView) view.findViewById(R.id.txtIncentive);
+                view.findViewById(R.id.txtIncentive);
         final AppCompatTextView txtLose =
-                (AppCompatTextView) view.findViewById(R.id.txtLose);
+                view.findViewById(R.id.txtLose);
         final AppCompatImageView imgAward =
-                (AppCompatImageView) view.findViewById(R.id.imgAward);
+                view.findViewById(R.id.imgAward);
         final AppCompatImageView imgNoAward =
-                (AppCompatImageView) view.findViewById(R.id.imgNoAward);
+                view.findViewById(R.id.imgNoAward);
         final AppCompatImageView imgCancel =
-                (AppCompatImageView) view.findViewById(R.id.imgCancel);
+                view.findViewById(R.id.imgCancel);
         final ScratchRelativeLayout scratch =
-                (ScratchRelativeLayout) view.findViewById(R.id.scratch);
+                view.findViewById(R.id.scratch);
         final AppCompatTextView txtMsg =
-                (AppCompatTextView) view.findViewById(R.id.winningMsg);
+                view.findViewById(R.id.winningMsg);
         final AppCompatTextView txtEarned =
-                (AppCompatTextView) view.findViewById(R.id.txtEarned);
+                view.findViewById(R.id.txtEarned);
         final AppCompatTextView txtHicare =
-                (AppCompatTextView) view.findViewById(R.id.txtHicare);
+                view.findViewById(R.id.txtHicare);
 
         if (dialog != null) {
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
             dialog.getWindow().setLayout(width, height);
-            imgCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onBackPressed();
-                    try {
-                        AppUtils.getDataClean();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    dialog.dismiss();
+            imgCancel.setOnClickListener(v -> {
+                onBackPressed();
+                try {
+                    AppUtils.getDataClean();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+                dialog.dismiss();
             });
 
             String[] array = getApplicationContext().getResources().getStringArray(R.array.randomApplause);
@@ -793,21 +946,17 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         final AlertDialog alertDialog = alertDialogBuilder.create();
 
         final ColorRatingBar ratingBar =
-                (ColorRatingBar) promptsView.findViewById(R.id.rating_bar);
+                promptsView.findViewById(R.id.rating_bar);
 
         final AppCompatButton btn_submit =
-                (AppCompatButton) promptsView.findViewById(R.id.btn_submit);
+                promptsView.findViewById(R.id.btn_submit);
 
-        btn_submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Rate = (int) ratingBar.getRating();
-                alertDialog.dismiss();
-                if (AppUtils.isGpsEnabled(NewTaskDetailsActivity.this)) {
-                    saveTaskDetails();
-                }
+        btn_submit.setOnClickListener(v -> {
+            Rate = (int) ratingBar.getRating();
+            alertDialog.dismiss();
+            if (AppUtils.isGpsEnabled(NewTaskDetailsActivity.this)) {
+                saveTaskDetails();
             }
-
         });
 
         alertDialog.setIcon(R.mipmap.logo);

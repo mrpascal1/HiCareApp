@@ -8,23 +8,44 @@
         android:layout_height = "35dp"
         android:gravity="center">
 
-        <TextView
-            android:id="@+id/chemType"
+
+        <LinearLayout
+            android:id="@+id/lnrType"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:ellipsize="end"
+            android:layout_weight="1.1"
+            android:visibility="gone"
+            android:background="@drawable/chemical_cells"
             android:gravity="center"
-            android:background = "@drawable/chemical_cells"
-            android:padding="5dp"
-            android:singleLine="true"
-            android:textColor="@color/black" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/chemType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/serviceArea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:textSize="10sp"
+                android:singleLine="true"
+                 />
+
+
+        </LinearLayout>
 
         <TextView
             android:id = "@+id/chem_name"
             android:layout_width = "0dp"
             android:layout_height = "match_parent"
-            android:layout_weight = "2.5"
+            android:layout_weight = "1.7"
             android:background = "@drawable/chemical_cells"
             android:ellipsize = "end"
             android:padding = "5dp"
@@ -36,7 +57,7 @@
             android:id = "@+id/chem_consumption"
             android:layout_width = "0dp"
             android:layout_height = "match_parent"
-            android:layout_weight = "1.5"
+            android:layout_weight = "0.7"
             android:background = "@drawable/chemical_cells"
             android:ellipsize = "end"
             android:gravity="center"
@@ -63,7 +84,7 @@
             android:background = "@drawable/chemical_cells"
             android:ellipsize = "end"
             android:padding = "5dp"
-            android:layout_weight="1.1">
+            android:layout_weight="0.9">
             <EditText
                 android:id = "@+id/edt_actual"
                 android:layout_width = "match_parent"

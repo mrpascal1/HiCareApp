@@ -163,6 +163,10 @@ public class GeneralData implements RealmModel {
     @Expose
     private String ChequeImageUrl;
 
+    @SerializedName("ReferralDiscount")
+    @Expose
+    private String ReferralDiscount;
+
     @SerializedName("SchedulingStatusList")
     @Expose
     private RealmList<GeneralTaskStatus> SchedulingStatusModel = null;
@@ -226,6 +230,7 @@ public class GeneralData implements RealmModel {
         ChequeImageUrl = "NA";
         ActualCompletionDateTime = "NA";
         Restrict_Early_Completion = false;
+        ReferralDiscount = "0";
     }
 
     public String getOrderNumber() {
@@ -578,5 +583,13 @@ public class GeneralData implements RealmModel {
 
     public void setMSTList(RealmList<MSTTasks> MSTList) {
         this.MSTList = MSTList;
+    }
+
+    public String getReferralDiscount() {
+        return ReferralDiscount;
+    }
+
+    public void setReferralDiscount(String referralDiscount) {
+        ReferralDiscount = referralDiscount;
     }
 }

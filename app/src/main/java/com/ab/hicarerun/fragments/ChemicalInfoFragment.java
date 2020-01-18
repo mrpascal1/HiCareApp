@@ -110,23 +110,22 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentChemicalInfoBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_chemical_info, container, false);
-//        mProgressBar = new ProgressDialog(getActivity());
         return mFragmentChemicalInfoBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
-//        try {
-//            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
         mFragmentChemicalInfoBinding.recycleView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         mFragmentChemicalInfoBinding.recycleView.setLayoutManager(layoutManager);
         ViewCompat.setNestedScrollingEnabled(mFragmentChemicalInfoBinding.recycleView, false);
+        if (model.getCombinedTask()) {
+            mFragmentChemicalInfoBinding.txtType.setVisibility(View.VISIBLE);
+
+        } else {
+            mFragmentChemicalInfoBinding.txtType.setVisibility(View.GONE);
+        }
         mGeneralRealmData =
                 getRealm().where(GeneralData.class).findAll();
         mAdapter = new ChemicalRecycleAdapter(getActivity(), model.getCombinedTask(), (position, charSeq) -> {

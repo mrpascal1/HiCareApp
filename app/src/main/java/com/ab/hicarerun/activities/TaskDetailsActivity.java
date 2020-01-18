@@ -1,18 +1,13 @@
 package com.ab.hicarerun.activities;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -45,7 +39,6 @@ import com.ab.hicarerun.fragments.SignatureFragment;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentList;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralResponse;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;
@@ -67,7 +60,6 @@ import java.util.Random;
 
 import es.dmoral.toasty.Toasty;
 import hyogeun.github.com.colorratingbarlib.ColorRatingBar;
-import in.myinnos.androidscratchcard.ScratchCard;
 import io.realm.RealmResults;
 
 import static com.ab.hicarerun.BaseApplication.getRealm;
@@ -213,7 +205,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     }
 
     private void setViewPagerView() {
-        mAdapter = new TaskViewPagerAdapter(getSupportFragmentManager());
+        mAdapter = new TaskViewPagerAdapter(getSupportFragmentManager(), this);
         if (sta.equals("Dispatched") || sta.equals("Incomplete")) {
             mAdapter.addFragment(GeneralFragment.newInstance(model.getTaskId(), model.getStatus()), "General");
         } else {

@@ -34,103 +34,117 @@
                 android:layout_height="wrap_content"
                 >
 
+
                 <LinearLayout
-                    android:id="@+id/lnr_time"
+                    android:id="@+id/lnrHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginLeft="15dp"
+                    android:orientation="horizontal">
 
 
-                    <TextView
-                        android:id="@+id/txt_time"
+                    <LinearLayout
+                        android:id="@+id/lnr_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:lineSpacingMultiplier="1.2"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:text="@string/_11_00_am_12_00_pm"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textSize="15sp"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:ignore="MissingConstraints" />
-
-                </LinearLayout>
+                        app:layout_constraintLeft_toRightOf="@id/lnrMST"
+                        android:layout_marginLeft="3dp"
+                        app:layout_constraintTop_toTopOf="parent">
 
 
+                        <TextView
+                            android:id="@+id/txt_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:lineSpacingMultiplier="1.2"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="10dp"
+                            android:textColor="@color/colorPrimaryDark"
+                            android:textSize="15sp"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:ignore="MissingConstraints" />
 
-                <LinearLayout
-                    android:id="@+id/lnr_Map"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginTop="4dp"
-                    android:clickable="true"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:gravity="center"
-                    app:layout_constraintLeft_toRightOf="@id/lnr_time"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginStart="3dp">
+                    </LinearLayout>
 
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/img_tracklocation"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_compass" />
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/btnHelpline"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginLeft="3dp"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:layout_marginTop="4dp"
-                    android:clickable="true"
-                    android:gravity="center"
-                    app:layout_constraintLeft_toRightOf="@id/lnr_Map"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginStart="3dp">
-
-                    <ImageView
-                        android:id="@+id/helpline"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
+                    <LinearLayout
+                        android:id="@+id/lnr_Map"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginTop="4dp"
+                        android:clickable="true"
+                        android:background="?android:attr/selectableItemBackground"
                         android:gravity="center"
-                        app:srcCompat="@drawable/ic_helpcall" />
+                        app:layout_constraintLeft_toRightOf="@id/lnr_time"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_marginStart="3dp">
 
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/img_tracklocation"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_compass" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/btnHelpline"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="3dp"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:layout_marginTop="4dp"
+                        android:clickable="true"
+                        android:gravity="center"
+                        app:layout_constraintLeft_toRightOf="@id/lnr_Map"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_marginStart="3dp">
+
+                        <ImageView
+                            android:id="@+id/helpline"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:gravity="center"
+                            app:srcCompat="@drawable/ic_helpcall" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/img_warning"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginTop="4dp"
+                        android:clickable="true"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        app:layout_constraintLeft_toRightOf="@id/btnHelpline"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_marginStart="3dp"
+                        android:focusable="true">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/warning"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_running" />
+
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/img_warning"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginTop="4dp"
-                    android:clickable="true"
-                    android:gravity="center"
-                    android:visibility="gone"
-                    app:layout_constraintLeft_toRightOf="@id/btnHelpline"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginStart="3dp"
-                    android:focusable="true">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/warning"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_running" />
 
 
-                </LinearLayout>
+
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/lnrStatus"
@@ -154,7 +168,6 @@
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
                         android:textColor="@color/white"
-                        android:text="Completed"
                         android:textSize="11sp" />
 
                 </androidx.cardview.widget.CardView>
@@ -164,7 +177,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
-
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/lnrStatus"
                   >
@@ -175,7 +187,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:lineSpacingMultiplier="1.2"
-                        android:text="09 Jan, 2019"
                         android:layout_marginTop="2dp"
                         android:layout_marginRight="5dp"
                         android:textColor="@color/black"
@@ -192,14 +203,38 @@
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:layout_marginLeft="15dp"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/lnr_time">
+                    app:layout_constraintTop_toBottomOf="@id/lnrHeader">
+
+                    <LinearLayout
+                        android:id="@+id/lnrMST"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:visibility="gone"
+                        android:layout_marginRight="5dp"
+                        android:layout_gravity="center"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:gravity="center"
+                        >
+
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/imgMST"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_link" />
+
+
+                    </LinearLayout>
+
 
                     <TextView
                         android:id="@+id/txt_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
                         android:layout_marginTop="2dp"
                         android:inputType="textPersonName"
                         android:lineSpacingMultiplier="1.2"
@@ -214,423 +249,438 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/lnrDetail"
+                    android:id="@+id/lnrMain"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/lnrName">
 
 
                     <LinearLayout
-                        android:id="@+id/lnrTask"
+                        android:id="@+id/lnrDetail"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="5dp"
+                        >
+
 
                         <LinearLayout
-                            android:id="@+id/lnr_service"
+                            android:id="@+id/lnrTask"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginTop="8dp"
-
-                            >
-
-                            <TextView
-                                android:id="@+id/labelPlan"
-                                android:layout_width="130dp"
-                                android:layout_height="wrap_content"
-                                android:text="@string/service_plan"
-                                android:textSize="14sp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text=":"
-                                android:textSize="14sp" />
-
-                            <RelativeLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="right"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginRight="15dp"
-                                android:gravity="right">
-
-                                <TextView
-                                    android:id="@+id/txt_service"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="left"
-                                    android:text="fsv fwrfvrwvwrw fww wefw wfwe fefwe fwwefw fwef f"
-                                    android:textColor="@color/black"
-                                    android:textSize="14sp" />
-
-                            </RelativeLayout>
-
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/lnr_tag"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginTop="2dp"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/lnr_service">
-
-                            <TextView
-                                android:id="@+id/labelTag"
-                                android:layout_width="130dp"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:text="@string/tag"
-                                android:textSize="14sp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text=":"
-                                android:textSize="14sp" />
-
-                            <RelativeLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="right"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginRight="15dp"
-                                android:gravity="left">
-
-                                <TextView
-                                    android:id="@+id/txt_tag"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentRight="true"
-                                    android:text="1"
-                                    android:textColor="@color/black"
-                                    android:textSize="14sp" />
-                            </RelativeLayout>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/lnr_sequence"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginTop="2dp"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/lnr_tag">
-
-                            <TextView
-                                android:id="@+id/labelSequence"
-                                android:layout_width="130dp"
-                                android:layout_height="wrap_content"
-                                android:text="@string/sequence_no"
-                                android:textSize="14sp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text=":"
-                                android:textSize="14sp" />
-
-                            <RelativeLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="right"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginRight="15dp"
-                                android:gravity="left">
-
-                                <TextView
-                                    android:id="@+id/txt_sequence"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentRight="true"
-                                    android:text="wfrr"
-                                    android:textColor="@color/black"
-                                    android:textSize="14sp" />
-
-                            </RelativeLayout>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/lnr_type"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginTop="2dp"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/lnr_sequence">
-
-                            <TextView
-                                android:id="@+id/labelType"
-                                android:layout_width="130dp"
-                                android:layout_height="wrap_content"
-                                android:text="@string/type"
-                                android:textSize="14sp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text=":"
-                                android:textSize="14sp" />
-
-                            <RelativeLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="right"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginRight="15dp"
-                                android:gravity="left">
-
-                                <TextView
-                                    android:id="@+id/txt_type"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentRight="true"
-                                    android:textColor="@color/black"
-                                    android:textSize="14sp" />
-                            </RelativeLayout>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/lnr_address"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginTop="2dp"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/lnr_type">
-
-                            <TextView
-                                android:id="@+id/labelAddress"
-                                android:layout_width="130dp"
-                                android:layout_height="wrap_content"
-                                android:text="@string/address"
-                                android:textSize="14sp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text=":"
-                                android:textSize="14sp" />
-
-
-                            <RelativeLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="right"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginRight="15dp"
-                                android:gravity="left">
-
-                                <TextView
-                                    android:id="@+id/txt_address"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentRight="true"
-                                    android:textColor="@color/black"
-                                    android:textSize="14sp" />
-                            </RelativeLayout>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/lnr_landmark"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginTop="2dp"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/lnr_address">
-
-                            <TextView
-                                android:id="@+id/labelLandmark"
-                                android:layout_width="130dp"
-                                android:layout_height="wrap_content"
-                                android:text="@string/landmark"
-                                android:textSize="14sp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text=":"
-                                android:textSize="14sp" />
-
-                            <RelativeLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="right"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginRight="15dp"
-                                android:gravity="left">
-
-                                <TextView
-                                    android:id="@+id/txt_Landmark"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentRight="true"
-                                    android:textColor="@color/black"
-                                    android:textSize="14sp" />
-                            </RelativeLayout>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/lnr_postalcode"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginTop="2dp"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/lnr_landmark">
-
-                            <TextView
-                                android:id="@+id/labelPostal"
-                                android:layout_width="130dp"
-                                android:layout_height="match_parent"
-                                android:text="@string/postal_code"
-                                android:textSize="14sp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text=":"
-                                android:textSize="14sp" />
-
-                            <RelativeLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="right"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginRight="15dp"
-                                android:gravity="left">
-
-                                <TextView
-                                    android:id="@+id/txt_postcode"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentRight="true"
-                                    android:textColor="@color/black"
-                                    android:textSize="14sp" />
-                            </RelativeLayout>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/lnr_order"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginTop="2dp"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/lnr_postalcode">
-
-                            <TextView
-                                android:id="@+id/labelOrder"
-                                android:layout_width="130dp"
-                                android:layout_height="wrap_content"
-                                android:text="@string/order_no"
-                                android:textSize="14sp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text=":"
-                                android:textSize="14sp" />
-
-                            <RelativeLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="right"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginRight="15dp"
-                                android:gravity="left">
-
-                                <TextView
-                                    android:id="@+id/txt_orderno"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentRight="true"
-                                    android:textColor="@color/black"
-                                    android:textSize="14sp" />
-                            </RelativeLayout>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/lnr_amount"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginTop="2dp"
-                            android:orientation="horizontal"
-                            android:paddingBottom="5dp"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/lnr_order">
-
-                            <TextView
-                                android:id="@+id/labelAmount"
-                                android:layout_width="130dp"
-                                android:layout_height="wrap_content"
-                                android:text="@string/amount_to_collect"
-                                android:textSize="14sp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text=":"
-                                android:textSize="14sp" />
-
-                            <RelativeLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="right"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginRight="15dp"
-                                android:gravity="left">
-
-                                <TextView
-                                    android:id="@+id/txt_amount"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentRight="true"
-                                    android:textColor="@color/black"
-                                    android:textSize="14sp" />
-                            </RelativeLayout>
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
 
                             <LinearLayout
-                                android:id="@+id/lnr_timer"
+                                android:id="@+id/lnr_service"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginRight="10dp"
-                                android:orientation="horizontal"
-                                android:visibility="gone">
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginTop="8dp"
 
-                                <androidx.appcompat.widget.AppCompatTextView
-                                    android:id="@+id/txt_timer"
-                                    android:layout_width="match_parent"
+                                >
+
+                                <TextView
+                                    android:id="@+id/labelPlan"
+                                    android:layout_width="130dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/service_plan"
+                                    android:textSize="14sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=":"
+                                    android:textSize="14sp" />
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="right"
-                                    android:gravity="right"
-                                    android:text="@string/running_late"
-                                    android:textColor="@color/red"
-                                    android:textSize="16sp" />
+                                    android:layout_marginLeft="10dp"
+                                    android:layout_marginRight="15dp"
+                                    android:gravity="right">
 
+                                    <TextView
+                                        android:id="@+id/txt_service"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="left"
+                                        android:maxLines="2"
+                                        android:ellipsize="end"
+                                        android:textColor="@color/black"
+                                        android:textSize="14sp" />
+
+                                </RelativeLayout>
+
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/lnr_tag"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginTop="2dp"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/lnr_service">
+
+                                <TextView
+                                    android:id="@+id/labelTag"
+                                    android:layout_width="130dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentTop="true"
+                                    android:text="@string/tag"
+                                    android:textSize="14sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=":"
+                                    android:textSize="14sp" />
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:layout_marginLeft="10dp"
+                                    android:layout_marginRight="15dp"
+                                    android:gravity="left">
+
+                                    <TextView
+                                        android:id="@+id/txt_tag"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentRight="true"
+                                        android:textColor="@color/black"
+                                        android:textSize="14sp" />
+                                </RelativeLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/lnr_sequence"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginTop="2dp"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/lnr_tag">
+
+                                <TextView
+                                    android:id="@+id/labelSequence"
+                                    android:layout_width="130dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/sequence_no"
+                                    android:textSize="14sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=":"
+                                    android:textSize="14sp" />
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:layout_marginLeft="10dp"
+                                    android:layout_marginRight="15dp"
+                                    android:gravity="left">
+
+                                    <TextView
+                                        android:id="@+id/txt_sequence"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentRight="true"
+                                        android:textColor="@color/black"
+                                        android:textSize="14sp" />
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/lnr_type"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginTop="2dp"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/lnr_sequence">
+
+                                <TextView
+                                    android:id="@+id/labelType"
+                                    android:layout_width="130dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/type"
+                                    android:textSize="14sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=":"
+                                    android:textSize="14sp" />
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:layout_marginLeft="10dp"
+                                    android:layout_marginRight="15dp"
+                                    android:gravity="left">
+
+                                    <TextView
+                                        android:id="@+id/txt_type"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentRight="true"
+                                        android:lines="1"
+                                        android:ellipsize="end"
+                                        android:textColor="@color/black"
+                                        android:textSize="14sp" />
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/lnr_address"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginTop="2dp"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/lnr_type">
+
+                                <TextView
+                                    android:id="@+id/labelAddress"
+                                    android:layout_width="130dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/address"
+                                    android:textSize="14sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=":"
+                                    android:textSize="14sp" />
+
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:layout_marginLeft="10dp"
+                                    android:layout_marginRight="15dp"
+                                    android:gravity="left">
+
+                                    <TextView
+                                        android:id="@+id/txt_address"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentRight="true"
+                                        android:textColor="@color/black"
+                                        android:textSize="14sp" />
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/lnr_landmark"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginTop="2dp"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/lnr_address">
+
+                                <TextView
+                                    android:id="@+id/labelLandmark"
+                                    android:layout_width="130dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/landmark"
+                                    android:textSize="14sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=":"
+                                    android:textSize="14sp" />
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:layout_marginLeft="10dp"
+                                    android:layout_marginRight="15dp"
+                                    android:gravity="left">
+
+                                    <TextView
+                                        android:id="@+id/txt_Landmark"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentRight="true"
+                                        android:textColor="@color/black"
+                                        android:textSize="14sp" />
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/lnr_postalcode"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginTop="2dp"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/lnr_landmark">
+
+                                <TextView
+                                    android:id="@+id/labelPostal"
+                                    android:layout_width="130dp"
+                                    android:layout_height="match_parent"
+                                    android:text="@string/postal_code"
+                                    android:textSize="14sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=":"
+                                    android:textSize="14sp" />
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:layout_marginLeft="10dp"
+                                    android:layout_marginRight="15dp"
+                                    android:gravity="left">
+
+                                    <TextView
+                                        android:id="@+id/txt_postcode"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentRight="true"
+                                        android:textColor="@color/black"
+                                        android:textSize="14sp" />
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/lnr_order"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginTop="2dp"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/lnr_postalcode">
+
+                                <TextView
+                                    android:id="@+id/labelOrder"
+                                    android:layout_width="130dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/order_no"
+                                    android:textSize="14sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=":"
+                                    android:textSize="14sp" />
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:layout_marginLeft="10dp"
+                                    android:layout_marginRight="15dp"
+                                    android:gravity="left">
+
+                                    <TextView
+                                        android:id="@+id/txt_orderno"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:maxLines="2"
+                                        android:lines="1"
+                                        android:ellipsize="end"
+                                        android:layout_alignParentRight="true"
+                                        android:textColor="@color/black"
+                                        android:textSize="14sp" />
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/lnr_amount"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginTop="2dp"
+                                android:orientation="horizontal"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/lnr_order">
+
+                                <TextView
+                                    android:id="@+id/labelAmount"
+                                    android:layout_width="130dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/amount_to_collect"
+                                    android:textSize="14sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=":"
+                                    android:textSize="14sp" />
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:layout_marginLeft="10dp"
+                                    android:layout_marginRight="15dp"
+                                    android:gravity="left">
+
+                                    <TextView
+                                        android:id="@+id/txt_amount"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentRight="true"
+                                        android:textColor="@color/black"
+                                        android:textSize="14sp" />
+                                </RelativeLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/lnr_timer"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginRight="10dp"
+                                    android:orientation="horizontal"
+                                    android:visibility="gone">
+
+                                    <androidx.appcompat.widget.AppCompatTextView
+                                        android:id="@+id/txt_timer"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="right"
+                                        android:gravity="right"
+                                        android:text="@string/running_late"
+                                        android:textColor="@color/red"
+                                        android:textSize="16sp" />
+
+
+                                </LinearLayout>
 
                             </LinearLayout>
 
                         </LinearLayout>
 
+
                     </LinearLayout>
 
 
                 </LinearLayout>
+
 
                 <View
                     android:id="@+id/view"
@@ -640,7 +690,7 @@
                     android:layerType="software"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/lnrDetail" />
+                    app:layout_constraintTop_toBottomOf="@id/lnrMain" />
 
 
                 <LinearLayout

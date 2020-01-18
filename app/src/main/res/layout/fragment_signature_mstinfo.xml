@@ -252,12 +252,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
-                    android:background="@color/white"
-                    android:visibility="gone"
                     android:layout_margin="5dp"
+                    android:background="@color/white"
                     android:freezesText="true"
                     android:onClick="@{(view) -> handler.onSignatureClicked(view)}"
-                    android:orientation="vertical"/>
+                    android:orientation="vertical"
+                    android:visibility="gone" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtHint"
@@ -305,8 +305,8 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="36dp"
                         android:gravity="center_vertical"
-                        android:visibility="gone"
-                        android:onClick="@{(view) -> handler.onUploadAttachmentClicked(view)}">
+                        android:onClick="@{(view) -> handler.onUploadAttachmentClicked(view)}"
+                        android:visibility="gone">
 
                         <ImageView
                             android:layout_width="22dp"
@@ -322,6 +322,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
                     android:background="@color/black" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -330,32 +331,19 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="15dp">
 
-                        <!--<ExpandableListView-->
-                            <!--android:id="@+id/expandableListView"-->
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="match_parent"-->
-                            <!--android:dividerHeight="0dp"-->
-                            <!--android:transcriptMode="alwaysScroll"-->
-                            <!--android:nestedScrollingEnabled="true"-->
-                            <!--android:childDivider="@color/transparent"-->
-                            <!--tools:listitem="@layout/layout_jobcard_header"-->
-                            <!--android:indicatorRight="?android:attr/expandableListPreferredItemIndicatorRight"-->
-                            <!--android:groupIndicator="@null"-->
-                            <!--android:divider="@null"/>-->
 
                         <com.ab.hicarerun.utils.NoScrollExListView
                             android:id="@+id/expandableListView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:divider="@null"
-                            android:paddingRight="15dp"
-                            android:paddingLeft="15dp"
                             android:groupIndicator="@null"
-                            tools:listitem="@layout/layout_jobcard_header">
-                        </com.ab.hicarerun.utils.NoScrollExListView>
-
+                            android:paddingLeft="15dp"
+                            android:paddingRight="15dp"
+                            tools:listitem="@layout/layout_jobcard_header"/>
 
 
                         <androidx.appcompat.widget.AppCompatTextView

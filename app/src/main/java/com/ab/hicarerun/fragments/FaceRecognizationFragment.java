@@ -27,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.databinding.DataBindingUtil;
 
 import com.ab.hicarerun.BaseApplication;
@@ -114,7 +115,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
         surfaceHolder.addCallback(this);
         if (isAttendance) {
             mFragmentFaceRecognizationBinding.txtReason.setText("Please upload your photo to mark attendance.");
-            Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+            CardView toolbar = getActivity().findViewById(R.id.toolbar);
             toolbar.setVisibility(View.GONE);
         } else {
             if ((VerifyOtpActivity) getActivity() != null) {
@@ -221,11 +222,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
         if (camera != null) {
             try {
                 setUpCamera(camera);
-                camera.setErrorCallback(new Camera.ErrorCallback() {
-
-                    @Override
-                    public void onError(int error, Camera camera) {
-                    }
+                camera.setErrorCallback((error, camera) -> {
                 });
                 surfceTexture = new SurfaceTexture(MODE_PRIVATE);
                 camera.setPreviewTexture(surfceTexture);
@@ -348,8 +345,9 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                                             if (response.getSuccess()) {
                                                 getAttendanceDetails();
                                                 Toasty.success(getActivity(), "Attendance marked successfully.", Toast.LENGTH_SHORT).show();
-                                                replaceFragment(HomeFragment.newInstance(), "FaceRecognizationFragment-HomeFragment");
-//                                                startActivity(new Intent(getActivity(), WelcomeVideoActivity.class));
+//                                                replaceFragment(HomeFragment.newInstance(bitUser), "FaceRecognizationFragment-HomeFragment");
+
+                                                startActivity(new Intent(getActivity(), HomeActivity.class));
 //                                                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                                             } else {
                                                 getErrorDialog("Attendance Failed", response.getErrorMessage());
@@ -383,12 +381,12 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                                             HandShakeResponse response = (HandShakeResponse) data;
                                             if (response.getSuccess()) {
 //                                                AppUtils.getHandShakeCall(username, getActivity());
-                                                if(SharedPreferencesUtility.getPrefBoolean(getActivity(),SharedPreferencesUtility.IS_SKIP_VIDEO)){
+                                                if (SharedPreferencesUtility.getPrefBoolean(getActivity(), SharedPreferencesUtility.IS_SKIP_VIDEO)) {
                                                     AppUtils.getHandShakeCall(username, getActivity());
-                                                }else {
-                                                    if(uri.length()>0){
+                                                } else {
+                                                    if (uri.length() > 0) {
                                                         startActivity(new Intent(getActivity(), StartVideoActivity.class));
-                                                    }else {
+                                                    } else {
                                                         AppUtils.getHandShakeCall(username, getActivity());
                                                     }
                                                 }
@@ -438,12 +436,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
         alertDialogBuilder.setView(promptsView);
         final AlertDialog alertDialog = alertDialogBuilder.create();
         LinearLayout btnOk = promptsView.findViewById(R.id.lnrOk);
-        btnOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-            }
-        });
+        btnOk.setOnClickListener(view -> alertDialog.dismiss());
         alertDialog.setCancelable(false);
         alertDialog.show();
 

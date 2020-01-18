@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,12 +28,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
-import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
@@ -42,7 +42,6 @@ import com.ab.hicarerun.activities.NewTaskDetailsActivity;
 import com.ab.hicarerun.adapter.TaskListAdapter;
 import com.ab.hicarerun.databinding.FragmentHomeBinding;
 import com.ab.hicarerun.handler.OnCallListItemClickHandler;
-import com.ab.hicarerun.handler.OnListItemClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
@@ -59,7 +58,6 @@ import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.List;
-import java.util.UUID;
 
 import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
@@ -87,16 +85,28 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     List<Tasks> items = null;
     RealmResults<LoginResponse> LoginRealmModels = null;
     private boolean isParam = false;
+    private byte[] bitUser = null;
+    private static final String ARG_USER = "ARG_USER";
+    AlertDialog alertDialog = null;
 
     public HomeFragment() {
         // Required empty public constructor
     }
 
-    public static HomeFragment newInstance() {
+    public static HomeFragment newInstance(byte[] bitUser) {
         Bundle args = new Bundle();
+        args.putByteArray(ARG_USER, bitUser);
         HomeFragment fragment = new HomeFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            bitUser = getArguments().getByteArray(ARG_USER);
+        }
     }
 
     @Override
@@ -107,8 +117,8 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
 //        getActivity().setTitle("Home");
         navigationView = getActivity().findViewById(R.id.navigation_view);
-//        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-//        toolbar.setVisibility(View.VISIBLE);
+        CardView toolbar = getActivity().findViewById(R.id.toolbar);
+        toolbar.setVisibility(View.VISIBLE);
         activityName = getActivity().getClass().getSimpleName();
         apply();
 
@@ -221,6 +231,9 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
         } else {
             mFragmentHomeBinding.swipeRefreshLayout.setRefreshing(false);
+            if (items != null) {
+                items.clear();
+            }
             items = data.getData();
             if (items != null) {
                 if (pageNumber == 1 && items.size() > 0) {
@@ -252,6 +265,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
                     Intent intent = new Intent(getActivity(), NewTaskDetailsActivity.class);
                     intent.putExtra(NewTaskDetailsActivity.ARGS_TASKS, items.get(position));
+                    intent.putExtra(NewTaskDetailsActivity.ARG_USER, bitUser);
                     startActivity(intent);
 //                        getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 
@@ -265,107 +279,120 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
 
     private void getAttendanceDialog() {
-        LayoutInflater li = LayoutInflater.from(getActivity());
+        try {
+            if (alertDialog != null) {
+                alertDialog.dismiss();
+            }
 
-        View promptsView = li.inflate(R.layout.dialog_mark_attendance, null);
+            LayoutInflater li = LayoutInflater.from(getActivity());
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+            View promptsView = li.inflate(R.layout.dialog_mark_attendance, null);
 
-        alertDialogBuilder.setView(promptsView);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
 
-        alertDialogBuilder.setTitle("Mark Attendance");
+            alertDialogBuilder.setView(promptsView);
 
-        // create alert dialog
-        final AlertDialog alertDialog = alertDialogBuilder.create();
-        final AppCompatTextView txt_head =
-                (AppCompatTextView) promptsView.findViewById(R.id.txt_head);
-        final AppCompatButton btn_send =
-                (AppCompatButton) promptsView.findViewById(R.id.btn_send);
-        final AppCompatButton btnSkip =
-                (AppCompatButton) promptsView.findViewById(R.id.btn_skip);
+            alertDialogBuilder.setTitle("Mark Attendance");
 
-        if (isParam) {
-            btnSkip.setVisibility(View.VISIBLE);
-        } else {
-            btnSkip.setVisibility(View.GONE);
-        }
+            // create alert dialog
+            alertDialog = alertDialogBuilder.create();
+            final AppCompatTextView txt_head =
+                    (AppCompatTextView) promptsView.findViewById(R.id.txt_head);
+            final AppCompatButton btn_send =
+                    (AppCompatButton) promptsView.findViewById(R.id.btn_send);
+            final AppCompatButton btnSkip =
+                    (AppCompatButton) promptsView.findViewById(R.id.btn_skip);
 
-        txt_head.setText("Welcome " + UserName + ", please mark your attendance with the face recognization.");
+            if (isParam) {
+                btnSkip.setVisibility(View.VISIBLE);
+            } else {
+                btnSkip.setVisibility(View.GONE);
+            }
 
-        btn_send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            txt_head.setText("Welcome " + UserName + ", please mark your attendance with the face recognization.");
+
+            btn_send.setOnClickListener(v -> {
                 alertDialog.dismiss();
                 replaceFragment(FaceRecognizationFragment.newInstance(true, "", ""), "HomeFragment-FaceRecognizationFragment");
-            }
+            });
 
 
-        });
-
-
-        btnSkip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-                isSkip = true;
-                try {
-                    if ((HomeActivity) getActivity() != null) {
-                        RealmResults<LoginResponse> LoginRealmModels =
-                                BaseApplication.getRealm().where(LoginResponse.class).findAll();
-                        if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-                            String BatteryStatistics = String.valueOf(AppUtils.getMyBatteryLevel(getActivity()));
-                            AttendanceRequest request = AppUtils.getDeviceInfo(getActivity(), "", BatteryStatistics, true);
-                            NetworkCallController controller = new NetworkCallController(HomeFragment.this);
-                            controller.setListner(new NetworkResponseListner() {
-                                @Override
-                                public void onResponse(int requestCode, Object data) {
-                                    ContinueHandShakeResponse response = (ContinueHandShakeResponse) data;
-                                    if (response.getSuccess()) {
-                                        Toasty.success(getActivity(), "Attendance marked successfully.", Toasty.LENGTH_SHORT).show();
+            btnSkip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                    isSkip = true;
+                    try {
+                        if ((HomeActivity) getActivity() != null) {
+                            RealmResults<LoginResponse> LoginRealmModels =
+                                    BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                            if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                                String BatteryStatistics = String.valueOf(AppUtils.getMyBatteryLevel(getActivity()));
+                                AttendanceRequest request = AppUtils.getDeviceInfo(getActivity(), "", BatteryStatistics, true);
+                                NetworkCallController controller = new NetworkCallController(HomeFragment.this);
+                                controller.setListner(new NetworkResponseListner() {
+                                    @Override
+                                    public void onResponse(int requestCode, Object data) {
+                                        ContinueHandShakeResponse response = (ContinueHandShakeResponse) data;
+                                        if (response.getSuccess()) {
+                                            Toasty.success(getActivity(), "Attendance marked successfully.", Toasty.LENGTH_SHORT).show();
 //                                        startActivity(new Intent(getActivity(), WelcomeVideoActivity.class));
 //                                        getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                                        replaceFragment(HomeFragment.newInstance(), "HomeFragment-HomeFragment");
+//                                        replaceFragment(HomeFragment.newInstance(bitUser), "HomeFragment-HomeFragment");
+                                            alertDialog.dismiss();
 //                                        getAttendanceDialog();
-                                    } else {
-                                        Toast.makeText(getActivity(), "Attendance Failed, please try again.", Toast.LENGTH_SHORT).show();
-                                        getAttendanceDialog();
-                                        getAllTasks();
+                                        } else {
+                                            Toast.makeText(getActivity(), "Attendance Failed, please try again.", Toast.LENGTH_SHORT).show();
+//                                            getAttendanceDialog();
+                                            getAllTasks();
+                                        }
                                     }
-                                }
 
-                                @Override
-                                public void onFailure(int requestCode) {
+                                    @Override
+                                    public void onFailure(int requestCode) {
 
-                                }
-                            });
-                            controller.getTechAttendance(CAM_REQUEST, request);
+                                    }
+                                });
+                                controller.getTechAttendance(CAM_REQUEST, request);
 
+                            }
+                        }
+                    } catch (Exception e) {
+                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                            AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getAttendanceDialog", lineNo, userName, DeviceName);
                         }
                     }
-                } catch (Exception e) {
-                    RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
-                    if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
-                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
-                        AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getAttendanceDialog", lineNo, userName, DeviceName);
-                    }
+                    getAllTasks();
                 }
+            });
+            alertDialog.setIcon(R.mipmap.logo);
+            alertDialog.setCancelable(false);
+            alertDialog.show();
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-                getAllTasks();
-            }
-        });
-        alertDialog.setIcon(R.mipmap.logo);
-        alertDialog.setCancelable(false);
-        alertDialog.show();
     }
+
 
 
     @Override
     public void onFailure(int requestCode) {
         mFragmentHomeBinding.swipeRefreshLayout.setRefreshing(false);
         mFragmentHomeBinding.emptyTask.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (alertDialog != null){
+            alertDialog.dismiss();
+        }
     }
 
     @Override
