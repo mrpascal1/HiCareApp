@@ -23,7 +23,6 @@ import com.ab.hicarerun.viewmodel.AttachmentListViewModel;
 import com.ab.hicarerun.viewmodel.TaskViewModel;
 import com.bumptech.glide.Glide;
 
-import net.igenius.customcheckbox.CustomCheckBox;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -82,58 +81,58 @@ public class AttachmentListAdapter extends RecyclerView.Adapter<AttachmentListAd
 
         holder.mAttachmentListAdapterBinding.txtName.setText(model.getFileName());
 
-        if (model.getVisible()) {
-            holder.mAttachmentListAdapterBinding.lnrSelect.setVisibility(View.VISIBLE);
-        } else {
-            holder.mAttachmentListAdapterBinding.lnrSelect.setVisibility(View.GONE);
-        }
+//        if (model.getVisible()) {
+//            holder.mAttachmentListAdapterBinding.lnrSelect.setVisibility(View.VISIBLE);
+//        } else {
+//            holder.mAttachmentListAdapterBinding.lnrSelect.setVisibility(View.GONE);
+//        }
 
 
-        imgSelect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (holder.mAttachmentListAdapterBinding.lnrSelect.getVisibility() == View.VISIBLE) {
-                    for (int i = 0; i < items.size(); i++) {
-                        items.get(i).setVisible(false);
-                        imgSelect.setImageResource(R.drawable.ic_deselect);
-                        holder.mAttachmentListAdapterBinding.checkAttach.setChecked(false);
-                    }
-                    notifyDataSetChanged();
+//        imgSelect.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (holder.mAttachmentListAdapterBinding.lnrSelect.getVisibility() == View.VISIBLE) {
+//                    for (int i = 0; i < items.size(); i++) {
+//                        items.get(i).setVisible(false);
+//                        imgSelect.setImageResource(R.drawable.ic_deselect);
+//                        holder.mAttachmentListAdapterBinding.checkAttach.setChecked(false);
+//                    }
+//                    notifyDataSetChanged();
+//
+//                } else {
+//                    for (int i = 0; i < items.size(); i++) {
+//                        items.get(i).setVisible(true);
+//                        imgSelect.setImageResource(R.drawable.ic_general);
+//
+//                    }
+//                    notifyDataSetChanged();
+//                }
+//            }
+//        });
 
-                } else {
-                    for (int i = 0; i < items.size(); i++) {
-                        items.get(i).setVisible(true);
-                        imgSelect.setImageResource(R.drawable.ic_general);
-
-                    }
-                    notifyDataSetChanged();
-                }
-            }
-        });
-
-        holder.mAttachmentListAdapterBinding.checkAttach.setOnCheckedChangeListener(new CustomCheckBox.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CustomCheckBox checkBox, boolean isChecked) {
-                model.setChecked(isChecked);
-
-                int count = 0;
-
-                for (int i = 0; i < items.size(); i++) {
-                    if (getItem(i).getChecked()) {
-                        count++;
-                        txtDelcount.setVisibility(View.GONE);
-                        txtDelcount.setText("(" + count + ")");
-                    } else if (count == 0) {
-                        txtDelcount.setVisibility(View.GONE);
-                    } else {
-                        count--;
-                    }
-
-                }
-
-
-            }
-        });
+//        holder.mAttachmentListAdapterBinding.checkAttach.setOnCheckedChangeListener(new CustomCheckBox.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CustomCheckBox checkBox, boolean isChecked) {
+//                model.setChecked(isChecked);
+//
+//                int count = 0;
+//
+//                for (int i = 0; i < items.size(); i++) {
+//                    if (getItem(i).getChecked()) {
+//                        count++;
+//                        txtDelcount.setVisibility(View.GONE);
+//                        txtDelcount.setText("(" + count + ")");
+//                    } else if (count == 0) {
+//                        txtDelcount.setVisibility(View.GONE);
+//                    } else {
+//                        count--;
+//                    }
+//
+//                }
+//
+//
+//            }
+//        });
 
 
     }

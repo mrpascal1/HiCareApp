@@ -8,6 +8,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,18 +19,24 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
@@ -51,6 +61,7 @@ import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyRequest;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyResponse;
 import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonsList;
 import com.ab.hicarerun.network.models.LoginResponse;
+import com.ab.hicarerun.network.models.ProfileModel.Profile;
 import com.ab.hicarerun.network.models.TaskModel.TaskListResponse;
 import com.ab.hicarerun.network.models.TaskModel.Tasks;
 import com.ab.hicarerun.utils.AppUtils;
@@ -74,6 +85,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     private static final int CAM_REQUEST = 4000;
     private static final int JEOPARDY_REQUEST = 5000;
     private static final int CWF_REQUEST = 6000;
+    private static final int TECH_REQ = 7000;
     private boolean isBack = false;
     private boolean isSkip = false;
     private Integer pageNumber = 1;
@@ -251,7 +263,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 mFragmentHomeBinding.emptyTask.setVisibility(View.VISIBLE);
             }
 
-
             mAdapter.setOnItemClickHandler(position -> {
                 if (items.get(position).getDetailVisible()) {
                     try {
@@ -259,16 +270,10 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-//                        Intent intent = new Intent(getActivity(), TaskDetailsActivity.class);
-//                        intent.putExtra(TaskDetailsActivity.ARGS_TASKS, items.get(position));
-//                        startActivity(intent);
-
                     Intent intent = new Intent(getActivity(), NewTaskDetailsActivity.class);
                     intent.putExtra(NewTaskDetailsActivity.ARGS_TASKS, items.get(position));
                     intent.putExtra(NewTaskDetailsActivity.ARG_USER, bitUser);
                     startActivity(intent);
-//                        getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-
 
                 } else {
                     Toasty.info(getActivity(), "Please complete your previous job first.", Toasty.LENGTH_SHORT).show();
@@ -336,14 +341,9 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                         ContinueHandShakeResponse response = (ContinueHandShakeResponse) data;
                                         if (response.getSuccess()) {
                                             Toasty.success(getActivity(), "Attendance marked successfully.", Toasty.LENGTH_SHORT).show();
-//                                        startActivity(new Intent(getActivity(), WelcomeVideoActivity.class));
-//                                        getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-//                                        replaceFragment(HomeFragment.newInstance(bitUser), "HomeFragment-HomeFragment");
                                             alertDialog.dismiss();
-//                                        getAttendanceDialog();
                                         } else {
                                             Toast.makeText(getActivity(), "Attendance Failed, please try again.", Toast.LENGTH_SHORT).show();
-//                                            getAttendanceDialog();
                                             getAllTasks();
                                         }
                                     }
@@ -380,7 +380,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     }
 
 
-
     @Override
     public void onFailure(int requestCode) {
         mFragmentHomeBinding.swipeRefreshLayout.setRefreshing(false);
@@ -390,7 +389,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (alertDialog != null){
+        if (alertDialog != null) {
             alertDialog.dismiss();
         }
     }
@@ -435,7 +434,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
             });
         }
     }
-
 
     @Override
     public void onAlternateMobileClicked(int position) {
@@ -582,31 +580,22 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
                         builder.setView(v);
                         builder.setCancelable(false);
-                        builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                RadioButton radioButton = (RadioButton) v.findViewById(radioGroup.getCheckedRadioButtonId());
-                                if (radioGroup.getCheckedRadioButtonId() == -1) {
-                                    Toast.makeText(getActivity(), "Please select at least one reason...", Toast.LENGTH_SHORT).show();
-                                    builder.setCancelable(false);
-                                } else {
-                                    if (items != null) {
-                                        Log.i("taskId", items.get(position).getTaskId());
-                                        techHelpline(items.get(position).getTaskId(), "Technician Helpline", "Technician_HelpLine"
-                                                , radioButton.getText().toString());
-                                    }
-                                    dialogInterface.dismiss();
+                        builder.setPositiveButton("Submit", (dialogInterface, i) -> {
+                            RadioButton radioButton = (RadioButton) v.findViewById(radioGroup.getCheckedRadioButtonId());
+                            if (radioGroup.getCheckedRadioButtonId() == -1) {
+                                Toast.makeText(getActivity(), "Please select at least one reason...", Toast.LENGTH_SHORT).show();
+                                builder.setCancelable(false);
+                            } else {
+                                if (items != null) {
+                                    Log.i("taskId", items.get(position).getTaskId());
+                                    techHelpline(items.get(position).getTaskId(), "Technician Helpline", "Technician_HelpLine"
+                                            , radioButton.getText().toString());
                                 }
+                                dialogInterface.dismiss();
                             }
                         });
 
-                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-
-                            }
-                        });
+                        builder.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
                         final AlertDialog dialog = builder.create();
                         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation_2;
 
@@ -629,6 +618,82 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
             Toasty.info(getActivity(), "Please complete your previous job first.", Toasty.LENGTH_SHORT).show();
         }
 
+    }
+
+    @Override
+    public void onResourcePartnerPic(int position) {
+        try {
+            NetworkCallController controller = new NetworkCallController(this);
+            controller.setListner(new NetworkResponseListner() {
+                @Override
+                public void onResponse(int requestCode, Object data) {
+                    Profile response = (Profile) data;
+                    showPartnerId(response);
+                }
+
+                @Override
+                public void onFailure(int requestCode) {
+                }
+            });
+            controller.getTechnicianProfile(TECH_REQ, items.get(position).getHelper_Resource_Id());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showPartnerId(Profile response) {
+        LayoutInflater li = LayoutInflater.from(getActivity());
+        View promptsView = li.inflate(R.layout.layout_partner_dialog, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        alertDialogBuilder.setView(promptsView);
+        final AlertDialog alertDialog = alertDialogBuilder.create();
+        final ImageView imgTech =
+                promptsView.findViewById(R.id.imgPartner);
+        final TextView txtTechName =
+                promptsView.findViewById(R.id.txtTechName);
+        final TextView txtCode =
+                promptsView.findViewById(R.id.txtCode);
+        final LinearLayout lnrCode =
+                promptsView.findViewById(R.id.lnr_added);
+        final LinearLayout lnrView =
+                promptsView.findViewById(R.id.lnrView);
+        final LinearLayout callTech =
+                promptsView.findViewById(R.id.callTech);
+        txtTechName.setText(response.getFirstName());
+        txtTechName.setTypeface(txtTechName.getTypeface(), Typeface.BOLD);
+        if (response.getEmployeeCode() != null) {
+            lnrCode.setVisibility(View.VISIBLE);
+            txtCode.setText(response.getEmployeeCode());
+        } else {
+            lnrCode.setVisibility(View.GONE);
+        }
+        if (response.getProfilePic() != null) {
+            String base64 = response.getProfilePic();
+            byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            if (base64.length() > 0) {
+                if (decodedByte != null) {
+                    imgTech.setImageBitmap(decodedByte);
+                }
+            }
+        }
+
+        if (!response.getMobile().equals("") && response.getMobile() != null) {
+            callTech.setVisibility(View.VISIBLE);
+        } else {
+            callTech.setVisibility(View.GONE);
+        }
+        callTech.setOnClickListener(view -> {
+            alertDialog.dismiss();
+            Intent callIntent = new Intent(Intent.ACTION_DIAL);
+            callIntent.setData(Uri.parse("tel:" + response.getMobile()));
+            startActivity(callIntent);
+        });
+
+        lnrView.setOnClickListener(view -> alertDialog.dismiss());
+
+        alertDialog.show();
+        alertDialog.setIcon(R.mipmap.logo);
     }
 
     private void techHelpline(String taskId, String jeopardyText, String batchName, String remark) {
@@ -659,7 +724,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
     @Override
     public void onItemClick(int positon) {
-
     }
 
     private void getExotelCalled(String customerNumber, String techNumber) {

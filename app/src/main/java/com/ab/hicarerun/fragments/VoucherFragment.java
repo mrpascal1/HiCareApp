@@ -89,57 +89,43 @@ public class VoucherFragment extends BaseFragment implements UserVoucherClickHan
     }
 
     private void getVoucherCode() {
-        if ((VoucherActivity) getActivity() != null) {
-            RealmResults<LoginResponse> LoginRealmModels =
-                    BaseApplication.getRealm().where(LoginResponse.class).findAll();
-            if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-                String userId = LoginRealmModels.get(0).getUserID();
-                NetworkCallController controller = new NetworkCallController(this);
-                controller.setListner(new NetworkResponseListner() {
-                    @Override
-                    public void onResponse(int requestCode, Object data) {
-                        VoucherResponse response = (VoucherResponse) data;
-                        Picasso.get().load(response.getImageUrl()).into(mFragmentVoucherBinding.banner);
+        try {
+            if ((VoucherActivity) getActivity() != null) {
+                RealmResults<LoginResponse> LoginRealmModels =
+                        BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                    String userId = LoginRealmModels.get(0).getUserID();
+                    NetworkCallController controller = new NetworkCallController(this);
+                    controller.setListner(new NetworkResponseListner() {
+                        @Override
+                        public void onResponse(int requestCode, Object data) {
+                            VoucherResponse response = (VoucherResponse) data;
+                            Picasso.get().load(response.getImageUrl()).into(mFragmentVoucherBinding.banner);
 
 //                        Hey! Let your home become Pest Free like mine! Use my referral code [CODE] to get 10%+10% off on all services from HiCare!
-                        String ReferText = "Hey! Let your home become Pest Free like mine! Use my referral code "+"_*" + response.getReferralCode()
-                                + "*_" + " to get 10%+10% off on all services from HiCare! Call us at 8828333888 or visit https://hicare.in/";
-                        shareText = String.valueOf(Html.fromHtml(ReferText));
-                        imgBanner = Uri.parse(response.getImageUrl());
-                        mFragmentVoucherBinding.txtTitle.setText(response.getTitle());
-                        mFragmentVoucherBinding.txtDescription.setText(response.getDescription());
-                        mFragmentVoucherBinding.txtTitle.setTypeface(Typeface.DEFAULT_BOLD, Typeface.NORMAL);
-                        mFragmentVoucherBinding.voucherCode.setTypeface(Typeface.DEFAULT_BOLD, Typeface.NORMAL);
-                        mFragmentVoucherBinding.voucherCode.setText(response.getReferralCode());
-                    }
+                            String ReferText = "Hey! Let your home become Pest Free like mine! Use my referral code "+"_*" + response.getReferralCode()
+                                    + "*_" + " to get 10%+10% off on all services from HiCare! Call us at 8828333888 or visit https://hicare.in/";
+                            shareText = String.valueOf(Html.fromHtml(ReferText));
+                            imgBanner = Uri.parse(response.getImageUrl());
+                            mFragmentVoucherBinding.txtTitle.setText(response.getTitle());
+                            mFragmentVoucherBinding.txtDescription.setText(response.getDescription());
+                            mFragmentVoucherBinding.txtTitle.setTypeface(Typeface.DEFAULT_BOLD, Typeface.NORMAL);
+                            mFragmentVoucherBinding.voucherCode.setTypeface(Typeface.DEFAULT_BOLD, Typeface.NORMAL);
+                            mFragmentVoucherBinding.voucherCode.setText(response.getReferralCode());
+                        }
 
-                    @Override
-                    public void onFailure(int requestCode) {
+                        @Override
+                        public void onFailure(int requestCode) {
 
-                    }
-                });
-                controller.getVoucherCode(VOUCHER_REQUEST, userId);
+                        }
+                    });
+                    controller.getVoucherCode(VOUCHER_REQUEST, userId);
+                }
             }
-        }
-    }
 
-    private Uri getLocalBitmapUri(Bitmap bmp) {
-        Uri bmpUri = null;
-        File file = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "share_image_" + System.currentTimeMillis() + ".png");
-        FileOutputStream out = null;
-        try {
-            out = new FileOutputStream(file);
-            bmp.compress(Bitmap.CompressFormat.PNG, 90, out);
-            try {
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            bmpUri = Uri.fromFile(file);
-        } catch (FileNotFoundException e) {
+        }catch (Exception e){
             e.printStackTrace();
         }
-        return bmpUri;
     }
 
     @Override

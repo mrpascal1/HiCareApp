@@ -13,7 +13,6 @@ import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -25,20 +24,15 @@ import androidx.databinding.DataBindingUtil;
 
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.activities.VerifyOtpActivity;
-import com.ab.hicarerun.adapter.MainSliderAdapter;
 import com.ab.hicarerun.databinding.FragmentOtpLoginBinding;
 import com.ab.hicarerun.handler.UserOtpLoginClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.network.models.OtpModel.OtpData;
 import com.ab.hicarerun.network.models.OtpModel.SendOtpResponse;
 import com.ab.hicarerun.network.models.UpdateAppModel.UpdateData;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.DownloadApk;
-import com.ab.hicarerun.viewmodel.UserLoginViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 public class OTP_LoginFragment extends BaseFragment implements UserOtpLoginClickHandler {
@@ -69,7 +63,7 @@ public class OTP_LoginFragment extends BaseFragment implements UserOtpLoginClick
                 DataBindingUtil.inflate(inflater, R.layout.fragment_otp_login, container, false);
         mBottomSheetBehaviour = BottomSheetBehavior.from(mFragmentOtpLoginBinding.nestedScrollView);
         mFragmentOtpLoginBinding.setHandler(this);
-        mFragmentOtpLoginBinding.bannerSlider.setAdapter(new MainSliderAdapter());
+//        mFragmentOtpLoginBinding.bannerSlider.setAdapter(new MainSliderAdapter());
         mFragmentOtpLoginBinding.edtMobile.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -108,7 +102,6 @@ public class OTP_LoginFragment extends BaseFragment implements UserOtpLoginClick
                 Version = data.getVersion();
                 Apk_URL = data.getApkurl();
                 Apk_Type = data.getApktype();
-//                checkCurrentVersion(data.getApkurl(), data.getVersion(), data.getApktype());
             }
 
             @Override

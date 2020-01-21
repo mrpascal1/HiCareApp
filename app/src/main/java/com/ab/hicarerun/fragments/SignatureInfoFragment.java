@@ -237,22 +237,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
                 final int position = viewHolder.getAdapterPosition();
-                final AttachmentListViewModel item = mAdapter.getItem(position);
-//                mAdapter.removeItem(position);
                 getJobCardDeleted(position);
-//                Snackbar snackbar = Snackbar
-//                        .make(mFragmentSignatureInfoBinding.idScroll, "Item was removed from the list.", Snackbar.LENGTH_LONG);
-//
-//                snackbar.setAction("UNDO", new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        mAdapter.restoreItem(item, position);
-//                        mFragmentSignatureInfoBinding.recycleView.scrollToPosition(position);
-//                    }
-//                });
-//
-//                snackbar.setActionTextColor(Color.YELLOW);
-//                snackbar.show();
             }
         };
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeToDeleteCallback);
@@ -391,79 +376,64 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
     }
 
     private void getSignatureDialog() {
-        if (mFragmentSignatureInfoBinding.imgSign.getDrawable() == null) {
-            LayoutInflater li = LayoutInflater.from(getActivity());
-            View promptsView = li.inflate(R.layout.signature_dialog, null);
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-            alertDialogBuilder.setView(promptsView);
-            //            final Dialog dialog = new Dialog(getActivity(), android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
-//            Window window = dialog.getWindow();
-//            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-//            window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-//            window.setBackgroundDrawableResource(R.color.darkblack);
-//            dialog.setContentView(promptsView);
-//            dialog.setCancelable(false);
-//            dialog.show();
-            final AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialogBuilder.setTitle("Signature");
-            final RelativeLayout lnr_screen =
-                    promptsView.findViewById(R.id.lnr_screen);
-            final AppCompatImageView img_right =
-                    promptsView.findViewById(R.id.img_right);
-            final AppCompatImageView img_wrong =
-                    promptsView.findViewById(R.id.img_wrong);
-            final AppCompatButton btn_close =
-                    promptsView.findViewById(R.id.btn_close);
-            final AppCompatTextView txt_hint =
-                    promptsView.findViewById(R.id.txt_hint);
-            img_right.setEnabled(false);
-            dv = new DrawingView(getActivity(), txt_hint, img_right);
-            lnr_screen.addView(dv);
-
-//            int width = ViewGroup.LayoutParams.MATCH_PARENT;
-//            int height = ViewGroup.LayoutParams.MATCH_PARENT;
-//            alertDialog.getWindow().setLayout(width, height);
-//            alertDialog.getWindow().setGravity(Gravity.CENTER);
-
-            img_right.setOnClickListener(v -> {
-                View view = lnr_screen;
-                view.setDrawingCacheEnabled(true);
-                bmp = Bitmap.createBitmap(view.getDrawingCache());
-                view.setDrawingCacheEnabled(false);
-                onCallBack(bmp);
-                alertDialog.dismiss();
-
-            });
-
-            img_wrong.setOnClickListener(v -> {
-                lnr_screen.removeAllViews();
+        try {
+            if (mFragmentSignatureInfoBinding.imgSign.getDrawable() == null) {
+                LayoutInflater li = LayoutInflater.from(getActivity());
+                View promptsView = li.inflate(R.layout.signature_dialog, null);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                alertDialogBuilder.setView(promptsView);
+                final AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialogBuilder.setTitle("Signature");
+                final RelativeLayout lnr_screen =
+                        promptsView.findViewById(R.id.lnr_screen);
+                final AppCompatImageView img_right =
+                        promptsView.findViewById(R.id.img_right);
+                final AppCompatImageView img_wrong =
+                        promptsView.findViewById(R.id.img_wrong);
+                final AppCompatButton btn_close =
+                        promptsView.findViewById(R.id.btn_close);
+                final AppCompatTextView txt_hint =
+                        promptsView.findViewById(R.id.txt_hint);
+                img_right.setEnabled(false);
                 dv = new DrawingView(getActivity(), txt_hint, img_right);
-                mPaint = new Paint();
-                mPaint.setAntiAlias(true);
-                mPaint.setDither(true);
-                mPaint.setColor(Color.BLACK);
-                mPaint.setStyle(Paint.Style.STROKE);
-                mPaint.setStrokeJoin(Paint.Join.ROUND);
-                mPaint.setStrokeCap(Paint.Cap.ROUND);
-                mPaint.setStrokeWidth(8);
                 lnr_screen.addView(dv);
-                txt_hint.setVisibility(View.VISIBLE);
-                getValidate();
-            });
+                img_right.setOnClickListener(v -> {
+                    View view = lnr_screen;
+                    view.setDrawingCacheEnabled(true);
+                    bmp = Bitmap.createBitmap(view.getDrawingCache());
+                    view.setDrawingCacheEnabled(false);
+                    onCallBack(bmp);
+                    alertDialog.dismiss();
 
-            btn_close.setOnClickListener(v -> {
-                alertDialog.dismiss();
-                getValidate();
+                });
 
-            });
-            alertDialog.show();
-            alertDialog.setIcon(R.mipmap.logo);
-//            Window window = alertDialog.getWindow();
-//            WindowManager.LayoutParams wlp = window.getAttributes();
-//            wlp.gravity = Gravity.CENTER;
-//            wlp.flags &= ~WindowManager.LayoutParams.FLAG_BLUR_BEHIND;
-//            window.setAttributes(wlp);
-//            alertDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+                img_wrong.setOnClickListener(v -> {
+                    lnr_screen.removeAllViews();
+                    dv = new DrawingView(getActivity(), txt_hint, img_right);
+                    mPaint = new Paint();
+                    mPaint.setAntiAlias(true);
+                    mPaint.setDither(true);
+                    mPaint.setColor(Color.BLACK);
+                    mPaint.setStyle(Paint.Style.STROKE);
+                    mPaint.setStrokeJoin(Paint.Join.ROUND);
+                    mPaint.setStrokeCap(Paint.Cap.ROUND);
+                    mPaint.setStrokeWidth(8);
+                    lnr_screen.addView(dv);
+                    txt_hint.setVisibility(View.VISIBLE);
+                    getValidate();
+                });
+
+                btn_close.setOnClickListener(v -> {
+                    alertDialog.dismiss();
+                    getValidate();
+
+                });
+                alertDialog.show();
+                alertDialog.setIcon(R.mipmap.logo);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -483,100 +453,117 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
     }
 
     private void sendFeedbackLink() {
-        if (isFeedBack && status.equals("On-Site") && mGeneralRealmData.get(0).getRestrict_Early_Completion()) {
-            NetworkCallController controller = new NetworkCallController(this);
-            controller.setListner(new NetworkResponseListner() {
-                @Override
-                public void onResponse(int requestCode, Object data) {
-                    BasicResponse response = (BasicResponse) data;
-                    if (response.getSuccess()) {
-                        sendFeedback();
-                    } else {
-                        Toasty.error(getActivity(),
-                                "You are not allowed to send feedback link as you have not spent adequate time. Please follow the correct procedure and deliver the job properly",
-                                Toasty.LENGTH_LONG).show();
-                        getValidate();
+        try {
+            if (isFeedBack && status.equals("On-Site") && mGeneralRealmData.get(0).getRestrict_Early_Completion()) {
+                NetworkCallController controller = new NetworkCallController(this);
+                controller.setListner(new NetworkResponseListner() {
+                    @Override
+                    public void onResponse(int requestCode, Object data) {
+                        BasicResponse response = (BasicResponse) data;
+                        if (response.getSuccess()) {
+                            sendFeedback();
+                        } else {
+                            Toasty.error(getActivity(),
+                                    "You are not allowed to send feedback link as you have not spent adequate time. Please follow the correct procedure and deliver the job properly",
+                                    Toasty.LENGTH_LONG).show();
+                            getValidate();
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(int requestCode) {
-                }
-            });
-            controller.getValidateCompletionTime(COMPLETION_REQUEST, mGeneralRealmData.get(0).getActualCompletionDateTime(), model.getTaskId());
-        } else {
-            sendFeedback();
-            getValidate();
+                    @Override
+                    public void onFailure(int requestCode) {
+                    }
+                });
+                controller.getValidateCompletionTime(COMPLETION_REQUEST, mGeneralRealmData.get(0).getActualCompletionDateTime(), model.getTaskId());
+            } else {
+                sendFeedback();
+                getValidate();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     public void sendFeedback() {
-        LayoutInflater li = LayoutInflater.from(getActivity());
-        View promptsView = li.inflate(R.layout.link_confirm_dialog, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-        alertDialogBuilder.setView(promptsView);
-        alertDialogBuilder.setTitle("Feedback Link");
-        final AlertDialog alertDialog = alertDialogBuilder.create();
-        final AppCompatEditText edtmobile =
-                promptsView.findViewById(R.id.edtmobile);
-        final AppCompatEditText edtemail =
-                promptsView.findViewById(R.id.edtemail);
-        final AppCompatButton btn_send =
-                promptsView.findViewById(R.id.btn_send);
-        final AppCompatButton btn_cancel =
-                promptsView.findViewById(R.id.btn_cancel);
-        edtemail.setEnabled(false);
-        edtmobile.setEnabled(false);
-        edtemail.setText(Email);
-        edtmobile.setText(mask);
-        btn_send.setOnClickListener(v -> {
 
-            String customer_otp = mGeneralRealmData.get(0).getCustomer_OTP();
-            FeedbackRequest request = new FeedbackRequest();
-            request.setName(name);
-            request.setTask_id(model.getTaskId());
-            request.setFeedback_code(customer_otp);
-            request.setOrder_number(Order_Number);
-            request.setService_name(Service_Name);
-            NetworkCallController controller = new NetworkCallController(SignatureInfoFragment.this);
-            controller.setListner(new NetworkResponseListner() {
-                @Override
-                public void onResponse(int requestCode, Object response) {
-                    FeedbackResponse refResponse = (FeedbackResponse) response;
-                    if (refResponse.getSuccess()) {
-                        Toasty.success(getActivity(), "Feedback link sent successfully.", Toasty.LENGTH_LONG).show();
-                        getValidate();
+        try {
+            LayoutInflater li = LayoutInflater.from(getActivity());
+            View promptsView = li.inflate(R.layout.link_confirm_dialog, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+            alertDialogBuilder.setView(promptsView);
+            alertDialogBuilder.setTitle("Feedback Link");
+            final AlertDialog alertDialog = alertDialogBuilder.create();
+            final AppCompatEditText edtmobile =
+                    promptsView.findViewById(R.id.edtmobile);
+            final AppCompatEditText edtemail =
+                    promptsView.findViewById(R.id.edtemail);
+            final AppCompatButton btn_send =
+                    promptsView.findViewById(R.id.btn_send);
+            final AppCompatButton btn_cancel =
+                    promptsView.findViewById(R.id.btn_cancel);
+            edtemail.setEnabled(false);
+            edtmobile.setEnabled(false);
+            edtemail.setText(Email);
+            edtmobile.setText(mask);
+            btn_send.setOnClickListener(v -> {
+
+                String customer_otp = mGeneralRealmData.get(0).getCustomer_OTP();
+                FeedbackRequest request = new FeedbackRequest();
+                request.setName(name);
+                request.setTask_id(model.getTaskId());
+                request.setFeedback_code(customer_otp);
+                request.setOrder_number(Order_Number);
+                request.setService_name(Service_Name);
+                NetworkCallController controller = new NetworkCallController(SignatureInfoFragment.this);
+                controller.setListner(new NetworkResponseListner() {
+                    @Override
+                    public void onResponse(int requestCode, Object response) {
+                        FeedbackResponse refResponse = (FeedbackResponse) response;
+                        if (refResponse.getSuccess()) {
+                            Toasty.success(getActivity(), "Feedback link sent successfully.", Toasty.LENGTH_LONG).show();
+                            getValidate();
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(int requestCode) {
+                    @Override
+                    public void onFailure(int requestCode) {
 
-                }
+                    }
+                });
+                controller.postFeedbackLink(POST_FEEDBACK_LINK, request);
+
+                alertDialog.dismiss();
             });
-            controller.postFeedbackLink(POST_FEEDBACK_LINK, request);
+            btn_cancel.setOnClickListener(v -> alertDialog.dismiss());
+            alertDialog.setIcon(R.mipmap.logo);
+            alertDialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            alertDialog.dismiss();
-        });
-        btn_cancel.setOnClickListener(v -> alertDialog.dismiss());
-        alertDialog.setIcon(R.mipmap.logo);
-        alertDialog.show();
     }
 
     private void onCallBack(Bitmap bmp) {
-        if (bmp != null) {
-            mFragmentSignatureInfoBinding.txtHint.setVisibility(GONE);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            byte[] b = baos.toByteArray();
-            String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-            signature = encodedImage;
-            mCallback.signature(encodedImage);
-            mCallback.signatory(mFragmentSignatureInfoBinding.edtSignatory.getText().toString());
-            mFragmentSignatureInfoBinding.imgSign.setImageBitmap(bmp);
-            mFragmentSignatureInfoBinding.imgSign.setVisibility(View.VISIBLE);
-            getValidate();
+
+        try {
+            if (bmp != null) {
+                mFragmentSignatureInfoBinding.txtHint.setVisibility(GONE);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                byte[] b = baos.toByteArray();
+                String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+                signature = encodedImage;
+                mCallback.signature(encodedImage);
+                mCallback.signatory(mFragmentSignatureInfoBinding.edtSignatory.getText().toString());
+                mFragmentSignatureInfoBinding.imgSign.setImageBitmap(bmp);
+                mFragmentSignatureInfoBinding.imgSign.setVisibility(View.VISIBLE);
+                getValidate();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
     @Override
@@ -620,19 +607,14 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                                             PostAttachmentResponse postResponse = (PostAttachmentResponse) response;
                                             if (postResponse.getSuccess()) {
                                                 Toasty.success(getActivity(), "Job card uploaded successfully.", Toast.LENGTH_LONG).show();
-//                                                    isAttachment = true;
-//                                                    mCallback.isJobCardEnable(false);
                                                 getAttachmentList();
                                             } else {
-//                                                    isAttachment = false;
                                                 Toast.makeText(getActivity(), "Posting Failed.", Toast.LENGTH_LONG).show();
-//                                                    mCallback.isJobCardEnable(true);
                                             }
                                         }
 
                                         @Override
                                         public void onFailure(int requestCode) {
-//                                                mCallback.isJobCardEnable(true);
                                         }
                                     });
 
@@ -643,7 +625,6 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     }).show(getActivity());
 
                 } else {
-//                    mCallback.isJobCardEnable(false);
                     Toast.makeText(getActivity(), "Disable", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -730,7 +711,6 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     mFragmentSignatureInfoBinding.lnrAdd.setVisibility(View.VISIBLE);
                 }
                 if (status.equals("Completed") || status.equals("Incomplete")) {
-//                mCallback.isFeedbackRequired(false);
                     mFragmentSignatureInfoBinding.txtFeedback.setEnabled(false);
                     mFragmentSignatureInfoBinding.btnSendlink.setVisibility(View.GONE);
                 } else {
@@ -774,17 +754,6 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     mCallback.isSignatureValidated(false);
                 }
             }
-//            if (isJobcardEnable) {
-//                if (isAttachment) {
-//                    mCallback.isJobCardEnable(false);
-//                    SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_ATTACHMENT, false);
-//                } else {
-//                    mCallback.isJobCardEnable(true);
-//                }
-//            } else {
-//                mCallback.isJobCardEnable(false);
-//                SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_ATTACHMENT, false);
-//            }
         } catch (Exception e) {
             e.printStackTrace();
         }

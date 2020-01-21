@@ -21,7 +21,6 @@ import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.viewmodel.AttachmentListViewModel;
 import com.bumptech.glide.Glide;
 
-import net.igenius.customcheckbox.CustomCheckBox;
 
 import java.text.ParseException;
 import java.util.ArrayList;

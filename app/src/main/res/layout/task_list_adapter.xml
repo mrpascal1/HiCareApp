@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:clickable="true"
     android:focusable="true">
+
     <data>
 
         <import type="android.view.View" />
@@ -14,16 +15,15 @@
         android:id="@+id/constraint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        >
+        android:background="?android:attr/selectableItemBackground">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardTasks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardUseCompatPadding="true"
-            app:cardMaxElevation="4dp"
             app:cardElevation="2dp"
+            app:cardMaxElevation="4dp"
+            app:cardUseCompatPadding="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -31,26 +31,25 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+                android:layout_height="wrap_content">
 
 
                 <LinearLayout
                     android:id="@+id/lnrHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
                     android:layout_marginLeft="15dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
 
                     <LinearLayout
                         android:id="@+id/lnr_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintLeft_toRightOf="@id/lnrMST"
                         android:layout_marginLeft="3dp"
+                        app:layout_constraintLeft_toRightOf="@id/lnrMST"
                         app:layout_constraintTop_toTopOf="parent">
 
 
@@ -73,14 +72,14 @@
                         android:id="@+id/lnr_Map"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
+                        android:layout_marginStart="3dp"
                         android:layout_marginLeft="3dp"
                         android:layout_marginTop="4dp"
-                        android:clickable="true"
                         android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
                         android:gravity="center"
                         app:layout_constraintLeft_toRightOf="@id/lnr_time"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginStart="3dp">
+                        app:layout_constraintTop_toTopOf="parent">
 
 
                         <androidx.appcompat.widget.AppCompatImageView
@@ -97,14 +96,14 @@
                         android:id="@+id/btnHelpline"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
+                        android:layout_marginStart="3dp"
                         android:layout_marginLeft="3dp"
-                        android:background="?android:attr/selectableItemBackground"
                         android:layout_marginTop="4dp"
+                        android:background="?android:attr/selectableItemBackground"
                         android:clickable="true"
                         android:gravity="center"
                         app:layout_constraintLeft_toRightOf="@id/lnr_Map"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginStart="3dp">
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <ImageView
                             android:id="@+id/helpline"
@@ -120,15 +119,15 @@
                         android:id="@+id/img_warning"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
+                        android:layout_marginStart="3dp"
                         android:layout_marginLeft="3dp"
                         android:layout_marginTop="4dp"
                         android:clickable="true"
+                        android:focusable="true"
                         android:gravity="center"
                         android:visibility="gone"
                         app:layout_constraintLeft_toRightOf="@id/btnHelpline"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginStart="3dp"
-                        android:focusable="true">
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/warning"
@@ -143,30 +142,27 @@
                 </LinearLayout>
 
 
-
-
-
                 <androidx.cardview.widget.CardView
                     android:id="@+id/lnrStatus"
                     android:layout_width="80dp"
                     android:layout_height="24dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="5dp"
-                    app:cardUseCompatPadding="true"
-                    app:cardElevation="2dp"
-                    app:layout_constraintRight_toRightOf="parent"
                     app:cardBackgroundColor="@color/colorPrimaryDark"
                     app:cardCornerRadius="4dp"
+                    app:cardElevation="2dp"
+                    app:cardUseCompatPadding="true"
+                    app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
                         android:id="@+id/status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
                         android:layout_gravity="center"
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
+                        android:gravity="center"
                         android:textColor="@color/white"
                         android:textSize="11sp" />
 
@@ -178,17 +174,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/lnrStatus"
-                  >
+                    app:layout_constraintTop_toBottomOf="@id/lnrStatus">
 
 
                     <TextView
                         android:id="@+id/txtDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:lineSpacingMultiplier="1.2"
                         android:layout_marginTop="2dp"
                         android:layout_marginRight="5dp"
+                        android:lineSpacingMultiplier="1.2"
                         android:textColor="@color/black"
                         android:textSize="12sp"
                         app:layout_constraintLeft_toLeftOf="parent"
@@ -202,8 +197,8 @@
                     android:id="@+id/lnrName"
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginLeft="15dp"
+                    android:orientation="horizontal"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/lnrHeader">
 
@@ -211,13 +206,12 @@
                         android:id="@+id/lnrMST"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:visibility="gone"
-                        android:layout_marginRight="5dp"
                         android:layout_gravity="center"
+                        android:layout_marginRight="5dp"
                         android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
                         android:gravity="center"
-                        >
+                        android:visibility="gone">
 
 
                         <androidx.appcompat.widget.AppCompatImageView
@@ -260,9 +254,8 @@
                         android:id="@+id/lnrDetail"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal"
                         android:layout_marginBottom="5dp"
-                        >
+                        android:orientation="horizontal">
 
 
                         <LinearLayout
@@ -305,9 +298,9 @@
                                         android:id="@+id/txt_service"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
+                                        android:ellipsize="end"
                                         android:gravity="left"
                                         android:maxLines="2"
-                                        android:ellipsize="end"
                                         android:textColor="@color/black"
                                         android:textSize="14sp" />
 
@@ -434,8 +427,8 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_alignParentRight="true"
-                                        android:lines="1"
                                         android:ellipsize="end"
+                                        android:lines="1"
                                         android:textColor="@color/black"
                                         android:textSize="14sp" />
                                 </RelativeLayout>
@@ -485,193 +478,242 @@
                             </LinearLayout>
 
                             <LinearLayout
-                                android:id="@+id/lnr_landmark"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
-                                android:layout_marginTop="2dp"
-                                app:layout_constraintLeft_toLeftOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/lnr_address">
-
-                                <TextView
-                                    android:id="@+id/labelLandmark"
-                                    android:layout_width="130dp"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/landmark"
-                                    android:textSize="14sp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text=":"
-                                    android:textSize="14sp" />
-
-                                <RelativeLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="right"
-                                    android:layout_marginLeft="10dp"
-                                    android:layout_marginRight="15dp"
-                                    android:gravity="left">
-
-                                    <TextView
-                                        android:id="@+id/txt_Landmark"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_alignParentRight="true"
-                                        android:textColor="@color/black"
-                                        android:textSize="14sp" />
-                                </RelativeLayout>
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/lnr_postalcode"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
-                                android:layout_marginTop="2dp"
-                                app:layout_constraintLeft_toLeftOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/lnr_landmark">
-
-                                <TextView
-                                    android:id="@+id/labelPostal"
-                                    android:layout_width="130dp"
-                                    android:layout_height="match_parent"
-                                    android:text="@string/postal_code"
-                                    android:textSize="14sp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text=":"
-                                    android:textSize="14sp" />
-
-                                <RelativeLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="right"
-                                    android:layout_marginLeft="10dp"
-                                    android:layout_marginRight="15dp"
-                                    android:gravity="left">
-
-                                    <TextView
-                                        android:id="@+id/txt_postcode"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_alignParentRight="true"
-                                        android:textColor="@color/black"
-                                        android:textSize="14sp" />
-                                </RelativeLayout>
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/lnr_order"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
-                                android:layout_marginTop="2dp"
-                                app:layout_constraintLeft_toLeftOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/lnr_postalcode">
-
-                                <TextView
-                                    android:id="@+id/labelOrder"
-                                    android:layout_width="130dp"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/order_no"
-                                    android:textSize="14sp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text=":"
-                                    android:textSize="14sp" />
-
-                                <RelativeLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="right"
-                                    android:layout_marginLeft="10dp"
-                                    android:layout_marginRight="15dp"
-                                    android:gravity="left">
-
-                                    <TextView
-                                        android:id="@+id/txt_orderno"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:maxLines="2"
-                                        android:lines="1"
-                                        android:ellipsize="end"
-                                        android:layout_alignParentRight="true"
-                                        android:textColor="@color/black"
-                                        android:textSize="14sp" />
-                                </RelativeLayout>
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/lnr_amount"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
-                                android:layout_marginTop="2dp"
-                                android:orientation="horizontal"
-                                app:layout_constraintLeft_toLeftOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/lnr_order">
-
-                                <TextView
-                                    android:id="@+id/labelAmount"
-                                    android:layout_width="130dp"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/amount_to_collect"
-                                    android:textSize="14sp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text=":"
-                                    android:textSize="14sp" />
-
-                                <RelativeLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="right"
-                                    android:layout_marginLeft="10dp"
-                                    android:layout_marginRight="15dp"
-                                    android:gravity="left">
-
-                                    <TextView
-                                        android:id="@+id/txt_amount"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_alignParentRight="true"
-                                        android:textColor="@color/black"
-                                        android:textSize="14sp" />
-                                </RelativeLayout>
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal">
 
                                 <LinearLayout
-                                    android:id="@+id/lnr_timer"
-                                    android:layout_width="match_parent"
+                                    android:layout_width="0dp"
                                     android:layout_height="match_parent"
-                                    android:layout_marginRight="10dp"
-                                    android:orientation="horizontal"
-                                    android:visibility="gone">
+                                    android:layout_weight="2.5"
+                                    android:orientation="vertical">
 
-                                    <androidx.appcompat.widget.AppCompatTextView
-                                        android:id="@+id/txt_timer"
+                                    <LinearLayout
+                                        android:id="@+id/lnr_landmark"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:layout_gravity="right"
-                                        android:gravity="right"
-                                        android:text="@string/running_late"
-                                        android:textColor="@color/red"
-                                        android:textSize="16sp" />
+                                        android:layout_marginLeft="15dp"
+                                        android:layout_marginTop="2dp"
+                                        app:layout_constraintLeft_toLeftOf="parent"
+                                        app:layout_constraintTop_toBottomOf="@id/lnr_address">
 
+                                        <TextView
+                                            android:id="@+id/labelLandmark"
+                                            android:layout_width="130dp"
+                                            android:layout_height="wrap_content"
+                                            android:text="@string/landmark"
+                                            android:textSize="14sp" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text=":"
+                                            android:textSize="14sp" />
+
+                                        <RelativeLayout
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="right"
+                                            android:layout_marginLeft="10dp"
+                                            android:layout_marginRight="15dp"
+                                            android:gravity="left">
+
+                                            <TextView
+                                                android:id="@+id/txt_Landmark"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_alignParentRight="true"
+                                                android:textColor="@color/black"
+                                                android:textSize="14sp" />
+                                        </RelativeLayout>
+
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:id="@+id/lnr_postalcode"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="15dp"
+                                        android:layout_marginTop="2dp"
+                                        app:layout_constraintLeft_toLeftOf="parent"
+                                        app:layout_constraintTop_toBottomOf="@id/lnr_landmark">
+
+                                        <TextView
+                                            android:id="@+id/labelPostal"
+                                            android:layout_width="130dp"
+                                            android:layout_height="match_parent"
+                                            android:text="@string/postal_code"
+                                            android:textSize="14sp" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text=":"
+                                            android:textSize="14sp" />
+
+                                        <RelativeLayout
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="right"
+                                            android:layout_marginLeft="10dp"
+                                            android:layout_marginRight="15dp"
+                                            android:gravity="left">
+
+                                            <TextView
+                                                android:id="@+id/txt_postcode"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_alignParentRight="true"
+                                                android:textColor="@color/black"
+                                                android:textSize="14sp" />
+                                        </RelativeLayout>
+
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:id="@+id/lnr_order"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="15dp"
+                                        android:layout_marginTop="2dp"
+                                        app:layout_constraintLeft_toLeftOf="parent"
+                                        app:layout_constraintTop_toBottomOf="@id/lnr_postalcode">
+
+                                        <TextView
+                                            android:id="@+id/labelOrder"
+                                            android:layout_width="130dp"
+                                            android:layout_height="wrap_content"
+                                            android:text="@string/order_no"
+                                            android:textSize="14sp" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text=":"
+                                            android:textSize="14sp" />
+
+                                        <RelativeLayout
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="right"
+                                            android:layout_marginLeft="10dp"
+                                            android:layout_marginRight="15dp"
+                                            android:gravity="left">
+
+                                            <TextView
+                                                android:id="@+id/txt_orderno"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_alignParentRight="true"
+                                                android:ellipsize="end"
+                                                android:lines="1"
+                                                android:maxLines="2"
+                                                android:textColor="@color/black"
+                                                android:textSize="14sp" />
+                                        </RelativeLayout>
+
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:id="@+id/lnr_amount"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="15dp"
+                                        android:layout_marginTop="2dp"
+                                        android:orientation="horizontal"
+                                        app:layout_constraintLeft_toLeftOf="parent"
+                                        app:layout_constraintTop_toBottomOf="@id/lnr_order">
+
+                                        <TextView
+                                            android:id="@+id/labelAmount"
+                                            android:layout_width="130dp"
+                                            android:layout_height="wrap_content"
+                                            android:text="@string/amount_to_collect"
+                                            android:textSize="14sp" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text=":"
+                                            android:textSize="14sp" />
+
+                                        <RelativeLayout
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="right"
+                                            android:layout_marginLeft="10dp"
+                                            android:layout_marginRight="15dp"
+                                            android:gravity="left">
+
+                                            <TextView
+                                                android:id="@+id/txt_amount"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_alignParentRight="true"
+                                                android:textColor="@color/black"
+                                                android:textSize="14sp" />
+                                        </RelativeLayout>
+
+                                        <LinearLayout
+                                            android:id="@+id/lnr_timer"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_marginRight="10dp"
+                                            android:orientation="horizontal"
+                                            android:visibility="gone">
+
+                                            <androidx.appcompat.widget.AppCompatTextView
+                                                android:id="@+id/txt_timer"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content"
+                                                android:layout_gravity="right"
+                                                android:gravity="right"
+                                                android:text="@string/running_late"
+                                                android:textColor="@color/red"
+                                                android:textSize="16sp" />
+
+
+                                        </LinearLayout>
+
+                                    </LinearLayout>
 
                                 </LinearLayout>
 
+                                <LinearLayout
+                                    android:id="@+id/lnrPartnerPic"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="0.8"
+                                    android:layout_gravity="right"
+                                    android:gravity="right|bottom"
+                                    android:orientation="vertical"
+                                    android:visibility="gone">
+
+                                    <de.hdodenhof.circleimageview.CircleImageView
+                                        android:id="@+id/imgPartner"
+                                        android:layout_width="45dp"
+                                        android:layout_height="45dp"
+                                        android:elevation="4dp"
+                                        android:layout_gravity="center"
+                                        android:layout_margin="2dp"
+                                        android:src="@drawable/ic_profile"
+                                        app:civ_border_color="@color/smoke_gray"
+                                        app:civ_border_width="0.001dp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Service Partner"
+                                        android:textSize="10sp"
+                                        android:layout_marginTop="1dp"
+                                        android:layout_gravity="center"
+                                        android:textColor="@color/black"/>
+
+                                </LinearLayout>
+
+
                             </LinearLayout>
+
 
                         </LinearLayout>
 
@@ -743,8 +785,8 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:clickable="true"
                         android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
                         android:gravity="center"
                         android:orientation="horizontal">
 
@@ -774,8 +816,8 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:clickable="true"
                         android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
                         android:gravity="center"
                         android:orientation="horizontal">
 

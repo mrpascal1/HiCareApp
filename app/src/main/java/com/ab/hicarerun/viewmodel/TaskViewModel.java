@@ -46,6 +46,7 @@ public class TaskViewModel implements Parcelable {
     private Boolean IsCombineTask;
     private String CombineTaskType;
     private String CombineOrderNumber;
+    private String HelperResourceId;
 
     public TaskViewModel() {
         AccountName = "NA";
@@ -132,6 +133,7 @@ public class TaskViewModel implements Parcelable {
         IsCombineTask = tmpIsCombineTask == 0 ? null : tmpIsCombineTask == 1;
         CombineTaskType = in.readString();
         CombineOrderNumber = in.readString();
+        HelperResourceId = in.readString();
     }
 
     public static final Creator<TaskViewModel> CREATOR = new Creator<TaskViewModel>() {
@@ -458,6 +460,14 @@ public class TaskViewModel implements Parcelable {
         CombineOrderNumber = combineOrderNumber;
     }
 
+    public String getHelperResourceId() {
+        return HelperResourceId;
+    }
+
+    public void setHelperResourceId(String helperResourceId) {
+        HelperResourceId = helperResourceId;
+    }
+
     public void clone(Tasks tasks) {
         this.AccountName = tasks.getAccountName();
         this.BuildingName = tasks.getBuildingName();
@@ -496,10 +506,10 @@ public class TaskViewModel implements Parcelable {
         this.IsDetailVisible = tasks.getDetailVisible();
         this.AccountType = tasks.getAccountType();
         this.IsCombineTask = tasks.getCombinedTask();
-        this.CombineTaskType =  tasks.getCombinedServiceType();
-        this.CombineOrderNumber= tasks.getCombinedOrderNumber();
+        this.CombineTaskType = tasks.getCombinedServiceType();
+        this.CombineOrderNumber = tasks.getCombinedOrderNumber();
+        this.HelperResourceId = tasks.getHelper_Resource_Id();
     }
-
 
     @Override
     public int describeContents() {
@@ -547,6 +557,7 @@ public class TaskViewModel implements Parcelable {
         parcel.writeByte((byte) (IsCombineTask == null ? 0 : IsCombineTask ? 1 : 2));
         parcel.writeString(CombineTaskType);
         parcel.writeString(CombineOrderNumber);
+        parcel.writeString(HelperResourceId);
     }
 }
 

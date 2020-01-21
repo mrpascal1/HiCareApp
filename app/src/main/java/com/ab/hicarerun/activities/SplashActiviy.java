@@ -73,57 +73,53 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
 
     void splashScreen() {
         try {
-            new Handler().postDelayed(new Runnable() {
-
-                @Override
-                public void run() {
-                    locationManager =
-                            (android.location.LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-                    if (locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
-                            && locationManager.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER)) {
-                        if (SharedPreferencesUtility.getPrefBoolean(SplashActiviy.this, SharedPreferencesUtility.IS_USER_LOGIN)) {
-                            if (SharedPreferencesUtility.getPrefString(SplashActiviy.this, SharedPreferencesUtility.PREF_LOGOUT) != null) {
-                                String PreviousLoginDate = SharedPreferencesUtility.getPrefString(SplashActiviy.this, SharedPreferencesUtility.PREF_LOGOUT);
-                                String ComparePreviousLogin = AppUtils.compareLoginDates(PreviousLoginDate, AppUtils.currentDate());
-                                Log.i("LoginDates", AppUtils.compareLoginDates(PreviousLoginDate, AppUtils.currentDate()));
-                                Log.i("CurrentDate", AppUtils.currentDate());
-                                if (ComparePreviousLogin.equals("equal")) {
-                                    startActivity(new Intent(SplashActiviy.this, HomeActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+            new Handler().postDelayed(() -> {
+                locationManager =
+                        (android.location.LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+                if (locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
+                        && locationManager.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER)) {
+                    if (SharedPreferencesUtility.getPrefBoolean(SplashActiviy.this, SharedPreferencesUtility.IS_USER_LOGIN)) {
+                        if (SharedPreferencesUtility.getPrefString(SplashActiviy.this, SharedPreferencesUtility.PREF_LOGOUT) != null) {
+                            String PreviousLoginDate = SharedPreferencesUtility.getPrefString(SplashActiviy.this, SharedPreferencesUtility.PREF_LOGOUT);
+                            String ComparePreviousLogin = AppUtils.compareLoginDates(PreviousLoginDate, AppUtils.currentDate());
+                            Log.i("LoginDates", AppUtils.compareLoginDates(PreviousLoginDate, AppUtils.currentDate()));
+                            Log.i("CurrentDate", AppUtils.currentDate());
+                            if (ComparePreviousLogin.equals("equal")) {
+                                startActivity(new Intent(SplashActiviy.this, HomeActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
 //                                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                                    finish();
-                                } else {
-                                    Intent myIntent = new Intent(SplashActiviy.this, HandShakeReceiver.class);
-                                    pendingIntent = PendingIntent.getActivity(getApplicationContext(),
-                                            0, myIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-                                    mAlarmManager.cancel(pendingIntent);
-                                    getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
-                                    startActivity(new Intent(SplashActiviy.this, LoginActivity.class));
-//                                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                                    finish();
-                                }
+                                finish();
                             } else {
                                 Intent myIntent = new Intent(SplashActiviy.this, HandShakeReceiver.class);
                                 pendingIntent = PendingIntent.getActivity(getApplicationContext(),
                                         0, myIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-                                pendingIntent.cancel();
                                 mAlarmManager.cancel(pendingIntent);
-                                getApplicationContext().stopService(new Intent(SplashActiviy.this, ServiceLocationSend.class));
+                                getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
                                 startActivity(new Intent(SplashActiviy.this, LoginActivity.class));
-//                                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+//                                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                                 finish();
                             }
                         } else {
+                            Intent myIntent = new Intent(SplashActiviy.this, HandShakeReceiver.class);
+                            pendingIntent = PendingIntent.getActivity(getApplicationContext(),
+                                    0, myIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                            pendingIntent.cancel();
+                            mAlarmManager.cancel(pendingIntent);
                             getApplicationContext().stopService(new Intent(SplashActiviy.this, ServiceLocationSend.class));
                             startActivity(new Intent(SplashActiviy.this, LoginActivity.class));
-//                            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+//                                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                             finish();
                         }
                     } else {
-                        try {
-                            AppUtils.statusCheck(SplashActiviy.this);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        getApplicationContext().stopService(new Intent(SplashActiviy.this, ServiceLocationSend.class));
+                        startActivity(new Intent(SplashActiviy.this, LoginActivity.class));
+//                            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                        finish();
+                    }
+                } else {
+                    try {
+                        AppUtils.statusCheck(SplashActiviy.this);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }, SPLASH_TIME_OUT);

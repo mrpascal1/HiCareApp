@@ -24,7 +24,6 @@ import com.ab.hicarerun.network.models.OnSiteModel.OnSiteRecent;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.viewmodel.AccountAreaViewModel;
 import com.ab.hicarerun.viewmodel.RecentActivityViewModel;
-import com.daimajia.swipe.SwipeLayout;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -77,64 +76,12 @@ public class OnSiteRecentAdapter extends RecyclerView.Adapter<OnSiteRecentAdapte
         holder.mOnsiteRecentAdapterBinding.txtTitle.setText(items.get(position).getAreaSubType());
         holder.mOnsiteRecentAdapterBinding.txtArea.setText(items.get(position).getAreaType());
         holder.mOnsiteRecentAdapterBinding.txtServiceType.setText(service);
-//        holder.mOnsiteRecentAdapterBinding.swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
         if (items.get(position).getServiceType().equalsIgnoreCase("Not Done")) {
             holder.mOnsiteRecentAdapterBinding.bgView.setBackgroundColor(mContext.getResources().getColor(R.color.red));
         } else {
             holder.mOnsiteRecentAdapterBinding.bgView.setBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
         }
 
-        // Drag From Right
-//        holder.mOnsiteRecentAdapterBinding.swipeLayout.addDrag(SwipeLayout.DragEdge.Right, holder.mOnsiteRecentAdapterBinding.swipeLayout.findViewById(R.id.bottom_wrapper));
-
-
-        // Handling different events when swiping
-//        holder.mOnsiteRecentAdapterBinding.swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
-//            @Override
-//            public void onClose(SwipeLayout layout) {
-//                //when the SurfaceView totally cover the BottomView.
-//                isSwiped = false;
-//            }
-//
-//            @Override
-//            public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
-//                //you are swiping.
-//            }
-//
-//            @Override
-//            public void onStartOpen(SwipeLayout layout) {
-//
-//            }
-//
-//            @Override
-//            public void onOpen(SwipeLayout layout) {
-//                //when the BottomView totally show.
-//                isSwiped = true;
-//            }
-//
-//            @Override
-//            public void onStartClose(SwipeLayout layout) {
-//
-//            }
-//
-//            @Override
-//            public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
-//                //when user's hand released.
-//            }
-//        });
-
-//        holder.mOnsiteRecentAdapterBinding.lnrView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                onItemClickHandler.onViewItemClicked(position);
-//            }
-//        });
-//        holder.mOnsiteRecentAdapterBinding.lnrDelete.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                onItemClickHandler.onDeleteItemClicked(position);
-//            }
-//        });
     }
 
     public void setOnItemClickHandler(OnRecentTaskClickHandler onItemClickHandler) {

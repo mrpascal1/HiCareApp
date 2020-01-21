@@ -165,6 +165,11 @@ public class Tasks implements Parcelable {
     @SerializedName("IsCombinedTask")
     @Expose
     private Boolean IsCombinedTask;
+
+    @SerializedName("Helper_Resource_Id")
+    @Expose
+    private String Helper_Resource_Id;
+
     public Tasks() {
         AccountName = "NA";
         ServicePlan = "NA";
@@ -206,6 +211,7 @@ public class Tasks implements Parcelable {
         AccountType = "NA";
         CombinedTaskId = "NA";
         CombinedOrderNumber = "NA";
+        Helper_Resource_Id = "NA";
     }
 
 
@@ -227,6 +233,7 @@ public class Tasks implements Parcelable {
         Amount = in.readString();
         PostalCode = in.readString();
         OrderNumber = in.readString();
+        CombinedOrderNumber = in.readString();
         TaskAssignmentStartDate = in.readString();
         TaskAssignmentStartTime = in.readString();
         TaskAssignmentEndDate = in.readString();
@@ -247,11 +254,11 @@ public class Tasks implements Parcelable {
         AccountType = in.readString();
         CombinedServiceType = in.readString();
         CombinedTaskId = in.readString();
-        CombinedOrderNumber = in.readString();
         byte tmpIsDetailVisible = in.readByte();
         IsDetailVisible = tmpIsDetailVisible == 0 ? null : tmpIsDetailVisible == 1;
         byte tmpIsCombinedTask = in.readByte();
         IsCombinedTask = tmpIsCombinedTask == 0 ? null : tmpIsCombinedTask == 1;
+        Helper_Resource_Id = in.readString();
     }
 
     public static final Creator<Tasks> CREATOR = new Creator<Tasks>() {
@@ -586,6 +593,14 @@ public class Tasks implements Parcelable {
         CombinedOrderNumber = combinedOrderNumber;
     }
 
+    public String getHelper_Resource_Id() {
+        return Helper_Resource_Id;
+    }
+
+    public void setHelper_Resource_Id(String helper_Resource_Id) {
+        Helper_Resource_Id = helper_Resource_Id;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -610,6 +625,7 @@ public class Tasks implements Parcelable {
         parcel.writeString(Amount);
         parcel.writeString(PostalCode);
         parcel.writeString(OrderNumber);
+        parcel.writeString(CombinedOrderNumber);
         parcel.writeString(TaskAssignmentStartDate);
         parcel.writeString(TaskAssignmentStartTime);
         parcel.writeString(TaskAssignmentEndDate);
@@ -630,8 +646,8 @@ public class Tasks implements Parcelable {
         parcel.writeString(AccountType);
         parcel.writeString(CombinedServiceType);
         parcel.writeString(CombinedTaskId);
-        parcel.writeString(CombinedOrderNumber);
         parcel.writeByte((byte) (IsDetailVisible == null ? 0 : IsDetailVisible ? 1 : 2));
         parcel.writeByte((byte) (IsCombinedTask == null ? 0 : IsCombinedTask ? 1 : 2));
+        parcel.writeString(Helper_Resource_Id);
     }
 }

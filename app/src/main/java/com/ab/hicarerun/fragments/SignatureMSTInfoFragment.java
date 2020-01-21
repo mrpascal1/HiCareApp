@@ -246,12 +246,6 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
             }
         });
 
-//        mFragmentSignatureInfoBinding.recycleView.setHasFixedSize(true);
-//        layoutManager = new LinearLayoutManager(getActivity());
-//        mFragmentSignatureInfoBinding.recycleView.setLayoutManager(layoutManager);
-//        mAdapter = new NewAttachmentListAdapter(getActivity());
-//        mFragmentSignatureInfoBinding.recycleView.setAdapter(mAdapter);
-
         getAttachmentList();
 
         mFragmentSignatureInfoBinding.expandableListView.setOnGroupClickListener((parent, v, groupPosition, id) -> {
@@ -316,7 +310,6 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                     mFragmentSignatureInfoBinding.txtHint.setVisibility(GONE);
                     mFragmentSignatureInfoBinding.txtFeedback.setEnabled(false);
                     mFragmentSignatureInfoBinding.btnSendlink.setVisibility(GONE);
-//                    mFragmentSignatureInfoBinding.btnUpload.setVisibility(GONE);
                     mFragmentSignatureInfoBinding.lnrJobCard.setVisibility(GONE);
                     mFragmentSignatureInfoBinding.imgSign.setVisibility(View.VISIBLE);
 
@@ -327,7 +320,6 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                     mFragmentSignatureInfoBinding.txtHint.setVisibility(GONE);
                     mFragmentSignatureInfoBinding.txtFeedback.setEnabled(false);
                     mFragmentSignatureInfoBinding.btnSendlink.setVisibility(GONE);
-//                    mFragmentSignatureInfoBinding.btnUpload.setVisibility(GONE);
                     mFragmentSignatureInfoBinding.lnrJobCard.setVisibility(GONE);
                 } else {
                     mFragmentSignatureInfoBinding.edtSignatory.setEnabled(true);
@@ -365,10 +357,8 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                 isFeedBack = mGeneralRealmData.get(0).getFeedBack();
                 accountType = mGeneralRealmData.get(0).getAccountType();
                 if (isJobcardEnable) {
-//                    mFragmentSignatureInfoBinding.btnUpload.setVisibility(View.VISIBLE);
                     mFragmentSignatureInfoBinding.lnrJobCard.setVisibility(View.VISIBLE);
                 } else {
-//                    mFragmentSignatureInfoBinding.btnUpload.setVisibility(View.GONE);
                     mFragmentSignatureInfoBinding.lnrJobCard.setVisibility(View.GONE);
                 }
                 getValidate();
@@ -390,14 +380,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
             View promptsView = li.inflate(R.layout.signature_dialog, null);
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
             alertDialogBuilder.setView(promptsView);
-            //            final Dialog dialog = new Dialog(getActivity(), android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
-//            Window window = dialog.getWindow();
-//            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-//            window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-//            window.setBackgroundDrawableResource(R.color.darkblack);
-//            dialog.setContentView(promptsView);
-//            dialog.setCancelable(false);
-//            dialog.show();
+
             final AlertDialog alertDialog = alertDialogBuilder.create();
             alertDialogBuilder.setTitle("Signature");
             final RelativeLayout lnr_screen =
@@ -413,11 +396,6 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
             img_right.setEnabled(false);
             dv = new DrawingView(getActivity(), txt_hint, img_right);
             lnr_screen.addView(dv);
-
-//            int width = ViewGroup.LayoutParams.MATCH_PARENT;
-//            int height = ViewGroup.LayoutParams.MATCH_PARENT;
-//            alertDialog.getWindow().setLayout(width, height);
-//            alertDialog.getWindow().setGravity(Gravity.CENTER);
 
             img_right.setOnClickListener(v -> {
                 View view = lnr_screen;
@@ -452,12 +430,6 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
             });
             alertDialog.show();
             alertDialog.setIcon(R.mipmap.logo);
-//            Window window = alertDialog.getWindow();
-//            WindowManager.LayoutParams wlp = window.getAttributes();
-//            wlp.gravity = Gravity.CENTER;
-//            wlp.flags &= ~WindowManager.LayoutParams.FLAG_BLUR_BEHIND;
-//            window.setAttributes(wlp);
-//            alertDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         }
     }
 
@@ -477,100 +449,116 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     }
 
     private void sendFeedbackLink() {
-        if (isFeedBack && status.equals("On-Site") && mGeneralRealmData.get(0).getRestrict_Early_Completion()) {
-            NetworkCallController controller = new NetworkCallController(this);
-            controller.setListner(new NetworkResponseListner() {
-                @Override
-                public void onResponse(int requestCode, Object data) {
-                    BasicResponse response = (BasicResponse) data;
-                    if (response.getSuccess()) {
-                        sendFeedback();
-                    } else {
-                        Toasty.error(getActivity(),
-                                "You are not allowed to send feedback link as you have not spent adequate time. Please follow the correct procedure and deliver the job properly",
-                                Toasty.LENGTH_LONG).show();
-                        getValidate();
+        try {
+            if (isFeedBack && status.equals("On-Site") && mGeneralRealmData.get(0).getRestrict_Early_Completion()) {
+                NetworkCallController controller = new NetworkCallController(this);
+                controller.setListner(new NetworkResponseListner() {
+                    @Override
+                    public void onResponse(int requestCode, Object data) {
+                        BasicResponse response = (BasicResponse) data;
+                        if (response.getSuccess()) {
+                            sendFeedback();
+                        } else {
+                            Toasty.error(getActivity(),
+                                    "You are not allowed to send feedback link as you have not spent adequate time. Please follow the correct procedure and deliver the job properly",
+                                    Toasty.LENGTH_LONG).show();
+                            getValidate();
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(int requestCode) {
-                }
-            });
-            controller.getValidateCompletionTime(COMPLETION_REQUEST, mGeneralRealmData.get(0).getActualCompletionDateTime(), model.getTaskId());
-        } else {
-            sendFeedback();
-            getValidate();
+                    @Override
+                    public void onFailure(int requestCode) {
+                    }
+                });
+                controller.getValidateCompletionTime(COMPLETION_REQUEST, mGeneralRealmData.get(0).getActualCompletionDateTime(), model.getTaskId());
+            } else {
+                sendFeedback();
+                getValidate();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
-    public void sendFeedback() {
-        LayoutInflater li = LayoutInflater.from(getActivity());
-        View promptsView = li.inflate(R.layout.link_confirm_dialog, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-        alertDialogBuilder.setView(promptsView);
-        alertDialogBuilder.setTitle("Feedback Link");
-        final AlertDialog alertDialog = alertDialogBuilder.create();
-        final AppCompatEditText edtmobile =
-                promptsView.findViewById(R.id.edtmobile);
-        final AppCompatEditText edtemail =
-                promptsView.findViewById(R.id.edtemail);
-        final AppCompatButton btn_send =
-                promptsView.findViewById(R.id.btn_send);
-        final AppCompatButton btn_cancel =
-                promptsView.findViewById(R.id.btn_cancel);
-        edtemail.setEnabled(false);
-        edtmobile.setEnabled(false);
-        edtemail.setText(Email);
-        edtmobile.setText(mask);
-        btn_send.setOnClickListener(v -> {
+    private void sendFeedback() {
 
-            String customer_otp = mGeneralRealmData.get(0).getCustomer_OTP();
-            FeedbackRequest request = new FeedbackRequest();
-            request.setName(name);
-            request.setTask_id(model.getTaskId());
-            request.setFeedback_code(customer_otp);
-            request.setOrder_number(Order_Number);
-            request.setService_name(Service_Name);
-            NetworkCallController controller = new NetworkCallController(SignatureMSTInfoFragment.this);
-            controller.setListner(new NetworkResponseListner() {
-                @Override
-                public void onResponse(int requestCode, Object response) {
-                    FeedbackResponse refResponse = (FeedbackResponse) response;
-                    if (refResponse.getSuccess()) {
-                        Toasty.success(getActivity(), "Feedback link sent successfully.", Toasty.LENGTH_LONG).show();
-                        getValidate();
+        try {
+            LayoutInflater li = LayoutInflater.from(getActivity());
+            View promptsView = li.inflate(R.layout.link_confirm_dialog, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+            alertDialogBuilder.setView(promptsView);
+            alertDialogBuilder.setTitle("Feedback Link");
+            final AlertDialog alertDialog = alertDialogBuilder.create();
+            final AppCompatEditText edtmobile =
+                    promptsView.findViewById(R.id.edtmobile);
+            final AppCompatEditText edtemail =
+                    promptsView.findViewById(R.id.edtemail);
+            final AppCompatButton btn_send =
+                    promptsView.findViewById(R.id.btn_send);
+            final AppCompatButton btn_cancel =
+                    promptsView.findViewById(R.id.btn_cancel);
+            edtemail.setEnabled(false);
+            edtmobile.setEnabled(false);
+            edtemail.setText(Email);
+            edtmobile.setText(mask);
+            btn_send.setOnClickListener(v -> {
+
+                String customer_otp = mGeneralRealmData.get(0).getCustomer_OTP();
+                FeedbackRequest request = new FeedbackRequest();
+                request.setName(name);
+                request.setTask_id(model.getTaskId());
+                request.setFeedback_code(customer_otp);
+                request.setOrder_number(Order_Number);
+                request.setService_name(Service_Name);
+                NetworkCallController controller = new NetworkCallController(SignatureMSTInfoFragment.this);
+                controller.setListner(new NetworkResponseListner() {
+                    @Override
+                    public void onResponse(int requestCode, Object response) {
+                        FeedbackResponse refResponse = (FeedbackResponse) response;
+                        if (refResponse.getSuccess()) {
+                            Toasty.success(getActivity(), "Feedback link sent successfully.", Toasty.LENGTH_LONG).show();
+                            getValidate();
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(int requestCode) {
+                    @Override
+                    public void onFailure(int requestCode) {
 
-                }
+                    }
+                });
+                controller.postFeedbackLink(POST_FEEDBACK_LINK, request);
+
+                alertDialog.dismiss();
             });
-            controller.postFeedbackLink(POST_FEEDBACK_LINK, request);
+            btn_cancel.setOnClickListener(v -> alertDialog.dismiss());
+            alertDialog.setIcon(R.mipmap.logo);
+            alertDialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            alertDialog.dismiss();
-        });
-        btn_cancel.setOnClickListener(v -> alertDialog.dismiss());
-        alertDialog.setIcon(R.mipmap.logo);
-        alertDialog.show();
     }
 
     private void onCallBack(Bitmap bmp) {
-        if (bmp != null) {
-            mFragmentSignatureInfoBinding.txtHint.setVisibility(GONE);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            byte[] b = baos.toByteArray();
-            String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-            signature = encodedImage;
-            mCallback.signature(encodedImage);
-            mCallback.signatory(mFragmentSignatureInfoBinding.edtSignatory.getText().toString());
-            mFragmentSignatureInfoBinding.imgSign.setImageBitmap(bmp);
-            mFragmentSignatureInfoBinding.imgSign.setVisibility(View.VISIBLE);
-            getValidate();
+        try {
+            if (bmp != null) {
+                mFragmentSignatureInfoBinding.txtHint.setVisibility(GONE);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                byte[] b = baos.toByteArray();
+                String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+                signature = encodedImage;
+                mCallback.signature(encodedImage);
+                mCallback.signatory(mFragmentSignatureInfoBinding.edtSignatory.getText().toString());
+                mFragmentSignatureInfoBinding.imgSign.setImageBitmap(bmp);
+                mFragmentSignatureInfoBinding.imgSign.setVisibility(View.VISIBLE);
+                getValidate();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     @Override
@@ -694,23 +682,6 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                             }
                             getValidate();
                         }
-//                        if (items != null) {
-//                            if (pageNumber == 1 && items.size() > 0) {
-//                                mFragmentSignatureInfoBinding.txtData.setVisibility(View.GONE);
-//                                mAdapter.setData(items);
-//                                mAdapter.notifyDataSetChanged();
-//                                enableSwipeToDeleteAndUndo();
-//                            } else if (items.size() > 0) {
-//                                mFragmentSignatureInfoBinding.txtData.setVisibility(View.GONE);
-//                                mAdapter.addData(items);
-//                                mAdapter.notifyDataSetChanged();
-//                                enableSwipeToDeleteAndUndo();
-//                            } else {
-//                                pageNumber--;
-//                            }
-//                        } else {
-//                            mFragmentSignatureInfoBinding.txtData.setVisibility(View.VISIBLE);
-//                        }
                     }
 
                     @Override
@@ -783,10 +754,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                     mCallback.isSignatureValidated(false);
                 }
             }
-//            if (isJobcardEnable) {
-//            } else {
-//                mCallback.isJobCardEnable(false);
-//            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -808,137 +776,159 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     }
 
     private void getAddJobCard(int parent) {
-        jobCardId = "";
-        RealmResults<GeneralData> mGeneralRealmData =
-                getRealm().where(GeneralData.class).findAll();
-        if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
-//            jobCardId = mGeneralRealmData.get(0).getMSTList().get(parent).getTaskId();
-            jobCardId = mstAttachments.get(parent).getTaskNo();
+        try {
+            jobCardId = "";
+            RealmResults<GeneralData> mGeneralRealmData =
+                    getRealm().where(GeneralData.class).findAll();
+            if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
+                jobCardId = mstAttachments.get(parent).getTaskNo();
 
-//            Toast.makeText(getActivity(), String.valueOf(jobCardId), Toast.LENGTH_SHORT).show();
+                LayoutInflater li = LayoutInflater.from(getActivity());
 
-            LayoutInflater li = LayoutInflater.from(getActivity());
+                View promptsView = li.inflate(R.layout.layout_choose_gallery_dialog, null);
 
-            View promptsView = li.inflate(R.layout.layout_choose_gallery_dialog, null);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
 
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                alertDialogBuilder.setView(promptsView);
+                final AlertDialog alertDialog = alertDialogBuilder.create();
 
-            alertDialogBuilder.setView(promptsView);
-            final AlertDialog alertDialog = alertDialogBuilder.create();
+                final ImageView selectedImg =
+                        promptsView.findViewById(R.id.selectedImg);
+                final LinearLayout lnrCamera =
+                        promptsView.findViewById(R.id.lnrCamera);
+                final LinearLayout lnrGallery =
+                        promptsView.findViewById(R.id.lnrGallery);
+                final TextView btn_cancel =
+                        promptsView.findViewById(R.id.btnCancel);
+                final LinearLayout cardSelected = promptsView.findViewById(R.id.cardSelected);
 
-            final ImageView selectedImg =
-                    promptsView.findViewById(R.id.selectedImg);
-            final LinearLayout lnrCamera =
-                    promptsView.findViewById(R.id.lnrCamera);
-            final LinearLayout lnrGallery =
-                    promptsView.findViewById(R.id.lnrGallery);
-            final TextView btn_cancel =
-                    promptsView.findViewById(R.id.btnCancel);
-            final LinearLayout cardSelected = promptsView.findViewById(R.id.cardSelected);
+                int[] attrs = new int[]{R.attr.selectableItemBackground};
+                TypedArray typedArray = getActivity().obtainStyledAttributes(attrs);
+                int backgroundResource = typedArray.getResourceId(0, 0);
+                lnrCamera.setBackgroundResource(backgroundResource);
+                lnrGallery.setBackgroundResource(backgroundResource);
 
-            int[] attrs = new int[]{R.attr.selectableItemBackground};
-            TypedArray typedArray = getActivity().obtainStyledAttributes(attrs);
-            int backgroundResource = typedArray.getResourceId(0, 0);
-            lnrCamera.setBackgroundResource(backgroundResource);
-            lnrGallery.setBackgroundResource(backgroundResource);
-
-            if (selectedBmp != null) {
-                cardSelected.setVisibility(View.VISIBLE);
-                Glide.with(getActivity())
-                        .load(selectedBmp)
-                        .error(android.R.drawable.stat_notify_error)
-                        .into(selectedImg);
-            } else {
-                cardSelected.setVisibility(GONE);
-            }
-
-            cardSelected.setOnClickListener(view -> {
                 if (selectedBmp != null) {
-                    alertDialog.dismiss();
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    selectedBmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                    byte[] b = baos.toByteArray();
-                    String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-                    getUploadJobCard(encodedImage);
+                    cardSelected.setVisibility(View.VISIBLE);
+                    Glide.with(getActivity())
+                            .load(selectedBmp)
+                            .error(android.R.drawable.stat_notify_error)
+                            .into(selectedImg);
+                } else {
+                    cardSelected.setVisibility(GONE);
                 }
-            });
-            lnrCamera.setOnClickListener(view -> {
-                requestStoragePermission(true);
-                alertDialog.dismiss();
-            });
 
-            lnrGallery.setOnClickListener(view -> {
-                requestStoragePermission(false);
-                alertDialog.dismiss();
-            });
+                cardSelected.setOnClickListener(view -> {
+                    if (selectedBmp != null) {
+                        alertDialog.dismiss();
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        selectedBmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        byte[] b = baos.toByteArray();
+                        String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+                        getUploadJobCard(encodedImage);
+                    }
+                });
+                lnrCamera.setOnClickListener(view -> {
+                    requestStoragePermission(true);
+                    alertDialog.dismiss();
+                });
 
-            btn_cancel.setOnClickListener(v -> alertDialog.dismiss());
-            alertDialog.setCanceledOnTouchOutside(false);
-            alertDialog.show();
+                lnrGallery.setOnClickListener(view -> {
+                    requestStoragePermission(false);
+                    alertDialog.dismiss();
+                });
+
+                btn_cancel.setOnClickListener(v -> alertDialog.dismiss());
+                alertDialog.setCanceledOnTouchOutside(false);
+                alertDialog.show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     private void dispatchGalleryIntent() {
-        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        pickPhoto.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        startActivityForResult(pickPhoto, REQUEST_GALLERY_PHOTO);
+        try {
+            Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            pickPhoto.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivityForResult(pickPhoto, REQUEST_GALLERY_PHOTO);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     private void requestStoragePermission(boolean isCamera) {
-        Dexter.withActivity(getActivity())
-                .withPermissions(Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
-                .withListener(new MultiplePermissionsListener() {
-                    @Override
-                    public void onPermissionsChecked(MultiplePermissionsReport report) {
-                        // check if all permissions are granted
-                        if (report.areAllPermissionsGranted()) {
-                            if (isCamera) {
-                                dispatchTakePictureIntent();
-                            } else {
-                                dispatchGalleryIntent();
+        try {
+            Dexter.withActivity(getActivity())
+                    .withPermissions(Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+                    .withListener(new MultiplePermissionsListener() {
+                        @Override
+                        public void onPermissionsChecked(MultiplePermissionsReport report) {
+                            // check if all permissions are granted
+                            if (report.areAllPermissionsGranted()) {
+                                if (isCamera) {
+                                    dispatchTakePictureIntent();
+                                } else {
+                                    dispatchGalleryIntent();
+                                }
+                            }
+                            // check for permanent denial of any permission
+                            if (report.isAnyPermissionPermanentlyDenied()) {
+                                // show alert dialog navigating to Settings
+                                showSettingsDialog();
                             }
                         }
-                        // check for permanent denial of any permission
-                        if (report.isAnyPermissionPermanentlyDenied()) {
-                            // show alert dialog navigating to Settings
-                            showSettingsDialog();
-                        }
-                    }
 
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions,
-                                                                   PermissionToken token) {
-                        token.continuePermissionRequest();
-                    }
-                })
-                .withErrorListener(
-                        error -> Toast.makeText(getActivity(), "Error occurred! ", Toast.LENGTH_SHORT)
-                                .show())
-                .onSameThread()
-                .check();
+                        @Override
+                        public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions,
+                                                                       PermissionToken token) {
+                            token.continuePermissionRequest();
+                        }
+                    })
+                    .withErrorListener(
+                            error -> Toast.makeText(getActivity(), "Error occurred! ", Toast.LENGTH_SHORT)
+                                    .show())
+                    .onSameThread()
+                    .check();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     private void showSettingsDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Need Permissions");
-        builder.setMessage(
-                "This app needs permission to use this feature. You can grant them in app settings.");
-        builder.setPositiveButton("GOTO SETTINGS", (dialog, which) -> {
-            dialog.cancel();
-            openSettings();
-        });
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-        builder.show();
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Need Permissions");
+            builder.setMessage(
+                    "This app needs permission to use this feature. You can grant them in app settings.");
+            builder.setPositiveButton("GOTO SETTINGS", (dialog, which) -> {
+                dialog.cancel();
+                openSettings();
+            });
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+            builder.show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     // navigating user to app settings
     private void openSettings() {
-        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
-        intent.setData(uri);
-        startActivityForResult(intent, 101);
+        try {
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+            intent.setData(uri);
+            startActivityForResult(intent, 101);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     private File createImageFile() throws IOException {
@@ -953,7 +943,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     /**
      * Get real file path from URI
      */
-    public String getRealPathFromUri(Uri contentUri) {
+    private String getRealPathFromUri(Uri contentUri) {
         Cursor cursor = null;
         try {
             String[] proj = {MediaStore.Images.Media.DATA};
@@ -970,98 +960,112 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     }
 
     private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                // Error occurred while creating the File
+        try {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                // Create the File where the photo should go
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    // Error occurred while creating the File
+                }
+                if (photoFile != null) {
+                    Uri photoURI = FileProvider.getUriForFile(getActivity(),
+                            BuildConfig.APPLICATION_ID + ".provider",
+                            photoFile);
+                    mPhotoFile = photoFile;
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                }
             }
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(getActivity(),
-                        BuildConfig.APPLICATION_ID + ".provider",
-                        photoFile);
-                mPhotoFile = photoFile;
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_TAKE_PHOTO) {
-//                    mPhotoFile = mCompressor.compressToFile(mPhotoFile);
-                images.add(mPhotoFile.getPath());
-                imgFile = new File(mPhotoFile.getPath());
-                selectedImagePath = mPhotoFile.getPath();
-                if (selectedImagePath != null) {
-                    Bitmap bit = new BitmapDrawable(getActivity().getResources(),
-                            selectedImagePath).getBitmap();
-                    int i = (int) (bit.getHeight() * (1024.0 / bit.getWidth()));
-                    bitmap = Bitmap.createScaledBitmap(bit, 1024, i, true);
-                    selectedBmp = bitmap;
-                }
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                byte[] b = baos.toByteArray();
-                String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-                getUploadJobCard(encodedImage);
+        try {
+            if (resultCode == RESULT_OK) {
+                if (requestCode == REQUEST_TAKE_PHOTO) {
+                    images.add(mPhotoFile.getPath());
+                    imgFile = new File(mPhotoFile.getPath());
+                    selectedImagePath = mPhotoFile.getPath();
+                    if (selectedImagePath != null) {
+                        Bitmap bit = new BitmapDrawable(getActivity().getResources(),
+                                selectedImagePath).getBitmap();
+                        int i = (int) (bit.getHeight() * (1024.0 / bit.getWidth()));
+                        bitmap = Bitmap.createScaledBitmap(bit, 1024, i, true);
+                        selectedBmp = bitmap;
+                    }
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    byte[] b = baos.toByteArray();
+                    String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+                    getUploadJobCard(encodedImage);
 
-            } else if (requestCode == REQUEST_GALLERY_PHOTO) {
-                Uri selectedImage = data.getData();
-                mPhotoFile = new File(getRealPathFromUri(selectedImage));
-                selectedImagePath = mPhotoFile.getPath();
-                if (selectedImagePath != null) {
-                    Bitmap bit = new BitmapDrawable(getActivity().getResources(),
-                            selectedImagePath).getBitmap();
-                    int i = (int) (bit.getHeight() * (1024.0 / bit.getWidth()));
-                    bitmap = Bitmap.createScaledBitmap(bit, 1024, i, true);
-                    selectedBmp = bitmap;
+                } else if (requestCode == REQUEST_GALLERY_PHOTO) {
+                    Uri selectedImage = data.getData();
+                    mPhotoFile = new File(getRealPathFromUri(selectedImage));
+                    selectedImagePath = mPhotoFile.getPath();
+                    if (selectedImagePath != null) {
+                        Bitmap bit = new BitmapDrawable(getActivity().getResources(),
+                                selectedImagePath).getBitmap();
+                        int i = (int) (bit.getHeight() * (1024.0 / bit.getWidth()));
+                        bitmap = Bitmap.createScaledBitmap(bit, 1024, i, true);
+                        selectedBmp = bitmap;
+                    }
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    byte[] b = baos.toByteArray();
+                    String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+                    getUploadJobCard(encodedImage);
                 }
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                byte[] b = baos.toByteArray();
-                String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-                getUploadJobCard(encodedImage);
             }
+
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
     private void getUploadJobCard(String encodedImage) {
-        RealmResults<LoginResponse> LoginRealmModels =
-                BaseApplication.getRealm().where(LoginResponse.class).findAll();
-        if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-            UserId = LoginRealmModels.get(0).getUserID();
-            NetworkCallController controller = new NetworkCallController(SignatureMSTInfoFragment.this);
-            PostAttachmentRequest request = new PostAttachmentRequest();
-            request.setFile(encodedImage);
-            request.setResourceId(UserId);
-            request.setTaskId(jobCardId);
-            controller.setListner(new NetworkResponseListner() {
-                @Override
-                public void onResponse(int requestCode, Object response) {
-                    PostAttachmentResponse postResponse = (PostAttachmentResponse) response;
-                    if (postResponse.getSuccess()) {
-                        Toasty.success(getActivity(), "Job card uploaded successfully.", Toast.LENGTH_LONG).show();
-                        getAttachmentList();
-                    } else {
-                        Toast.makeText(getActivity(), "Posting Failed.", Toast.LENGTH_LONG).show();
+        try {
+            RealmResults<LoginResponse> LoginRealmModels =
+                    BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                UserId = LoginRealmModels.get(0).getUserID();
+                NetworkCallController controller = new NetworkCallController(SignatureMSTInfoFragment.this);
+                PostAttachmentRequest request = new PostAttachmentRequest();
+                request.setFile(encodedImage);
+                request.setResourceId(UserId);
+                request.setTaskId(jobCardId);
+                controller.setListner(new NetworkResponseListner() {
+                    @Override
+                    public void onResponse(int requestCode, Object response) {
+                        PostAttachmentResponse postResponse = (PostAttachmentResponse) response;
+                        if (postResponse.getSuccess()) {
+                            Toasty.success(getActivity(), "Job card uploaded successfully.", Toast.LENGTH_LONG).show();
+                            getAttachmentList();
+                        } else {
+                            Toast.makeText(getActivity(), "Posting Failed.", Toast.LENGTH_LONG).show();
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(int requestCode) {
-                }
-            });
+                    @Override
+                    public void onFailure(int requestCode) {
+                    }
+                });
 
-            controller.postAttachments(POST_ATTACHMENT_REQ, request);
+                controller.postAttachments(POST_ATTACHMENT_REQ, request);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
 

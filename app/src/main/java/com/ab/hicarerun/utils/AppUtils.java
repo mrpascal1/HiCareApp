@@ -101,14 +101,10 @@ public class AppUtils {
         if (_name.equalsIgnoreCase("Customer")) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 relMarker.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.pink_sec));
-//                txt_name.setTextColor(context.getResources().getColor(R.color.pink_sec));
             }
-
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 relMarker.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.colorPrimary));
-//                txt_name.setTextColor(context.getResources().getColor(R.color.white));
-
             }
         }
         DisplayMetrics displayMetrics = new DisplayMetrics();

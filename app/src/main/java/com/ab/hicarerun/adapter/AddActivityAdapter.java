@@ -17,8 +17,6 @@ import com.ab.hicarerun.handler.OnDeleteListItemClickHandler;
 import com.ab.hicarerun.handler.OnSelectServiceClickHandler;
 import com.ab.hicarerun.viewmodel.AccountAreaViewModel;
 
-import net.igenius.customcheckbox.CustomCheckBox;
-
 import java.util.ArrayList;
 import java.util.List;
 

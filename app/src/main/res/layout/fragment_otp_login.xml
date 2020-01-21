@@ -21,19 +21,19 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <ss.com.bannerslider.Slider
-                android:layout_above="@id/lnr_enter"
-                android:id="@+id/banner_slider"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
-                app:slider_interval="3000"
-                android:layout_marginBottom="10dp"
-                app:slider_loopSlides="true"
-                app:slider_animateIndicators="true"
-                app:slider_selectedSlideIndicator="@drawable/selected_slide_indicator"
-                app:slider_unselectedSlideIndicator="@drawable/selected_slide_indicator"
-                app:slider_emptyView="@layout/layout_empty_view"/>
+            <!--<ss.com.bannerslider.Slider-->
+                <!--android:layout_above="@id/lnr_enter"-->
+                <!--android:id="@+id/banner_slider"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:fitsSystemWindows="true"-->
+                <!--app:slider_interval="3000"-->
+                <!--android:layout_marginBottom="10dp"-->
+                <!--app:slider_loopSlides="true"-->
+                <!--app:slider_animateIndicators="true"-->
+                <!--app:slider_selectedSlideIndicator="@drawable/selected_slide_indicator"-->
+                <!--app:slider_unselectedSlideIndicator="@drawable/selected_slide_indicator"-->
+                <!--app:slider_emptyView="@layout/layout_empty_view"/>-->
 
             <LinearLayout
                 android:id="@+id/lnr_enter"

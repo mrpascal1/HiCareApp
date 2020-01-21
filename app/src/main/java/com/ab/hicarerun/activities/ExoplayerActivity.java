@@ -65,7 +65,6 @@ public class ExoplayerActivity extends BaseActivity implements Player.EventListe
         mExoplayerLayoutBinding =
                 DataBindingUtil.setContentView(this, R.layout.exoplayer_layout);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-//        getSupportActionBar().hide();
         if (getIntent().hasExtra(VIDEO_URI)) {
             videoUri = getIntent().getStringExtra(VIDEO_URI);
         }

@@ -32,9 +32,9 @@ allprojects {
         maven {
             url "https://mint.splunk.com/gradle/"
         }
-        flatDir {
-            dirs 'libs'
-        }
+//        flatDir {
+//            dirs 'libs'
+//        }
 
     }
 }

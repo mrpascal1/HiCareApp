@@ -40,7 +40,6 @@ import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
 import com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;
 import com.ab.hicarerun.utils.AppUtils;
 
-import net.igenius.customcheckbox.CustomCheckBox;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

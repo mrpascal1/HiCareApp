@@ -1,6 +1,5 @@
 package com.ab.hicarerun.network;
 
-import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.network.models.AttachmentModel.AttachmentDeleteRequest;
 import com.ab.hicarerun.network.models.AttachmentModel.AttachmentMSTResponse;
 import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentResponse;
@@ -10,13 +9,12 @@ import com.ab.hicarerun.network.models.AttendanceModel.AttendanceDetailResponse;
 import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
 import com.ab.hicarerun.network.models.AttendanceModel.ProfilePicRequest;
 import com.ab.hicarerun.network.models.BasicResponse;
-import com.ab.hicarerun.network.models.ChemicalModel.ChemicalMSTResponse;
+import com.ab.hicarerun.network.models.ChemicalCountModel.ChemicalCountResponse;
 import com.ab.hicarerun.network.models.ChemicalModel.ChemicalResponse;
 import com.ab.hicarerun.network.models.ExotelModel.ExotelResponse;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackRequest;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackResponse;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralResponse;
-import com.ab.hicarerun.network.models.GeneralModel.OnSiteOtp;
 import com.ab.hicarerun.network.models.GeneralModel.OnSiteOtpResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeRequest;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeResponse;
@@ -50,7 +48,6 @@ import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingRespo
 import com.ab.hicarerun.network.models.TrainingModel.TrainingResponse;
 import com.ab.hicarerun.network.models.TrainingModel.WelcomeVideoResponse;
 import com.ab.hicarerun.network.models.UpdateAppModel.UpdateResponse;
-import com.ab.hicarerun.network.models.voucher.VoucherRequest;
 import com.ab.hicarerun.network.models.voucher.VoucherResponseMain;
 
 import java.util.List;
@@ -307,4 +304,15 @@ public interface IRetrofit {
 
     @GET("AreaActivity/DeleteAccountAreaActivity")
     Call<SaveAccountAreaResponse> getDeleteOnSiteTasks(@Query("activityId") Integer activityId);
+
+    /*[TechnicianGrooming/GetTechnicianJobSummary]*/
+
+    @GET("TechnicianGrooming/GetTechnicianJobSummary")
+    Call<ChemicalCountResponse> getTechnicianJobSummary(@Query("resourceId") String customerNo);
+
+    /*[TechnicianGrooming/GetTechnicianJobSummary]*/
+
+    @GET("ResourceActivity/GetResourceProfilePicture")
+    Call<String> getResourceProfilePicture(@Query("resourceId") String customerNo);
+
 }

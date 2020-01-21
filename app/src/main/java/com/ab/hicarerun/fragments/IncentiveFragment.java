@@ -120,39 +120,40 @@ public class IncentiveFragment extends BaseFragment {
     }
 
     private void getIncentiveDetails() {
-
-        if (getActivity() != null) {
-            RealmResults<LoginResponse> LoginRealmModels =
-                    BaseApplication.getRealm().where(LoginResponse.class).findAll();
-            String userId = LoginRealmModels.get(0).getUserID();
-            if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-                NetworkCallController controller = new NetworkCallController(this);
-                controller.setListner(new NetworkResponseListner() {
-                    @Override
-                    public void onResponse(int requestCode, Object data) {
-                        Incentive response = (Incentive) data;
-                        mFragmentIncentiveBinding.txtPoints.setText(response.getTotalPoint());
-                        mFragmentIncentiveBinding.txtIncentive.setText("\u20B9" + response.getTotalIncentive());
-                        if (response.getIncentiveDate() != null) {
-                            mFragmentIncentiveBinding.txtDate.setVisibility(View.VISIBLE);
-                            mFragmentIncentiveBinding.txtDate.setText("Incentive as on: " + response.getIncentiveDate());
-                        } else {
-                            mFragmentIncentiveBinding.txtDate.setVisibility(View.GONE);
+        try {
+            if (getActivity() != null) {
+                RealmResults<LoginResponse> LoginRealmModels =
+                        BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                String userId = LoginRealmModels.get(0).getUserID();
+                if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                    NetworkCallController controller = new NetworkCallController(this);
+                    controller.setListner(new NetworkResponseListner() {
+                        @Override
+                        public void onResponse(int requestCode, Object data) {
+                            Incentive response = (Incentive) data;
+                            mFragmentIncentiveBinding.txtPoints.setText(response.getTotalPoint());
+                            mFragmentIncentiveBinding.txtIncentive.setText("\u20B9" + response.getTotalIncentive());
+                            if (response.getIncentiveDate() != null) {
+                                mFragmentIncentiveBinding.txtDate.setVisibility(View.VISIBLE);
+                                mFragmentIncentiveBinding.txtDate.setText("Incentive as on: " + response.getIncentiveDate());
+                            } else {
+                                mFragmentIncentiveBinding.txtDate.setVisibility(View.GONE);
+                            }
+                            if (response.getMatrixList() != null) {
+                                mAdapter.setData(response.getMatrixList());
+                                mAdapter.notifyDataSetChanged();
+                            }
                         }
-                        if (response.getMatrixList() != null) {
-                            mAdapter.setData(response.getMatrixList());
-                            mAdapter.notifyDataSetChanged();
+                        @Override
+                        public void onFailure(int requestCode) {
+
                         }
-
-                    }
-
-                    @Override
-                    public void onFailure(int requestCode) {
-
-                    }
-                });
-                controller.getTechnicianIncentive(REQ_INCENTIVE, userId);
+                    });
+                    controller.getTechnicianIncentive(REQ_INCENTIVE, userId);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

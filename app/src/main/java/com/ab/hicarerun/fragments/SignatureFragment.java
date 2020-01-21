@@ -54,7 +54,6 @@ import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.bumptech.glide.Glide;
 
-import net.igenius.customcheckbox.CustomCheckBox;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -149,17 +148,6 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeWidth(8);
 
-        mFragmentSignatureBinding.checkProperty.setOnCheckedChangeListener(new CustomCheckBox.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CustomCheckBox checkBox, boolean isChecked) {
-                if (isChecked) {
-                    mFragmentSignatureBinding.lnrActual.setVisibility(View.VISIBLE);
-
-                } else {
-                    mFragmentSignatureBinding.lnrActual.setVisibility(View.GONE);
-                }
-            }
-        });
         mFragmentSignatureBinding.setHandler(this);
         return mFragmentSignatureBinding.getRoot();
     }

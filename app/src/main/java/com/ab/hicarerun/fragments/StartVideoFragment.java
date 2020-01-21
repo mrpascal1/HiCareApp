@@ -136,33 +136,15 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
         super.onViewCreated(view, savedInstanceState);
         mFragmentStartVideoBinding.progress.setVisibility(View.VISIBLE);
         mFragmentStartVideoBinding.lnrSkip.setVisibility(View.GONE);
-        mFragmentStartVideoBinding.exoPlayerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                animateVolumeControl();
-            }
-        });
+        mFragmentStartVideoBinding.exoPlayerView.setOnClickListener(view1 -> animateVolumeControl());
 
-        mFragmentStartVideoBinding.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                animateVolumeControl();
-            }
-        });
+        mFragmentStartVideoBinding.view.setOnClickListener(view12 -> animateVolumeControl());
 
-        mFragmentStartVideoBinding.imgOrientation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggleOrientation();
-            }
-        });
-        mFragmentStartVideoBinding.lnrSkip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.IS_SKIP_VIDEO, true);
-                SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.IS_USER_LOGIN, true);
-                AppUtils.getHandShakeCall(username, getActivity());
-            }
+        mFragmentStartVideoBinding.imgOrientation.setOnClickListener(view13 -> toggleOrientation());
+        mFragmentStartVideoBinding.lnrSkip.setOnClickListener(view14 -> {
+            SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.IS_SKIP_VIDEO, true);
+            SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.IS_USER_LOGIN, true);
+            AppUtils.getHandShakeCall(username, getActivity());
         });
         setUp(URL);
     }

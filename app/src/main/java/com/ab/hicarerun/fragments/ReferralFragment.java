@@ -144,22 +144,8 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                 @Override
                 public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
                     final int position = viewHolder.getAdapterPosition();
-//                final AttachmentListViewModel item = mAdapter.getItem(position);
-//                mAdapter.removeItem(position);
                     getReferralDeleted(position);
-//                Snackbar snackbar = Snackbar
-//                        .make(mFragmentSignatureInfoBinding.idScroll, "Item was removed from the list.", Snackbar.LENGTH_LONG);
-//
-//                snackbar.setAction("UNDO", new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        mAdapter.restoreItem(item, position);
-//                        mFragmentSignatureInfoBinding.recycleView.scrollToPosition(position);
-//                    }
-//                });
-//
-//                snackbar.setActionTextColor(Color.YELLOW);
-//                snackbar.show();
+
                 }
             };
             ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeToDeleteCallback);
@@ -169,7 +155,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
         }
     }
 
-    public void getReferralDeleted(int position) {
+    private void getReferralDeleted(int position) {
         try {
             ReferralDeleteRequest request = new ReferralDeleteRequest();
             request.setId(mAdapter.getItem(position).getId());
@@ -233,65 +219,57 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                     final AppCompatButton btn_cancel =
                             (AppCompatButton) promptsView.findViewById(R.id.btn_cancel);
 
-                    btn_send.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            String mobile = "";
-                            String Alt_Mobile = "";
-                            String Technicain_Mobile = "";
-                            if (mGeneralRealmModel.get(0).getMobileNumber() != null) {
-                                mobile = mGeneralRealmModel.get(0).getMobileNumber();
-                            }
-                            if (mGeneralRealmModel.get(0).getAlternateMobileNumber() != null) {
-                                Alt_Mobile = mGeneralRealmModel.get(0).getAlternateMobileNumber();
-                            }
-                            if (tasks.getTechnicianMobileNo() != null) {
-                                Technicain_Mobile = tasks.getTechnicianMobileNo();
-                            }
-
-                            if (validateSaveReferral(edt_fname, edt_lname, edt_contact, edt_email, mobile, Alt_Mobile, Technicain_Mobile)) {
-
-                                NetworkCallController controller = new NetworkCallController(ReferralFragment.this);
-                                ReferralRequest request = new ReferralRequest();
-                                request.setTaskId(tasks.getTaskId());
-                                request.setFirstName(edt_fname.getText().toString());
-                                request.setLastName("");
-                                request.setMobileNo(edt_contact.getText().toString());
-                                request.setAlternateMobileNo("");
-                                request.setEmail("");
-                                request.setInterestedService("");
-
-                                controller.setListner(new NetworkResponseListner() {
-                                    @Override
-                                    public void onResponse(int requestCode, Object response) {
-                                        ReferralResponse refResponse = (ReferralResponse) response;
-                                        if (refResponse.getSuccess()) {
-                                            mAdapter.notifyDataSetChanged();
-                                            Toasty.success(getActivity(), "Referral added successfully.", Toast.LENGTH_SHORT).show();
-                                            getReferralList();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(int requestCode) {
-
-                                    }
-                                });
-                                controller.postReferrals(POST_REFERRAL_REQUEST, request);
-                                alertDialog.dismiss();
-                                mAdapter.notifyDataSetChanged();
-
-                            }
+                    btn_send.setOnClickListener(v -> {
+                        String mobile = "";
+                        String Alt_Mobile = "";
+                        String Technicain_Mobile = "";
+                        if (mGeneralRealmModel.get(0).getMobileNumber() != null) {
+                            mobile = mGeneralRealmModel.get(0).getMobileNumber();
                         }
-                    });
+                        if (mGeneralRealmModel.get(0).getAlternateMobileNumber() != null) {
+                            Alt_Mobile = mGeneralRealmModel.get(0).getAlternateMobileNumber();
+                        }
+                        if (tasks.getTechnicianMobileNo() != null) {
+                            Technicain_Mobile = tasks.getTechnicianMobileNo();
+                        }
 
+                        if (validateSaveReferral(edt_fname, edt_lname, edt_contact, edt_email, mobile, Alt_Mobile, Technicain_Mobile)) {
 
-                    btn_cancel.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
+                            NetworkCallController controller = new NetworkCallController(ReferralFragment.this);
+                            ReferralRequest request = new ReferralRequest();
+                            request.setTaskId(tasks.getTaskId());
+                            request.setFirstName(edt_fname.getText().toString());
+                            request.setLastName("");
+                            request.setMobileNo(edt_contact.getText().toString());
+                            request.setAlternateMobileNo("");
+                            request.setEmail("");
+                            request.setInterestedService("");
+
+                            controller.setListner(new NetworkResponseListner() {
+                                @Override
+                                public void onResponse(int requestCode, Object response) {
+                                    ReferralResponse refResponse = (ReferralResponse) response;
+                                    if (refResponse.getSuccess()) {
+                                        mAdapter.notifyDataSetChanged();
+                                        Toasty.success(getActivity(), "Referral added successfully.", Toast.LENGTH_SHORT).show();
+                                        getReferralList();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(int requestCode) {
+
+                                }
+                            });
+                            controller.postReferrals(POST_REFERRAL_REQUEST, request);
                             alertDialog.dismiss();
+                            mAdapter.notifyDataSetChanged();
+
                         }
                     });
+
+
+                    btn_cancel.setOnClickListener(v -> alertDialog.dismiss());
                     alertDialog.setIcon(R.mipmap.logo);
 
                     alertDialog.show();

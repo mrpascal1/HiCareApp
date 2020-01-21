@@ -36,8 +36,6 @@ import static com.ab.hicarerun.BaseApplication.getRealm;
  */
 public class BottomSheetFragment extends BottomSheetDialogFragment {
     FragmentBottomSheetBinding mFragmentBottomSheetBinding;
-    private BottomSheetBehavior bottomSheetBehavior;
-    CoordinatorLayout coordinatorLayout;
     private RecyclerViewAreaAdapter mAdapter;
     ArrayList<String> areaList = null;
     private RealmResults<OnSiteArea> AreaRealmListResults;
@@ -94,23 +92,6 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
                             mListener.onAreaSelect(areaList.get(position), position);
                             dismiss();
                         }
-//                        Area = AreaRealmListResults.get(position).getAreaTypeC();
-//                        for (int i = 0; i < AreaRealmListResults.size(); i++) {
-//                            OnSiteArea mOnSiteArea = new OnSiteArea();
-//                            if (Area.equals(AreaRealmListResults.get(i).getAreaTypeC())) {
-//                                mOnSiteArea.setId(AreaRealmListResults.get(i).getId());
-//                                mOnSiteArea.setName(AreaRealmListResults.get(i).getName());
-//                                mOnSiteArea.setAccountC(AreaRealmListResults.get(i).getAccountC());
-//                                mOnSiteArea.setActivityDetail(AreaRealmListResults.get(i).getActivityDetail());
-//                                mOnSiteArea.setAreaTypeC(AreaRealmListResults.get(i).getAreaTypeC());
-//                                mOnSiteArea.setAreaSubTypeC(AreaRealmListResults.get(i).getAreaSubTypeC());
-//                                mOnSiteArea.setServiceNameC(AreaRealmListResults.get(i).getServiceNameC());
-//                                subItems.add(mOnSiteArea);
-//                            }
-//                        }
-//                        Gson gson = new Gson();
-//                        String json = gson.toJson(subItems);
-//                        SharedPreferencesUtility.savePrefString(getActivity(), SharedPreferencesUtility.PREF_SUB_AREA, json);
                     });
                     mAdapter.notifyDataSetChanged();
                 } else {

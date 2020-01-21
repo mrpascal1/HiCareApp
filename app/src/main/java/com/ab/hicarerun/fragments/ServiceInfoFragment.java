@@ -225,72 +225,72 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             }
         });
 
-        mFragmentServiceInfoBinding.btnOnsiteOtp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getCommercialDialog();
-            }
-        });
+        mFragmentServiceInfoBinding.btnOnsiteOtp.setOnClickListener(view1 -> getCommercialDialog());
     }
 
     private void getCommercialDialog() {
 
-        if (getActivity() != null) {
-            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
-            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+        try {
+            if (getActivity() != null) {
+                RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
 
-                LayoutInflater li = LayoutInflater.from(getActivity());
+                    LayoutInflater li = LayoutInflater.from(getActivity());
 
-                View promptsView = li.inflate(R.layout.layout_commercial_dialog, null);
+                    View promptsView = li.inflate(R.layout.layout_commercial_dialog, null);
 
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
 
-                alertDialogBuilder.setView(promptsView);
-                final AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialogBuilder.setView(promptsView);
+                    final AlertDialog alertDialog = alertDialogBuilder.create();
 
-                final EditText edtmobile =
-                        promptsView.findViewById(R.id.edtMobile);
-                final EditText edtName =
-                        promptsView.findViewById(R.id.edtusername);
-                final AppCompatButton btn_send =
-                        promptsView.findViewById(R.id.btn_send);
-                final AppCompatButton btn_cancel =
-                        promptsView.findViewById(R.id.btn_cancel);
-                final String resourceId = mLoginRealmModels.get(0).getUserID();
-                final String mobileNo = mLoginRealmModels.get(0).getPhoneNumber();
+                    final EditText edtmobile =
+                            promptsView.findViewById(R.id.edtMobile);
+                    final EditText edtName =
+                            promptsView.findViewById(R.id.edtusername);
+                    final AppCompatButton btn_send =
+                            promptsView.findViewById(R.id.btn_send);
+                    final AppCompatButton btn_cancel =
+                            promptsView.findViewById(R.id.btn_cancel);
+                    final String resourceId = mLoginRealmModels.get(0).getUserID();
+                    final String mobileNo = mLoginRealmModels.get(0).getPhoneNumber();
 
-                btn_send.setOnClickListener(v -> {
-                    if (isOnSiteValidate(edtmobile, edtName)) {
-                        if (!mobileNo.equalsIgnoreCase(edtmobile.getText().toString())) {
-                            NetworkCallController controller = new NetworkCallController(ServiceInfoFragment.this);
-                            controller.setListner(new NetworkResponseListner() {
-                                @Override
-                                public void onResponse(int requestCode, Object data) {
-                                    OnSiteOtpResponse response = (OnSiteOtpResponse) data;
-                                    if (response.getSuccess()) {
-                                        Toasty.success(getActivity(), "On-Site OTP is sent successfully").show();
-                                        alertDialog.dismiss();
-                                    } else {
-                                        Toasty.error(getActivity(), response.getErrorMessage()).show();
-                                        alertDialog.dismiss();
+                    btn_send.setOnClickListener(v -> {
+                        if (isOnSiteValidate(edtmobile, edtName)) {
+                            if (!mobileNo.equalsIgnoreCase(edtmobile.getText().toString())) {
+                                NetworkCallController controller = new NetworkCallController(ServiceInfoFragment.this);
+                                controller.setListner(new NetworkResponseListner() {
+                                    @Override
+                                    public void onResponse(int requestCode, Object data) {
+                                        OnSiteOtpResponse response = (OnSiteOtpResponse) data;
+                                        if (response.getSuccess()) {
+                                            Toasty.success(getActivity(), "On-Site OTP is sent successfully").show();
+                                            alertDialog.dismiss();
+                                        } else {
+                                            Toasty.error(getActivity(), response.getErrorMessage()).show();
+                                            alertDialog.dismiss();
+                                        }
                                     }
-                                }
 
-                                @Override
-                                public void onFailure(int requestCode) {
-                                }
-                            });
-                            controller.getOnSiteOTP(ONSITE_REQUEST, resourceId, model.getTaskId(), edtName.getText().toString(), edtmobile.getText().toString());
-                        } else {
-                            Toasty.error(getActivity(), "Invalid mobile no.").show();
+                                    @Override
+                                    public void onFailure(int requestCode) {
+                                    }
+                                });
+                                controller.getOnSiteOTP(ONSITE_REQUEST, resourceId, model.getTaskId(), edtName.getText().toString(), edtmobile.getText().toString());
+                            } else {
+                                Toasty.error(getActivity(), "Invalid mobile no.").show();
+                            }
                         }
-                    }
-                });
-                btn_cancel.setOnClickListener(v -> alertDialog.dismiss());
-                alertDialog.setCanceledOnTouchOutside(false);
-                alertDialog.show();
+                    });
+                    btn_cancel.setOnClickListener(v -> alertDialog.dismiss());
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.show();
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
 
@@ -642,25 +642,23 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
     @Override
     public void onIncompleteReasonClicked(View view) {
-        if (!status.equalsIgnoreCase("Incomplete")) {
-            if ((NewTaskDetailsActivity) getActivity() != null) {
+        try {
+            if (!status.equalsIgnoreCase("Incomplete")) {
+                if ((NewTaskDetailsActivity) getActivity() != null) {
+                    mTaskDetailsData = getRealm().where(GeneralData.class).findAll();
+                    if (mTaskDetailsData != null && mTaskDetailsData.size() > 0) {
+                        final ArrayList<String> type = new ArrayList<>();
+                        type.add("Select Reason");
+                        for (IncompleteReason incompleteReason : ReasonRealmModel) {
+                            type.add(incompleteReason.getReason());
+                        }
+                        arrayReason = new String[type.size()];
+                        arrayReason = type.toArray(arrayReason);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-                mTaskDetailsData = getRealm().where(GeneralData.class).findAll();
-                if (mTaskDetailsData != null && mTaskDetailsData.size() > 0) {
-                    final ArrayList<String> type = new ArrayList<>();
-                    type.add("Select Reason");
-                    for (IncompleteReason incompleteReason : ReasonRealmModel) {
-                        type.add(incompleteReason.getReason());
-                    }
-                    arrayReason = new String[type.size()];
-                    arrayReason = type.toArray(arrayReason);
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-                    builder.setTitle("Incomplete Reason");
-                    builder.setIcon(R.mipmap.logo);
-                    builder.setSingleChoiceItems(arrayReason, radiopos, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                        builder.setTitle("Incomplete Reason");
+                        builder.setIcon(R.mipmap.logo);
+                        builder.setSingleChoiceItems(arrayReason, radiopos, (dialog, which) -> {
                             radiopos = which;
                             Selection = arrayReason[which];
                             mFragmentServiceInfoBinding.txtReason.setText(Selection);
@@ -672,176 +670,171 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                 mCallback.isIncompleteReason(false);
                             }
                             mAlertDialog.dismiss();
-                        }
-                    });
-                    mAlertDialog = builder.create();
-                    mAlertDialog.show();
-                }
-
-            }
-        }
-    }
-
-    private void showBankDialog() {
-        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getLayoutInflater();
-        final View dialogView = inflater.inflate(R.layout.bank_custom_dialog, null);
-        dialogBuilder.setView(dialogView);
-        final RecyclerView recycle = (RecyclerView) dialogView.findViewById(R.id.recycle);
-        final TextView txt_close = (TextView) dialogView.findViewById(R.id.txt_close);
-        final SearchView search = (SearchView) dialogView.findViewById(R.id.search);
-
-        if (bankList == null || bankList.size() == 0) {
-            NetworkCallController controller = new NetworkCallController(ServiceInfoFragment.this);
-            controller.setListner(new NetworkResponseListner() {
-                @Override
-                public void onResponse(int requestCode, Object data) {
-                    List<String> items = (List<String>) data;
-
-                    if (items != null) {
-                        RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity());
-                        recycle.setLayoutManager(lm);
-                        recycle.setItemAnimator(new DefaultItemAnimator());
-                        mAdapter = new BankSearchAdapter(getActivity(), items);
-                        recycle.setAdapter(mAdapter);
-                        recycle.addItemDecoration(new MyDividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL, 10));
-                        mAdapter.onBankSelected(new BankSearchAdapter.BankAdapterListener() {
-                            @Override
-                            public void onSelected(String item, int position) {
-                                mFragmentServiceInfoBinding.txtBankname.setText(item);
-                                mCallback.bankName(item);
-                                mTaskDetailsData =
-                                        getRealm().where(GeneralData.class).findAll();
-
-                                if (mTaskDetailsData != null && mTaskDetailsData.size() > 0) {
-                                    try {
-                                        String amountToCollect = mTaskDetailsData.get(0).getAmountToCollect();
-                                        int amount = Integer.parseInt(amountToCollect);
-                                        getValidated(amount);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                mAlertDialog.dismiss();
-                            }
                         });
-                        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                            @Override
-                            public boolean onQueryTextSubmit(String query) {
-                                mAdapter.getFilter().filter(query);
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onQueryTextChange(String query) {
-                                mAdapter.getFilter().filter(query);
-                                return false;
-                            }
-                        });
-                    } else {
-                        RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity());
-                        recycle.setLayoutManager(lm);
-                        recycle.setItemAnimator(new DefaultItemAnimator());
-                        mAdapter = new BankSearchAdapter(getActivity(), bankList);
-                        recycle.setAdapter(mAdapter);
-                        recycle.addItemDecoration(new MyDividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL, 10));
-                        mAdapter.onBankSelected(new BankSearchAdapter.BankAdapterListener() {
-                            @Override
-                            public void onSelected(String item, int position) {
-                                mFragmentServiceInfoBinding.txtBankname.setText(item);
-                                mCallback.bankName(item);
-                                mTaskDetailsData =
-                                        getRealm().where(GeneralData.class).findAll();
-
-                                if (mTaskDetailsData != null && mTaskDetailsData.size() > 0) {
-                                    try {
-                                        String amountToCollect = mTaskDetailsData.get(0).getAmountToCollect();
-                                        int amount = Integer.parseInt(amountToCollect);
-                                        getValidated(amount);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                mAlertDialog.dismiss();
-                            }
-
-                        });
-                        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                            @Override
-                            public boolean onQueryTextSubmit(String query) {
-                                mAdapter.getFilter().filter(query);
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onQueryTextChange(String query) {
-                                mAdapter.getFilter().filter(query);
-                                return false;
-                            }
-                        });
+                        mAlertDialog = builder.create();
+                        mAlertDialog.show();
                     }
-                }
-
-                @Override
-                public void onFailure(int requestCode) {
 
                 }
-            });
-            controller.getBanksName(REQUEST_BANK);
-        }
-        txt_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mAlertDialog.dismiss();
             }
-        });
-
-        dialogBuilder.setCancelable(false);
-        mAlertDialog = dialogBuilder.create();
-        mAlertDialog.setCanceledOnTouchOutside(true);
-        mAlertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        mAlertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        mAlertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        mAlertDialog.show();
-
-    }
-
-    private void sendPaymentLink() {
-        LayoutInflater li = LayoutInflater.from(getActivity());
-
-        View promptsView = li.inflate(R.layout.payment_link_dialog, null);
-
-        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(getActivity());
-
-        alertDialogBuilder.setView(promptsView);
-
-        alertDialogBuilder.setTitle("Payment Link");
-
-        // create alert dialog
-        final android.app.AlertDialog alertDialog = alertDialogBuilder.create();
-
-        final AppCompatEditText edtmobile =
-                (AppCompatEditText) promptsView.findViewById(R.id.edtmobile);
-        final AppCompatEditText edtemail =
-                (AppCompatEditText) promptsView.findViewById(R.id.edtemail);
-        final AppCompatButton btn_send =
-                (AppCompatButton) promptsView.findViewById(R.id.btn_send);
-        final AppCompatButton btn_cancel =
-                (AppCompatButton) promptsView.findViewById(R.id.btn_cancel);
-        edtemail.setEnabled(false);
-        edtmobile.setEnabled(false);
-
-        try {
-            edtmobile.setText(mask);
-            edtemail.setText(Email);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
 
-        btn_send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    private void showBankDialog() {
+
+        try {
+            final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+            LayoutInflater inflater = getLayoutInflater();
+            final View dialogView = inflater.inflate(R.layout.bank_custom_dialog, null);
+            dialogBuilder.setView(dialogView);
+            final RecyclerView recycle = (RecyclerView) dialogView.findViewById(R.id.recycle);
+            final TextView txt_close = (TextView) dialogView.findViewById(R.id.txt_close);
+            final SearchView search = (SearchView) dialogView.findViewById(R.id.search);
+
+            if (bankList == null || bankList.size() == 0) {
+                NetworkCallController controller = new NetworkCallController(ServiceInfoFragment.this);
+                controller.setListner(new NetworkResponseListner() {
+                    @Override
+                    public void onResponse(int requestCode, Object data) {
+                        List<String> items = (List<String>) data;
+
+                        if (items != null) {
+                            RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity());
+                            recycle.setLayoutManager(lm);
+                            recycle.setItemAnimator(new DefaultItemAnimator());
+                            mAdapter = new BankSearchAdapter(getActivity(), items);
+                            recycle.setAdapter(mAdapter);
+                            recycle.addItemDecoration(new MyDividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL, 10));
+                            mAdapter.onBankSelected((item, position) -> {
+                                mFragmentServiceInfoBinding.txtBankname.setText(item);
+                                mCallback.bankName(item);
+                                mTaskDetailsData =
+                                        getRealm().where(GeneralData.class).findAll();
+
+                                if (mTaskDetailsData != null && mTaskDetailsData.size() > 0) {
+                                    try {
+                                        String amountToCollect = mTaskDetailsData.get(0).getAmountToCollect();
+                                        int amount = Integer.parseInt(amountToCollect);
+                                        getValidated(amount);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                mAlertDialog.dismiss();
+                            });
+                            search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                                @Override
+                                public boolean onQueryTextSubmit(String query) {
+                                    mAdapter.getFilter().filter(query);
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onQueryTextChange(String query) {
+                                    mAdapter.getFilter().filter(query);
+                                    return false;
+                                }
+                            });
+                        } else {
+                            RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity());
+                            recycle.setLayoutManager(lm);
+                            recycle.setItemAnimator(new DefaultItemAnimator());
+                            mAdapter = new BankSearchAdapter(getActivity(), bankList);
+                            recycle.setAdapter(mAdapter);
+                            recycle.addItemDecoration(new MyDividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL, 10));
+                            mAdapter.onBankSelected((item, position) -> {
+                                mFragmentServiceInfoBinding.txtBankname.setText(item);
+                                mCallback.bankName(item);
+                                mTaskDetailsData =
+                                        getRealm().where(GeneralData.class).findAll();
+
+                                if (mTaskDetailsData != null && mTaskDetailsData.size() > 0) {
+                                    try {
+                                        String amountToCollect = mTaskDetailsData.get(0).getAmountToCollect();
+                                        int amount = Integer.parseInt(amountToCollect);
+                                        getValidated(amount);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                mAlertDialog.dismiss();
+                            });
+                            search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                                @Override
+                                public boolean onQueryTextSubmit(String query) {
+                                    mAdapter.getFilter().filter(query);
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onQueryTextChange(String query) {
+                                    mAdapter.getFilter().filter(query);
+                                    return false;
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int requestCode) {
+
+                    }
+                });
+                controller.getBanksName(REQUEST_BANK);
+            }
+            txt_close.setOnClickListener(v -> mAlertDialog.dismiss());
+
+            dialogBuilder.setCancelable(false);
+            mAlertDialog = dialogBuilder.create();
+            mAlertDialog.setCanceledOnTouchOutside(true);
+            mAlertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            mAlertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            mAlertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            mAlertDialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendPaymentLink() {
+
+        try {
+            LayoutInflater li = LayoutInflater.from(getActivity());
+
+            View promptsView = li.inflate(R.layout.payment_link_dialog, null);
+
+            android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(getActivity());
+
+            alertDialogBuilder.setView(promptsView);
+
+            alertDialogBuilder.setTitle("Payment Link");
+
+            // create alert dialog
+            final android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+
+            final AppCompatEditText edtmobile =
+                    (AppCompatEditText) promptsView.findViewById(R.id.edtmobile);
+            final AppCompatEditText edtemail =
+                    (AppCompatEditText) promptsView.findViewById(R.id.edtemail);
+            final AppCompatButton btn_send =
+                    (AppCompatButton) promptsView.findViewById(R.id.btn_send);
+            final AppCompatButton btn_cancel =
+                    (AppCompatButton) promptsView.findViewById(R.id.btn_cancel);
+            edtemail.setEnabled(false);
+            edtmobile.setEnabled(false);
+
+            try {
+                edtmobile.setText(mask);
+                edtemail.setText(Email);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            btn_send.setOnClickListener(v -> {
                 mTaskDetailsData =
                         getRealm().where(GeneralData.class).findAll();
 
@@ -875,23 +868,22 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 }
 
                 alertDialog.dismiss();
-            }
-        });
+            });
 
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            btn_cancel.setOnClickListener(v -> {
                 if (Mode.equalsIgnoreCase("Online Payment Link")) {
                     alertDialog.dismiss();
                     mFragmentServiceInfoBinding.btnSendPaymentLink.setVisibility(View.VISIBLE);
                 } else {
                     mFragmentServiceInfoBinding.btnSendPaymentLink.setVisibility(GONE);
                 }
-            }
-        });
-        alertDialog.setCancelable(false);
-        alertDialog.setIcon(R.mipmap.logo);
-        alertDialog.show();
+            });
+            alertDialog.setCancelable(false);
+            alertDialog.setIcon(R.mipmap.logo);
+            alertDialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -926,78 +918,93 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     }
 
     private void uploadChequeImage() {
-        if (images.size() < 1) {
-            PickImageDialog.build(new PickSetup()).setOnPickResult(new IPickResult() {
-                @Override
-                public void onPickResult(PickResult pickResult) {
-                    try {
-                        if (pickResult.getError() == null) {
-                            images.add(pickResult.getPath());
-                            mFragmentServiceInfoBinding.lnrUpload.setVisibility(View.VISIBLE);
+        try {
+            if (images.size() < 1) {
+                PickImageDialog.build(new PickSetup()).setOnPickResult(new IPickResult() {
+                    @Override
+                    public void onPickResult(PickResult pickResult) {
+                        try {
+                            if (pickResult.getError() == null) {
+                                images.add(pickResult.getPath());
+                                mFragmentServiceInfoBinding.lnrUpload.setVisibility(View.VISIBLE);
 
-                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            selectedImagePath = pickResult.getPath();
-                            if (selectedImagePath != null) {
-                                Bitmap bit = new BitmapDrawable(getActivity().getResources(),
-                                        selectedImagePath).getBitmap();
-                                int i = (int) (bit.getHeight() * (512.0 / bit.getWidth()));
-                                bitmap = Bitmap.createScaledBitmap(bit, 512, i, true);
+                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                selectedImagePath = pickResult.getPath();
+                                if (selectedImagePath != null) {
+                                    Bitmap bit = new BitmapDrawable(getActivity().getResources(),
+                                            selectedImagePath).getBitmap();
+                                    int i = (int) (bit.getHeight() * (512.0 / bit.getWidth()));
+                                    bitmap = Bitmap.createScaledBitmap(bit, 512, i, true);
+                                }
+                                mFragmentServiceInfoBinding.imgUploadedCheque.setImageBitmap(bitmap);
+                                mFragmentServiceInfoBinding.lnrImage.setVisibility(View.VISIBLE);
+
+                                if (mFragmentServiceInfoBinding.imgUploadedCheque.getDrawable() != null) {
+                                    mFragmentServiceInfoBinding.lnrUpload.setVisibility(View.GONE);
+                                }
+
+
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                                byte[] b = baos.toByteArray();
+                                String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+                                if (images.size() == 0) {
+                                    mCallback.isPaymentChanged(true);
+                                } else {
+                                    mCallback.isPaymentChanged(false);
+                                    mCallback.chequeImage(encodedImage);
+                                    getValidated(AmountToCollect);
+                                }
                             }
-                            mFragmentServiceInfoBinding.imgUploadedCheque.setImageBitmap(bitmap);
-                            mFragmentServiceInfoBinding.lnrImage.setVisibility(View.VISIBLE);
-
-                            if (mFragmentServiceInfoBinding.imgUploadedCheque.getDrawable() != null) {
-                                mFragmentServiceInfoBinding.lnrUpload.setVisibility(View.GONE);
-                            }
-
-
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                            byte[] b = baos.toByteArray();
-                            String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-                            if (images.size() == 0) {
-                                mCallback.isPaymentChanged(true);
-                            } else {
-                                mCallback.isPaymentChanged(false);
-                                mCallback.chequeImage(encodedImage);
-                                getValidated(AmountToCollect);
-                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
 
-                }
-            }).show(getActivity());
-        } else {
-            Toast.makeText(getContext(), "You have already selected an Image", Toast.LENGTH_SHORT).show();
+                    }
+                }).show(getActivity());
+            } else {
+                Toast.makeText(getContext(), "You have already selected an Image", Toast.LENGTH_SHORT).show();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
     private void showDatePicker() {
-        FragmentDatePicker mFragDatePicker = new FragmentDatePicker();
-        mFragDatePicker.setmDatePickerListener(this);
-        mFragDatePicker.show(getActivity().getSupportFragmentManager(), "datepicker");
+        try {
+            FragmentDatePicker mFragDatePicker = new FragmentDatePicker();
+            mFragDatePicker.setmDatePickerListener(this);
+            mFragDatePicker.show(getActivity().getSupportFragmentManager(), "datepicker");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day) {
-        month++;
-        mFragmentServiceInfoBinding.txtDate.setText("" + day + "-" + month + "-" + year);
-        String date = mFragmentServiceInfoBinding.txtDate.getText().toString();
-        mCallback.chequeDate("" + month + "-" + day + "-" + year);
-        mTaskDetailsData =
-                getRealm().where(GeneralData.class).findAll();
+        try {
+            month++;
+            mFragmentServiceInfoBinding.txtDate.setText("" + day + "-" + month + "-" + year);
+            String date = mFragmentServiceInfoBinding.txtDate.getText().toString();
+            mCallback.chequeDate("" + month + "-" + day + "-" + year);
+            mTaskDetailsData =
+                    getRealm().where(GeneralData.class).findAll();
 
 
-        if (mTaskDetailsData != null && mTaskDetailsData.size() > 0) {
-            try {
-                String amountToCollect = mTaskDetailsData.get(0).getAmountToCollect();
-                int amount = Integer.parseInt(amountToCollect);
-                getValidated(amount);
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (mTaskDetailsData != null && mTaskDetailsData.size() > 0) {
+                try {
+                    String amountToCollect = mTaskDetailsData.get(0).getAmountToCollect();
+                    int amount = Integer.parseInt(amountToCollect);
+                    getValidated(amount);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
     private void getValidated(int amounttocollect) {
@@ -1172,13 +1179,11 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private void getServiceValidate() {
         try {
             if (Mode.equals("On-Site")) {
-                Log.i("isFeedback", String.valueOf(isFeedback));
-
                 if (isFeedback && mTaskDetailsData.get(0).getOnsite_OTP() != null && !mTaskDetailsData.get(0).getOnsite_OTP().equals("")) {
                     if (status.equals("Dispatched")) {
                         mFragmentServiceInfoBinding.layoutOtp.setVisibility(View.VISIBLE);
                         mFragmentServiceInfoBinding.lnrNoCustomer.setVisibility(View.VISIBLE);
-
+                        mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(GONE);
                     } else {
                         mFragmentServiceInfoBinding.layoutOtp.setVisibility(View.GONE);
                         mFragmentServiceInfoBinding.lnrNoCustomer.setVisibility(View.GONE);
@@ -1205,9 +1210,9 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
             }
 
-            if (Mode.equals("Completed")) {
+            else if (Mode.equals("Completed")) {
+                mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(GONE);
                 if (mTaskDetailsData.get(0).getRestrict_Early_Completion()) {
-
                     NetworkCallController controller = new NetworkCallController(this);
                     controller.setListner(new NetworkResponseListner() {
                         @Override
@@ -1226,9 +1231,15 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                         }
                     });
                     controller.getValidateCompletionTime(COMPLETION_REQUEST, mTaskDetailsData.get(0).getActualCompletionDateTime(), model.getTaskId());
-
                 }
+            }else if(Mode.equals("Dispatched")){
+                mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(GONE);
+                mFragmentServiceInfoBinding.layoutOtp.setVisibility(GONE);
+            }else if(Mode.equals("Incomplete")){
+                mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(View.VISIBLE);
+                mFragmentServiceInfoBinding.layoutOtp.setVisibility(GONE);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

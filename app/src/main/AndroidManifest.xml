@@ -15,10 +15,10 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
+    <uses-permission
+        android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
         tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-    <!-- <uses-permission -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> <!-- <uses-permission -->
     <!-- android:name="android.permission.RECEIVE_SMS" -->
     <!-- tools:node="remove" /> -->
     <!-- <uses-permission -->
@@ -55,34 +55,34 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.OnSiteAccountDetailsActivity"/>
-
+        <activity
+            android:name=".activities.TechChemicalCountActivity"
+            android:parentActivityName=".activities.HomeActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activities.OnSiteAccountDetailsActivity" />
         <activity android:name=".activities.OnSiteTaskActivity" />
         <activity
             android:name=".activities.StartVideoActivity"
             android:configChanges="orientation|screenSize|layoutDirection" />
         <activity
-            android:name=".activities.WelcomeVideoActivity"
-            android:configChanges="orientation|screenSize" />
-        <activity
             android:name=".activities.NewTaskDetailsActivity"
-            android:windowSoftInputMode="adjustPan"
             android:configChanges="keyboardHidden"
             android:exported="true"
             android:parentActivityName=".activities.HomeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.VoucherActivity"
             android:parentActivityName=".activities.HomeActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.AttendanceActivity"
             android:parentActivityName=".activities.HomeActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.IncentivesActivity"
             android:parentActivityName=".activities.HomeActivity"
-            android:screenOrientation="portrait"/> <!-- <activity -->
+            android:screenOrientation="portrait" /> <!-- <activity -->
         <activity
             android:name=".activities.TechIdActivity"
             android:configChanges="keyboardHidden"
@@ -122,10 +122,9 @@
         <activity
             android:name=".activities.LoginActivity"
             android:configChanges="keyboardHidden"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".BaseApplication"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" /> <!-- <activity -->
+        <!-- android:name=".BaseApplication" -->
+        <!-- android:screenOrientation="portrait" /> -->
         <activity
             android:name=".activities.HomeActivity"
             android:configChanges="keyboardHidden"
@@ -195,17 +194,15 @@
             <intent-filter>
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
-        </receiver>
-
-        <provider
-            android:name="com.ezetap.sdk.EzetapFileProvider"
-            android:authorities="com.ezeapi.sample.EzetapFileProvider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
-        </provider>
+        </receiver> <!-- <provider -->
+        <!-- android:name="com.ezetap.sdk.EzetapFileProvider" -->
+        <!-- android:authorities="com.ezeapi.sample.EzetapFileProvider" -->
+        <!-- android:exported="false" -->
+        <!-- android:grantUriPermissions="true"> -->
+        <!-- <meta-data -->
+        <!-- android:name="android.support.FILE_PROVIDER_PATHS" -->
+        <!-- android:resource="@xml/provider_paths" /> -->
+        <!-- </provider> -->
         <provider
             android:name=".utils.DownloadFileProvider"
             android:authorities="${applicationId}.provider"

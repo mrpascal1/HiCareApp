@@ -12,13 +12,13 @@ import java.util.Calendar;
 public class FragmentDatePicker extends DialogFragment
                             implements DatePickerDialog.OnDateSetListener {
 
-    protected onDatePickerListener mDatePickerListener=null;
+    private onDatePickerListener mDatePickerListener=null;
 
     public onDatePickerListener getmDatePickerListener() {
         return mDatePickerListener;
     }
 
-    public void setmDatePickerListener(onDatePickerListener mDatePickerListener) {
+    void setmDatePickerListener(onDatePickerListener mDatePickerListener) {
         this.mDatePickerListener = mDatePickerListener;
     }
 
@@ -55,9 +55,8 @@ public class FragmentDatePicker extends DialogFragment
         if(mDatePickerListener!=null){
             mDatePickerListener.onDateSet(view,year,month,day);
         }
-        // Do something with the date chosen by the user
     }
     public interface onDatePickerListener {
-        public void onDateSet(DatePicker view, int year, int month, int day);
+        void onDateSet(DatePicker view, int year, int month, int day);
     }
 }

@@ -107,12 +107,7 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
         super.onViewCreated(view, savedInstanceState);
 
         mFragmentTechnicianSeniorBinding.swipeRefreshLayout.setOnRefreshListener(
-                new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        getGroomingDetails();
-                    }
-                });
+                () -> getGroomingDetails());
         mFragmentTechnicianSeniorBinding.recycleView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         mFragmentTechnicianSeniorBinding.recycleView.setLayoutManager(layoutManager);
@@ -196,24 +191,28 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
 
     @Override
     public void onCaptureImageItemClick(int position) {
-        pos = position;
-        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        tempImageName = createFileName() + getFileExtension();
-        File photo = new File(IMAGE_FILE_PATH, tempImageName);
-        Log.i("photo", String.valueOf(photo));
+        try {
+            pos = position;
+            Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            tempImageName = createFileName() + getFileExtension();
+            File photo = new File(IMAGE_FILE_PATH, tempImageName);
+            Log.i("photo", String.valueOf(photo));
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Uri photoURI = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", photo);
-            Log.i("provider", String.valueOf(photoURI));
-            intent.putExtra("output", photoURI);
-        } else {
-            intent.putExtra("output", Uri.fromFile(photo));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Uri photoURI = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", photo);
+                Log.i("provider", String.valueOf(photoURI));
+                intent.putExtra("output", photoURI);
+            } else {
+                intent.putExtra("output", Uri.fromFile(photo));
+            }
+
+            TimeStamp = AppUtils.getCurrentTimeStamp();
+            startActivityForResult(intent, CAMERA_REQUEST);
+            Uri.fromFile(photo);
+        }catch (Exception e){
+            e.printStackTrace();
         }
-
-        TimeStamp = AppUtils.getCurrentTimeStamp();
-        startActivityForResult(intent, CAMERA_REQUEST);
-        Uri.fromFile(photo);
 
     }
 
@@ -317,32 +316,35 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
 
 
     private void uploadCapturedImage(String encodedImage) {
-        NetworkCallController controller = new NetworkCallController(this);
-        TechGroomingRequest request = new TechGroomingRequest();
-        request.setEmployeeCode(mAdapter.getItem(pos).getEmployeeCode());
-        request.setTechnicianId(mAdapter.getItem(pos).getTechnicianId());
-        request.setTechnicianName(mAdapter.getItem(pos).getTechnicianName());
-        request.setMobileNo(mAdapter.getItem(pos).getMobileNo());
-        request.setImage(encodedImage);
-        controller.setListner(new NetworkResponseListner() {
-            @Override
-            public void onResponse(int requestCode, Object data) {
-                BasicResponse response = (BasicResponse) data;
-                if (response.getSuccess()) {
-                    Toasty.success(getActivity(),"Image uploaded successfully.",Toasty.LENGTH_SHORT).show();
-                    getGroomingDetails();
-                } else {
-                    Toast.makeText(getActivity(), "Failed.", Toast.LENGTH_SHORT).show();
+        try {
+            NetworkCallController controller = new NetworkCallController(this);
+            TechGroomingRequest request = new TechGroomingRequest();
+            request.setEmployeeCode(mAdapter.getItem(pos).getEmployeeCode());
+            request.setTechnicianId(mAdapter.getItem(pos).getTechnicianId());
+            request.setTechnicianName(mAdapter.getItem(pos).getTechnicianName());
+            request.setMobileNo(mAdapter.getItem(pos).getMobileNo());
+            request.setImage(encodedImage);
+            controller.setListner(new NetworkResponseListner() {
+                @Override
+                public void onResponse(int requestCode, Object data) {
+                    BasicResponse response = (BasicResponse) data;
+                    if (response.getSuccess()) {
+                        Toasty.success(getActivity(),"Image uploaded successfully.",Toasty.LENGTH_SHORT).show();
+                        getGroomingDetails();
+                    } else {
+                        Toast.makeText(getActivity(), "Failed.", Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(int requestCode) {
+                @Override
+                public void onFailure(int requestCode) {
 
-            }
-        });
-        controller.postGroomingImage(POST_GROOMING_REQ, request);
-
+                }
+            });
+            controller.postGroomingImage(POST_GROOMING_REQ, request);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -73,12 +73,7 @@ FragmentTrainingBinding mFragmentTrainingBinding;
         InputMethodManager imm =(InputMethodManager)getActivity().getSystemService(INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         mFragmentTrainingBinding.swipeRefreshLayout.setOnRefreshListener(
-                new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        getTrainingVideos();
-                    }
-                });
+                () -> getTrainingVideos());
         mFragmentTrainingBinding.recycleView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         mFragmentTrainingBinding.recycleView.setLayoutManager(layoutManager);
@@ -121,17 +116,13 @@ FragmentTrainingBinding mFragmentTrainingBinding;
                         if (pageNumber == 1 && items.size() > 0) {
                             mAdapter.setData(items);
                             mAdapter.notifyDataSetChanged();
-                            mFragmentTrainingBinding.emptyVideos.setVisibility(View.GONE);
                         } else if (items.size() > 0) {
                             mAdapter.addData(items);
                             mAdapter.notifyDataSetChanged();
-                            mFragmentTrainingBinding.emptyVideos.setVisibility(View.GONE);
                         } else {
                             pageNumber--;
-                            mFragmentTrainingBinding.emptyVideos.setVisibility(View.VISIBLE);
                         }
                     }else {
-                        mFragmentTrainingBinding.emptyVideos.setVisibility(View.VISIBLE);
 
                     }
                 }

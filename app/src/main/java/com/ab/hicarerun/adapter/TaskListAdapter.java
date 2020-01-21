@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.hardware.Camera;
@@ -16,6 +18,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.format.Time;
 import android.text.style.ForegroundColorSpan;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +42,8 @@ import com.ab.hicarerun.databinding.TaskListAdapterBinding;
 import com.ab.hicarerun.handler.OnCallListItemClickHandler;
 import com.ab.hicarerun.handler.OnDeleteListItemClickHandler;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
+import com.ab.hicarerun.network.NetworkCallController;
+import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.TaskModel.Tasks;
 import com.ab.hicarerun.utils.AppUtils;
@@ -81,6 +86,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     private int time = 20;
     private Timer timer;
     private String Flat = "";
+    private static final int RESOURCE_REQ = 1000;
 
     public TaskListAdapter(Activity context) {
         if (items == null) {
@@ -102,6 +108,31 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
+
+        if (items.get(position).getHelperResourceId() != null && !items.get(position).getHelperResourceId().equals("")) {
+            holder.mTaskListAdapterBinding.lnrPartnerPic.setVisibility(View.VISIBLE);
+            NetworkCallController controller = new NetworkCallController();
+            controller.setListner(new NetworkResponseListner() {
+                @Override
+                public void onResponse(int requestCode, Object response) {
+                    String base64 = (String) response;
+                    byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    if (base64.length() > 0) {
+                        holder.mTaskListAdapterBinding.imgPartner.setImageBitmap(decodedByte);
+                    }
+                }
+
+                @Override
+                public void onFailure(int requestCode) {
+
+                }
+            });
+            controller.getResourceProfilePicture(RESOURCE_REQ, items.get(position).getHelperResourceId());
+        } else {
+            holder.mTaskListAdapterBinding.lnrPartnerPic.setVisibility(View.GONE);
+        }
+
         holder.mTaskListAdapterBinding.txtTime.setText(items.get(position).getTaskAssignmentStartTime() + " - " + items.get(position).getTaskAssignmentEndTime());
         holder.mTaskListAdapterBinding.txtName.setText(items.get(position).getAccountName());
         holder.mTaskListAdapterBinding.status.setText(items.get(position).getStatus());
@@ -137,12 +168,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         holder.mTaskListAdapterBinding.status.setTypeface(Typeface.DEFAULT_BOLD, Typeface.NORMAL);
         Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.blink);
         holder.mTaskListAdapterBinding.imgWarning.startAnimation(animation);
-//        if (items.get(position).getSequenceNumber() == 1) {
-//            holder.mTaskListAdapterBinding.cardTasks.setCardBackgroundColor(Color.parseColor("#ffe76e54"));
-//        }else {
-//            holder.mTaskListAdapterBinding.cardTasks.setCardBackgroundColor(Color.parseColor("#ffffff"));
-//
-//        }
         if (items.get(position).getSequenceNumber() == 1 && items.get(position).getAccountType().equals("Individual")) {
             holder.mTaskListAdapterBinding.lnrMain.setBackgroundColor(Color.parseColor("#ffc0cb"));
         } else {
@@ -234,6 +259,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
         holder.mTaskListAdapterBinding.btnHelpline.setOnClickListener(view -> onCallListItemClickHandler.onTechnicianHelplineClicked(position));
 
+        holder.mTaskListAdapterBinding.lnrPartnerPic.setOnClickListener(view -> onCallListItemClickHandler.onResourcePartnerPic(position));
 
         final Handler ha = new Handler();
         ha.postDelayed(new Runnable() {

@@ -66,16 +66,13 @@ public class LoginFragment extends BaseFragment implements UserLoginClickHandler
 
         mFragmentLoginBinding.setHandler(this);
 
-        mFragmentLoginBinding.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    // show password
-                    mFragmentLoginBinding.edtpassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                } else {
-                    // hide password
-                    mFragmentLoginBinding.edtpassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                }
+        mFragmentLoginBinding.checkbox.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            if (isChecked) {
+                // show password
+                mFragmentLoginBinding.edtpassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            } else {
+                // hide password
+                mFragmentLoginBinding.edtpassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
             }
         });
 

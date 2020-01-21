@@ -125,9 +125,6 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
             }
         }
 
-//        FocusView view = new FocusView(getActivity());
-//        mFragmentFaceRecognizationBinding.focusView.addView(view);
-//        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         return mFragmentFaceRecognizationBinding.getRoot();
     }
 
@@ -137,38 +134,38 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
 
 
         cameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
-        mFragmentFaceRecognizationBinding.captureImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                takeImage();
-            }
-        });
+        mFragmentFaceRecognizationBinding.captureImage.setOnClickListener(v -> takeImage());
     }
 
     private void getAttendanceDetails() {
-        RealmResults<LoginResponse> LoginRealmModels =
-                BaseApplication.getRealm().where(LoginResponse.class).findAll();
-        if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-            String resourceId = LoginRealmModels.get(0).getUserID();
-            NetworkCallController controller = new NetworkCallController(this);
-            controller.setListner(new NetworkResponseListner() {
-                @Override
-                public void onResponse(int requestCode, Object response) {
-                    AttendanceDetail data = (AttendanceDetail) response;
-                    LateDays = data.getTotalDaysLateCome();
-                    Days = data.getTotalNoOfDays();
-                    PresentDays = data.getTotalNoOfDaysPresent();
-                    AbsentDays = Days - PresentDays;
-                    getAttendanceSheetDialog();
-                }
+        try {
+            RealmResults<LoginResponse> LoginRealmModels =
+                    BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                String resourceId = LoginRealmModels.get(0).getUserID();
+                NetworkCallController controller = new NetworkCallController(this);
+                controller.setListner(new NetworkResponseListner() {
+                    @Override
+                    public void onResponse(int requestCode, Object response) {
+                        AttendanceDetail data = (AttendanceDetail) response;
+                        LateDays = data.getTotalDaysLateCome();
+                        Days = data.getTotalNoOfDays();
+                        PresentDays = data.getTotalNoOfDaysPresent();
+                        AbsentDays = Days - PresentDays;
+                        getAttendanceSheetDialog();
+                    }
 
-                @Override
-                public void onFailure(int requestCode) {
+                    @Override
+                    public void onFailure(int requestCode) {
 
-                }
-            });
-            controller.getAttendanceDetail(ATTENDANCE_REQ, resourceId);
+                    }
+                });
+                controller.getAttendanceDetail(ATTENDANCE_REQ, resourceId);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
 
@@ -189,7 +186,6 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
 
             }
         });
-
         dialog.show();
     }
 
@@ -257,8 +253,6 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
             }
         }
     }
-
-    //    Another important method in this is setUpCamera that gets the camera object as a parameter. In this method we manage the rotation and the flash button also because the front camera doesn't support a flash.
     private void setUpCamera(Camera c) {
         Camera.CameraInfo info = new Camera.CameraInfo();
         Camera.getCameraInfo(cameraId, info);
@@ -421,25 +415,29 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
     }
 
     private void getAttendanceSheetDialog() {
-        LayoutInflater li = LayoutInflater.from(getActivity());
 
-        View promptsView = li.inflate(R.layout.layout_view_attendance, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-        TextView txtDays = promptsView.findViewById(R.id.txtDays);
-        TextView txtPresent = promptsView.findViewById(R.id.txtPresent);
-        TextView txtAbsent = promptsView.findViewById(R.id.txtAbsent);
-        TextView txtLate = promptsView.findViewById(R.id.txtLate);
-        txtDays.setText(String.valueOf(Days));
-        txtPresent.setText(String.valueOf(PresentDays));
-        txtAbsent.setText(String.valueOf(AbsentDays));
-        txtLate.setText(String.valueOf(LateDays));
-        alertDialogBuilder.setView(promptsView);
-        final AlertDialog alertDialog = alertDialogBuilder.create();
-        LinearLayout btnOk = promptsView.findViewById(R.id.lnrOk);
-        btnOk.setOnClickListener(view -> alertDialog.dismiss());
-        alertDialog.setCancelable(false);
-        alertDialog.show();
+        try {
+            LayoutInflater li = LayoutInflater.from(getActivity());
+            View promptsView = li.inflate(R.layout.layout_view_attendance, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+            TextView txtDays = promptsView.findViewById(R.id.txtDays);
+            TextView txtPresent = promptsView.findViewById(R.id.txtPresent);
+            TextView txtAbsent = promptsView.findViewById(R.id.txtAbsent);
+            TextView txtLate = promptsView.findViewById(R.id.txtLate);
+            txtDays.setText(String.valueOf(Days));
+            txtPresent.setText(String.valueOf(PresentDays));
+            txtAbsent.setText(String.valueOf(AbsentDays));
+            txtLate.setText(String.valueOf(LateDays));
+            alertDialogBuilder.setView(promptsView);
+            final AlertDialog alertDialog = alertDialogBuilder.create();
+            LinearLayout btnOk = promptsView.findViewById(R.id.lnrOk);
+            btnOk.setOnClickListener(view -> alertDialog.dismiss());
+            alertDialog.setCancelable(false);
+            alertDialog.show();
 
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 
@@ -479,7 +477,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
         return Bitmap.createScaledBitmap(image, width, height, true);
     }
 
-    public void getErrorDialog(String title, String message) {
+    private void getErrorDialog(String title, String message) {
         try {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(title);

@@ -11,7 +11,6 @@ import androidx.appcompat.app.AlertDialog;
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.activities.HomeActivity;
-import com.ab.hicarerun.activities.TaskDetailsActivity;
 import com.ab.hicarerun.network.models.AttachmentModel.AttachmentDeleteRequest;
 import com.ab.hicarerun.network.models.AttachmentModel.AttachmentMSTResponse;
 import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentResponse;
@@ -21,7 +20,7 @@ import com.ab.hicarerun.network.models.AttendanceModel.AttendanceDetailResponse;
 import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
 import com.ab.hicarerun.network.models.AttendanceModel.ProfilePicRequest;
 import com.ab.hicarerun.network.models.BasicResponse;
-import com.ab.hicarerun.network.models.ChemicalModel.ChemicalMSTResponse;
+import com.ab.hicarerun.network.models.ChemicalCountModel.ChemicalCountResponse;
 import com.ab.hicarerun.network.models.ChemicalModel.ChemicalResponse;
 import com.ab.hicarerun.network.models.ExotelModel.ExotelResponse;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackRequest;
@@ -60,7 +59,6 @@ import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingRespo
 import com.ab.hicarerun.network.models.TrainingModel.TrainingResponse;
 import com.ab.hicarerun.network.models.TrainingModel.WelcomeVideoResponse;
 import com.ab.hicarerun.network.models.UpdateAppModel.UpdateResponse;
-import com.ab.hicarerun.network.models.voucher.VoucherRequest;
 import com.ab.hicarerun.network.models.voucher.VoucherResponseMain;
 import com.ab.hicarerun.utils.AppUtils;
 
@@ -2109,6 +2107,135 @@ public class NetworkCallController {
                     public void onFailure(Call<SaveAccountAreaResponse> call, Throwable t) {
                         mContext.dismissProgressDialog();
                         mContext.showServerError("Something went wrong, please try again !!!");
+                    }
+                });
+    }
+
+    public void getTechnicianJobSummary(final int requestCode, final String userId) {
+        mContext.showProgressDialog();
+        BaseApplication.getRetrofitAPI(true)
+                .getTechnicianJobSummary(userId)
+                .enqueue(new Callback<ChemicalCountResponse>() {
+                    @Override
+                    public void onResponse(Call<ChemicalCountResponse> call,
+                                           Response<ChemicalCountResponse> response) {
+                        mContext.dismissProgressDialog();
+                        if (response != null) {
+                            if (response.code() == 401) { // Unauthorised Access
+                                NetworkCallController controller = new NetworkCallController();
+                                controller.setListner(new NetworkResponseListner<LoginResponse>() {
+                                    @Override
+                                    public void onResponse(int reqCode, LoginResponse response) {
+                                        // delete all previous record
+                                        Realm.getDefaultInstance().beginTransaction();
+                                        Realm.getDefaultInstance().deleteAll();
+                                        Realm.getDefaultInstance().commitTransaction();
+
+                                        // add new record
+                                        Realm.getDefaultInstance().beginTransaction();
+                                        Realm.getDefaultInstance().copyToRealmOrUpdate(response);
+                                        Realm.getDefaultInstance().commitTransaction();
+                                        getTechnicianJobSummary(requestCode, userId);
+                                    }
+
+                                    @Override
+                                    public void onFailure(int requestCode) {
+
+                                    }
+                                });
+                                controller.refreshToken(100, getRefreshToken());
+                            } else if (response.body() != null) {
+                                mListner.onResponse(requestCode, response.body().getData());
+
+                            } else if (response.errorBody() != null) {
+                                try {
+                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                    mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                    RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                    if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getGroomingTechnicians", lineNo, userName, DeviceName);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ChemicalCountResponse> call, Throwable t) {
+                        mContext.dismissProgressDialog();
+                        mContext.showServerError("Something went wrong, please try again !!!");
+                    }
+                });
+    }
+
+    public void getResourceProfilePicture(final int requestCode, final String userId) {
+        if (mContext != null)
+            mContext.showProgressDialog();
+        BaseApplication.getRetrofitAPI(true)
+                .getResourceProfilePicture(userId)
+                .enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call,
+                                           Response<String> response) {
+                        if (mContext != null)
+                            mContext.dismissProgressDialog();
+                        if (response != null) {
+                            if (response.code() == 401) { // Unauthorised Access
+                                NetworkCallController controller = new NetworkCallController();
+                                controller.setListner(new NetworkResponseListner<LoginResponse>() {
+                                    @Override
+                                    public void onResponse(int reqCode, LoginResponse response) {
+                                        // delete all previous record
+                                        Realm.getDefaultInstance().beginTransaction();
+                                        Realm.getDefaultInstance().deleteAll();
+                                        Realm.getDefaultInstance().commitTransaction();
+
+                                        // add new record
+                                        Realm.getDefaultInstance().beginTransaction();
+                                        Realm.getDefaultInstance().copyToRealmOrUpdate(response);
+                                        Realm.getDefaultInstance().commitTransaction();
+                                        getTechnicianJobSummary(requestCode, userId);
+                                    }
+
+                                    @Override
+                                    public void onFailure(int requestCode) {
+
+                                    }
+                                });
+                                controller.refreshToken(100, getRefreshToken());
+                            } else if (response.body() != null) {
+                                mListner.onResponse(requestCode, response.body());
+
+                            } else if (response.errorBody() != null) {
+                                try {
+                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                    if (mContext != null)
+                                        mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                    RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                    if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                        AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getGroomingTechnicians", lineNo, userName, DeviceName);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        if (mContext != null) {
+                            mContext.dismissProgressDialog();
+                            mContext.showServerError("Something went wrong, please try again !!!");
+                        }
                     }
                 });
     }

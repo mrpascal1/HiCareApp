@@ -155,8 +155,6 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
         mFragmentGeneralBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_general, container, false);
         return mFragmentGeneralBinding.getRoot();
     }
@@ -449,9 +447,9 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
                     @Override
                     public void onResponse(int requestCode, Object data) {
                         BasicResponse response = (BasicResponse) data;
-                        if(response.getSuccess()){
+                        if (response.getSuccess()) {
                             mCallback.isEarlyCompletion(false);
-                        }else {
+                        } else {
                             mCallback.isEarlyCompletion(true);
                         }
                     }
@@ -461,7 +459,7 @@ public class GeneralFragment extends BaseFragment implements UserGeneralClickHan
 
                     }
                 });
-                controller.getValidateCompletionTime(COMPLETION_REQUEST,mGeneralRealmModel.get(0).getActualCompletionDateTime(),taskId);
+                controller.getValidateCompletionTime(COMPLETION_REQUEST, mGeneralRealmModel.get(0).getActualCompletionDateTime(), taskId);
             }
         }
     }

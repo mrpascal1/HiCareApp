@@ -19,8 +19,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_link" />
-                            <entry key="sourceFile" value="D:\Image\link.svg" />
+                            <entry key="outputName" value="ic_data_table" />
+                            <entry key="sourceFile" value="D:\Image\data-table.svg" />
                           </map>
                         </option>
                       </PersistentState>

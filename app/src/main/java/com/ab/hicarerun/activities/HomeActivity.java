@@ -352,10 +352,14 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
             String isTsEnable = LoginRealmModels.get(0).getIsTechnician();
             Menu menu = navigationView.getMenu();
             MenuItem groom = menu.findItem(R.id.nav_groom);
+            MenuItem jobCount = menu.findItem(R.id.nav_summary);
             if (isTsEnable.equals("0")) {
                 groom.setVisible(true);
+                jobCount.setVisible(true);
             } else {
                 groom.setVisible(false);
+                jobCount.setVisible(false);
+
             }
             PackageInfo pInfo = null;
             try {
@@ -405,6 +409,11 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 case R.id.nav_groom:
                     mActivityHomeBinding.drawer.closeDrawers();
                     startActivity(new Intent(HomeActivity.this, TechnicianSeniorActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                    break;
+
+                case R.id.nav_summary:
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, TechChemicalCountActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
                     break;
 
                 case R.id.nav_notifications:

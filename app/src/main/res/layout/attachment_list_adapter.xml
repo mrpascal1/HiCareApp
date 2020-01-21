@@ -34,22 +34,22 @@
                     app:layout_constraintTop_toTopOf="parent"
                     android:orientation="horizontal">
 
-                    <LinearLayout
-                        android:id="@+id/lnr_select"
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:visibility="gone"
-                        android:gravity="center">
+                    <!--<LinearLayout-->
+                        <!--android:id="@+id/lnr_select"-->
+                        <!--android:layout_width="40dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:visibility="gone"-->
+                        <!--android:gravity="center">-->
 
-                    <net.igenius.customcheckbox.CustomCheckBox
-                        android:id="@+id/check_attach"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_alignParentLeft="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center"
-                        android:paddingLeft="5dp" />
-                    </LinearLayout>
+                    <!--<net.igenius.customcheckbox.CustomCheckBox-->
+                        <!--android:id="@+id/check_attach"-->
+                        <!--android:layout_width="25dp"-->
+                        <!--android:layout_height="25dp"-->
+                        <!--android:layout_alignParentLeft="true"-->
+                        <!--android:layout_centerVertical="true"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--android:paddingLeft="5dp" />-->
+                    <!--</LinearLayout>-->
 
                     <ImageView
                         android:id="@+id/img_job"

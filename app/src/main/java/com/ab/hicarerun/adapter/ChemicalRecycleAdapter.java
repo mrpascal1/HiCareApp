@@ -22,8 +22,6 @@ import com.ab.hicarerun.viewmodel.AttachmentListViewModel;
 import com.ab.hicarerun.viewmodel.ChemicalViewModel;
 import com.bumptech.glide.Glide;
 
-import net.igenius.customcheckbox.CustomCheckBox;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

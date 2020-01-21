@@ -31,6 +31,11 @@
             android:title="@string/grooming" />
 
         <item
+            android:id="@+id/nav_summary"
+            android:icon="@drawable/ic_data_table"
+            android:title="Today's Job Count" />
+
+        <item
             android:id="@+id/nav_myid"
             android:icon="@drawable/ic_id_card"
             android:title="@string/my_id_card" />

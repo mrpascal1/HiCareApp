@@ -23,7 +23,6 @@ import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.viewmodel.AccountAreaViewModel;
 import com.ab.hicarerun.viewmodel.ReferralListViewModel;
-import com.daimajia.swipe.SwipeLayout;
 
 import java.text.ParseException;
 import java.util.ArrayList;

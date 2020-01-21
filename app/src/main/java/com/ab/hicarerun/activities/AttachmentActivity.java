@@ -51,7 +51,6 @@ public class AttachmentActivity extends BaseActivity implements OnJobCardEventHa
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void getAttchmentBack() {
@@ -72,7 +71,6 @@ public class AttachmentActivity extends BaseActivity implements OnJobCardEventHa
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
             case android.R.id.home:

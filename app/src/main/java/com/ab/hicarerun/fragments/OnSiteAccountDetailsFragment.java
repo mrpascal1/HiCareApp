@@ -64,12 +64,17 @@ public class OnSiteAccountDetailsFragment extends BaseFragment {
     }
 
     private void setViewPagerView() {
-        mAdapter = new TaskViewPagerAdapter(getActivity().getSupportFragmentManager(), getActivity());
-        mAdapter.addFragment(OnSiteTaskFragment.newInstance(model), "On-Site Tasks");
-        mAdapter.addFragment(RecentOnsiteTaskFragment.newInstance(model), "Recent Tasks");
-        mFragmentOnSiteAccountDetailsBinding.viewpagertab.setDistributeEvenly(true);
-        mFragmentOnSiteAccountDetailsBinding.pager.setAdapter(mAdapter);
-        mFragmentOnSiteAccountDetailsBinding.viewpagertab.setViewPager(mFragmentOnSiteAccountDetailsBinding.pager);
+        try {
+            mAdapter = new TaskViewPagerAdapter(getActivity().getSupportFragmentManager(), getActivity());
+            mAdapter.addFragment(OnSiteTaskFragment.newInstance(model), "On-Site Tasks");
+            mAdapter.addFragment(RecentOnsiteTaskFragment.newInstance(model), "Recent Tasks");
+            mFragmentOnSiteAccountDetailsBinding.viewpagertab.setDistributeEvenly(true);
+            mFragmentOnSiteAccountDetailsBinding.pager.setAdapter(mAdapter);
+            mFragmentOnSiteAccountDetailsBinding.viewpagertab.setViewPager(mFragmentOnSiteAccountDetailsBinding.pager);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

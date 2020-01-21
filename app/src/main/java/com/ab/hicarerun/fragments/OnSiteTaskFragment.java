@@ -179,11 +179,6 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
                                 }
                                 getSubList(response.getData());
                             }
-//                                getSubList(items);
-//                                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(),
-//                                        android.R.layout.simple_spinner_dropdown_item, areaList);
-//                                arrayAdapter.setDropDownViewResource(R.layout.spinner_popup);
-//                                mFragmentOnSiteTaskBinding.spnArea.setAdapter(arrayAdapter);
                         }
 
                         @Override
@@ -205,77 +200,42 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
     }
 
     private void getSubList(final List<OnSiteArea> items) {
-        subItems = new ArrayList<>();
-        defaultSubItems = new ArrayList<>();
-        for (int i = 0; i < items.size(); i++) {
-            OnSiteArea mOnSiteArea = new OnSiteArea();
-            if (Area.equals(items.get(i).getAreaTypeC())) {
-                mOnSiteArea.setId(items.get(i).getId());
-                mOnSiteArea.setName(items.get(i).getName());
-                mOnSiteArea.setAccountC(items.get(i).getAccountC());
-                mOnSiteArea.setActivityDetail(items.get(i).getActivityDetail());
-                mOnSiteArea.setAreaTypeC(items.get(i).getAreaTypeC());
-                mOnSiteArea.setAreaSubTypeC(items.get(i).getAreaSubTypeC());
-                mOnSiteArea.setServiceNameC(items.get(i).getServiceNameC());
-                mOnSiteArea.setLastActivityOn_Text(items.get(i).getLastActivityOn_Text());
-                subItems.add(mOnSiteArea);
+        try {
+            subItems = new ArrayList<>();
+            defaultSubItems = new ArrayList<>();
+            for (int i = 0; i < items.size(); i++) {
+                OnSiteArea mOnSiteArea = new OnSiteArea();
+                if (Area.equals(items.get(i).getAreaTypeC())) {
+                    mOnSiteArea.setId(items.get(i).getId());
+                    mOnSiteArea.setName(items.get(i).getName());
+                    mOnSiteArea.setAccountC(items.get(i).getAccountC());
+                    mOnSiteArea.setActivityDetail(items.get(i).getActivityDetail());
+                    mOnSiteArea.setAreaTypeC(items.get(i).getAreaTypeC());
+                    mOnSiteArea.setAreaSubTypeC(items.get(i).getAreaSubTypeC());
+                    mOnSiteArea.setServiceNameC(items.get(i).getServiceNameC());
+                    mOnSiteArea.setLastActivityOn_Text(items.get(i).getLastActivityOn_Text());
+                    subItems.add(mOnSiteArea);
+                }
             }
-        }
-        if (subItems != null) {
-            if (pageNumber == 1 && subItems.size() > 0) {
-                mAdapter.setData(subItems);
-                mAdapter.notifyDataSetChanged();
-                mFragmentOnSiteTaskBinding.emptyTask.setVisibility(View.GONE);
-            } else if (subItems.size() > 0) {
-                mAdapter.addData(subItems);
-                mAdapter.notifyDataSetChanged();
-                mFragmentOnSiteTaskBinding.emptyTask.setVisibility(View.GONE);
+            if (subItems != null) {
+                if (pageNumber == 1 && subItems.size() > 0) {
+                    mAdapter.setData(subItems);
+                    mAdapter.notifyDataSetChanged();
+                    mFragmentOnSiteTaskBinding.emptyTask.setVisibility(View.GONE);
+                } else if (subItems.size() > 0) {
+                    mAdapter.addData(subItems);
+                    mAdapter.notifyDataSetChanged();
+                    mFragmentOnSiteTaskBinding.emptyTask.setVisibility(View.GONE);
+                } else {
+                    mFragmentOnSiteTaskBinding.emptyTask.setVisibility(View.VISIBLE);
+                }
             } else {
                 mFragmentOnSiteTaskBinding.emptyTask.setVisibility(View.VISIBLE);
             }
-        } else {
-            mFragmentOnSiteTaskBinding.emptyTask.setVisibility(View.VISIBLE);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-//        mFragmentOnSiteTaskBinding.spnArea.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                subItems = new ArrayList<>();
-//                Area = mFragmentOnSiteTaskBinding.spnArea.getSelectedItem().toString();
-//                for (int i = 0; i < items.size(); i++) {
-//                    OnSiteArea mOnSiteArea = new OnSiteArea();
-//                    if (Area.equals(items.get(i).getAreaTypeC())) {
-//                        mOnSiteArea.setId(items.get(i).getId());
-//                        mOnSiteArea.setName(items.get(i).getName());
-//                        mOnSiteArea.setAccountC(items.get(i).getAccountC());
-//                        mOnSiteArea.setActivityDetail(items.get(i).getActivityDetail());
-//                        mOnSiteArea.setAreaTypeC(items.get(i).getAreaTypeC());
-//                        mOnSiteArea.setAreaSubTypeC(items.get(i).getAreaSubTypeC());
-//                        mOnSiteArea.setServiceNameC(items.get(i).getServiceNameC());
-//                        subItems.add(mOnSiteArea);
-//                    }
-//                }
-//                if (subItems != null) {
-//                    if (pageNumber == 1 && subItems.size() > 0) {
-//                        mAdapter.setData(subItems);
-//                        mAdapter.notifyDataSetChanged();
-//                        mFragmentOnSiteTaskBinding.emptyTask.setVisibility(View.GONE);
-//                    } else if (subItems.size() > 0) {
-//                        mAdapter.addData(subItems);
-//                        mAdapter.notifyDataSetChanged();
-//                        mFragmentOnSiteTaskBinding.emptyTask.setVisibility(View.GONE);
-//                    } else {
-//                        mFragmentOnSiteTaskBinding.emptyTask.setVisibility(View.VISIBLE);
-//                    }
-//                } else {
-//                    mFragmentOnSiteTaskBinding.emptyTask.setVisibility(View.VISIBLE);
-//                }
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//            }
-//
-//        });
+
     }
 
     @Override
@@ -287,58 +247,63 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
 
     @Override
     public void onNotDoneClick(final int position) {
-        NetworkCallController controller = new NetworkCallController(OnSiteTaskFragment.this);
-        controller.setListner(new NetworkResponseListner() {
-            @Override
-            public void onResponse(int requestCode, Object response) {
-                try {
-                    List<String> list = (List<String>) response;
-                    dismissProgressDialog();
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    LayoutInflater inflater = LayoutInflater.from(getActivity());
-                    final View v = inflater.inflate(R.layout.jeopardy_reasons_layout, null, false);
-                    final RadioGroup radioGroup = (RadioGroup) v.findViewById(R.id.radiogrp);
+        try {
+            NetworkCallController controller = new NetworkCallController(OnSiteTaskFragment.this);
+            controller.setListner(new NetworkResponseListner() {
+                @Override
+                public void onResponse(int requestCode, Object response) {
+                    try {
+                        List<String> list = (List<String>) response;
+                        dismissProgressDialog();
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        LayoutInflater inflater = LayoutInflater.from(getActivity());
+                        final View v = inflater.inflate(R.layout.jeopardy_reasons_layout, null, false);
+                        final RadioGroup radioGroup = (RadioGroup) v.findViewById(R.id.radiogrp);
 
-                    if (list != null) {
-                        for (int i = 0; i < list.size(); i++) {
-                            final RadioButton rbn = new RadioButton(getActivity());
-                            rbn.setId(i);
-                            rbn.setText(list.get(i));
-                            rbn.setTextSize(15);
-                            RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
-                            params.setMargins(10, 10, 2, 1);
-                            radioGroup.addView(rbn, params);
+                        if (list != null) {
+                            for (int i = 0; i < list.size(); i++) {
+                                final RadioButton rbn = new RadioButton(getActivity());
+                                rbn.setId(i);
+                                rbn.setText(list.get(i));
+                                rbn.setTextSize(15);
+                                RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
+                                params.setMargins(10, 10, 2, 1);
+                                radioGroup.addView(rbn, params);
+                            }
                         }
+                        builder.setView(v);
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Submit", (dialogInterface, i) -> {
+                            RadioButton radioButton = (RadioButton) v.findViewById(radioGroup.getCheckedRadioButtonId());
+                            if (radioGroup.getCheckedRadioButtonId() == -1) {
+                                Toast.makeText(getActivity(), "Please select at least one reason...", Toast.LENGTH_SHORT).show();
+                                builder.setCancelable(false);
+                            } else {
+                                getSaveActivity(subItems.get(position), false, radioButton.getText().toString());
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        builder.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
+                        final AlertDialog dialog = builder.create();
+                        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation_2;
+                        dialog.show();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        dismissProgressDialog();
                     }
-                    builder.setView(v);
-                    builder.setCancelable(false);
-                    builder.setPositiveButton("Submit", (dialogInterface, i) -> {
-                        RadioButton radioButton = (RadioButton) v.findViewById(radioGroup.getCheckedRadioButtonId());
-                        if (radioGroup.getCheckedRadioButtonId() == -1) {
-                            Toast.makeText(getActivity(), "Please select at least one reason...", Toast.LENGTH_SHORT).show();
-                            builder.setCancelable(false);
-                        } else {
-                            getSaveActivity(subItems.get(position), false, radioButton.getText().toString());
-                            dialogInterface.dismiss();
-                        }
-                    });
-                    builder.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
-                    final AlertDialog dialog = builder.create();
-                    dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation_2;
-                    dialog.show();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    dismissProgressDialog();
                 }
-            }
 
-            @Override
-            public void onFailure(int requestCode) {
+                @Override
+                public void onFailure(int requestCode) {
 
-            }
-        });
-        controller.getNotDoneReasons(REASONS_REQ);
+                }
+            });
+            controller.getNotDoneReasons(REASONS_REQ);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void addActivityDialog(final OnSiteArea onSiteArea) {
@@ -462,18 +427,7 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
                     request.setTaskId("");
                     request.setCreatedBy(0);
                     request.setModifiedBy(0);
-//                            for (int i = 0; i < onSiteArea.getActivityDetail().size(); i++) {
-//                                ActivityDetail activityDetail = new ActivityDetail();
-//                                activityDetail.setActivityId(0);
-//                                activityDetail.setCreatedBy(0);
-//                                activityDetail.setLat(String.valueOf(Lat));
-//                                activityDetail.setLon(String.valueOf(Lon));
-//                                activityDetail.setStartTime(AppUtils.currentDateTime());
-//                                activityDetail.setEndTime(AppUtils.currentDateTime());
-//                                activityDetail.setIsServiceDone(isServiceDone);
-//                                activityDetail.setModifiedBy(0);
-//                                activityDetail.setServiceNotDoneReason(NotDoneReason);
-//                            }
+
                     if (!isServiceDone) {
                         activityItems = new ArrayList<>();
                         ActivityDetail activityDetail = new ActivityDetail();
@@ -567,24 +521,28 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
     }
 
     protected void startLocationUpdates() {
-        // Create the location request
-        mLocationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(UPDATE_INTERVAL)
-                .setFastestInterval(FASTEST_INTERVAL);
-        // Request location updates
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+        try {
+            // Create the location request
+            mLocationRequest = LocationRequest.create()
+                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                    .setInterval(UPDATE_INTERVAL)
+                    .setFastestInterval(FASTEST_INTERVAL);
+            // Request location updates
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+                    mLocationRequest, this);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
-                mLocationRequest, this);
     }
 
     @Override
@@ -604,50 +562,53 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
 
     @Override
     public void onAreaSelect(String Area, int position) {
-        AreaRealmListResults = getRealm().where(OnSiteArea.class).findAll();
-        subItems = new ArrayList<>();
-        mFragmentOnSiteTaskBinding.txtArea.setText(Area);
-        this.Area = Area;
+
         try {
-            if (AreaRealmListResults != null) {
-                if (AreaRealmListResults.size() > 0) {
-                    Area = areaList.get(position);
-                    for (int i = 0; i < AreaRealmListResults.size(); i++) {
-                        OnSiteArea mOnSiteArea = new OnSiteArea();
-                        if (Area.equals(AreaRealmListResults.get(i).getAreaTypeC())) {
-                            mOnSiteArea.setId(AreaRealmListResults.get(i).getId());
-                            mOnSiteArea.setName(AreaRealmListResults.get(i).getName());
-                            mOnSiteArea.setAccountC(AreaRealmListResults.get(i).getAccountC());
-                            mOnSiteArea.setActivityDetail(AreaRealmListResults.get(i).getActivityDetail());
-                            mOnSiteArea.setAreaTypeC(AreaRealmListResults.get(i).getAreaTypeC());
-                            mOnSiteArea.setAreaSubTypeC(AreaRealmListResults.get(i).getAreaSubTypeC());
-                            mOnSiteArea.setServiceNameC(AreaRealmListResults.get(i).getServiceNameC());
-                            mOnSiteArea.setLastActivityOn_Text(AreaRealmListResults.get(i).getLastActivityOn_Text());
-                            subItems.add(mOnSiteArea);
+            AreaRealmListResults = getRealm().where(OnSiteArea.class).findAll();
+            subItems = new ArrayList<>();
+            mFragmentOnSiteTaskBinding.txtArea.setText(Area);
+            this.Area = Area;
+            try {
+                if (AreaRealmListResults != null) {
+                    if (AreaRealmListResults.size() > 0) {
+                        Area = areaList.get(position);
+                        for (int i = 0; i < AreaRealmListResults.size(); i++) {
+                            OnSiteArea mOnSiteArea = new OnSiteArea();
+                            if (Area.equals(AreaRealmListResults.get(i).getAreaTypeC())) {
+                                mOnSiteArea.setId(AreaRealmListResults.get(i).getId());
+                                mOnSiteArea.setName(AreaRealmListResults.get(i).getName());
+                                mOnSiteArea.setAccountC(AreaRealmListResults.get(i).getAccountC());
+                                mOnSiteArea.setActivityDetail(AreaRealmListResults.get(i).getActivityDetail());
+                                mOnSiteArea.setAreaTypeC(AreaRealmListResults.get(i).getAreaTypeC());
+                                mOnSiteArea.setAreaSubTypeC(AreaRealmListResults.get(i).getAreaSubTypeC());
+                                mOnSiteArea.setServiceNameC(AreaRealmListResults.get(i).getServiceNameC());
+                                mOnSiteArea.setLastActivityOn_Text(AreaRealmListResults.get(i).getLastActivityOn_Text());
+                                subItems.add(mOnSiteArea);
+                            }
                         }
                     }
                 }
-            }
-            if (subItems != null) {
-                if (pageNumber == 1 && subItems.size() > 0) {
-                    mAdapter.setData(subItems);
-                    mAdapter.notifyDataSetChanged();
-                    mFragmentOnSiteTaskBinding.emptyTask.setVisibility(View.GONE);
-                } else if (subItems.size() > 0) {
-                    mAdapter.addData(subItems);
-                    mAdapter.notifyDataSetChanged();
-                    mFragmentOnSiteTaskBinding.emptyTask.setVisibility(View.GONE);
+                if (subItems != null) {
+                    if (pageNumber == 1 && subItems.size() > 0) {
+                        mAdapter.setData(subItems);
+                        mAdapter.notifyDataSetChanged();
+                        mFragmentOnSiteTaskBinding.emptyTask.setVisibility(View.GONE);
+                    } else if (subItems.size() > 0) {
+                        mAdapter.addData(subItems);
+                        mAdapter.notifyDataSetChanged();
+                        mFragmentOnSiteTaskBinding.emptyTask.setVisibility(View.GONE);
+                    } else {
+                        mFragmentOnSiteTaskBinding.emptyTask.setVisibility(View.VISIBLE);
+                    }
                 } else {
                     mFragmentOnSiteTaskBinding.emptyTask.setVisibility(View.VISIBLE);
                 }
-            } else {
-                mFragmentOnSiteTaskBinding.emptyTask.setVisibility(View.VISIBLE);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 }
 

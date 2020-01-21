@@ -8,14 +8,12 @@ import com.ab.hicarerun.network.HeaderInterceptor;
 import com.ab.hicarerun.network.IRetrofit;
 import com.ab.hicarerun.network.RequestHeader;
 import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.utils.PicassoImageLoadingService;
 import com.ab.hicarerun.utils.notifications.OneSIgnalHelper;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.onesignal.OneSignal;
 
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +29,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import ss.com.bannerslider.Slider;
 
 
 public class BaseApplication extends Application {
@@ -217,8 +214,6 @@ public class BaseApplication extends Application {
         super.onCreate();
 
         mOneSignalHelper = new OneSIgnalHelper(this);
-
-        Slider.init(new PicassoImageLoadingService(this));
         // initialise the realm database
         try {
             Realm.init(this);
