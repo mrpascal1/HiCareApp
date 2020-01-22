@@ -1,6 +1,7 @@
 package com.ab.hicarerun.network;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.util.Log;
@@ -345,7 +346,7 @@ public class NetworkCallController {
                 });
     }
 
-    public void getTaskDetailById(final int requestCode, final String userId, final String taskId, final Boolean isCombinedTask, final Activity context) {
+    public void getTaskDetailById(final int requestCode, final String userId, final String taskId, final Boolean isCombinedTask, final Activity context, ProgressDialog progress) {
         BaseApplication.getRetrofitAPI(true)
                 .getTasksDetailById(userId, taskId, isCombinedTask)
                 .enqueue(new Callback<GeneralResponse>() {
@@ -353,6 +354,7 @@ public class NetworkCallController {
                     public void onResponse(Call<GeneralResponse> call,
                                            Response<GeneralResponse> response) {
                         if (response != null) {
+                            progress.dismiss();
                             if (response.code() == 401) { // Unauthorised Access
                                 NetworkCallController controller = new NetworkCallController();
                                 controller.setListner(new NetworkResponseListner<LoginResponse>() {
@@ -367,16 +369,17 @@ public class NetworkCallController {
                                         Realm.getDefaultInstance().beginTransaction();
                                         Realm.getDefaultInstance().copyToRealmOrUpdate(response);
                                         Realm.getDefaultInstance().commitTransaction();
-                                        getTaskDetailById(requestCode, userId, taskId, isCombinedTask, context);
+                                        getTaskDetailById(requestCode, userId, taskId, isCombinedTask, context, progress);
                                     }
 
                                     @Override
                                     public void onFailure(int requestCode) {
-
+                                        progress.dismiss();
                                     }
                                 });
                                 controller.refreshToken(100, getRefreshToken());
                             } else if (response.body() != null) {
+                                progress.dismiss();
                                 mListner.onResponse(requestCode, response.body());
 
                             } else if (response.errorBody() != null) {
@@ -399,14 +402,10 @@ public class NetworkCallController {
                     @Override
                     public void onFailure(Call<GeneralResponse> call, Throwable t) {
                         try {
+                            progress.dismiss();
                             AlertDialog.Builder builder = new AlertDialog.Builder(context);
                             builder.setMessage("Something went wrong, please try again!");
-                            builder.setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            }).create().show();
+                            builder.setNeutralButton("Dismiss", (dialogInterface, i) -> dialogInterface.dismiss()).create().show();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -620,13 +619,13 @@ public class NetworkCallController {
                                 }
                             }
                         } else {
-                            mContext.showProgressDialog();
+                            mContext.dismissProgressDialog();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<PostAttachmentResponse> call, Throwable t) {
-                        mContext.showProgressDialog();
+                        mContext.dismissProgressDialog();
                         mContext.showServerError("Something went wrong, please try again !!!");
                     }
                 });
@@ -799,12 +798,13 @@ public class NetworkCallController {
     }
 
 
-    public void updateTasks(final int requestCode, UpdateTasksRequest request, final Activity context) {
+    public void updateTasks(final int requestCode, UpdateTasksRequest request, final Activity context, ProgressDialog progress) {
         BaseApplication.getRetrofitAPI(true)
                 .updateTasks(request)
                 .enqueue(new Callback<UpdateTaskResponse>() {
                     @Override
                     public void onResponse(Call<UpdateTaskResponse> call, Response<UpdateTaskResponse> response) {
+                        progress.dismiss();
                         if (response != null) {
                             if (response.body() != null) {
                                 mListner.onResponse(requestCode, response.body());
@@ -828,14 +828,10 @@ public class NetworkCallController {
                     @Override
                     public void onFailure(Call<UpdateTaskResponse> call, Throwable t) {
                         try {
+                            progress.dismiss();
                             AlertDialog.Builder builder = new AlertDialog.Builder(context);
                             builder.setMessage("Something went wrong, please try again!");
-                            builder.setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            }).create().show();
+                            builder.setNeutralButton("Dismiss", (dialogInterface, i) -> dialogInterface.dismiss()).create().show();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

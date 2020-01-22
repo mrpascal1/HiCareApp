@@ -560,7 +560,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                 mFragmentSignatureInfoBinding.imgSign.setVisibility(View.VISIBLE);
                 getValidate();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -606,10 +606,10 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                                         public void onResponse(int requestCode, Object response) {
                                             PostAttachmentResponse postResponse = (PostAttachmentResponse) response;
                                             if (postResponse.getSuccess()) {
-                                                Toasty.success(getActivity(), "Job card uploaded successfully.", Toast.LENGTH_LONG).show();
+                                                Toasty.success(getActivity(), "Job card uploaded successfully", Toast.LENGTH_LONG).show();
                                                 getAttachmentList();
                                             } else {
-                                                Toast.makeText(getActivity(), "Posting Failed.", Toast.LENGTH_LONG).show();
+                                                Toasty.error(getActivity(), "Posting Failed", Toast.LENGTH_LONG).show();
                                             }
                                         }
 
@@ -624,8 +624,6 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                         }
                     }).show(getActivity());
 
-                } else {
-                    Toast.makeText(getActivity(), "Disable", Toast.LENGTH_SHORT).show();
                 }
             }
         } catch (Exception e) {

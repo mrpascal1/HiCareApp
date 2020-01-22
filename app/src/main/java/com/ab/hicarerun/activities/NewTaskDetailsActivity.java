@@ -260,6 +260,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
     private void getTaskDetailsById() {
         try {
+            progress.show();
             try {
                 AppUtils.getDataClean();
             } catch (Exception e) {
@@ -292,7 +293,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                     public void onFailure(int requestCode) {
                     }
                 });
-                controller.getTaskDetailById(TASK_BY_ID_REQUEST, userId, model.getTaskId(), model.getCombinedTask(), NewTaskDetailsActivity.this);
+                controller.getTaskDetailById(TASK_BY_ID_REQUEST, userId, model.getTaskId(), model.getCombinedTask(), NewTaskDetailsActivity.this, progress);
             }
 
         } catch (Exception e) {
@@ -406,9 +407,12 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 finish();
                 super.onBackPressed();
             } else {
-                passData();
-                mActivityNewTaskDetailsBinding.pager.setCurrentItem(0, true);
-                finish();
+                if (sta.equals("On-Site") && Status.equals("Completed") && mActivityNewTaskDetailsBinding.pager.getCurrentItem() == 3) {
+                    passData();
+                    finish();
+                } else {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(0, true);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -565,9 +569,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             .center(mCurrLocationMarker.getPosition())
                             .strokeColor(Color.parseColor("#55000000"))
                             .fillColor(Color.parseColor("#55000000")));
-
-
-                    mCircle.setRadius(distanceRange+2000);
+                    mCircle.setRadius(distanceRange * 1.2);
                     float[] distance = new float[2];
                     for (int m = 0; m < markersList.size(); m++) {
                         Marker marker = markersList.get(m);
@@ -581,8 +583,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         boolean inCircle = distance[0] <= distanceRange;
                         marker.setVisible(inCircle);
                     }
-
-
                     /**create for loop for get the latLngbuilder from the marker list*/
                     builder = new LatLngBounds.Builder();
                     for (Marker m : markersList) {
@@ -592,18 +592,17 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                     /**create the bounds from latlngBuilder to set into map camera*/
                     LatLngBounds bounds = builder.build();
                     /**create the camera with bounds and padding to set into map*/
-                    cu = CameraUpdateFactory.newLatLngBounds(bounds, 50);
+                    cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
                     /**call the map call back to know map is loaded or not*/
                     mGoogleMap.setOnMapLoadedCallback(() -> {
                         /**set animated zoom camera into map*/
                         mGoogleMap.animateCamera(cu);
 
                     });
-
                 }
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -803,9 +802,10 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         controller.setListner(new NetworkResponseListner() {
                             @Override
                             public void onResponse(int requestCode, Object response) {
+                                progress.dismiss();
                                 UpdateTaskResponse updateResponse = (UpdateTaskResponse) response;
                                 if (updateResponse.getSuccess()) {
-                                    progress.dismiss();
+//                                    progress.dismiss();
                                     Toasty.success(NewTaskDetailsActivity.this, updateResponse.getErrorMessage(), Toast.LENGTH_SHORT).show();
 
                                     if (isIncentiveEnable && Status.equals("Completed")) {
@@ -814,17 +814,17 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                                         onBackPressed();
                                     }
                                 } else {
-                                    progress.dismiss();
+//                                    progress.dismiss();
                                     Toast.makeText(NewTaskDetailsActivity.this, updateResponse.getErrorMessage(), Toast.LENGTH_LONG).show();
                                 }
                             }
 
                             @Override
                             public void onFailure(int requestCode) {
-                                progress.dismiss();
+//                                progress.dismiss();
                             }
                         });
-                        controller.updateTasks(UPDATE_REQUEST, request, NewTaskDetailsActivity.this);
+                        controller.updateTasks(UPDATE_REQUEST, request, NewTaskDetailsActivity.this, progress);
                     }
 
                 }

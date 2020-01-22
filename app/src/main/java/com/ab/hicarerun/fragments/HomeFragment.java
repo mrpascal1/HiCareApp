@@ -179,7 +179,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 android.R.color.holo_red_dark, android.R.color.holo_red_light);
 
         // specify an adapter (see also next example)
-        mAdapter = new TaskListAdapter(getActivity());
+        mAdapter = new TaskListAdapter(getActivity(), this);
         mAdapter.setOnCallClickHandler(this);
         mFragmentHomeBinding.recycleView.setAdapter(mAdapter);
 
@@ -354,7 +354,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                     }
                                 });
                                 controller.getTechAttendance(CAM_REQUEST, request);
-
                             }
                         }
                     } catch (Exception e) {
@@ -479,45 +478,50 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
     @Override
     public void onTelePhoneClicked(int position) {
+        try {
+            if (AppUtils.checkConnection(getActivity())) {
+                String secondaryNumber = mAdapter.getItem(position).getAltMobile();
+                String techNumber = "";
 
-        if (AppUtils.checkConnection(getActivity())) {
-            String secondaryNumber = mAdapter.getItem(position).getAltMobile();
-            String techNumber = "";
-
-            if ((HomeActivity) getActivity() != null) {
-                RealmResults<LoginResponse> LoginRealmModels =
-                        BaseApplication.getRealm().where(LoginResponse.class).findAll();
-                if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-                    techNumber = LoginRealmModels.get(0).getPhoneNumber();
+                if ((HomeActivity) getActivity() != null) {
+                    RealmResults<LoginResponse> LoginRealmModels =
+                            BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                    if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                        techNumber = LoginRealmModels.get(0).getPhoneNumber();
+                    }
                 }
-            }
-            if (techNumber == null || techNumber.trim().length() == 0) {
+                if (techNumber == null || techNumber.trim().length() == 0) {
 
-                AppUtils.showOkActionAlertBox(getActivity(), "Technician number is unavaible, please contact to Administrator.", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-            } else if (secondaryNumber == null || secondaryNumber.trim().length() == 0) {
-                AppUtils.showOkActionAlertBox(getActivity(), "Customer phone number is unavaible.", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
+                    AppUtils.showOkActionAlertBox(getActivity(), "Technician number is unavaible, please contact to Administrator.", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+                        }
+                    });
+                } else if (secondaryNumber == null || secondaryNumber.trim().length() == 0) {
+                    AppUtils.showOkActionAlertBox(getActivity(), "Customer phone number is unavaible.", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+                        }
+                    });
+                } else {
+                    getExotelCalled(secondaryNumber, techNumber);
+                }
             } else {
-                getExotelCalled(secondaryNumber, techNumber);
-            }
-        } else {
 
-            AppUtils.showOkActionAlertBox(getActivity(), "No Internet Connection.", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.dismiss();
-                }
-            });
+                AppUtils.showOkActionAlertBox(getActivity(), "No Internet Connection.", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+
     }
 
     @Override
@@ -552,76 +556,85 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
     @Override
     public void onTechnicianHelplineClicked(final int position) {
-        if (items.get(position).getDetailVisible()) {
-            NetworkCallController controller = new NetworkCallController(this);
-            controller.setListner(new NetworkResponseListner() {
-                @Override
-                public void onResponse(int requestCode, Object response) {
-                    try {
-                        List<JeopardyReasonsList> list = (List<JeopardyReasonsList>) response;
-                        dismissProgressDialog();
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        LayoutInflater inflater = LayoutInflater.from(getActivity());
-                        final View v = inflater.inflate(R.layout.jeopardy_reasons_layout, null, false);
-                        final RadioGroup radioGroup = (RadioGroup) v.findViewById(R.id.radiogrp);
+        try {
+            if (items.get(position).getDetailVisible()) {
+                NetworkCallController controller = new NetworkCallController(this);
+                controller.setListner(new NetworkResponseListner() {
+                    @Override
+                    public void onResponse(int requestCode, Object response) {
+                        try {
+                            List<JeopardyReasonsList> list = (List<JeopardyReasonsList>) response;
+                            dismissProgressDialog();
+                            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                            LayoutInflater inflater = LayoutInflater.from(getActivity());
+                            final View v = inflater.inflate(R.layout.jeopardy_reasons_layout, null, false);
+                            final RadioGroup radioGroup = (RadioGroup) v.findViewById(R.id.radiogrp);
 
-                        if (list != null) {
-                            for (int i = 0; i < list.size(); i++) {
-                                final RadioButton rbn = new RadioButton(getActivity());
-                                rbn.setId(i);
-                                rbn.setText(list.get(i).getResonName());
-                                rbn.setTextSize(15);
-                                RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
-                                params.setMargins(10, 10, 2, 1);
-                                radioGroup.addView(rbn, params);
+                            if (list != null) {
+                                for (int i = 0; i < list.size(); i++) {
+                                    final RadioButton rbn = new RadioButton(getActivity());
+                                    rbn.setId(i);
+                                    rbn.setText(list.get(i).getResonName());
+                                    rbn.setTextSize(15);
+                                    RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
+                                    params.setMargins(10, 10, 2, 1);
+                                    radioGroup.addView(rbn, params);
+                                }
                             }
+
+
+                            builder.setView(v);
+                            builder.setCancelable(false);
+                            builder.setPositiveButton("Submit", (dialogInterface, i) -> {
+                                RadioButton radioButton = (RadioButton) v.findViewById(radioGroup.getCheckedRadioButtonId());
+                                if (radioGroup.getCheckedRadioButtonId() == -1) {
+                                    Toast.makeText(getActivity(), "Please select at least one reason...", Toast.LENGTH_SHORT).show();
+                                    builder.setCancelable(false);
+                                } else {
+                                    if (items != null) {
+                                        Log.i("taskId", items.get(position).getTaskId());
+                                        techHelpline(items.get(position).getTaskId(), "Technician Helpline", "Technician_HelpLine"
+                                                , radioButton.getText().toString());
+                                    }
+                                    dialogInterface.dismiss();
+                                }
+                            });
+
+                            builder.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
+                            final AlertDialog dialog = builder.create();
+                            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation_2;
+
+                            dialog.show();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            dismissProgressDialog();
                         }
 
-
-                        builder.setView(v);
-                        builder.setCancelable(false);
-                        builder.setPositiveButton("Submit", (dialogInterface, i) -> {
-                            RadioButton radioButton = (RadioButton) v.findViewById(radioGroup.getCheckedRadioButtonId());
-                            if (radioGroup.getCheckedRadioButtonId() == -1) {
-                                Toast.makeText(getActivity(), "Please select at least one reason...", Toast.LENGTH_SHORT).show();
-                                builder.setCancelable(false);
-                            } else {
-                                if (items != null) {
-                                    Log.i("taskId", items.get(position).getTaskId());
-                                    techHelpline(items.get(position).getTaskId(), "Technician Helpline", "Technician_HelpLine"
-                                            , radioButton.getText().toString());
-                                }
-                                dialogInterface.dismiss();
-                            }
-                        });
-
-                        builder.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
-                        final AlertDialog dialog = builder.create();
-                        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation_2;
-
-                        dialog.show();
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        dismissProgressDialog();
                     }
 
-                }
+                    @Override
+                    public void onFailure(int requestCode) {
 
-                @Override
-                public void onFailure(int requestCode) {
-
-                }
-            });
-            controller.getJeopardyReasons(JEOPARDY_REQUEST);
-        } else {
-            Toasty.info(getActivity(), "Please complete your previous job first.", Toasty.LENGTH_SHORT).show();
+                    }
+                });
+                controller.getJeopardyReasons(JEOPARDY_REQUEST);
+            } else {
+                Toasty.info(getActivity(), "Please complete your previous job first.", Toasty.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
 
     }
 
     @Override
-    public void onResourcePartnerPic(int position) {
+    public void onResourcePartnerPic(Profile profile) {
+        showPartnerId(profile);
+    }
+
+    private void getTechDetails(int position) {
         try {
             NetworkCallController controller = new NetworkCallController(this);
             controller.setListner(new NetworkResponseListner() {
@@ -642,84 +655,94 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     }
 
     private void showPartnerId(Profile response) {
-        LayoutInflater li = LayoutInflater.from(getActivity());
-        View promptsView = li.inflate(R.layout.layout_partner_dialog, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-        alertDialogBuilder.setView(promptsView);
-        final AlertDialog alertDialog = alertDialogBuilder.create();
-        final ImageView imgTech =
-                promptsView.findViewById(R.id.imgPartner);
-        final TextView txtTechName =
-                promptsView.findViewById(R.id.txtTechName);
-        final TextView txtCode =
-                promptsView.findViewById(R.id.txtCode);
-        final LinearLayout lnrCode =
-                promptsView.findViewById(R.id.lnr_added);
-        final LinearLayout lnrView =
-                promptsView.findViewById(R.id.lnrView);
-        final LinearLayout callTech =
-                promptsView.findViewById(R.id.callTech);
-        txtTechName.setText(response.getFirstName());
-        txtTechName.setTypeface(txtTechName.getTypeface(), Typeface.BOLD);
-        if (response.getEmployeeCode() != null) {
-            lnrCode.setVisibility(View.VISIBLE);
-            txtCode.setText(response.getEmployeeCode());
-        } else {
-            lnrCode.setVisibility(View.GONE);
-        }
-        if (response.getProfilePic() != null) {
-            String base64 = response.getProfilePic();
-            byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
-            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            if (base64.length() > 0) {
-                if (decodedByte != null) {
-                    imgTech.setImageBitmap(decodedByte);
+        try {
+            LayoutInflater li = LayoutInflater.from(getActivity());
+            View promptsView = li.inflate(R.layout.layout_partner_dialog, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+            alertDialogBuilder.setView(promptsView);
+            final AlertDialog alertDialog = alertDialogBuilder.create();
+            final ImageView imgTech =
+                    promptsView.findViewById(R.id.imgPartner);
+            final TextView txtTechName =
+                    promptsView.findViewById(R.id.txtTechName);
+            final TextView txtCode =
+                    promptsView.findViewById(R.id.txtCode);
+            final LinearLayout lnrCode =
+                    promptsView.findViewById(R.id.lnr_added);
+            final LinearLayout lnrView =
+                    promptsView.findViewById(R.id.lnrView);
+            final LinearLayout callTech =
+                    promptsView.findViewById(R.id.callTech);
+            txtTechName.setText(response.getFirstName());
+            txtTechName.setTypeface(txtTechName.getTypeface(), Typeface.BOLD);
+            if (response.getEmployeeCode() != null) {
+                lnrCode.setVisibility(View.VISIBLE);
+                txtCode.setText(response.getEmployeeCode());
+            } else {
+                lnrCode.setVisibility(View.GONE);
+            }
+            if (response.getProfilePic() != null) {
+                String base64 = response.getProfilePic();
+                byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                if (base64.length() > 0) {
+                    if (decodedByte != null) {
+                        imgTech.setImageBitmap(decodedByte);
+                    }
                 }
             }
+
+            if (!response.getMobile().equals("") && response.getMobile() != null) {
+                callTech.setVisibility(View.VISIBLE);
+            } else {
+                callTech.setVisibility(View.GONE);
+            }
+            callTech.setOnClickListener(view -> {
+                alertDialog.dismiss();
+                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                callIntent.setData(Uri.parse("tel:" + response.getMobile()));
+                startActivity(callIntent);
+            });
+
+            lnrView.setOnClickListener(view -> alertDialog.dismiss());
+
+            alertDialog.show();
+            alertDialog.setIcon(R.mipmap.logo);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        if (!response.getMobile().equals("") && response.getMobile() != null) {
-            callTech.setVisibility(View.VISIBLE);
-        } else {
-            callTech.setVisibility(View.GONE);
-        }
-        callTech.setOnClickListener(view -> {
-            alertDialog.dismiss();
-            Intent callIntent = new Intent(Intent.ACTION_DIAL);
-            callIntent.setData(Uri.parse("tel:" + response.getMobile()));
-            startActivity(callIntent);
-        });
-
-        lnrView.setOnClickListener(view -> alertDialog.dismiss());
-
-        alertDialog.show();
-        alertDialog.setIcon(R.mipmap.logo);
     }
 
     private void techHelpline(String taskId, String jeopardyText, String batchName, String remark) {
-        NetworkCallController controller = new NetworkCallController(this);
-        CWFJeopardyRequest request = new CWFJeopardyRequest();
-        request.setTaskId(taskId);
-        request.setJeopardyText(jeopardyText);
-        request.setBatchName(batchName);
-        request.setRemark(remark);
-        controller.setListner(new NetworkResponseListner() {
-            @Override
-            public void onResponse(int requestCode, Object data) {
-                CWFJeopardyResponse response = (CWFJeopardyResponse) data;
-                if (response.getSuccess()) {
-                    Toasty.success(getActivity(), response.getResponseMessage(), Toasty.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(getActivity(), response.getResponseMessage(), Toast.LENGTH_LONG).show();
+        try {
+            NetworkCallController controller = new NetworkCallController(this);
+            CWFJeopardyRequest request = new CWFJeopardyRequest();
+            request.setTaskId(taskId);
+            request.setJeopardyText(jeopardyText);
+            request.setBatchName(batchName);
+            request.setRemark(remark);
+            controller.setListner(new NetworkResponseListner() {
+                @Override
+                public void onResponse(int requestCode, Object data) {
+                    CWFJeopardyResponse response = (CWFJeopardyResponse) data;
+                    if (response.getSuccess()) {
+                        Toasty.success(getActivity(), response.getResponseMessage(), Toasty.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getActivity(), response.getResponseMessage(), Toast.LENGTH_LONG).show();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(int requestCode) {
+                @Override
+                public void onFailure(int requestCode) {
 
-            }
-        });
-        controller.postCWFJepoardy(CWF_REQUEST, request);
+                }
+            });
+            controller.postCWFJepoardy(CWF_REQUEST, request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -727,50 +750,54 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     }
 
     private void getExotelCalled(String customerNumber, String techNumber) {
-        NetworkCallController controller = new NetworkCallController();
-        controller.setListner(new NetworkResponseListner() {
-            @Override
-            public void onResponse(int requestCode, Object data) {
-                ExotelResponse exotelResponse = (ExotelResponse) data;
+        try {
+            NetworkCallController controller = new NetworkCallController();
+            controller.setListner(new NetworkResponseListner() {
+                @Override
+                public void onResponse(int requestCode, Object data) {
+                    ExotelResponse exotelResponse = (ExotelResponse) data;
 
-                if (exotelResponse.getSuccess()) {
-                    try {
-                        String number = exotelResponse.getResponseMessage().concat(exotelResponse.getData());
-                        String pause = String.valueOf(PhoneNumberUtils.PAUSE);
-                        String postNo = String.valueOf(PhoneNumberUtils.extractPostDialPortion(exotelResponse.getData()));
-                        Log.i("num", pause);
-                        String comma = Uri.encode(" ");
-                        StringBuilder build = new StringBuilder();
-                        build.append(exotelResponse.getResponseMessage());
-                        build.append(pause);
-                        build.append(exotelResponse.getData());
-                        Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                        callIntent.setData(Uri.parse("tel:" + build.toString()));
-                        startActivity(callIntent);
-                        Log.i("num", build.toString());
+                    if (exotelResponse.getSuccess()) {
+                        try {
+                            String number = exotelResponse.getResponseMessage().concat(exotelResponse.getData());
+                            String pause = String.valueOf(PhoneNumberUtils.PAUSE);
+                            String postNo = String.valueOf(PhoneNumberUtils.extractPostDialPortion(exotelResponse.getData()));
+                            Log.i("num", pause);
+                            String comma = Uri.encode(" ");
+                            StringBuilder build = new StringBuilder();
+                            build.append(exotelResponse.getResponseMessage());
+                            build.append(pause);
+                            build.append(exotelResponse.getData());
+                            Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                            callIntent.setData(Uri.parse("tel:" + build.toString()));
+                            startActivity(callIntent);
+                            Log.i("num", build.toString());
 
-                    } catch (Exception e) {
-                        Log.i("num", e.getMessage());
-                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
-                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
-                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
-                            AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getExotelCalled", lineNo, userName, DeviceName);
+                        } catch (Exception e) {
+                            Log.i("num", e.getMessage());
+                            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getExotelCalled", lineNo, userName, DeviceName);
+                            }
                         }
+
+                    } else {
+                        Toast.makeText(getActivity(), "Failed.", Toast.LENGTH_LONG).show();
                     }
-
-                } else {
-                    Toast.makeText(getActivity(), "Failed.", Toast.LENGTH_LONG).show();
                 }
-            }
 
-            @Override
-            public void onFailure(int requestCode) {
+                @Override
+                public void onFailure(int requestCode) {
 
-            }
-        });
-        controller.getExotelCalled(EXOTEL_REQ, customerNumber, techNumber);
+                }
+            });
+            controller.getExotelCalled(EXOTEL_REQ, customerNumber, techNumber);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

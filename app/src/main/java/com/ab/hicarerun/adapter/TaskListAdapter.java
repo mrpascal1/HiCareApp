@@ -33,18 +33,22 @@ import android.widget.Chronometer;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.BaseApplication;
+import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.databinding.TaskListAdapterBinding;
+import com.ab.hicarerun.fragments.HomeFragment;
 import com.ab.hicarerun.handler.OnCallListItemClickHandler;
 import com.ab.hicarerun.handler.OnDeleteListItemClickHandler;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.LoginResponse;
+import com.ab.hicarerun.network.models.ProfileModel.Profile;
 import com.ab.hicarerun.network.models.TaskModel.Tasks;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.MyCountDownTimer;
@@ -72,6 +76,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     private String street = "";
     private boolean isShown = false;
     private final Context mContext;
+    private final HomeFragment mFragment;
     private Activity activity = null;
     private List<TaskViewModel> items = null;
     String currentdate;
@@ -87,13 +92,16 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     private Timer timer;
     private String Flat = "";
     private static final int RESOURCE_REQ = 1000;
+    private static final int PROFILE_REQ = 2000;
+    private Profile profile = null;
 
-    public TaskListAdapter(Activity context) {
+    public TaskListAdapter(Activity context, HomeFragment homeFragment) {
         if (items == null) {
             items = new ArrayList<>();
         }
         this.mContext = context;
         this.activity = context;
+        this.mFragment = homeFragment;
         currentdate = AppUtils.currentDateTime();
     }
 
@@ -110,25 +118,44 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
         if (items.get(position).getHelperResourceId() != null && !items.get(position).getHelperResourceId().equals("")) {
-            holder.mTaskListAdapterBinding.lnrPartnerPic.setVisibility(View.VISIBLE);
-            NetworkCallController controller = new NetworkCallController();
-            controller.setListner(new NetworkResponseListner() {
-                @Override
-                public void onResponse(int requestCode, Object response) {
-                    String base64 = (String) response;
-                    byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
-                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                    if (base64.length() > 0) {
-                        holder.mTaskListAdapterBinding.imgPartner.setImageBitmap(decodedByte);
+            try {
+                holder.mTaskListAdapterBinding.lnrPartnerPic.setVisibility(View.VISIBLE);
+                NetworkCallController controller = new NetworkCallController();
+                controller.setListner(new NetworkResponseListner() {
+                    @Override
+                    public void onResponse(int requestCode, Object response) {
+                        String base64 = (String) response;
+                        byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
+                        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                        if (base64.length() > 0) {
+                            holder.mTaskListAdapterBinding.imgPartner.setImageBitmap(decodedByte);
+                        }
+                        NetworkCallController controller1 = new NetworkCallController(mFragment);
+                        controller1.setListner(new NetworkResponseListner() {
+                            @Override
+                            public void onResponse(int requestCode, Object data) {
+                                Profile response = (Profile) data;
+                                profile = response;
+                                holder.mTaskListAdapterBinding.txtHelperName.setText(response.getFirstName());
+                            }
+
+                            @Override
+                            public void onFailure(int requestCode) {
+
+                            }
+                        });
+                        controller1.getTechnicianProfile(PROFILE_REQ, items.get(position).getHelperResourceId());
                     }
-                }
 
-                @Override
-                public void onFailure(int requestCode) {
+                    @Override
+                    public void onFailure(int requestCode) {
 
-                }
-            });
-            controller.getResourceProfilePicture(RESOURCE_REQ, items.get(position).getHelperResourceId());
+                    }
+                });
+                controller.getResourceProfilePicture(RESOURCE_REQ, items.get(position).getHelperResourceId());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             holder.mTaskListAdapterBinding.lnrPartnerPic.setVisibility(View.GONE);
         }
@@ -192,9 +219,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             holder.mTaskListAdapterBinding.warning.setVisibility(View.GONE);
 //            holder.mTaskListAdapterBinding.status.setTextColor(Color.parseColor("#FF69B4"));
             holder.mTaskListAdapterBinding.lnrStatus.setBackgroundColor(Color.parseColor("#FF69B4"));
-
         }
-
         if (items.get(position).getTag() != null && items.get(position).getTag().length() > 0) {
             holder.mTaskListAdapterBinding.lnrTag.setVisibility(View.VISIBLE);
             holder.mTaskListAdapterBinding.txtTag.setText(items.get(position).getTag());
@@ -259,7 +284,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
         holder.mTaskListAdapterBinding.btnHelpline.setOnClickListener(view -> onCallListItemClickHandler.onTechnicianHelplineClicked(position));
 
-        holder.mTaskListAdapterBinding.lnrPartnerPic.setOnClickListener(view -> onCallListItemClickHandler.onResourcePartnerPic(position));
+        holder.mTaskListAdapterBinding.lnrPartnerPic.setOnClickListener(view -> onCallListItemClickHandler.onResourcePartnerPic(profile));
 
         final Handler ha = new Handler();
         ha.postDelayed(new Runnable() {
@@ -390,12 +415,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
             builder.setTitle(title);
             builder.setMessage(message);
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.dismiss();
-                }
-            }).create().show();
+            builder.setPositiveButton("OK", (dialogInterface, i) -> dialogInterface.dismiss()).create().show();
         } catch (Exception e) {
             e.printStackTrace();
             Log.i("error", e.getMessage());

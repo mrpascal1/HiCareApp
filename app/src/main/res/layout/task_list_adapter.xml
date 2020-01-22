@@ -701,11 +701,12 @@
                                         app:civ_border_width="0.001dp" />
 
                                     <TextView
+                                        android:id="@+id/txtHelperName"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="Service Partner"
                                         android:textSize="10sp"
                                         android:layout_marginTop="1dp"
+                                        android:gravity="center"
                                         android:layout_gravity="center"
                                         android:textColor="@color/black"/>
 

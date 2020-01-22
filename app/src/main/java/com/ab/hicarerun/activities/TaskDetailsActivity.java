@@ -189,7 +189,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                         public void onFailure(int requestCode) {
                         }
                     });
-                    controller.getTaskDetailById(TASK_BY_ID_REQUEST, UserId, model.getTaskId(), false, TaskDetailsActivity.this);
+                    controller.getTaskDetailById(TASK_BY_ID_REQUEST, UserId, model.getTaskId(), false, TaskDetailsActivity.this, progress);
                 }
             }
         } catch (Exception e) {
@@ -531,7 +531,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                                     progress.dismiss();
                                 }
                             });
-                            controller.updateTasks(UPDATE_REQUEST, request, TaskDetailsActivity.this);
+                            controller.updateTasks(UPDATE_REQUEST, request, TaskDetailsActivity.this, progress);
                         }
                     }
                 }

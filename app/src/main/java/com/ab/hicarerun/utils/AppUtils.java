@@ -105,6 +105,7 @@ public class AppUtils {
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 relMarker.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.colorPrimary));
+
             }
         }
         DisplayMetrics displayMetrics = new DisplayMetrics();

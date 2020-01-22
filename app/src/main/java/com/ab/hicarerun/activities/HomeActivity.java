@@ -82,8 +82,8 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     private android.location.LocationManager locationManager;
     private AlarmManager mAlarmManager = null;
     private PendingIntent pendingUpdateIntent = null;
-    private String video_url = "http://apps.hicare.in/video1.mp4";
     private Bitmap bitUser = null;
+    private ProgressDialog progress;
 
 
     @Override
@@ -92,11 +92,14 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         mActivityHomeBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_home);
 //        setSupportActionBar(mActivityHomeBinding.toolbar)
+        progress = new ProgressDialog(this, R.style.TransparentProgressDialog);
+        progress.setCancelable(false);
         mActivityHomeBinding.toolbar.lnrDrawer.setOnClickListener(view -> mActivityHomeBinding.drawer.openDrawer(GravityCompat.START));
         locationManager =
                 (android.location.LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         if (locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
                 && locationManager.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER)) {
+            progress.show();
             getServiceCalled();
             getTechDeails();
             getIncentiveDetails();
@@ -135,14 +138,8 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     protected void onResume() {
         super.onResume();
         if (AppUtils.checkConnection(HomeActivity.this)) {
-//            getVersionFromApi();
         } else {
-            AppUtils.showOkActionAlertBox(HomeActivity.this, "Something went wrong! please check your internet connection.", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    finish();
-                }
-            });
+            AppUtils.showOkActionAlertBox(HomeActivity.this, "Please check your internet connection!", (dialogInterface, i) -> finish());
         }
         try {
             AppUtils.statusCheck(HomeActivity.this);
@@ -277,7 +274,6 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
     private void getTechDeails() {
         try {
-
             RealmResults<LoginResponse> LoginRealmModels =
                     BaseApplication.getRealm().where(LoginResponse.class).findAll();
             String userId = LoginRealmModels.get(0).getUserID();
@@ -286,6 +282,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 controller.setListner(new NetworkResponseListner() {
                     @Override
                     public void onResponse(int requestCode, Object data) {
+                        progress.dismiss();
                         Profile response = (Profile) data;
                         if (response.getProfilePic() != null) {
                             String base64 = response.getProfilePic();
@@ -306,7 +303,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
                     @Override
                     public void onFailure(int requestCode) {
-
+progress.dismiss();
                     }
                 });
                 controller.getTechnicianProfile(REQ_PROFILE, userId);
@@ -492,27 +489,11 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         });
 
 
-//        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, mActivityHomeBinding.drawer, mActivityHomeBinding.toolbar, R.string.openDrawer, R.string.closeDrawer) {
-//
-//            @Override
-//            public void onDrawerClosed(View v) {
-//                super.onDrawerClosed(v);
-//            }
-//
-//            @Override
-//            public void onDrawerOpened(View v) {
-//                super.onDrawerOpened(v);
-//            }
-//        };
-//        mActivityHomeBinding.drawer.addDrawerListener(actionBarDrawerToggle);
-//        actionBarDrawerToggle.syncState();
 
     }
 
     @Override
     public void onBackPressed() {
-//        getSupportFragmentManager().beginTransaction().remove(FaceRecognizationFragment.newInstance(false, "avatar", "")).commit();
-//        getSupportFragmentManager().popBackStack();
         int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
         if (backStackEntryCount == 0) {
             showExitAlert();
