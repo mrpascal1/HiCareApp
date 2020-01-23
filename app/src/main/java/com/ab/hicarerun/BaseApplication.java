@@ -120,7 +120,6 @@ public class BaseApplication extends Application {
         }.getType(), RealmStringListTypeAdapter.INSTANCE);
 
         Gson gson = gsonBuilder.create();
-
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
 
         if (BuildConfig.DEBUG) {

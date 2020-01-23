@@ -42,7 +42,6 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
     private PendingIntent pendingIntent = null;
     private AlarmManager mAlarmManager = null;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

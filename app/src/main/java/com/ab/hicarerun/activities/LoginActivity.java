@@ -70,11 +70,12 @@ public class LoginActivity extends BaseActivity {
     private void getBack() {
         int fragment = getSupportFragmentManager().getBackStackEntryCount();
         Log.e("fragments", String.valueOf(fragment));
-        if (fragment < 1) {
-            finish();
-        } else {
-            getFragmentManager().popBackStack();
-        }
+//        if (fragment < 1) {
+//            finish();
+//        } else {
+//            getFragmentManager().popBackStack();
+//        }
+        finishAffinity();
     }
 
     @Override
@@ -89,6 +90,7 @@ public class LoginActivity extends BaseActivity {
 
         return true;
     }
+
     public void askPermissions() {
 
         try {
@@ -156,7 +158,7 @@ public class LoginActivity extends BaseActivity {
                 }
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
