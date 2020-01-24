@@ -35,6 +35,7 @@ import com.ab.hicarerun.handler.OnAddActivityClickHandler;
 import com.ab.hicarerun.handler.OnSelectServiceClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
+import com.ab.hicarerun.network.models.AttachmentModel.MSTAttachment;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.OnSiteModel.Account;
 import com.ab.hicarerun.network.models.OnSiteModel.ActivityDetail;
@@ -49,6 +50,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
@@ -74,6 +76,7 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
     List<OnSiteArea> subItems = null;
     List<OnSiteArea> defaultSubItems = null;
     List<ActivityDetail> activityItems = null;
+    HashMap<String, ActivityDetail> hashActivity = null;
     private String Area = "";
     private Integer pageNumber = 1;
     private Double Lat = 0.0;
@@ -319,6 +322,7 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
                     alertDialogBuilder.setView(promptsView);
                     final AlertDialog alertDialog = alertDialogBuilder.create();
                     activityItems = new ArrayList<>();
+                    hashActivity = new HashMap<>();
                     alertDialog.setCancelable(false);
                     final RecyclerView recyclerView =
                             (RecyclerView) promptsView.findViewById(R.id.recycleView);
@@ -329,21 +333,35 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
                     recyclerView.setHasFixedSize(true);
                     layoutManager = new LinearLayoutManager(getActivity());
                     recyclerView.setLayoutManager(layoutManager);
-                    addAdapter = new AddActivityAdapter(getActivity(), serviceList, (position, isYes, isNo) -> {
-                        if (isYes) {
-                            btnDone.setEnabled(true);
-                            btnDone.setText("Done");
-                            btnDone.setAlpha(1f);
-                        } else if (isNo) {
+                    addAdapter = new AddActivityAdapter(getActivity(), serviceList, (position, isCheckedList) -> {
+                        if (isAnyTrue(isCheckedList)) {
                             btnDone.setEnabled(false);
                             btnDone.setText("Select");
                             btnDone.setAlpha(0.5f);
+
+                        } else {
+                            btnDone.setEnabled(true);
+                            btnDone.setText("Done");
+                            btnDone.setAlpha(1f);
                         }
+
                     });
+
+//                    addAdapter = new AddActivityAdapter(getActivity(), serviceList, (position, isYes, isNo) -> {
+//                        if (isYes) {
+//                            btnDone.setEnabled(true);
+//                            btnDone.setText("Done");
+//                            btnDone.setAlpha(1f);
+//                        } else if (isNo) {
+//                            btnDone.setEnabled(false);
+//                            btnDone.setText("Select");
+//                            btnDone.setAlpha(0.5f);
+//                        }
+//                    });
                     recyclerView.setAdapter(addAdapter);
                     btnDone.setOnClickListener(v -> {
                         getSaveActivity(onSiteArea, true, "");
-                        alertDialog.setCanceledOnTouchOutside(false);
+//                        alertDialog.setCanceledOnTouchOutside(false);
                         alertDialog.dismiss();
                     });
 
@@ -361,9 +379,15 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
                             activityDetail.setIsServiceDone(true);
                             activityDetail.setModifiedBy(0);
                             activityDetail.setServiceNotDoneReason("");
-                            if (!activityItems.contains(activityDetail)) {
-                                activityItems.add(activityDetail);
-                            }
+                            hashActivity.put(serviceList.get(position), activityDetail);
+//                            for(int i = 0; i < activityItems.size(); i++){
+//                                if (!activityItems.get(i).getServiceType().contains(activityDetail.getServiceType())) {
+//                                    activityItems.add(activityDetail);
+//                                    break;
+//                                }
+//                            }
+
+
                         }
 
                         @Override
@@ -379,9 +403,17 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
                             activityDetail.setIsServiceDone(false);
                             activityDetail.setModifiedBy(0);
                             activityDetail.setServiceNotDoneReason("");
-                            if (!activityItems.contains(activityDetail)) {
-                                activityItems.add(activityDetail);
-                            }
+//                            if (!activityItems.contains(activityDetail)) {
+//                                activityItems.add(activityDetail);
+//                            }
+                            hashActivity.put(serviceList.get(position), activityDetail);
+
+//                            for(int i = 0; i < activityItems.size(); i++){
+//                                if (!activityItems.get(i).getServiceType().contains(activityDetail.getServiceType())) {
+//                                    activityItems.add(activityDetail);
+//                                    break;
+//                                }
+//                            }
                         }
 
                         @Override
@@ -405,6 +437,15 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
     @Override
     public void onItemClick(int position) {
 
+    }
+
+    public static boolean isAnyTrue(List<String> arraylist) {
+        for (String str : arraylist) {
+            if (str.equals("true")) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void getSaveActivity(OnSiteArea onSiteArea, final boolean isServiceDone, String NotDoneReason) {
@@ -445,8 +486,8 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
                             activityItems.add(activityDetail);
                         }
                         request.setActivityDetail(activityItems);
-
                     } else {
+                        activityItems = new ArrayList<>(hashActivity.values());
                         request.setActivityDetail(activityItems);
                     }
                     controller.setListner(new NetworkResponseListner() {

@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +17,7 @@ import com.ab.hicarerun.handler.OnAddActivityClickHandler;
 import com.ab.hicarerun.handler.OnDeleteListItemClickHandler;
 import com.ab.hicarerun.handler.OnSelectServiceClickHandler;
 import com.ab.hicarerun.viewmodel.AccountAreaViewModel;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,7 @@ public class AddActivityAdapter extends RecyclerView.Adapter<AddActivityAdapter.
     private List<AccountAreaViewModel> items = null;
     List<String> serviceList = null;
     private onRadioClickChanged mRadioClickChanged;
+    List<String> isCheckedList = new ArrayList<>();
 
     public AddActivityAdapter(Context context, List<String> serviceList, onRadioClickChanged mRadioClickChanged) {
         if (items == null) {
@@ -51,32 +54,33 @@ public class AddActivityAdapter extends RecyclerView.Adapter<AddActivityAdapter.
     @Override
     public void onBindViewHolder(final AddActivityAdapter.ViewHolder holder, final int position) {
         try {
+            if (isCheckedList.isEmpty()) {
+                for (int i = 0; i < serviceList.size(); i++) {
+                    isCheckedList.add("false");
+                }
+            }
+
             holder.mAddActivityAdapterBinding.radioYes.setOnClickListener(view -> {
+                isCheckedList.set(position, "true");
                 holder.mAddActivityAdapterBinding.radioNo.setChecked(false);
                 holder.mAddActivityAdapterBinding.radioYes.setChecked(true);
                 serviceClickHandler.onRadioYesClicked(position);
-                mRadioClickChanged.onClickChanged(position, true, false);
-
+                mRadioClickChanged.onClickChanged(position, isCheckedList);
             });
             holder.mAddActivityAdapterBinding.radioNo.setOnClickListener(view -> {
+                isCheckedList.set(position, "false");
                 holder.mAddActivityAdapterBinding.radioNo.setChecked(true);
                 holder.mAddActivityAdapterBinding.radioYes.setChecked(false);
                 serviceClickHandler.onRadioNoClicked(position);
-                mRadioClickChanged.onClickChanged(position, false, true);
+                mRadioClickChanged.onClickChanged(position, isCheckedList);
             });
-
-            holder.mAddActivityAdapterBinding.radioYes.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
-                }
-            });
-
 
             if (holder.mAddActivityAdapterBinding.radioYes.isChecked()) {
-                mRadioClickChanged.onClickChanged(position, true, false);
+                isCheckedList.set(position, "true");
+                mRadioClickChanged.onClickChanged(position, isCheckedList);
             } else {
-                mRadioClickChanged.onClickChanged(position, false, true);
+                isCheckedList.set(position, "false");
+                mRadioClickChanged.onClickChanged(position, isCheckedList);
             }
 
             holder.mAddActivityAdapterBinding.txtServiceType.setText(serviceList.get(position));
@@ -120,7 +124,7 @@ public class AddActivityAdapter extends RecyclerView.Adapter<AddActivityAdapter.
     }
 
     public interface onRadioClickChanged {
-        void onClickChanged(int position, Boolean yesChecked, Boolean noChecked);
+        void onClickChanged(int position, List<String> isCheckedList);
     }
 }
 
