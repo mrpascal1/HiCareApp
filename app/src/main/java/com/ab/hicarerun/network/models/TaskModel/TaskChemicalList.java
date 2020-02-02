@@ -10,6 +10,9 @@ public class TaskChemicalList {
     @SerializedName("Standard_Usage__c")
     @Expose
     private String Standard;
+    @SerializedName("Original_Actual_Usage__c")
+    @Expose
+    private String Orignal;
     @SerializedName("Actual_Usage__c")
     @Expose
     private String Actual;
@@ -19,14 +22,19 @@ public class TaskChemicalList {
     @SerializedName("CWFProductName__c")
     @Expose
     private String CWFProductName;
+    @SerializedName("Is_Chemical_Changed__c")
+    @Expose
+    private Boolean IsChemicalChanged;
 
 
     public TaskChemicalList() {
         Id = "NA";
         Standard = "NA";
+        Orignal = "NA";
         Actual = "NA";
         Consumption = "NA";
-    CWFProductName = "NA";
+        CWFProductName = "NA";
+        IsChemicalChanged = false;
     }
 
     public String getId() {
@@ -67,5 +75,21 @@ public class TaskChemicalList {
 
     public void setCWFProductName(String CWFProductName) {
         this.CWFProductName = CWFProductName;
+    }
+
+    public String getOrignal() {
+        return Orignal;
+    }
+
+    public void setOrignal(String orignal) {
+        Orignal = orignal;
+    }
+
+    public Boolean getChemicalChanged() {
+        return IsChemicalChanged;
+    }
+
+    public void setChemicalChanged(Boolean chemicalChanged) {
+        IsChemicalChanged = chemicalChanged;
     }
 }

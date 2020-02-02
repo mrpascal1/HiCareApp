@@ -120,6 +120,10 @@ public class UpdateTasksRequest {
     @SerializedName("CombinedTaskId")
     @Expose
     private String CombinedTaskId;
+
+    @SerializedName("IsChemicalChanged")
+    @Expose
+    private Boolean IsChemicalChanged;
     public UpdateTasksRequest() {
         UserId = "";
         ResourceId = "";
@@ -156,6 +160,7 @@ public class UpdateTasksRequest {
         TechnicianRating = 0;
         TechnicianOnsiteOTP = "";
         IsCombinedTask = false;
+        IsChemicalChanged = false;
         CombinedTaskId = "";
     }
 
@@ -455,5 +460,13 @@ public class UpdateTasksRequest {
 
     public void setCombinedTaskId(String combinedTaskId) {
         CombinedTaskId = combinedTaskId;
+    }
+
+    public Boolean getChemicalChanged() {
+        return IsChemicalChanged;
+    }
+
+    public void setChemicalChanged(Boolean chemicalChanged) {
+        IsChemicalChanged = chemicalChanged;
     }
 }

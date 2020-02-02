@@ -33,6 +33,8 @@ public interface OnSaveEventHandler {
 
     public void isChemicalVerified(Boolean b);
 
+    public void isActualChemicalChanged(Boolean b);
+
     public void isPaymentChanged(Boolean b);
 
     public void isSignatureChanged(Boolean b);

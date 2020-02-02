@@ -10,6 +10,9 @@ public class Chemicals {
     @SerializedName("Standard_Usage__c") @Expose
     private String Standard_Usage;
 
+    @SerializedName("Original_Actual_Usage__c") @Expose
+    private String Orignal;
+
     @SerializedName("Actual_Usage__c") @Expose
     private String Actual_Usage;
 
@@ -25,14 +28,19 @@ public class Chemicals {
     @SerializedName("Service_Area__c") @Expose
     private String ServiceArea;
 
+    @SerializedName("Is_Chemical_Changed__c") @Expose
+    private Boolean IsChemicalChanged;
+
     public Chemicals() {
         Id = "NA";
         Standard_Usage = "NA";
+        Orignal = "NA";
         Actual_Usage = "NA";
         Consumption = "NA";
         CWFProductName = "NA";
         ChemType = "NA";
         ServiceArea = "NA";
+        IsChemicalChanged = false;
     }
 
     public String getId() {
@@ -89,5 +97,21 @@ public class Chemicals {
 
     public void setServiceArea(String serviceArea) {
         ServiceArea = serviceArea;
+    }
+
+    public String getOrignal() {
+        return Orignal;
+    }
+
+    public void setOrignal(String orignal) {
+        Orignal = orignal;
+    }
+
+    public Boolean getChemicalChanged() {
+        return IsChemicalChanged;
+    }
+
+    public void setChemicalChanged(Boolean chemicalChanged) {
+        IsChemicalChanged = chemicalChanged;
     }
 }

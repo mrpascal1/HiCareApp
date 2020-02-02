@@ -15,6 +15,7 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.os.Parcelable;
 import android.provider.Settings;
 
 import android.telephony.TelephonyManager;
@@ -50,6 +51,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -324,7 +326,7 @@ public class AppUtils {
                             SharedPreferencesUtility.IS_USER_LOGIN, true);
                     List<HandShake> items = (List<HandShake>) data;
                     Intent intent = new Intent(context, HomeActivity.class);
-                    intent.putExtra(HomeActivity.ARG_HANDSHAKE, (Serializable) items);
+                    intent.putParcelableArrayListExtra(HomeActivity.ARG_HANDSHAKE, (ArrayList<? extends Parcelable>) items);
                     intent.putExtra(HomeActivity.ARG_EVENT, true);
                     intent.putExtra(HomeActivity.ARG_USER, username);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

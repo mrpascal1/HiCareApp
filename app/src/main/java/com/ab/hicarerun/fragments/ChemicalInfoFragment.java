@@ -17,8 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
@@ -27,7 +26,6 @@ import com.ab.hicarerun.databinding.FragmentChemicalInfoBinding;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.AttachmentModel.MSTAttachment;
 import com.ab.hicarerun.network.models.ChemicalModel.Chemicals;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;
@@ -39,8 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.realm.RealmResults;
-
-import static android.content.Context.INPUT_METHOD_SERVICE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -128,6 +124,9 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
         }
         mGeneralRealmData =
                 getRealm().where(GeneralData.class).findAll();
+if(map != null){
+    map.clear();
+}
         mAdapter = new ChemicalRecycleAdapter(getActivity(), model.getCombinedTask(), (position, charSeq) -> {
             try {
                 if (charSeq != null && map != null) {
@@ -136,6 +135,7 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
                     if (map.containsValue("")) {
                         map.remove(position);
                     } else {
+//                        Toast.makeText(getActivity(), String.valueOf(map.get(position)), Toast.LENGTH_SHORT).show();
                         ChemList.clear();
                         for (int i = 0; i < map.size(); i++) {
                             TaskChemicalList ChemModel = new TaskChemicalList();
@@ -143,11 +143,23 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
                             ChemModel.setCWFProductName(mAdapter.getItem(i).getName());
                             ChemModel.setConsumption(mAdapter.getItem(i).getConsumption());
                             ChemModel.setStandard(mAdapter.getItem(i).getStandard());
+                            ChemModel.setOrignal(mAdapter.getItem(i).getOrignal());
+                            if(mAdapter.getItem(i).getOrignal()!=null){
+                                if (mAdapter.getItem(i).getOrignal().equals(map.get(i))) {
+                                    ChemModel.setChemicalChanged(false);
+                                } else {
+                                    ChemModel.setChemicalChanged(true);
+                                }
+                            }else {
+                                ChemModel.setChemicalChanged(true);
+                            }
+
                             ChemModel.setActual(map.get(i));
                             ChemList.add(ChemModel);
                         }
                         mCallback.chemReqList(ChemList);
                     }
+                    mCallback.isActualChemicalChanged(isChemicalChanged(ChemList));
                     for (int i = 0; i < mAdapter.getItemCount(); i++)
                         getValidation(i);
                 }
@@ -172,7 +184,15 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
         if (items == null) {
             setChemicals();
         }
+    }
 
+    private static boolean isChemicalChanged(List<TaskChemicalList> arraylist) {
+        for (TaskChemicalList list : arraylist) {
+            if (list.getChemicalChanged()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void setChemicals() {
@@ -221,12 +241,13 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
     public void onFailure(int requestCode) {
     }
 
-    public void getValidation(int position) {
+    private void getValidation(int position) {
         try {
             if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
                 isVerified = mGeneralRealmData.get(0).getAutoSubmitChemicals();
                 Log.i("chemicalcount", String.valueOf(mAdapter.getItemCount()));
                 Log.i("mapcount", String.valueOf(map.size()));
+                Log.i("mapcount", String.valueOf(map.keySet() +" , " +map.values()));
                 if (!isVerified) {
                     if (map.size() == mAdapter.getItemCount()) {
                         mCallback.isChemicalChanged(false);

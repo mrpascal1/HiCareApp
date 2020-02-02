@@ -162,6 +162,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private boolean isEarlyCompletion = false;
     private boolean isIncompleteReason = false;
     private boolean isAttachment = false;
+    private boolean isActualChemicalChanged = false;
     private String bankName = "";
     private String chequeNumber = "";
     private String chequeDate = "";
@@ -795,6 +796,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         request.setResourceId(UserId);
                         request.setTechnicianOnsiteOTP(OnsiteOTP);
                         request.setChemicalList(ChemReqList);
+                        request.setChemicalChanged(isActualChemicalChanged);
                         request.setIncompleteReason(incompleteReason);
                         request.setChequeImage(chequeImage);
 
@@ -1028,6 +1030,11 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     @Override
     public void isChemicalVerified(Boolean b) {
         isChemicalVerified = b;
+    }
+
+    @Override
+    public void isActualChemicalChanged(Boolean b) {
+        isActualChemicalChanged = b;
     }
 
     @Override

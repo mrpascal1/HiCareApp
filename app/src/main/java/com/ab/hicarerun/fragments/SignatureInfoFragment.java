@@ -485,7 +485,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
 
     }
 
-    public void sendFeedback() {
+    private void sendFeedback() {
 
         try {
             LayoutInflater li = LayoutInflater.from(getActivity());
@@ -645,10 +645,10 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
             if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
                 UserId = LoginRealmModels.get(0).getUserID();
                 NetworkCallController controller = new NetworkCallController(this);
-                controller.setListner(new NetworkResponseListner() {
+                controller.setListner(new NetworkResponseListner<List<GetAttachmentList>>() {
+
                     @Override
-                    public void onResponse(int requestCode, Object data) {
-                        List<GetAttachmentList> items = (List<GetAttachmentList>) data;
+                    public void onResponse(int requestCode, List<GetAttachmentList> items) {
                         if (items != null) {
                             if (pageNumber == 1 && items.size() > 0) {
                                 mFragmentSignatureInfoBinding.txtData.setVisibility(View.GONE);
@@ -674,7 +674,6 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                                 mCallback.isJobCardEnable(true);
                             mFragmentSignatureInfoBinding.txtData.setVisibility(View.VISIBLE);
                         }
-
                     }
 
                     @Override

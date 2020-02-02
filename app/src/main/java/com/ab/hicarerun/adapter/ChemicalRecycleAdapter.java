@@ -12,15 +12,11 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.databinding.AttachmentListAdapterBinding;
 import com.ab.hicarerun.databinding.ChemicalRecycleRowBinding;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentList;
 import com.ab.hicarerun.network.models.ChemicalModel.Chemicals;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
-import com.ab.hicarerun.viewmodel.AttachmentListViewModel;
 import com.ab.hicarerun.viewmodel.ChemicalViewModel;
-import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -94,10 +90,20 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
                 holder.mChemicalRecycleRowBinding.edtActual.setEnabled(false);
                 holder.mChemicalRecycleRowBinding.edtActual.setBackgroundResource(R.drawable.disable_edit_borders);
             } else {
+                if(model.getActual()!=null){
+                    holder.mChemicalRecycleRowBinding.edtActual.setText(model.getEdtActual());
+                }else {
+                    holder.mChemicalRecycleRowBinding.edtActual.setText("");
+                }
+
                 holder.mChemicalRecycleRowBinding.edtActual.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+//                        try {
+//                            onEditTextChanged.onTextChanged(position, s.toString());
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
                     }
 
                     @Override
@@ -107,13 +113,21 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
                     @Override
                     public void afterTextChanged(Editable s) {
                         try {
-                            onEditTextChanged.onTextChanged(position, s.toString());
+                            onEditTextChanged.onTextChanged(holder.getAdapterPosition(), s.toString());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
 
                     }
                 });
+
+                if(holder.mChemicalRecycleRowBinding.edtActual.getText().toString().length() != 0){
+                    try {
+                        onEditTextChanged.onTextChanged(holder.getAdapterPosition(), holder.mChemicalRecycleRowBinding.edtActual.getText().toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
 

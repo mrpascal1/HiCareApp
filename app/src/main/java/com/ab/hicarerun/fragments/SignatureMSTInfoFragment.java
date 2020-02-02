@@ -139,7 +139,6 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     List<MSTAttachment> listTitle;
     List<MSTAttachment> mstAttachments;
     HashMap<String, List<GetAttachmentList>> expandableListDetail;
-    List<MSTAttachment> items = null;
     JobCardMSTAdapter mJobCardAdapter;
     static final int REQUEST_TAKE_PHOTO = 1;
     static final int REQUEST_GALLERY_PHOTO = 2;
@@ -639,10 +638,10 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
             if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
                 UserId = LoginRealmModels.get(0).getUserID();
                 NetworkCallController controller = new NetworkCallController(this);
-                controller.setListner(new NetworkResponseListner() {
+                controller.setListner(new NetworkResponseListner<List<MSTAttachment>>() {
+
                     @Override
-                    public void onResponse(int requestCode, Object data) {
-                        items = (List<MSTAttachment>) data;
+                    public void onResponse(int requestCode, List<MSTAttachment> items) {
                         expandableListDetail = new HashMap<>();
                         expandableListTitle = new ArrayList<>(expandableListDetail.keySet());
                         listTitle = new ArrayList<>();
@@ -669,8 +668,6 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                                 expandableListDetail.put(items.get(i).getTaskNo(), items.get(i).getAttachmentList());
                                 hashJob.put(items.get(i).getTaskNo(), items.get(i).getAttachmentList());
                                 mstAttachments = items;
-
-//                                SubItems = expandableListDetail.get(expandableListTitle);
                             }
                             mJobCardAdapter = new JobCardMSTAdapter(getActivity(), expandableListTitle, expandableListDetail, mFragmentSignatureInfoBinding.expandableListView, status, listTitle);
                             mFragmentSignatureInfoBinding.expandableListView.setAdapter(mJobCardAdapter);

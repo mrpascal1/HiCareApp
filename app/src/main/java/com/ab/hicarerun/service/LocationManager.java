@@ -403,31 +403,30 @@ public class LocationManager implements GoogleApiClient.ConnectionCallbacks,
 
     private void buildAlertMessageTurnOnLocationProviders(final String message, String positiveButtonText,
                                                           String negativeButtonText) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        builder.setMessage(message)
-                .setCancelable(false)
-                .setPositiveButton(positiveButtonText, new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog,
-                                        @SuppressWarnings("unused") final int id) {
+        try {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            builder.setMessage(message)
+                    .setCancelable(false)
+                    .setPositiveButton(positiveButtonText, (dialog, id) -> {
                         Intent mIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         mActivity.startActivity(mIntent);
                         Activity activity = (Activity) mActivity;
                         activity.finishAffinity();
                         dialog.dismiss();
-                    }
-                })
-                .setNegativeButton(negativeButtonText, new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog,
-                                        @SuppressWarnings("unused") final int id) {
+                    })
+                    .setNegativeButton(negativeButtonText, (dialog, id) -> {
                         // Location Service are not turned off
                         dialog.cancel();
                         Activity activity = (Activity) mActivity;
                         activity.finishAffinity();
-                    }
-                });
-        final AlertDialog alert = builder.create();
-        alert.show();
+                    });
+            final AlertDialog alert = builder.create();
+            alert.show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
 

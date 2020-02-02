@@ -217,7 +217,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
             if (isClicked) {
                 userName = getIntent().getStringExtra(ARG_USER);
                 SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_USERNAME, userName);
-                items = (List<HandShake>) getIntent().getSerializableExtra(ARG_HANDSHAKE);
+                items = getIntent().getParcelableArrayListExtra(ARG_HANDSHAKE);
                 long REPEATED_TIME = 1000 * 60 * Integer.parseInt(items.get(1).getValue());
 //                long REPEATED_TIME = 60000;
                 SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_INTERVAL, String.valueOf(REPEATED_TIME));

@@ -779,6 +779,11 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     }
 
     @Override
+    public void isActualChamicalChanged(Boolean b) {
+
+    }
+
+    @Override
     public void isPaymentChanged(Boolean b) {
         isPaymentChanged = b;
     }
