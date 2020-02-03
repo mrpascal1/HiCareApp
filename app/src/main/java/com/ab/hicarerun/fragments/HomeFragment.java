@@ -41,6 +41,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -131,6 +132,8 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         navigationView = getActivity().findViewById(R.id.navigation_view);
         CardView toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
+        DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer);
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         activityName = getActivity().getClass().getSimpleName();
         apply();
 

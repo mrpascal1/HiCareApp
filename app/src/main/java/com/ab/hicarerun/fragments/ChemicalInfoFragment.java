@@ -124,9 +124,9 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
         }
         mGeneralRealmData =
                 getRealm().where(GeneralData.class).findAll();
-if(map != null){
-    map.clear();
-}
+        if (map != null) {
+            map.clear();
+        }
         mAdapter = new ChemicalRecycleAdapter(getActivity(), model.getCombinedTask(), (position, charSeq) -> {
             try {
                 if (charSeq != null && map != null) {
@@ -144,13 +144,13 @@ if(map != null){
                             ChemModel.setConsumption(mAdapter.getItem(i).getConsumption());
                             ChemModel.setStandard(mAdapter.getItem(i).getStandard());
                             ChemModel.setOrignal(mAdapter.getItem(i).getOrignal());
-                            if(mAdapter.getItem(i).getOrignal()!=null){
+                            if (mAdapter.getItem(i).getOrignal() != null) {
                                 if (mAdapter.getItem(i).getOrignal().equals(map.get(i))) {
                                     ChemModel.setChemicalChanged(false);
                                 } else {
                                     ChemModel.setChemicalChanged(true);
                                 }
-                            }else {
+                            } else {
                                 ChemModel.setChemicalChanged(true);
                             }
 
@@ -247,7 +247,7 @@ if(map != null){
                 isVerified = mGeneralRealmData.get(0).getAutoSubmitChemicals();
                 Log.i("chemicalcount", String.valueOf(mAdapter.getItemCount()));
                 Log.i("mapcount", String.valueOf(map.size()));
-                Log.i("mapcount", String.valueOf(map.keySet() +" , " +map.values()));
+                Log.i("mapcount", String.valueOf(map.keySet() + " , " + map.values()));
                 if (!isVerified) {
                     if (map.size() == mAdapter.getItemCount()) {
                         mCallback.isChemicalChanged(false);

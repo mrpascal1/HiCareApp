@@ -267,7 +267,7 @@ public class AppUtils {
     }
 
     public static String currentDateTime() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", Locale.ENGLISH);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.ENGLISH);
         Date date1 = new Date();
         return dateFormat.format(date1);
     }

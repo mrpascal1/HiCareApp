@@ -1,15 +1,12 @@
 package com.ab.hicarerun.activities;
 
 import android.Manifest;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -20,21 +17,20 @@ import androidx.databinding.DataBindingUtil;
 import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ActivityLoginBinding;
-import com.ab.hicarerun.fragments.LoginFragment;
 import com.ab.hicarerun.fragments.NewLoginFragment;
-import com.ab.hicarerun.fragments.OTP_LoginFragment;
-import com.ab.hicarerun.fragments.VideoPlayerFragment;
-import com.ab.hicarerun.handler.UserLoginClickHandler;
-import com.ab.hicarerun.service.LocationManager;
-import com.ab.hicarerun.service.listner.LocationManagerListner;
+import com.ab.hicarerun.network.NetworkCallController;
+import com.ab.hicarerun.network.NetworkResponseListner;
+import com.ab.hicarerun.network.models.UpdateAppModel.UpdateData;
 import com.ab.hicarerun.utils.AppUtils;
-import com.ab.hicarerun.utils.SharedPreferencesUtility;
-import com.ab.hicarerun.viewmodel.UserLoginViewModel;
 
 public class LoginActivity extends BaseActivity {
     ActivityLoginBinding mActivityLoginBinding;
     private static final int PERMISSION_REQUEST_CODE = 1000;
     AlertDialog alert;
+    private String Version = "";
+    private String Apk_URL = "";
+    private String Apk_Type = "";
+    private static final int UPDATE_REQ = 2000;
 
     @Override
     protected void onResume() {
@@ -52,7 +48,34 @@ public class LoginActivity extends BaseActivity {
         mActivityLoginBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_login);
         askPermissions();
-        addFragment(NewLoginFragment.newInstance(), "LoginTrealActivity-CreateRealFragment");
+        getVersionFromApi();
+//        addFragment(NewLoginFragment.newInstance(Version, Apk_URL, Apk_Type), "LoginTrealActivity-CreateRealFragment");
+    }
+
+
+    private void getVersionFromApi() {
+        try {
+            NetworkCallController controller = new NetworkCallController();
+            controller.setListner(new NetworkResponseListner() {
+                @Override
+                public void onResponse(int requestCode, Object response) {
+                    UpdateData data = (UpdateData) response;
+                    Version = data.getVersion();
+                    Apk_URL = data.getApkurl();
+                    Apk_Type = data.getApktype();
+                    addFragment(NewLoginFragment.newInstance(Version, Apk_URL, Apk_Type), "LoginTrealActivity-CreateRealFragment");
+
+                }
+
+                @Override
+                public void onFailure(int requestCode) {
+
+                }
+            });
+            controller.getUpdateApp(UPDATE_REQ);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

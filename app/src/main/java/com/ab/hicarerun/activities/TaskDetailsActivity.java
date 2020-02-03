@@ -779,7 +779,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
     }
 
     @Override
-    public void isActualChamicalChanged(Boolean b) {
+    public void isActualChemicalChanged(Boolean b) {
 
     }
 

@@ -70,8 +70,8 @@ public class BaseApplication extends Application {
         Gson gson = gsonBuilder.create();
 
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
-                .readTimeout(20, TimeUnit.SECONDS)
-                .connectTimeout(20, TimeUnit.SECONDS);
+                .readTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS);
 
 
         if (BuildConfig.DEBUG) {

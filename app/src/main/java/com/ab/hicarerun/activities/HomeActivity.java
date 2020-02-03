@@ -295,7 +295,6 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                                 bitUser.compress(Bitmap.CompressFormat.PNG, 100, stream);
                                 byte[] byteArray = stream.toByteArray();
                                 addFragment(HomeFragment.newInstance(byteArray), "HomeActivity - HomeFragment");
-
                             }
                         }
                         initNavigationDrawer();

@@ -134,6 +134,7 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mFragmentStartVideoBinding.progress.setVisibility(View.VISIBLE);
         mFragmentStartVideoBinding.lnrSkip.setVisibility(View.GONE);
         mFragmentStartVideoBinding.exoPlayerView.setOnClickListener(view1 -> animateVolumeControl());
@@ -348,7 +349,7 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
 
     @Override
     public void onPlayerError(ExoPlaybackException error) {
-
+        mFragmentStartVideoBinding.lnrSkip.setVisibility(View.VISIBLE);
     }
 
     @Override

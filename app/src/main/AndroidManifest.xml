@@ -59,10 +59,12 @@
             android:name=".activities.TechChemicalCountActivity"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activities.OnSiteAccountDetailsActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.OnSiteTaskActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activities.OnSiteAccountDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.OnSiteTaskActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.StartVideoActivity"
             android:configChanges="orientation|screenSize|layoutDirection" />

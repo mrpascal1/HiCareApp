@@ -269,7 +269,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:gravity="center"
-                        android:text="There is No Recent Tasks to display!" />
+                        android:text="There is No Area to display!" />
 
                 </LinearLayout>
 
@@ -277,6 +277,7 @@
             </RelativeLayout>
 
         </LinearLayout>
+
 
 
     </FrameLayout>

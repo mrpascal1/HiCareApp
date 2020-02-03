@@ -29,6 +29,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.databinding.DataBindingUtil;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
@@ -117,6 +118,8 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
             mFragmentFaceRecognizationBinding.txtReason.setText("Please upload your photo to mark attendance.");
             CardView toolbar = getActivity().findViewById(R.id.toolbar);
             toolbar.setVisibility(View.GONE);
+            DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer);
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         } else {
             if ((VerifyOtpActivity) getActivity() != null) {
                 mFragmentFaceRecognizationBinding.txtReason.setText("Please upload your photo to complete the registration.");

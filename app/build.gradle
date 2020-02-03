@@ -21,8 +21,8 @@ android {
         applicationId "com.ab.hicarerun"
         minSdkVersion 16
         targetSdkVersion 29
-        versionCode 15
-        versionName "2.1"
+        versionCode 17
+        versionName "3.1"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -46,6 +46,13 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    lintOptions {
+        quiet true
+        abortOnError false
+        ignoreWarnings true
+        checkReleaseBuilds false
     }
 
     dataBinding {

@@ -129,8 +129,8 @@ public class OnSiteAccountFragment extends BaseFragment implements OnAccountOnsi
                         }
                     });
                     controller.getOnSiteAccounts(ACCOUNT_REQ, userId);
-
                     mAdapter.setOnItemClickHandler(position -> startActivity(new Intent(getActivity(), OnSiteAccountDetailsActivity.class).putExtra(OnSiteAccountDetailsActivity.ARG_ACCOUNT, items.get(position).getAccount())));
+
                 }
             }
         } catch (Exception e) {

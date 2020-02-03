@@ -168,7 +168,9 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
                             getRealm().commitTransaction();
                             areaList = new ArrayList<>();
 
-                            if (response.getData() != null) {
+                            if (response.getData() != null && response.getData().size() > 0) {
+                                mFragmentOnSiteTaskBinding.emptyTask.setVisibility(View.GONE);
+                                mFragmentOnSiteTaskBinding.lnrArea.setVisibility(View.VISIBLE);
                                 if (area.equals("")) {
                                     Area = response.getData().get(0).getAreaTypeC();
                                     mFragmentOnSiteTaskBinding.txtArea.setText(Area);
@@ -181,6 +183,9 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
                                         areaList.add(response.getData().get(i).getAreaTypeC());
                                 }
                                 getSubList(response.getData());
+                            } else {
+                                mFragmentOnSiteTaskBinding.emptyTask.setVisibility(View.VISIBLE);
+                                mFragmentOnSiteTaskBinding.lnrArea.setVisibility(View.GONE);
                             }
                         }
 
