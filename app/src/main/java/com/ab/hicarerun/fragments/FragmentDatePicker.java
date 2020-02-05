@@ -7,7 +7,10 @@ import android.widget.DatePicker;
 
 import androidx.fragment.app.DialogFragment;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Calendar;
+import java.util.Objects;
 
 public class FragmentDatePicker extends DialogFragment
                             implements DatePickerDialog.OnDateSetListener {
@@ -22,6 +25,7 @@ public class FragmentDatePicker extends DialogFragment
         this.mDatePickerListener = mDatePickerListener;
     }
 
+    @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Calendar c;
@@ -43,7 +47,7 @@ public class FragmentDatePicker extends DialogFragment
         mCMin .add(Calendar.DATE,-90);
 
 
-        DatePickerDialog dialogFrag = new DatePickerDialog(getActivity(), this, year, month, day);
+        DatePickerDialog dialogFrag = new DatePickerDialog(Objects.requireNonNull(getActivity()), this, year, month, day);
         dialogFrag.getDatePicker().setMinDate(mCMin.getTime().getTime());
         dialogFrag.getDatePicker().setMaxDate(mCMax.getTime().getTime());
         // Create a new instance of DatePickerDialog and return it

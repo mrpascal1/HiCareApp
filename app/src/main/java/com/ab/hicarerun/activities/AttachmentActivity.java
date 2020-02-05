@@ -19,6 +19,7 @@ import com.ab.hicarerun.utils.SharedPreferencesUtility;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 
 public class AttachmentActivity extends BaseActivity implements OnJobCardEventHandler {
@@ -37,7 +38,7 @@ public class AttachmentActivity extends BaseActivity implements OnJobCardEventHa
         taskId = getIntent().getStringExtra(ARGS_TASKS);
         addFragment(AttachmentFragment.newInstance(taskId), "AttachmentActivity - AttachmentFragment");
         setSupportActionBar(mActivityAttachmentBinding.toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
     }
 

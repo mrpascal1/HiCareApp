@@ -22,6 +22,8 @@ import com.ab.hicarerun.viewmodel.AttachmentListViewModel;
 import com.bumptech.glide.Glide;
 
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +50,9 @@ public class NewAttachmentListAdapter extends RecyclerView.Adapter<NewAttachment
     }
 
 
+    @NotNull
     @Override
-    public NewAttachmentListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public NewAttachmentListAdapter.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         NewAttachmentListAdapterBinding mAttachmentListAdapterBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.new_attachment_list_adapter, parent, false);
@@ -57,7 +60,7 @@ public class NewAttachmentListAdapter extends RecyclerView.Adapter<NewAttachment
     }
 
     @Override
-    public void onBindViewHolder(final NewAttachmentListAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NotNull final NewAttachmentListAdapter.ViewHolder holder, final int position) {
         final AttachmentListViewModel model = items.get(position);
         int[] attrs = new int[]{R.attr.selectableItemBackground};
         TypedArray typedArray = mContext.obtainStyledAttributes(attrs);

@@ -166,6 +166,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
                 RealmResults<LoginResponse> LoginRealmModels =
                         getRealm().where(LoginResponse.class).findAll();
                 if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                    assert LoginRealmModels.get(0) != null;
                     UserId = LoginRealmModels.get(0).getUserID();
                     NetworkCallController controller = new NetworkCallController();
                     controller.setListner(new NetworkResponseListner<GeneralResponse>() {
@@ -195,6 +196,7 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                assert mLoginRealmModels.get(0) != null;
                 String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
                 String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
@@ -276,16 +278,12 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
         final AppCompatButton btn_submit =
                 (AppCompatButton) promptsView.findViewById(R.id.btn_submit);
 
-        btn_submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Rate = (int) ratingBar.getRating();
-                alertDialog.dismiss();
-                if (AppUtils.isGpsEnabled(TaskDetailsActivity.this)) {
-                    getSaveMenu();
-                }
+        btn_submit.setOnClickListener(v -> {
+            Rate = (int) ratingBar.getRating();
+            alertDialog.dismiss();
+            if (AppUtils.isGpsEnabled(TaskDetailsActivity.this)) {
+                getSaveMenu();
             }
-
         });
 
         alertDialog.setIcon(R.mipmap.logo);
@@ -316,12 +314,9 @@ public class TaskDetailsActivity extends BaseActivity implements LocationManager
 
             // Set action to perform when any menu-item is selected.
             mActivityTaskDetailsBinding.bottomNavigation.setOnNavigationItemSelectedListener(
-                    new BottomNavigationView.OnNavigationItemSelectedListener() {
-                        @Override
-                        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                            selectFragment(item);
-                            return false;
-                        }
+                    item -> {
+                        selectFragment(item);
+                        return false;
                     });
         }
 

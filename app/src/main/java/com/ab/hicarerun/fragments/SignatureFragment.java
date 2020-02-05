@@ -55,6 +55,8 @@ import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.bumptech.glide.Glide;
 
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.ParseException;
@@ -100,7 +102,7 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NotNull Context context) {
         super.onAttach(context);
         try {
             mCallback = (OnSaveEventHandler) context;
@@ -130,7 +132,7 @@ public class SignatureFragment extends BaseFragment implements UserSignatureClic
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentSignatureBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_signature, container, false);

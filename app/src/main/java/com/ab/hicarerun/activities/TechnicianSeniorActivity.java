@@ -14,6 +14,8 @@ import com.ab.hicarerun.fragments.AttachmentFragment;
 import com.ab.hicarerun.fragments.TechnicianSeniorFragment;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 
+import java.util.Objects;
+
 public class TechnicianSeniorActivity extends BaseActivity {
     ActivityTechnicianSeniorBinding mTechnicianSeniorBinding;
 
@@ -25,7 +27,7 @@ public class TechnicianSeniorActivity extends BaseActivity {
         addFragment(TechnicianSeniorFragment.newInstance(), "TechnicianSeniorActivity - TechnicianSeniorFragment");
 
         setSupportActionBar(mTechnicianSeniorBinding.toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

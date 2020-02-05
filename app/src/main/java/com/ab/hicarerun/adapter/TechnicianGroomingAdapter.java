@@ -20,6 +20,8 @@ import com.ab.hicarerun.viewmodel.GroomingViewModel;
 import com.ab.hicarerun.viewmodel.ReferralListViewModel;
 import com.bumptech.glide.Glide;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,8 +43,9 @@ public class TechnicianGroomingAdapter extends RecyclerView.Adapter<TechnicianGr
     }
 
 
+    @NotNull
     @Override
-    public TechnicianGroomingAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TechnicianGroomingAdapter.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         OnJobTechniciansListBinding mOnJobTechniciansListBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.on_job_technicians_list, parent, false);
@@ -51,7 +54,7 @@ public class TechnicianGroomingAdapter extends RecyclerView.Adapter<TechnicianGr
 
 
     @Override
-    public void onBindViewHolder(TechnicianGroomingAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NotNull TechnicianGroomingAdapter.ViewHolder holder, final int position) {
         int[] attrs = new int[]{R.attr.selectableItemBackground};
         TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
         int backgroundResource = typedArray.getResourceId(0, 0);

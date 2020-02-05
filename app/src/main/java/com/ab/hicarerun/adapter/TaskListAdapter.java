@@ -55,6 +55,8 @@ import com.ab.hicarerun.utils.MyCountDownTimer;
 import com.ab.hicarerun.viewmodel.TaskViewModel;
 import com.orhanobut.logger.Logger;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -106,8 +108,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     }
 
 
+    @NotNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         TaskListAdapterBinding mTaskListAdapterBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.task_list_adapter, parent, false);
@@ -115,7 +118,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NotNull final ViewHolder holder, final int position) {
 
         if (items.get(position).getHelperResourceId() != null && !items.get(position).getHelperResourceId().equals("")) {
             try {
@@ -410,7 +413,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     }
 
 
-    public void getErrorDialog(SpannableStringBuilder title, String message) {
+    private void getErrorDialog(SpannableStringBuilder title, String message) {
         try {
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
             builder.setTitle(title);
@@ -418,7 +421,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             builder.setPositiveButton("OK", (dialogInterface, i) -> dialogInterface.dismiss()).create().show();
         } catch (Exception e) {
             e.printStackTrace();
-            Log.i("error", e.getMessage());
         }
     }
 

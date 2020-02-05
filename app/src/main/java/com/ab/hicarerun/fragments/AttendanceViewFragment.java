@@ -22,6 +22,8 @@ import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.AttendanceModel.AttendanceDetail;
 import com.ab.hicarerun.network.models.LoginResponse;
 
+import org.jetbrains.annotations.NotNull;
+
 import io.realm.RealmResults;
 
 /**
@@ -44,7 +46,7 @@ public class AttendanceViewFragment extends BaseFragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mFragmentAttendanceViewBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_attendance_view, container, false);
         return mFragmentAttendanceViewBinding.getRoot();

@@ -97,6 +97,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import es.dmoral.toasty.Toasty;
@@ -122,8 +123,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     public static final String LAT_LONG = "LAT_LONG";
     private static final String TAG = "NewTaskDetailsActivity";
     private Location mLocation;
-    private long UPDATE_INTERVAL = 20 * 10000;  /* 10 secs */
-    private long FASTEST_INTERVAL = 20000; /* 2 sec */
+    private long UPDATE_INTERVAL = 5 * 1000;  /* 10 secs */
+    private long FASTEST_INTERVAL = 5000; /* 2 sec */
     private LocationRequest mLocationRequest;
     private LocationManager locationManager;
     private Tasks model;
@@ -271,6 +272,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                     getRealm().where(LoginResponse.class).findAll();
 
             if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                assert LoginRealmModels.get(0) != null;
                 userId = LoginRealmModels.get(0).getUserID();
                 NetworkCallController controller = new NetworkCallController();
                 controller.setListner(new NetworkResponseListner<GeneralResponse>() {
@@ -625,6 +627,13 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        mGoogleApiClient.stopAutoManage(this);
+        mGoogleApiClient.disconnect();
+    }
+
     protected void startLocationUpdates() {
         // Create the location request
         mLocationRequest = LocationRequest.create()
@@ -804,12 +813,11 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         controller.setListner(new NetworkResponseListner() {
                             @Override
                             public void onResponse(int requestCode, Object response) {
-                                progress.dismiss();
+//                                progress.dismiss();
                                 UpdateTaskResponse updateResponse = (UpdateTaskResponse) response;
                                 if (updateResponse.getSuccess()) {
 //                                    progress.dismiss();
                                     Toasty.success(NewTaskDetailsActivity.this, updateResponse.getErrorMessage(), Toast.LENGTH_SHORT).show();
-
                                     if (isIncentiveEnable && Status.equals("Completed")) {
                                         showIncentiveDialog();
                                     } else {
@@ -834,6 +842,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                assert mLoginRealmModels.get(0) != null;
                 String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
                 String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
@@ -849,6 +858,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         final Dialog dialog = new Dialog(this, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
         Window window = dialog.getWindow();
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        assert window != null;
         window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         window.setBackgroundDrawableResource(R.color.darkblack);
         dialog.setContentView(view);
@@ -878,7 +888,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         if (dialog != null) {
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
-            dialog.getWindow().setLayout(width, height);
+            Objects.requireNonNull(dialog.getWindow()).setLayout(width, height);
             imgCancel.setOnClickListener(v -> {
                 onBackPressed();
                 try {

@@ -19,6 +19,8 @@ import com.ab.hicarerun.network.models.TaskModel.Tasks;
 import com.ab.hicarerun.viewmodel.ReferralListViewModel;
 import com.ab.hicarerun.viewmodel.TaskViewModel;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,8 +39,9 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
     }
 
 
+    @NotNull
     @Override
-    public ReferralListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ReferralListAdapter.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         ReferralListAdapterBinding mReferralListAdapterBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.referral_list_adapter, parent, false);
@@ -60,12 +63,7 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
         holder.mReferralListAdapterBinding.txtEmail.setText(items.get(position).getEmail());
 
 
-        holder.mReferralListAdapterBinding.imgDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onItemClickHandler.onDeleteItemClicked(position);
-            }
-        });
+        holder.mReferralListAdapterBinding.imgDelete.setOnClickListener(v -> onItemClickHandler.onDeleteItemClicked(position));
     }
 
     public void setOnItemClickHandler(OnDeleteListItemClickHandler onItemClickHandler) {

@@ -27,6 +27,7 @@ import com.bumptech.glide.Glide;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Arjun Bhatt on 1/6/2020.
@@ -54,7 +55,7 @@ public class JobCardMSTAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int listPosition, int expandedListPosition) {
-        return this.expandableListDetail.get(this.expandableListTitle.get(listPosition)).get(expandedListPosition);
+        return Objects.requireNonNull(this.expandableListDetail.get(this.expandableListTitle.get(listPosition))).get(expandedListPosition);
     }
 
     @Override
@@ -69,6 +70,7 @@ public class JobCardMSTAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            assert layoutInflater != null;
             convertView = layoutInflater.inflate(R.layout.new_attachment_list_adapter, null);
         }
         TextView txtTitle = convertView
@@ -113,7 +115,7 @@ public class JobCardMSTAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int listPosition) {
-        return this.expandableListDetail.get(this.expandableListTitle.get(listPosition)).size();
+        return Objects.requireNonNull(this.expandableListDetail.get(this.expandableListTitle.get(listPosition))).size();
     }
 
     @Override
@@ -139,6 +141,7 @@ public class JobCardMSTAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context.
                     getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            assert layoutInflater != null;
             convertView = layoutInflater.inflate(R.layout.layout_jobcard_header, null);
         }
         TextView listTitleTextView = convertView

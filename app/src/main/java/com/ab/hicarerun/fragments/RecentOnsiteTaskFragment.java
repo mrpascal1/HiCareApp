@@ -32,6 +32,8 @@ import com.ab.hicarerun.network.models.OnSiteModel.OnSiteHead;
 import com.ab.hicarerun.network.models.OnSiteModel.OnSiteRecent;
 import com.ab.hicarerun.network.models.OnSiteModel.SaveAccountAreaResponse;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -87,7 +89,7 @@ public class RecentOnsiteTaskFragment extends BaseFragment implements OnRecentTa
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentRecentOnsiteTaskBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_recent_onsite_task, container, false);
@@ -100,7 +102,7 @@ public class RecentOnsiteTaskFragment extends BaseFragment implements OnRecentTa
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mFragmentRecentOnsiteTaskBinding.swipeRefreshLayout.setOnRefreshListener(
-                () -> getRecentTasks());
+                this::getRecentTasks);
         mFragmentRecentOnsiteTaskBinding.swipeRefreshLayout.setColorSchemeResources(
                 android.R.color.holo_blue_dark, android.R.color.holo_blue_light,
                 android.R.color.holo_red_dark, android.R.color.holo_red_light,
@@ -127,6 +129,7 @@ public class RecentOnsiteTaskFragment extends BaseFragment implements OnRecentTa
                 RealmResults<LoginResponse> LoginRealmModels =
                         BaseApplication.getRealm().where(LoginResponse.class).findAll();
                 if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                    assert LoginRealmModels.get(0) != null;
                     String userId = LoginRealmModels.get(0).getUserID();
                     NetworkCallController controller = new NetworkCallController(this);
                     controller.setListner(new NetworkResponseListner() {
@@ -174,11 +177,11 @@ public class RecentOnsiteTaskFragment extends BaseFragment implements OnRecentTa
     public void onDeleteItemClicked(final int parent, final int child) {
         try {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setIcon(R.drawable.ic_rubbish_bin);
+//            builder.setIcon(R.drawable.ic_rubbish_bin);
             builder.setTitle("Delete Activity");
             builder.setMessage("Are you sure you want to delete this activity?")
-                    .setPositiveButton("No, keep it", (dialog, id) -> dialog.cancel())
-                    .setNegativeButton("Yes, delete it", (dialog, id) -> {
+                    .setNegativeButton("No", (dialog, id) -> dialog.cancel())
+                    .setPositiveButton("Yes", (dialog, id) -> {
                         NetworkCallController controller = new NetworkCallController(RecentOnsiteTaskFragment.this);
                         controller.setListner(new NetworkResponseListner() {
                             @Override

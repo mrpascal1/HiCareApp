@@ -24,6 +24,8 @@ import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.viewmodel.AccountAreaViewModel;
 import com.ab.hicarerun.viewmodel.ReferralListViewModel;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +47,9 @@ public class OnSiteTasksAdapter extends RecyclerView.Adapter<OnSiteTasksAdapter.
     }
 
 
+    @NotNull
     @Override
-    public OnSiteTasksAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public OnSiteTasksAdapter.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         OnsiteListAdapterBinding mOnsiteListAdapterBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.onsite_list_adapter, parent, false);
@@ -54,7 +57,7 @@ public class OnSiteTasksAdapter extends RecyclerView.Adapter<OnSiteTasksAdapter.
     }
 
     @Override
-    public void onBindViewHolder(OnSiteTasksAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NotNull OnSiteTasksAdapter.ViewHolder holder, final int position) {
         int[] attrs = new int[]{R.attr.selectableItemBackground};
         TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
         int backgroundResource = typedArray.getResourceId(0, 0);

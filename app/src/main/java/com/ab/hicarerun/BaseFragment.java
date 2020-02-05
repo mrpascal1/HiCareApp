@@ -16,6 +16,8 @@ import androidx.fragment.app.Fragment;
 import com.ab.hicarerun.activities.LoginActivity;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 
+import java.util.Objects;
+
 import io.realm.Realm;
 
 /**
@@ -81,15 +83,11 @@ public class BaseFragment extends Fragment {
 
   public void showServerError() {
     try {
-      AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+      AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
       builder.setTitle("Network Error");
       builder.setMessage(
           "Unable to connect to server, please check your internet connection and try again.");
-      builder.setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
-        @Override public void onClick(DialogInterface dialogInterface, int i) {
-          dialogInterface.dismiss();
-        }
-      }).create().show();
+      builder.setNeutralButton("Dismiss", (dialogInterface, i) -> dialogInterface.dismiss()).create().show();
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -97,13 +95,9 @@ public class BaseFragment extends Fragment {
 
   public void showServerError(String msg) {
     try {
-      AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+      AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
       builder.setMessage(msg);
-      builder.setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
-        @Override public void onClick(DialogInterface dialogInterface, int i) {
-          dialogInterface.dismiss();
-        }
-      }).create().show();
+      builder.setNeutralButton("Dismiss", (dialogInterface, i) -> dialogInterface.dismiss()).create().show();
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -111,6 +105,7 @@ public class BaseFragment extends Fragment {
 
 
   protected void replaceFragment(BaseFragment fragment, String tag) {
+    assert getFragmentManager() != null;
     getFragmentManager().beginTransaction()
         .replace(R.id.container, fragment, tag)
         .addToBackStack(null)
@@ -118,15 +113,15 @@ public class BaseFragment extends Fragment {
   }
 
   protected void storeBoolean(String key, Boolean value) {
-    SharedPreferences pref = getActivity().getApplicationContext()
+    SharedPreferences pref = Objects.requireNonNull(getActivity()).getApplicationContext()
         .getSharedPreferences("hicare_pref", Context.MODE_PRIVATE);
     SharedPreferences.Editor editor = pref.edit();
     editor.putBoolean(key, value);
-    editor.commit();
+    editor.apply();
   }
 
   protected Boolean getBoolean(String key, Boolean defauleValue) {
-    SharedPreferences pref = getActivity().getApplicationContext()
+    SharedPreferences pref = Objects.requireNonNull(getActivity()).getApplicationContext()
         .getSharedPreferences("hicare_pref", Context.MODE_PRIVATE);
     return pref.getBoolean(key, defauleValue);
   }

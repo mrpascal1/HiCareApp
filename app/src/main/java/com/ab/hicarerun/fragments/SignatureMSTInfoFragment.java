@@ -83,6 +83,8 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -91,6 +93,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
@@ -187,12 +190,13 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentSignatureInfoBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_signature_mstinfo, container, false);
-        feedback_code = mFragmentSignatureInfoBinding.txtFeedback.getText().toString();
-        signatory = mFragmentSignatureInfoBinding.edtSignatory.getText().toString();
+        feedback_code = Objects.requireNonNull(mFragmentSignatureInfoBinding.txtFeedback.getText()).toString();
+        signatory = Objects.requireNonNull(mFragmentSignatureInfoBinding.edtSignatory.getText()).toString();
+        assert getArguments() != null;
         mFeedback = getArguments().getString(ARG_VAR);
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
@@ -301,6 +305,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
             mGeneralRealmData =
                     getRealm().where(GeneralData.class).findAll();
             if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
+                assert mGeneralRealmData.get(0) != null;
                 status = mGeneralRealmData.get(0).getSchedulingStatus();
                 if (status.equals("Completed") || status.equals("Incomplete")) {
                     mFragmentSignatureInfoBinding.edtSignatory.setEnabled(false);
@@ -344,7 +349,8 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                 }
 
                 try {
-                    mask = mobile.replaceAll("\\w(?=\\w{4})", "*");
+                    if (mobile != null && mobile.length() > 0)
+                        mask = mobile.replaceAll("\\w(?=\\w{4})", "*");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -587,6 +593,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                                     BaseApplication.getRealm().where(LoginResponse.class).findAll();
                             if (pickResult.getPath() != null) {
                                 if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                                    assert LoginRealmModels.get(0) != null;
                                     UserId = LoginRealmModels.get(0).getUserID();
                                     NetworkCallController controller = new NetworkCallController(SignatureMSTInfoFragment.this);
                                     PostAttachmentRequest request = new PostAttachmentRequest();
@@ -851,7 +858,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             pickPhoto.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivityForResult(pickPhoto, REQUEST_GALLERY_PHOTO);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -891,7 +898,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                                     .show())
                     .onSameThread()
                     .check();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -909,7 +916,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
             });
             builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
             builder.show();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -922,7 +929,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
             Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
             intent.setData(uri);
             startActivityForResult(intent, 101);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -977,7 +984,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                     startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -1024,7 +1031,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                 }
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -1059,7 +1066,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
 
                 controller.postAttachments(POST_ATTACHMENT_REQ, request);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

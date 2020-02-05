@@ -1,6 +1,7 @@
 package com.ab.hicarerun.activities;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 
 import android.os.Build;
@@ -31,6 +32,7 @@ public class LoginActivity extends BaseActivity {
     private String Apk_URL = "";
     private String Apk_Type = "";
     private static final int UPDATE_REQ = 2000;
+    private ProgressDialog progress;
 
     @Override
     protected void onResume() {
@@ -47,6 +49,9 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         mActivityLoginBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_login);
+        progress = new ProgressDialog(this, R.style.TransparentProgressDialog);
+        progress.setCancelable(false);
+        progress.show();
         askPermissions();
         getVersionFromApi();
 //        addFragment(NewLoginFragment.newInstance(Version, Apk_URL, Apk_Type), "LoginTrealActivity-CreateRealFragment");
@@ -59,6 +64,7 @@ public class LoginActivity extends BaseActivity {
             controller.setListner(new NetworkResponseListner() {
                 @Override
                 public void onResponse(int requestCode, Object response) {
+                    progress.dismiss();
                     UpdateData data = (UpdateData) response;
                     Version = data.getVersion();
                     Apk_URL = data.getApkurl();
@@ -69,7 +75,7 @@ public class LoginActivity extends BaseActivity {
 
                 @Override
                 public void onFailure(int requestCode) {
-
+                    progress.dismiss();
                 }
             });
             controller.getUpdateApp(UPDATE_REQ);

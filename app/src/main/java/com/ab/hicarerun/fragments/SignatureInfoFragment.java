@@ -71,10 +71,13 @@ import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
 import com.vansuita.pickimage.listeners.IPickResult;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
@@ -150,7 +153,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NotNull Context context) {
         super.onAttach(context);
         try {
             mCallback = (OnSaveEventHandler) context;
@@ -162,12 +165,13 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentSignatureInfoBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_signature_info, container, false);
-        feedback_code = mFragmentSignatureInfoBinding.txtFeedback.getText().toString();
-        signatory = mFragmentSignatureInfoBinding.edtSignatory.getText().toString();
+        feedback_code = Objects.requireNonNull(mFragmentSignatureInfoBinding.txtFeedback.getText()).toString();
+        signatory = Objects.requireNonNull(mFragmentSignatureInfoBinding.edtSignatory.getText()).toString();
+        assert getArguments() != null;
         mFeedback = getArguments().getString(ARG_VAR);
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
@@ -225,6 +229,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
         mFragmentSignatureInfoBinding.recycleView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         mFragmentSignatureInfoBinding.recycleView.setLayoutManager(layoutManager);
+        assert mGeneralRealmData.get(0) != null;
         mAdapter = new NewAttachmentListAdapter(getActivity(), mGeneralRealmData.get(0).getSchedulingStatus());
         mFragmentSignatureInfoBinding.recycleView.setAdapter(mAdapter);
         mAdapter.setOnItemClickHandler(this);
@@ -285,6 +290,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                assert mLoginRealmModels.get(0) != null;
                 String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
                 String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
@@ -302,7 +308,9 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                 status = mGeneralRealmData.get(0).getSchedulingStatus();
                 if (status.equals("Completed") || status.equals("Incomplete")) {
                     mFragmentSignatureInfoBinding.edtSignatory.setEnabled(false);
+                    assert mGeneralRealmData.get(0) != null;
                     mFragmentSignatureInfoBinding.edtSignatory.setText(mGeneralRealmData.get(0).getSignatory());
+                    assert mGeneralRealmData.get(0) != null;
                     mFragmentSignatureInfoBinding.txtFeedback.setText(mGeneralRealmData.get(0).getTechnicianOTP());
                     mFragmentSignatureInfoBinding.txtHint.setVisibility(GONE);
                     mFragmentSignatureInfoBinding.txtFeedback.setEnabled(false);
@@ -325,11 +333,17 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     mFragmentSignatureInfoBinding.imgSign.setEnabled(true);
                     mFragmentSignatureInfoBinding.txtHint.setVisibility(View.VISIBLE);
                 }
+                assert mGeneralRealmData.get(0) != null;
                 String amount = mGeneralRealmData.get(0).getAmountToCollect();
+                assert mGeneralRealmData.get(0) != null;
                 mobile = mGeneralRealmData.get(0).getMobileNumber();
+                assert mGeneralRealmData.get(0) != null;
                 Order_Number = mGeneralRealmData.get(0).getOrderNumber();
+                assert mGeneralRealmData.get(0) != null;
                 Service_Name = mGeneralRealmData.get(0).getServicePlan();
+                assert mGeneralRealmData.get(0) != null;
                 name = mGeneralRealmData.get(0).getCustName();
+                assert mGeneralRealmData.get(0) != null;
                 code = mGeneralRealmData.get(0).getTechnicianOTP();
                 try {
                     if (mGeneralRealmData.get(0).getSignatureUrl() != null || !mGeneralRealmData.get(0).getSignatureUrl().equals("")) {
@@ -344,6 +358,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                 }
 
                 try {
+                    if(mobile != null && mobile.length()>0)
                     mask = mobile.replaceAll("\\w(?=\\w{4})", "*");
                 } catch (Exception e) {
                     e.printStackTrace();

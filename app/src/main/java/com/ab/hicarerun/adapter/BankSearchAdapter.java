@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,14 +33,15 @@ public class BankSearchAdapter extends RecyclerView.Adapter<BankSearchAdapter.Vi
         this.itemsFiltered = items;
     }
 
+    @NotNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.bank_row_item, parent, false);
         return new ViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NotNull ViewHolder holder, final int position) {
         final String name = itemsFiltered.get(position);
         int[] attrs = new int[]{R.attr.selectableItemBackground};
         TypedArray typedArray = context.obtainStyledAttributes(attrs);

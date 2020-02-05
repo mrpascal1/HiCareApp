@@ -18,6 +18,8 @@ import com.ab.hicarerun.viewmodel.GroomingViewModel;
 import com.ab.hicarerun.viewmodel.IncentiveMatrixViewModel;
 import com.bumptech.glide.Glide;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,8 +38,9 @@ public class IncentiveMatrixAdapter extends RecyclerView.Adapter<IncentiveMatrix
     }
 
 
+    @NotNull
     @Override
-    public IncentiveMatrixAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public IncentiveMatrixAdapter.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         IncentiveMatrixAdapterBinding mIncentiveMatrixAdapterBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.incentive_matrix_adapter, parent, false);
@@ -46,7 +49,7 @@ public class IncentiveMatrixAdapter extends RecyclerView.Adapter<IncentiveMatrix
 
 
     @Override
-    public void onBindViewHolder(IncentiveMatrixAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NotNull IncentiveMatrixAdapter.ViewHolder holder, final int position) {
         holder.mIncentiveMatrixAdapterBinding.txtMatrix.setText(items.get(position).getMatrix());
         holder.mIncentiveMatrixAdapterBinding.txtIncentive.setText(items.get(position).getIncentive());
     }

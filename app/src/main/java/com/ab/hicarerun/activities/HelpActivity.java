@@ -17,6 +17,8 @@ import com.ab.hicarerun.handler.UserHelpClickHandler;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.utils.AppUtils;
 
+import java.util.Objects;
+
 import io.realm.RealmResults;
 
 public class HelpActivity extends AppCompatActivity implements UserHelpClickHandler {
@@ -29,7 +31,7 @@ public class HelpActivity extends AppCompatActivity implements UserHelpClickHand
                 DataBindingUtil.setContentView(this, R.layout.activity_help);
         mActivityHelpBinding.setHandler(this);
         setSupportActionBar(mActivityHelpBinding.toolbar);
-        getSupportActionBar().setTitle("Help");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Help");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -45,6 +47,7 @@ public class HelpActivity extends AppCompatActivity implements UserHelpClickHand
         }catch (Exception e){
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                assert mLoginRealmModels.get(0) != null;
                 String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
                 String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
@@ -63,6 +66,7 @@ public class HelpActivity extends AppCompatActivity implements UserHelpClickHand
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                assert mLoginRealmModels.get(0) != null;
                 String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
                 String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;

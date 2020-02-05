@@ -19,6 +19,10 @@ import com.ab.hicarerun.databinding.FragmentOnSiteAccountDetailsBinding;
 import com.ab.hicarerun.network.models.OnSiteModel.Account;
 import com.ab.hicarerun.network.models.OnSiteModel.OnSiteAccounts;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -49,7 +53,7 @@ public class OnSiteAccountDetailsFragment extends BaseFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentOnSiteAccountDetailsBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_on_site_account_details, container, false);
@@ -65,7 +69,7 @@ public class OnSiteAccountDetailsFragment extends BaseFragment {
 
     private void setViewPagerView() {
         try {
-            mAdapter = new TaskViewPagerAdapter(getActivity().getSupportFragmentManager(), getActivity());
+            mAdapter = new TaskViewPagerAdapter(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), getActivity());
             mAdapter.addFragment(OnSiteTaskFragment.newInstance(model), "On-Site Tasks");
             mAdapter.addFragment(RecentOnsiteTaskFragment.newInstance(model), "Recent Tasks");
             mFragmentOnSiteAccountDetailsBinding.viewpagertab.setDistributeEvenly(true);

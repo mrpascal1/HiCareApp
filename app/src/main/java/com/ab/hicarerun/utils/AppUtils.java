@@ -326,7 +326,7 @@ public class AppUtils {
                             SharedPreferencesUtility.IS_USER_LOGIN, true);
                     List<HandShake> items = (List<HandShake>) data;
                     Intent intent = new Intent(context, HomeActivity.class);
-                    intent.putParcelableArrayListExtra(HomeActivity.ARG_HANDSHAKE, (ArrayList<? extends Parcelable>) items);
+                    intent.putExtra(HomeActivity.ARG_HANDSHAKE, (Serializable) items);
                     intent.putExtra(HomeActivity.ARG_EVENT, true);
                     intent.putExtra(HomeActivity.ARG_USER, username);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

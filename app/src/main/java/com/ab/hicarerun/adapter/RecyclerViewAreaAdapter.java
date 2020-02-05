@@ -13,6 +13,8 @@ import com.ab.hicarerun.databinding.LayoutAreaAdapterBinding;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
 import com.ab.hicarerun.network.models.OnSiteModel.OnSiteArea;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,8 +38,9 @@ public class RecyclerViewAreaAdapter extends RecyclerView.Adapter<RecyclerViewAr
     }
 
 
+    @NotNull
     @Override
-    public RecyclerViewAreaAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerViewAreaAdapter.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         LayoutAreaAdapterBinding mLayoutAreaAdapterBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.layout_area_adapter, parent, false);
@@ -46,7 +49,7 @@ public class RecyclerViewAreaAdapter extends RecyclerView.Adapter<RecyclerViewAr
 
 
     @Override
-    public void onBindViewHolder(RecyclerViewAreaAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NotNull RecyclerViewAreaAdapter.ViewHolder holder, final int position) {
         int[] attrs = new int[]{R.attr.selectableItemBackground};
         TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
         int backgroundResource = typedArray.getResourceId(0, 0);

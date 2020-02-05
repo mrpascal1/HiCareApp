@@ -71,7 +71,10 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
+import java.util.Objects;
 
 import io.realm.RealmResults;
 
@@ -99,7 +102,8 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
     private static final String ARG_URL = "ARG_URL";
     private String username = "";
     private String URL = "";
-
+    private long duration = 0;
+    private boolean isShown = false;
 
     public StartVideoFragment() {
         // Required empty public constructor
@@ -124,7 +128,7 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentStartVideoBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_start_video, container, false);
@@ -134,7 +138,7 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        Objects.requireNonNull(getActivity()).getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mFragmentStartVideoBinding.progress.setVisibility(View.VISIBLE);
         mFragmentStartVideoBinding.lnrSkip.setVisibility(View.GONE);
         mFragmentStartVideoBinding.exoPlayerView.setOnClickListener(view1 -> animateVolumeControl());
@@ -174,20 +178,31 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
     }
 
     private void startTimer() {
-        handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                handler.postDelayed(this, SECONDS);
-            }
-        }, SECONDS);
+        try {
+            handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    showSkip();
+                    handler.postDelayed(this, SECONDS);
+                }
+            }, SECONDS);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     private void setUp(String video_url) {
-        initializePlayer();
-        if (video_url == null) {
-            return;
+        try {
+            initializePlayer();
+            if (video_url == null) {
+                return;
+            }
+            buildMediaSource(Uri.parse(video_url));
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        buildMediaSource(Uri.parse(video_url));
+
     }
 
     private void initializePlayer() {
@@ -213,9 +228,9 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
                 // 2. Create the player
                 player = ExoPlayerFactory.newSimpleInstance(new DefaultRenderersFactory(getActivity()), trackSelector, loadControl);
                 mFragmentStartVideoBinding.exoPlayerView.setPlayer(player);
+
                 // Bind the player to the view.
                 videoSurfaceView.setUseController(false);
-                startTimer();
                 setOrientationState(OrientationState.LANDSCAPE);
             }
         } catch (Exception e) {
@@ -226,45 +241,60 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
 
 
     private void toggleOrientation() {
-        if (mFragmentStartVideoBinding.exoPlayerView != null) {
-            if (orientationState == OrientationState.LANDSCAPE) {
-                setOrientationState(OrientationState.PORTRAIT);
+        try {
+            if (mFragmentStartVideoBinding.exoPlayerView != null) {
+                if (orientationState == OrientationState.LANDSCAPE) {
+                    setOrientationState(OrientationState.PORTRAIT);
 
-            } else if (orientationState == OrientationState.PORTRAIT) {
-                setOrientationState(OrientationState.LANDSCAPE);
+                } else if (orientationState == OrientationState.PORTRAIT) {
+                    setOrientationState(OrientationState.LANDSCAPE);
+                }
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
 
     private void setOrientationState(OrientationState state) {
-        orientationState = state;
-        if (state == OrientationState.LANDSCAPE) {
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            animateVolumeControl();
-        } else if (state == OrientationState.PORTRAIT) {
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            animateVolumeControl();
+        try {
+            orientationState = state;
+            if (state == OrientationState.LANDSCAPE) {
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                animateVolumeControl();
+            } else if (state == OrientationState.PORTRAIT) {
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                animateVolumeControl();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     private void animateVolumeControl() {
-        if (orientationState != null) {
-            mFragmentStartVideoBinding.imgOrientation.bringToFront();
-            if (orientationState == OrientationState.LANDSCAPE) {
-                Glide.with(getActivity()).load(R.drawable.ic_landscape).into(mFragmentStartVideoBinding.imgOrientation);
-            } else if (orientationState == OrientationState.PORTRAIT) {
-                Glide.with(getActivity()).load(R.drawable.ic_portrait).into(mFragmentStartVideoBinding.imgOrientation);
+        try {
+            if (orientationState != null) {
+                mFragmentStartVideoBinding.imgOrientation.bringToFront();
+                if (orientationState == OrientationState.LANDSCAPE) {
+                    Glide.with(Objects.requireNonNull(getActivity())).load(R.drawable.ic_landscape).into(mFragmentStartVideoBinding.imgOrientation);
+                } else if (orientationState == OrientationState.PORTRAIT) {
+                    Glide.with(Objects.requireNonNull(getActivity())).load(R.drawable.ic_portrait).into(mFragmentStartVideoBinding.imgOrientation);
+                }
+                mFragmentStartVideoBinding.lnrOrientation.animate().cancel();
+
+                mFragmentStartVideoBinding.lnrOrientation.setAlpha(1f);
+
+                mFragmentStartVideoBinding.lnrOrientation.animate()
+                        .alpha(0f)
+                        .setDuration(1500)
+                        .setStartDelay(1000);
             }
-            mFragmentStartVideoBinding.lnrOrientation.animate().cancel();
-
-            mFragmentStartVideoBinding.lnrOrientation.setAlpha(1f);
-
-            mFragmentStartVideoBinding.lnrOrientation.animate()
-                    .alpha(0f)
-                    .setDuration(1500)
-                    .setStartDelay(1000);
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
     private void buildMediaSource(Uri mUri) {
@@ -272,7 +302,7 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
             // Measures bandwidth during playback. Can be null if not required.
             DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
             // Produces DataSource instances through which media data is loaded.
-            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getContext(),
+            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(Objects.requireNonNull(getContext()),
                     Util.getUserAgent(getContext(), getString(R.string.app_name)), bandwidthMeter);
             // This is the MediaSource representing the media to be played.
             MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
@@ -284,17 +314,33 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                assert mLoginRealmModels.get(0) != null;
                 String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
                 String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
                 AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "buildMediaSource", lineNo, userName, DeviceName);
             }
         }
+    }
+
+    private void showSkip() {
+        try {
+            Log.i("video_position", String.valueOf(player.getCurrentPosition()));
+            if (duration - player.getCurrentPosition() < 10000 && !isShown) {
+                Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.push_left_in);
+                mFragmentStartVideoBinding.lnrSkip.setVisibility(View.VISIBLE);
+                mFragmentStartVideoBinding.lnrSkip.startAnimation(animation);
+                isShown = true;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 
+
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NotNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
     }
 
@@ -316,25 +362,34 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
 
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-        switch (playbackState) {
+        try {
+            switch (playbackState) {
 
-            case Player.STATE_BUFFERING:
-                mFragmentStartVideoBinding.progress.setVisibility(View.VISIBLE);
-                break;
-            case Player.STATE_ENDED:
-                Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.push_left_in);
-                mFragmentStartVideoBinding.lnrSkip.setVisibility(View.VISIBLE);
-                mFragmentStartVideoBinding.lnrSkip.startAnimation(animation);
-                break;
-            case Player.STATE_IDLE:
+                case Player.STATE_BUFFERING:
+                    mFragmentStartVideoBinding.progress.setVisibility(View.VISIBLE);
+                    break;
+                case Player.STATE_ENDED:
+//                Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.push_left_in);
+//                mFragmentStartVideoBinding.lnrSkip.setVisibility(View.VISIBLE);
+//                mFragmentStartVideoBinding.lnrSkip.startAnimation(animation);
+                    break;
+                case Player.STATE_IDLE:
 
-                break;
-            case Player.STATE_READY:
-                mFragmentStartVideoBinding.progress.setVisibility(View.GONE);
-                break;
-            default:
-                break;
+                    break;
+                case Player.STATE_READY:
+                    startTimer();
+                    mFragmentStartVideoBinding.progress.setVisibility(View.GONE);
+                    duration = player.getDuration();
+                    break;
+
+
+                default:
+                    break;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
     @Override

@@ -27,6 +27,8 @@ import com.ab.hicarerun.network.models.ProfileModel.Profile;
 import com.ab.hicarerun.network.models.ProfileModel.TechnicianProfileDetails;
 import com.ab.hicarerun.utils.AppUtils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayOutputStream;
 
 import io.realm.RealmResults;
@@ -49,7 +51,7 @@ public class TechIdFragment extends BaseFragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentTechIdBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_tech_id, container, false);

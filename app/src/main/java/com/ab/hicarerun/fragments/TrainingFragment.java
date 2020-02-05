@@ -32,7 +32,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
+import java.util.Objects;
 
 import io.realm.RealmResults;
 
@@ -59,7 +62,7 @@ FragmentTrainingBinding mFragmentTrainingBinding;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentTrainingBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_training, container, false);
@@ -70,10 +73,11 @@ FragmentTrainingBinding mFragmentTrainingBinding;
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        InputMethodManager imm =(InputMethodManager)getActivity().getSystemService(INPUT_METHOD_SERVICE);
+        InputMethodManager imm =(InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(INPUT_METHOD_SERVICE);
+        assert imm != null;
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         mFragmentTrainingBinding.swipeRefreshLayout.setOnRefreshListener(
-                () -> getTrainingVideos());
+                this::getTrainingVideos);
         mFragmentTrainingBinding.recycleView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         mFragmentTrainingBinding.recycleView.setLayoutManager(layoutManager);

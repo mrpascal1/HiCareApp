@@ -98,6 +98,8 @@ public class BaseApplication extends Application {
         if (query != null && query.size() > 0) {
             header = new RequestHeader();
             header.setHeaderName("Authorization");
+            assert query.get(0) != null;
+            assert query.get(0) != null;
             header.setHeaderValue(query.get(0).getTokenType() + " " + query.get(0).getAccessToken());
         }
         return header;

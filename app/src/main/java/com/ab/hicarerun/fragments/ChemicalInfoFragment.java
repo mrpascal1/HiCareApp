@@ -32,16 +32,19 @@ import com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;
 import com.ab.hicarerun.network.models.TaskModel.Tasks;
 import com.ab.hicarerun.utils.AppUtils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import io.realm.RealmResults;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ChemicalInfoFragment extends BaseFragment implements NetworkResponseListner {
+public class ChemicalInfoFragment extends BaseFragment implements NetworkResponseListner<List<Chemicals>> {
     FragmentChemicalInfoBinding mFragmentChemicalInfoBinding;
     private static final String ARG_TASK = "ARG_TASK";
     private static final int CHEMICAL_REQ = 1000;
@@ -53,7 +56,6 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
     private OnSaveEventHandler mCallback;
     private HashMap<Integer, String> map = new HashMap<>();
     private List<TaskChemicalList> ChemList = new ArrayList<>();
-    List<Chemicals> items = null;
     RealmResults<GeneralData> mGeneralRealmData = null;
     private String status = "";
     private String ActualStatus = "";
@@ -91,7 +93,7 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NotNull Context context) {
         super.onAttach(context);
         try {
             mCallback = (OnSaveEventHandler) context;
@@ -102,7 +104,7 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentChemicalInfoBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_chemical_info, container, false);
@@ -131,7 +133,7 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
             try {
                 if (charSeq != null && map != null) {
                     map.put(position, charSeq);
-                    Log.i("MAP_VALUE", map.get(position));
+                    Log.i("MAP_VALUE", Objects.requireNonNull(map.get(position)));
                     if (map.containsValue("")) {
                         map.remove(position);
                     } else {
@@ -181,9 +183,7 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
         });
 
         mFragmentChemicalInfoBinding.recycleView.setAdapter(mAdapter);
-        if (items == null) {
-            setChemicals();
-        }
+        setChemicals();
     }
 
     private static boolean isChemicalChanged(List<TaskChemicalList> arraylist) {
@@ -198,7 +198,9 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
     private void setChemicals() {
         try {
             if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
+                assert mGeneralRealmData.get(0) != null;
                 isVerified = mGeneralRealmData.get(0).getAutoSubmitChemicals();
+                assert mGeneralRealmData.get(0) != null;
                 ActualStatus = mGeneralRealmData.get(0).getSchedulingStatus();
                 NetworkCallController controller = new NetworkCallController(this);
                 controller.setListner(this);
@@ -215,11 +217,20 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
         }
     }
 
+//
+//    @Override
+//    public void onResponse(int requestCode, Object data) {
+//        try {
+//            List items = (List<Chemicals>) data;
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     @Override
-    public void onResponse(int requestCode, Object data) {
+    public void onResponse(int requestCode, List<Chemicals> items) {
         try {
-            items = (List<Chemicals>) data;
             if (items != null) {
                 if (pageNumber == 1 && items.size() > 0) {
                     mAdapter.setData(items);
@@ -244,6 +255,7 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
     private void getValidation(int position) {
         try {
             if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
+                assert mGeneralRealmData.get(0) != null;
                 isVerified = mGeneralRealmData.get(0).getAutoSubmitChemicals();
                 Log.i("chemicalcount", String.valueOf(mAdapter.getItemCount()));
                 Log.i("mapcount", String.valueOf(map.size()));

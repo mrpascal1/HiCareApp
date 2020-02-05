@@ -30,9 +30,12 @@ import com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;
 import com.ab.hicarerun.network.models.TaskModel.Tasks;
 import com.ab.hicarerun.utils.AppUtils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import io.realm.RealmResults;
 
@@ -89,7 +92,7 @@ public class ChemicalMSTFragment extends BaseFragment implements NetworkResponse
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NotNull Context context) {
         super.onAttach(context);
         try {
             mCallback = (OnSaveEventHandler) context;
@@ -100,7 +103,7 @@ public class ChemicalMSTFragment extends BaseFragment implements NetworkResponse
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentChemicalInfoBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_chemical_mst, container, false);
@@ -120,7 +123,7 @@ public class ChemicalMSTFragment extends BaseFragment implements NetworkResponse
             try {
                 if (charSeq != null && map != null) {
                     map.put(position, charSeq);
-                    Log.i("MAP_VALUE", map.get(position));
+                    Log.i("MAP_VALUE", Objects.requireNonNull(map.get(position)));
                     if (map.containsValue("")) {
                         map.remove(position);
                     } else {

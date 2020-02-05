@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.os.Parcelable;
 import android.text.Html;
 import android.util.Base64;
 import android.util.Log;
@@ -58,6 +59,7 @@ import com.google.android.material.navigation.NavigationView;
 import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.RealmResults;
@@ -79,11 +81,14 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     boolean isClicked = false;
     String userName = "";
     String userId = "";
+    int value = 0;
     private android.location.LocationManager locationManager;
     private AlarmManager mAlarmManager = null;
     private PendingIntent pendingUpdateIntent = null;
     private Bitmap bitUser = null;
     private ProgressDialog progress;
+
+
 
 
     @Override
@@ -115,13 +120,14 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         mActivityHomeBinding.toolbar.lnrWallet.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, IncentivesActivity.class).putExtra(HomeActivity.ARG_EVENT, false)));
 
         try {
-            isClicked = getIntent().getExtras().getBoolean(ARG_EVENT, false);
+            isClicked = Objects.requireNonNull(getIntent().getExtras()).getBoolean(ARG_EVENT, false);
             LoginRealmModels =
                     BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
                 LocationManager.Builder builder = new LocationManager.Builder(this);
                 builder.setLocationListner(this);
                 builder.build();
+                assert LoginRealmModels.get(0) != null;
                 userId = LoginRealmModels.get(0).getUserID();
                 SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_USERID, userId);
             }
@@ -173,6 +179,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+        assert pInfo != null;
         String mobileVersion = pInfo.versionName;
 
         if (Float.parseFloat(mobileVersion) < Float.parseFloat(version)) {
@@ -215,59 +222,65 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     private void getServiceCalled() {
         try {
             if (isClicked) {
-                userName = getIntent().getStringExtra(ARG_USER);
-                SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_USERNAME, userName);
-                items = getIntent().getParcelableArrayListExtra(ARG_HANDSHAKE);
-                long REPEATED_TIME = 1000 * 60 * Integer.parseInt(items.get(1).getValue());
+                try {
+                    userName = getIntent().getStringExtra(ARG_USER);
+                    SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_USERNAME, userName);
+                    items = (List<HandShake>) getIntent().getSerializableExtra(ARG_HANDSHAKE);
+                    assert items != null;
+                    value = Integer.parseInt(items.get(1).getValue());
+                    long REPEATED_TIME = 1000 * 60 * value;
 //                long REPEATED_TIME = 60000;
-                SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_INTERVAL, String.valueOf(REPEATED_TIME));
-                Log.i("callHandshake", String.valueOf(REPEATED_TIME));
-                SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_TIME, items.get(1).getValue());
-                if (items.get(0).getText().equals("EnableTrace")) {
-                    if (items.get(0).getValue().equals("true")) {
-                        Intent intent = new Intent(getApplicationContext(), HandShakeReceiver.class);
-                        intent.setAction("HandshakeAction");
-                        pendingUpdateIntent = PendingIntent.getBroadcast(getApplicationContext(),
-                                0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                        Calendar futureDate = Calendar.getInstance();
-                        mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                    SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_INTERVAL, String.valueOf(REPEATED_TIME));
+                    Log.i("callHandshake", String.valueOf(REPEATED_TIME));
+                    SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_TIME, items.get(1).getValue());
+                    if (items.get(0).getText().equals("EnableTrace")) {
+                        if (items.get(0).getValue().equals("true")) {
+                            Intent intent = new Intent(getApplicationContext(), HandShakeReceiver.class);
+                            intent.setAction("HandshakeAction");
+                            pendingUpdateIntent = PendingIntent.getBroadcast(getApplicationContext(),
+                                    0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                            Calendar futureDate = Calendar.getInstance();
+                            mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-                        if (android.os.Build.VERSION.SDK_INT >= 19) {
-                            mAlarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, futureDate.getTime().getTime(), REPEATED_TIME, pendingUpdateIntent);
-                        } else {
-                            mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, futureDate.getTime().getTime(), REPEATED_TIME, pendingUpdateIntent);
+                            if (android.os.Build.VERSION.SDK_INT >= 19) {
+                                mAlarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, futureDate.getTime().getTime(), REPEATED_TIME, pendingUpdateIntent);
+                            } else {
+                                mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, futureDate.getTime().getTime(), REPEATED_TIME, pendingUpdateIntent);
+                            }
                         }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } else {
-                if (pendingUpdateIntent != null) {
-                    mAlarmManager.cancel(pendingUpdateIntent);
-                    getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
-                }
-                String time = SharedPreferencesUtility.getPrefString(HomeActivity.this, SharedPreferencesUtility.PREF_TIME);
-                long REPEATED_TIME = 1000 * 60 * Integer.parseInt(time);
-//                long REPEATED_TIME = 60000;
-                Intent intent = new Intent(getApplicationContext(), HandShakeReceiver.class);
-                intent.setAction("HandshakeAction");
-                pendingUpdateIntent = PendingIntent.getBroadcast(getApplicationContext(),
-                        0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                Calendar futureDate = Calendar.getInstance();
-                mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-                if (android.os.Build.VERSION.SDK_INT >= 19) {
-                    mAlarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, futureDate.getTime().getTime(), REPEATED_TIME, pendingUpdateIntent);
-                } else {
-                    mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, futureDate.getTime().getTime(), REPEATED_TIME, pendingUpdateIntent);
+            } else {
+                try {
+                    if (pendingUpdateIntent != null) {
+                        mAlarmManager.cancel(pendingUpdateIntent);
+                        getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
+                    }
+                    String time = SharedPreferencesUtility.getPrefString(HomeActivity.this, SharedPreferencesUtility.PREF_TIME);
+                    value = Integer.parseInt(time);
+                    long REPEATED_TIME = 1000 * 60 * value;
+                    Intent intent = new Intent(getApplicationContext(), HandShakeReceiver.class);
+                    intent.setAction("HandshakeAction");
+                    pendingUpdateIntent = PendingIntent.getBroadcast(getApplicationContext(),
+                            0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    Calendar futureDate = Calendar.getInstance();
+                    mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+                    if (android.os.Build.VERSION.SDK_INT >= 19) {
+                        mAlarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, futureDate.getTime().getTime(), REPEATED_TIME, pendingUpdateIntent);
+                    } else {
+                        mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, futureDate.getTime().getTime(), REPEATED_TIME, pendingUpdateIntent);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+
             }
         } catch (Exception e) {
-            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
-            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
-                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
-                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getServiceCalled", lineNo, userName, DeviceName);
-            }
+         e.printStackTrace();
         }
 
     }
@@ -276,6 +289,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         try {
             RealmResults<LoginResponse> LoginRealmModels =
                     BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            assert LoginRealmModels.get(0) != null;
             String userId = LoginRealmModels.get(0).getUserID();
             if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
                 NetworkCallController controller = new NetworkCallController();
@@ -302,7 +316,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
                     @Override
                     public void onFailure(int requestCode) {
-progress.dismiss();
+                        progress.dismiss();
                     }
                 });
                 controller.getTechnicianProfile(REQ_PROFILE, userId);
@@ -317,6 +331,7 @@ progress.dismiss();
         try {
             RealmResults<LoginResponse> LoginRealmModels =
                     BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            assert LoginRealmModels.get(0) != null;
             String userId = LoginRealmModels.get(0).getUserID();
             if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
                 NetworkCallController controller = new NetworkCallController();
@@ -345,6 +360,7 @@ progress.dismiss();
         LoginRealmModels =
                 BaseApplication.getRealm().where(LoginResponse.class).findAll();
         if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+            assert LoginRealmModels.get(0) != null;
             String isTsEnable = LoginRealmModels.get(0).getIsTechnician();
             Menu menu = navigationView.getMenu();
             MenuItem groom = menu.findItem(R.id.nav_groom);
@@ -363,7 +379,9 @@ progress.dismiss();
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
+            assert pInfo != null;
             String mobileVersion = pInfo.versionName;
+            assert LoginRealmModels.get(0) != null;
             String Uname = LoginRealmModels.get(0).getUserName();
 
             View header = navigationView.getHeaderView(0);
@@ -444,7 +462,7 @@ progress.dismiss();
                     dialog.setTitle("Logout");
                     dialog.setMessage("Do you want to logout?");
                     dialog.setPositiveButton("Yes", (dialogInterface, i) -> {
-
+                        dialogInterface.dismiss();
                         NetworkCallController controller = new NetworkCallController();
                         String UserId = SharedPreferencesUtility.getPrefString(HomeActivity.this, SharedPreferencesUtility.PREF_USERID);
 
@@ -478,7 +496,7 @@ progress.dismiss();
                         controller.getLogout(LOGOUT_REQ, UserId, HomeActivity.this);
 
                     });
-                    dialog.setNegativeButton("No", null);
+                    dialog.setNegativeButton("No", (dialogInterface, i) -> dialogInterface.dismiss());
                     dialog.show();
 
                     break;
@@ -486,7 +504,6 @@ progress.dismiss();
             }
             return true;
         });
-
 
 
     }
@@ -505,18 +522,25 @@ progress.dismiss();
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("Exit");
         dialog.setMessage("Do you want to exit?");
-        dialog.setPositiveButton("Yes", (dialogInterface, i) -> finishAffinity());
-        dialog.setNegativeButton("No", null);
+        dialog.setPositiveButton("Yes", (dialogInterface, i) -> {
+            dialogInterface.dismiss();
+            finishAffinity();
+        });
+        dialog.setNegativeButton("No", (dialogInterface, i) -> dialogInterface.dismiss());
         dialog.show();
     }
 
     @Override
     public void onBackStackChanged() {
-        int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
-        if (backStackEntryCount == 0) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        } else {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        try {
+            int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
+            if (backStackEntryCount == 0) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            } else {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

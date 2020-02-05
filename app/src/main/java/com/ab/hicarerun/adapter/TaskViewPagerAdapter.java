@@ -17,6 +17,8 @@ import androidx.viewpager.widget.PagerAdapter;
 import com.ab.hicarerun.R;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class TaskViewPagerAdapter extends FragmentPagerAdapter  {
         super(manager);
     }
 
+    @NotNull
     @Override
     public Fragment getItem(int position) {
         return mFragmentList.get(position);

@@ -65,11 +65,14 @@ import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
 import com.vansuita.pickimage.listeners.IPickResult;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
@@ -138,7 +141,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NotNull Context context) {
         super.onAttach(context);
         try {
             mCallback = (OnSaveEventHandler) context;
@@ -157,7 +160,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentServiceInfoBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_service_info, container, false);
@@ -169,6 +172,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
+        assert imm != null;
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         bankList = new ArrayList<>();
         getServiceDetail();
@@ -311,188 +315,197 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
 
     private void getPaymentData() {
-        mTaskDetailsData =
-                getRealm().where(GeneralData.class).findAll();
-        if (mTaskDetailsData != null && mTaskDetailsData.size() > 0) {
-            mobile = mTaskDetailsData.get(0).getMobileNumber();
-            Email = mTaskDetailsData.get(0).getEmail();
-            try {
-                mask = mobile.replaceAll("\\w(?=\\w{4})", "*");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            chequeImg = mTaskDetailsData.get(0).getChequeImageUrl();
-            AmountCollected = mTaskDetailsData.get(0).getAmountCollected();
-            AmountToCollect = Integer.parseInt(mTaskDetailsData.get(0).getAmountToCollect());
-            mFragmentServiceInfoBinding.txtAmountToCollect.setText(AmountToCollect + " " + "\u20B9");
-            mPaymentRealmModel = getRealm().where(GeneralPaymentMode.class).findAll().sort("Value");
-            type = new ArrayList<>();
-            type.clear();
-            for (GeneralPaymentMode generalPaymentMode : mPaymentRealmModel) {
-                type.add(generalPaymentMode.getValue());
-            }
-
-            isTrue = mTaskDetailsData.get(0).getPaymentValidation();
-            isChequeRequired = mTaskDetailsData.get(0).getChequeRequired();
-            type.add(0, "None");
-            Log.i("type", String.valueOf(type.size()));
-            arrayMode = new String[type.size()];
-            arrayMode = type.toArray(arrayMode);
-            Log.i("payment", Arrays.toString(arrayMode));
-            final String status = mTaskDetailsData.get(0).getSchedulingStatus();
-            sta = mTaskDetailsData.get(0).getSchedulingStatus();
-            try {
-                if (mTaskDetailsData.get(0).getChequeImageUrl() != null && mTaskDetailsData.get(0).getChequeImageUrl().length() != 0) {
-                    mFragmentServiceInfoBinding.lnrUpload.setVisibility(View.GONE);
-                    mFragmentServiceInfoBinding.cardUpload.setVisibility(View.VISIBLE);
-                    Glide.with(getActivity())
-                            .load(mTaskDetailsData.get(0).getChequeImageUrl())
-                            .error(android.R.drawable.stat_notify_error)
-                            .into(mFragmentServiceInfoBinding.imgChequeUploaded);
+        try {
+            mTaskDetailsData =
+                    getRealm().where(GeneralData.class).findAll();
+            if (mTaskDetailsData != null && mTaskDetailsData.size() > 0) {
+                mobile = mTaskDetailsData.get(0).getMobileNumber();
+                assert mTaskDetailsData.get(0) != null;
+                Email = mTaskDetailsData.get(0).getEmail();
+                try {
+                    if(mobile!= null && mobile.length()>0)
+                        mask = mobile.replaceAll("\\w(?=\\w{4})", "*");
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            if (status.equalsIgnoreCase("Dispatched")) {
-                mFragmentServiceInfoBinding.lnrPayment.setVisibility(View.GONE);
-                mFragmentServiceInfoBinding.lnrCollected.setVisibility(View.GONE);
-                mFragmentServiceInfoBinding.lnrCheque.setVisibility(View.GONE);
-                mFragmentServiceInfoBinding.btnSendPaymentLink.setVisibility(GONE);
-            } else {
-                mFragmentServiceInfoBinding.lnrPayment.setVisibility(View.VISIBLE);
-                mFragmentServiceInfoBinding.lnrCollected.setVisibility(View.VISIBLE);
-                mFragmentServiceInfoBinding.lnrCheque.setVisibility(View.VISIBLE);
-                mFragmentServiceInfoBinding.btnSendPaymentLink.setVisibility(View.VISIBLE);
-            }
-
-            if (AmountToCollect == 0) {
-                mFragmentServiceInfoBinding.txtCollected.setEnabled(false);
-                mFragmentServiceInfoBinding.lnrCollected.setVisibility(GONE);
+                chequeImg = mTaskDetailsData.get(0).getChequeImageUrl();
+                AmountCollected = mTaskDetailsData.get(0).getAmountCollected();
+                AmountToCollect = Integer.parseInt(mTaskDetailsData.get(0).getAmountToCollect());
+                mFragmentServiceInfoBinding.txtAmountToCollect.setText(AmountToCollect + " " + "\u20B9");
+                mPaymentRealmModel = getRealm().where(GeneralPaymentMode.class).findAll().sort("Value");
+                type = new ArrayList<>();
                 type.clear();
+                for (GeneralPaymentMode generalPaymentMode : mPaymentRealmModel) {
+                    type.add(generalPaymentMode.getValue());
+                }
+
+                isTrue = mTaskDetailsData.get(0).getPaymentValidation();
+                isChequeRequired = mTaskDetailsData.get(0).getChequeRequired();
                 type.add(0, "None");
+                Log.i("type", String.valueOf(type.size()));
                 arrayMode = new String[type.size()];
                 arrayMode = type.toArray(arrayMode);
-            } else if (status.equals("Completed")) {
+                Log.i("payment", Arrays.toString(arrayMode));
+                final String status = mTaskDetailsData.get(0).getSchedulingStatus();
+                sta = mTaskDetailsData.get(0).getSchedulingStatus();
                 try {
-                    mFragmentServiceInfoBinding.txtCollected.setEnabled(false);
-                    mFragmentServiceInfoBinding.lnrBank.setEnabled(false);
-                    mFragmentServiceInfoBinding.lnrDate.setEnabled(false);
-                    mFragmentServiceInfoBinding.lnrCollected.setVisibility(View.VISIBLE);
-                    mFragmentServiceInfoBinding.txtChequeNo.setEnabled(false);
-                    mFragmentServiceInfoBinding.txtCollected.setText(AmountCollected);
-                    mFragmentServiceInfoBinding.txtChequeNo.setText(mTaskDetailsData.get(0).getChequeNo());
-                    mFragmentServiceInfoBinding.txtBankname.setText(mTaskDetailsData.get(0).getBankName());
-                    if (mTaskDetailsData.get(0).getChequeDate() != null) {
-                        try {
-                            mFragmentServiceInfoBinding.txtDate.setText(AppUtils.reFormatDateTime(mTaskDetailsData.get(0).getChequeDate(), "dd-MMM-yyyy"));
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
+                    if (mTaskDetailsData.get(0).getChequeImageUrl() != null && mTaskDetailsData.get(0).getChequeImageUrl().length() != 0) {
+                        mFragmentServiceInfoBinding.lnrUpload.setVisibility(View.GONE);
+                        mFragmentServiceInfoBinding.cardUpload.setVisibility(View.VISIBLE);
+                        Glide.with(getActivity())
+                                .load(mTaskDetailsData.get(0).getChequeImageUrl())
+                                .error(android.R.drawable.stat_notify_error)
+                                .into(mFragmentServiceInfoBinding.imgChequeUploaded);
                     }
-                    type.clear();
-                    type.add(0, mTaskDetailsData.get(0).getPaymentMode());
-                    arrayMode = new String[type.size()];
-                    arrayMode = type.toArray(arrayMode);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-            } else if (status.equals("Incomplete")) {
-                mFragmentServiceInfoBinding.txtCollected.setEnabled(false);
-                mFragmentServiceInfoBinding.lnrCollected.setVisibility(View.VISIBLE);
-                mFragmentServiceInfoBinding.lnrBank.setEnabled(false);
-                mFragmentServiceInfoBinding.lnrDate.setEnabled(false);
-                mFragmentServiceInfoBinding.txtChequeNo.setEnabled(false);
-                type.clear();
-                type.add(0, "None");
-                arrayMode = new String[type.size()];
-                arrayMode = type.toArray(arrayMode);
-            }
-            ArrayAdapter<String> statusAdapter = new ArrayAdapter<String>(getActivity(),
-                    R.layout.spinner_layout_new, arrayMode);
-            statusAdapter.setDropDownViewResource(R.layout.spinner_popup);
-            mFragmentServiceInfoBinding.spnPaymentMode.setAdapter(statusAdapter);
+                if (status.equalsIgnoreCase("Dispatched")) {
+                    mFragmentServiceInfoBinding.lnrPayment.setVisibility(View.GONE);
+                    mFragmentServiceInfoBinding.lnrCollected.setVisibility(View.GONE);
+                    mFragmentServiceInfoBinding.lnrCheque.setVisibility(View.GONE);
+                    mFragmentServiceInfoBinding.btnSendPaymentLink.setVisibility(GONE);
+                } else {
+                    mFragmentServiceInfoBinding.lnrPayment.setVisibility(View.VISIBLE);
+                    mFragmentServiceInfoBinding.lnrCollected.setVisibility(View.VISIBLE);
+                    mFragmentServiceInfoBinding.lnrCheque.setVisibility(View.VISIBLE);
+                    mFragmentServiceInfoBinding.btnSendPaymentLink.setVisibility(View.VISIBLE);
+                }
 
-            mFragmentServiceInfoBinding.spnPaymentMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (AmountToCollect == 0) {
+                    mFragmentServiceInfoBinding.txtCollected.setEnabled(false);
+                    mFragmentServiceInfoBinding.lnrCollected.setVisibility(GONE);
+                    type.clear();
+                    type.add(0, "None");
+                    arrayMode = new String[type.size()];
+                    arrayMode = type.toArray(arrayMode);
+                } else if (status.equals("Completed")) {
                     try {
-                        mFragmentServiceInfoBinding.btnSendPaymentLink.setVisibility(GONE);
-                        Mode = mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString();
-                        if (Mode.equals("None")) {
-                            mCallback.mode("");
-                        } else {
-                            mCallback.mode(Mode);
-                        }
-                        mCallback.amountToCollect(String.valueOf(AmountToCollect));
-
-                        if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("Cheque")) {
-                            mFragmentServiceInfoBinding.lnrCheque.setVisibility(View.VISIBLE);
-                            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
-                            imm.showSoftInput(mFragmentServiceInfoBinding.txtCollected, InputMethodManager.SHOW_IMPLICIT);
-                            mFragmentServiceInfoBinding.txtCollected.requestFocus();
-                            getValidated(AmountToCollect);
-
-                        } else {
-                            mFragmentServiceInfoBinding.lnrCheque.setVisibility(View.GONE);
-                        }
-
-                        if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equalsIgnoreCase("Online Payment Link")) {
-                            if (sta.equals("On-Site")) {
-                                sendPaymentLink();
+                        mFragmentServiceInfoBinding.txtCollected.setEnabled(false);
+                        mFragmentServiceInfoBinding.lnrBank.setEnabled(false);
+                        mFragmentServiceInfoBinding.lnrDate.setEnabled(false);
+                        mFragmentServiceInfoBinding.lnrCollected.setVisibility(View.VISIBLE);
+                        mFragmentServiceInfoBinding.txtChequeNo.setEnabled(false);
+                        mFragmentServiceInfoBinding.txtCollected.setText(AmountCollected);
+                        mFragmentServiceInfoBinding.txtChequeNo.setText(mTaskDetailsData.get(0).getChequeNo());
+                        mFragmentServiceInfoBinding.txtBankname.setText(mTaskDetailsData.get(0).getBankName());
+                        if (mTaskDetailsData.get(0).getChequeDate() != null) {
+                            try {
+                                mFragmentServiceInfoBinding.txtDate.setText(AppUtils.reFormatDateTime(mTaskDetailsData.get(0).getChequeDate(), "dd-MMM-yyyy"));
+                            } catch (ParseException e) {
+                                e.printStackTrace();
                             }
                         }
-                        if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("PayTm")) {
-                            mFragmentServiceInfoBinding.cardScanner.setVisibility(View.VISIBLE);
-                            getValidated(AmountToCollect);
-                            Glide.with(getActivity()).load("http://52.74.65.15/MobileApi/images/PayTm.png").into(mFragmentServiceInfoBinding.imgPayscanner);
-                        } else if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("Google Pay")) {
-                            mFragmentServiceInfoBinding.cardScanner.setVisibility(View.VISIBLE);
-                            getValidated(AmountToCollect);
-                            Glide.with(getActivity()).load("http://52.74.65.15/MobileApi/images/gpay.png").into(mFragmentServiceInfoBinding.imgPayscanner);
-                        } else if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("PhonePe")) {
-                            mFragmentServiceInfoBinding.cardScanner.setVisibility(View.VISIBLE);
-                            getValidated(AmountToCollect);
-                            Glide.with(getActivity()).load("http://52.74.65.15/MobileApi/images/PhonePay.png").into(mFragmentServiceInfoBinding.imgPayscanner);
-                        } else {
-                            mFragmentServiceInfoBinding.cardScanner.setVisibility(View.GONE);
-                        }
-                        if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("None")) {
-                            getValidated(AmountToCollect);
-                            mFragmentServiceInfoBinding.txtCollected.setEnabled(false);
-//                            mFragmentServiceInfoBinding.lnrCollected.setVisibility(GONE);
-                        }
-                        if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("Online Payment Link")) {
-                            getValidated(AmountToCollect);
-                            mFragmentServiceInfoBinding.txtCollected.setText("");
-                            mFragmentServiceInfoBinding.txtCollected.setEnabled(false);
-                            mFragmentServiceInfoBinding.lnrCollected.setVisibility(View.GONE);
-                        }
-                        if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("Cash")) {
-                            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
-                            imm.showSoftInput(mFragmentServiceInfoBinding.txtCollected, InputMethodManager.SHOW_IMPLICIT);
-                            mFragmentServiceInfoBinding.txtCollected.requestFocus();
-                            getValidated(AmountToCollect);
-                        }
+                        type.clear();
+                        type.add(0, mTaskDetailsData.get(0).getPaymentMode());
+                        arrayMode = new String[type.size()];
+                        arrayMode = type.toArray(arrayMode);
                     } catch (Exception e) {
-                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
-                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
-                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
-                            AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getPaymentData", lineNo, userName, DeviceName);
+                        e.printStackTrace();
+                    }
+
+                } else if (status.equals("Incomplete")) {
+                    mFragmentServiceInfoBinding.txtCollected.setEnabled(false);
+                    mFragmentServiceInfoBinding.lnrCollected.setVisibility(View.VISIBLE);
+                    mFragmentServiceInfoBinding.lnrBank.setEnabled(false);
+                    mFragmentServiceInfoBinding.lnrDate.setEnabled(false);
+                    mFragmentServiceInfoBinding.txtChequeNo.setEnabled(false);
+                    type.clear();
+                    type.add(0, "None");
+                    arrayMode = new String[type.size()];
+                    arrayMode = type.toArray(arrayMode);
+                }
+                ArrayAdapter<String> statusAdapter = new ArrayAdapter<String>(getActivity(),
+                        R.layout.spinner_layout_new, arrayMode);
+                statusAdapter.setDropDownViewResource(R.layout.spinner_popup);
+                mFragmentServiceInfoBinding.spnPaymentMode.setAdapter(statusAdapter);
+
+                mFragmentServiceInfoBinding.spnPaymentMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        try {
+                            mFragmentServiceInfoBinding.btnSendPaymentLink.setVisibility(GONE);
+                            Mode = mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString();
+                            if (Mode.equals("None")) {
+                                mCallback.mode("");
+                            } else {
+                                mCallback.mode(Mode);
+                            }
+                            mCallback.amountToCollect(String.valueOf(AmountToCollect));
+
+                            if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("Cheque")) {
+                                mFragmentServiceInfoBinding.lnrCheque.setVisibility(View.VISIBLE);
+                                InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(getActivity().INPUT_METHOD_SERVICE);
+                                assert imm != null;
+                                imm.showSoftInput(mFragmentServiceInfoBinding.txtCollected, InputMethodManager.SHOW_IMPLICIT);
+                                mFragmentServiceInfoBinding.txtCollected.requestFocus();
+                                getValidated(AmountToCollect);
+
+                            } else {
+                                mFragmentServiceInfoBinding.lnrCheque.setVisibility(View.GONE);
+                            }
+
+                            if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equalsIgnoreCase("Online Payment Link")) {
+                                if (sta.equals("On-Site")) {
+                                    sendPaymentLink();
+                                }
+                            }
+                            if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("PayTm")) {
+                                mFragmentServiceInfoBinding.cardScanner.setVisibility(View.VISIBLE);
+                                getValidated(AmountToCollect);
+                                Glide.with(getActivity()).load("http://52.74.65.15/MobileApi/images/PayTm.png").into(mFragmentServiceInfoBinding.imgPayscanner);
+                            } else if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("Google Pay")) {
+                                mFragmentServiceInfoBinding.cardScanner.setVisibility(View.VISIBLE);
+                                getValidated(AmountToCollect);
+                                Glide.with(getActivity()).load("http://52.74.65.15/MobileApi/images/gpay.png").into(mFragmentServiceInfoBinding.imgPayscanner);
+                            } else if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("PhonePe")) {
+                                mFragmentServiceInfoBinding.cardScanner.setVisibility(View.VISIBLE);
+                                getValidated(AmountToCollect);
+                                Glide.with(getActivity()).load("http://52.74.65.15/MobileApi/images/PhonePay.png").into(mFragmentServiceInfoBinding.imgPayscanner);
+                            } else {
+                                mFragmentServiceInfoBinding.cardScanner.setVisibility(View.GONE);
+                            }
+                            if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("None")) {
+                                getValidated(AmountToCollect);
+                                mFragmentServiceInfoBinding.txtCollected.setEnabled(false);
+//                            mFragmentServiceInfoBinding.lnrCollected.setVisibility(GONE);
+                            }
+                            if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("Online Payment Link")) {
+                                getValidated(AmountToCollect);
+                                mFragmentServiceInfoBinding.txtCollected.setText("");
+                                mFragmentServiceInfoBinding.txtCollected.setEnabled(false);
+                                mFragmentServiceInfoBinding.lnrCollected.setVisibility(View.GONE);
+                            }
+                            if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("Cash")) {
+                                InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(getActivity().INPUT_METHOD_SERVICE);
+                                assert imm != null;
+                                imm.showSoftInput(mFragmentServiceInfoBinding.txtCollected, InputMethodManager.SHOW_IMPLICIT);
+                                mFragmentServiceInfoBinding.txtCollected.requestFocus();
+                                getValidated(AmountToCollect);
+                            }
+                        } catch (Exception e) {
+                            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getPaymentData", lineNo, userName, DeviceName);
+                            }
                         }
                     }
-                }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
 
-                }
-            });
+                    }
+                });
 
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
     private void getServiceDetail() {
@@ -540,77 +553,82 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     }
 
     private void getStatus() {
-        selectedStatus = mTaskDetailsData.get(0).getSchedulingStatus();
-        generalTaskRealmModel = getRealm().where(GeneralTaskStatus.class).findAll().sort("Status");
-        final ArrayList<String> type = new ArrayList<>();
+        try {
+            selectedStatus = mTaskDetailsData.get(0).getSchedulingStatus();
+            generalTaskRealmModel = getRealm().where(GeneralTaskStatus.class).findAll().sort("Status");
+            final ArrayList<String> type = new ArrayList<>();
 
-        for (GeneralTaskStatus generalTaskStatus : generalTaskRealmModel) {
-            type.add(generalTaskStatus.getStatus());
-        }
-        arrayStatus = new String[type.size()];
-        arrayStatus = type.toArray(arrayStatus);
+            for (GeneralTaskStatus generalTaskStatus : generalTaskRealmModel) {
+                type.add(generalTaskStatus.getStatus());
+            }
+            arrayStatus = new String[type.size()];
+            arrayStatus = type.toArray(arrayStatus);
 
-        ArrayAdapter<String> statusAdapter = new ArrayAdapter<String>(getActivity(),
-                R.layout.spinner_layout_new, arrayStatus);
-        statusAdapter.setDropDownViewResource(R.layout.spinner_popup);
-        mFragmentServiceInfoBinding.spnStatus.setAdapter(statusAdapter);
+            ArrayAdapter<String> statusAdapter = new ArrayAdapter<String>(getActivity(),
+                    R.layout.spinner_layout_new, arrayStatus);
+            statusAdapter.setDropDownViewResource(R.layout.spinner_popup);
+            mFragmentServiceInfoBinding.spnStatus.setAdapter(statusAdapter);
 
-        mFragmentServiceInfoBinding.spnStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                try {
+            mFragmentServiceInfoBinding.spnStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     try {
-                        AppUtils.statusCheck(getActivity());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    Mode = mFragmentServiceInfoBinding.spnStatus.getSelectedItem().toString();
-                    isFeedback = mTaskDetailsData.get(0).getFeedBack();
-                    try {
-                        mCallback.status(generalTaskRealmModel.get(position).getStatus());
-                        if (generalTaskRealmModel.get(position).getStatus().equals("Incomplete")) {
-                            mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(View.VISIBLE);
-                            if (mFragmentServiceInfoBinding.txtReason.getText().toString().equals("Select Reason")) {
-                                mCallback.isIncompleteReason(true);
-                                mCallback.getIncompleteReason("");
+                        try {
+                            AppUtils.statusCheck(getActivity());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        Mode = mFragmentServiceInfoBinding.spnStatus.getSelectedItem().toString();
+                        isFeedback = mTaskDetailsData.get(0).getFeedBack();
+                        try {
+                            mCallback.status(generalTaskRealmModel.get(position).getStatus());
+                            if (generalTaskRealmModel.get(position).getStatus().equals("Incomplete")) {
+                                mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(View.VISIBLE);
+                                if (mFragmentServiceInfoBinding.txtReason.getText().toString().equals("Select Reason")) {
+                                    mCallback.isIncompleteReason(true);
+                                    mCallback.getIncompleteReason("");
 
+                                } else {
+                                    mCallback.isIncompleteReason(false);
+                                    mCallback.getIncompleteReason(mFragmentServiceInfoBinding.txtReason.getText().toString());
+                                }
                             } else {
-                                mCallback.isIncompleteReason(false);
-                                mCallback.getIncompleteReason(mFragmentServiceInfoBinding.txtReason.getText().toString());
+                                mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(View.GONE);
                             }
-                        } else {
-                            mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(View.GONE);
-                        }
 
-                        mCallback.duration(mTaskDetailsData.get(0).getDuration());
-                        if (selectedStatus.equals(generalTaskRealmModel.get(position).getStatus())) {
-                            mCallback.isGeneralChanged(true);
-                            mCallback.status(generalTaskRealmModel.get(position).getStatus());
-                        } else {
-                            mCallback.isGeneralChanged(false);
-                            mCallback.status(generalTaskRealmModel.get(position).getStatus());
+                            mCallback.duration(mTaskDetailsData.get(0).getDuration());
+                            if (selectedStatus.equals(generalTaskRealmModel.get(position).getStatus())) {
+                                mCallback.isGeneralChanged(true);
+                                mCallback.status(generalTaskRealmModel.get(position).getStatus());
+                            } else {
+                                mCallback.isGeneralChanged(false);
+                                mCallback.status(generalTaskRealmModel.get(position).getStatus());
+                            }
+                            getServiceValidate();
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                        getServiceValidate();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+
+            });
+
+            for (int i = 0; i < generalTaskRealmModel.size(); i++) {
+                if (selectedStatus.equals(generalTaskRealmModel.get(i).getStatus())) {
+                    mFragmentServiceInfoBinding.spnStatus.setSelection(i);
                 }
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-
-        });
-
-        for (int i = 0; i < generalTaskRealmModel.size(); i++) {
-            if (selectedStatus.equals(generalTaskRealmModel.get(i).getStatus())) {
-                mFragmentServiceInfoBinding.spnStatus.setSelection(i);
-            }
+        }catch ( Exception e){
+            e.printStackTrace();
         }
+
     }
 
 
@@ -790,7 +808,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             dialogBuilder.setCancelable(false);
             mAlertDialog = dialogBuilder.create();
             mAlertDialog.setCanceledOnTouchOutside(true);
-            mAlertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            Objects.requireNonNull(mAlertDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
             mAlertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             mAlertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
             mAlertDialog.show();
@@ -920,46 +938,43 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private void uploadChequeImage() {
         try {
             if (images.size() < 1) {
-                PickImageDialog.build(new PickSetup()).setOnPickResult(new IPickResult() {
-                    @Override
-                    public void onPickResult(PickResult pickResult) {
-                        try {
-                            if (pickResult.getError() == null) {
-                                images.add(pickResult.getPath());
-                                mFragmentServiceInfoBinding.lnrUpload.setVisibility(View.VISIBLE);
+                PickImageDialog.build(new PickSetup()).setOnPickResult(pickResult -> {
+                    try {
+                        if (pickResult.getError() == null) {
+                            images.add(pickResult.getPath());
+                            mFragmentServiceInfoBinding.lnrUpload.setVisibility(View.VISIBLE);
 
-                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                selectedImagePath = pickResult.getPath();
-                                if (selectedImagePath != null) {
-                                    Bitmap bit = new BitmapDrawable(getActivity().getResources(),
-                                            selectedImagePath).getBitmap();
-                                    int i = (int) (bit.getHeight() * (512.0 / bit.getWidth()));
-                                    bitmap = Bitmap.createScaledBitmap(bit, 512, i, true);
-                                }
-                                mFragmentServiceInfoBinding.imgUploadedCheque.setImageBitmap(bitmap);
-                                mFragmentServiceInfoBinding.lnrImage.setVisibility(View.VISIBLE);
-
-                                if (mFragmentServiceInfoBinding.imgUploadedCheque.getDrawable() != null) {
-                                    mFragmentServiceInfoBinding.lnrUpload.setVisibility(View.GONE);
-                                }
-
-
-                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                                byte[] b = baos.toByteArray();
-                                String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-                                if (images.size() == 0) {
-                                    mCallback.isPaymentChanged(true);
-                                } else {
-                                    mCallback.isPaymentChanged(false);
-                                    mCallback.chequeImage(encodedImage);
-                                    getValidated(AmountToCollect);
-                                }
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            selectedImagePath = pickResult.getPath();
+                            if (selectedImagePath != null) {
+                                Bitmap bit = new BitmapDrawable(getActivity().getResources(),
+                                        selectedImagePath).getBitmap();
+                                int i = (int) (bit.getHeight() * (512.0 / bit.getWidth()));
+                                bitmap = Bitmap.createScaledBitmap(bit, 512, i, true);
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                            mFragmentServiceInfoBinding.imgUploadedCheque.setImageBitmap(bitmap);
+                            mFragmentServiceInfoBinding.lnrImage.setVisibility(View.VISIBLE);
 
+                            if (mFragmentServiceInfoBinding.imgUploadedCheque.getDrawable() != null) {
+                                mFragmentServiceInfoBinding.lnrUpload.setVisibility(View.GONE);
+                            }
+
+
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                            byte[] b = baos.toByteArray();
+                            String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+                            if (images.size() == 0) {
+                                mCallback.isPaymentChanged(true);
+                            } else {
+                                mCallback.isPaymentChanged(false);
+                                mCallback.chequeImage(encodedImage);
+                                getValidated(AmountToCollect);
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+
                 }).show(getActivity());
             } else {
                 Toast.makeText(getContext(), "You have already selected an Image", Toast.LENGTH_SHORT).show();
@@ -1179,6 +1194,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private void getServiceValidate() {
         try {
             if (Mode.equals("On-Site")) {
+                assert mTaskDetailsData.get(0) != null;
                 if (isFeedback && mTaskDetailsData.get(0).getOnsite_OTP() != null && !mTaskDetailsData.get(0).getOnsite_OTP().equals("")) {
                     if (status.equals("Dispatched")) {
                         mFragmentServiceInfoBinding.layoutOtp.setVisibility(View.VISIBLE);
@@ -1188,9 +1204,11 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                         mFragmentServiceInfoBinding.layoutOtp.setVisibility(View.GONE);
                         mFragmentServiceInfoBinding.lnrNoCustomer.setVisibility(View.GONE);
                     }
+                    assert mTaskDetailsData.get(0) != null;
                     OnSiteOtp = mTaskDetailsData.get(0).getOnsite_OTP();
+                    assert mTaskDetailsData.get(0) != null;
                     ScOtp = mTaskDetailsData.get(0).getSc_OTP();
-                    String otp = mFragmentServiceInfoBinding.edtOnsiteOtp.getText().toString();
+                    String otp = Objects.requireNonNull(mFragmentServiceInfoBinding.edtOnsiteOtp.getText()).toString();
                     if (otp.length() != 0) {
                         mCallback.isEmptyOnsiteOtp(false);
                         if (otp.equals(OnSiteOtp) || otp.equals(ScOtp)) {

@@ -35,6 +35,10 @@ import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.DownloadApk;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+
 public class OTP_LoginFragment extends BaseFragment implements UserOtpLoginClickHandler {
     FragmentOtpLoginBinding mFragmentOtpLoginBinding;
     private BottomSheetBehavior mBottomSheetBehaviour;
@@ -56,7 +60,7 @@ public class OTP_LoginFragment extends BaseFragment implements UserOtpLoginClick
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentOtpLoginBinding =
@@ -158,10 +162,11 @@ public class OTP_LoginFragment extends BaseFragment implements UserOtpLoginClick
         try {
             PackageInfo pInfo = null;
             try {
-                pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+                pInfo = Objects.requireNonNull(getActivity()).getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
+            assert pInfo != null;
             String mobileVersion = pInfo.versionName;
             if (Float.parseFloat(mobileVersion) < Float.parseFloat(Version)) {
                 String title = "New update available";

@@ -32,6 +32,8 @@ import com.ab.hicarerun.network.models.IncentiveModel.Incentive;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.ProfileModel.Profile;
 
+import org.jetbrains.annotations.NotNull;
+
 import io.realm.RealmResults;
 
 /**
@@ -58,7 +60,7 @@ public class IncentiveFragment extends BaseFragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mFragmentIncentiveBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_incentive, container, false);
         getActivity().setTitle("Incentive");
@@ -85,6 +87,7 @@ public class IncentiveFragment extends BaseFragment {
             if ((IncentivesActivity) getActivity() != null) {
                 RealmResults<LoginResponse> LoginRealmModels =
                         BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                assert LoginRealmModels.get(0) != null;
                 String userId = LoginRealmModels.get(0).getUserID();
                 if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
                     NetworkCallController controller = new NetworkCallController(this);
@@ -124,6 +127,7 @@ public class IncentiveFragment extends BaseFragment {
             if (getActivity() != null) {
                 RealmResults<LoginResponse> LoginRealmModels =
                         BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                assert LoginRealmModels.get(0) != null;
                 String userId = LoginRealmModels.get(0).getUserID();
                 if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
                     NetworkCallController controller = new NetworkCallController(this);

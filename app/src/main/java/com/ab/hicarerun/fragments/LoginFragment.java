@@ -34,6 +34,8 @@ import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.notifications.OneSIgnalHelper;
 import com.ab.hicarerun.viewmodel.UserLoginViewModel;
 
+import org.jetbrains.annotations.NotNull;
+
 
 public class LoginFragment extends BaseFragment implements UserLoginClickHandler {
     FragmentLoginBinding mFragmentLoginBinding;
@@ -57,7 +59,7 @@ public class LoginFragment extends BaseFragment implements UserLoginClickHandler
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentLoginBinding =
@@ -129,6 +131,7 @@ public class LoginFragment extends BaseFragment implements UserLoginClickHandler
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
+        assert telephonyManager != null;
         imei = telephonyManager.getDeviceId();
         PackageInfo pinfo = null;
         try {
@@ -136,6 +139,7 @@ public class LoginFragment extends BaseFragment implements UserLoginClickHandler
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+        assert pinfo != null;
         String versionName = pinfo.versionName;
         OneSIgnalHelper oneSIgnalHelper = new OneSIgnalHelper(getActivity());
         String mStrPlayerId = oneSIgnalHelper.getmStrUserID();
@@ -174,7 +178,7 @@ public class LoginFragment extends BaseFragment implements UserLoginClickHandler
 
 
         } catch (Exception e) {
-            Log.i("LoginError", e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -194,7 +198,7 @@ public class LoginFragment extends BaseFragment implements UserLoginClickHandler
                     return true;
                 }
             } catch (Exception e) {
-                Log.i("Background failed", e.getMessage());
+                e.printStackTrace();
             }
 
             return false;

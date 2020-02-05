@@ -49,9 +49,12 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import es.dmoral.toasty.Toasty;
 import io.realm.Realm;
@@ -110,7 +113,7 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentOnSiteTaskBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_onsite_task, container, false);
@@ -141,7 +144,7 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
         mFragmentOnSiteTaskBinding.cardSheet.setOnClickListener(view1 -> {
             BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
             bottomSheetFragment.setListener(this);
-            bottomSheetFragment.show(getActivity().getSupportFragmentManager(), bottomSheetFragment.getTag());
+            bottomSheetFragment.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), bottomSheetFragment.getTag());
         });
     }
 
@@ -152,6 +155,7 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
                 RealmResults<LoginResponse> LoginRealmModels =
                         BaseApplication.getRealm().where(LoginResponse.class).findAll();
                 if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                    assert LoginRealmModels.get(0) != null;
                     String userId = LoginRealmModels.get(0).getUserID();
                     NetworkCallController controller = new NetworkCallController(this);
                     controller.setListner(new NetworkResponseListner<OnSiteAreaResponse>() {
@@ -172,6 +176,7 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
                                 mFragmentOnSiteTaskBinding.emptyTask.setVisibility(View.GONE);
                                 mFragmentOnSiteTaskBinding.lnrArea.setVisibility(View.VISIBLE);
                                 if (area.equals("")) {
+                                    assert response.getData().get(0) != null;
                                     Area = response.getData().get(0).getAreaTypeC();
                                     mFragmentOnSiteTaskBinding.txtArea.setText(Area);
                                 } else {
@@ -199,6 +204,7 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                assert mLoginRealmModels.get(0) != null;
                 String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
                 String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
@@ -263,7 +269,7 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
                     try {
                         List<String> list = (List<String>) response;
                         dismissProgressDialog();
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
                         LayoutInflater inflater = LayoutInflater.from(getActivity());
                         final View v = inflater.inflate(R.layout.jeopardy_reasons_layout, null, false);
                         final RadioGroup radioGroup = (RadioGroup) v.findViewById(R.id.radiogrp);
@@ -293,7 +299,7 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
                         });
                         builder.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
                         final AlertDialog dialog = builder.create();
-                        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation_2;
+                        Objects.requireNonNull(dialog.getWindow()).getAttributes().windowAnimations = R.style.DialogAnimation_2;
                         dialog.show();
 
                     } catch (Exception e) {
@@ -320,6 +326,7 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
                 RealmResults<LoginResponse> LoginRealmModels =
                         BaseApplication.getRealm().where(LoginResponse.class).findAll();
                 if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                    assert LoginRealmModels.get(0) != null;
                     final String userId = LoginRealmModels.get(0).getUserID();
                     LayoutInflater li = LayoutInflater.from(getActivity());
                     View promptsView = li.inflate(R.layout.layout_add_activity_dialog, null);
@@ -459,6 +466,7 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
                 RealmResults<LoginResponse> LoginRealmModels =
                         BaseApplication.getRealm().where(LoginResponse.class).findAll();
                 if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                    assert LoginRealmModels.get(0) != null;
                     final String userId = LoginRealmModels.get(0).getUserID();
                     NetworkCallController controller = new NetworkCallController(OnSiteTaskFragment.this);
                     SaveAccountAreaRequest request = new SaveAccountAreaRequest();
@@ -566,7 +574,7 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
         }
     }
 
-    protected void startLocationUpdates() {
+    private void startLocationUpdates() {
         try {
             // Create the location request
             mLocationRequest = LocationRequest.create()

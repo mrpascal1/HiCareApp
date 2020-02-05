@@ -48,6 +48,8 @@ import com.ab.hicarerun.viewmodel.AttachmentListViewModel;
 import com.ab.hicarerun.viewmodel.ReferralViewModel;
 import com.ab.hicarerun.viewmodel.UserLoginViewModel;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
@@ -102,7 +104,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mfragmentReferralBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_referral, container, false);
@@ -116,12 +118,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
         super.onViewCreated(view, savedInstanceState);
 //        getActivity().setTitle("Customer Referrals");
         mfragmentReferralBinding.swipeRefreshLayout.setOnRefreshListener(
-                new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        getReferralList();
-                    }
-                });
+                this::getReferralList);
         mfragmentReferralBinding.recycleView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         mfragmentReferralBinding.recycleView.setLayoutManager(layoutManager);

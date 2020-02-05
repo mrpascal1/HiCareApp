@@ -51,6 +51,8 @@ import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.viewmodel.GroomingViewModel;
 import com.vansuita.pickimage.bundle.PickSetup;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -94,7 +96,7 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentTechnicianSeniorBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_technician_senior, container, false);
@@ -107,7 +109,7 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
         super.onViewCreated(view, savedInstanceState);
 
         mFragmentTechnicianSeniorBinding.swipeRefreshLayout.setOnRefreshListener(
-                () -> getGroomingDetails());
+                this::getGroomingDetails);
         mFragmentTechnicianSeniorBinding.recycleView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         mFragmentTechnicianSeniorBinding.recycleView.setLayoutManager(layoutManager);
@@ -286,14 +288,14 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
     }
 
 
-    public static Bitmap rotateImage(Bitmap source, float angle) {
+    private static Bitmap rotateImage(Bitmap source, float angle) {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
                 matrix, true);
     }
 
-    public Item getCapturedImage(int requestCode) {
+    private Item getCapturedImage(int requestCode) {
 
         Item myClass = null;
         String picturePath;
@@ -350,7 +352,7 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
     @Override
     public void onItemClick(int positon) {}
 
-    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+    private Bitmap getResizedBitmap(Bitmap image, int maxSize) {
         int width = image.getWidth();
         int height = image.getHeight();
 
@@ -365,11 +367,11 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
         return Bitmap.createScaledBitmap(image, width, height, true);
     }
 
-    public String createFileName() {
+    private String createFileName() {
         return "" + System.currentTimeMillis();
     }
 
-    public String getFileExtension() {
+    private String getFileExtension() {
         return FILE_ENTENSION;
     }
 }

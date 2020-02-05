@@ -47,10 +47,13 @@ import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
 import com.vansuita.pickimage.listeners.IPickResult;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
@@ -97,7 +100,7 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NotNull Context context) {
         super.onAttach(context);
         try {
             mCallback = (OnJobCardEventHandler) context;
@@ -108,7 +111,7 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mFragmentAttachmentBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_attachment, container, false);
         mFragmentAttachmentBinding.setHandler(this);
@@ -134,6 +137,7 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
             RealmResults<LoginResponse> LoginRealmModels =
                     BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                assert LoginRealmModels.get(0) != null;
                 UserId = LoginRealmModels.get(0).getUserID();
                 NetworkCallController controller = new NetworkCallController(this);
                 controller.setListner(this);
@@ -142,6 +146,7 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                assert mLoginRealmModels.get(0) != null;
                 String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
                 String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
@@ -158,62 +163,61 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
                     getRealm().where(GeneralData.class).findAll();
 
             if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
+                assert mGeneralRealmData.get(0) != null;
                 isCardRequired = mGeneralRealmData.get(0).getJobCardRequired();
                 if (isCardRequired) {
-                    PickImageDialog.build(new PickSetup()).setOnPickResult(new IPickResult() {
-                        @Override
-                        public void onPickResult(PickResult pickResult) {
-                            if (pickResult.getError() == null) {
-                                images.add(pickResult.getPath());
-                                imgFile = new File(pickResult.getPath());
-                                selectedImagePath = pickResult.getPath();
-                                if (selectedImagePath != null) {
-                                    Bitmap bit = new BitmapDrawable(getActivity().getResources(),
-                                            selectedImagePath).getBitmap();
-                                    int i = (int) (bit.getHeight() * (1024.0 / bit.getWidth()));
-                                    bitmap = Bitmap.createScaledBitmap(bit, 1024, i, true);
-                                }
+                    PickImageDialog.build(new PickSetup()).setOnPickResult(pickResult -> {
+                        if (pickResult.getError() == null) {
+                            images.add(pickResult.getPath());
+                            imgFile = new File(pickResult.getPath());
+                            selectedImagePath = pickResult.getPath();
+                            if (selectedImagePath != null) {
+                                Bitmap bit = new BitmapDrawable(getActivity().getResources(),
+                                        selectedImagePath).getBitmap();
+                                int i = (int) (bit.getHeight() * (1024.0 / bit.getWidth()));
+                                bitmap = Bitmap.createScaledBitmap(bit, 1024, i, true);
+                            }
 
-                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                                byte[] b = baos.toByteArray();
-                                String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                            byte[] b = baos.toByteArray();
+                            String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
 
-                                RealmResults<LoginResponse> LoginRealmModels =
-                                        BaseApplication.getRealm().where(LoginResponse.class).findAll();
-                                if (pickResult.getPath() != null) {
-                                    if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-                                        UserId = LoginRealmModels.get(0).getUserID();
-                                        NetworkCallController controller = new NetworkCallController(AttachmentFragment.this);
-                                        PostAttachmentRequest request = new PostAttachmentRequest();
-                                        request.setFile(encodedImage);
-                                        request.setResourceId(UserId);
-                                        request.setTaskId(taskId);
-                                        controller.setListner(new NetworkResponseListner() {
-                                            @Override
-                                            public void onResponse(int requestCode, Object response) {
-                                                PostAttachmentResponse postResponse = (PostAttachmentResponse) response;
-                                                if (postResponse.getSuccess() == true) {
+                            RealmResults<LoginResponse> LoginRealmModels =
+                                    BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                            if (pickResult.getPath() != null) {
+                                if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                                    assert LoginRealmModels.get(0) != null;
+                                    UserId = LoginRealmModels.get(0).getUserID();
+                                    NetworkCallController controller = new NetworkCallController(AttachmentFragment.this);
+                                    PostAttachmentRequest request = new PostAttachmentRequest();
+                                    request.setFile(encodedImage);
+                                    request.setResourceId(UserId);
+                                    request.setTaskId(taskId);
+                                    controller.setListner(new NetworkResponseListner() {
+                                        @Override
+                                        public void onResponse(int requestCode, Object response) {
+                                            PostAttachmentResponse postResponse = (PostAttachmentResponse) response;
+                                            if (postResponse.getSuccess()) {
 //                                                    Toast.makeText(getActivity(), "Post Successfully.", Toast.LENGTH_LONG).show();
-                                                    Toasty.success(getActivity(), "Job card uploaded successfully.", Toast.LENGTH_LONG).show();
-                                                    getAttachmentList();
-                                                } else {
-                                                    Toast.makeText(getActivity(), "Posting Failed.", Toast.LENGTH_LONG).show();
-                                                }
+                                                Toasty.success(Objects.requireNonNull(getActivity()), "Job card uploaded successfully.", Toast.LENGTH_LONG).show();
+                                                getAttachmentList();
+                                            } else {
+                                                Toast.makeText(getActivity(), "Posting Failed.", Toast.LENGTH_LONG).show();
                                             }
+                                        }
 
-                                            @Override
-                                            public void onFailure(int requestCode) {
+                                        @Override
+                                        public void onFailure(int requestCode) {
 
-                                            }
-                                        });
+                                        }
+                                    });
 
-                                        controller.postAttachments(POST_ATTACHMENT_REQ, request);
-                                    }
+                                    controller.postAttachments(POST_ATTACHMENT_REQ, request);
                                 }
                             }
                         }
-                    }).show(getActivity());
+                    }).show(Objects.requireNonNull(getActivity()));
 
                 } else {
                     mCallback.isJobCardEnable(false);
@@ -223,6 +227,7 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                assert mLoginRealmModels.get(0) != null;
                 String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
                 String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
@@ -272,6 +277,7 @@ public class AttachmentFragment extends BaseFragment implements UserAttachmentCl
         }catch (Exception e){
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                assert mLoginRealmModels.get(0) != null;
                 String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
                 String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;

@@ -12,6 +12,8 @@ import com.ab.hicarerun.databinding.ActivityTechIdBinding;
 import com.ab.hicarerun.fragments.TechIdFragment;
 import com.ab.hicarerun.fragments.TechnicianSeniorFragment;
 
+import java.util.Objects;
+
 public class TechIdActivity extends BaseActivity {
     ActivityTechIdBinding mActivityTechIdBinding;
 
@@ -22,7 +24,7 @@ public class TechIdActivity extends BaseActivity {
                 DataBindingUtil.setContentView(this, R.layout.activity_tech_id);
         addFragment(TechIdFragment.newInstance(), "TechIdActivity - TechIdFragment");
         setSupportActionBar(mActivityTechIdBinding.toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }
 
 

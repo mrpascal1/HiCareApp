@@ -24,6 +24,8 @@ import com.ab.hicarerun.viewmodel.ReferralListViewModel;
 import com.ab.hicarerun.viewmodel.VideoPlayerViewModel;
 import com.bumptech.glide.RequestManager;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -50,8 +52,9 @@ public class VideoPlayerAdapter extends RecyclerView.Adapter<VideoPlayerAdapter.
 
 
 
+    @NotNull
     @Override
-    public VideoPlayerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public VideoPlayerAdapter.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         LayoutVideoListItemBinding mLayoutVideoListItemBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.layout_video_list_item, parent, false);
@@ -60,7 +63,7 @@ public class VideoPlayerAdapter extends RecyclerView.Adapter<VideoPlayerAdapter.
 
 
     @Override
-    public void onBindViewHolder(VideoPlayerAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NotNull VideoPlayerAdapter.ViewHolder holder, final int position) {
 
         holder.mLayoutVideoListItemBinding.title.setText(items.get(position).getVideoTitle());
         holder.mLayoutVideoListItemBinding.description.setText(items.get(position).getVideoDescription());
@@ -68,13 +71,10 @@ public class VideoPlayerAdapter extends RecyclerView.Adapter<VideoPlayerAdapter.
                 .load(items.get(position).getVideoThumbnail())
                 .into(holder.mLayoutVideoListItemBinding.thumbnail);
 
-        holder.mLayoutVideoListItemBinding.exoCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, ExoplayerActivity.class);
-                intent.putExtra(ExoplayerActivity.VIDEO_URI, items.get(position).getVideoUrl());
-                mContext.startActivity(intent);
-            }
+        holder.mLayoutVideoListItemBinding.exoCard.setOnClickListener(v -> {
+            Intent intent = new Intent(mContext, ExoplayerActivity.class);
+            intent.putExtra(ExoplayerActivity.VIDEO_URI, items.get(position).getVideoUrl());
+            mContext.startActivity(intent);
         });
 
         try {

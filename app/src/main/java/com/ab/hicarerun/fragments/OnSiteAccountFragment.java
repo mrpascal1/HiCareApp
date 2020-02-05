@@ -36,6 +36,8 @@ import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.OnSiteModel.OnSiteAccounts;
 import com.ab.hicarerun.utils.AppUtils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import io.realm.RealmResults;
@@ -64,7 +66,7 @@ public class OnSiteAccountFragment extends BaseFragment implements OnAccountOnsi
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         fragmentOnsiteAccountBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_onsite_account, container, false);
@@ -78,7 +80,7 @@ public class OnSiteAccountFragment extends BaseFragment implements OnAccountOnsi
         super.onViewCreated(view, savedInstanceState);
 //        setViewPagerView();
         fragmentOnsiteAccountBinding.swipeRefreshLayout.setOnRefreshListener(
-                () -> getOnSiteAccounts());
+                this::getOnSiteAccounts);
         fragmentOnsiteAccountBinding.recycleView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         fragmentOnsiteAccountBinding.recycleView.setLayoutManager(layoutManager);
@@ -99,6 +101,7 @@ public class OnSiteAccountFragment extends BaseFragment implements OnAccountOnsi
                 RealmResults<LoginResponse> LoginRealmModels =
                         BaseApplication.getRealm().where(LoginResponse.class).findAll();
                 if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                    assert LoginRealmModels.get(0) != null;
                     String userId = LoginRealmModels.get(0).getUserID();
                     NetworkCallController controller = new NetworkCallController(this);
                     controller.setListner(new NetworkResponseListner() {
@@ -136,6 +139,7 @@ public class OnSiteAccountFragment extends BaseFragment implements OnAccountOnsi
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                assert mLoginRealmModels.get(0) != null;
                 String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
                 String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;

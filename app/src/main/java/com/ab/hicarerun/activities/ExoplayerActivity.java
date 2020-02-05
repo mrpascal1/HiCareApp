@@ -69,12 +69,7 @@ public class ExoplayerActivity extends BaseActivity implements Player.EventListe
             videoUri = getIntent().getStringExtra(VIDEO_URI);
         }
         setUp();
-        mExoplayerLayoutBinding.imageViewExit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        mExoplayerLayoutBinding.imageViewExit.setOnClickListener(v -> finish());
 
     }
 
@@ -112,6 +107,7 @@ public class ExoplayerActivity extends BaseActivity implements Player.EventListe
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                assert mLoginRealmModels.get(0) != null;
                 String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
                 String DeviceName = "DEVICE_NAME : "+Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
@@ -139,6 +135,7 @@ public class ExoplayerActivity extends BaseActivity implements Player.EventListe
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                assert mLoginRealmModels.get(0) != null;
                 String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
                 String DeviceName = "DEVICE_NAME : "+Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;

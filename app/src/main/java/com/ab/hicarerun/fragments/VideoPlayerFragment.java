@@ -44,7 +44,10 @@ import com.ab.hicarerun.network.models.TrainingModel.Videos;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -90,7 +93,7 @@ public class VideoPlayerFragment extends BaseFragment implements SurfaceHolder.C
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentVideoPlayerBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_video_player, container, false);
@@ -99,7 +102,7 @@ public class VideoPlayerFragment extends BaseFragment implements SurfaceHolder.C
 //        progress.setTitle("Please wait while we load video...");
         progress.setCancelable(false);
         progress.show();
-        getActivity().getWindow().setFormat(PixelFormat.UNKNOWN);
+        Objects.requireNonNull(getActivity()).getWindow().setFormat(PixelFormat.UNKNOWN);
         surfaceHolder = mFragmentVideoPlayerBinding.surfaceview.getHolder();
         surfaceHolder.addCallback(this);
 //        surfaceHolder.setFixedSize(176, 144);
@@ -179,22 +182,16 @@ public class VideoPlayerFragment extends BaseFragment implements SurfaceHolder.C
         }
 
 
-        mFragmentVideoPlayerBinding.land.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mFragmentVideoPlayerBinding.land.setVisibility(View.GONE);
-                mFragmentVideoPlayerBinding.potrait.setVisibility(View.VISIBLE);
-                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            }
+        mFragmentVideoPlayerBinding.land.setOnClickListener(view1 -> {
+            mFragmentVideoPlayerBinding.land.setVisibility(View.GONE);
+            mFragmentVideoPlayerBinding.potrait.setVisibility(View.VISIBLE);
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         });
 
-        mFragmentVideoPlayerBinding.potrait.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mFragmentVideoPlayerBinding.land.setVisibility(View.VISIBLE);
-                mFragmentVideoPlayerBinding.potrait.setVisibility(View.GONE);
-                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            }
+        mFragmentVideoPlayerBinding.potrait.setOnClickListener(view12 -> {
+            mFragmentVideoPlayerBinding.land.setVisibility(View.VISIBLE);
+            mFragmentVideoPlayerBinding.potrait.setVisibility(View.GONE);
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         });
 
 
@@ -288,13 +285,18 @@ public class VideoPlayerFragment extends BaseFragment implements SurfaceHolder.C
     }
 
     private void showSkip() {
-        Log.i("video_position", String.valueOf(mediaPlayer.getCurrentPosition()));
-        if (Duration - mediaPlayer.getCurrentPosition() < 1500 && putinside) {
-            Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.push_left_in);
-            mFragmentVideoPlayerBinding.lnrSkip.setVisibility(View.VISIBLE);
-            mFragmentVideoPlayerBinding.lnrSkip.startAnimation(animation);
-            putinside = false;
+        try {
+            Log.i("video_position", String.valueOf(mediaPlayer.getCurrentPosition()));
+            if (Duration - mediaPlayer.getCurrentPosition() < 1500 && putinside) {
+                Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.push_left_in);
+                mFragmentVideoPlayerBinding.lnrSkip.setVisibility(View.VISIBLE);
+                mFragmentVideoPlayerBinding.lnrSkip.startAnimation(animation);
+                putinside = false;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
     @Override

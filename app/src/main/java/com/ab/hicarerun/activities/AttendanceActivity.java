@@ -13,6 +13,8 @@ import com.ab.hicarerun.databinding.ActivityAttendanceBinding;
 import com.ab.hicarerun.fragments.AttendanceViewFragment;
 import com.ab.hicarerun.fragments.IncentiveFragment;
 
+import java.util.Objects;
+
 public class AttendanceActivity extends BaseActivity {
 ActivityAttendanceBinding mActivityAttendanceBinding;
     @Override
@@ -22,7 +24,7 @@ ActivityAttendanceBinding mActivityAttendanceBinding;
                 DataBindingUtil.setContentView(this, R.layout.activity_attendance);
         addFragment(AttendanceViewFragment.newInstance(), "AttendanceActivity - AttendanceViewFragment");
         setSupportActionBar(mActivityAttendanceBinding.toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

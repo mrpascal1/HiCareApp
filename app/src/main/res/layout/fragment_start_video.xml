@@ -23,15 +23,17 @@
                 android:layout_gravity="center"
                 app:keep_content_on_player_reset="true"
                 app:use_controller="false"
+                
                 android:layout_centerInParent="true"
                 />
 
             <LinearLayout
                 android:id="@+id/lnrSkip"
-                android:layout_width="80dp"
-                android:layout_height="30dp"
+                android:layout_width="90dp"
+                android:layout_height="35dp"
                 android:layout_above="@id/lnrOrientation"
                 android:layout_alignRight="@id/exoPlayerView"
+                android:layout_centerInParent="true"
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/skip_bg"
                 android:visibility="gone"
@@ -42,7 +44,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="1.2"
+                    android:layout_weight="1.4"
                     android:gravity="center"
                     android:text="SKIP"
                     android:textColor="@color/white"
@@ -52,7 +54,7 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:layout_gravity="center"
-                    android:layout_weight="0.8"
+                    android:layout_weight="0.6"
                     app:srcCompat="@drawable/ic_imgright"
                     android:tint="@color/white" />
 

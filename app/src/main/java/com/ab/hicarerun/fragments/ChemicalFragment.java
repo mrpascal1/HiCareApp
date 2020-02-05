@@ -30,6 +30,8 @@ import com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;
 import com.ab.hicarerun.utils.AppUtils;
 
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -100,7 +102,7 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mFragmentChemicalBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_chemical, container, false);
         mProgressBar = new ProgressDialog(getActivity());
@@ -137,38 +139,27 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
                                 ChemList.add(ChemModel);
                             }
                             mCallback.chemReqList(ChemList);
-
                         }
                         for (int i = 0; i < mAdapter.getItemCount(); i++)
                             getValidation(i);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-//                    RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
-//                    if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-//                        String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
-//                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-//                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
-//                        AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "chemicalFragmentonViewCreated", lineNo, userName, DeviceName);
-//                    }
                 }
 
             }
         });
 
 
-        mFragmentChemicalBinding.checkChemVerified.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                try {
-                    isChemicalChecked = isChecked;
-                    for (int i = 0; i < mAdapter.getItemCount(); i++)
-                        getValidation(i);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
+        mFragmentChemicalBinding.checkChemVerified.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            try {
+                isChemicalChecked = isChecked;
+                for (int i = 0; i < mAdapter.getItemCount(); i++)
+                    getValidation(i);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
         });
 
         mFragmentChemicalBinding.recycleView.setAdapter(mAdapter);
@@ -186,7 +177,6 @@ public class ChemicalFragment extends BaseFragment implements NetworkResponseLis
                 NetworkCallController controller = new NetworkCallController(this);
                 controller.setListner(this);
                 controller.getChemicals(CHEMICAL_REQ, taskId);
-
                 callAfterResponse();
 
             }

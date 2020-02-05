@@ -18,6 +18,8 @@ import com.ab.hicarerun.network.models.ChemicalModel.Chemicals;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.viewmodel.ChemicalViewModel;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,8 +51,9 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
     }
 
 
+    @NotNull
     @Override
-    public ChemicalRecycleAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ChemicalRecycleAdapter.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         ChemicalRecycleRowBinding mChemicalRecycleRowBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.chemical_recycle_row, parent, false);
@@ -58,7 +61,7 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
     }
 
     @Override
-    public void onBindViewHolder(final ChemicalRecycleAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NotNull final ChemicalRecycleAdapter.ViewHolder holder, final int position) {
 
         final ChemicalViewModel model = items.get(position);
         holder.mChemicalRecycleRowBinding.chemName.setText(model.getName());
@@ -75,7 +78,9 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
         RealmResults<GeneralData> mGeneralRealmData =
                 getRealm().where(GeneralData.class).findAll();
         if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
+            assert mGeneralRealmData.get(0) != null;
             isVerified = mGeneralRealmData.get(0).getAutoSubmitChemicals();
+            assert mGeneralRealmData.get(0) != null;
             String status = mGeneralRealmData.get(0).getSchedulingStatus();
 
             if (isVerified || status.equals("Completed")) {
@@ -152,9 +157,11 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
             chemicalViewModel.clone(data.get(index));
             items.add(chemicalViewModel);
         }
+
     }
 
     public void addData(List<Chemicals> data) {
+        items.clear();
         for (int index = 0; index < data.size(); index++) {
             ChemicalViewModel chemicalViewModel = new ChemicalViewModel();
             chemicalViewModel.clone(data.get(index));

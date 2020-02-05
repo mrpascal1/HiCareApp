@@ -13,6 +13,8 @@ import com.ab.hicarerun.databinding.ActivityIncentivesBinding;
 import com.ab.hicarerun.fragments.IncentiveFragment;
 import com.ab.hicarerun.fragments.TechIdFragment;
 
+import java.util.Objects;
+
 public class IncentivesActivity extends BaseActivity {
     ActivityIncentivesBinding mActivityIncentivesBinding;
 
@@ -23,7 +25,7 @@ public class IncentivesActivity extends BaseActivity {
                 DataBindingUtil.setContentView(this, R.layout.activity_incentives);
         addFragment(IncentiveFragment.newInstance(), "IncentivesActivity - IncentiveFragment");
         setSupportActionBar(mActivityIncentivesBinding.toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

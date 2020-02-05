@@ -30,6 +30,7 @@ import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
+import java.util.Objects;
 
 public class TrainingActivity extends BaseActivity {
     ActivityTrainingBinding mActivityTrainingBinding;
@@ -41,7 +42,7 @@ public class TrainingActivity extends BaseActivity {
         mActivityTrainingBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_training);
         setSupportActionBar(mActivityTrainingBinding.toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         addFragment(TrainingFragment.newInstance(), "TrainingActivity - TrainingFragment");
     }
 

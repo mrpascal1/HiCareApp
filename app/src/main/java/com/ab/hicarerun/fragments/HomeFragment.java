@@ -69,7 +69,10 @@ import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.google.android.material.navigation.NavigationView;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
+import java.util.Objects;
 
 import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
@@ -78,8 +81,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     FragmentHomeBinding mFragmentHomeBinding;
     RecyclerView.LayoutManager layoutManager;
     TaskListAdapter mAdapter;
-    final Handler timerHandler = new Handler();
-    Runnable timerRunnable;
+//    final Handler timerHandler = new Handler();
     private static final int TASKS_REQ = 1000;
     private static final int EXOTEL_REQ = 2000;
     private static final int CALL_REQUEST = 3000;
@@ -123,13 +125,13 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentHomeBinding =
                 DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
 //        getActivity().setTitle("Home");
-        navigationView = getActivity().findViewById(R.id.navigation_view);
+        navigationView = Objects.requireNonNull(getActivity()).findViewById(R.id.navigation_view);
         CardView toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
         DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer);
@@ -146,7 +148,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         super.onResume();
 //        timerHandler.postDelayed(timerRunnable, 500);
         try {
-            isBack = SharedPreferencesUtility.getPrefBoolean(getActivity(), SharedPreferencesUtility.PREF_REFRESH);
+            isBack = SharedPreferencesUtility.getPrefBoolean(Objects.requireNonNull(getActivity()), SharedPreferencesUtility.PREF_REFRESH);
             if (isBack) {
                 getAllTasks();
                 AppUtils.getDataClean();
@@ -165,13 +167,13 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         int[] attrs = new int[]{R.attr.selectableItemBackground};
-        TypedArray typedArray = getActivity().obtainStyledAttributes(attrs);
+        TypedArray typedArray = Objects.requireNonNull(getActivity()).obtainStyledAttributes(attrs);
         int backgroundResource = typedArray.getResourceId(0, 0);
         view.setBackgroundResource(backgroundResource);
         mFragmentHomeBinding.recycleView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         mFragmentHomeBinding.swipeRefreshLayout.setOnRefreshListener(
-                () -> getAllTasks());
+                this::getAllTasks);
 
         mFragmentHomeBinding.recycleView.setLayoutManager(layoutManager);
 
@@ -193,11 +195,12 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
     private void getAllTasks() {
         try {
-            SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_REFRESH, false);
+            SharedPreferencesUtility.savePrefBoolean(Objects.requireNonNull(getActivity()), SharedPreferencesUtility.PREF_REFRESH, false);
             if (getActivity() != null) {
                 RealmResults<LoginResponse> LoginRealmModels =
                         BaseApplication.getRealm().where(LoginResponse.class).findAll();
                 if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                    assert LoginRealmModels.get(0) != null;
                     UserName = LoginRealmModels.get(0).getUserName();
                     TelephonyManager telephonyManager = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
                     if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
@@ -214,6 +217,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 //                    IMEI = UUID.randomUUID().toString();
                     IMEI = Settings.Secure.getString(getActivity().getContentResolver(),
                             Settings.Secure.ANDROID_ID);
+                    assert LoginRealmModels.get(0) != null;
                     UserId = LoginRealmModels.get(0).getUserID();
                     NetworkCallController controller = new NetworkCallController(this);
                     controller.setListner(this);
@@ -224,6 +228,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                assert mLoginRealmModels.get(0) != null;
                 String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
                 String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
@@ -279,7 +284,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                     startActivity(intent);
 
                 } else {
-                    Toasty.info(getActivity(), "Please complete your previous job first.", Toasty.LENGTH_SHORT).show();
+                    Toasty.info(Objects.requireNonNull(getActivity()), "Please complete your previous job first.", Toasty.LENGTH_SHORT).show();
                 }
             });
         }
@@ -296,7 +301,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
             View promptsView = li.inflate(R.layout.dialog_mark_attendance, null);
 
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
 
             alertDialogBuilder.setView(promptsView);
 
@@ -398,91 +403,40 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
     @Override
     public void onPrimaryMobileClicked(int position) {
-        if (AppUtils.checkConnection(getActivity())) {
-            String primaryNumber = mAdapter.getItem(position).getPrimaryMobile();
-            String techNumber = "";
+        try {
+            if (AppUtils.checkConnection(Objects.requireNonNull(getActivity()))) {
+                String primaryNumber = mAdapter.getItem(position).getPrimaryMobile();
+                String techNumber = "";
 
-            if ((HomeActivity) getActivity() != null) {
-                RealmResults<LoginResponse> LoginRealmModels =
-                        BaseApplication.getRealm().where(LoginResponse.class).findAll();
-                if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-                    techNumber = LoginRealmModels.get(0).getPhoneNumber();
+                if ((HomeActivity) getActivity() != null) {
+                    RealmResults<LoginResponse> LoginRealmModels =
+                            BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                    if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                        assert LoginRealmModels.get(0) != null;
+                        techNumber = LoginRealmModels.get(0).getPhoneNumber();
+                    }
                 }
-            }
 
-            if (techNumber == null || techNumber.length() == 0) {
-                AppUtils.showOkActionAlertBox(getActivity(), "Technician number is unavaible, please contact to Administrator.", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-            } else if (primaryNumber == null || primaryNumber.trim().length() == 0) {
-                AppUtils.showOkActionAlertBox(getActivity(), "Customer mobile number is unavaible.", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
+                if (techNumber == null || techNumber.length() == 0) {
+                    AppUtils.showOkActionAlertBox(getActivity(), "Technician number is unavaible, please contact to Administrator.", (dialogInterface, i) -> dialogInterface.cancel());
+                } else if (primaryNumber == null || primaryNumber.trim().length() == 0) {
+                    AppUtils.showOkActionAlertBox(getActivity(), "Customer mobile number is unavaible.", (dialogInterface, i) -> dialogInterface.cancel());
+                } else {
+                    getExotelCalled(primaryNumber, techNumber);
+                }
             } else {
-                getExotelCalled(primaryNumber, techNumber);
+                AppUtils.showOkActionAlertBox(getActivity(), "No Internet Connection.", (dialogInterface, i) -> dialogInterface.dismiss());
             }
-        } else {
-            AppUtils.showOkActionAlertBox(getActivity(), "No Internet Connection.", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.dismiss();
-                }
-            });
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
     @Override
     public void onAlternateMobileClicked(int position) {
-        if (AppUtils.checkConnection(getActivity())) {
-            String secondaryNumber = mAdapter.getItem(position).getAltMobile();
-            String techNumber = "";
-
-            if ((HomeActivity) getActivity() != null) {
-                RealmResults<LoginResponse> LoginRealmModels =
-                        BaseApplication.getRealm().where(LoginResponse.class).findAll();
-                if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-                    techNumber = LoginRealmModels.get(0).getPhoneNumber();
-                }
-            }
-            if (techNumber == null || techNumber.trim().length() == 0) {
-
-                AppUtils.showOkActionAlertBox(getActivity(), "Technician number is unavaible, please contact to Administrator.", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-            } else if (secondaryNumber == null || secondaryNumber.trim().length() == 0) {
-                AppUtils.showOkActionAlertBox(getActivity(), "Customer alt. mobile number is unavaible.", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-            } else {
-                getExotelCalled(secondaryNumber, techNumber);
-            }
-        } else {
-
-            AppUtils.showOkActionAlertBox(getActivity(), "No Internet Connection.", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.dismiss();
-                }
-            });
-        }
-    }
-
-    @Override
-    public void onTelePhoneClicked(int position) {
         try {
-            if (AppUtils.checkConnection(getActivity())) {
+            if (AppUtils.checkConnection(Objects.requireNonNull(getActivity()))) {
                 String secondaryNumber = mAdapter.getItem(position).getAltMobile();
                 String techNumber = "";
 
@@ -490,35 +444,54 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                     RealmResults<LoginResponse> LoginRealmModels =
                             BaseApplication.getRealm().where(LoginResponse.class).findAll();
                     if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                        assert LoginRealmModels.get(0) != null;
                         techNumber = LoginRealmModels.get(0).getPhoneNumber();
                     }
                 }
                 if (techNumber == null || techNumber.trim().length() == 0) {
 
-                    AppUtils.showOkActionAlertBox(getActivity(), "Technician number is unavaible, please contact to Administrator.", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.cancel();
-                        }
-                    });
+                    AppUtils.showOkActionAlertBox(getActivity(), "Technician number is unavaible, please contact to Administrator.", (dialogInterface, i) -> dialogInterface.cancel());
                 } else if (secondaryNumber == null || secondaryNumber.trim().length() == 0) {
-                    AppUtils.showOkActionAlertBox(getActivity(), "Customer phone number is unavaible.", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.cancel();
-                        }
-                    });
+                    AppUtils.showOkActionAlertBox(getActivity(), "Customer alt. mobile number is unavaible.", (dialogInterface, i) -> dialogInterface.cancel());
                 } else {
                     getExotelCalled(secondaryNumber, techNumber);
                 }
             } else {
 
-                AppUtils.showOkActionAlertBox(getActivity(), "No Internet Connection.", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
+                AppUtils.showOkActionAlertBox(getActivity(), "No Internet Connection.", (dialogInterface, i) -> dialogInterface.dismiss());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void onTelePhoneClicked(int position) {
+        try {
+            if (AppUtils.checkConnection(Objects.requireNonNull(getActivity()))) {
+                String secondaryNumber = mAdapter.getItem(position).getAltMobile();
+                String techNumber = "";
+
+                if ((HomeActivity) getActivity() != null) {
+                    RealmResults<LoginResponse> LoginRealmModels =
+                            BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                    if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                        assert LoginRealmModels.get(0) != null;
+                        techNumber = LoginRealmModels.get(0).getPhoneNumber();
                     }
-                });
+                }
+                if (techNumber == null || techNumber.trim().length() == 0) {
+
+                    AppUtils.showOkActionAlertBox(getActivity(), "Technician number is unavaible, please contact to Administrator.", (dialogInterface, i) -> dialogInterface.cancel());
+                } else if (secondaryNumber == null || secondaryNumber.trim().length() == 0) {
+                    AppUtils.showOkActionAlertBox(getActivity(), "Customer phone number is unavaible.", (dialogInterface, i) -> dialogInterface.cancel());
+                } else {
+                    getExotelCalled(secondaryNumber, techNumber);
+                }
+            } else {
+
+                AppUtils.showOkActionAlertBox(getActivity(), "No Internet Connection.", (dialogInterface, i) -> dialogInterface.dismiss());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -548,6 +521,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                assert mLoginRealmModels.get(0) != null;
                 String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
                 String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
@@ -568,7 +542,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                         try {
                             List<JeopardyReasonsList> list = (List<JeopardyReasonsList>) response;
                             dismissProgressDialog();
-                            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                            final AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
                             LayoutInflater inflater = LayoutInflater.from(getActivity());
                             final View v = inflater.inflate(R.layout.jeopardy_reasons_layout, null, false);
                             final RadioGroup radioGroup = (RadioGroup) v.findViewById(R.id.radiogrp);
@@ -605,7 +579,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
                             builder.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
                             final AlertDialog dialog = builder.create();
-                            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation_2;
+                            Objects.requireNonNull(dialog.getWindow()).getAttributes().windowAnimations = R.style.DialogAnimation_2;
 
                             dialog.show();
 
@@ -623,7 +597,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 });
                 controller.getJeopardyReasons(JEOPARDY_REQUEST);
             } else {
-                Toasty.info(getActivity(), "Please complete your previous job first.", Toasty.LENGTH_SHORT).show();
+                Toasty.info(Objects.requireNonNull(getActivity()), "Please complete your previous job first.", Toasty.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -661,7 +635,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         try {
             LayoutInflater li = LayoutInflater.from(getActivity());
             View promptsView = li.inflate(R.layout.layout_partner_dialog, null);
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
             alertDialogBuilder.setView(promptsView);
             final AlertDialog alertDialog = alertDialogBuilder.create();
             final ImageView imgTech =
@@ -730,7 +704,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 public void onResponse(int requestCode, Object data) {
                     CWFJeopardyResponse response = (CWFJeopardyResponse) data;
                     if (response.getSuccess()) {
-                        Toasty.success(getActivity(), response.getResponseMessage(), Toasty.LENGTH_LONG).show();
+                        Toasty.success(Objects.requireNonNull(getActivity()), response.getResponseMessage(), Toasty.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(getActivity(), response.getResponseMessage(), Toast.LENGTH_LONG).show();
                     }
@@ -777,9 +751,9 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                             Log.i("num", build.toString());
 
                         } catch (Exception e) {
-                            Log.i("num", e.getMessage());
                             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                assert mLoginRealmModels.get(0) != null;
                                 String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
                                 String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
@@ -805,7 +779,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
     @Override
     public void onPause() {
-        timerHandler.removeCallbacks(timerRunnable);
+//        timerHandler.removeCallbacks(timerRunnable);
         super.onPause();
     }
 

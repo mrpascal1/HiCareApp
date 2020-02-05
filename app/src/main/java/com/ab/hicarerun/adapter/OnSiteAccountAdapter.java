@@ -20,6 +20,8 @@ import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
 import com.ab.hicarerun.viewmodel.OnSiteAccountViewModel;
 import com.ab.hicarerun.viewmodel.ReferralListViewModel;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +46,9 @@ public class OnSiteAccountAdapter extends RecyclerView.Adapter<OnSiteAccountAdap
     }
 
 
+    @NotNull
     @Override
-    public OnSiteAccountAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public OnSiteAccountAdapter.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         OnsiteAccountAdapterBinding mOnsiteAccountAdapterBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.onsite_account_adapter, parent, false);
@@ -54,7 +57,7 @@ public class OnSiteAccountAdapter extends RecyclerView.Adapter<OnSiteAccountAdap
 
 
     @Override
-    public void onBindViewHolder(OnSiteAccountAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NotNull OnSiteAccountAdapter.ViewHolder holder, final int position) {
         int[] attrs = new int[]{R.attr.selectableItemBackground};
         TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
         int backgroundResource = typedArray.getResourceId(0, 0);
@@ -76,39 +79,14 @@ public class OnSiteAccountAdapter extends RecyclerView.Adapter<OnSiteAccountAdap
         } else {
             holder.mOnsiteAccountAdapterBinding.lnrAddress.setVisibility(View.GONE);
         }
-        holder.mOnsiteAccountAdapterBinding.lnrLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onOnSiteClickHandler.onTrackLocationIconClicked(position);
-            }
-        });
+        holder.mOnsiteAccountAdapterBinding.lnrLocation.setOnClickListener(v -> onOnSiteClickHandler.onTrackLocationIconClicked(position));
 
-        holder.mOnsiteAccountAdapterBinding.mobilePrimary.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onOnSiteClickHandler.onPrimaryMobileClicked(position);
-            }
-        });
+        holder.mOnsiteAccountAdapterBinding.mobilePrimary.setOnClickListener(view -> onOnSiteClickHandler.onPrimaryMobileClicked(position));
 
-        holder.mOnsiteAccountAdapterBinding.mobileSecondary.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onOnSiteClickHandler.onAlternateMobileClicked(position);
-            }
-        });
+        holder.mOnsiteAccountAdapterBinding.mobileSecondary.setOnClickListener(view -> onOnSiteClickHandler.onAlternateMobileClicked(position));
 
-        holder.mOnsiteAccountAdapterBinding.oldPhone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onOnSiteClickHandler.onTelePhoneClicked(position);
-            }
-        });
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onItemClickHandler.onItemClick(position);
-            }
-        });
+        holder.mOnsiteAccountAdapterBinding.oldPhone.setOnClickListener(view -> onOnSiteClickHandler.onTelePhoneClicked(position));
+        holder.itemView.setOnClickListener(v -> onItemClickHandler.onItemClick(position));
     }
 
     public void setOnItemClickHandler(OnAccountOnsiteClickHandler onItemClickHandler) {

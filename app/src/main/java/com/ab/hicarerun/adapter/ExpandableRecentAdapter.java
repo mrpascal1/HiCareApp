@@ -23,6 +23,7 @@ import com.ab.hicarerun.utils.AppUtils;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Arjun Bhatt on 12/31/2019.
@@ -59,6 +60,7 @@ public class ExpandableRecentAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            assert layoutInflater != null;
             convertView = layoutInflater.inflate(R.layout.onsite_recent_adapter, null);
         }
         TextView txtTitle = convertView
@@ -115,7 +117,7 @@ public class ExpandableRecentAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int listPosition) {
-        return this.expandableListDetail.get(this.expandableListTitle.get(listPosition)).size();
+        return Objects.requireNonNull(this.expandableListDetail.get(this.expandableListTitle.get(listPosition))).size();
     }
 
     @Override
@@ -140,6 +142,7 @@ public class ExpandableRecentAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context.
                     getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            assert layoutInflater != null;
             convertView = layoutInflater.inflate(R.layout.layout_header_adapter, null);
         }
         TextView listTitleTextView = convertView

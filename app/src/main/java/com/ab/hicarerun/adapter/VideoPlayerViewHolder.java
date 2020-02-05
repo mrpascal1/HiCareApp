@@ -34,7 +34,7 @@ public class VideoPlayerViewHolder extends RecyclerView.ViewHolder {
     RequestManager requestManager;
     Activity mActivity;
 
-    public VideoPlayerViewHolder(@NonNull View itemView, Activity mActivity) {
+    VideoPlayerViewHolder(@NonNull View itemView, Activity mActivity) {
         super(itemView);
         parent = itemView;
         this.mActivity = mActivity;
@@ -49,7 +49,7 @@ public class VideoPlayerViewHolder extends RecyclerView.ViewHolder {
         playIcon = itemView.findViewById(R.id.video_play);
     }
 
-    public void onBind(final Videos videos, RequestManager requestManager) {
+    void onBind(final Videos videos, RequestManager requestManager) {
         this.requestManager = requestManager;
         parent.setTag(this);
         title.setText(videos.getVideoTitle());
@@ -58,13 +58,10 @@ public class VideoPlayerViewHolder extends RecyclerView.ViewHolder {
                 .load(videos.getVideoThumbnail())
                 .into(thumbnail);
 
-        exoCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mActivity, ExoplayerActivity.class);
-                intent.putExtra(ExoplayerActivity.VIDEO_URI, videos.getVideoUrl());
-                mActivity.startActivity(intent);
-            }
+        exoCard.setOnClickListener(v -> {
+            Intent intent = new Intent(mActivity, ExoplayerActivity.class);
+            intent.putExtra(ExoplayerActivity.VIDEO_URI, videos.getVideoUrl());
+            mActivity.startActivity(intent);
         });
 
         try {

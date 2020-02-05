@@ -15,6 +15,8 @@ import com.ab.hicarerun.handler.OnSelectServiceClickHandler;
 import com.ab.hicarerun.network.models.OnSiteModel.RecentActivityDetails;
 import com.ab.hicarerun.viewmodel.AccountAreaViewModel;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,8 +36,9 @@ public class ViewActivityAdapter extends RecyclerView.Adapter<ViewActivityAdapte
         this.mContext = context;
     }
 
+    @NotNull
     @Override
-    public ViewActivityAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewActivityAdapter.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         AddActivityAdapterBinding mAddActivityAdapterBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.add_activity_adapter, parent, false);
@@ -43,7 +46,7 @@ public class ViewActivityAdapter extends RecyclerView.Adapter<ViewActivityAdapte
     }
 
     @Override
-    public void onBindViewHolder(final ViewActivityAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NotNull final ViewActivityAdapter.ViewHolder holder, final int position) {
         holder.mAddActivityAdapterBinding.txtServiceType.setText(serviceList.get(position).getServiceType());
         holder.mAddActivityAdapterBinding.radioNo.setEnabled(false);
         holder.mAddActivityAdapterBinding.radioYes.setEnabled(false);

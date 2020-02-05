@@ -15,6 +15,8 @@ import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ActivityGrommingGalleryBinding;
 import com.bumptech.glide.Glide;
 
+import java.util.Objects;
+
 public class GrommingGalleryActivity extends BaseActivity {
     ActivityGrommingGalleryBinding mActivityGrommingGalleryBinding;
     private ScaleGestureDetector mScaleGestureDetector;
@@ -31,7 +33,7 @@ public class GrommingGalleryActivity extends BaseActivity {
         Glide.with(this).load(image).into(mActivityGrommingGalleryBinding.imgTech);
         mScaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
         setSupportActionBar(mActivityGrommingGalleryBinding.toolbar);
-        getSupportActionBar().setTitle(title);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

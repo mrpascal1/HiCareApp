@@ -19,6 +19,8 @@ import com.ab.hicarerun.handler.OnSelectServiceClickHandler;
 import com.ab.hicarerun.viewmodel.AccountAreaViewModel;
 import com.orhanobut.logger.Logger;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,8 +45,9 @@ public class AddActivityAdapter extends RecyclerView.Adapter<AddActivityAdapter.
         this.mRadioClickChanged = mRadioClickChanged;
     }
 
+    @NotNull
     @Override
-    public AddActivityAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AddActivityAdapter.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         AddActivityAdapterBinding mAddActivityAdapterBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.add_activity_adapter, parent, false);
@@ -52,7 +55,7 @@ public class AddActivityAdapter extends RecyclerView.Adapter<AddActivityAdapter.
     }
 
     @Override
-    public void onBindViewHolder(final AddActivityAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NotNull final AddActivityAdapter.ViewHolder holder, final int position) {
         try {
             if (isCheckedList.isEmpty()) {
                 for (int i = 0; i < serviceList.size(); i++) {

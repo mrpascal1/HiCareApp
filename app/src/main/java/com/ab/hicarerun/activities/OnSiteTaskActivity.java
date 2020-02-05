@@ -14,6 +14,8 @@ import com.ab.hicarerun.fragments.OnSiteAccountFragment;
 import com.ab.hicarerun.service.LocationManager;
 import com.ab.hicarerun.service.listner.LocationManagerListner;
 
+import java.util.Objects;
+
 public class OnSiteTaskActivity extends BaseActivity implements LocationManagerListner{
     ActivityOnsiteTaskBinding mActivityOnSiteTaskBinding;
     private Location mLocation;
@@ -28,7 +30,7 @@ public class OnSiteTaskActivity extends BaseActivity implements LocationManagerL
         builder.build();
         addFragment(OnSiteAccountFragment.newInstance(), "OnSiteTaskActivity - OnSiteAccountFragment");
         setSupportActionBar(mActivityOnSiteTaskBinding.toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }
 
 
@@ -54,7 +56,6 @@ public class OnSiteTaskActivity extends BaseActivity implements LocationManagerL
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
             case android.R.id.home:

@@ -25,6 +25,8 @@ import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.viewmodel.AccountAreaViewModel;
 import com.ab.hicarerun.viewmodel.RecentActivityViewModel;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +47,9 @@ public class OnSiteRecentAdapter extends RecyclerView.Adapter<OnSiteRecentAdapte
         this.mContext = context;
     }
 
+    @NotNull
     @Override
-    public OnSiteRecentAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public OnSiteRecentAdapter.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         OnsiteRecentAdapterBinding mOnsiteRecentAdapterBinding =
                 DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                         R.layout.onsite_recent_adapter, parent, false);
@@ -54,7 +57,7 @@ public class OnSiteRecentAdapter extends RecyclerView.Adapter<OnSiteRecentAdapte
     }
 
     @Override
-    public void onBindViewHolder(final OnSiteRecentAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NotNull final OnSiteRecentAdapter.ViewHolder holder, final int position) {
         int[] attrs = new int[]{R.attr.selectableItemBackground};
         TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
         int backgroundResource = typedArray.getResourceId(0, 0);

@@ -49,9 +49,12 @@ import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
@@ -108,7 +111,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentFaceRecognizationBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_face_recognization, container, false);
@@ -116,7 +119,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
         surfaceHolder.addCallback(this);
         if (isAttendance) {
             mFragmentFaceRecognizationBinding.txtReason.setText("Please upload your photo to mark attendance.");
-            CardView toolbar = getActivity().findViewById(R.id.toolbar);
+            CardView toolbar = Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar);
             toolbar.setVisibility(View.GONE);
             DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer);
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -145,6 +148,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
             RealmResults<LoginResponse> LoginRealmModels =
                     BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                assert LoginRealmModels.get(0) != null;
                 String resourceId = LoginRealmModels.get(0).getUserID();
                 NetworkCallController controller = new NetworkCallController(this);
                 controller.setListner(new NetworkResponseListner() {
@@ -249,6 +253,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                assert mLoginRealmModels.get(0) != null;
                 String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
                 String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
@@ -259,7 +264,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
     private void setUpCamera(Camera c) {
         Camera.CameraInfo info = new Camera.CameraInfo();
         Camera.getCameraInfo(cameraId, info);
-        rotation = getActivity().getWindowManager().getDefaultDisplay().getRotation();
+        rotation = Objects.requireNonNull(getActivity()).getWindowManager().getDefaultDisplay().getRotation();
         int degree = 0;
         switch (rotation) {
             case Surface.ROTATION_0:
@@ -304,111 +309,108 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
 
     private void takeImage() {
         try {
-            camera.takePicture(null, null, new Camera.PictureCallback() {
-
-                @Override
-                public void onPictureTaken(byte[] data, Camera camera) {
-                    try {
-                        // convert byte array into bitmap
-                        Bitmap loadedImage = BitmapFactory.decodeByteArray(data, 0,
-                                data.length);
+            camera.takePicture(null, null, (data, camera) -> {
+                try {
+                    // convert byte array into bitmap
+                    Bitmap loadedImage = BitmapFactory.decodeByteArray(data, 0,
+                            data.length);
 
 
-                        // rotate Image
-                        Matrix rotateMatrix = new Matrix();
-                        rotateMatrix.postRotate(270);
-                        Bitmap rotatedBitmap = Bitmap.createBitmap(loadedImage, 0,
-                                0, loadedImage.getWidth(), loadedImage.getHeight(),
-                                rotateMatrix, false);
-                        Bitmap convertedImage = getResizedBitmap(rotatedBitmap, 500);
+                    // rotate Image
+                    Matrix rotateMatrix = new Matrix();
+                    rotateMatrix.postRotate(270);
+                    Bitmap rotatedBitmap = Bitmap.createBitmap(loadedImage, 0,
+                            0, loadedImage.getWidth(), loadedImage.getHeight(),
+                            rotateMatrix, false);
+                    Bitmap convertedImage = getResizedBitmap(rotatedBitmap, 500);
 
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        convertedImage.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                        byte[] b = baos.toByteArray();
-                        encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    convertedImage.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    byte[] b = baos.toByteArray();
+                    encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
 
-                        if (isAttendance) {
-                            if ((HomeActivity) getActivity() != null) {
-                                RealmResults<LoginResponse> LoginRealmModels =
-                                        BaseApplication.getRealm().where(LoginResponse.class).findAll();
-                                if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-                                    String BatteryStatistics = String.valueOf(AppUtils.getMyBatteryLevel(getActivity()));
-                                    AttendanceRequest request = AppUtils.getDeviceInfo(getActivity(), encodedImage, BatteryStatistics, false);
-                                    NetworkCallController controller = new NetworkCallController(FaceRecognizationFragment.this);
-                                    controller.setListner(new NetworkResponseListner() {
-                                        @Override
-                                        public void onResponse(int requestCode, Object data) {
-                                            ContinueHandShakeResponse response = (ContinueHandShakeResponse) data;
-                                            if (response.getSuccess()) {
-                                                getAttendanceDetails();
-                                                Toasty.success(getActivity(), "Attendance marked successfully.", Toast.LENGTH_SHORT).show();
+                    if (isAttendance) {
+                        if ((HomeActivity) getActivity() != null) {
+                            RealmResults<LoginResponse> LoginRealmModels =
+                                    BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                            if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                                String BatteryStatistics = String.valueOf(AppUtils.getMyBatteryLevel(getActivity()));
+                                AttendanceRequest request = AppUtils.getDeviceInfo(getActivity(), encodedImage, BatteryStatistics, false);
+                                NetworkCallController controller = new NetworkCallController(FaceRecognizationFragment.this);
+                                controller.setListner(new NetworkResponseListner() {
+                                    @Override
+                                    public void onResponse(int requestCode, Object data) {
+                                        ContinueHandShakeResponse response = (ContinueHandShakeResponse) data;
+                                        if (response.getSuccess()) {
+                                            getAttendanceDetails();
+                                            Toasty.success(getActivity(), "Attendance marked successfully.", Toast.LENGTH_SHORT).show();
 //                                                replaceFragment(HomeFragment.newInstance(bitUser), "FaceRecognizationFragment-HomeFragment");
 
-                                                startActivity(new Intent(getActivity(), HomeActivity.class));
+                                            startActivity(new Intent(getActivity(), HomeActivity.class));
 //                                                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                                            } else {
-                                                getErrorDialog("Attendance Failed", response.getErrorMessage());
-                                            }
+                                        } else {
+                                            getErrorDialog("Attendance Failed", response.getErrorMessage());
                                         }
+                                    }
 
-                                        @Override
-                                        public void onFailure(int requestCode) {
+                                    @Override
+                                    public void onFailure(int requestCode) {
 
-                                        }
-                                    });
-                                    controller.getTechAttendance(ATTENDANCE_REQ, request);
+                                    }
+                                });
+                                controller.getTechAttendance(ATTENDANCE_REQ, request);
 
-                                }
-                            }
-
-                        } else {
-                            if ((VerifyOtpActivity) getActivity() != null) {
-                                RealmResults<LoginResponse> LoginRealmModels =
-                                        BaseApplication.getRealm().where(LoginResponse.class).findAll();
-                                String resourceId = LoginRealmModels.get(0).getUserID();
-                                if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-                                    NetworkCallController controller = new NetworkCallController(FaceRecognizationFragment.this);
-                                    ProfilePicRequest request = new ProfilePicRequest();
-                                    request.setProfilePic(encodedImage);
-                                    request.setResourceId(resourceId);
-
-                                    controller.setListner(new NetworkResponseListner() {
-                                        @Override
-                                        public void onResponse(int requestCode, Object data) {
-                                            HandShakeResponse response = (HandShakeResponse) data;
-                                            if (response.getSuccess()) {
-//                                                AppUtils.getHandShakeCall(username, getActivity());
-                                                if (SharedPreferencesUtility.getPrefBoolean(getActivity(), SharedPreferencesUtility.IS_SKIP_VIDEO)) {
-                                                    AppUtils.getHandShakeCall(username, getActivity());
-                                                } else {
-                                                    if (uri.length() > 0) {
-                                                        startActivity(new Intent(getActivity(), StartVideoActivity.class));
-                                                    } else {
-                                                        AppUtils.getHandShakeCall(username, getActivity());
-                                                    }
-                                                }
-                                            } else {
-                                                getErrorDialog("Error", "Unable to capture your photo, please try again.");
-                                            }
-                                        }
-
-
-                                        @Override
-                                        public void onFailure(int requestCode) {
-
-                                        }
-                                    });
-                                    controller.postResourceProfilePic(CAM_REQ, request);
-                                }
                             }
                         }
 
+                    } else {
+                        if ((VerifyOtpActivity) getActivity() != null) {
+                            RealmResults<LoginResponse> LoginRealmModels =
+                                    BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                            assert LoginRealmModels.get(0) != null;
+                            String resourceId = LoginRealmModels.get(0).getUserID();
+                            if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                                NetworkCallController controller = new NetworkCallController(FaceRecognizationFragment.this);
+                                ProfilePicRequest request = new ProfilePicRequest();
+                                request.setProfilePic(encodedImage);
+                                request.setResourceId(resourceId);
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                                controller.setListner(new NetworkResponseListner() {
+                                    @Override
+                                    public void onResponse(int requestCode, Object data) {
+                                        HandShakeResponse response = (HandShakeResponse) data;
+                                        if (response.getSuccess()) {
+//                                                AppUtils.getHandShakeCall(username, getActivity());
+                                            if (SharedPreferencesUtility.getPrefBoolean(Objects.requireNonNull(getActivity()), SharedPreferencesUtility.IS_SKIP_VIDEO)) {
+                                                AppUtils.getHandShakeCall(username, getActivity());
+                                            } else {
+                                                if (uri.length() > 0) {
+                                                    startActivity(new Intent(getActivity(), StartVideoActivity.class));
+                                                } else {
+                                                    AppUtils.getHandShakeCall(username, getActivity());
+                                                }
+                                            }
+                                        } else {
+                                            getErrorDialog("Error", "Unable to capture your photo, please try again.");
+                                        }
+                                    }
+
+
+                                    @Override
+                                    public void onFailure(int requestCode) {
+
+                                    }
+                                });
+                                controller.postResourceProfilePic(CAM_REQ, request);
+                            }
+                        }
                     }
 
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+
             });
         } catch (Exception e) {
             e.printStackTrace();
@@ -422,7 +424,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
         try {
             LayoutInflater li = LayoutInflater.from(getActivity());
             View promptsView = li.inflate(R.layout.layout_view_attendance, null);
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
             TextView txtDays = promptsView.findViewById(R.id.txtDays);
             TextView txtPresent = promptsView.findViewById(R.id.txtPresent);
             TextView txtAbsent = promptsView.findViewById(R.id.txtAbsent);
@@ -482,20 +484,16 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
 
     private void getErrorDialog(String title, String message) {
         try {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
             builder.setTitle(title);
             builder.setMessage(
                     message);
-            builder.setPositiveButton("Try again", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    openCamera(Camera.CameraInfo.CAMERA_FACING_FRONT);
-                    dialogInterface.dismiss();
-                }
+            builder.setPositiveButton("Try again", (dialogInterface, i) -> {
+                openCamera(Camera.CameraInfo.CAMERA_FACING_FRONT);
+                dialogInterface.dismiss();
             }).create().show();
         } catch (Exception e) {
             e.printStackTrace();
-            Log.i("handshake", e.getMessage());
         }
     }
 
