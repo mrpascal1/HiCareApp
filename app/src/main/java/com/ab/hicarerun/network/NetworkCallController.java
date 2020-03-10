@@ -38,6 +38,7 @@ import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonModel;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
+import com.ab.hicarerun.network.models.NPSModel.NPSDataResponse;
 import com.ab.hicarerun.network.models.OnSiteModel.OnSiteAccountResponse;
 import com.ab.hicarerun.network.models.OnSiteModel.OnSiteAreaResponse;
 import com.ab.hicarerun.network.models.OnSiteModel.OnSiteRecentResponse;
@@ -52,6 +53,9 @@ import com.ab.hicarerun.network.models.ReferralModel.ReferralDeleteRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralListResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralResponse;
+import com.ab.hicarerun.network.models.RewardsModel.RewardsResponse;
+import com.ab.hicarerun.network.models.RewardsModel.SaveRedeemRequest;
+import com.ab.hicarerun.network.models.RewardsModel.SaveRedeemResponse;
 import com.ab.hicarerun.network.models.TaskModel.TaskListResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTaskResponse;
@@ -1695,11 +1699,11 @@ public class NetworkCallController {
 
     /*[Get Jeopardy Reasons]*/
 
-    public void getJeopardyReasons(final int requestCode) {
+    public void getJeopardyReasons(final int requestCode, final String taskId) {
         try {
             mContext.showProgressDialog();
-            BaseApplication.getExotelApi()
-                    .getJeopardyReasons()
+            BaseApplication.getRetrofitAPI(true)
+                    .getJeopardyReasons(taskId)
                     .enqueue(new Callback<JeopardyReasonModel>() {
                         @Override
                         public void onResponse(Call<JeopardyReasonModel> call,
@@ -1746,7 +1750,7 @@ public class NetworkCallController {
     public void postCWFJepoardy(final int requestCode, final CWFJeopardyRequest request) {
         try {
             mContext.showProgressDialog();
-            BaseApplication.getJeopardyApi()
+            BaseApplication.getRetrofitAPI(true)
                     .postCWFJeopardy(request)
                     .enqueue(new Callback<CWFJeopardyResponse>() {
                         @Override
@@ -2473,6 +2477,190 @@ public class NetworkCallController {
                                 mContext.dismissProgressDialog();
                                 mContext.showServerError("Something went wrong, please try again !!!");
                             }
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public void getResourceRedeemedData(final int requestCode, final String userId) {
+        try {
+            if (mContext != null)
+                mContext.showProgressDialog();
+            BaseApplication.getRetrofitAPI(true)
+                    .getResourceRedeemedData(userId)
+                    .enqueue(new Callback<RewardsResponse>() {
+                        @Override
+                        public void onResponse(Call<RewardsResponse> call,
+                                               Response<RewardsResponse> response) {
+                            if (mContext != null)
+                                mContext.dismissProgressDialog();
+                            if (response != null) {
+                                if (response.code() == 401) { // Unauthorised Access
+                                    NetworkCallController controller = new NetworkCallController();
+                                    controller.setListner(new NetworkResponseListner<LoginResponse>() {
+                                        @Override
+                                        public void onResponse(int reqCode, LoginResponse response) {
+                                            // delete all previous record
+                                            Realm.getDefaultInstance().beginTransaction();
+                                            Realm.getDefaultInstance().deleteAll();
+                                            Realm.getDefaultInstance().commitTransaction();
+
+                                            // add new record
+                                            Realm.getDefaultInstance().beginTransaction();
+                                            Realm.getDefaultInstance().copyToRealmOrUpdate(response);
+                                            Realm.getDefaultInstance().commitTransaction();
+                                            getTechnicianJobSummary(requestCode, userId);
+                                        }
+
+                                        @Override
+                                        public void onFailure(int requestCode) {
+
+                                        }
+                                    });
+                                    controller.refreshToken(100, getRefreshToken());
+                                } else if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body().getData());
+
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        if (mContext != null)
+                                            mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getGroomingTechnicians", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<RewardsResponse> call, Throwable t) {
+                            if (mContext != null) {
+                                mContext.dismissProgressDialog();
+                                mContext.showServerError("Something went wrong, please try again !!!");
+                            }
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public void getSaveRedeemOffer(final int requestCode, final SaveRedeemRequest request) {
+        try {
+            mContext.showProgressDialog();
+            BaseApplication.getRetrofitAPI(true)
+                    .getSaveResourceRedeemData(request)
+                    .enqueue(new Callback<SaveRedeemResponse>() {
+                        @Override
+                        public void onResponse(Call<SaveRedeemResponse> call, Response<SaveRedeemResponse> response) {
+                            mContext.dismissProgressDialog();
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getChemicals", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            } else {
+                                mContext.showServerError();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<SaveRedeemResponse> call, Throwable t) {
+                            mContext.dismissProgressDialog();
+                            mContext.showServerError("Something went wrong, please try again !!!");
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getNPSData(final int requestCode, final String userId) {
+        try {
+            mContext.showProgressDialog();
+            BaseApplication.getRetrofitAPI(true)
+                    .getNPSData(userId)
+                    .enqueue(new Callback<NPSDataResponse>() {
+                        @Override
+                        public void onResponse(Call<NPSDataResponse> call,
+                                               Response<NPSDataResponse> response) {
+                            mContext.dismissProgressDialog();
+                            if (response != null) {
+                                if (response.code() == 401) { // Unauthorised Access
+                                    NetworkCallController controller = new NetworkCallController();
+                                    controller.setListner(new NetworkResponseListner<LoginResponse>() {
+                                        @Override
+                                        public void onResponse(int reqCode, LoginResponse response) {
+                                            // delete all previous record
+                                            Realm.getDefaultInstance().beginTransaction();
+                                            Realm.getDefaultInstance().deleteAll();
+                                            Realm.getDefaultInstance().commitTransaction();
+
+                                            // add new record
+                                            Realm.getDefaultInstance().beginTransaction();
+                                            Realm.getDefaultInstance().copyToRealmOrUpdate(response);
+                                            Realm.getDefaultInstance().commitTransaction();
+                                            getNPSData(requestCode, userId);
+                                        }
+
+                                        @Override
+                                        public void onFailure(int requestCode) {
+
+                                        }
+                                    });
+                                    controller.refreshToken(100, getRefreshToken());
+                                } else if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body().getData());
+
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getGroomingTechnicians", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<NPSDataResponse> call, Throwable t) {
+                            mContext.dismissProgressDialog();
+                            mContext.showServerError("Something went wrong, please try again !!!");
                         }
                     });
         } catch (Exception e) {

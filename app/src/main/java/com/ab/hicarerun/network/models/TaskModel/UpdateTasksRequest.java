@@ -1,5 +1,6 @@
 package com.ab.hicarerun.network.models.TaskModel;
 
+import com.bogdwellers.pinchtozoom.animation.FlingAnimatorHandler;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -124,6 +125,12 @@ public class UpdateTasksRequest {
     @SerializedName("IsChemicalChanged")
     @Expose
     private Boolean IsChemicalChanged;
+
+    @SerializedName("FlushOutReason")
+    @Expose
+    private String FlushOutReason;
+
+
     public UpdateTasksRequest() {
         UserId = "";
         ResourceId = "";
@@ -162,6 +169,7 @@ public class UpdateTasksRequest {
         IsCombinedTask = false;
         IsChemicalChanged = false;
         CombinedTaskId = "";
+        FlushOutReason = "";
     }
 
     public String getUserId() {
@@ -468,5 +476,13 @@ public class UpdateTasksRequest {
 
     public void setChemicalChanged(Boolean chemicalChanged) {
         IsChemicalChanged = chemicalChanged;
+    }
+
+    public String getFlushOutReason() {
+        return FlushOutReason;
+    }
+
+    public void setFlushOutReason(String flushOutReason) {
+        FlushOutReason = flushOutReason;
     }
 }

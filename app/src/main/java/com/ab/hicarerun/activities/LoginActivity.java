@@ -1,11 +1,15 @@
 package com.ab.hicarerun.activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -18,11 +22,20 @@ import androidx.databinding.DataBindingUtil;
 import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ActivityLoginBinding;
+import com.ab.hicarerun.fragments.LoginFragment;
 import com.ab.hicarerun.fragments.NewLoginFragment;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.UpdateAppModel.UpdateData;
 import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.utils.GPSUtils;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+
+import java.util.List;
 
 public class LoginActivity extends BaseActivity {
     ActivityLoginBinding mActivityLoginBinding;
@@ -33,16 +46,8 @@ public class LoginActivity extends BaseActivity {
     private String Apk_Type = "";
     private static final int UPDATE_REQ = 2000;
     private ProgressDialog progress;
+    private boolean isGPS = false;
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        try {
-            AppUtils.statusCheck(LoginActivity.this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +56,98 @@ public class LoginActivity extends BaseActivity {
                 DataBindingUtil.setContentView(this, R.layout.activity_login);
         progress = new ProgressDialog(this, R.style.TransparentProgressDialog);
         progress.setCancelable(false);
-        progress.show();
-        askPermissions();
-        getVersionFromApi();
-//        addFragment(NewLoginFragment.newInstance(Version, Apk_URL, Apk_Type), "LoginTrealActivity-CreateRealFragment");
+        new GPSUtils(this).turnGPSOn(isGPSEnable -> {
+            // turn on GPS
+            if (isGPSEnable) {
+                requestPermission();
+            } else {
+                isGPS = isGPSEnable;
+            }
+        });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == GPSUtils.GPS_REQUEST) {
+                isGPS = true; // flag maintain before get location
+                requestPermission();
+            }
+        }
+    }
+
+    private void requestPermission() {
+        try {
+            Dexter.withActivity(this)
+                    .withPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.CAMERA, Manifest.permission.READ_PHONE_STATE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    .withListener(new MultiplePermissionsListener() {
+                        @Override
+                        public void onPermissionsChecked(MultiplePermissionsReport report) {
+                            // check if all permissions are granted
+                            if (report.areAllPermissionsGranted()) {
+                                getVersionFromApi();
+                            }
+                            // check for permanent denial of any permission
+                            if (report.isAnyPermissionPermanentlyDenied()) {
+                                // show alert dialog navigating to Settings
+                                showSettingsDialog();
+                            }
+                        }
+
+                        @Override
+                        public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions,
+                                                                       PermissionToken token) {
+                            token.continuePermissionRequest();
+                        }
+                    })
+                    .withErrorListener(
+                            error -> Toast.makeText(this, "Error occurred! ", Toast.LENGTH_SHORT)
+                                    .show())
+                    .onSameThread()
+                    .check();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void showSettingsDialog() {
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Need Permissions");
+            builder.setMessage(
+                    "HiCare Run needs permission to use these features. You can grant them in app settings.");
+            builder.setPositiveButton("GOTO SETTINGS", (dialog, which) -> {
+                dialog.cancel();
+                openSettings();
+            });
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+            builder.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    // navigating user to app settings
+    private void openSettings() {
+        try {
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            Uri uri = Uri.fromParts("package", this.getPackageName(), null);
+            intent.setData(uri);
+            startActivityForResult(intent, 101);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     private void getVersionFromApi() {
+        progress.show();
+//        requestPermission();
         try {
             NetworkCallController controller = new NetworkCallController();
             controller.setListner(new NetworkResponseListner() {
@@ -70,7 +159,6 @@ public class LoginActivity extends BaseActivity {
                     Apk_URL = data.getApkurl();
                     Apk_Type = data.getApktype();
                     addFragment(NewLoginFragment.newInstance(Version, Apk_URL, Apk_Type), "LoginTrealActivity-CreateRealFragment");
-
                 }
 
                 @Override
@@ -99,11 +187,6 @@ public class LoginActivity extends BaseActivity {
     private void getBack() {
         int fragment = getSupportFragmentManager().getBackStackEntryCount();
         Log.e("fragments", String.valueOf(fragment));
-//        if (fragment < 1) {
-//            finish();
-//        } else {
-//            getFragmentManager().popBackStack();
-//        }
         finishAffinity();
     }
 

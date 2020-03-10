@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fff"
+        android:background="@color/white"
         android:orientation="vertical"
         android:weightSum="100">
 
@@ -97,7 +96,7 @@
                             android:alpha="0"
                             android:animateLayoutChanges="true"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/ic_volume_up_grey_24dp"
+                            app:srcCompat="@drawable/ic_volume_up_grey_24dp"
                             android:visibility="gone" />
 
                         <ImageView
@@ -108,7 +107,7 @@
                             android:animateLayoutChanges="true"
                             android:scaleType="centerCrop"
                             android:clickable="true"
-                            android:src="@drawable/ic_play" />
+                            app:srcCompat="@drawable/ic_play" />
 
                         <TextView
                             android:id="@+id/duration"

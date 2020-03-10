@@ -8,5 +8,4 @@
     android:lines="1"
     android:ellipsize="end"
     android:textColor="@color/black"
-    android:layout_marginLeft="30dp"
     android:textSize="14sp" />

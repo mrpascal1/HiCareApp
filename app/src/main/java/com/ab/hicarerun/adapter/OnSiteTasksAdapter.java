@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.RatingBar;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -70,20 +71,120 @@ public class OnSiteTasksAdapter extends RecyclerView.Adapter<OnSiteTasksAdapter.
 //        ((GradientDrawable) holder.mOnsiteListAdapterBinding.outerNotdone.getBackground()).setColor(mContext.getResources().getColor(R.color.red));
         holder.mOnsiteListAdapterBinding.lnrAdd.setOnClickListener(v -> onItemClickHandler.onAddActivityClick(position));
         holder.mOnsiteListAdapterBinding.lnrNotDone.setOnClickListener(view -> onItemClickHandler.onNotDoneClick(position));
-        String service = items.get(position).getServiceName().replace(";",", ");
+        String service = items.get(position).getServiceName().replace(";", ", ");
         holder.mOnsiteListAdapterBinding.txtServiceType.setText(service);
         holder.mOnsiteListAdapterBinding.txtArea.setText(items.get(position).getArea());
         holder.mOnsiteListAdapterBinding.txtSubArea.setText(items.get(position).getSubArea());
-        if(items.get(position).getLastActivity()!=null && !items.get(position).getLastActivity().equals("")){
-            try {
-                String mDate = AppUtils.reFormatDateAndTime(items.get(position).getLastActivity(),"dd MMM, yyyy hh:mm aa");
-                holder.mOnsiteListAdapterBinding.txtLastActivity.setText(items.get(position).getLastActivity());
 
+        switch (items.get(position).getTotalCompletedCount()) {
+
+            case 0:
+                holder.mOnsiteListAdapterBinding.tick1.setVisibility(View.GONE);
+                holder.mOnsiteListAdapterBinding.tick2.setVisibility(View.GONE);
+                holder.mOnsiteListAdapterBinding.tick3.setVisibility(View.GONE);
+                holder.mOnsiteListAdapterBinding.tick4.setVisibility(View.GONE);
+                holder.mOnsiteListAdapterBinding.tick5.setVisibility(View.GONE);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
+                break;
+
+            case 1:
+                holder.mOnsiteListAdapterBinding.tick1.setVisibility(View.VISIBLE);
+                holder.mOnsiteListAdapterBinding.tick2.setVisibility(View.GONE);
+                holder.mOnsiteListAdapterBinding.tick3.setVisibility(View.GONE);
+                holder.mOnsiteListAdapterBinding.tick4.setVisibility(View.GONE);
+                holder.mOnsiteListAdapterBinding.tick5.setVisibility(View.GONE);
+
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
+                break;
+
+            case 2:
+                holder.mOnsiteListAdapterBinding.tick1.setVisibility(View.VISIBLE);
+                holder.mOnsiteListAdapterBinding.tick2.setVisibility(View.VISIBLE);
+                holder.mOnsiteListAdapterBinding.tick3.setVisibility(View.GONE);
+                holder.mOnsiteListAdapterBinding.tick4.setVisibility(View.GONE);
+                holder.mOnsiteListAdapterBinding.tick5.setVisibility(View.GONE);
+
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
+                break;
+
+            case 3:
+                holder.mOnsiteListAdapterBinding.tick1.setVisibility(View.VISIBLE);
+                holder.mOnsiteListAdapterBinding.tick2.setVisibility(View.VISIBLE);
+                holder.mOnsiteListAdapterBinding.tick3.setVisibility(View.VISIBLE);
+                holder.mOnsiteListAdapterBinding.tick4.setVisibility(View.GONE);
+                holder.mOnsiteListAdapterBinding.tick5.setVisibility(View.GONE);
+
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
+                break;
+
+            case 4:
+                holder.mOnsiteListAdapterBinding.tick1.setVisibility(View.VISIBLE);
+                holder.mOnsiteListAdapterBinding.tick2.setVisibility(View.VISIBLE);
+                holder.mOnsiteListAdapterBinding.tick3.setVisibility(View.VISIBLE);
+                holder.mOnsiteListAdapterBinding.tick4.setVisibility(View.VISIBLE);
+                holder.mOnsiteListAdapterBinding.tick5.setVisibility(View.GONE);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
+                break;
+
+            case 5:
+                holder.mOnsiteListAdapterBinding.tick1.setVisibility(View.VISIBLE);
+                holder.mOnsiteListAdapterBinding.tick2.setVisibility(View.VISIBLE);
+                holder.mOnsiteListAdapterBinding.tick3.setVisibility(View.VISIBLE);
+                holder.mOnsiteListAdapterBinding.tick4.setVisibility(View.VISIBLE);
+                holder.mOnsiteListAdapterBinding.tick5.setVisibility(View.VISIBLE);
+
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
+                break;
+
+            default:
+                holder.mOnsiteListAdapterBinding.tick1.setVisibility(View.VISIBLE);
+                holder.mOnsiteListAdapterBinding.tick2.setVisibility(View.VISIBLE);
+                holder.mOnsiteListAdapterBinding.tick3.setVisibility(View.VISIBLE);
+                holder.mOnsiteListAdapterBinding.tick4.setVisibility(View.VISIBLE);
+                holder.mOnsiteListAdapterBinding.tick5.setVisibility(View.VISIBLE);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
+//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
+
+                break;
+        }
+
+        if (items.get(position).getLastActivity() != null && !items.get(position).getLastActivity().equals("")) {
+            try {
+                String mDate = AppUtils.reFormatDateAndTime(items.get(position).getLastActivity(), "dd MMM, yyyy hh:mm aa");
+                holder.mOnsiteListAdapterBinding.txtLastActivity.setText(items.get(position).getLastActivity());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-        }else {
-            holder.mOnsiteListAdapterBinding.txtLastActivity.setText("NA");        }
+        } else {
+            holder.mOnsiteListAdapterBinding.txtLastActivity.setText("NA");
+        }
     }
 
     public void setOnItemClickHandler(OnAddActivityClickHandler onItemClickHandler) {

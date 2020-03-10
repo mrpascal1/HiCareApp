@@ -75,6 +75,10 @@ public class GeneralData implements RealmModel {
     @Expose
     private String Customer_OTP;
 
+    @SerializedName("PaymentOtp")
+    @Expose
+    private String PaymentOtp;
+
     @SerializedName("CustomerSign")
     @Expose
     private String Signatory;
@@ -190,6 +194,25 @@ public class GeneralData implements RealmModel {
     @Expose
     private Boolean Restrict_Early_Completion;
 
+    @SerializedName("IsFlushOutRequired")
+    @Expose
+    private Boolean IsFlushOutRequired;
+
+    @SerializedName("Payment_Otp_Required")
+    @Expose
+    private Boolean Payment_Otp_Required;
+
+    @SerializedName("CustomerLatitude")
+    @Expose
+    private Double CustomerLatitude;
+
+    @SerializedName("CustomerLongitude")
+    @Expose
+    private Double CustomerLongitude;
+    @SerializedName("TechnicianMobileNo")
+    @Expose
+    private String TechnicianMobileNo;
+
     public GeneralData() {
         SchedulingStatus = "NA";
         PaymentMode = "NA";
@@ -231,6 +254,12 @@ public class GeneralData implements RealmModel {
         ActualCompletionDateTime = "NA";
         Restrict_Early_Completion = false;
         ReferralDiscount = "0";
+        IsFlushOutRequired = false;
+        Payment_Otp_Required = false;
+        PaymentOtp = "";
+        CustomerLatitude = 0.0;
+        CustomerLongitude = 0.0;
+        TechnicianMobileNo = "";
     }
 
     public String getOrderNumber() {
@@ -591,5 +620,53 @@ public class GeneralData implements RealmModel {
 
     public void setReferralDiscount(String referralDiscount) {
         ReferralDiscount = referralDiscount;
+    }
+
+    public Boolean getFlushOutRequired() {
+        return IsFlushOutRequired;
+    }
+
+    public void setFlushOutRequired(Boolean flushOutRequired) {
+        IsFlushOutRequired = flushOutRequired;
+    }
+
+    public Boolean getPayment_Otp_Required() {
+        return Payment_Otp_Required;
+    }
+
+    public void setPayment_Otp_Required(Boolean payment_Otp_Required) {
+        Payment_Otp_Required = payment_Otp_Required;
+    }
+
+    public String getPaymentOtp() {
+        return PaymentOtp;
+    }
+
+    public void setPaymentOtp(String paymentOtp) {
+        PaymentOtp = paymentOtp;
+    }
+
+    public Double getCustomerLatitude() {
+        return CustomerLatitude;
+    }
+
+    public void setCustomerLatitude(Double customerLatitude) {
+        CustomerLatitude = customerLatitude;
+    }
+
+    public Double getCustomerLongitude() {
+        return CustomerLongitude;
+    }
+
+    public void setCustomerLongitude(Double customerLongitude) {
+        CustomerLongitude = customerLongitude;
+    }
+
+    public String getTechnicianMobileNo() {
+        return TechnicianMobileNo;
+    }
+
+    public void setTechnicianMobileNo(String technicianMobileNo) {
+        TechnicianMobileNo = technicianMobileNo;
     }
 }

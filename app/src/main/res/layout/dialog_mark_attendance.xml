@@ -39,7 +39,7 @@
                 android:layout_height="130dp"
                 android:layout_gravity="center"
                 android:layout_margin="15dp"
-                android:src="@drawable/ic_face_recognition"
+                app:srcCompat="@drawable/ic_face_recognition"
                 />
 
         </LinearLayout>

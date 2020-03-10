@@ -93,6 +93,7 @@
                 android:textSize="15dp"
                 android:digits="0123456789."
                 android:focusableInTouchMode="true"
+                android:descendantFocusability="beforeDescendants"
                 android:textColor="@color/black"
                 android:background="@drawable/edit_border"
                 android:focusable="true"

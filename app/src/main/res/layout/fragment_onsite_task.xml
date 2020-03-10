@@ -125,7 +125,7 @@
                                     android:layout_width="10dp"
                                     android:layout_height="10dp"
                                     android:layout_gravity="center"
-                                    android:src="@drawable/ic_down_arrow"/>
+                                    app:srcCompat="@drawable/ic_down_arrow"/>
 
                             </LinearLayout>
 
@@ -177,7 +177,7 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="5dp"
                         android:layout_weight="0.2"
-                        android:src="@drawable/ic_download" />
+                        app:srcCompat="@drawable/ic_download" />
 
                     <LinearLayout
                         android:id="@+id/lnrFilter"
@@ -212,8 +212,8 @@
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_down"
-                                android:tint="@android:color/tab_indicator_text" />
+                                app:srcCompat="@drawable/ic_down"
+                                 />
 
                         </LinearLayout>
 

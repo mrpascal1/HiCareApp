@@ -64,7 +64,7 @@
                                     android:layout_width="16dp"
                                     android:layout_height="16dp"
                                     android:layout_gravity="center"
-                                    android:src="@drawable/ic_up" />
+                                    app:srcCompat="@drawable/ic_up" />
 
                             </LinearLayout>
 
@@ -113,7 +113,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="4dp"
                                 android:layout_above="@id/lnrSave"
-                                android:background="@drawable/shadow" />
+                                android:background="@drawable/shadow_bg" />
 
                             <LinearLayout
                                 android:id="@+id/lnrSave"

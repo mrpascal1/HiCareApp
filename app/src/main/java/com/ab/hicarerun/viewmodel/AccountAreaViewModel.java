@@ -18,6 +18,7 @@ public class AccountAreaViewModel implements Parcelable {
     private String subArea;
     private String ServiceName;
     private String LastActivity;
+    private Integer TotalCompletedCount;
 
     public AccountAreaViewModel() {
         this.id = "NA";
@@ -27,6 +28,7 @@ public class AccountAreaViewModel implements Parcelable {
         this.subArea = "NA";
         this.ServiceName = "NA";
         this.LastActivity = "NA";
+
     }
 
 
@@ -38,6 +40,11 @@ public class AccountAreaViewModel implements Parcelable {
         subArea = in.readString();
         ServiceName = in.readString();
         LastActivity = in.readString();
+        if (in.readByte() == 0) {
+            TotalCompletedCount = null;
+        } else {
+            TotalCompletedCount = in.readInt();
+        }
     }
 
     public static final Creator<AccountAreaViewModel> CREATOR = new Creator<AccountAreaViewModel>() {
@@ -109,6 +116,14 @@ public class AccountAreaViewModel implements Parcelable {
         LastActivity = lastActivity;
     }
 
+    public Integer getTotalCompletedCount() {
+        return TotalCompletedCount;
+    }
+
+    public void setTotalCompletedCount(Integer totalCompletedCount) {
+        TotalCompletedCount = totalCompletedCount;
+    }
+
     public void clone(OnSiteArea area) {
         this.id = area.getId();
         this.name = area.getName();
@@ -117,7 +132,9 @@ public class AccountAreaViewModel implements Parcelable {
         this.subArea = area.getAreaSubTypeC();
         this.ServiceName= area.getServiceNameC();
         this.LastActivity = area.getLastActivityOn_Text();
+        this.TotalCompletedCount = area.getTotalCompletedCount();
     }
+
 
     @Override
     public int describeContents() {
@@ -133,6 +150,12 @@ public class AccountAreaViewModel implements Parcelable {
         parcel.writeString(subArea);
         parcel.writeString(ServiceName);
         parcel.writeString(LastActivity);
+        if (TotalCompletedCount == null) {
+            parcel.writeByte((byte) 0);
+        } else {
+            parcel.writeByte((byte) 1);
+            parcel.writeInt(TotalCompletedCount);
+        }
     }
 }
 

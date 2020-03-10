@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ab.hicarerun"
     tools:ignore="GoogleAppIndexingWarning">
-    <!-- <permission -->
-    <!-- android:name="android.permission.CALL_PRIVILEGED" -->
-    <!-- android:protectionLevel="signature|privileged" /> -->
+
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -15,18 +13,15 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    <uses-permission
-        android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
-        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> <!-- <uses-permission -->
     <!-- android:name="android.permission.RECEIVE_SMS" -->
     <!-- tools:node="remove" /> -->
     <!-- <uses-permission -->
     <!-- android:name="android.permission.CALL_PHONE" -->
     <!-- tools:node="remove" /> -->
-    <uses-permission
-        android:name="android.permission.BATTERY_STATS"
-        tools:ignore="ProtectedPermissions" />
+    <!-- <uses-permission -->
+    <!-- android:name="android.permission.BATTERY_STATS" -->
+    <!-- tools:ignore="ProtectedPermissions" /> -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -42,7 +37,6 @@
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
 
     <application
         android:name=".BaseApplication"
@@ -55,6 +49,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".utils.notifications.ActivityTransparentPopup"></activity>
+        <activity android:name=".activities.RewardsHistoryActivity" />
+        <activity android:name=".activities.OfferActivity" />
         <activity
             android:name=".activities.TechChemicalCountActivity"
             android:parentActivityName=".activities.HomeActivity"
@@ -144,16 +141,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.TaskDetailsActivity"
-            android:configChanges="keyboardHidden"
-            android:exported="true"
-            android:parentActivityName=".activities.HomeActivity"
-            android:screenOrientation="portrait" />
 
         <service
             android:name=".service.ServiceLocationSend"
             android:enabled="true" />
+        <service
+            android:name=".utils.notifications.OneSignalSilentNotificationHandlerService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE">
+            <intent-filter>
+                <action android:name="com.onesignal.NotificationExtender" />
+            </intent-filter>
+        </service>
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -166,8 +165,6 @@
                 android:resource="@xml/picker_provider_paths"
                 tools:replace="android:resource" />
         </provider>
-
-        <activity android:name=".activities.AttachmentActivity" />
 
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"

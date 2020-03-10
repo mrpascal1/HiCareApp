@@ -439,7 +439,7 @@
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:layout_marginRight="15dp"
-                            android:src="@drawable/ic_imgright"
+                            app:srcCompat="@drawable/ic_imgright"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />

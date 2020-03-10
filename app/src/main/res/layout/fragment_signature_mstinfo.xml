@@ -43,7 +43,7 @@
                         android:layout_height="20dp"
                         android:layout_marginStart="10dp"
                         android:layout_marginLeft="10dp"
-                        android:src="@drawable/ic_key"
+                        app:srcCompat="@drawable/ic_key"
                         android:text="@string/order_no"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -103,7 +103,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_amount_to_collect"
+                        app:srcCompat="@drawable/ic_amount_to_collect"
                         android:text="@string/order_no"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -170,7 +170,7 @@
                         android:layout_height="20dp"
                         android:layout_marginStart="10dp"
                         android:layout_marginLeft="10dp"
-                        android:src="@drawable/ic_avatar"
+                        app:srcCompat="@drawable/ic_avatar"
                         android:text="@string/order_no"
                         android:textSize="15sp"
                         android:textStyle="bold" />

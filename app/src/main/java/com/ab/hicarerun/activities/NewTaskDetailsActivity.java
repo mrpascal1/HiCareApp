@@ -8,17 +8,15 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
-import androidx.slidingpanelayout.widget.SlidingPaneLayout;
-import androidx.viewpager.widget.PagerAdapter;
 
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -33,17 +31,15 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.provider.Settings;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,8 +50,6 @@ import com.ab.hicarerun.R;
 import com.ab.hicarerun.adapter.TaskViewPagerAdapter;
 import com.ab.hicarerun.databinding.ActivityNewTaskDetailsBinding;
 import com.ab.hicarerun.fragments.ChemicalInfoFragment;
-import com.ab.hicarerun.fragments.ChemicalMSTFragment;
-import com.ab.hicarerun.fragments.ChemicalMSTInfoFragment;
 import com.ab.hicarerun.fragments.ReferralFragment;
 import com.ab.hicarerun.fragments.ServiceInfoFragment;
 import com.ab.hicarerun.fragments.SignatureInfoFragment;
@@ -67,10 +61,10 @@ import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralResponse;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;
-import com.ab.hicarerun.network.models.TaskModel.Tasks;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTaskResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
 import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.utils.GPSUtils;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.ab.hicarerun.utils.notifications.ScratchRelativeLayout;
 import com.clock.scratch.ScratchView;
@@ -91,9 +85,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -119,7 +113,17 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private GoogleMap mGoogleMap;
     private LocationManager mLocationManager;
     public static final String ARGS_TASKS = "ARGS_TASKS";
-    public static final String ARG_USER = "ARG_USER";
+    public static final String ARGS_COMBINED_TASKS_ID = "ARGS_COMBINED_TASKS_ID";
+    public static final String ARGS_COMBINED_TASKS = "ARGS_COMBINED_TASKS";
+    public static final String ARGS_COMBINED_TYPE = "ARGS_COMBINED_TYPE";
+    public static final String ARGS_COMBINED_ORDER = "ARGS_COMBINED_ORDER";
+    public static final String ARGS_LATITUDE = "ARGS_LATITUDE";
+    public static final String ARGS_LONGITUDE = "ARGS_LONGITUDE";
+    public static final String ARGS_NAME = "ARGS_NAME";
+    //    public static final String ARG_USER = "ARG_USER";
+//    public static final String ARGS_MOBILE = "ARGS_MOBILE";
+//    public static final String ARGS_TAG = "ARGS_TAG";
+//    public static final String ARGS_SEQUENCE = "ARGS_SEQUENCE";
     public static final String LAT_LONG = "LAT_LONG";
     private static final String TAG = "NewTaskDetailsActivity";
     private Location mLocation;
@@ -127,7 +131,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private long FASTEST_INTERVAL = 5000; /* 2 sec */
     private LocationRequest mLocationRequest;
     private LocationManager locationManager;
-    private Tasks model;
     private Marker mCurrLocationMarker;
     private Marker mCustomerMarker;
     private TaskViewPagerAdapter mAdapter;
@@ -140,6 +143,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private int referralDiscount = 0;
     private Double Lat = 0.0;
     private Double Lon = 0.0;
+    private boolean isGPS = false;
+
     private String Status = "", Payment_Mode = "", Amount_Collected = "", Amount_To_Collected = "", Actual_Size = "", Standard_Size = "", Feedback_Code = "", signatory = "", Signature = "", Duration = "", OnsiteOTP = "";
     private boolean isGeneralChanged = false;
     private boolean isChemicalChanged = false;
@@ -164,21 +169,36 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private boolean isIncompleteReason = false;
     private boolean isAttachment = false;
     private boolean isActualChemicalChanged = false;
+    private boolean isWorkTypeNotChecked = false;
+    private boolean isPaymentOtpRequired = false;
+    private boolean isPaymentOtpValidated = false;
+    private boolean isPaymentModeNotChanged = false;
     private String bankName = "";
     private String chequeNumber = "";
     private String chequeDate = "";
     private String chequeImage = "";
     private String incompleteReason = "";
+    private String flushoutReason = "";
     private HashMap<Integer, String> mMap = null;
     private List<TaskChemicalList> ChemReqList = null;
     private int Rate = 0;
     private Circle mCircle;
     private Toasty mToastToShow;
     private double mCircleRadius = 150;
-    private byte[] bitUser = null;
+    private Bitmap bitUser;
+//    private byte[] bitUser = null;
 
     LatLngBounds.Builder builder;
     CameraUpdate cu;
+    private String taskId = "";
+    private String combinedTaskId = "";
+    private Boolean isCombinedTasks = false;
+    private String combinedOrderId = "";
+    private String combinedTaskTypes = "";
+    private Double customerLatitude = 0.0;
+    private Double customerLongitude = 0.0;
+    private String accountName = "";
+    private String technicianMobileNo = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,6 +206,29 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         mActivityNewTaskDetailsBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_new_task_details);
         mActivityNewTaskDetailsBinding.setHandler(this);
+        progress = new ProgressDialog(this, R.style.TransparentProgressDialog);
+        progress.setCancelable(false);
+        taskId = getIntent().getStringExtra(ARGS_TASKS);
+        combinedTaskId = getIntent().getStringExtra(ARGS_COMBINED_TASKS_ID);
+        isCombinedTasks = getIntent().getBooleanExtra(ARGS_COMBINED_TASKS, false);
+        combinedOrderId = getIntent().getStringExtra(ARGS_COMBINED_ORDER);
+        combinedTaskTypes = getIntent().getStringExtra(ARGS_COMBINED_TYPE);
+//        customerLatitude = getIntent().getStringExtra(ARGS_LATITUDE);
+//        customerLongitude = getIntent().getStringExtra(ARGS_LONGITUDE);
+//        accountName = getIntent().getStringExtra(ARGS_NAME);
+//        technicianMobileNo = getIntent().getStringExtra(ARGS_MOBILE);
+//        Tag = getIntent().getStringExtra(ARGS_TAG);
+//        sequenceNo = getIntent().getStringExtra(ARGS_SEQUENCE);
+//        bitUser = getIntent().getByteArrayExtra(ARG_USER);
+        new GPSUtils(this).turnGPSOn(isGPSEnable -> {
+            // turn on GPS
+            if (isGPSEnable) {
+                progress.show();
+                getTaskDetailsById();
+            } else {
+                isGPS = isGPSEnable;
+            }
+        });
 //        setViewPagerView();
         int[] attrs = new int[]{R.attr.selectableItemBackground};
         TypedArray typedArray = obtainStyledAttributes(attrs);
@@ -196,8 +239,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         mActivityNewTaskDetailsBinding.pager.setOffscreenPageLimit(4);
         setTitle("");
-        model = getIntent().getParcelableExtra(ARGS_TASKS);
-        bitUser = getIntent().getByteArrayExtra(ARG_USER);
+
         mActivityNewTaskDetailsBinding.toolbar.getNavigationIcon().setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -255,14 +297,25 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 }
             }
         });
-        progress = new ProgressDialog(this, R.style.TransparentProgressDialog);
-        progress.setCancelable(false);
-        getTaskDetailsById();
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == GPSUtils.GPS_REQUEST) {
+                isGPS = true; // flag maintain before get location
+                progress.show();
+                getTaskDetailsById();
+
+            }
+        }
     }
 
     private void getTaskDetailsById() {
         try {
-            progress.show();
+
             try {
                 AppUtils.getDataClean();
             } catch (Exception e) {
@@ -288,17 +341,20 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         Incentive = Integer.parseInt(response.getData().getIncentivePoint());
                         isTechnicianFeedbackEnable = response.getData().getTechnicianFeedbackRequired();
                         TechnicianRating = Integer.parseInt(response.getData().getTechnicianRating());
+//                        customerLatitude = response.getData().
+                        accountName = response.getData().getCustName();
+                        customerLatitude = response.getData().getCustomerLatitude();
+                        customerLongitude = response.getData().getCustomerLongitude();
+                        technicianMobileNo = response.getData().getTechnicianMobileNo();
                         referralDiscount = Integer.parseInt(response.getData().getReferralDiscount());
                         setViewPagerView();
                     }
-
                     @Override
                     public void onFailure(int requestCode) {
                     }
                 });
-                controller.getTaskDetailById(TASK_BY_ID_REQUEST, userId, model.getTaskId(), model.getCombinedTask(), NewTaskDetailsActivity.this, progress);
+                controller.getTaskDetailById(TASK_BY_ID_REQUEST, userId, taskId, isCombinedTasks, NewTaskDetailsActivity.this, progress);
             }
-
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
@@ -315,16 +371,16 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             mAdapter = new TaskViewPagerAdapter(getSupportFragmentManager(), this);
 
             if (sta.equals("Dispatched") || sta.equals("Incomplete")) {
-                mAdapter.addFragment(ServiceInfoFragment.newInstance(model), "Service Info");
+                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, isCombinedTasks, combinedTaskTypes, combinedOrderId), "Service Info");
                 mActivityNewTaskDetailsBinding.viewpagertab.setDistributeEvenly(false);
             } else {
-                mAdapter.addFragment(ServiceInfoFragment.newInstance(model), "Service Info");
-                mAdapter.addFragment(ChemicalInfoFragment.newInstance(model), "Chemicals");
-                mAdapter.addFragment(ReferralFragment.newInstance(model), "Referrals");
-                if (model.getCombinedTask()) {
-                    mAdapter.addFragment(SignatureMSTInfoFragment.newInstance(model), "Signature");
+                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, isCombinedTasks, combinedTaskTypes, combinedOrderId), "Service Info");
+                mAdapter.addFragment(ChemicalInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks), "Chemicals");
+                mAdapter.addFragment(ReferralFragment.newInstance(taskId, technicianMobileNo), "Referrals");
+                if (isCombinedTasks) {
+                    mAdapter.addFragment(SignatureMSTInfoFragment.newInstance(taskId, combinedTaskId, combinedTaskTypes), "Signature");
                 } else {
-                    mAdapter.addFragment(SignatureInfoFragment.newInstance(model), "Signature");
+                    mAdapter.addFragment(SignatureInfoFragment.newInstance(taskId), "Signature");
                 }
                 mActivityNewTaskDetailsBinding.viewpagertab.setDistributeEvenly(true);
             }
@@ -386,7 +442,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                     default:
                         throw new IllegalStateException("Invalid position: " + position);
                 }
-
                 return itemView;
             });
             mActivityNewTaskDetailsBinding.viewpagertab.setViewPager(mActivityNewTaskDetailsBinding.pager);
@@ -419,6 +474,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -532,19 +588,25 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 mGoogleMap.clear();
                 RealmResults<LoginResponse> LoginRealmModels =
                         getRealm().where(LoginResponse.class).findAll();
-
                 if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-                    LatLng latLongc = new LatLng(Double.parseDouble(model.getCustomerLatitude()), Double.valueOf(model.getCustomerLongitude()));
+                    LatLng latLongc = new LatLng(customerLatitude, customerLongitude);
                     Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.customer_marker);
                     List<Marker> markersList = new ArrayList<>();
-                    BitmapDescriptor CustomerMarkerIcon = BitmapDescriptorFactory.fromBitmap(AppUtils.createCustomMarker(this, b, model.getAccountName(), "Customer"));
+                    BitmapDescriptor CustomerMarkerIcon = BitmapDescriptorFactory.fromBitmap(AppUtils.createCustomMarker(this, b, accountName, "Customer"));
                     MarkerOptions markerOptionsCust = new MarkerOptions();
                     markerOptionsCust.position(latLongc);
                     markerOptionsCust.title("Customer's Location");
                     markerOptionsCust.icon(CustomerMarkerIcon);
+                    String techPic = SharedPreferencesUtility.getPrefString(NewTaskDetailsActivity.this, SharedPreferencesUtility.PREF_USER_PIC);
 
-                    Bitmap bmp = BitmapFactory.decodeByteArray(bitUser, 0, bitUser.length);
-                    BitmapDescriptor homeMarkerIcon = BitmapDescriptorFactory.fromBitmap(AppUtils.createCustomMarker(this, bmp, LoginRealmModels.get(0).getUserName(), "Resource"));
+                    if (techPic != null) {
+                        byte[] decodedString = Base64.decode(techPic, Base64.DEFAULT);
+                        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                        bitUser = decodedByte;
+                    }
+
+//                    Bitmap bmp = BitmapFactory.decodeByteArray(bitUser, 0, bitUser.length);
+                    BitmapDescriptor homeMarkerIcon = BitmapDescriptorFactory.fromBitmap(AppUtils.createCustomMarker(this, bitUser, LoginRealmModels.get(0).getUserName(), "Resource"));
                     MarkerOptions markerOptions = new MarkerOptions();
                     markerOptions.position(latLong);
                     markerOptions.title("You are here");
@@ -627,12 +689,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        mGoogleApiClient.stopAutoManage(this);
-        mGoogleApiClient.disconnect();
-    }
 
     protected void startLocationUpdates() {
         // Create the location request
@@ -687,7 +743,14 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
     @Override
     public void onSaveTaskClick(View view) {
-        saveTaskDetails();
+        new GPSUtils(this).turnGPSOn(isGPSEnable -> {
+            // turn on GPS
+            if (isGPSEnable) {
+                saveTaskDetails();
+            } else {
+                isGPS = isGPSEnable;
+            }
+        });
     }
 
     private void saveTaskDetails() {
@@ -714,6 +777,18 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             } else if (isIncompleteReason && Status.equals("Incomplete")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
                 Toasty.error(this, "Please select incomplete reason", Toast.LENGTH_SHORT, true).show();
+                progress.dismiss();
+            } else if (isPaymentModeNotChanged && Status.equals("Completed")) {
+                mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
+                Toasty.error(this, "Please change payment mode", Toast.LENGTH_SHORT, true).show();
+                progress.dismiss();
+            } else if (isPaymentOtpRequired && Status.equals("Completed")) {
+                mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
+                Toasty.error(this, "Payment OTP is required", Toast.LENGTH_SHORT, true).show();
+                progress.dismiss();
+            } else if (isPaymentOtpValidated && Status.equals("Completed")) {
+                mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
+                Toasty.error(this, "Invalid Payment OTP", Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
             } else if (isAmountCollectedRequired && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
@@ -763,6 +838,10 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
                 progress.dismiss();
                 Toasty.error(this, "Signatory field is required", Toast.LENGTH_SHORT, true).show();
+            } else if (isWorkTypeNotChecked && Status.equals("Completed")) {
+                mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                progress.dismiss();
+                Toasty.error(this, "Please select correct type of service done", Toast.LENGTH_SHORT, true).show();
             } else if (isSignatureValidated && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
                 progress.dismiss();
@@ -778,6 +857,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                     RealmResults<LoginResponse> LoginRealmModels =
                             getRealm().where(LoginResponse.class).findAll();
                     if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                        assert LoginRealmModels.get(0) != null;
                         String UserId = LoginRealmModels.get(0).getUserID();
                         UpdateTasksRequest request = new UpdateTasksRequest();
                         request.setSchedulingStatus(Status);
@@ -795,12 +875,12 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         request.setCustomerSign(Signature);
                         request.setLatitude(String.valueOf(Lat));
                         request.setLongitude(String.valueOf(Lon));
-                        if (model.getCombinedTask()) {
-                            request.setCombinedTaskId(model.getCombinedTaskId());
+                        if (isCombinedTasks) {
+                            request.setCombinedTaskId(combinedTaskId);
                         } else {
-                            request.setTaskId(model.getTaskId());
+                            request.setTaskId(taskId);
                         }
-                        request.setCombinedTask(model.getCombinedTask());
+                        request.setCombinedTask(isCombinedTasks);
                         request.setDuration(Duration);
                         request.setResourceId(UserId);
                         request.setTechnicianOnsiteOTP(OnsiteOTP);
@@ -808,6 +888,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         request.setChemicalChanged(isActualChemicalChanged);
                         request.setIncompleteReason(incompleteReason);
                         request.setChequeImage(chequeImage);
+                        request.setFlushOutReason(flushoutReason);
 
                         NetworkCallController controller = new NetworkCallController();
                         controller.setListner(new NetworkResponseListner() {
@@ -851,7 +932,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         }
 
     }
-
 
     private void showIncentiveDialog() {
         View view = getLayoutInflater().inflate(R.layout.new_scratchcard_layout, null);
@@ -966,9 +1046,17 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         btn_submit.setOnClickListener(v -> {
             Rate = (int) ratingBar.getRating();
             alertDialog.dismiss();
-            if (AppUtils.isGpsEnabled(NewTaskDetailsActivity.this)) {
-                saveTaskDetails();
-            }
+//            if (AppUtils.isGpsEnabled(NewTaskDetailsActivity.this)) {
+//                saveTaskDetails();
+//            }
+            new GPSUtils(this).turnGPSOn(isGPSEnable -> {
+                // turn on GPS
+                if (isGPSEnable) {
+                    saveTaskDetails();
+                } else {
+                    isGPS = isGPSEnable;
+                }
+            });
         });
 
         alertDialog.setIcon(R.mipmap.logo);
@@ -1171,6 +1259,31 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     @Override
     public void isJobCardEnable(Boolean b) {
         isCardRequired = b;
+    }
+
+    @Override
+    public void isWorkTypeNotChecked(Boolean b) {
+        isWorkTypeNotChecked = b;
+    }
+
+    @Override
+    public void FlushOutReason(String s) {
+        flushoutReason = s;
+    }
+
+    @Override
+    public void isPaymentOtpRequired(Boolean b) {
+        isPaymentOtpRequired = b;
+    }
+
+    @Override
+    public void isPaymentOtpvalidated(Boolean b) {
+        isPaymentOtpValidated = b;
+    }
+
+    @Override
+    public void isPaymentModeNotChanged(Boolean b) {
+        isPaymentModeNotChanged = b;
     }
 
 }

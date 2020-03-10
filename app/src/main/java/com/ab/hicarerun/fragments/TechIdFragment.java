@@ -9,6 +9,8 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +19,7 @@ import androidx.databinding.DataBindingUtil;
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
+import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.activities.TechIdActivity;
 import com.ab.hicarerun.activities.TechnicianSeniorActivity;
 import com.ab.hicarerun.databinding.FragmentTechIdBinding;
@@ -55,7 +58,15 @@ public class TechIdFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentTechIdBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_tech_id, container, false);
-        getActivity().setTitle("My ID Card");
+        getActivity().setTitle("ID Card");
+        if ((HomeActivity) getActivity() != null) {
+            LinearLayout toolbar = getActivity().findViewById(R.id.toolbar);
+            toolbar.setVisibility(View.GONE);
+            LinearLayout custom_toolbar = getActivity().findViewById(R.id.customToolbar);
+            custom_toolbar.setVisibility(View.VISIBLE);
+            TextView tool = getActivity().findViewById(R.id.txtTool);
+            tool.setText("ID Card");
+        }
         return mFragmentTechIdBinding.getRoot();
 
     }
@@ -69,7 +80,7 @@ public class TechIdFragment extends BaseFragment {
     private void getTechnicianProfile() {
         try {
 
-            if ((TechIdActivity) getActivity() != null) {
+            if ( getActivity() != null) {
                 RealmResults<LoginResponse> LoginRealmModels =
                         BaseApplication.getRealm().where(LoginResponse.class).findAll();
                 String userId = LoginRealmModels.get(0).getUserID();

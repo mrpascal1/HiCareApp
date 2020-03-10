@@ -20,6 +20,7 @@ import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -89,6 +90,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
         // Required empty public constructor
     }
 
+
     public static FaceRecognizationFragment newInstance(boolean isAttendance, String username, String videoUrl) {
         Bundle args = new Bundle();
         args.putBoolean(ARG_ATTENDANCE, isAttendance);
@@ -119,8 +121,14 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
         surfaceHolder.addCallback(this);
         if (isAttendance) {
             mFragmentFaceRecognizationBinding.txtReason.setText("Please upload your photo to mark attendance.");
-            CardView toolbar = Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar);
+            LinearLayout toolbar = Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar);
+            LinearLayout tool = getActivity().findViewById(R.id.customToolbar);
+            RelativeLayout relBottom = getActivity().findViewById(R.id.relBottom);
+            RelativeLayout relCoin = getActivity().findViewById(R.id.relCoin);
             toolbar.setVisibility(View.GONE);
+            tool.setVisibility(View.GONE);
+            relBottom.setVisibility(View.GONE);
+            relCoin.setVisibility(View.GONE);
             DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer);
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         } else {
@@ -190,7 +198,6 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
-
             }
         });
         dialog.show();
@@ -209,9 +216,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
         dialog.setMessage(message);
         dialog.setCancelable(false);
         return dialog;
-
     }
-
 
     private boolean openCamera(int id) {
         boolean result = false;
@@ -261,6 +266,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
             }
         }
     }
+
     private void setUpCamera(Camera c) {
         Camera.CameraInfo info = new Camera.CameraInfo();
         Camera.getCameraInfo(cameraId, info);
@@ -345,7 +351,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                                             getAttendanceDetails();
                                             Toasty.success(getActivity(), "Attendance marked successfully.", Toast.LENGTH_SHORT).show();
 //                                                replaceFragment(HomeFragment.newInstance(bitUser), "FaceRecognizationFragment-HomeFragment");
-
+                                            SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_SHOW_NPS, true);
                                             startActivity(new Intent(getActivity(), HomeActivity.class));
 //                                                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                                         } else {
@@ -440,7 +446,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
             alertDialog.setCancelable(false);
             alertDialog.show();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -98,6 +98,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
 
     private static final String ARG_TASK = "ARG_TASK";
     private static final String ARG_VAR = "ARG_VAR";
+    private static final String ARG_SEQUENCE = "ARG_SEQUENCE";
     private String status = "";
     static String mFeedback = "";
     //    private boolean isAttachment = false;
@@ -119,15 +120,16 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
     private NewAttachmentListAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private Integer pageNumber = 1;
-    private Tasks model;
+    private String taskId = "";
+//    private Tasks model;
 
     public SignatureInfoFragment() {
         // Required empty public constructor
     }
 
-    public static SignatureInfoFragment newInstance(Tasks taskId) {
+    public static SignatureInfoFragment newInstance(String taskId) {
         Bundle args = new Bundle();
-        args.putParcelable(ARG_TASK, taskId);
+        args.putString(ARG_TASK, taskId);
         SignatureInfoFragment fragment = new SignatureInfoFragment();
         fragment.setArguments(args);
         return fragment;
@@ -137,20 +139,10 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            model = getArguments().getParcelable(ARG_TASK);
+            taskId = getArguments().getString(ARG_TASK);
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getValidate();
-        try {
-            AppUtils.statusCheck(getActivity());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void onAttach(@NotNull Context context) {
@@ -304,6 +296,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
         try {
             mGeneralRealmData =
                     getRealm().where(GeneralData.class).findAll();
+
             if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
                 status = mGeneralRealmData.get(0).getSchedulingStatus();
                 if (status.equals("Completed") || status.equals("Incomplete")) {
@@ -333,6 +326,14 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     mFragmentSignatureInfoBinding.imgSign.setEnabled(true);
                     mFragmentSignatureInfoBinding.txtHint.setVisibility(View.VISIBLE);
                 }
+
+
+                if (mGeneralRealmData.get(0).getFlushOutRequired()) {
+                    mFragmentSignatureInfoBinding.lnrCMSReason.setVisibility(View.VISIBLE);
+                } else {
+                    mFragmentSignatureInfoBinding.lnrCMSReason.setVisibility(GONE);
+                }
+
                 assert mGeneralRealmData.get(0) != null;
                 String amount = mGeneralRealmData.get(0).getAmountToCollect();
                 assert mGeneralRealmData.get(0) != null;
@@ -358,8 +359,8 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                 }
 
                 try {
-                    if(mobile != null && mobile.length()>0)
-                    mask = mobile.replaceAll("\\w(?=\\w{4})", "*");
+                    if (mobile != null && mobile.length() > 0)
+                        mask = mobile.replaceAll("\\w(?=\\w{4})", "*");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -489,7 +490,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     public void onFailure(int requestCode) {
                     }
                 });
-                controller.getValidateCompletionTime(COMPLETION_REQUEST, mGeneralRealmData.get(0).getActualCompletionDateTime(), model.getTaskId());
+                controller.getValidateCompletionTime(COMPLETION_REQUEST, mGeneralRealmData.get(0).getActualCompletionDateTime(), taskId);
             } else {
                 sendFeedback();
                 getValidate();
@@ -526,7 +527,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                 String customer_otp = mGeneralRealmData.get(0).getCustomer_OTP();
                 FeedbackRequest request = new FeedbackRequest();
                 request.setName(name);
-                request.setTask_id(model.getTaskId());
+                request.setTask_id(taskId);
                 request.setFeedback_code(customer_otp);
                 request.setOrder_number(Order_Number);
                 request.setService_name(Service_Name);
@@ -615,7 +616,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                                     PostAttachmentRequest request = new PostAttachmentRequest();
                                     request.setFile(encodedImage);
                                     request.setResourceId(UserId);
-                                    request.setTaskId(model.getTaskId());
+                                    request.setTaskId(taskId);
                                     controller.setListner(new NetworkResponseListner() {
                                         @Override
                                         public void onResponse(int requestCode, Object response) {
@@ -624,7 +625,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                                                 Toasty.success(getActivity(), "Job card uploaded successfully", Toast.LENGTH_LONG).show();
                                                 getAttachmentList();
                                             } else {
-                                                Toasty.error(getActivity(), "Posting Failed", Toast.LENGTH_LONG).show();
+                                                Toasty.error(getActivity(), "Uploading Failed", Toast.LENGTH_LONG).show();
                                             }
                                         }
 
@@ -696,7 +697,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
 
                     }
                 });
-                controller.getAttachments(GET_ATTACHMENT_REQ, model.getTaskId(), UserId);
+                controller.getAttachments(GET_ATTACHMENT_REQ, taskId, UserId);
             }
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
@@ -709,9 +710,18 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
         }
     }
 
-
     private void getValidate() {
         try {
+            if (mGeneralRealmData.get(0).getFlushOutRequired() && mFragmentSignatureInfoBinding.rgCMS.getCheckedRadioButtonId() == -1) {
+                mCallback.isWorkTypeNotChecked(true);
+            } else {
+                mCallback.isWorkTypeNotChecked(false);
+                if (mFragmentSignatureInfoBinding.rgCMS.getCheckedRadioButtonId() == 0) {
+                    mCallback.FlushOutReason(mFragmentSignatureInfoBinding.rbFlushOut.getText().toString());
+                } else {
+                    mCallback.FlushOutReason(mFragmentSignatureInfoBinding.rbComplete.getText().toString());
+                }
+            }
             if (isFeedBack && accountType.equals("Individual")) {
                 mFragmentSignatureInfoBinding.lnrOtp.setVisibility(View.VISIBLE);
                 String otp = mFragmentSignatureInfoBinding.txtFeedback.getText().toString().trim();
@@ -739,6 +749,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     } else {
                         mCallback.isOTPRequired(true);
                     }
+
 
                     if (mFragmentSignatureInfoBinding.edtSignatory.getText().toString().length() == 0) {
                         mCallback.isSignatureChanged(true);

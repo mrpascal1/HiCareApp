@@ -85,7 +85,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/ic_time"
+                            app:srcCompat="@drawable/ic_time"
                             android:text="@string/order_no"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -152,7 +152,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
 
-                            android:src="@drawable/ic_time"
+                            app:srcCompat="@drawable/ic_time"
                             android:text="@string/order_no"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -219,7 +219,7 @@
                             android:layout_height="20dp"
                             android:layout_marginStart="10dp"
                             android:layout_marginLeft="10dp"
-                            android:src="@drawable/ic_warning"
+                            app:srcCompat="@drawable/ic_warning"
                             android:text="@string/order_no"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -291,7 +291,7 @@
                             android:layout_height="20dp"
                             android:layout_marginStart="10dp"
                             android:layout_marginLeft="10dp"
-                            android:src="@drawable/ic_key"
+                            app:srcCompat="@drawable/ic_key"
                             android:text="@string/order_no"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -433,7 +433,7 @@
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_payment_method"
+                                app:srcCompat="@drawable/ic_payment_method"
                                 android:text="@string/order_no"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
@@ -504,7 +504,7 @@
                                 android:layout_height="20dp"
                                 android:layout_marginStart="10dp"
                                 android:layout_marginLeft="10dp"
-                                android:src="@drawable/ic_amount_to_collect"
+                                app:srcCompat="@drawable/ic_amount_to_collect"
                                 android:text="@string/order_no"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
@@ -570,7 +570,7 @@
                                 android:layout_height="20dp"
                                 android:layout_marginStart="10dp"
                                 android:layout_marginLeft="10dp"
-                                android:src="@drawable/ic_collected"
+                                app:srcCompat="@drawable/ic_collected"
                                 android:text="@string/order_no"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
@@ -635,7 +635,7 @@
                                     android:layout_height="20dp"
                                     android:layout_marginStart="10dp"
                                     android:layout_marginLeft="10dp"
-                                    android:src="@drawable/ic_bank"
+                                    app:srcCompat="@drawable/ic_bank"
                                     android:text="@string/order_no"
                                     android:textSize="15sp"
                                     android:textStyle="bold" />
@@ -706,7 +706,7 @@
                                     android:layout_height="20dp"
                                     android:layout_marginStart="10dp"
                                     android:layout_marginLeft="10dp"
-                                    android:src="@drawable/ic_cheque_date"
+                                    app:srcCompat="@drawable/ic_cheque_date"
                                     android:text="@string/order_no"
                                     android:textSize="15sp"
                                     android:textStyle="bold" />
@@ -761,7 +761,7 @@
                                     android:layout_alignParentRight="true"
                                     android:layout_centerVertical="true"
                                     android:layout_gravity="center"
-                                    android:src="@drawable/ic_date_calendar"
+                                    app:srcCompat="@drawable/ic_date_calendar"
                                     app:layout_constraintTop_toTopOf="parent" />
 
                             </RelativeLayout>
@@ -790,7 +790,7 @@
                                     android:layout_height="20dp"
                                     android:layout_marginStart="10dp"
                                     android:layout_marginLeft="10dp"
-                                    android:src="@drawable/ic_cheque"
+                                    app:srcCompat="@drawable/ic_cheque"
                                     android:text="@string/order_no"
                                     android:textSize="15sp"
                                     android:textStyle="bold" />
@@ -894,7 +894,7 @@
                                     <androidx.appcompat.widget.AppCompatImageView
                                         android:layout_width="70dp"
                                         android:layout_height="70dp"
-                                        android:src="@drawable/ic_upload" />
+                                        app:srcCompat="@drawable/ic_upload" />
 
                                     <LinearLayout
                                         android:layout_width="wrap_content"

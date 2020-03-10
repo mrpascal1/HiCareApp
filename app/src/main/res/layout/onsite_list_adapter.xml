@@ -27,8 +27,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
             android:background="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
             android:weightSum="5">
 
@@ -45,16 +45,65 @@
                 android:layout_weight="3.56"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/txtSubArea"
+
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"
-                    android:ellipsize="middle"
-                    android:singleLine="true"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:id="@+id/txtSubArea"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:ellipsize="middle"
+                        android:singleLine="true"
+                        android:text="sdrgteff "
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+                    <ImageView
+                        android:id="@+id/tick1"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        app:srcCompat="@drawable/ic_tick"
+                        android:layout_marginLeft="7dp"/>
+
+                    <ImageView
+                        android:id="@+id/tick2"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        app:srcCompat="@drawable/ic_tick"
+                        android:layout_marginLeft="5dp"/>
+
+                    <ImageView
+                        android:id="@+id/tick3"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        app:srcCompat="@drawable/ic_tick"
+                        android:layout_marginLeft="5dp"/>
+
+                    <ImageView
+                        android:id="@+id/tick4"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        app:srcCompat="@drawable/ic_tick"
+                        android:layout_marginLeft="5dp"/>
+
+                    <ImageView
+                        android:id="@+id/tick5"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        app:srcCompat="@drawable/ic_tick"
+                        android:layout_marginLeft="5dp"/>
+
+
+
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/lnr_mobile"
@@ -145,6 +194,19 @@
 
                 </LinearLayout>
 
+<!--                <RatingBar-->
+<!--                    android:id="@+id/completedTics"-->
+<!--                    style="@style/customRatingBar"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="left"-->
+<!--                    android:layout_marginLeft="10dp"-->
+<!--                    android:isIndicator="true"-->
+<!--                    android:numStars="5"-->
+<!--                    android:rating="3.5" />-->
+
+
+
             </LinearLayout>
 
             <LinearLayout
@@ -189,7 +251,7 @@
                                 android:layout_width="14dp"
                                 android:layout_height="14dp"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_add_activity" />
+                                app:srcCompat="@drawable/ic_add_activity" />
 
                         </LinearLayout>
 
@@ -200,8 +262,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_weight="1.4"
-                            android:gravity="center"
                             android:background="?android:attr/selectableItemBackground"
+                            android:gravity="center"
                             android:text="Add"
                             android:textColor="@color/white" />
 
@@ -267,7 +329,7 @@
                                 android:layout_width="12dp"
                                 android:layout_height="14dp"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_minus" />
+                                app:srcCompat="@drawable/ic_minus" />
 
                         </LinearLayout>
 
@@ -277,8 +339,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_weight="1.4"
-                            android:gravity="center"
                             android:background="?android:attr/selectableItemBackground"
+                            android:gravity="center"
                             android:text="Not Done"
                             android:textColor="@color/colorPrimary" />
                     </LinearLayout>

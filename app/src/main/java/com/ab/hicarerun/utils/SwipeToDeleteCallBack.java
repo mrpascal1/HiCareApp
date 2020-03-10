@@ -37,9 +37,10 @@ abstract public class SwipeToDeleteCallBack extends ItemTouchHelper.Callback {
         backgroundColor = Color.parseColor("#e76e54");
         mClearPaint = new Paint();
         mClearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-        deleteDrawable = ContextCompat.getDrawable(mContext, R.drawable.ic_trash);
-        intrinsicWidth = deleteDrawable.getIntrinsicWidth();
-        intrinsicHeight = deleteDrawable.getIntrinsicHeight();
+//        deleteDrawable = ContextCompat.getDrawable(mContext, R.drawable.ic_remove);
+//        assert deleteDrawable != null;
+//        intrinsicWidth = deleteDrawable.getIntrinsicWidth();
+//        intrinsicHeight = deleteDrawable.getIntrinsicHeight();
     }
 
 
@@ -77,8 +78,8 @@ abstract public class SwipeToDeleteCallBack extends ItemTouchHelper.Callback {
         int deleteIconLeft = itemView.getRight() - deleteIconMargin - intrinsicWidth;
         int deleteIconRight = itemView.getRight() - deleteIconMargin;
         int deleteIconBottom = deleteIconTop + intrinsicHeight;
-        deleteDrawable.setBounds(deleteIconLeft, deleteIconTop, deleteIconRight, deleteIconBottom);
-        deleteDrawable.draw(c);
+//        deleteDrawable.setBounds(deleteIconLeft, deleteIconTop, deleteIconRight, deleteIconBottom);
+//        deleteDrawable.draw(c);
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
     }
 

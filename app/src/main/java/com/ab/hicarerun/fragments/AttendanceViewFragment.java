@@ -12,10 +12,13 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
+import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.databinding.FragmentAttendanceViewBinding;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
@@ -49,6 +52,15 @@ public class AttendanceViewFragment extends BaseFragment {
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mFragmentAttendanceViewBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_attendance_view, container, false);
+
+        if ((HomeActivity) getActivity() != null) {
+            LinearLayout toolbar = getActivity().findViewById(R.id.toolbar);
+            toolbar.setVisibility(View.GONE);
+            LinearLayout custom_toolbar = getActivity().findViewById(R.id.customToolbar);
+            custom_toolbar.setVisibility(View.VISIBLE);
+            TextView tool = getActivity().findViewById(R.id.txtTool);
+            tool.setText("Your Attendance");
+        }
         return mFragmentAttendanceViewBinding.getRoot();
     }
 

@@ -41,10 +41,10 @@
                         android:layout_height="20dp"
                         android:layout_marginStart="10dp"
                         android:layout_marginLeft="10dp"
-                        android:src="@drawable/ic_key"
                         android:text="@string/order_no"
                         android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        app:srcCompat="@drawable/ic_key" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -101,10 +101,10 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_amount_to_collect"
                         android:text="@string/order_no"
                         android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        app:srcCompat="@drawable/ic_amount_to_collect" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -154,7 +154,8 @@
                 android:id="@+id/lnrSignatory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp">
+                android:layout_marginTop="15dp"
+                >
 
                 <LinearLayout
                     android:id="@+id/imgSignatory"
@@ -169,10 +170,10 @@
                         android:layout_height="20dp"
                         android:layout_marginStart="10dp"
                         android:layout_marginLeft="10dp"
-                        android:src="@drawable/ic_avatar"
                         android:text="@string/order_no"
                         android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        app:srcCompat="@drawable/ic_avatar" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -210,12 +211,84 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/lnrCMSReason"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:orientation="vertical">
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_margin="15dp"
+                        android:background="@color/tab_textColor" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="What work have you done?"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <RadioGroup
+                        android:id="@+id/rgCMS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp">
+
+                        <RadioButton
+                            android:id="@+id/rbFlushOut"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:textSize="14sp"
+                            android:textColor="@color/colorAccentDrawerPrimaryLight"
+                            android:gravity="center_vertical"
+                            android:textDirection="rtl"
+                            android:text="Only Flush Out Done"
+                            />
+
+                        <RadioButton
+                            android:id="@+id/rbComplete"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:textSize="14sp"
+                            android:textDirection="rtl"
+                            android:gravity="center_vertical"
+                            android:textColor="@color/colorAccentDrawerPrimaryLight"
+                            android:text="Complete Service"
+                            />
+                    </RadioGroup>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:background="@color/tab_textColor" />
+
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="15dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginRight="20dp"
                 android:background="@color/tab_textColor"
@@ -251,12 +324,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
-                    android:background="@color/white"
-                    android:visibility="gone"
                     android:layout_margin="5dp"
+                    android:background="@color/white"
                     android:freezesText="true"
                     android:onClick="@{(view) -> handler.onSignatureClicked(view)}"
-                    android:orientation="vertical"/>
+                    android:orientation="vertical"
+                    android:visibility="gone" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtHint"
@@ -317,6 +390,7 @@
 
 
                 </RelativeLayout>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.3dp"
@@ -359,7 +433,7 @@
                             android:layout_width="22dp"
                             android:layout_height="22dp"
                             android:layout_gravity="center_vertical"
-                            android:src="@drawable/ic_add" />
+                            app:srcCompat="@drawable/ic_add" />
 
                     </LinearLayout>
 
@@ -423,8 +497,7 @@
                     android:layout_marginRight="15dp"
                     android:layout_marginBottom="15dp"
                     android:layout_weight="1"
-                    android:background="@drawable/button_border"
-                    android:clickable="true"
+                    android:background="@drawable/button_background"                    android:clickable="true"
                     android:onClick="@{(view) -> handler.onSendLinkClicked(view)}"
                     android:text="@string/send_feedback_link"
                     android:textAllCaps="false"

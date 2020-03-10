@@ -31,6 +31,7 @@ import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;
 import com.ab.hicarerun.network.models.TaskModel.Tasks;
 import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.utils.GPSUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -46,7 +47,9 @@ import io.realm.RealmResults;
  */
 public class ChemicalInfoFragment extends BaseFragment implements NetworkResponseListner<List<Chemicals>> {
     FragmentChemicalInfoBinding mFragmentChemicalInfoBinding;
-    private static final String ARG_TASK = "ARG_TASK";
+    public static final String ARGS_TASKS = "ARGS_TASKS";
+    public static final String ARGS_COMBINED_TASKS = "ARGS_COMBINED_TASKS";
+    public static final String ARGS_COMBINED_ID = "ARGS_COMBINED_ID";
     private static final int CHEMICAL_REQ = 1000;
     private Boolean isVerified = false;
     RecyclerView.LayoutManager layoutManager;
@@ -60,15 +63,20 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
     private String status = "";
     private String ActualStatus = "";
     private boolean isChemicalChecked = false;
-    private Tasks model;
+//    private Tasks model;
+    private String taskId = "";
+    private String combinedTaskId = "";
+    private boolean isCombinedTask = false;
 
     public ChemicalInfoFragment() {
         // Required empty public constructor
     }
 
-    public static ChemicalInfoFragment newInstance(Tasks taskId) {
+    public static ChemicalInfoFragment newInstance(String taskId, String combinedTaskId, boolean isCombinedTasks) {
         Bundle args = new Bundle();
-        args.putParcelable(ARG_TASK, taskId);
+        args.putString(ARGS_TASKS, taskId);
+        args.putString(ARGS_COMBINED_ID, combinedTaskId);
+        args.putBoolean(ARGS_COMBINED_TASKS, isCombinedTasks);
         ChemicalInfoFragment fragment = new ChemicalInfoFragment();
         fragment.setArguments(args);
         return fragment;
@@ -78,19 +86,13 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            model = getArguments().getParcelable(ARG_TASK);
+            taskId = getArguments().getString(ARGS_TASKS);
+            combinedTaskId = getArguments().getString(ARGS_COMBINED_ID);
+            isCombinedTask = getArguments().getBoolean(ARGS_COMBINED_TASKS);
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        try {
-            AppUtils.statusCheck(getActivity());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+
 
     @Override
     public void onAttach(@NotNull Context context) {
@@ -118,7 +120,7 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
         layoutManager = new LinearLayoutManager(getActivity());
         mFragmentChemicalInfoBinding.recycleView.setLayoutManager(layoutManager);
         ViewCompat.setNestedScrollingEnabled(mFragmentChemicalInfoBinding.recycleView, false);
-        if (model.getCombinedTask()) {
+        if (isCombinedTask) {
             mFragmentChemicalInfoBinding.txtType.setVisibility(View.VISIBLE);
 
         } else {
@@ -129,7 +131,7 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
         if (map != null) {
             map.clear();
         }
-        mAdapter = new ChemicalRecycleAdapter(getActivity(), model.getCombinedTask(), (position, charSeq) -> {
+        mAdapter = new ChemicalRecycleAdapter(getActivity(), isCombinedTask, (position, charSeq) -> {
             try {
                 if (charSeq != null && map != null) {
                     map.put(position, charSeq);
@@ -204,10 +206,10 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
                 ActualStatus = mGeneralRealmData.get(0).getSchedulingStatus();
                 NetworkCallController controller = new NetworkCallController(this);
                 controller.setListner(this);
-                if (model.getCombinedTask()) {
-                    controller.getMSTChemicals(CHEMICAL_REQ, model.getCombinedTaskId());
+                if (isCombinedTask) {
+                    controller.getMSTChemicals(CHEMICAL_REQ, combinedTaskId);
                 } else {
-                    controller.getChemicals(CHEMICAL_REQ, model.getTaskId());
+                    controller.getChemicals(CHEMICAL_REQ, taskId);
                 }
 
                 callAfterResponse();
@@ -217,16 +219,7 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
         }
     }
 
-//
-//    @Override
-//    public void onResponse(int requestCode, Object data) {
-//        try {
-//            List items = (List<Chemicals>) data;
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+
 
     @Override
     public void onResponse(int requestCode, List<Chemicals> items) {

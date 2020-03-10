@@ -14,6 +14,7 @@ import com.ab.hicarerun.fragments.FaceRecognizationFragment;
 import com.ab.hicarerun.fragments.LoginFragment;
 import com.ab.hicarerun.fragments.VerifyMobileOTPFragment;
 import com.ab.hicarerun.fragments.VerifyOtpFragment;
+import com.ab.hicarerun.utils.GPSUtils;
 
 import java.util.Objects;
 
@@ -31,9 +32,12 @@ public class VerifyOtpActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         mActivityVerifyOtpBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_verify_otp);
+
+        new GPSUtils(this).turnGPSOn(isGPSEnable -> {
+        });
         try {
             setSupportActionBar(mActivityVerifyOtpBinding.toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
             Objects.requireNonNull(mActivityVerifyOtpBinding.toolbar.getNavigationIcon()).setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
         } catch (Exception e) {
             e.printStackTrace();
@@ -44,7 +48,6 @@ public class VerifyOtpActivity extends BaseActivity {
         user = getIntent().getStringExtra(ARGS_USER);
         addFragment(VerifyMobileOTPFragment.newInstance(mobile, otp, user), "VerifyOTPActivity - VerifyMobileOTPFragment");
     }
-
 
 //    @Override
 //    public void onBackPressed() {

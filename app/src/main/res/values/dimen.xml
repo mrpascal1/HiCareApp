@@ -5,6 +5,7 @@
     <dimen name="design_bottom_navigation_height" tools:override="true">55dp</dimen>
     <dimen name="design_bottom_navigation_icon_size" tools:override="true">22sp</dimen>
     <dimen name="design_bottom_navigation_active_icon_size" tools:override="true">24sp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 
 <!--table layout-->
     <dimen name="activity_horizontal_margin">16dp</dimen>

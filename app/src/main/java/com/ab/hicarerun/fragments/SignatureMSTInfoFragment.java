@@ -114,6 +114,8 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     private String jobCardId = "";
     private Bitmap selectedBmp = null;
     private static final String ARG_TASK = "ARG_TASK";
+    public static final String ARGS_COMBINED_TASKS_ID = "ARGS_COMBINED_TASKS_ID";
+    public static final String ARGS_COMBINED_TYPE = "ARGS_COMBINED_TYPE";
     private static final String ARG_VAR = "ARG_VAR";
     private String status = "";
     static String mFeedback = "";
@@ -137,7 +139,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     private NewAttachmentListAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private Integer pageNumber = 1;
-    private Tasks model;
+//    private Tasks model;
     List<String> expandableListTitle;
     List<MSTAttachment> listTitle;
     List<MSTAttachment> mstAttachments;
@@ -146,14 +148,19 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     static final int REQUEST_TAKE_PHOTO = 1;
     static final int REQUEST_GALLERY_PHOTO = 2;
     File mPhotoFile;
+    private String taskId = "";
+    private String combinedTaskId = "";
+    private String combinedTaskType = "";
 
     public SignatureMSTInfoFragment() {
         // Required empty public constructor
     }
 
-    public static SignatureMSTInfoFragment newInstance(Tasks taskId) {
+    public static SignatureMSTInfoFragment newInstance(String taskId, String combinedId, String combinedTypes) {
         Bundle args = new Bundle();
-        args.putParcelable(ARG_TASK, taskId);
+        args.putString(ARG_TASK, taskId);
+        args.putString(ARGS_COMBINED_TASKS_ID, combinedId);
+        args.putString(ARGS_COMBINED_TYPE, combinedTypes);
         SignatureMSTInfoFragment fragment = new SignatureMSTInfoFragment();
         fragment.setArguments(args);
         return fragment;
@@ -163,7 +170,9 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            model = getArguments().getParcelable(ARG_TASK);
+            taskId = getArguments().getString(ARG_TASK);
+            combinedTaskId = getArguments().getString(ARGS_COMBINED_TASKS_ID);
+            combinedTaskType = getArguments().getString(ARGS_COMBINED_TYPE);
         }
     }
 
@@ -475,7 +484,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                     public void onFailure(int requestCode) {
                     }
                 });
-                controller.getValidateCompletionTime(COMPLETION_REQUEST, mGeneralRealmData.get(0).getActualCompletionDateTime(), model.getTaskId());
+                controller.getValidateCompletionTime(COMPLETION_REQUEST, mGeneralRealmData.get(0).getActualCompletionDateTime(), taskId);
             } else {
                 sendFeedback();
                 getValidate();
@@ -512,7 +521,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                 String customer_otp = mGeneralRealmData.get(0).getCustomer_OTP();
                 FeedbackRequest request = new FeedbackRequest();
                 request.setName(name);
-                request.setTask_id(model.getTaskId());
+                request.setTask_id(taskId);
                 request.setFeedback_code(customer_otp);
                 request.setOrder_number(Order_Number);
                 request.setService_name(Service_Name);
@@ -599,7 +608,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                                     PostAttachmentRequest request = new PostAttachmentRequest();
                                     request.setFile(encodedImage);
                                     request.setResourceId(UserId);
-                                    request.setTaskId(model.getTaskId());
+                                    request.setTaskId(taskId);
                                     controller.setListner(new NetworkResponseListner() {
                                         @Override
                                         public void onResponse(int requestCode, Object response) {
@@ -693,7 +702,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
 
                     }
                 });
-                controller.getMSTAttachments(GET_ATTACHMENT_REQ, UserId, model.getCombinedTaskId(), model.getCombinedServiceType());
+                controller.getMSTAttachments(GET_ATTACHMENT_REQ, UserId, combinedTaskId, combinedTaskType);
             }
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();

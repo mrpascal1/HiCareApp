@@ -87,7 +87,7 @@
                             android:layout_width="28dp"
                             android:layout_height="28dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/ic_compass" />
+                            app:srcCompat="@drawable/ic_compass" />
 
 
                     </LinearLayout>
@@ -134,7 +134,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/ic_running" />
+                            app:srcCompat="@drawable/ic_running" />
 
 
                     </LinearLayout>
@@ -219,7 +219,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/ic_link" />
+                            app:srcCompat="@drawable/ic_link" />
 
 
                     </LinearLayout>
@@ -696,7 +696,7 @@
                                         android:elevation="4dp"
                                         android:layout_gravity="center"
                                         android:layout_margin="2dp"
-                                        android:src="@drawable/ic_profile"
+                                        app:srcCompat="@drawable/ic_profile"
                                         app:civ_border_color="@color/smoke_gray"
                                         app:civ_border_width="0.001dp" />
 

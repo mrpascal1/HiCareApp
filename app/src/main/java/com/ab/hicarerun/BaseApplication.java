@@ -1,6 +1,9 @@
 package com.ab.hicarerun;
 
 import android.app.Application;
+import android.content.Context;
+
+import androidx.multidex.MultiDex;
 
 import com.ab.hicarerun.database.realm.RealmString;
 import com.ab.hicarerun.database.realm.RealmStringListTypeAdapter;
@@ -37,6 +40,11 @@ public class BaseApplication extends Application {
     private static volatile Realm REALM = null;
     private OneSIgnalHelper mOneSignalHelper;
 
+    @Override
+    protected void attachBaseContext(Context context) {
+        super.attachBaseContext(context);
+        MultiDex.install(this);
+    }
 
     public static synchronized Realm getRealm() {
         if (REALM != null) {

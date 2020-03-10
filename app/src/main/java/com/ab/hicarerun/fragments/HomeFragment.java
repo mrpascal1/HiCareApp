@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +25,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -32,12 +35,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
@@ -62,12 +67,14 @@ import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyRequest;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyResponse;
 import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonsList;
 import com.ab.hicarerun.network.models.LoginResponse;
+import com.ab.hicarerun.network.models.NPSModel.NPSData;
 import com.ab.hicarerun.network.models.ProfileModel.Profile;
 import com.ab.hicarerun.network.models.TaskModel.TaskListResponse;
 import com.ab.hicarerun.network.models.TaskModel.Tasks;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.google.android.material.navigation.NavigationView;
+import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -81,7 +88,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     FragmentHomeBinding mFragmentHomeBinding;
     RecyclerView.LayoutManager layoutManager;
     TaskListAdapter mAdapter;
-//    final Handler timerHandler = new Handler();
+    //    final Handler timerHandler = new Handler();
     private static final int TASKS_REQ = 1000;
     private static final int EXOTEL_REQ = 2000;
     private static final int CALL_REQUEST = 3000;
@@ -89,6 +96,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     private static final int JEOPARDY_REQUEST = 5000;
     private static final int CWF_REQUEST = 6000;
     private static final int TECH_REQ = 7000;
+    private static final int TECH_NPS = 8000;
     private boolean isBack = false;
     private boolean isSkip = false;
     private Integer pageNumber = 1;
@@ -103,14 +111,14 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     private byte[] bitUser = null;
     private static final String ARG_USER = "ARG_USER";
     AlertDialog alertDialog = null;
+    private boolean isShowNPS = false;
 
     public HomeFragment() {
         // Required empty public constructor
     }
 
-    public static HomeFragment newInstance(byte[] bitUser) {
+    public static HomeFragment newInstance() {
         Bundle args = new Bundle();
-        args.putByteArray(ARG_USER, bitUser);
         HomeFragment fragment = new HomeFragment();
         fragment.setArguments(args);
         return fragment;
@@ -132,8 +140,16 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
 //        getActivity().setTitle("Home");
         navigationView = Objects.requireNonNull(getActivity()).findViewById(R.id.navigation_view);
-        CardView toolbar = getActivity().findViewById(R.id.toolbar);
+        LinearLayout toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
+        LinearLayout tool = getActivity().findViewById(R.id.customToolbar);
+        RelativeLayout relBottom = getActivity().findViewById(R.id.relBottom);
+        RelativeLayout relCoin = getActivity().findViewById(R.id.relCoin);
+        tool.setVisibility(View.VISIBLE);
+        relBottom.setVisibility(View.VISIBLE);
+        relCoin.setVisibility(View.GONE);
+//        LinearLayout custom_toolbar = getActivity().findViewById(R.id.customToolbar);
+//        custom_toolbar.setVisibility(View.GONE);
         DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer);
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         activityName = getActivity().getClass().getSimpleName();
@@ -175,6 +191,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         mFragmentHomeBinding.swipeRefreshLayout.setOnRefreshListener(
                 this::getAllTasks);
 
+
         mFragmentHomeBinding.recycleView.setLayoutManager(layoutManager);
 
         mFragmentHomeBinding.swipeRefreshLayout.setColorSchemeResources(
@@ -189,6 +206,9 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         mFragmentHomeBinding.recycleView.setAdapter(mAdapter);
 
         getAllTasks();
+        isShowNPS = SharedPreferencesUtility.getPrefBoolean(getActivity(), SharedPreferencesUtility.PREF_SHOW_NPS);
+        if (isShowNPS)
+            showNPSDialog();
         mFragmentHomeBinding.swipeRefreshLayout.setRefreshing(true);
     }
 
@@ -278,10 +298,24 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    Intent intent = new Intent(getActivity(), NewTaskDetailsActivity.class);
-                    intent.putExtra(NewTaskDetailsActivity.ARGS_TASKS, items.get(position));
-                    intent.putExtra(NewTaskDetailsActivity.ARG_USER, bitUser);
-                    startActivity(intent);
+                    try {
+                        Intent intent = new Intent(getActivity(), NewTaskDetailsActivity.class);
+                        intent.putExtra(NewTaskDetailsActivity.ARGS_TASKS, items.get(position).getTaskId());
+                        intent.putExtra(NewTaskDetailsActivity.ARGS_COMBINED_TASKS, items.get(position).getCombinedTask());
+                        intent.putExtra(NewTaskDetailsActivity.ARGS_COMBINED_TASKS_ID, items.get(position).getCombinedTaskId());
+                        intent.putExtra(NewTaskDetailsActivity.ARGS_COMBINED_ORDER, items.get(position).getCombinedOrderNumber());
+                        intent.putExtra(NewTaskDetailsActivity.ARGS_COMBINED_TYPE, items.get(position).getCombinedServiceType());
+//                        intent.putExtra(NewTaskDetailsActivity.ARGS_LATITUDE, items.get(position).getCustomerLatitude());
+//                        intent.putExtra(NewTaskDetailsActivity.ARGS_LONGITUDE, items.get(position).getCustomerLongitude());
+//                        intent.putExtra(NewTaskDetailsActivity.ARGS_NAME, items.get(position).getAccountName());
+//                        intent.putExtra(NewTaskDetailsActivity.ARGS_MOBILE, items.get(position).getTechnicianMobileNo());
+//                        intent.putExtra(NewTaskDetailsActivity.ARGS_SEQUENCE, String.valueOf(items.get(position).getSequenceNumber()));
+//                        intent.putExtra(NewTaskDetailsActivity.ARGS_TAG, items.get(position).getTag());
+//                        intent.putExtra(NewTaskDetailsActivity.ARG_USER, bitUser);
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
                 } else {
                     Toasty.info(Objects.requireNonNull(getActivity()), "Please complete your previous job first.", Toasty.LENGTH_SHORT).show();
@@ -329,13 +363,13 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 replaceFragment(FaceRecognizationFragment.newInstance(true, "", ""), "HomeFragment-FaceRecognizationFragment");
             });
 
-
             btnSkip.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     alertDialog.dismiss();
                     isSkip = true;
                     try {
+
                         if ((HomeActivity) getActivity() != null) {
                             RealmResults<LoginResponse> LoginRealmModels =
                                     BaseApplication.getRealm().where(LoginResponse.class).findAll();
@@ -350,6 +384,9 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                         if (response.getSuccess()) {
                                             Toasty.success(getActivity(), "Attendance marked successfully.", Toasty.LENGTH_SHORT).show();
                                             alertDialog.dismiss();
+                                            getAllTasks();
+                                            showNPSDialog();
+
                                         } else {
                                             Toast.makeText(getActivity(), "Attendance Failed, please try again.", Toast.LENGTH_SHORT).show();
                                             getAllTasks();
@@ -427,7 +464,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
             } else {
                 AppUtils.showOkActionAlertBox(getActivity(), "No Internet Connection.", (dialogInterface, i) -> dialogInterface.dismiss());
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -460,7 +497,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
                 AppUtils.showOkActionAlertBox(getActivity(), "No Internet Connection.", (dialogInterface, i) -> dialogInterface.dismiss());
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -534,6 +571,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     @Override
     public void onTechnicianHelplineClicked(final int position) {
         try {
+
             if (items.get(position).getDetailVisible()) {
                 NetworkCallController controller = new NetworkCallController(this);
                 controller.setListner(new NetworkResponseListner() {
@@ -558,7 +596,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                     radioGroup.addView(rbn, params);
                                 }
                             }
-
 
                             builder.setView(v);
                             builder.setCancelable(false);
@@ -595,7 +632,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
                     }
                 });
-                controller.getJeopardyReasons(JEOPARDY_REQUEST);
+                controller.getJeopardyReasons(JEOPARDY_REQUEST, items.get(position).getTaskId());
             } else {
                 Toasty.info(Objects.requireNonNull(getActivity()), "Please complete your previous job first.", Toasty.LENGTH_SHORT).show();
             }
@@ -626,6 +663,66 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 }
             });
             controller.getTechnicianProfile(TECH_REQ, items.get(position).getHelper_Resource_Id());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showNPSDialog() {
+        try {
+            if ((HomeActivity) getActivity() != null) {
+                RealmResults<LoginResponse> LoginRealmModels =
+                        BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                    String resourceId = LoginRealmModels.get(0).getUserID();
+                    LayoutInflater li = LayoutInflater.from(getActivity());
+                    View promptsView = li.inflate(R.layout.layout_nps_dialog, null);
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+                    alertDialogBuilder.setView(promptsView);
+                    final AlertDialog alertDialog = alertDialogBuilder.create();
+                    final ImageView imgCancel =
+                            promptsView.findViewById(R.id.imgCancel);
+                    final ImageView imgNps =
+                            promptsView.findViewById(R.id.imgNPS);
+                    final TextView txtScore =
+                            promptsView.findViewById(R.id.txtScore);
+                    final TextView txtNps =
+                            promptsView.findViewById(R.id.txtNPS);
+                    final TextView txtMonth =
+                            promptsView.findViewById(R.id.txtMonth);
+
+                    Animation animShake = AnimationUtils.loadAnimation(getActivity(), R.anim.shake);
+                    imgCancel.startAnimation(animShake);
+
+                    imgCancel.setOnClickListener(view -> alertDialog.dismiss());
+
+
+                    NetworkCallController controller = new NetworkCallController(HomeFragment.this);
+                    controller.setListner(new NetworkResponseListner() {
+                        @Override
+                        public void onResponse(int requestCode, Object response) {
+                            NPSData data = (NPSData) response;
+                            Picasso.get().load(data.getTechBadge()).into(imgNps);
+                            SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_SHOW_NPS, false);
+                            txtNps.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
+                            txtScore.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
+                            txtNps.setText(data.getMonthlyNPS());
+                            txtScore.setText(data.getPreviousDayNPS());
+                            txtMonth.setText(data.getNPS_Month());
+                        }
+
+                        @Override
+                        public void onFailure(int requestCode) {
+
+                        }
+                    });
+                    controller.getNPSData(TECH_NPS, resourceId);
+                    alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.show();
+                    alertDialog.setIcon(R.mipmap.logo);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

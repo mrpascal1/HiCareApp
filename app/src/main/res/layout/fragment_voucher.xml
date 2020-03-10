@@ -12,8 +12,19 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white">
+        android:layout_height="match_parent">
+
+        <com.waynell.library.DropAnimationView
+            android:id="@+id/drop_animation_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:minSize="20dp"
+            app:maxSize="40dp"
+            app:largePercent="60%"
+            app:rate="80"
+            app:xAnimate="true"
+            app:yAnimate="true"
+            app:rotationAnimate="true"/>
 
         <ScrollView
             android:layout_width="match_parent"
@@ -23,7 +34,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
                 android:orientation="vertical">
 
                 <ImageView
@@ -131,7 +141,7 @@
                                     android:layout_width="35dp"
                                     android:layout_height="35dp"
                                     android:layout_gravity="center"
-                                    android:src="@drawable/ic_facebook" />
+                                    app:srcCompat="@drawable/ic_facebook" />
 
                             </androidx.cardview.widget.CardView>
 
@@ -181,7 +191,7 @@
                                     android:layout_width="35dp"
                                     android:layout_height="35dp"
                                     android:layout_gravity="center"
-                                    android:src="@drawable/ic_whatsapp" />
+                                    app:srcCompat="@drawable/ic_whatsapp" />
 
                             </androidx.cardview.widget.CardView>
 
@@ -222,7 +232,7 @@
                                     android:layout_width="35dp"
                                     android:layout_height="35dp"
                                     android:layout_gravity="center"
-                                    android:src="@drawable/ic_google_plus" />
+                                    app:srcCompat="@drawable/ic_google_plus" />
 
                             </androidx.cardview.widget.CardView>
 
@@ -248,7 +258,7 @@
                                     android:layout_width="35dp"
                                     android:layout_height="35dp"
                                     android:layout_gravity="center"
-                                    android:src="@drawable/ic_messenger" />
+                                    app:srcCompat="@drawable/ic_messenger" />
 
                             </androidx.cardview.widget.CardView>
 
@@ -272,7 +282,7 @@
                                     android:layout_width="35dp"
                                     android:layout_height="35dp"
                                     android:layout_gravity="center"
-                                    android:src="@drawable/ic_share" />
+                                    app:srcCompat="@drawable/ic_share" />
 
                             </androidx.cardview.widget.CardView>
 

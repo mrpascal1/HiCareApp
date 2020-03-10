@@ -49,7 +49,7 @@
                     android:layout_height="16dp"
                     android:layout_gravity="center"
                     android:layout_weight="0.8"
-                    android:src="@drawable/ic_imgright"
+                    app:srcCompat="@drawable/ic_imgright"
                     android:tint="@color/white" />
 
             </LinearLayout>
@@ -65,7 +65,7 @@
                 android:animateLayoutChanges="true"
                 android:clickable="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_landscape" />
+                app:srcCompat="@drawable/ic_landscape" />
 
             <ImageView
                 android:id="@+id/potrait"
@@ -76,7 +76,7 @@
                 android:animateLayoutChanges="true"
                 android:clickable="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_portrait"
+                app:srcCompat="@drawable/ic_portrait"
                 android:visibility="gone" />
 
         </RelativeLayout>

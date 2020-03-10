@@ -17,11 +17,15 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
+import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.activities.IncentivesActivity;
+import com.ab.hicarerun.activities.VerifyOtpActivity;
 import com.ab.hicarerun.adapter.ChemicalRecycleAdapter;
 import com.ab.hicarerun.adapter.IncentiveMatrixAdapter;
 import com.ab.hicarerun.adapter.ReferralListAdapter;
@@ -64,6 +68,15 @@ public class IncentiveFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         mFragmentIncentiveBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_incentive, container, false);
         getActivity().setTitle("Incentive");
+
+        if ( getActivity() != null) {
+            LinearLayout toolbar = getActivity().findViewById(R.id.toolbar);
+            toolbar.setVisibility(View.GONE);
+            LinearLayout custom_toolbar = getActivity().findViewById(R.id.customToolbar);
+            custom_toolbar.setVisibility(View.VISIBLE);
+            TextView tool = getActivity().findViewById(R.id.txtTool);
+            tool.setText("Incentives");
+        }
         return mFragmentIncentiveBinding.getRoot();
     }
 
@@ -84,7 +97,7 @@ public class IncentiveFragment extends BaseFragment {
 
     private void getTechDeails() {
         try {
-            if ((IncentivesActivity) getActivity() != null) {
+            if ( getActivity() != null) {
                 RealmResults<LoginResponse> LoginRealmModels =
                         BaseApplication.getRealm().where(LoginResponse.class).findAll();
                 assert LoginRealmModels.get(0) != null;

@@ -140,7 +140,6 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
         mFragmentOnSiteTaskBinding.lnrArea.setOnClickListener(view12 -> {
 //                mFragmentOnSiteTaskBinding.spnArea.performClick();
         });
-
         mFragmentOnSiteTaskBinding.cardSheet.setOnClickListener(view1 -> {
             BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
             bottomSheetFragment.setListener(this);
@@ -228,6 +227,7 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
                     mOnSiteArea.setAreaSubTypeC(items.get(i).getAreaSubTypeC());
                     mOnSiteArea.setServiceNameC(items.get(i).getServiceNameC());
                     mOnSiteArea.setLastActivityOn_Text(items.get(i).getLastActivityOn_Text());
+                    mOnSiteArea.setTotalCompletedCount(items.get(i).getTotalCompletedCount());
                     subItems.add(mOnSiteArea);
                 }
             }
@@ -249,7 +249,6 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -398,7 +397,6 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
 //                                    break;
 //                                }
 //                            }
-
 
                         }
 

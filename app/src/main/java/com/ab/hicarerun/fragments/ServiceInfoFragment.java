@@ -87,19 +87,25 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
     FragmentServiceInfoBinding mFragmentServiceInfoBinding;
     private static final int POST_PAYMENT_LINK = 1000;
-    private static final String ARG_TASK = "ARG_TASK";
+    public static final String ARGS_TASKS = "ARGS_TASKS";
+    public static final String ARGS_COMBINED_TASKS = "ARGS_COMBINED_TASKS";
+    public static final String ARGS_COMBINED_TYPE = "ARGS_COMBINED_TYPE";
+    public static final String ARGS_COMBINED_ORDER = "ARGS_COMBINED_ORDER";
     private static final int ONSITE_REQUEST = 1000;
     private static final int REQUEST_BANK = 2000;
     private static final int COMPLETION_REQUEST = 3000;
     private String selectedStatus = "";
     private String status = "";
     private String OnSiteOtp = "";
+    private String PaymentOtp = "";
     private String ScOtp = "";
     private String[] arrayReason = null;
     private String[] arrayStatus = null;
     private Boolean isFeedback = false;
     private Boolean isChequeRequired = false;
-    private Boolean isTrue = false;
+    private Boolean isPaymentValidation = false;
+    private Boolean isPaymentOtpRequired = false;
+    private Boolean isRaiseJeopardyClicked = false;
     private int radiopos = 0;
     private String Selection = "";
     private String chequeImg = "";
@@ -120,7 +126,9 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private int AmountToCollect = 0;
     private String sta = "";
     private String taskId = "";
-    private Tasks model;
+    private String combiedTaskOrders = "";
+    private String combinedTypes = "";
+    private boolean isCombinedTask = false;
     private RealmResults<GeneralData> mTaskDetailsData = null;
     private RealmResults<GeneralTaskStatus> generalTaskRealmModel;
     private RealmResults<IncompleteReason> ReasonRealmModel = null;
@@ -128,9 +136,12 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private AlertDialog mAlertDialog = null;
     private OnSaveEventHandler mCallback;
 
-    public static ServiceInfoFragment newInstance(Tasks taskId) {
+    public static ServiceInfoFragment newInstance(String taskId, boolean isCombinedTasks, String combinedTypes, String combinedOrders) {
         Bundle args = new Bundle();
-        args.putParcelable(ARG_TASK, taskId);
+        args.putString(ARGS_TASKS, taskId);
+        args.putBoolean(ARGS_COMBINED_TASKS, isCombinedTasks);
+        args.putString(ARGS_COMBINED_ORDER, combinedOrders);
+        args.putString(ARGS_COMBINED_TYPE, combinedTypes);
         ServiceInfoFragment fragment = new ServiceInfoFragment();
         fragment.setArguments(args);
         return fragment;
@@ -139,6 +150,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     public ServiceInfoFragment() {
         // Required empty public constructor
     }
+
 
     @Override
     public void onAttach(@NotNull Context context) {
@@ -155,7 +167,10 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            model = getArguments().getParcelable(ARG_TASK);
+            taskId = getArguments().getString(ARGS_TASKS);
+            combiedTaskOrders = getArguments().getString(ARGS_COMBINED_ORDER);
+            combinedTypes = getArguments().getString(ARGS_COMBINED_TYPE);
+            isCombinedTask = getArguments().getBoolean(ARGS_COMBINED_TASKS);
         }
     }
 
@@ -177,6 +192,11 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
         bankList = new ArrayList<>();
         getServiceDetail();
         getPaymentData();
+        mTaskDetailsData =
+                getRealm().where(GeneralData.class).findAll();
+        if (mTaskDetailsData != null && mTaskDetailsData.size() > 0) {
+            AmountToCollect = Integer.parseInt(mTaskDetailsData.get(0).getAmountToCollect());
+        }
 
         mFragmentServiceInfoBinding.edtOnsiteOtp.addTextChangedListener(new TextWatcher() {
             @Override
@@ -229,7 +249,26 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             }
         });
 
+        mFragmentServiceInfoBinding.edtPaymentOTP.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                getValidated(AmountToCollect);
+            }
+        });
+
         mFragmentServiceInfoBinding.btnOnsiteOtp.setOnClickListener(view1 -> getCommercialDialog());
+
+
     }
 
     private void getCommercialDialog() {
@@ -280,7 +319,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                     public void onFailure(int requestCode) {
                                     }
                                 });
-                                controller.getOnSiteOTP(ONSITE_REQUEST, resourceId, model.getTaskId(), edtName.getText().toString(), edtmobile.getText().toString());
+                                controller.getOnSiteOTP(ONSITE_REQUEST, resourceId, taskId, edtName.getText().toString(), edtmobile.getText().toString());
                             } else {
                                 Toasty.error(getActivity(), "Invalid mobile no.").show();
                             }
@@ -323,11 +362,12 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 assert mTaskDetailsData.get(0) != null;
                 Email = mTaskDetailsData.get(0).getEmail();
                 try {
-                    if(mobile!= null && mobile.length()>0)
+                    if (mobile != null && mobile.length() > 0)
                         mask = mobile.replaceAll("\\w(?=\\w{4})", "*");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
                 chequeImg = mTaskDetailsData.get(0).getChequeImageUrl();
                 AmountCollected = mTaskDetailsData.get(0).getAmountCollected();
                 AmountToCollect = Integer.parseInt(mTaskDetailsData.get(0).getAmountToCollect());
@@ -339,7 +379,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     type.add(generalPaymentMode.getValue());
                 }
 
-                isTrue = mTaskDetailsData.get(0).getPaymentValidation();
+                isPaymentValidation = mTaskDetailsData.get(0).getPaymentValidation();
+                isPaymentOtpRequired = mTaskDetailsData.get(0).getPayment_Otp_Required();
                 isChequeRequired = mTaskDetailsData.get(0).getChequeRequired();
                 type.add(0, "None");
                 Log.i("type", String.valueOf(type.size()));
@@ -348,6 +389,35 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 Log.i("payment", Arrays.toString(arrayMode));
                 final String status = mTaskDetailsData.get(0).getSchedulingStatus();
                 sta = mTaskDetailsData.get(0).getSchedulingStatus();
+
+
+                if (isPaymentOtpRequired && sta.equals("On-Site")) {
+                    mFragmentServiceInfoBinding.btnPaymentJeopardy.setVisibility(View.VISIBLE);
+                } else {
+                    mFragmentServiceInfoBinding.btnPaymentJeopardy.setVisibility(GONE);
+                    mFragmentServiceInfoBinding.lnrPaymentOTP.setVisibility(GONE);
+                }
+                mFragmentServiceInfoBinding.btnPaymentJeopardy.setOnClickListener(view -> {
+
+                    Mode = type.get(0);
+                    getValidated(AmountToCollect);
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle("Raise Payment Jeopardy")
+                            .setMessage("Do you really want to raise payment jeopardy?")
+                            .setIcon(R.drawable.ic_caution)
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    isRaiseJeopardyClicked = true;
+                                    mFragmentServiceInfoBinding.lnrPaymentOTP.setVisibility(View.VISIBLE);
+
+                                    getValidated(AmountToCollect);
+
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, null).show();
+                });
+
                 try {
                     if (mTaskDetailsData.get(0).getChequeImageUrl() != null && mTaskDetailsData.get(0).getChequeImageUrl().length() != 0) {
                         mFragmentServiceInfoBinding.lnrUpload.setVisibility(View.GONE);
@@ -416,10 +486,14 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     arrayMode = new String[type.size()];
                     arrayMode = type.toArray(arrayMode);
                 }
-                ArrayAdapter<String> statusAdapter = new ArrayAdapter<String>(getActivity(),
-                        R.layout.spinner_layout_new, arrayMode);
-                statusAdapter.setDropDownViewResource(R.layout.spinner_popup);
-                mFragmentServiceInfoBinding.spnPaymentMode.setAdapter(statusAdapter);
+                try {
+                    ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(getActivity(),
+                            R.layout.spinner_layout_new, arrayMode);
+                    statusAdapter.setDropDownViewResource(R.layout.spinner_popup);
+                    mFragmentServiceInfoBinding.spnPaymentMode.setAdapter(statusAdapter);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 mFragmentServiceInfoBinding.spnPaymentMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -430,18 +504,24 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                             if (Mode.equals("None")) {
                                 mCallback.mode("");
                             } else {
+                                InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(getActivity().INPUT_METHOD_SERVICE);
+                                assert imm != null;
+                                imm.showSoftInput(mFragmentServiceInfoBinding.edtPaymentOTP, InputMethodManager.SHOW_IMPLICIT);
+                                mFragmentServiceInfoBinding.edtPaymentOTP.requestFocus();
                                 mCallback.mode(Mode);
                             }
                             mCallback.amountToCollect(String.valueOf(AmountToCollect));
 
                             if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("Cheque")) {
                                 mFragmentServiceInfoBinding.lnrCheque.setVisibility(View.VISIBLE);
+                                mFragmentServiceInfoBinding.lnrCollected.setVisibility(View.VISIBLE);
                                 InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(getActivity().INPUT_METHOD_SERVICE);
                                 assert imm != null;
+                                imm.showSoftInput(mFragmentServiceInfoBinding.edtPaymentOTP, InputMethodManager.SHOW_IMPLICIT);
+                                mFragmentServiceInfoBinding.edtPaymentOTP.requestFocus();
                                 imm.showSoftInput(mFragmentServiceInfoBinding.txtCollected, InputMethodManager.SHOW_IMPLICIT);
                                 mFragmentServiceInfoBinding.txtCollected.requestFocus();
                                 getValidated(AmountToCollect);
-
                             } else {
                                 mFragmentServiceInfoBinding.lnrCheque.setVisibility(View.GONE);
                             }
@@ -468,8 +548,9 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                             }
                             if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("None")) {
                                 getValidated(AmountToCollect);
+                                mFragmentServiceInfoBinding.txtCollected.setText("");
                                 mFragmentServiceInfoBinding.txtCollected.setEnabled(false);
-//                            mFragmentServiceInfoBinding.lnrCollected.setVisibility(GONE);
+                                mFragmentServiceInfoBinding.lnrCollected.setVisibility(GONE);
                             }
                             if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("Online Payment Link")) {
                                 getValidated(AmountToCollect);
@@ -480,7 +561,10 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                             if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("Cash")) {
                                 InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(getActivity().INPUT_METHOD_SERVICE);
                                 assert imm != null;
+                                imm.showSoftInput(mFragmentServiceInfoBinding.edtPaymentOTP, InputMethodManager.SHOW_IMPLICIT);
+                                mFragmentServiceInfoBinding.edtPaymentOTP.requestFocus();
                                 imm.showSoftInput(mFragmentServiceInfoBinding.txtCollected, InputMethodManager.SHOW_IMPLICIT);
+                                mFragmentServiceInfoBinding.lnrCollected.setVisibility(View.VISIBLE);
                                 mFragmentServiceInfoBinding.txtCollected.requestFocus();
                                 getValidated(AmountToCollect);
                             }
@@ -502,7 +586,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 });
 
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -517,8 +601,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     String order = mTaskDetailsData.get(0).getOrderNumber();
                     String duration = mTaskDetailsData.get(0).getDuration();
                     String start = mTaskDetailsData.get(0).getTaskAssignmentStartTime();
-                    if (model.getCombinedTask()) {
-                        String type = model.getCombinedServiceType().replace(",", ", ");
+                    if (isCombinedTask) {
+                        String type = combinedTypes.replace(",", ", ");
                         mFragmentServiceInfoBinding.txtType.setText(type);
                     } else {
                         String type = mTaskDetailsData.get(0).getServiceType();
@@ -534,8 +618,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     } else {
                         mFragmentServiceInfoBinding.txtDuration.setText(duration + " hr");
                     }
-                    if (model.getCombinedTask()) {
-                        String service = model.getCombinedOrderNumber().replace(",", ", ");
+                    if (isCombinedTask) {
+                        String service = combiedTaskOrders.replace(",", ", ");
                         mFragmentServiceInfoBinding.txtOrder.setText("Order# " + service);
                     } else {
                         mFragmentServiceInfoBinding.txtOrder.setText("Order# " + order);
@@ -554,6 +638,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
     private void getStatus() {
         try {
+            assert mTaskDetailsData.get(0) != null;
             selectedStatus = mTaskDetailsData.get(0).getSchedulingStatus();
             generalTaskRealmModel = getRealm().where(GeneralTaskStatus.class).findAll().sort("Status");
             final ArrayList<String> type = new ArrayList<>();
@@ -564,23 +649,25 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             arrayStatus = new String[type.size()];
             arrayStatus = type.toArray(arrayStatus);
 
-            ArrayAdapter<String> statusAdapter = new ArrayAdapter<String>(getActivity(),
-                    R.layout.spinner_layout_new, arrayStatus);
-            statusAdapter.setDropDownViewResource(R.layout.spinner_popup);
-            mFragmentServiceInfoBinding.spnStatus.setAdapter(statusAdapter);
+            try {
+                ArrayAdapter<String> statusAdapter = new ArrayAdapter<String>(Objects.requireNonNull(getActivity()),
+                        R.layout.spinner_layout_new, arrayStatus);
+                statusAdapter.setDropDownViewResource(R.layout.spinner_popup);
+                mFragmentServiceInfoBinding.spnStatus.setAdapter(statusAdapter);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
 
             mFragmentServiceInfoBinding.spnStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     try {
-                        try {
-                            AppUtils.statusCheck(getActivity());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
                         Mode = mFragmentServiceInfoBinding.spnStatus.getSelectedItem().toString();
+                        assert mTaskDetailsData.get(0) != null;
                         isFeedback = mTaskDetailsData.get(0).getFeedBack();
                         try {
+                            assert generalTaskRealmModel.get(position) != null;
                             mCallback.status(generalTaskRealmModel.get(position).getStatus());
                             if (generalTaskRealmModel.get(position).getStatus().equals("Incomplete")) {
                                 mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(View.VISIBLE);
@@ -621,11 +708,12 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             });
 
             for (int i = 0; i < generalTaskRealmModel.size(); i++) {
+                assert generalTaskRealmModel.get(i) != null;
                 if (selectedStatus.equals(generalTaskRealmModel.get(i).getStatus())) {
                     mFragmentServiceInfoBinding.spnStatus.setSelection(i);
                 }
             }
-        }catch ( Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -864,7 +952,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     request.setEmail(mTaskDetailsData.get(0).getEmail());
                     request.setMobileNo(mTaskDetailsData.get(0).getMobileNumber());
                     request.setOrderNo(mTaskDetailsData.get(0).getOrderNumber());
-                    request.setTaskId(model.getTaskId());
+                    request.setTaskId(taskId);
 
                     NetworkCallController controller = new NetworkCallController(ServiceInfoFragment.this);
                     controller.setListner(new NetworkResponseListner() {
@@ -979,7 +1067,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             } else {
                 Toast.makeText(getContext(), "You have already selected an Image", Toast.LENGTH_SHORT).show();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -990,7 +1078,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             FragmentDatePicker mFragDatePicker = new FragmentDatePicker();
             mFragDatePicker.setmDatePickerListener(this);
             mFragDatePicker.show(getActivity().getSupportFragmentManager(), "datepicker");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -1016,7 +1104,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     e.printStackTrace();
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -1024,50 +1112,133 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
     private void getValidated(int amounttocollect) {
         try {
-            if (isTrue) {
+            if (Mode.equals("None") && amounttocollect != 0) {
+                mCallback.isPaymentModeNotChanged(true);
+            } else {
+                mCallback.isPaymentModeNotChanged(false);
+            }
+            if (isPaymentValidation) {
                 if (amounttocollect > 0) {
-                    Log.i("paymentMode", Mode);
-                    mFragmentServiceInfoBinding.txtCollected.setEnabled(true);
-                    mFragmentServiceInfoBinding.lnrCollected.setVisibility(View.VISIBLE);
-
-                    if (mFragmentServiceInfoBinding.txtCollected.getText().toString().trim().length() == 0) {
-                        mCallback.isPaymentChanged(true);
-                        if (Mode.equals("Online Payment Link")) {
-                            mCallback.isAmountCollectedRequired(false);
-                        } else {
-                            mCallback.isAmountCollectedRequired(true);
-                        }
-                    } else {
+                    if (isRaiseJeopardyClicked) {
                         if (mFragmentServiceInfoBinding.txtCollected.getText().toString().trim().length() != 0) {
                             int amount = 0;
-                            Log.i("amount", String.valueOf(amount));
-                            try {
-                                amount = Integer.parseInt(mFragmentServiceInfoBinding.txtCollected.getText().toString());
-                                if (amounttocollect == amount) {
-                                    mCallback.isPaymentChanged(false);
-                                    mCallback.isAmountCollectedRequired(false);
-                                    mCallback.isACEquals(false);
+                            amount = Integer.parseInt(mFragmentServiceInfoBinding.txtCollected.getText().toString());
+                            if (amounttocollect == amount) {
+                                mCallback.isPaymentOtpRequired(false);
+                                mCallback.isPaymentOtpvalidated(false);
+                            } else {
+                                if (PaymentOtp.length() > 0 && PaymentOtp != null) {
+                                    String otp = mFragmentServiceInfoBinding.edtPaymentOTP.getText().toString();
+                                    if (otp.length() != 0) {
+                                        mCallback.isPaymentOtpRequired(false);
+                                        if (otp.equals(PaymentOtp)) {
+//                                    mCallback.onSiteOtp(otp);
+                                            mCallback.isPaymentOtpvalidated(false);
+                                        } else {
+                                            mCallback.isPaymentOtpvalidated(true);
+                                        }
+                                    } else {
+                                        mCallback.isPaymentOtpRequired(true);
+                                    }
+                                    mCallback.isPaymentOtpRequired(true);
+                                    mFragmentServiceInfoBinding.txtCollected.setEnabled(true);
+//                                    mFragmentServiceInfoBinding.lnrCollected.setVisibility(View.VISIBLE);
+                                    if (mFragmentServiceInfoBinding.txtCollected.getText().toString().trim().length() == 0) {
+                                        mCallback.isPaymentChanged(true);
+                                        if (Mode.equalsIgnoreCase("Online Payment Link")) {
+                                            mCallback.isAmountCollectedRequired(false);
+                                        } else {
+                                            mCallback.isAmountCollectedRequired(true);
+                                        }
+                                    } else {
+                                        mCallback.isPaymentChanged(false);
+                                        mCallback.isAmountCollectedRequired(false);
+
+                                    }
                                 } else {
-                                    mCallback.isPaymentChanged(true);
-                                    mCallback.isAmountCollectedRequired(true);
-                                    mCallback.isACEquals(true);
+                                    mCallback.isPaymentOtpRequired(false);
+                                    mCallback.isPaymentOtpvalidated(false);
+                                }
+                            }
+                        } else {
+                            if (PaymentOtp.length() > 0 && PaymentOtp != null) {
+                                String otp = mFragmentServiceInfoBinding.edtPaymentOTP.getText().toString();
+                                if (otp.length() != 0) {
+                                    mCallback.isPaymentOtpRequired(false);
+                                    if (otp.equals(PaymentOtp)) {
+//                                    mCallback.onSiteOtp(otp);
+                                        mCallback.isPaymentOtpvalidated(false);
+                                    } else {
+                                        mCallback.isPaymentOtpvalidated(true);
+                                    }
+                                } else {
+                                    mCallback.isPaymentOtpRequired(true);
                                 }
 
-                            } catch (Exception e) {
-                                e.getMessage();
-                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                                if (mFragmentServiceInfoBinding.txtCollected.getText().toString().trim().length() == 0) {
+                                    mCallback.isPaymentChanged(true);
+                                    if (Mode.equalsIgnoreCase("Online Payment Link")) {
+                                        mCallback.isAmountCollectedRequired(false);
+                                    } else {
+                                        mCallback.isAmountCollectedRequired(true);
+                                    }
+                                } else {
+                                    mCallback.isPaymentChanged(false);
+                                    mCallback.isAmountCollectedRequired(false);
+                                }
+                            } else {
+                                mCallback.isPaymentOtpRequired(false);
+                                mCallback.isPaymentOtpvalidated(false);
                             }
+                        }
 
-                        } else {
+                    } else {
+                        mCallback.isPaymentOtpRequired(false);
+                        if (mFragmentServiceInfoBinding.txtCollected.getText().toString().trim().length() == 0) {
                             mCallback.isPaymentChanged(true);
                             if (Mode.equals("Online Payment Link")) {
                                 mCallback.isAmountCollectedRequired(false);
                             } else {
                                 mCallback.isAmountCollectedRequired(true);
                             }
-                        }
+                        } else {
+                            if (mFragmentServiceInfoBinding.txtCollected.getText().toString().trim().length() != 0) {
+                                int amount = 0;
+                                Log.i("amount", String.valueOf(amount));
+                                try {
+                                    amount = Integer.parseInt(mFragmentServiceInfoBinding.txtCollected.getText().toString());
+                                    if (amounttocollect == amount) {
+                                        mCallback.isPaymentChanged(false);
+                                        mCallback.isAmountCollectedRequired(false);
+                                        mCallback.isACEquals(false);
 
+                                    } else {
+                                        mCallback.isPaymentChanged(true);
+                                        mCallback.isAmountCollectedRequired(true);
+                                        mCallback.isACEquals(true);
+                                    }
+
+                                } catch (Exception e) {
+                                    e.getMessage();
+                                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+
+                            } else {
+                                mCallback.isPaymentChanged(true);
+                                if (Mode.equals("Online Payment Link")) {
+                                    mCallback.isAmountCollectedRequired(false);
+                                } else {
+                                    mCallback.isAmountCollectedRequired(true);
+                                }
+                            }
+
+                        }
                     }
+                    Log.i("paymentMode", Mode);
+                    mFragmentServiceInfoBinding.txtCollected.setEnabled(true);
+//                    mFragmentServiceInfoBinding.lnrCollected.setVisibility(View.VISIBLE);
+
+
                 } else {
                     Log.i("paymentMode", Mode);
                     mFragmentServiceInfoBinding.txtCollected.setEnabled(false);
@@ -1079,25 +1250,99 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 }
 
             } else {
-                if (amounttocollect > 0) {
-                    Log.i("paymentMode", Mode);
-                    mFragmentServiceInfoBinding.txtCollected.setEnabled(true);
-                    mFragmentServiceInfoBinding.lnrCollected.setVisibility(View.VISIBLE);
-                    if (mFragmentServiceInfoBinding.txtCollected.getText().toString().trim().length() == 0) {
-                        mCallback.isPaymentChanged(true);
-                        if (Mode.equalsIgnoreCase("Online Payment Link")) {
-                            mCallback.isAmountCollectedRequired(false);
-                        } else {
-                            mCallback.isAmountCollectedRequired(true);
-                        }
-                    } else {
-                        mCallback.isPaymentChanged(false);
-                        mCallback.isAmountCollectedRequired(false);
 
+                if (amounttocollect > 0) {
+                    if (isRaiseJeopardyClicked) {
+                        mFragmentServiceInfoBinding.txtCollected.setEnabled(true);
+                        if (mFragmentServiceInfoBinding.txtCollected.getText().toString().trim().length() != 0) {
+                            int amount = 0;
+                            amount = Integer.parseInt(mFragmentServiceInfoBinding.txtCollected.getText().toString());
+                            if (amounttocollect == amount) {
+                                mCallback.isPaymentOtpRequired(false);
+                                mCallback.isPaymentOtpvalidated(false);
+                            } else {
+                                if (PaymentOtp.length() > 0 && PaymentOtp != null) {
+                                    String otp = mFragmentServiceInfoBinding.edtPaymentOTP.getText().toString();
+                                    if (otp.length() != 0) {
+                                        mCallback.isPaymentOtpRequired(false);
+                                        if (otp.equals(PaymentOtp)) {
+//                                    mCallback.onSiteOtp(otp);
+                                            mCallback.isPaymentOtpvalidated(false);
+                                        } else {
+                                            mCallback.isPaymentOtpvalidated(true);
+                                        }
+                                    } else {
+                                        mCallback.isPaymentOtpRequired(true);
+                                    }
+
+                                    if (mFragmentServiceInfoBinding.txtCollected.getText().toString().trim().length() == 0) {
+                                        mCallback.isPaymentChanged(true);
+                                        if (Mode.equalsIgnoreCase("Online Payment Link")) {
+                                            mCallback.isAmountCollectedRequired(false);
+                                        } else {
+                                            mCallback.isAmountCollectedRequired(true);
+                                        }
+                                    } else {
+                                        mCallback.isPaymentChanged(false);
+                                        mCallback.isAmountCollectedRequired(false);
+                                    }
+                                } else {
+                                    mCallback.isPaymentOtpRequired(false);
+                                    mCallback.isPaymentOtpvalidated(false);
+                                }
+                            }
+                        } else {
+                            if (PaymentOtp.length() > 0 && PaymentOtp != null) {
+                                String otp = mFragmentServiceInfoBinding.edtPaymentOTP.getText().toString();
+                                if (otp.length() != 0) {
+                                    mCallback.isPaymentOtpRequired(false);
+                                    if (otp.equals(PaymentOtp)) {
+//                                    mCallback.onSiteOtp(otp);
+                                        mCallback.isPaymentOtpvalidated(false);
+                                    } else {
+                                        mCallback.isPaymentOtpvalidated(true);
+                                    }
+                                } else {
+                                    mCallback.isPaymentOtpRequired(true);
+                                }
+
+                                if (mFragmentServiceInfoBinding.txtCollected.getText().toString().trim().length() == 0) {
+                                    mCallback.isPaymentChanged(true);
+                                    if (Mode.equalsIgnoreCase("Online Payment Link")) {
+                                        mCallback.isAmountCollectedRequired(false);
+                                    } else {
+                                        mCallback.isAmountCollectedRequired(true);
+                                    }
+                                } else {
+                                    mCallback.isPaymentChanged(false);
+                                    mCallback.isAmountCollectedRequired(false);
+                                }
+                            } else {
+                                mCallback.isPaymentOtpRequired(false);
+                                mCallback.isPaymentOtpvalidated(false);
+                            }
+                        }
+
+                    } else {
+                        Log.i("paymentMode", Mode);
+                        mFragmentServiceInfoBinding.txtCollected.setEnabled(true);
+//                        mFragmentServiceInfoBinding.lnrCollected.setVisibility(View.VISIBLE);
+                        if (mFragmentServiceInfoBinding.txtCollected.getText().toString().trim().length() == 0) {
+                            mCallback.isPaymentChanged(true);
+                            if (Mode.equalsIgnoreCase("Online Payment Link")) {
+                                mCallback.isAmountCollectedRequired(false);
+                            } else {
+                                mCallback.isAmountCollectedRequired(true);
+                            }
+                        } else {
+                            mCallback.isPaymentChanged(false);
+                            mCallback.isAmountCollectedRequired(false);
+                        }
                     }
+
                 } else {
                     mFragmentServiceInfoBinding.txtCollected.setEnabled(false);
-                    mFragmentServiceInfoBinding.lnrCollected.setVisibility(GONE);
+//                    mFragmentServiceInfoBinding.lnrCollected.setVisibility(GONE);
                     mCallback.isPaymentChanged(false);
                     mCallback.isAmountCollectedRequired(false);
                 }
@@ -1123,9 +1368,16 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                     if (amounttocollect == amount) {
                                         mCallback.isPaymentChanged(false);
                                         mCallback.isAmountCollectedRequired(false);
+                                        mCallback.isPaymentOtpvalidated(false);
+                                        mCallback.isPaymentModeNotChanged(false);
                                     } else {
                                         mCallback.isPaymentChanged(true);
                                         mCallback.isAmountCollectedRequired(true);
+                                        if (isRaiseJeopardyClicked) {
+                                            mCallback.isPaymentOtpvalidated(true);
+                                            mCallback.isPaymentModeNotChanged(true);
+                                        }
+
                                     }
 
                                 } catch (Exception e) {
@@ -1188,7 +1440,6 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void getServiceValidate() {
@@ -1208,6 +1459,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     OnSiteOtp = mTaskDetailsData.get(0).getOnsite_OTP();
                     assert mTaskDetailsData.get(0) != null;
                     ScOtp = mTaskDetailsData.get(0).getSc_OTP();
+                    assert mTaskDetailsData.get(0) != null;
+                    PaymentOtp = mTaskDetailsData.get(0).getPaymentOtp();
                     String otp = Objects.requireNonNull(mFragmentServiceInfoBinding.edtOnsiteOtp.getText()).toString();
                     if (otp.length() != 0) {
                         mCallback.isEmptyOnsiteOtp(false);
@@ -1226,9 +1479,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     mFragmentServiceInfoBinding.layoutOtp.setVisibility(View.GONE);
                 }
 
-            }
-
-            else if (Mode.equals("Completed")) {
+            } else if (Mode.equals("Completed")) {
                 mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(GONE);
                 if (mTaskDetailsData.get(0).getRestrict_Early_Completion()) {
                     NetworkCallController controller = new NetworkCallController(this);
@@ -1248,12 +1499,12 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
                         }
                     });
-                    controller.getValidateCompletionTime(COMPLETION_REQUEST, mTaskDetailsData.get(0).getActualCompletionDateTime(), model.getTaskId());
+                    controller.getValidateCompletionTime(COMPLETION_REQUEST, mTaskDetailsData.get(0).getActualCompletionDateTime(), taskId);
                 }
-            }else if(Mode.equals("Dispatched")){
+            } else if (Mode.equals("Dispatched")) {
                 mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(GONE);
                 mFragmentServiceInfoBinding.layoutOtp.setVisibility(GONE);
-            }else if(Mode.equals("Incomplete")){
+            } else if (Mode.equals("Incomplete")) {
                 mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(View.VISIBLE);
                 mFragmentServiceInfoBinding.layoutOtp.setVisibility(GONE);
             }
@@ -1261,7 +1512,5 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
-
 }

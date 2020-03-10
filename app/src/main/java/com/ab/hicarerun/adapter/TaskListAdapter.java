@@ -207,19 +207,24 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         if (items.get(position).getStatus().equalsIgnoreCase("Completed")) {
             holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
             holder.mTaskListAdapterBinding.warning.setVisibility(View.GONE);
+            holder.mTaskListAdapterBinding.btnHelpline.setVisibility(View.GONE);
 //            holder.mTaskListAdapterBinding.status.setTextColor(Color.parseColor("#1E90FF"));
             holder.mTaskListAdapterBinding.lnrStatus.setBackgroundColor(Color.parseColor("#1E90FF"));
         } else if (items.get(position).getStatus().equalsIgnoreCase("Dispatched")) {
 //            holder.mTaskListAdapterBinding.status.setTextColor(Color.parseColor("#ff6700"));
             holder.mTaskListAdapterBinding.lnrStatus.setBackgroundColor(Color.parseColor("#ff6700"));
+            holder.mTaskListAdapterBinding.btnHelpline.setVisibility(View.VISIBLE);
+
         } else if (items.get(position).getStatus().equalsIgnoreCase("On-Site")) {
             holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
             holder.mTaskListAdapterBinding.warning.setVisibility(View.GONE);
+            holder.mTaskListAdapterBinding.btnHelpline.setVisibility(View.VISIBLE);
 //            holder.mTaskListAdapterBinding.status.setTextColor(Color.parseColor("#e1ad01"));
             holder.mTaskListAdapterBinding.lnrStatus.setBackgroundColor(Color.parseColor("#e1ad01"));
         } else if (items.get(position).getStatus().equalsIgnoreCase("Incomplete")) {
             holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
             holder.mTaskListAdapterBinding.warning.setVisibility(View.GONE);
+            holder.mTaskListAdapterBinding.btnHelpline.setVisibility(View.GONE);
 //            holder.mTaskListAdapterBinding.status.setTextColor(Color.parseColor("#FF69B4"));
             holder.mTaskListAdapterBinding.lnrStatus.setBackgroundColor(Color.parseColor("#FF69B4"));
         }
@@ -229,7 +234,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         } else {
             holder.mTaskListAdapterBinding.lnrTag.setVisibility(View.GONE);
         }
-
         if (items.get(position).getSequenceNumber() != 0) {
             holder.mTaskListAdapterBinding.lnrSequence.setVisibility(View.VISIBLE);
             holder.mTaskListAdapterBinding.txtSequence.setText(String.valueOf(items.get(position).getSequenceNumber()));
@@ -276,17 +280,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             holder.mTaskListAdapterBinding.txtAmount.setText(items.get(position).getAmount());
         }
         holder.itemView.setOnClickListener(v -> onItemClickHandler.onItemClick(position));
-
-
         holder.mTaskListAdapterBinding.dispatchTaskMobileNo.setOnClickListener(v -> onCallListItemClickHandler.onPrimaryMobileClicked(position));
-
         holder.mTaskListAdapterBinding.dispatchTaskAltMobileNo.setOnClickListener(v -> onCallListItemClickHandler.onAlternateMobileClicked(position));
-
         holder.mTaskListAdapterBinding.dispatchTaskPhoneNo.setOnClickListener(v -> onCallListItemClickHandler.onTelePhoneClicked(position));
         holder.mTaskListAdapterBinding.lnrMap.setOnClickListener(v -> onCallListItemClickHandler.onTrackLocationIconClicked(position));
-
         holder.mTaskListAdapterBinding.btnHelpline.setOnClickListener(view -> onCallListItemClickHandler.onTechnicianHelplineClicked(position));
-
         holder.mTaskListAdapterBinding.lnrPartnerPic.setOnClickListener(view -> onCallListItemClickHandler.onResourcePartnerPic(profile));
 
         final Handler ha = new Handler();
@@ -470,7 +468,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             this.mTaskListAdapterBinding = mTaskListAdapterBinding;
             if (!isShown) {
                 ShowcaseConfig config = new ShowcaseConfig();
-                config.setDelay(500); // half second between each showcase view
+                config.setDelay(300); // half second between each showcase view
 
                 MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(activity, "Hicare");
 

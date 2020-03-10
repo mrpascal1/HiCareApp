@@ -10,9 +10,7 @@ import androidx.databinding.DataBindingUtil;
 import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ActivityTechnicianSeniorBinding;
-import com.ab.hicarerun.fragments.AttachmentFragment;
 import com.ab.hicarerun.fragments.TechnicianSeniorFragment;
-import com.ab.hicarerun.utils.SharedPreferencesUtility;
 
 import java.util.Objects;
 

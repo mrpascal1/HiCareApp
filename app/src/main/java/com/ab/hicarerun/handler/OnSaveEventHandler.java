@@ -84,6 +84,16 @@ public interface OnSaveEventHandler {
     public void isEarlyCompletion(Boolean b);
 
     public void isJobCardEnable(Boolean b);
+
+    public void isWorkTypeNotChecked(Boolean b);
+
+    public void FlushOutReason(String s);
+
+    public void isPaymentOtpRequired(Boolean b);
+
+    public void isPaymentOtpvalidated(Boolean b);
+
+    public void isPaymentModeNotChanged(Boolean b);
 //
 //    public void AttachmentList(List<GetAttachmentList> mList);
 }

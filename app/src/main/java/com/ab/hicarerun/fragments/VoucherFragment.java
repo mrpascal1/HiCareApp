@@ -24,6 +24,8 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ab.hicarerun.BaseApplication;
@@ -41,6 +43,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.squareup.picasso.Picasso;
+import com.waynell.library.DropAnimationView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -62,6 +65,7 @@ public class VoucherFragment extends BaseFragment implements UserVoucherClickHan
     private String shareText = "";
     private Uri imgBanner = null;
     private static final int VOUCHER_REQUEST = 1000;
+
     public VoucherFragment() {
         // Required empty public constructor
     }
@@ -79,8 +83,16 @@ public class VoucherFragment extends BaseFragment implements UserVoucherClickHan
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentVoucherBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_voucher, container, false);
-        getActivity().setTitle("Referral Code");
+//        getActivity().setTitle("Referral Code");
         mFragmentVoucherBinding.setHandler(this);
+        if (getActivity() != null) {
+            LinearLayout toolbar = getActivity().findViewById(R.id.toolbar);
+            toolbar.setVisibility(View.GONE);
+            LinearLayout custom_toolbar = getActivity().findViewById(R.id.customToolbar);
+            custom_toolbar.setVisibility(View.VISIBLE);
+            TextView tool = getActivity().findViewById(R.id.txtTool);
+            tool.setText("Referral Code");
+        }
         return mFragmentVoucherBinding.getRoot();
     }
 
@@ -88,6 +100,9 @@ public class VoucherFragment extends BaseFragment implements UserVoucherClickHan
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getVoucherCode();
+        mFragmentVoucherBinding.dropAnimationView.setDrawables(R.drawable.ic_rupee,
+                R.drawable.ic_rupee_reward);
+        mFragmentVoucherBinding.dropAnimationView.startAnimation();
     }
 
     private void getVoucherCode() {
@@ -105,12 +120,12 @@ public class VoucherFragment extends BaseFragment implements UserVoucherClickHan
                             Picasso.get().load(response.getImageUrl()).into(mFragmentVoucherBinding.banner);
 
 //                        Hey! Let your home become Pest Free like mine! Use my referral code [CODE] to get 10%+10% off on all services from HiCare!
-                            String ReferText = "Hey! Let your home become Pest Free like mine! Use my referral code "+"_*" + response.getReferralCode()
+                            String ReferText = "Hey! Let your home become Pest Free like mine! Use my referral code " + "_*" + response.getReferralCode()
                                     + "*_" + " to get 10%+10% off on all services from HiCare! Call us at 8828333888 or visit https://hicare.in/";
                             shareText = String.valueOf(Html.fromHtml(ReferText));
                             imgBanner = Uri.parse(response.getImageUrl());
-                            mFragmentVoucherBinding.txtTitle.setText(response.getTitle());
-                            mFragmentVoucherBinding.txtDescription.setText(response.getDescription());
+                            mFragmentVoucherBinding.txtTitle.setText(Html.fromHtml(response.getTitle()));
+                            mFragmentVoucherBinding.txtDescription.setText(Html.fromHtml(response.getDescription()));
                             mFragmentVoucherBinding.txtTitle.setTypeface(Typeface.DEFAULT_BOLD, Typeface.NORMAL);
                             mFragmentVoucherBinding.voucherCode.setTypeface(Typeface.DEFAULT_BOLD, Typeface.NORMAL);
                             mFragmentVoucherBinding.voucherCode.setText(response.getReferralCode());
@@ -125,7 +140,7 @@ public class VoucherFragment extends BaseFragment implements UserVoucherClickHan
                 }
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -163,7 +178,6 @@ public class VoucherFragment extends BaseFragment implements UserVoucherClickHan
     }
 
 
-
     private void openWhatsApp(String shareText, Uri imgBanner) {
 
 
@@ -186,7 +200,7 @@ public class VoucherFragment extends BaseFragment implements UserVoucherClickHan
             shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivity(Intent.createChooser(shareIntent, "Share Referral code via WhatsApp"));
 
-        }catch (android.content.ActivityNotFoundException ex){
+        } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(getActivity(), "WhatsApp have not been installed...", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
 
@@ -229,7 +243,7 @@ public class VoucherFragment extends BaseFragment implements UserVoucherClickHan
             share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             share.setPackage("com.facebook.katana"); //Facebook App package
             startActivity(Intent.createChooser(share, "Share Referral code via Facebook"));
-        }catch (android.content.ActivityNotFoundException ex){
+        } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(getActivity(), "Facebook have not been installed...", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -253,9 +267,9 @@ public class VoucherFragment extends BaseFragment implements UserVoucherClickHan
             shareIntent.setType("image/*");
             shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             shareIntent.setPackage("com.instagram.android");
-            startActivity(Intent.createChooser(shareIntent, "Share Referral code via WhatsApp"));
+            startActivity(Intent.createChooser(shareIntent, "Share Referral code via Instagram"));
 
-        }catch (android.content.ActivityNotFoundException ex){
+        } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(getActivity(), "Instagram have not been installed...", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -304,7 +318,7 @@ public class VoucherFragment extends BaseFragment implements UserVoucherClickHan
             shareIntent.setPackage("com.google.android.apps.plus");
             startActivity(shareIntent);
 
-        }catch (android.content.ActivityNotFoundException ex){
+        } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(getActivity(), "Google Plus have not been installed...", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -332,7 +346,7 @@ public class VoucherFragment extends BaseFragment implements UserVoucherClickHan
             sendIntent.setPackage("com.facebook.orca");
             startActivity(sendIntent);
 
-        }catch (android.content.ActivityNotFoundException ex){
+        } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(getActivity(), "Messenger have not been installed...", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();

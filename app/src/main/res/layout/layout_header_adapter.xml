@@ -43,7 +43,7 @@
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/ic_placeholder" />
+                            app:srcCompat="@drawable/ic_placeholder" />
 
                     </LinearLayout>
 
@@ -75,7 +75,7 @@
                             android:layout_centerInParent="true"
                             android:layout_marginRight="20dp"
                             android:layout_alignParentRight="true"
-                            android:src="@drawable/ic_down_arrow" />
+                            app:srcCompat="@drawable/ic_down_arrow" />
 
                     </RelativeLayout>
 

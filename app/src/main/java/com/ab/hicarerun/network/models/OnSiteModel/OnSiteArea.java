@@ -41,8 +41,13 @@ public class OnSiteArea extends RealmObject implements Parcelable {
     @Expose
     private RealmList<String> activityDetail = null;
 
+    @SerializedName("TotalCompletedCount")
+    @Expose
+    private Integer TotalCompletedCount;
+
     public OnSiteArea() {
     }
+
 
     protected OnSiteArea(Parcel in) {
         id = in.readString();
@@ -52,6 +57,11 @@ public class OnSiteArea extends RealmObject implements Parcelable {
         areaSubTypeC = in.readString();
         serviceNameC = in.readString();
         LastActivityOn_Text = in.readString();
+        if (in.readByte() == 0) {
+            TotalCompletedCount = null;
+        } else {
+            TotalCompletedCount = in.readInt();
+        }
     }
 
     public static final Creator<OnSiteArea> CREATOR = new Creator<OnSiteArea>() {
@@ -130,6 +140,13 @@ public class OnSiteArea extends RealmObject implements Parcelable {
         this.activityDetail = activityDetail;
     }
 
+    public Integer getTotalCompletedCount() {
+        return TotalCompletedCount;
+    }
+
+    public void setTotalCompletedCount(Integer totalCompletedCount) {
+        TotalCompletedCount = totalCompletedCount;
+    }
 
     @Override
     public int describeContents() {
@@ -145,5 +162,13 @@ public class OnSiteArea extends RealmObject implements Parcelable {
         parcel.writeString(areaSubTypeC);
         parcel.writeString(serviceNameC);
         parcel.writeString(LastActivityOn_Text);
+        if (TotalCompletedCount == null) {
+            parcel.writeByte((byte) 0);
+        } else {
+            parcel.writeByte((byte) 1);
+            parcel.writeInt(TotalCompletedCount);
+        }
     }
+
+
 }

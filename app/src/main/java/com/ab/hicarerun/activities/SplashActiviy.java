@@ -27,20 +27,22 @@ import com.ab.hicarerun.service.LocationManager;
 import com.ab.hicarerun.service.ServiceLocationSend;
 import com.ab.hicarerun.service.listner.LocationManagerListner;
 import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.utils.GPSUtils;
 import com.ab.hicarerun.utils.HandShakeReceiver;
 import com.ab.hicarerun.utils.RuntimePermissionsActivity;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.splunk.mint.Mint;
 import com.squareup.picasso.Picasso;
 
-public class SplashActiviy extends AppCompatActivity implements LocationManagerListner {
+public class SplashActiviy extends AppCompatActivity {
     ActivitySplashActiviyBinding mActivitySplashBinding;
-    private Location mLocation;
-    private LocationManagerListner mListner;
+    //    private Location mLocation;
+//    private LocationManagerListner mListner;
     private android.location.LocationManager locationManager;
     private static int SPLASH_TIME_OUT = 3000;
     private PendingIntent pendingIntent = null;
     private AlarmManager mAlarmManager = null;
+    private boolean isGPS = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +50,12 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
         mActivitySplashBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_splash_activiy);
         mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        LocationManager.Builder builder = new LocationManager.Builder(this);
-        builder.setLocationListner(this);
-        builder.build();
+//        LocationManager.Builder builder = new LocationManager.Builder(this);
+//        builder.setLocationListner(this);
+//        builder.build();
         Mint.initAndStartSession(this.getApplication(), "5623ed44");
         Picasso.get().load(R.mipmap.splash).into(mActivitySplashBinding.imgSplash);
-        splashScreen();
+//        splashScreen();
         PackageInfo pInfo = null;
 
         try {
@@ -67,60 +69,84 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.splash);
         mActivitySplashBinding.imgSplash.startAnimation(animation);
         SharedPreferencesUtility.savePrefBoolean(SplashActiviy.this, SharedPreferencesUtility.PREF_REFRESH, false);
+        locationManager =
+                (android.location.LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+
+        new GPSUtils(this).turnGPSOn(isGPSEnable -> {
+            // turn on GPS
+            if (isGPSEnable) {
+                splashScreen();
+            } else {
+                isGPS = isGPSEnable;
+            }
+        });
+
+
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == GPSUtils.GPS_REQUEST) {
+                isGPS = true; // flag maintain before get location
+                splashScreen();
+            }
+        }
+    }
 
     void splashScreen() {
         try {
             new Handler().postDelayed(() -> {
-                locationManager =
-                        (android.location.LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-                if (locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
-                        && locationManager.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER)) {
-                    if (SharedPreferencesUtility.getPrefBoolean(SplashActiviy.this, SharedPreferencesUtility.IS_USER_LOGIN)) {
-                        if (SharedPreferencesUtility.getPrefString(SplashActiviy.this, SharedPreferencesUtility.PREF_LOGOUT) != null) {
-                            String PreviousLoginDate = SharedPreferencesUtility.getPrefString(SplashActiviy.this, SharedPreferencesUtility.PREF_LOGOUT);
-                            String ComparePreviousLogin = AppUtils.compareLoginDates(PreviousLoginDate, AppUtils.currentDate());
-                            Log.i("LoginDates", AppUtils.compareLoginDates(PreviousLoginDate, AppUtils.currentDate()));
-                            Log.i("CurrentDate", AppUtils.currentDate());
-                            if (ComparePreviousLogin.equals("equal")) {
-                                startActivity(new Intent(SplashActiviy.this, HomeActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+
+                if (SharedPreferencesUtility.getPrefBoolean(SplashActiviy.this, SharedPreferencesUtility.IS_USER_LOGIN)) {
+                    if (SharedPreferencesUtility.getPrefString(SplashActiviy.this, SharedPreferencesUtility.PREF_LOGOUT) != null) {
+                        String PreviousLoginDate = SharedPreferencesUtility.getPrefString(SplashActiviy.this, SharedPreferencesUtility.PREF_LOGOUT);
+                        String ComparePreviousLogin = AppUtils.compareLoginDates(PreviousLoginDate, AppUtils.currentDate());
+                        Log.i("LoginDates", AppUtils.compareLoginDates(PreviousLoginDate, AppUtils.currentDate()));
+                        Log.i("CurrentDate", AppUtils.currentDate());
+                        if (ComparePreviousLogin.equals("equal")) {
+                            startActivity(new Intent(SplashActiviy.this, HomeActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
 //                                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                                finish();
-                            } else {
-                                Intent myIntent = new Intent(SplashActiviy.this, HandShakeReceiver.class);
-                                pendingIntent = PendingIntent.getActivity(getApplicationContext(),
-                                        0, myIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-                                mAlarmManager.cancel(pendingIntent);
-                                getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
-                                startActivity(new Intent(SplashActiviy.this, LoginActivity.class));
-//                                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                                finish();
-                            }
+                            finish();
                         } else {
                             Intent myIntent = new Intent(SplashActiviy.this, HandShakeReceiver.class);
                             pendingIntent = PendingIntent.getActivity(getApplicationContext(),
                                     0, myIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-                            pendingIntent.cancel();
                             mAlarmManager.cancel(pendingIntent);
-                            getApplicationContext().stopService(new Intent(SplashActiviy.this, ServiceLocationSend.class));
+                            getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
                             startActivity(new Intent(SplashActiviy.this, LoginActivity.class));
-//                                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+//                                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                             finish();
                         }
                     } else {
+                        Intent myIntent = new Intent(SplashActiviy.this, HandShakeReceiver.class);
+                        pendingIntent = PendingIntent.getActivity(getApplicationContext(),
+                                0, myIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                        pendingIntent.cancel();
+                        mAlarmManager.cancel(pendingIntent);
                         getApplicationContext().stopService(new Intent(SplashActiviy.this, ServiceLocationSend.class));
                         startActivity(new Intent(SplashActiviy.this, LoginActivity.class));
-//                            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+//                                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                         finish();
                     }
                 } else {
-                    try {
-                        AppUtils.statusCheck(SplashActiviy.this);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    getApplicationContext().stopService(new Intent(SplashActiviy.this, ServiceLocationSend.class));
+                    startActivity(new Intent(SplashActiviy.this, LoginActivity.class));
+//                            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                    finish();
                 }
+//                } else {
+//                    try {
+////                        AppUtils.statusCheck(SplashActiviy.this);
+//                        new GPSUtils(this).turnGPSOn(isGPSEnable -> {
+//                            // turn on GPS
+//                            isGPS = isGPSEnable;
+//                        });
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
             }, SPLASH_TIME_OUT);
         } catch (Exception e) {
             String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
@@ -129,14 +155,14 @@ public class SplashActiviy extends AppCompatActivity implements LocationManagerL
         }
     }
 
-    @Override
-    public void locationFetched(Location mLocation, Location oldLocation, String time,
-                                String locationProvider) {
-        this.mLocation = mLocation;
-        if (mListner != null) {
-            mListner.locationFetched(mLocation, oldLocation, time, locationProvider);
-        }
-    }
+//    @Override
+//    public void locationFetched(Location mLocation, Location oldLocation, String time,
+//                                String locationProvider) {
+//        this.mLocation = mLocation;
+//        if (mListner != null) {
+//            mListner.locationFetched(mLocation, oldLocation, time, locationProvider);
+//        }
+//    }
 
     @Override
     protected void onDestroy() {

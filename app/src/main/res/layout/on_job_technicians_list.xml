@@ -39,7 +39,7 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="7dp"
                         android:textColor="@color/colorPrimary"
-                        android:src="@drawable/ic_groom"
+                        app:srcCompat="@drawable/ic_groom"
                         android:textSize="14sp" />
 
                     <LinearLayout
@@ -56,7 +56,7 @@
                         android:layout_height="45dp"
                         android:text="@string/service_plan"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_addimage" />
+                        app:srcCompat="@drawable/ic_addimage" />
                         </LinearLayout>
 
 

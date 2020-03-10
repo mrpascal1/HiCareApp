@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <import type="android.view.View" />
     </data>
 
@@ -14,16 +15,29 @@
         android:background="@color/white"
         android:fitsSystemWindows="true">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
-            <include
-                android:id="@+id/toolbar"
-                layout="@layout/layout_custom_toolbar" />
+
+            <RelativeLayout
+                android:id="@+id/layoutTool"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/customToolbar"
+                    layout="@layout/layout_toolbar" />
+
+                <include
+                    android:id="@+id/toolbar"
+                    layout="@layout/layout_custom_toolbar" />
+
+
+            </RelativeLayout>
+
 
             <!--<androidx.appcompat.widget.Toolbar-->
             <!--android:id="@+id/toolbar"-->
@@ -34,14 +48,145 @@
             <!--style="@style/ToolBarStyle.Event"-->
             <!--/>-->
 
+
             <FrameLayout
                 android:id="@+id/container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/white"
-                />
+                android:layout_above="@id/relBottom"
+                android:layout_below="@id/layoutTool"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginBottom="0dp"
+                android:background="@color/white" />
 
-        </LinearLayout>
+            <View
+                            android:id="@+id/navigationBorder"
+                            android:layout_width="match_parent"
+                            android:layout_height="4dp"
+                            android:layout_above="@id/relBottom"
+                            android:background="@drawable/today_rect" />
+
+            <!--            <com.google.android.material.bottomnavigation.BottomNavigationView-->
+            <!--                android:id="@+id/bottom_navigation"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_gravity="bottom"-->
+            <!--                android:layout_alignParentBottom="true"-->
+            <!--                android:background="@color/white"-->
+            <!--                android:visibility="gone"-->
+            <!--                app:itemIconTint="@drawable/selector"-->
+            <!--                app:itemTextColor="@drawable/selector"-->
+            <!--                app:labelVisibilityMode="labeled"-->
+            <!--                app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"-->
+            <!--                app:menu="@menu/bottom_navigation_menu" />-->
+
+            <RelativeLayout
+                android:id="@+id/relBottom"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true">
+
+                <com.ab.hicarerun.utils.CustomBottomNavigation
+                    android:id="@+id/custom_navigation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginBottom="-2dp"
+                    app:itemIconTint="@drawable/selector"
+                    app:itemBackground="@color/white"
+                    app:itemTextColor="@drawable/selector"
+                    app:labelVisibilityMode="labeled"
+                    app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
+                    app:menu="@menu/bottom_navigation_menu" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relCoin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/circle"
+                android:visibility="gone">
+
+                <!--                <zone.com.lightsweep.ShineImageView-->
+                <!--                    android:id="@+id/img"-->
+                <!--                    android:layout_width="30dp"-->
+                <!--                    android:layout_height="30dp"-->
+                <!--                    android:src="@drawable/customer_marker"-->
+                <!--                    app:reflectionColor="@color/yellow"-->
+                <!--                    app:reflectionRorate="30"-->
+                <!--                    android:layout_centerInParent="true"-->
+                <!--                    app:reflectionWidth="100" />-->
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true"
+                    app:shimmer_base_alpha="0.9"
+                    app:shimmer_base_color="@color/white"
+                    app:shimmer_clip_to_children="true"
+                    app:shimmer_duration="1500"
+                    app:shimmer_highlight_color="@color/white">
+
+                    <ImageView
+                        android:id="@+id/img"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_centerInParent="true"
+                        android:alpha="1"
+                        app:srcCompat="@drawable/ic_rupee" />
+
+                </com.facebook.shimmer.ShimmerFrameLayout>
+
+            </RelativeLayout>
+
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="20dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:visibility="gone"
+                app:elevation="0dp"
+                app:maxImageSize="30dp"
+                app:srcCompat="@drawable/ic_rupee" />
+
+            <com.luseen.spacenavigation.SpaceNavigationView
+                android:id="@+id/bottom_navigation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@color/transparent"
+                android:visibility="gone"
+                app:active_centre_button_icon_color="@color/white"
+                app:active_item_color="@color/yelold"
+                app:centre_button_color="@color/yelold"
+                app:centre_button_icon="@drawable/ic_trophy"
+                app:inactive_centre_button_icon_color="@color/colorAccentDrawerPrimaryLightest"
+                app:inactive_item_color="@color/white"
+                app:layout_behavior="com.luseen.spacenavigation.SpaceNavigationViewBehavior"
+                app:space_background_color="@color/colorPrimary"
+                app:space_item_icon_only_size="25dp"
+                app:space_item_icon_size="20dp"
+                app:space_item_text_size="@dimen/space_item_text_default_size" />
+
+        </RelativeLayout>
+
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/navigation_view"
             android:layout_width="200dp"
@@ -51,4 +196,6 @@
             app:headerLayout="@layout/header_nav"
             app:menu="@menu/drawermenu" />
     </androidx.drawerlayout.widget.DrawerLayout>
+
+
 </layout>

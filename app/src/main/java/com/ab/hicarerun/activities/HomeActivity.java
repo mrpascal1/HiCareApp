@@ -1,44 +1,49 @@
 package com.ab.hicarerun.activities;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
-import android.os.Parcelable;
-import android.text.Html;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ActivityHomeBinding;
-import com.ab.hicarerun.fragments.FaceRecognizationFragment;
+import com.ab.hicarerun.fragments.AttendanceViewFragment;
 import com.ab.hicarerun.fragments.HomeFragment;
+import com.ab.hicarerun.fragments.IncentiveFragment;
 import com.ab.hicarerun.fragments.NotificationFragment;
+import com.ab.hicarerun.fragments.OffersFragment;
+import com.ab.hicarerun.fragments.TechIdFragment;
+import com.ab.hicarerun.fragments.VoucherFragment;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShake;
@@ -46,23 +51,28 @@ import com.ab.hicarerun.network.models.IncentiveModel.Incentive;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
 import com.ab.hicarerun.network.models.ProfileModel.Profile;
-import com.ab.hicarerun.network.models.UpdateAppModel.UpdateData;
 import com.ab.hicarerun.service.LocationManager;
 import com.ab.hicarerun.service.ServiceLocationSend;
 import com.ab.hicarerun.service.listner.LocationManagerListner;
 import com.ab.hicarerun.utils.AppUtils;
-import com.ab.hicarerun.utils.DownloadApk;
+import com.ab.hicarerun.utils.CustomBottomNavigation;
+import com.ab.hicarerun.utils.GPSUtils;
 import com.ab.hicarerun.utils.HandShakeReceiver;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.google.android.material.navigation.NavigationView;
+import com.luseen.spacenavigation.SpaceItem;
+import com.luseen.spacenavigation.SpaceOnClickListener;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.RealmResults;
+
+import static androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
 
 public class HomeActivity extends BaseActivity implements FragmentManager.OnBackStackChangedListener, LocationManagerListner {
     ActivityHomeBinding mActivityHomeBinding;
@@ -82,14 +92,18 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     String userName = "";
     String userId = "";
     int value = 0;
+    private boolean isGPS = false;
     private android.location.LocationManager locationManager;
     private AlarmManager mAlarmManager = null;
     private PendingIntent pendingUpdateIntent = null;
     private Bitmap bitUser = null;
     private ProgressDialog progress;
 
-
-
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mActivityHomeBinding.bottomNavigation.onSaveInstanceState(outState);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,21 +114,25 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         progress = new ProgressDialog(this, R.style.TransparentProgressDialog);
         progress.setCancelable(false);
         mActivityHomeBinding.toolbar.lnrDrawer.setOnClickListener(view -> mActivityHomeBinding.drawer.openDrawer(GravityCompat.START));
-        locationManager =
-                (android.location.LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
-                && locationManager.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER)) {
-            progress.show();
-            getServiceCalled();
-            getTechDeails();
-            getIncentiveDetails();
-        } else {
-            try {
-                AppUtils.statusCheck(HomeActivity.this);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            new GPSUtils(this).turnGPSOn(isGPSEnable -> {
+                // turn on GPS
+                if (isGPSEnable) {
+                    progress.show();
+                    getServiceCalled();
+                    getTechDeails();
+                    getIncentiveDetails();
+                } else {
+                    isGPS = isGPSEnable;
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+//        }
+
+//        CustomBottomNavigation curvedBottomNavigationView = findViewById(R.id.customBottomBar);
+//        curvedBottomNavigationView.inflateMenu(R.menu.bottom_navigation_menu);
 
         mActivityHomeBinding.toolbar.lnrUser.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, TechIdActivity.class).putExtra(HomeActivity.ARG_EVENT, false)));
         mActivityHomeBinding.toolbar.lnrWallet.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, IncentivesActivity.class).putExtra(HomeActivity.ARG_EVENT, false)));
@@ -135,8 +153,121 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         } catch (Exception e) {
             e.printStackTrace();
         }
+        mActivityHomeBinding.bottomNavigation.initWithSaveInstanceState(savedInstanceState);
+
+        mActivityHomeBinding.bottomNavigation.addSpaceItem(new SpaceItem("Home", R.drawable.ic_home));
+        mActivityHomeBinding.bottomNavigation.addSpaceItem(new SpaceItem("Incentives", R.drawable.ic_rupees));
+        mActivityHomeBinding.bottomNavigation.addSpaceItem(new SpaceItem("Attendance", R.drawable.ic_icon));
+        mActivityHomeBinding.bottomNavigation.addSpaceItem(new SpaceItem("ID Card", R.drawable.ic__avatar_user));
+        mActivityHomeBinding.bottomNavigation.hideAllBadges();
+        mActivityHomeBinding.fab.bringToFront();
+        mActivityHomeBinding.relCoin.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, OfferActivity.class)));
+
+    }
+
+    private void setupNavigationView() {
+
+        if (mActivityHomeBinding.bottomNavigation != null) {
+            // Select first menu item by default and show Fragment accordingly.
+            Menu menu = mActivityHomeBinding.customNavigation.getMenu();
+            selectFragment(menu.getItem(0));
+            mActivityHomeBinding.customNavigation.setOnNavigationItemSelectedListener(menuItem -> {
+                selectFragment(menuItem);
+                return false;
+            });
+        }
+    }
+
+    private void selectFragment(MenuItem item) {
+        item.setChecked(true);
+        switch (item.getItemId()) {
+            case R.id.nav_home:
+//                replaceFragment(HomeFragment.newInstance(byteArray), "HomeActivity-HomeFragment");
+                replaceFragment(HomeFragment.newInstance(), "HOME");
+//                viewFragment(HomeFragment.newInstance(byteArray),"HOME", mActivityHomeBinding.customNavigation);
+                break;
+            case R.id.nav_incentive:
+                replaceFragment(IncentiveFragment.newInstance(), "INCENTIVE");
+//                viewFragment(IncentiveFragment.newInstance(),"INCENTIVE", mActivityHomeBinding.customNavigation);
+//                startActivity(new Intent(HomeActivity.this, IncentivesActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                break;
+            case R.id.nav_rewards:
+//                replaceFragment(OffersFragment.newInstance(), "HomeActivity-NotificationFragment");
+                replaceFragment(VoucherFragment.newInstance(), "HomeActivity-NotificationFragment");
+//                startActivity(new Intent(HomeActivity.this, IncentivesActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                break;
+            case R.id.nav_attendance:
+//                viewFragment(AttendanceViewFragment.newInstance(),"ATTENDANCE", mActivityHomeBinding.customNavigation);
+                replaceFragment(AttendanceViewFragment.newInstance(), "ATTENDANCE");
+                break;
+            case R.id.nav_referral:
+                replaceFragment(TechIdFragment.newInstance(), "REFERRAL");
+//                viewFragment(AttendanceViewFragment.newInstance(),"TECHID", mActivityHomeBinding.customNavigation);
+                break;
+        }
+    }
 
 
+    private void setUpSpaceNavigationView(byte[] byteArray) {
+        mActivityHomeBinding.bottomNavigation.setSpaceOnClickListener(new SpaceOnClickListener() {
+            @Override
+            public void onCentreButtonClick() {
+                replaceFragment(OffersFragment.newInstance(), "HomeFragment-OffersFragment");
+            }
+
+            @Override
+            public void onItemClick(int itemIndex, String itemName) {
+                switch (itemIndex) {
+                    case 0:
+                        replaceFragment(HomeFragment.newInstance(), "HomeActivity-HomeFragment");
+                        break;
+                    case 1:
+                        replaceFragment(IncentiveFragment.newInstance(), "HomeActivity-IncentiveFragment");
+                        break;
+                    case 2:
+                        replaceFragment(AttendanceViewFragment.newInstance(), "HomeActivity-AttendanceViewFragment");
+                        break;
+                    case 3:
+                        replaceFragment(TechIdFragment.newInstance(), "HomeActivity-TechIdFragment");
+                        break;
+                }
+            }
+
+            @Override
+            public void onItemReselected(int itemIndex, String itemName) {
+
+                switch (itemIndex) {
+                    case 0:
+                        replaceFragment(HomeFragment.newInstance(), "HomeActivity-HomeFragment");
+                        break;
+                    case 1:
+                        replaceFragment(IncentiveFragment.newInstance(), "HomeActivity-IncentiveFragment");
+                        break;
+                    case 2:
+                        replaceFragment(AttendanceViewFragment.newInstance(), "HomeActivity-AttendanceViewFragment");
+                        break;
+                    case 3:
+                        replaceFragment(TechIdFragment.newInstance(), "HomeActivity-TechIdFragment");
+                        break;
+                }
+            }
+        });
+        mActivityHomeBinding.bottomNavigation.changeCurrentItem(0);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == GPSUtils.GPS_REQUEST) {
+                isGPS = true; // flag maintain before get location
+                progress.show();
+                getServiceCalled();
+                getTechDeails();
+                getIncentiveDetails();
+            }
+        }
     }
 
 
@@ -147,77 +278,8 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         } else {
             AppUtils.showOkActionAlertBox(HomeActivity.this, "Please check your internet connection!", (dialogInterface, i) -> finish());
         }
-        try {
-            AppUtils.statusCheck(HomeActivity.this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 
-    private void getVersionFromApi() {
-        NetworkCallController controller = new NetworkCallController();
-        controller.setListner(new NetworkResponseListner() {
-            @Override
-            public void onResponse(int requestCode, Object response) {
-                UpdateData data = (UpdateData) response;
-                checkCurrentVersion(data.getApkurl(), data.getVersion(), data.getApktype());
-            }
-
-            @Override
-            public void onFailure(int requestCode) {
-
-            }
-        });
-        controller.getUpdateApp(UPDATE_REQ);
-    }
-
-    private void checkCurrentVersion(final String apkurl, String version, final String apktype) {
-        PackageInfo pInfo = null;
-        try {
-            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        assert pInfo != null;
-        String mobileVersion = pInfo.versionName;
-
-        if (Float.parseFloat(mobileVersion) < Float.parseFloat(version)) {
-            String title = "New update available";
-            String messageAlert = "<html><body><p>Please update your app to new version.<br><br>Current app version: " + mobileVersion + "<br><br>New version: " + version + "</p></body></html>";
-            AppUtils.showDownloadActionAlertBox(HomeActivity.this, title, String.valueOf(Html.fromHtml(messageAlert)), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    if (AppUtils.checkConnection(HomeActivity.this)) {
-                        ProgressDialog progress = new ProgressDialog(HomeActivity.this);
-                        if (apktype.equalsIgnoreCase("url")) {
-                            final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
-                            try {
-                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-                            } catch (android.content.ActivityNotFoundException anfe) {
-                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-                            }
-                        } else {
-                            DownloadApk downloadAndInstall = new DownloadApk();
-                            progress.setCancelable(false);
-                            progress.setMessage("Downloading...");
-                            downloadAndInstall.setContext(HomeActivity.this, progress);
-                            downloadAndInstall.execute(apkurl);
-                        }
-
-                    } else {
-                        AppUtils.showOkActionAlertBox(HomeActivity.this, "No Internet Found.", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                finish();
-                            }
-                        });
-                    }
-                }
-            });
-
-        }
-    }
 
     private void getServiceCalled() {
         try {
@@ -229,7 +291,6 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                     assert items != null;
                     value = Integer.parseInt(items.get(1).getValue());
                     long REPEATED_TIME = 1000 * 60 * value;
-//                long REPEATED_TIME = 60000;
                     SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_INTERVAL, String.valueOf(REPEATED_TIME));
                     Log.i("callHandshake", String.valueOf(REPEATED_TIME));
                     SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_TIME, items.get(1).getValue());
@@ -260,7 +321,9 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                         getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
                     }
                     String time = SharedPreferencesUtility.getPrefString(HomeActivity.this, SharedPreferencesUtility.PREF_TIME);
-                    value = Integer.parseInt(time);
+                    if (time != null) {
+                        value = Integer.parseInt(time);
+                    }
                     long REPEATED_TIME = 1000 * 60 * value;
                     Intent intent = new Intent(getApplicationContext(), HandShakeReceiver.class);
                     intent.setAction("HandshakeAction");
@@ -280,7 +343,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
             }
         } catch (Exception e) {
-         e.printStackTrace();
+            e.printStackTrace();
         }
 
     }
@@ -308,7 +371,10 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                                 bitUser.compress(Bitmap.CompressFormat.PNG, 100, stream);
                                 byte[] byteArray = stream.toByteArray();
-                                addFragment(HomeFragment.newInstance(byteArray), "HomeActivity - HomeFragment");
+
+                                SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_USER_PIC, base64);
+//                                addFragment(HomeFragment.newInstance(byteArray), "HomeActivity - HomeFragment");
+                                setupNavigationView();
                             }
                         }
                         initNavigationDrawer();
@@ -350,6 +416,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 controller.getTechnicianIncentive(REQ_INCENTIVE, userId);
             }
         } catch (Exception e) {
+            getLogout();
             e.printStackTrace();
         }
     }
@@ -393,6 +460,8 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
             if (bitUser != null) {
                 imgUser.setImageBitmap(bitUser);
             }
+            mActivityHomeBinding.navigationView.setCheckedItem(0);
+
         }
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             int id = menuItem.getItemId();
@@ -413,7 +482,6 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                     mActivityHomeBinding.drawer.closeDrawers();
                     startActivity(new Intent(HomeActivity.this, AttendanceActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
                     break;
-
 
                 case R.id.nav_onsite:
                     mActivityHomeBinding.drawer.closeDrawers();
@@ -463,38 +531,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                     dialog.setMessage("Do you want to logout?");
                     dialog.setPositiveButton("Yes", (dialogInterface, i) -> {
                         dialogInterface.dismiss();
-                        NetworkCallController controller = new NetworkCallController();
-                        String UserId = SharedPreferencesUtility.getPrefString(HomeActivity.this, SharedPreferencesUtility.PREF_USERID);
-
-                        controller.setListner(new NetworkResponseListner() {
-                            @Override
-                            public void onResponse(int requestCode, Object response) {
-                                LogoutResponse logres = (LogoutResponse) response;
-
-                                if (logres.getSuccess()) {
-                                    if (pendingUpdateIntent != null) {
-                                        mAlarmManager.cancel(pendingUpdateIntent);
-                                        getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
-                                    }
-                                    SharedPreferencesUtility.savePrefBoolean(getApplicationContext(), SharedPreferencesUtility.IS_USER_LOGIN,
-                                            false);
-                                    SharedPreferencesUtility.savePrefBoolean(getApplicationContext(), SharedPreferencesUtility.IS_SKIP_VIDEO,
-                                            false);
-                                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                                    finish();
-                                } else {
-                                    Toast.makeText(HomeActivity.this, "Logout failed! try again.", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(int requestCode) {
-
-                            }
-                        });
-
-                        controller.getLogout(LOGOUT_REQ, UserId, HomeActivity.this);
-
+                        getLogout();
                     });
                     dialog.setNegativeButton("No", (dialogInterface, i) -> dialogInterface.dismiss());
                     dialog.show();
@@ -508,14 +545,63 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
     }
 
+    private void getLogout() {
+        NetworkCallController controller = new NetworkCallController();
+        String UserId = SharedPreferencesUtility.getPrefString(HomeActivity.this, SharedPreferencesUtility.PREF_USERID);
+
+        controller.setListner(new NetworkResponseListner() {
+            @Override
+            public void onResponse(int requestCode, Object response) {
+                LogoutResponse logres = (LogoutResponse) response;
+
+                if (logres.getSuccess()) {
+                    if (pendingUpdateIntent != null) {
+                        mAlarmManager.cancel(pendingUpdateIntent);
+                        getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
+                    }
+                    SharedPreferencesUtility.savePrefBoolean(getApplicationContext(), SharedPreferencesUtility.IS_USER_LOGIN,
+                            false);
+                    SharedPreferencesUtility.savePrefBoolean(getApplicationContext(), SharedPreferencesUtility.IS_SKIP_VIDEO,
+                            false);
+                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                    finish();
+                } else {
+                    Toast.makeText(HomeActivity.this, "Logout failed! try again.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(int requestCode) {
+
+            }
+        });
+
+        controller.getLogout(LOGOUT_REQ, UserId, HomeActivity.this);
+    }
+
     @Override
     public void onBackPressed() {
-        int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
-        if (backStackEntryCount == 0) {
+//        int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
+//        if (backStackEntryCount == 0) {
+//            finishAffinity();
+//        } else if(backStackEntryCount == 1) {
+//            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
+//            mActivityHomeBinding.customNavigation.getMenu().getItem(0).setChecked(true);
+//            getSupportFragmentManager().popBackStack();
+//            super.onBackPressed();
+//        }
+//        else {
+//            super.onBackPressed();
+//        }
+
+        if (mActivityHomeBinding.customNavigation.getSelectedItemId() == R.id.nav_home) {
+            mActivityHomeBinding.navigationView.setCheckedItem(0);
             showExitAlert();
         } else {
-            super.onBackPressed();
+            mActivityHomeBinding.customNavigation.setSelectedItemId(R.id.nav_home);
+            mActivityHomeBinding.navigationView.setCheckedItem(0);
         }
+
     }
 
     private void showExitAlert() {
@@ -532,8 +618,9 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
     @Override
     public void onBackStackChanged() {
+        int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
+//
         try {
-            int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
             if (backStackEntryCount == 0) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             } else {
@@ -542,6 +629,15 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+//        if( getSupportFragmentManager().getBackStackEntryCount() <= 1){
+//            // pop all the fragment and remove the listener
+//            getSupportFragmentManager().popBackStack("HOME", POP_BACK_STACK_INCLUSIVE);
+//            getSupportFragmentManager().removeOnBackStackChangedListener(this);
+//            // set the home button selected
+//            mActivityHomeBinding.customNavigation.getMenu().getItem(0).setChecked(true);
+//        }
+
     }
 
     @Override
@@ -555,6 +651,5 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     public Location getmLocation() {
         return mLocation;
     }
-
 
 }

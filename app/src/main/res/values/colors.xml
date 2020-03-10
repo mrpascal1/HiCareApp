@@ -7,6 +7,7 @@
     <color name="outerBlue">#E5ECFF</color>
     <color name="innerBlue">#7C9DFF</color>
     <color name="sky">#48b4e0</color>
+    <color name="popup">#78b348</color>
 
     <color name="colorAccentOrange">#FF5722</color>
     <color name="lightorange">#ffff8800</color>
@@ -29,12 +30,15 @@
     <color name="barGreenLight">#87FFBB</color>
     <color name="purple">#D278FE</color>
     <color name="orange">#E56B00</color>
+    <color name="yelold">#FAA300</color>
+
 
     <color name="colorAccentDrawerPrimaryDark">#24272c</color>
     <color name="colorAccentDrawerPrimary">#27313d</color>
     <color name="colorAccentDrawerPrimaryLight">#424951</color>
     <color name="colorTextDrawerPrimary">#fff</color>
     <color name="colorTextDrawerSecondary">#9199a6</color>
+    <color name="colorAccentDrawerPrimaryLightest">#696969</color>
     <color name="black">#000000</color>
     <color name="darkblack">#cc000000</color>
     <color name="lightblack">#191919</color>
@@ -49,6 +53,7 @@
     <color name="mint">#98fb98</color>
     <color name="textColorSecondary">#757575</color>
     <color name="gold">#FFD700</color>
+    <color name="yellow2">#FFBD00</color>
     <color name="transparent_black">#55000000</color>
     <color name="transparent_white">#55ffffff</color>
     <color name="trans_primary">#b32bb77a</color>

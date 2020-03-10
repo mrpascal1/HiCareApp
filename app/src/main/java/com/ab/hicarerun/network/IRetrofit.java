@@ -26,6 +26,7 @@ import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonModel;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
+import com.ab.hicarerun.network.models.NPSModel.NPSDataResponse;
 import com.ab.hicarerun.network.models.OnSiteModel.OnSiteAccountResponse;
 import com.ab.hicarerun.network.models.OnSiteModel.OnSiteAreaResponse;
 import com.ab.hicarerun.network.models.OnSiteModel.OnSiteRecentResponse;
@@ -40,6 +41,9 @@ import com.ab.hicarerun.network.models.ReferralModel.ReferralDeleteRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralListResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralResponse;
+import com.ab.hicarerun.network.models.RewardsModel.RewardsResponse;
+import com.ab.hicarerun.network.models.RewardsModel.SaveRedeemRequest;
+import com.ab.hicarerun.network.models.RewardsModel.SaveRedeemResponse;
 import com.ab.hicarerun.network.models.TaskModel.TaskListResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTaskResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
@@ -231,12 +235,12 @@ public interface IRetrofit {
 
     /*[Get Jeopardy Reasons]*/
 
-    @GET("applicationlogic/GetJeopardyReasons")
-    Call<JeopardyReasonModel> getJeopardyReasons();
+    @GET("Jeopardy/GetHelpLineReasons")
+    Call<JeopardyReasonModel> getJeopardyReasons(@Query("taskId") String taskId);
 
     /*[CWF JEOPARDY ]*/
 
-    @POST("datasync/InsertRenewalAppJeopardy")
+    @POST("Jeopardy/InsertHelpLineJeopardy")
     Call<CWFJeopardyResponse> postCWFJeopardy(@Body CWFJeopardyRequest request);
 
     /*[Resource Incentive]*/
@@ -313,6 +317,15 @@ public interface IRetrofit {
     /*[TechnicianGrooming/GetTechnicianJobSummary]*/
 
     @GET("ResourceActivity/GetResourceProfilePicture")
-    Call<String> getResourceProfilePicture(@Query("resourceId") String customerNo);
+    Call<String> getResourceProfilePicture(@Query("resourceId") String resourceId);
+
+    @GET("ResourceActivity/GetResourceRedeemedData")
+    Call<RewardsResponse> getResourceRedeemedData(@Query("resourceId") String resourceId);
+
+    @POST("ResourceActivity/SaveResourceRedeemData")
+    Call<SaveRedeemResponse> getSaveResourceRedeemData(@Body SaveRedeemRequest request);
+
+    @GET("ResourceActivity/GetResourceNPSData")
+    Call<NPSDataResponse> getNPSData(@Query("resourceId") String resourceId);
 
 }

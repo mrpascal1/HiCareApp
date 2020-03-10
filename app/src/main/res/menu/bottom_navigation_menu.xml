@@ -2,43 +2,41 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/nav_general"
-        android:title="@string/general"
-        android:icon="@drawable/ic_general"
+        android:id="@+id/nav_home"
+        android:title="Home"
+        android:icon="@drawable/ic_home"
         app:showAsAction="ifRoom"
         android:enabled="true"
 
         />
 
     <item
-        android:id="@+id/nav_chemicals"
-        android:title="@string/chemicals"
-        android:icon="@drawable/ic_pesticide"
+        android:id="@+id/nav_incentive"
+        android:title="Incentives"
+        android:icon="@drawable/ic_rupee_incentives"
+        app:showAsAction="ifRoom"
+        android:enabled="true"
+
+        />
+    <item
+        android:id="@+id/nav_rewards"
+        app:showAsAction="ifRoom"
+        android:enabled="true"
+        android:icon="@drawable/ic_voucher"
+        android:title="Referral" />
+
+    <item
+        android:id="@+id/nav_attendance"
+        android:title="Attendance"
+        android:icon="@drawable/ic_icon"
         app:showAsAction="ifRoom"
         android:enabled="true"
 
         />
     <item
         android:id="@+id/nav_referral"
-        android:title="@string/referral"
-        android:icon="@drawable/ic_referral"
-        app:showAsAction="ifRoom"
-        android:enabled="true"
-
-        />
-
-    <item
-        android:id="@+id/nav_payment"
-        android:title="@string/payment"
-        android:icon="@drawable/ic_card"
-        app:showAsAction="ifRoom"
-        android:enabled="true"
-
-        />
-    <item
-        android:id="@+id/nav_signature"
-        android:title="@string/signature"
-        android:icon="@drawable/ic_signature"
+        android:title="ID Card"
+        android:icon="@drawable/ic_idcard"
         app:showAsAction="ifRoom"
         android:enabled="true"
 

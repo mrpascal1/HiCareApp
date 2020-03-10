@@ -101,6 +101,15 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
                     holder.mChemicalRecycleRowBinding.edtActual.setText("");
                 }
 
+                holder.mChemicalRecycleRowBinding.edtActual.requestFocus();
+                holder.mChemicalRecycleRowBinding.edtActual.setOnFocusChangeListener((view, b) -> {
+                    try {
+                        onEditTextChanged.onTextChanged(holder.getAdapterPosition(), holder.mChemicalRecycleRowBinding.edtActual.getText().toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+
                 holder.mChemicalRecycleRowBinding.edtActual.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {

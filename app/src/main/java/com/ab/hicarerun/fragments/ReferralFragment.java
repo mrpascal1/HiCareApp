@@ -17,36 +17,26 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.NewTaskDetailsActivity;
-import com.ab.hicarerun.activities.TaskDetailsActivity;
 import com.ab.hicarerun.adapter.ReferralListAdapter;
-import com.ab.hicarerun.adapter.TaskListAdapter;
 import com.ab.hicarerun.databinding.FragmentReferralBinding;
 import com.ab.hicarerun.handler.OnDeleteListItemClickHandler;
 import com.ab.hicarerun.handler.UserReferralClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.AttachmentModel.PostAttachmentResponse;
-import com.ab.hicarerun.network.models.FeedbackModel.FeedbackRequest;
-import com.ab.hicarerun.network.models.FeedbackModel.FeedbackResponse;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralDeleteRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
-import com.ab.hicarerun.network.models.ReferralModel.ReferralListResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralResponse;
-import com.ab.hicarerun.network.models.TaskModel.Tasks;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SwipeToDeleteCallBack;
-import com.ab.hicarerun.viewmodel.AttachmentListViewModel;
 import com.ab.hicarerun.viewmodel.ReferralViewModel;
-import com.ab.hicarerun.viewmodel.UserLoginViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -62,8 +52,9 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
     private static final int GET_REFERRAL_REQUEST = 2000;
     private static final int DELETE_REFERRAL_REQUEST = 3000;
     private static final String ARG_TASK = "ARG_TASK";
+    private static final String ARGS_MOBILE = "ARGS_MOBILE";
     private String taskId = "";
-    private Tasks tasks = null;
+    private String technicianMobileNo = "";
     ReferralListAdapter mAdapter;
     RecyclerView.LayoutManager layoutManager;
     private Integer pageNumber = 1;
@@ -74,32 +65,23 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
         // Required empty public constructor
     }
 
-    public static ReferralFragment newInstance(Tasks taskId) {
+    public static ReferralFragment newInstance(String taskId, String technicianMobileNo ) {
         Bundle args = new Bundle();
-//        args.putString(ARG_TASK, taskId);
-        args.putParcelable(ARG_TASK, taskId);
+        args.putString(ARG_TASK, taskId);
+        args.putString(ARGS_MOBILE, technicianMobileNo);
         ReferralFragment fragment = new ReferralFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        try {
-            AppUtils.statusCheck(getActivity());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            tasks = getArguments().getParcelable(ARG_TASK);
+            taskId = getArguments().getString(ARG_TASK);
+            technicianMobileNo = getArguments().getString(ARGS_MOBILE);
         }
     }
 
@@ -176,7 +158,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
         try {
             NetworkCallController controller = new NetworkCallController(this);
             controller.setListner(this);
-            controller.getReferrals(GET_REFERRAL_REQUEST, tasks.getTaskId());
+            controller.getReferrals(GET_REFERRAL_REQUEST, taskId);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -226,15 +208,15 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                         if (mGeneralRealmModel.get(0).getAlternateMobileNumber() != null) {
                             Alt_Mobile = mGeneralRealmModel.get(0).getAlternateMobileNumber();
                         }
-                        if (tasks.getTechnicianMobileNo() != null) {
-                            Technicain_Mobile = tasks.getTechnicianMobileNo();
+                        if (technicianMobileNo != null && technicianMobileNo.length()>0) {
+                            Technicain_Mobile = technicianMobileNo;
                         }
 
                         if (validateSaveReferral(edt_fname, edt_lname, edt_contact, edt_email, mobile, Alt_Mobile, Technicain_Mobile)) {
 
                             NetworkCallController controller = new NetworkCallController(ReferralFragment.this);
                             ReferralRequest request = new ReferralRequest();
-                            request.setTaskId(tasks.getTaskId());
+                            request.setTaskId(taskId);
                             request.setFirstName(edt_fname.getText().toString());
                             request.setLastName("");
                             request.setMobileNo(edt_contact.getText().toString());
