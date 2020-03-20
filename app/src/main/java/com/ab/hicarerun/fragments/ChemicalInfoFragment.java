@@ -63,10 +63,11 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
     private String status = "";
     private String ActualStatus = "";
     private boolean isChemicalChecked = false;
-//    private Tasks model;
+    //    private Tasks model;
     private String taskId = "";
     private String combinedTaskId = "";
     private boolean isCombinedTask = false;
+    private boolean showStandardChemicals = false;
 
     public ChemicalInfoFragment() {
         // Required empty public constructor
@@ -93,7 +94,6 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
     }
 
 
-
     @Override
     public void onAttach(@NotNull Context context) {
         super.onAttach(context);
@@ -116,22 +116,29 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mGeneralRealmData =
+                getRealm().where(GeneralData.class).findAll();
         mFragmentChemicalInfoBinding.recycleView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         mFragmentChemicalInfoBinding.recycleView.setLayoutManager(layoutManager);
         ViewCompat.setNestedScrollingEnabled(mFragmentChemicalInfoBinding.recycleView, false);
         if (isCombinedTask) {
             mFragmentChemicalInfoBinding.txtType.setVisibility(View.VISIBLE);
-
         } else {
             mFragmentChemicalInfoBinding.txtType.setVisibility(View.GONE);
         }
-        mGeneralRealmData =
-                getRealm().where(GeneralData.class).findAll();
         if (map != null) {
             map.clear();
         }
-        mAdapter = new ChemicalRecycleAdapter(getActivity(), isCombinedTask, (position, charSeq) -> {
+        if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
+            showStandardChemicals = mGeneralRealmData.get(0).getShow_Standard_Chemicals();
+        }
+        if (showStandardChemicals) {
+            mFragmentChemicalInfoBinding.txtStandard.setVisibility(View.VISIBLE);
+        } else {
+            mFragmentChemicalInfoBinding.txtStandard.setVisibility(View.GONE);
+        }
+        mAdapter = new ChemicalRecycleAdapter(getActivity(), isCombinedTask, showStandardChemicals, (position, charSeq) -> {
             try {
                 if (charSeq != null && map != null) {
                     map.put(position, charSeq);
@@ -218,7 +225,6 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
             e.printStackTrace();
         }
     }
-
 
 
     @Override

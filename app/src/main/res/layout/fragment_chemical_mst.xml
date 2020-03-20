@@ -32,7 +32,7 @@
                         android:gravity="center"
                         android:padding="5dp"
                         android:singleLine="true"
-                        android:text="Type"
+                        android:text="@string/type_chemicals"
                         android:textColor="@color/black" />
 
                     <TextView

@@ -1,6 +1,7 @@
 package com.ab.hicarerun.activities;
 
 
+import android.content.Context;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 
@@ -15,6 +16,7 @@ import com.ab.hicarerun.fragments.LoginFragment;
 import com.ab.hicarerun.fragments.VerifyMobileOTPFragment;
 import com.ab.hicarerun.fragments.VerifyOtpFragment;
 import com.ab.hicarerun.utils.GPSUtils;
+import com.ab.hicarerun.utils.LocaleHelper;
 
 import java.util.Objects;
 
@@ -25,6 +27,7 @@ public class VerifyOtpActivity extends BaseActivity {
     public static final String ARGS_USER = "ARGS_USER";
     public static final String ARGS_OTP = "ARGS_OTP";
     String mobile = "", otp = "", user = "";
+
 
 
     @Override
@@ -48,6 +51,14 @@ public class VerifyOtpActivity extends BaseActivity {
         user = getIntent().getStringExtra(ARGS_USER);
         addFragment(VerifyMobileOTPFragment.newInstance(mobile, otp, user), "VerifyOTPActivity - VerifyMobileOTPFragment");
     }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+//        super.attachBaseContext(LocaleHelper.onAttach(base));
+        super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
+
+    }
+
 
 //    @Override
 //    public void onBackPressed() {

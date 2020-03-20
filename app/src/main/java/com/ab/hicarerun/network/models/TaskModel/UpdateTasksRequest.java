@@ -130,6 +130,10 @@ public class UpdateTasksRequest {
     @Expose
     private String FlushOutReason;
 
+    @SerializedName("Next_Task_Id")
+    @Expose
+    private String Next_Task_Id;
+
 
     public UpdateTasksRequest() {
         UserId = "";
@@ -170,6 +174,7 @@ public class UpdateTasksRequest {
         IsChemicalChanged = false;
         CombinedTaskId = "";
         FlushOutReason = "";
+        Next_Task_Id = "";
     }
 
     public String getUserId() {
@@ -484,5 +489,13 @@ public class UpdateTasksRequest {
 
     public void setFlushOutReason(String flushOutReason) {
         FlushOutReason = flushOutReason;
+    }
+
+    public String getNext_Task_Id() {
+        return Next_Task_Id;
+    }
+
+    public void setNext_Task_Id(String next_Task_Id) {
+        Next_Task_Id = next_Task_Id;
     }
 }

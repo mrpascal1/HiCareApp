@@ -39,15 +39,17 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
     private int ChemicalNo = 0;
     private int standardChem = 0;
     private Boolean isCombined = false;
+    private Boolean showStadardChemicals = false;
 
 
-    public ChemicalRecycleAdapter(Context context, Boolean isCombined, OnEditTextChanged onEditTextChanged) {
+    public ChemicalRecycleAdapter(Context context, Boolean isCombined, Boolean showStandardChemicals, OnEditTextChanged onEditTextChanged) {
         if (items == null) {
             items = new ArrayList<>();
         }
         this.mContext = context;
         this.onEditTextChanged = onEditTextChanged;
         this.isCombined = isCombined;
+        this.showStadardChemicals = showStandardChemicals;
     }
 
 
@@ -67,6 +69,12 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
         holder.mChemicalRecycleRowBinding.chemName.setText(model.getName());
         holder.mChemicalRecycleRowBinding.chemConsumption.setText(model.getConsumption());
         holder.mChemicalRecycleRowBinding.chemStandard.setText(model.getStandard());
+
+        if (showStadardChemicals) {
+            holder.mChemicalRecycleRowBinding.chemStandard.setVisibility(View.VISIBLE);
+        } else {
+            holder.mChemicalRecycleRowBinding.chemStandard.setVisibility(View.GONE);
+        }
         if (isCombined) {
             holder.mChemicalRecycleRowBinding.lnrType.setVisibility(View.VISIBLE);
             holder.mChemicalRecycleRowBinding.chemType.setText(model.getChemType());
@@ -95,9 +103,9 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
                 holder.mChemicalRecycleRowBinding.edtActual.setEnabled(false);
                 holder.mChemicalRecycleRowBinding.edtActual.setBackgroundResource(R.drawable.disable_edit_borders);
             } else {
-                if(model.getActual()!=null){
+                if (model.getActual() != null) {
                     holder.mChemicalRecycleRowBinding.edtActual.setText(model.getEdtActual());
-                }else {
+                } else {
                     holder.mChemicalRecycleRowBinding.edtActual.setText("");
                 }
 
@@ -135,7 +143,7 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
                     }
                 });
 
-                if(holder.mChemicalRecycleRowBinding.edtActual.getText().toString().length() != 0){
+                if (holder.mChemicalRecycleRowBinding.edtActual.getText().toString().length() != 0) {
                     try {
                         onEditTextChanged.onTextChanged(holder.getAdapterPosition(), holder.mChemicalRecycleRowBinding.edtActual.getText().toString());
                     } catch (Exception e) {
@@ -166,7 +174,6 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
             chemicalViewModel.clone(data.get(index));
             items.add(chemicalViewModel);
         }
-
     }
 
     public void addData(List<Chemicals> data) {
@@ -181,7 +188,6 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
     public ChemicalViewModel getItem(int position) {
         return items.get(position);
     }
-
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 

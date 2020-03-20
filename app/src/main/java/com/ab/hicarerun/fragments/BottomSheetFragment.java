@@ -95,7 +95,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
                     });
                     mAdapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(getActivity(), "No Area Available!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.no_area_available), Toast.LENGTH_SHORT).show();
                 }
             }
         } catch (Exception e) {

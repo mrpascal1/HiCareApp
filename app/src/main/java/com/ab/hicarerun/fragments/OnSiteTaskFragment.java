@@ -118,7 +118,7 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
         // Inflate the layout for this fragment
         mFragmentOnSiteTaskBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_onsite_task, container, false);
 //        mFragmentOnSiteTaskBinding.setHandler(this);
-        getActivity().setTitle("Activities");
+        getActivity().setTitle(getResources().getString(R.string.tool_activities));
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -286,10 +286,10 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
                         }
                         builder.setView(v);
                         builder.setCancelable(false);
-                        builder.setPositiveButton("Submit", (dialogInterface, i) -> {
+                        builder.setPositiveButton(getResources().getString(R.string.submit), (dialogInterface, i) -> {
                             RadioButton radioButton = (RadioButton) v.findViewById(radioGroup.getCheckedRadioButtonId());
                             if (radioGroup.getCheckedRadioButtonId() == -1) {
-                                Toast.makeText(getActivity(), "Please select at least one reason...", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), getResources().getString(R.string.please_select_atleast_one_reason), Toast.LENGTH_SHORT).show();
                                 builder.setCancelable(false);
                             } else {
                                 getSaveActivity(subItems.get(position), false, radioButton.getText().toString());
@@ -347,12 +347,12 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
                     addAdapter = new AddActivityAdapter(getActivity(), serviceList, (position, isCheckedList) -> {
                         if (isAnyTrue(isCheckedList)) {
                             btnDone.setEnabled(false);
-                            btnDone.setText("Select");
+                            btnDone.setText(getResources().getString(R.string.button_select));
                             btnDone.setAlpha(0.5f);
 
                         } else {
                             btnDone.setEnabled(true);
-                            btnDone.setText("Done");
+                            btnDone.setText(getResources().getString(R.string.done_onsite));
                             btnDone.setAlpha(1f);
                         }
 
@@ -508,10 +508,10 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
                             if (saveResponse.getSuccess()) {
                                 if (isServiceDone) {
                                     getAccountActivityArea(Area);
-                                    Toasty.success(getActivity(), "Activity added successfully", Toasty.LENGTH_LONG).show();
+                                    Toasty.success(getActivity(), getResources().getString(R.string.activity_successfully_added), Toasty.LENGTH_LONG).show();
                                 } else {
                                     getAccountActivityArea(Area);
-                                    Toasty.success(getActivity(), "Reason submitted successfully", Toasty.LENGTH_LONG).show();
+                                    Toasty.success(getActivity(), getResources().getString(R.string.reason_submitted_successfully), Toasty.LENGTH_LONG).show();
                                 }
                             }
                         }

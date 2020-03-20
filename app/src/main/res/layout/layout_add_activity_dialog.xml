@@ -23,7 +23,7 @@
                         android:id="@+id/txtTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Add On-Site Activity"
+                        android:text="@string/add_on_site_activity"
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:textColor="@color/white"
@@ -47,7 +47,7 @@
                         android:gravity="center"
                         android:padding="5dp"
                         android:singleLine="true"
-                        android:text="Service"
+                        android:text="@string/service_osite"
                         android:textColor="@color/white" />
 
                     <TextView
@@ -60,7 +60,7 @@
                         android:gravity="center"
                         android:padding="5dp"
                         android:singleLine="true"
-                        android:text="Yes"
+                        android:text="@string/yes"
                         android:textColor="@color/white" />
 
                     <TextView
@@ -72,7 +72,7 @@
                         android:gravity="center"
                         android:padding="5dp"
                         android:singleLine="true"
-                        android:text="No"
+                        android:text="@string/no"
                         android:textColor="@color/white" />
 
                 </LinearLayout>
@@ -114,7 +114,7 @@
                         android:layout_gravity="center"
                         android:background="@drawable/edit_box_border_green"
                         android:gravity="center"
-                        android:text="Cancel"
+                        android:text="@string/cancel_onsite"
                         android:textAllCaps="false"
                         android:textColor="@color/colorPrimary" />
 
@@ -128,7 +128,7 @@
                         android:background="@drawable/button_bg"
                         android:gravity="center"
                         android:layout_marginRight="25sp"
-                        android:text="Done"
+                        android:text="@string/done_onsite"
                         android:textAllCaps="false"
                         android:textColor="@color/white" />
 

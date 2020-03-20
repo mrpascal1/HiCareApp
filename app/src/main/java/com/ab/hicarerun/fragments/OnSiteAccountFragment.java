@@ -71,7 +71,7 @@ public class OnSiteAccountFragment extends BaseFragment implements OnAccountOnsi
         // Inflate the layout for this fragment
         fragmentOnsiteAccountBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_onsite_account, container, false);
 //        fragmentOnsiteAccountBinding.setHandler(this);
-        getActivity().setTitle("On-Site Accounts");
+        getActivity().setTitle(getResources().getString(R.string.tool_onsite_account));
         return fragmentOnsiteAccountBinding.getRoot();
     }
 

@@ -127,7 +127,7 @@
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:textAllCaps="false"
                 android:clickable="true"
-                android:text="Cancel"/>
+                android:text="@string/cancel_payment"/>
 
         </LinearLayout>
 

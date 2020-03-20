@@ -305,6 +305,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                         intent.putExtra(NewTaskDetailsActivity.ARGS_COMBINED_TASKS_ID, items.get(position).getCombinedTaskId());
                         intent.putExtra(NewTaskDetailsActivity.ARGS_COMBINED_ORDER, items.get(position).getCombinedOrderNumber());
                         intent.putExtra(NewTaskDetailsActivity.ARGS_COMBINED_TYPE, items.get(position).getCombinedServiceType());
+                        intent.putExtra(NewTaskDetailsActivity.ARGS_NEXT_TASK, items.get(position).getNext_Task_Id());
 //                        intent.putExtra(NewTaskDetailsActivity.ARGS_LATITUDE, items.get(position).getCustomerLatitude());
 //                        intent.putExtra(NewTaskDetailsActivity.ARGS_LONGITUDE, items.get(position).getCustomerLongitude());
 //                        intent.putExtra(NewTaskDetailsActivity.ARGS_NAME, items.get(position).getAccountName());
@@ -318,7 +319,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                     }
 
                 } else {
-                    Toasty.info(Objects.requireNonNull(getActivity()), "Please complete your previous job first.", Toasty.LENGTH_SHORT).show();
+                    Toasty.info(Objects.requireNonNull(getActivity()), getResources().getString(R.string.please_complete_your_previous_job_first), Toasty.LENGTH_SHORT).show();
                 }
             });
         }
@@ -339,7 +340,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
             alertDialogBuilder.setView(promptsView);
 
-            alertDialogBuilder.setTitle("Mark Attendance");
+            alertDialogBuilder.setTitle(getResources().getString(R.string.mark_attendance_home));
 
             // create alert dialog
             alertDialog = alertDialogBuilder.create();
@@ -356,7 +357,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 btnSkip.setVisibility(View.GONE);
             }
 
-            txt_head.setText("Welcome " + UserName + ", please mark your attendance with the face recognization.");
+            txt_head.setText(getResources().getString(R.string.welcome_attendance) + UserName + getResources().getString(R.string.please_mark_your_attendance_with_the_face_recognition));
 
             btn_send.setOnClickListener(v -> {
                 alertDialog.dismiss();
@@ -382,13 +383,13 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                     public void onResponse(int requestCode, Object data) {
                                         ContinueHandShakeResponse response = (ContinueHandShakeResponse) data;
                                         if (response.getSuccess()) {
-                                            Toasty.success(getActivity(), "Attendance marked successfully.", Toasty.LENGTH_SHORT).show();
+                                            Toasty.success(getActivity(), getResources().getString(R.string.attendance_marked_successfully), Toasty.LENGTH_SHORT).show();
                                             alertDialog.dismiss();
                                             getAllTasks();
                                             showNPSDialog();
 
                                         } else {
-                                            Toast.makeText(getActivity(), "Attendance Failed, please try again.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getActivity(), getResources().getString(R.string.attendance_failed_please_try_again), Toast.LENGTH_SHORT).show();
                                             getAllTasks();
                                         }
                                     }
@@ -455,14 +456,14 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 }
 
                 if (techNumber == null || techNumber.length() == 0) {
-                    AppUtils.showOkActionAlertBox(getActivity(), "Technician number is unavaible, please contact to Administrator.", (dialogInterface, i) -> dialogInterface.cancel());
+                    AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.technicain_number_is_unavailable), (dialogInterface, i) -> dialogInterface.cancel());
                 } else if (primaryNumber == null || primaryNumber.trim().length() == 0) {
-                    AppUtils.showOkActionAlertBox(getActivity(), "Customer mobile number is unavaible.", (dialogInterface, i) -> dialogInterface.cancel());
+                    AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.customer_mobile_number_is_unavailable), (dialogInterface, i) -> dialogInterface.cancel());
                 } else {
                     getExotelCalled(primaryNumber, techNumber);
                 }
             } else {
-                AppUtils.showOkActionAlertBox(getActivity(), "No Internet Connection.", (dialogInterface, i) -> dialogInterface.dismiss());
+                AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.no_internet_connection), (dialogInterface, i) -> dialogInterface.dismiss());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -487,15 +488,15 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 }
                 if (techNumber == null || techNumber.trim().length() == 0) {
 
-                    AppUtils.showOkActionAlertBox(getActivity(), "Technician number is unavaible, please contact to Administrator.", (dialogInterface, i) -> dialogInterface.cancel());
+                    AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.technicain_number_is_unavailable), (dialogInterface, i) -> dialogInterface.cancel());
                 } else if (secondaryNumber == null || secondaryNumber.trim().length() == 0) {
-                    AppUtils.showOkActionAlertBox(getActivity(), "Customer alt. mobile number is unavaible.", (dialogInterface, i) -> dialogInterface.cancel());
+                    AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.customer_alternate_number_is_unavailable), (dialogInterface, i) -> dialogInterface.cancel());
                 } else {
                     getExotelCalled(secondaryNumber, techNumber);
                 }
             } else {
 
-                AppUtils.showOkActionAlertBox(getActivity(), "No Internet Connection.", (dialogInterface, i) -> dialogInterface.dismiss());
+                AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.no_internet_connection), (dialogInterface, i) -> dialogInterface.dismiss());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -520,15 +521,15 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 }
                 if (techNumber == null || techNumber.trim().length() == 0) {
 
-                    AppUtils.showOkActionAlertBox(getActivity(), "Technician number is unavaible, please contact to Administrator.", (dialogInterface, i) -> dialogInterface.cancel());
+                    AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.technicain_number_is_unavailable), (dialogInterface, i) -> dialogInterface.cancel());
                 } else if (secondaryNumber == null || secondaryNumber.trim().length() == 0) {
-                    AppUtils.showOkActionAlertBox(getActivity(), "Customer phone number is unavaible.", (dialogInterface, i) -> dialogInterface.cancel());
+                    AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.customer_phone_number_is_unnavailable), (dialogInterface, i) -> dialogInterface.cancel());
                 } else {
                     getExotelCalled(secondaryNumber, techNumber);
                 }
             } else {
 
-                AppUtils.showOkActionAlertBox(getActivity(), "No Internet Connection.", (dialogInterface, i) -> dialogInterface.dismiss());
+                AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.no_internet_connection), (dialogInterface, i) -> dialogInterface.dismiss());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -549,10 +550,10 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                         Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
                         startActivity(Intent.createChooser(intent, "HiCare Run"));
                     } else {
-                        Toast.makeText(getActivity(), "Customer location not found!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(),  getResources().getString(R.string.customer_location_not_found), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getActivity(), "Customer location not found!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(),  getResources().getString(R.string.customer_location_not_found), Toast.LENGTH_SHORT).show();
                 }
             }
         } catch (Exception e) {
@@ -565,7 +566,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "onTrackLocationIconClicked", lineNo, userName, DeviceName);
             }
         }
-
     }
 
     @Override
@@ -599,10 +599,10 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
                             builder.setView(v);
                             builder.setCancelable(false);
-                            builder.setPositiveButton("Submit", (dialogInterface, i) -> {
+                            builder.setPositiveButton(getResources().getString(R.string.submit_helpline), (dialogInterface, i) -> {
                                 RadioButton radioButton = (RadioButton) v.findViewById(radioGroup.getCheckedRadioButtonId());
                                 if (radioGroup.getCheckedRadioButtonId() == -1) {
-                                    Toast.makeText(getActivity(), "Please select at least one reason...", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), getResources().getString(R.string.please_select_atleast_one_reason), Toast.LENGTH_SHORT).show();
                                     builder.setCancelable(false);
                                 } else {
                                     if (items != null) {
@@ -614,7 +614,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                 }
                             });
 
-                            builder.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
+                            builder.setNegativeButton(getResources().getString(R.string.cancel_helpline), (dialogInterface, i) -> dialogInterface.cancel());
                             final AlertDialog dialog = builder.create();
                             Objects.requireNonNull(dialog.getWindow()).getAttributes().windowAnimations = R.style.DialogAnimation_2;
 
@@ -634,7 +634,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 });
                 controller.getJeopardyReasons(JEOPARDY_REQUEST, items.get(position).getTaskId());
             } else {
-                Toasty.info(Objects.requireNonNull(getActivity()), "Please complete your previous job first.", Toasty.LENGTH_SHORT).show();
+                Toasty.info(Objects.requireNonNull(getActivity()), getResources().getString(R.string.complete_first_job), Toasty.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -720,7 +720,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                     alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
                     alertDialog.setCanceledOnTouchOutside(false);
                     alertDialog.show();
-                    alertDialog.setIcon(R.mipmap.logo);
                 }
             }
         } catch (Exception e) {
@@ -803,7 +802,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                     if (response.getSuccess()) {
                         Toasty.success(Objects.requireNonNull(getActivity()), response.getResponseMessage(), Toasty.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(getActivity(), response.getResponseMessage(), Toast.LENGTH_LONG).show();
+                        Toasty.success(Objects.requireNonNull(getActivity()), response.getResponseMessage(), Toasty.LENGTH_LONG).show();
                     }
                 }
 

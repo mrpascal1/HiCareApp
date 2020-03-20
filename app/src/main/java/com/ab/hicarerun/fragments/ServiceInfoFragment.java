@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -42,12 +43,15 @@ import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.NewTaskDetailsActivity;
 import com.ab.hicarerun.adapter.BankSearchAdapter;
+import com.ab.hicarerun.adapter.ChemicalDialogAdapter;
+import com.ab.hicarerun.adapter.ChemicalRecycleAdapter;
 import com.ab.hicarerun.databinding.FragmentServiceInfoBinding;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
 import com.ab.hicarerun.handler.UserServiceInfoClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.BasicResponse;
+import com.ab.hicarerun.network.models.ChemicalModel.Chemicals;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralPaymentMode;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralTaskStatus;
@@ -56,14 +60,11 @@ import com.ab.hicarerun.network.models.GeneralModel.OnSiteOtpResponse;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
-import com.ab.hicarerun.network.models.TaskModel.Tasks;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.MyDividerItemDecoration;
 import com.bumptech.glide.Glide;
-import com.vansuita.pickimage.bean.PickResult;
 import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
-import com.vansuita.pickimage.listeners.IPickResult;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -91,11 +92,15 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     public static final String ARGS_COMBINED_TASKS = "ARGS_COMBINED_TASKS";
     public static final String ARGS_COMBINED_TYPE = "ARGS_COMBINED_TYPE";
     public static final String ARGS_COMBINED_ORDER = "ARGS_COMBINED_ORDER";
+    public static final String ARGS_COMBINED_ID = "ARGS_COMBINED_ID";
     private static final int ONSITE_REQUEST = 1000;
     private static final int REQUEST_BANK = 2000;
     private static final int COMPLETION_REQUEST = 3000;
+    private static final int CHEMICAL_REQ = 4000;
+    private Integer pageNumber = 1;
     private String selectedStatus = "";
     private String status = "";
+    private boolean showSandardChemicals = false;
     private String OnSiteOtp = "";
     private String PaymentOtp = "";
     private String ScOtp = "";
@@ -106,12 +111,14 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private Boolean isPaymentValidation = false;
     private Boolean isPaymentOtpRequired = false;
     private Boolean isRaiseJeopardyClicked = false;
+    private Boolean isPaymentJeopardyRaised = false;
     private int radiopos = 0;
     private String Selection = "";
     private String chequeImg = "";
     private String selectedImagePath = "";
     private Bitmap bitmap;
     private BankSearchAdapter mAdapter;
+    private ChemicalDialogAdapter mChemicalAdapter;
     //    private OnSaveEventHandler mCallback;
     private String[] bankNames;
     private List<String> bankList;
@@ -135,13 +142,15 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private RealmResults<GeneralPaymentMode> mPaymentRealmModel;
     private AlertDialog mAlertDialog = null;
     private OnSaveEventHandler mCallback;
+    private String combinedTaskId = "";
 
-    public static ServiceInfoFragment newInstance(String taskId, boolean isCombinedTasks, String combinedTypes, String combinedOrders) {
+    public static ServiceInfoFragment newInstance(String taskId, String combinedTaskId, boolean isCombinedTasks, String combinedTypes, String combinedOrders) {
         Bundle args = new Bundle();
         args.putString(ARGS_TASKS, taskId);
         args.putBoolean(ARGS_COMBINED_TASKS, isCombinedTasks);
         args.putString(ARGS_COMBINED_ORDER, combinedOrders);
         args.putString(ARGS_COMBINED_TYPE, combinedTypes);
+        args.putString(ARGS_COMBINED_ID, combinedTaskId);
         ServiceInfoFragment fragment = new ServiceInfoFragment();
         fragment.setArguments(args);
         return fragment;
@@ -168,6 +177,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             taskId = getArguments().getString(ARGS_TASKS);
+            combinedTaskId = getArguments().getString(ARGS_COMBINED_ID);
             combiedTaskOrders = getArguments().getString(ARGS_COMBINED_ORDER);
             combinedTypes = getArguments().getString(ARGS_COMBINED_TYPE);
             isCombinedTask = getArguments().getBoolean(ARGS_COMBINED_TASKS);
@@ -381,6 +391,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
                 isPaymentValidation = mTaskDetailsData.get(0).getPaymentValidation();
                 isPaymentOtpRequired = mTaskDetailsData.get(0).getPayment_Otp_Required();
+                isPaymentJeopardyRaised = mTaskDetailsData.get(0).getPayment_Jeopardy_Raised();
                 isChequeRequired = mTaskDetailsData.get(0).getChequeRequired();
                 type.add(0, "None");
                 Log.i("type", String.valueOf(type.size()));
@@ -598,6 +609,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 mTaskDetailsData = getRealm().where(GeneralData.class).findAll();
                 if (mTaskDetailsData != null && mTaskDetailsData.size() > 0) {
                     status = mTaskDetailsData.get(0).getSchedulingStatus();
+                    showSandardChemicals = mTaskDetailsData.get(0).getShow_Standard_Chemicals();
                     String order = mTaskDetailsData.get(0).getOrderNumber();
                     String duration = mTaskDetailsData.get(0).getDuration();
                     String start = mTaskDetailsData.get(0).getTaskAssignmentStartTime();
@@ -658,12 +670,12 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 e.printStackTrace();
             }
 
-
             mFragmentServiceInfoBinding.spnStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     try {
                         Mode = mFragmentServiceInfoBinding.spnStatus.getSelectedItem().toString();
+
                         assert mTaskDetailsData.get(0) != null;
                         isFeedback = mTaskDetailsData.get(0).getFeedBack();
                         try {
@@ -682,7 +694,6 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                             } else {
                                 mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(View.GONE);
                             }
-
                             mCallback.duration(mTaskDetailsData.get(0).getDuration());
                             if (selectedStatus.equals(generalTaskRealmModel.get(position).getStatus())) {
                                 mCallback.isGeneralChanged(true);
@@ -690,6 +701,9 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                             } else {
                                 mCallback.isGeneralChanged(false);
                                 mCallback.status(generalTaskRealmModel.get(position).getStatus());
+                            }
+                            if (Mode.equals("On-Site") && status.equals("Dispatched") && showSandardChemicals) {
+                                showChemicalsDialog();
                             }
                             getServiceValidate();
                         } catch (Exception e) {
@@ -704,7 +718,6 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 public void onNothingSelected(AdapterView<?> parent) {
 
                 }
-
             });
 
             for (int i = 0; i < generalTaskRealmModel.size(); i++) {
@@ -717,6 +730,72 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             e.printStackTrace();
         }
 
+    }
+
+    private void showChemicalsDialog() {
+        try {
+            final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+            LayoutInflater inflater = getLayoutInflater();
+            final View dialogView = inflater.inflate(R.layout.layout_chemicals_dialog, null);
+            dialogBuilder.setView(dialogView);
+            final AlertDialog alertDialog = dialogBuilder.create();
+            final RecyclerView recycleView = (RecyclerView) dialogView.findViewById(R.id.recycleView);
+            final Button btnOk = (Button) dialogView.findViewById(R.id.btnOk);
+            final TextView txtType = (TextView) dialogView.findViewById(R.id.txtType);
+
+            RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity());
+            recycleView.setLayoutManager(lm);
+            recycleView.setItemAnimator(new DefaultItemAnimator());
+            mChemicalAdapter = new ChemicalDialogAdapter(getActivity(), isCombinedTask);
+            recycleView.setAdapter(mChemicalAdapter);
+            if (isCombinedTask) {
+                txtType.setVisibility(View.VISIBLE);
+            } else {
+                txtType.setVisibility(View.GONE);
+            }
+
+            NetworkCallController controller = new NetworkCallController(ServiceInfoFragment.this);
+            controller.setListner(new NetworkResponseListner<List<Chemicals>>() {
+                @Override
+                public void onResponse(int requestCode, List<Chemicals> items) {
+                    try {
+                        if (items != null) {
+                            if (pageNumber == 1 && items.size() > 0) {
+                                mChemicalAdapter.setData(items);
+                                mChemicalAdapter.notifyDataSetChanged();
+                                alertDialog.show();
+                            } else if (items.size() > 0) {
+                                mChemicalAdapter.addData(items);
+                                mChemicalAdapter.notifyDataSetChanged();
+                                alertDialog.show();
+                            } else {
+                                pageNumber--;
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int requestCode) {
+
+                }
+            });
+            if (isCombinedTask) {
+                controller.getMSTChemicals(CHEMICAL_REQ, combinedTaskId);
+            } else {
+                controller.getChemicals(CHEMICAL_REQ, taskId);
+            }
+            btnOk.setOnClickListener(v -> alertDialog.dismiss());
+
+            dialogBuilder.setCancelable(false);
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            alertDialog.setCanceledOnTouchOutside(false);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -1119,7 +1198,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             }
             if (isPaymentValidation) {
                 if (amounttocollect > 0) {
-                    if (isRaiseJeopardyClicked) {
+                    if (isRaiseJeopardyClicked || isPaymentJeopardyRaised) {
                         if (mFragmentServiceInfoBinding.txtCollected.getText().toString().trim().length() != 0) {
                             int amount = 0;
                             amount = Integer.parseInt(mFragmentServiceInfoBinding.txtCollected.getText().toString());
@@ -1211,10 +1290,9 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                         mCallback.isPaymentChanged(false);
                                         mCallback.isAmountCollectedRequired(false);
                                         mCallback.isACEquals(false);
-
                                     } else {
-                                        mCallback.isPaymentChanged(true);
-                                        mCallback.isAmountCollectedRequired(true);
+                                        mCallback.isPaymentChanged(false);
+                                        mCallback.isAmountCollectedRequired(false);
                                         mCallback.isACEquals(true);
                                     }
 
@@ -1228,7 +1306,9 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                 if (Mode.equals("Online Payment Link")) {
                                     mCallback.isAmountCollectedRequired(false);
                                 } else {
-                                    mCallback.isAmountCollectedRequired(true);
+                                    if (mFragmentServiceInfoBinding.txtCollected.getText().toString().trim().length() == 0) {
+                                        mCallback.isAmountCollectedRequired(true);
+                                    }
                                 }
                             }
 
@@ -1444,6 +1524,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
     private void getServiceValidate() {
         try {
+
+
             if (Mode.equals("On-Site")) {
                 assert mTaskDetailsData.get(0) != null;
                 if (isFeedback && mTaskDetailsData.get(0).getOnsite_OTP() != null && !mTaskDetailsData.get(0).getOnsite_OTP().equals("")) {

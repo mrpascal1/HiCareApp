@@ -5,16 +5,19 @@ import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Bundle;
 
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,11 +25,13 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -58,6 +63,7 @@ import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.CustomBottomNavigation;
 import com.ab.hicarerun.utils.GPSUtils;
 import com.ab.hicarerun.utils.HandShakeReceiver;
+import com.ab.hicarerun.utils.LocaleHelper;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.google.android.material.navigation.NavigationView;
 import com.luseen.spacenavigation.SpaceItem;
@@ -72,7 +78,6 @@ import java.util.Objects;
 
 import io.realm.RealmResults;
 
-import static androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
 
 public class HomeActivity extends BaseActivity implements FragmentManager.OnBackStackChangedListener, LocationManagerListner {
     ActivityHomeBinding mActivityHomeBinding;
@@ -103,6 +108,14 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         mActivityHomeBinding.bottomNavigation.onSaveInstanceState(outState);
+
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+//        super.attachBaseContext(LocaleHelper.onAttach(base));
+        super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
+
     }
 
     @Override
@@ -182,77 +195,100 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         item.setChecked(true);
         switch (item.getItemId()) {
             case R.id.nav_home:
-//                replaceFragment(HomeFragment.newInstance(byteArray), "HomeActivity-HomeFragment");
                 replaceFragment(HomeFragment.newInstance(), "HOME");
-//                viewFragment(HomeFragment.newInstance(byteArray),"HOME", mActivityHomeBinding.customNavigation);
                 break;
             case R.id.nav_incentive:
                 replaceFragment(IncentiveFragment.newInstance(), "INCENTIVE");
-//                viewFragment(IncentiveFragment.newInstance(),"INCENTIVE", mActivityHomeBinding.customNavigation);
-//                startActivity(new Intent(HomeActivity.this, IncentivesActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
                 break;
             case R.id.nav_rewards:
-//                replaceFragment(OffersFragment.newInstance(), "HomeActivity-NotificationFragment");
                 replaceFragment(VoucherFragment.newInstance(), "HomeActivity-NotificationFragment");
-//                startActivity(new Intent(HomeActivity.this, IncentivesActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
                 break;
             case R.id.nav_attendance:
-//                viewFragment(AttendanceViewFragment.newInstance(),"ATTENDANCE", mActivityHomeBinding.customNavigation);
                 replaceFragment(AttendanceViewFragment.newInstance(), "ATTENDANCE");
                 break;
             case R.id.nav_referral:
                 replaceFragment(TechIdFragment.newInstance(), "REFERRAL");
-//                viewFragment(AttendanceViewFragment.newInstance(),"TECHID", mActivityHomeBinding.customNavigation);
+                break;
+
+            case R.id.nav_language:
+                mActivityHomeBinding.drawer.closeDrawers();
+                showLanguageDialog();
                 break;
         }
     }
 
 
-    private void setUpSpaceNavigationView(byte[] byteArray) {
-        mActivityHomeBinding.bottomNavigation.setSpaceOnClickListener(new SpaceOnClickListener() {
-            @Override
-            public void onCentreButtonClick() {
-                replaceFragment(OffersFragment.newInstance(), "HomeFragment-OffersFragment");
-            }
+    private void showLanguageDialog() {
+        try {
 
-            @Override
-            public void onItemClick(int itemIndex, String itemName) {
-                switch (itemIndex) {
-                    case 0:
-                        replaceFragment(HomeFragment.newInstance(), "HomeActivity-HomeFragment");
-                        break;
-                    case 1:
-                        replaceFragment(IncentiveFragment.newInstance(), "HomeActivity-IncentiveFragment");
-                        break;
-                    case 2:
-                        replaceFragment(AttendanceViewFragment.newInstance(), "HomeActivity-AttendanceViewFragment");
-                        break;
-                    case 3:
-                        replaceFragment(TechIdFragment.newInstance(), "HomeActivity-TechIdFragment");
-                        break;
-                }
-            }
+            LayoutInflater li = LayoutInflater.from(HomeActivity.this);
+            View promptsView = li.inflate(R.layout.layout_language_dialog, null);
+            androidx.appcompat.app.AlertDialog.Builder alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(HomeActivity.this);
+            alertDialogBuilder.setView(promptsView);
+            final androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
+            final CardView lanEnglish =
+                    promptsView.findViewById(R.id.lanEnglish);
+            final CardView lanHindi =
+                    promptsView.findViewById(R.id.lanHindi);
+            final CardView lanMarathi =
+                    promptsView.findViewById(R.id.lanMarathi);
+            final CardView lanGujrati =
+                    promptsView.findViewById(R.id.lanGujrati);
+            final CardView lanTamil =
+                    promptsView.findViewById(R.id.lanTamil);
+            final CardView lanTelugu =
+                    promptsView.findViewById(R.id.lanTelugu);
+            final Button btnContinue = promptsView.findViewById(R.id.btnOk);
 
-            @Override
-            public void onItemReselected(int itemIndex, String itemName) {
 
-                switch (itemIndex) {
-                    case 0:
-                        replaceFragment(HomeFragment.newInstance(), "HomeActivity-HomeFragment");
-                        break;
-                    case 1:
-                        replaceFragment(IncentiveFragment.newInstance(), "HomeActivity-IncentiveFragment");
-                        break;
-                    case 2:
-                        replaceFragment(AttendanceViewFragment.newInstance(), "HomeActivity-AttendanceViewFragment");
-                        break;
-                    case 3:
-                        replaceFragment(TechIdFragment.newInstance(), "HomeActivity-TechIdFragment");
-                        break;
-                }
-            }
-        });
-        mActivityHomeBinding.bottomNavigation.changeCurrentItem(0);
+            btnContinue.setOnClickListener(view -> alertDialog.dismiss());
+
+            lanEnglish.setOnClickListener(view -> {
+                AppUtils.updateViews("en", HomeActivity.this);
+                alertDialog.dismiss();
+                recreate();
+            });
+
+            lanHindi.setOnClickListener(view -> {
+                AppUtils.updateViews("hi", HomeActivity.this);
+                alertDialog.dismiss();
+                recreate();
+            });
+
+
+            lanMarathi.setOnClickListener(view -> {
+                AppUtils.updateViews("mr", HomeActivity.this);
+                alertDialog.dismiss();
+                recreate();
+            });
+
+            lanGujrati.setOnClickListener(view -> {
+                AppUtils.updateViews("gu", HomeActivity.this);
+                alertDialog.dismiss();
+                recreate();
+            });
+
+
+            lanTamil.setOnClickListener(view -> {
+                AppUtils.updateViews("ta", HomeActivity.this);
+                alertDialog.dismiss();
+                recreate();
+            });
+
+            lanTelugu.setOnClickListener(view -> {
+                AppUtils.updateViews("te", HomeActivity.this);
+                alertDialog.dismiss();
+                recreate();
+            });
+
+
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

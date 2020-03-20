@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Typeface;
@@ -15,7 +16,6 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
-import android.os.Parcelable;
 import android.provider.Settings;
 
 import android.telephony.TelephonyManager;
@@ -51,7 +51,6 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -122,6 +121,29 @@ public class AppUtils {
 
         return bitmap;
     }
+
+    public static Resources updateViews(String languageCode, Context activity) {
+        Context context = LocaleHelper.setLocale(activity, languageCode);
+        Resources resources = context.getResources();
+        return resources;
+    }
+
+
+    private void saveLanguage(String lang, Context context) {
+        // we can use this method to save language
+      SharedPreferencesUtility.savePrefString(context, SharedPreferencesUtility.PREF_LANG, lang);
+        // we have saved
+        // recreate activity after saving to load the new language, this is the same
+        // as refreshing activity to load new language
+
+    }
+
+    private String getLangCode(Context context) {
+        String code = SharedPreferencesUtility.getPrefString(context, SharedPreferencesUtility.PREF_LANG);
+        // save english 'en' as the default language
+        return code;
+    }
+
 
 
     public static boolean hasLollipop() {
@@ -274,6 +296,12 @@ public class AppUtils {
 
     public static String currentDate() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date1 = new Date();
+        return dateFormat.format(date1);
+    }
+
+    public static String formattedCurrentDate() {
+        DateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy");
         Date date1 = new Date();
         return dateFormat.format(date1);
     }

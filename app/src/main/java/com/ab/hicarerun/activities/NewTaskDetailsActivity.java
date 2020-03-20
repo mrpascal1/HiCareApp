@@ -17,6 +17,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -40,6 +41,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +54,7 @@ import com.ab.hicarerun.R;
 import com.ab.hicarerun.adapter.TaskViewPagerAdapter;
 import com.ab.hicarerun.databinding.ActivityNewTaskDetailsBinding;
 import com.ab.hicarerun.fragments.ChemicalInfoFragment;
+import com.ab.hicarerun.fragments.HomeFragment;
 import com.ab.hicarerun.fragments.ReferralFragment;
 import com.ab.hicarerun.fragments.ServiceInfoFragment;
 import com.ab.hicarerun.fragments.SignatureInfoFragment;
@@ -60,11 +65,13 @@ import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralResponse;
 import com.ab.hicarerun.network.models.LoginResponse;
+import com.ab.hicarerun.network.models.NPSModel.NPSData;
 import com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTaskResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.GPSUtils;
+import com.ab.hicarerun.utils.LocaleHelper;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.ab.hicarerun.utils.notifications.ScratchRelativeLayout;
 import com.clock.scratch.ScratchView;
@@ -86,6 +93,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -94,6 +102,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
+import design.ivisionblog.apps.reviewdialoglibrary.FeedBackActionsListeners;
+import design.ivisionblog.apps.reviewdialoglibrary.FeedBackDialog;
 import es.dmoral.toasty.Toasty;
 import hyogeun.github.com.colorratingbarlib.ColorRatingBar;
 import io.realm.RealmResults;
@@ -120,6 +130,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     public static final String ARGS_LATITUDE = "ARGS_LATITUDE";
     public static final String ARGS_LONGITUDE = "ARGS_LONGITUDE";
     public static final String ARGS_NAME = "ARGS_NAME";
+    public static final String ARGS_NEXT_TASK = "ARGS_NEXT_TASK";
     //    public static final String ARG_USER = "ARG_USER";
 //    public static final String ARGS_MOBILE = "ARGS_MOBILE";
 //    public static final String ARGS_TAG = "ARGS_TAG";
@@ -195,10 +206,20 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private Boolean isCombinedTasks = false;
     private String combinedOrderId = "";
     private String combinedTaskTypes = "";
+    private String nextTaskId = "";
     private Double customerLatitude = 0.0;
     private Double customerLongitude = 0.0;
     private String accountName = "";
     private String technicianMobileNo = "";
+
+
+    @Override
+    protected void attachBaseContext(Context base) {
+//        super.attachBaseContext(LocaleHelper.onAttach(base));
+        super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
+
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -213,6 +234,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         isCombinedTasks = getIntent().getBooleanExtra(ARGS_COMBINED_TASKS, false);
         combinedOrderId = getIntent().getStringExtra(ARGS_COMBINED_ORDER);
         combinedTaskTypes = getIntent().getStringExtra(ARGS_COMBINED_TYPE);
+        nextTaskId = getIntent().getStringExtra(ARGS_NEXT_TASK);
 //        customerLatitude = getIntent().getStringExtra(ARGS_LATITUDE);
 //        customerLongitude = getIntent().getStringExtra(ARGS_LONGITUDE);
 //        accountName = getIntent().getStringExtra(ARGS_NAME);
@@ -349,6 +371,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         referralDiscount = Integer.parseInt(response.getData().getReferralDiscount());
                         setViewPagerView();
                     }
+
                     @Override
                     public void onFailure(int requestCode) {
                     }
@@ -371,10 +394,10 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             mAdapter = new TaskViewPagerAdapter(getSupportFragmentManager(), this);
 
             if (sta.equals("Dispatched") || sta.equals("Incomplete")) {
-                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, isCombinedTasks, combinedTaskTypes, combinedOrderId), "Service Info");
+                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId), "Service Info");
                 mActivityNewTaskDetailsBinding.viewpagertab.setDistributeEvenly(false);
             } else {
-                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, isCombinedTasks, combinedTaskTypes, combinedOrderId), "Service Info");
+                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId), "Service Info");
                 mAdapter.addFragment(ChemicalInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks), "Chemicals");
                 mAdapter.addFragment(ReferralFragment.newInstance(taskId, technicianMobileNo), "Referrals");
                 if (isCombinedTasks) {
@@ -566,20 +589,19 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         if (mGoogleMap != null) {
             LatLng latLong = new LatLng(lat, lon);
             mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-            mGoogleMap.setMyLocationEnabled(false);
+            mGoogleMap.setMyLocationEnabled(true);
             mGoogleMap.setTrafficEnabled(false);
             mGoogleMap.setIndoorEnabled(false);
             mGoogleMap.getUiSettings().setCompassEnabled(false);
             mGoogleMap.setBuildingsEnabled(false);
             mGoogleMap.getUiSettings().setZoomControlsEnabled(false);
-            mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
+            mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
             setBounds(latLong);
         } else {
             Toast.makeText(this,
                     "Sorry! unable to create maps", Toast.LENGTH_SHORT)
                     .show();
         }
-
     }
 
     private void setBounds(LatLng latLong) {
@@ -760,97 +782,100 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             isAttachment = SharedPreferencesUtility.getPrefBoolean(this, SharedPreferencesUtility.PREF_ATTACHMENT);
             if (isGeneralChanged) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
-                Toasty.error(this, "Please change status", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, getResources().getString(R.string.please_change_status_service), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
             } else if (isEarlyCompletion && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
-                Toasty.error(this, "You are not allowed to close the job as you have not spent adequate time. Please follow the correct procedure and deliver the job properly", Toasty.LENGTH_LONG, true).show();
+                Toasty.error(this, getResources().getString(R.string.job_time_serice), Toasty.LENGTH_LONG, true).show();
                 progress.dismiss();
             } else if (isOnsiteOtpRequired && Status.equals("On-Site")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
-                Toasty.error(this, "On-Site OTP is required", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, getResources().getString(R.string.onsite_otp_required_service), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
             } else if (isOnsiteOtpValidated && Status.equals("On-Site")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
-                Toasty.error(this, "Invalid On-Site OTP", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, getResources().getString(R.string.invalid_onsite_otp_service), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
             } else if (isIncompleteReason && Status.equals("Incomplete")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
-                Toasty.error(this, "Please select incomplete reason", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, getResources().getString(R.string.please_select_incomplete_reason), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
             } else if (isPaymentModeNotChanged && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
-                Toasty.error(this, "Please change payment mode", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, getResources().getString(R.string.please_change_payment_mode), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
             } else if (isPaymentOtpRequired && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
-                Toasty.error(this, "Payment OTP is required", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, getResources().getString(R.string.payment_otp_is_required), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
             } else if (isPaymentOtpValidated && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
-                Toasty.error(this, "Invalid Payment OTP", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, getResources().getString(R.string.invalid_payment_otp), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
             } else if (isAmountCollectedRequired && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
-                Toasty.error(this, "Amount collected field is required", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, getResources().getString(R.string.amount_collected_field_is_required), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
             } else if (isAmountCollectedEquals && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
-                Toasty.error(this, "Invalid amount", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, getResources().getString(R.string.invalid_otp_service), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
             } else if (isBankNameRequired && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
-                Toasty.error(this, "Please select bank name", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, getResources().getString(R.string.please_select_bank_name), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
             } else if (isChequeDateRequired && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
-                Toasty.error(this, "Please select cheque date", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, getResources().getString(R.string.please_select_cheque_date), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
             } else if (isChequeNumberRequired && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
-                Toasty.error(this, "Cheque number is required", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, getResources().getString(R.string.cheque_number_is_required), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
             } else if (isInvalidChequeNumber && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
-                Toasty.error(this, "Invalid cheque number", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, getResources().getString(R.string.invalid_cheque_number), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
             } else if (isChequeImageRequired && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
-                Toasty.error(this, "Please upload cheque image", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, getResources().getString(R.string.please_upload_cheque_image), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
             } else if (isChemicalChanged && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(1);
-                Toasty.error(this, "Enter the correct value of chemicals used", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, getResources().getString(R.string.enter_the_collect_values_of_chemicals_used), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
             } else if (isChemicalVerified && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(1);
-                Toasty.error(this, "Chemical should be verified", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, getResources().getString(R.string.chamical_should_be_verified), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
             } else if (isOTPRequired && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
                 progress.dismiss();
-                Toasty.error(this, "OTP field is required", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, getResources().getString(R.string.otp_field_is_required), Toast.LENGTH_SHORT, true).show();
             } else if (isOTPValidated && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
                 progress.dismiss();
-                Toasty.error(this, "Invalid OTP", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, getResources().getString(R.string.invalid_otp_ss), Toast.LENGTH_SHORT, true).show();
             } else if (isSignatureChanged && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
                 progress.dismiss();
-                Toasty.error(this, "Signatory field is required", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, getResources().getString(R.string.signatory_field_is_required), Toast.LENGTH_SHORT, true).show();
             } else if (isWorkTypeNotChecked && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
                 progress.dismiss();
-                Toasty.error(this, "Please select correct type of service done", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, getResources().getString(R.string.please_select_correct_type_of_service_done), Toast.LENGTH_SHORT, true).show();
             } else if (isSignatureValidated && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
                 progress.dismiss();
-                Toasty.error(this, "Customer signature is required", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, getResources().getString(R.string.customer_signature_is_required), Toast.LENGTH_SHORT, true).show();
             } else if (isCardRequired && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
                 progress.dismiss();
-                Toasty.error(this, "Please upload your job card", Toast.LENGTH_SHORT, true).show();
-            } else {
+                Toasty.error(this, getResources().getString(R.string.please_upload_your_job_card_service), Toast.LENGTH_SHORT, true).show();
+            } /*else if (Status.equals("Completed")) {
+                progress.dismiss();
+                showCompletionDialog();
+            }*/ else {
                 if (isTechnicianFeedbackEnable && Rate == 0 && Status.equals("Completed")) {
                     showRatingDialog();
                 } else {
@@ -889,6 +914,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         request.setIncompleteReason(incompleteReason);
                         request.setChequeImage(chequeImage);
                         request.setFlushOutReason(flushoutReason);
+                        request.setNext_Task_Id(nextTaskId);
 
                         NetworkCallController controller = new NetworkCallController();
                         controller.setListner(new NetworkResponseListner() {
@@ -917,7 +943,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         });
                         controller.updateTasks(UPDATE_REQUEST, request, NewTaskDetailsActivity.this, progress);
                     }
-
                 }
             }
         } catch (Exception e) {
@@ -929,6 +954,43 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
                 AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "getSaveMenu", lineNo, userName, DeviceName);
             }
+        }
+    }
+
+    private void showCompletionDialog() {
+        try {
+
+            LayoutInflater li = LayoutInflater.from(NewTaskDetailsActivity.this);
+            View promptsView = li.inflate(R.layout.completion_check_list_dialog, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(NewTaskDetailsActivity.this));
+            alertDialogBuilder.setView(promptsView);
+            final AlertDialog alertDialog = alertDialogBuilder.create();
+            final TextView txtTitle =
+                    promptsView.findViewById(R.id.txtTitle);
+            final TextView txtDescription =
+                    promptsView.findViewById(R.id.txtDescription);
+            final TextView txtQuery =
+                    promptsView.findViewById(R.id.txtQuery);
+            final LinearLayout btnYes =
+                    promptsView.findViewById(R.id.btnYes);
+            final LinearLayout btnNo =
+                    promptsView.findViewById(R.id.btnNo);
+            final LinearLayout btnNotRequired =
+                    promptsView.findViewById(R.id.btnNotRequired);
+
+
+            btnYes.setOnClickListener(view -> alertDialog.dismiss());
+
+            btnNo.setOnClickListener(view -> alertDialog.dismiss());
+
+            btnNotRequired.setOnClickListener(view -> alertDialog.dismiss());
+
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }

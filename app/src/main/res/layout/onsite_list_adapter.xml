@@ -62,7 +62,6 @@
 
                         android:ellipsize="middle"
                         android:singleLine="true"
-                        android:text="sdrgteff "
                         android:textColor="@color/black"
                         android:textSize="15sp" />
                     <ImageView
@@ -115,7 +114,7 @@
                     <TextView
                         android:layout_width="93dp"
                         android:layout_height="wrap_content"
-                        android:text="Area"
+                        android:text="@string/area_onsite"
                         android:textSize="14sp" />
 
                     <TextView
@@ -145,7 +144,7 @@
                     <TextView
                         android:layout_width="93dp"
                         android:layout_height="wrap_content"
-                        android:text="Service Type"
+                        android:text="@string/service_type_onsite"
                         android:textSize="14sp" />
 
                     <TextView
@@ -175,7 +174,7 @@
                     <TextView
                         android:layout_width="93dp"
                         android:layout_height="wrap_content"
-                        android:text="Last Added On"
+                        android:text="@string/last_added_on_onsite"
                         android:textSize="14sp" />
 
                     <TextView
@@ -264,7 +263,7 @@
                             android:layout_weight="1.4"
                             android:background="?android:attr/selectableItemBackground"
                             android:gravity="center"
-                            android:text="Add"
+                            android:text="@string/add_oniste"
                             android:textColor="@color/white" />
 
                     </LinearLayout>
@@ -341,7 +340,7 @@
                             android:layout_weight="1.4"
                             android:background="?android:attr/selectableItemBackground"
                             android:gravity="center"
-                            android:text="Not Done"
+                            android:text="@string/not_done_onsite"
                             android:textColor="@color/colorPrimary" />
                     </LinearLayout>
 

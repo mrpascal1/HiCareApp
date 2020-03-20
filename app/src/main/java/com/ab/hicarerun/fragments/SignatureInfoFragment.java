@@ -35,6 +35,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -217,7 +218,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                 getValidate();
             }
         });
-
+        mFragmentSignatureInfoBinding.rgCMS.setOnCheckedChangeListener((radioGroup, i) -> getValidate());
         mFragmentSignatureInfoBinding.recycleView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         mFragmentSignatureInfoBinding.recycleView.setLayoutManager(layoutManager);
@@ -230,6 +231,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
 
 
     private void enableSwipeToDeleteAndUndo() {
+
         SwipeToDeleteCallBack swipeToDeleteCallback = new SwipeToDeleteCallBack(getActivity()) {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
@@ -326,7 +328,6 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     mFragmentSignatureInfoBinding.imgSign.setEnabled(true);
                     mFragmentSignatureInfoBinding.txtHint.setVisibility(View.VISIBLE);
                 }
-
 
                 if (mGeneralRealmData.get(0).getFlushOutRequired()) {
                     mFragmentSignatureInfoBinding.lnrCMSReason.setVisibility(View.VISIBLE);
@@ -749,8 +750,6 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     } else {
                         mCallback.isOTPRequired(true);
                     }
-
-
                     if (mFragmentSignatureInfoBinding.edtSignatory.getText().toString().length() == 0) {
                         mCallback.isSignatureChanged(true);
                     } else {

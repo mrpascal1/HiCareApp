@@ -68,7 +68,7 @@
                     <TextView
                         android:layout_width="85dp"
                         android:layout_height="wrap_content"
-                        android:text="Area"
+                        android:text="@string/area_recent"
                         android:textSize="14sp" />
 
                     <TextView
@@ -99,7 +99,7 @@
                     <TextView
                         android:layout_width="85dp"
                         android:layout_height="wrap_content"
-                        android:text="Service Type"
+                        android:text="@string/service_type_recent"
                         android:textSize="14sp" />
 
                     <TextView
@@ -129,7 +129,7 @@
                     <TextView
                         android:layout_width="85dp"
                         android:layout_height="wrap_content"
-                        android:text="Reason"
+                        android:text="@string/reason_recent"
                         android:textSize="14sp" />
 
                     <TextView
@@ -159,7 +159,7 @@
                     <TextView
                         android:layout_width="85dp"
                         android:layout_height="wrap_content"
-                        android:text="Added On"
+                        android:text="@string/added_on_recent"
                         android:textSize="14sp" />
 
                     <TextView
@@ -189,7 +189,7 @@
                     <TextView
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
-                        android:text="Started On"
+                        android:text="@string/started_on_onsite"
                         android:textSize="14sp" />
 
                     <TextView

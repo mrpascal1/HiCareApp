@@ -85,7 +85,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Number of Points"
+                                    android:text="@string/number_of_points_incentive"
                                     android:textSize="18sp" />
 
                                 <TextView
@@ -118,7 +118,7 @@
                                     android:id="@+id/txtEarned"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Incentive Earned"
+                                    android:text="@string/incentive_earned_incentive"
                                     android:textSize="18sp" />
 
                                 <TextView
@@ -204,7 +204,7 @@
                         android:padding="5dp"
                         android:ellipsize = "end"
                         android:singleLine="true"
-                        android:text="Incentive Amount"
+                        android:text="@string/incentive_amount_incentive"
                         android:textColor="#ffffff" />
 
 

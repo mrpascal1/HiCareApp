@@ -1,5 +1,6 @@
 package com.ab.hicarerun.activities;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import androidx.databinding.DataBindingUtil;
 import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ActivityGrommingGalleryBinding;
+import com.ab.hicarerun.utils.LocaleHelper;
 import com.bumptech.glide.Glide;
 
 import java.util.Objects;
@@ -41,6 +43,14 @@ public class GrommingGalleryActivity extends BaseActivity {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.parseColor("#000000"));
         }
+
+    }
+
+
+    @Override
+    protected void attachBaseContext(Context base) {
+//        super.attachBaseContext(LocaleHelper.onAttach(base));
+        super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
 
     }
 

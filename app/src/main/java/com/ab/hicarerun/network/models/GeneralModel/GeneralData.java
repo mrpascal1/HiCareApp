@@ -202,6 +202,10 @@ public class GeneralData implements RealmModel {
     @Expose
     private Boolean Payment_Otp_Required;
 
+    @SerializedName("Payment_Jeopardy_Raised")
+    @Expose
+    private Boolean Payment_Jeopardy_Raised;
+
     @SerializedName("CustomerLatitude")
     @Expose
     private Double CustomerLatitude;
@@ -213,6 +217,9 @@ public class GeneralData implements RealmModel {
     @Expose
     private String TechnicianMobileNo;
 
+    @SerializedName("Show_Standard_Chemicals")
+    @Expose
+    private Boolean Show_Standard_Chemicals;
     public GeneralData() {
         SchedulingStatus = "NA";
         PaymentMode = "NA";
@@ -260,6 +267,8 @@ public class GeneralData implements RealmModel {
         CustomerLatitude = 0.0;
         CustomerLongitude = 0.0;
         TechnicianMobileNo = "";
+        Payment_Jeopardy_Raised = false;
+        Show_Standard_Chemicals = false;
     }
 
     public String getOrderNumber() {
@@ -668,5 +677,21 @@ public class GeneralData implements RealmModel {
 
     public void setTechnicianMobileNo(String technicianMobileNo) {
         TechnicianMobileNo = technicianMobileNo;
+    }
+
+    public Boolean getPayment_Jeopardy_Raised() {
+        return Payment_Jeopardy_Raised;
+    }
+
+    public void setPayment_Jeopardy_Raised(Boolean payment_Jeopardy_Raised) {
+        Payment_Jeopardy_Raised = payment_Jeopardy_Raised;
+    }
+
+    public Boolean getShow_Standard_Chemicals() {
+        return Show_Standard_Chemicals;
+    }
+
+    public void setShow_Standard_Chemicals(Boolean show_Standard_Chemicals) {
+        Show_Standard_Chemicals = show_Standard_Chemicals;
     }
 }

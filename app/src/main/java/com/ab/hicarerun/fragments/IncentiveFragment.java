@@ -67,7 +67,7 @@ public class IncentiveFragment extends BaseFragment {
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mFragmentIncentiveBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_incentive, container, false);
-        getActivity().setTitle("Incentive");
+        getActivity().setTitle(getResources().getString(R.string.incentives_in));
 
         if ( getActivity() != null) {
             LinearLayout toolbar = getActivity().findViewById(R.id.toolbar);
@@ -75,7 +75,7 @@ public class IncentiveFragment extends BaseFragment {
             LinearLayout custom_toolbar = getActivity().findViewById(R.id.customToolbar);
             custom_toolbar.setVisibility(View.VISIBLE);
             TextView tool = getActivity().findViewById(R.id.txtTool);
-            tool.setText("Incentives");
+            tool.setText(getResources().getString(R.string.incentives_in));
         }
         return mFragmentIncentiveBinding.getRoot();
     }
@@ -152,7 +152,7 @@ public class IncentiveFragment extends BaseFragment {
                             mFragmentIncentiveBinding.txtIncentive.setText("\u20B9" + response.getTotalIncentive());
                             if (response.getIncentiveDate() != null) {
                                 mFragmentIncentiveBinding.txtDate.setVisibility(View.VISIBLE);
-                                mFragmentIncentiveBinding.txtDate.setText("Incentive as on: " + response.getIncentiveDate());
+                                mFragmentIncentiveBinding.txtDate.setText(getResources().getString(R.string.incentive_as_on) + response.getIncentiveDate());
                             } else {
                                 mFragmentIncentiveBinding.txtDate.setVisibility(View.GONE);
                             }

@@ -46,7 +46,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="36dp"
-                    android:text="Add Customer Referrals"
+                    android:text="@string/add_customer_referrals"
                     android:textColor="@color/black"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -119,7 +119,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Nothing!"
+                        android:text="@string/nothing"
                         android:textSize="30sp" />
 
                     <TextView
@@ -127,7 +127,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:gravity="center"
-                        android:text="Your referral list is empty!" />
+                        android:text="@string/your_referral_list_is_empty" />
 
                 </LinearLayout>
 

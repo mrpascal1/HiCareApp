@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -100,9 +101,11 @@ public class VoucherFragment extends BaseFragment implements UserVoucherClickHan
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getVoucherCode();
-        mFragmentVoucherBinding.dropAnimationView.setDrawables(R.drawable.ic_rupee,
-                R.drawable.ic_rupee_reward);
-        mFragmentVoucherBinding.dropAnimationView.startAnimation();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mFragmentVoucherBinding.dropAnimationView.setDrawables(R.drawable.ic_rupee,
+                    R.drawable.ic_rupee_reward);
+            mFragmentVoucherBinding.dropAnimationView.startAnimation();
+        }
     }
 
     private void getVoucherCode() {

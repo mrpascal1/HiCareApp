@@ -39,13 +39,13 @@
                         android:id="@+id/txtType"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1.1"
+                        android:layout_weight="1"
 
                         android:ellipsize="end"
                         android:gravity="center"
                         android:padding="5dp"
                         android:singleLine="true"
-                        android:text="Type"
+                        android:text="@string/type_chemicals"
                         android:textColor="@color/black" />
 
                     <TextView
@@ -63,26 +63,27 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.7"
+                        android:layout_weight="0.6"
                         android:ellipsize="end"
                         android:gravity="center"
                         android:padding="5dp"
                         android:singleLine="true"
-                        android:text="Unit"
+                        android:text="@string/unit_chemicals"
                         android:textColor="@color/black"
                         app:tabTextAppearance="@style/calligraphy_font"/>
 
                     <TextView
+                        android:id="@+id/txtStandard"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1.1"
+                        android:layout_weight="0.9"
                         android:ellipsize="end"
                         android:gravity="center"
                         android:padding="5dp"
                         android:singleLine="true"
                         android:text="@string/standard"
-                        android:textColor="#ffffff"
-                        android:visibility="gone" />
+                        android:textColor="@color/black"
+                        />
 
                     <TextView
                         android:layout_width="0dp"

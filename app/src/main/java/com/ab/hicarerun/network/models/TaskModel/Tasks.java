@@ -170,6 +170,10 @@ public class Tasks implements Parcelable {
     @Expose
     private String Helper_Resource_Id;
 
+    @SerializedName("Next_Task_Id")
+    @Expose
+    private String Next_Task_Id;
+
     public Tasks() {
         AccountName = "NA";
         ServicePlan = "NA";
@@ -212,6 +216,7 @@ public class Tasks implements Parcelable {
         CombinedTaskId = "NA";
         CombinedOrderNumber = "NA";
         Helper_Resource_Id = "NA";
+        Next_Task_Id = "NA";
     }
 
 
@@ -259,6 +264,7 @@ public class Tasks implements Parcelable {
         byte tmpIsCombinedTask = in.readByte();
         IsCombinedTask = tmpIsCombinedTask == 0 ? null : tmpIsCombinedTask == 1;
         Helper_Resource_Id = in.readString();
+        Next_Task_Id = in.readString();
     }
 
     public static final Creator<Tasks> CREATOR = new Creator<Tasks>() {
@@ -601,10 +607,20 @@ public class Tasks implements Parcelable {
         Helper_Resource_Id = helper_Resource_Id;
     }
 
+    public String getNext_Task_Id() {
+        return Next_Task_Id;
+    }
+
+    public void setNext_Task_Id(String next_Task_Id) {
+        Next_Task_Id = next_Task_Id;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
+
+
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
@@ -649,5 +665,6 @@ public class Tasks implements Parcelable {
         parcel.writeByte((byte) (IsDetailVisible == null ? 0 : IsDetailVisible ? 1 : 2));
         parcel.writeByte((byte) (IsCombinedTask == null ? 0 : IsCombinedTask ? 1 : 2));
         parcel.writeString(Helper_Resource_Id);
+        parcel.writeString(Next_Task_Id);
     }
 }

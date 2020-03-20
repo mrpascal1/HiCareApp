@@ -1,6 +1,7 @@
 package com.ab.hicarerun.activities;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -16,6 +17,7 @@ import com.ab.hicarerun.databinding.ActivityHelpBinding;
 import com.ab.hicarerun.handler.UserHelpClickHandler;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.utils.LocaleHelper;
 
 import java.util.Objects;
 
@@ -54,6 +56,14 @@ public class HelpActivity extends AppCompatActivity implements UserHelpClickHand
                 AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "onContactNoClicked", lineNo,userName,DeviceName);
             }
         }
+
+    }
+
+
+    @Override
+    protected void attachBaseContext(Context base) {
+//        super.attachBaseContext(LocaleHelper.onAttach(base));
+        super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
 
     }
 

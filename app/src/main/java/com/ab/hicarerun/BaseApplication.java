@@ -11,18 +11,25 @@ import com.ab.hicarerun.network.HeaderInterceptor;
 import com.ab.hicarerun.network.IRetrofit;
 import com.ab.hicarerun.network.RequestHeader;
 import com.ab.hicarerun.network.models.LoginResponse;
+//import com.ab.hicarerun.utils.LocaleHelper;
+import com.ab.hicarerun.utils.LocaleHelper;
+import com.ab.hicarerun.utils.MyPhilologyRepositoryFactory;
 import com.ab.hicarerun.utils.notifications.OneSIgnalHelper;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.jcminarro.philology.Philology;
+import com.jcminarro.philology.PhilologyInterceptor;
+import com.jcminarro.philology.PhilologyRepositoryFactory;
 
 import java.util.concurrent.TimeUnit;
 
 import io.github.inflationx.calligraphy3.CalligraphyConfig;
 import io.github.inflationx.calligraphy3.CalligraphyInterceptor;
 import io.github.inflationx.viewpump.ViewPump;
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmList;
@@ -42,9 +49,15 @@ public class BaseApplication extends Application {
 
     @Override
     protected void attachBaseContext(Context context) {
-        super.attachBaseContext(context);
+        super.attachBaseContext(LocaleHelper.onAttach(context, "en"));
+//        super.attachBaseContext(ViewPumpContextWrapper.wrap(Philology.INSTANCE.wrap(context)));
         MultiDex.install(this);
     }
+
+//    @Override
+//    protected void attachBaseContext(Context base) {
+//        super.attachBaseContext(LocaleHelper.onAttach(base, "en"));
+//    }
 
     public static synchronized Realm getRealm() {
         if (REALM != null) {
@@ -239,15 +252,20 @@ public class BaseApplication extends Application {
 //                    new CalligraphyConfig.Builder().setDefaultFontPath("fonts/font.ttf")
 //                            .setFontAttrId(R.attr.fontPath)
 //                            .build());
+
+//            PhilologyRepositoryFactory repositoryFactory = new MyPhilologyRepositoryFactory();
+//            Philology.INSTANCE.init(repositoryFactory);
             ViewPump.init(ViewPump.builder()
                     .addInterceptor(new CalligraphyInterceptor(
                             new CalligraphyConfig.Builder()
                                     .setDefaultFontPath("fonts/font.ttf")
                                     .setFontAttrId(R.attr.fontPath)
                                     .build()))
+//                    .addInterceptor(PhilologyInterceptor.INSTANCE)
                     .build());
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 }

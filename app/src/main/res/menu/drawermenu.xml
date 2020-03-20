@@ -67,15 +67,21 @@
         <item
             android:id="@+id/nav_voucher"
             android:icon="@drawable/ic_voucher"
+            android:visible="false"
             android:title="@string/referral_code" />
 
         <item
             android:id="@+id/nav_help"
             android:icon="@drawable/ic_info"
             android:title="@string/help"
-
             />
 
+
+        <item
+            android:id="@+id/nav_language"
+            android:icon="@drawable/ic_language"
+            android:title="@string/change_language"
+            />
 
         <item
             android:id="@+id/nav_logout"

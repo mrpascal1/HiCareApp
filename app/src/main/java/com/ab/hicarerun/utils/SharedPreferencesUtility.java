@@ -30,6 +30,7 @@ public class SharedPreferencesUtility {
     public static final String PREF_SUB_AREA = "PREF_SUB_AREA";
     public static final String PREF_USER_PIC = "PREF_USER_PIC";
     public static final String PREF_SHOW_NPS = "PREF_SHOW_NPS";
+    public static final String PREF_LANG = "en";
 
     public static boolean getPrefBoolean(Context context, String key) {
         SharedPreferences prefs =

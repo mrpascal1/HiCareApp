@@ -120,7 +120,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
         surfaceHolder = mFragmentFaceRecognizationBinding.surfaceView.getHolder();
         surfaceHolder.addCallback(this);
         if (isAttendance) {
-            mFragmentFaceRecognizationBinding.txtReason.setText("Please upload your photo to mark attendance.");
+            mFragmentFaceRecognizationBinding.txtReason.setText(getResources().getString(R.string.please_upload_your_photo_to_mark_attendance_face));
             LinearLayout toolbar = Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar);
             LinearLayout tool = getActivity().findViewById(R.id.customToolbar);
             RelativeLayout relBottom = getActivity().findViewById(R.id.relBottom);
@@ -133,7 +133,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         } else {
             if ((VerifyOtpActivity) getActivity() != null) {
-                mFragmentFaceRecognizationBinding.txtReason.setText("Please upload your photo to complete the registration.");
+                mFragmentFaceRecognizationBinding.txtReason.setText(getResources().getString(R.string.please_upload_your_photo_to_complete_the_registration_face));
                 Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
                 toolbar.setVisibility(View.GONE);
             }
@@ -193,7 +193,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
 
     private void alertCameraDialog() {
         AlertDialog.Builder dialog = createAlert(getActivity(),
-                "Camera info", "Unable to open camera...");
+                "Camera info", getResources().getString(R.string.unable_to_extract_camera));
         dialog.setNegativeButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -349,11 +349,9 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                                         ContinueHandShakeResponse response = (ContinueHandShakeResponse) data;
                                         if (response.getSuccess()) {
                                             getAttendanceDetails();
-                                            Toasty.success(getActivity(), "Attendance marked successfully.", Toast.LENGTH_SHORT).show();
-//                                                replaceFragment(HomeFragment.newInstance(bitUser), "FaceRecognizationFragment-HomeFragment");
+                                            Toasty.success(getActivity(), getResources().getString(R.string.attendance_marked_successfully_face), Toast.LENGTH_SHORT).show();
                                             SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_SHOW_NPS, true);
                                             startActivity(new Intent(getActivity(), HomeActivity.class));
-//                                                getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                                         } else {
                                             getErrorDialog("Attendance Failed", response.getErrorMessage());
                                         }
@@ -397,7 +395,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                                                 }
                                             }
                                         } else {
-                                            getErrorDialog("Error", "Unable to capture your photo, please try again.");
+                                            getErrorDialog("Error", getResources().getString(R.string.unable_to_capture_your_photo_please_try_again));
                                         }
                                     }
 

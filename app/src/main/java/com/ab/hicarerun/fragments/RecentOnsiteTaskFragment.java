@@ -93,7 +93,7 @@ public class RecentOnsiteTaskFragment extends BaseFragment implements OnRecentTa
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentRecentOnsiteTaskBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_recent_onsite_task, container, false);
-        getActivity().setTitle("Activities");
+        getActivity().setTitle(getResources().getString(R.string.tool_activities));
         return mFragmentRecentOnsiteTaskBinding.getRoot();
     }
 
@@ -177,11 +177,10 @@ public class RecentOnsiteTaskFragment extends BaseFragment implements OnRecentTa
     public void onDeleteItemClicked(final int parent, final int child) {
         try {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//            builder.setIcon(R.drawable.ic_rubbish_bin);
-            builder.setTitle("Delete Activity");
-            builder.setMessage("Are you sure you want to delete this activity?")
-                    .setNegativeButton("No", (dialog, id) -> dialog.cancel())
-                    .setPositiveButton("Yes", (dialog, id) -> {
+            builder.setTitle(getResources().getString(R.string.delete_activity));
+            builder.setMessage(getResources().getString(R.string.are_you_sure_you_want_to_delete_activity))
+                    .setNegativeButton(getResources().getString(R.string.no), (dialog, id) -> dialog.cancel())
+                    .setPositiveButton(getResources().getString(R.string.yes), (dialog, id) -> {
                         NetworkCallController controller = new NetworkCallController(RecentOnsiteTaskFragment.this);
                         controller.setListner(new NetworkResponseListner() {
                             @Override
@@ -189,7 +188,7 @@ public class RecentOnsiteTaskFragment extends BaseFragment implements OnRecentTa
                                 SaveAccountAreaResponse response = (SaveAccountAreaResponse) data;
                                 if (response.getSuccess()) {
                                     dialog.dismiss();
-                                    Toasty.success(getActivity(), "Task deleted successfully").show();
+                                    Toasty.success(getActivity(), getResources().getString(R.string.task_deleted_successfully)).show();
                                     getRecentTasks();
                                 }
                             }
@@ -237,7 +236,7 @@ public class RecentOnsiteTaskFragment extends BaseFragment implements OnRecentTa
             txtTitle.setText(expandableListDetail.get(expandableListTitle.get(parent)).get(child).getAreaSubType()+" Activity");
             recyclerView.setAdapter(viewAdapter);
             btnDone.setVisibility(View.GONE);
-            btnCancel.setText("OK");
+            btnCancel.setText(getResources().getString(R.string.ok));
             btnCancel.setOnClickListener(view -> alertDialog.cancel());
             alertDialog.setIcon(R.mipmap.logo);
             alertDialog.show();

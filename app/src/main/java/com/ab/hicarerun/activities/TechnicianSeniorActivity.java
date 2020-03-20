@@ -1,6 +1,7 @@
 package com.ab.hicarerun.activities;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -11,11 +12,20 @@ import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ActivityTechnicianSeniorBinding;
 import com.ab.hicarerun.fragments.TechnicianSeniorFragment;
+import com.ab.hicarerun.utils.LocaleHelper;
 
 import java.util.Objects;
 
 public class TechnicianSeniorActivity extends BaseActivity {
     ActivityTechnicianSeniorBinding mTechnicianSeniorBinding;
+
+
+    @Override
+    protected void attachBaseContext(Context base) {
+//        super.attachBaseContext(LocaleHelper.onAttach(base));
+        super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

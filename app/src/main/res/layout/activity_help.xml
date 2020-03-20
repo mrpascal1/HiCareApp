@@ -70,7 +70,7 @@
                             android:layout_width="130dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
-                            android:text="Contact Number"
+                            android:text="@string/contact_number_help"
                             android:textColor="@color/colorPrimary"
                             android:textSize="15dp" />
                     </LinearLayout>
@@ -160,7 +160,7 @@
                             android:layout_width="130dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
-                            android:text="Support Email-ID"
+                            android:text="@string/support_email_id_help"
                             android:textColor="@color/colorPrimary"
                             android:textSize="15dp" />
                     </LinearLayout>

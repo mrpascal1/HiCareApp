@@ -19,6 +19,7 @@ import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ExoplayerLayoutBinding;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.utils.LocaleHelper;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -70,6 +71,13 @@ public class ExoplayerActivity extends BaseActivity implements Player.EventListe
         }
         setUp();
         mExoplayerLayoutBinding.imageViewExit.setOnClickListener(v -> finish());
+
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+//        super.attachBaseContext(LocaleHelper.onAttach(base));
+        super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
 
     }
 

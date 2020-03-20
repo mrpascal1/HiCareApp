@@ -57,7 +57,7 @@ public class OnSiteAccountDetailsFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentOnSiteAccountDetailsBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_on_site_account_details, container, false);
-        getActivity().setTitle("On-Site Accounts Details");
+        getActivity().setTitle(getResources().getString(R.string.on_site_activity_details));
         setViewPagerView();
         return mFragmentOnSiteAccountDetailsBinding.getRoot();
     }
@@ -70,8 +70,8 @@ public class OnSiteAccountDetailsFragment extends BaseFragment {
     private void setViewPagerView() {
         try {
             mAdapter = new TaskViewPagerAdapter(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), getActivity());
-            mAdapter.addFragment(OnSiteTaskFragment.newInstance(model), "On-Site Tasks");
-            mAdapter.addFragment(RecentOnsiteTaskFragment.newInstance(model), "Recent Tasks");
+            mAdapter.addFragment(OnSiteTaskFragment.newInstance(model), getResources().getString(R.string.on_site_tasks_tab));
+            mAdapter.addFragment(RecentOnsiteTaskFragment.newInstance(model), getResources().getString(R.string.recent_tasks_tab));
             mFragmentOnSiteAccountDetailsBinding.viewpagertab.setDistributeEvenly(true);
             mFragmentOnSiteAccountDetailsBinding.pager.setAdapter(mAdapter);
             mFragmentOnSiteAccountDetailsBinding.viewpagertab.setViewPager(mFragmentOnSiteAccountDetailsBinding.pager);

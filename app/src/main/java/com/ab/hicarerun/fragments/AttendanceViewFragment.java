@@ -59,7 +59,7 @@ public class AttendanceViewFragment extends BaseFragment {
             LinearLayout custom_toolbar = getActivity().findViewById(R.id.customToolbar);
             custom_toolbar.setVisibility(View.VISIBLE);
             TextView tool = getActivity().findViewById(R.id.txtTool);
-            tool.setText("Your Attendance");
+            tool.setText(getResources().getString(R.string.your_attendance));
         }
         return mFragmentAttendanceViewBinding.getRoot();
     }
@@ -67,7 +67,7 @@ public class AttendanceViewFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getActivity().setTitle("Your Attendance");
+        getActivity().setTitle(getResources().getString(R.string.tool_your_attendance));
         getAttendanceDetails();
     }
 

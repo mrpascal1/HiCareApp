@@ -230,7 +230,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                                     ReferralResponse refResponse = (ReferralResponse) response;
                                     if (refResponse.getSuccess()) {
                                         mAdapter.notifyDataSetChanged();
-                                        Toasty.success(getActivity(), "Referral added successfully.", Toast.LENGTH_SHORT).show();
+                                        Toasty.success(getActivity(), getResources().getString(R.string.referral_added_successfully), Toast.LENGTH_SHORT).show();
                                         getReferralList();
                                     }
                                 }
@@ -330,7 +330,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                         mAdapter.removeAll();
                         getReferralList();
 //                    Toast.makeText(getActivity(), "Deleted Successfully.", Toast.LENGTH_LONG).show();
-                        Toasty.success(getActivity(), "Deleted successfully.", Toast.LENGTH_SHORT).show();
+                        Toasty.success(getActivity(), getResources().getString(R.string.deleted_successfully), Toast.LENGTH_SHORT).show();
 
                         mAdapter.notifyDataSetChanged();
                     } else {

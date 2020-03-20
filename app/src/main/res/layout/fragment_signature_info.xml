@@ -58,7 +58,7 @@
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="7dp"
-                        android:text="OTP"
+                        android:text="@string/otp_signature"
                         android:textColor="@color/colorAccentDrawerPrimaryLight"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -118,7 +118,7 @@
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="7dp"
-                        android:text="Amount To Collect"
+                        android:text="@string/amount_to_collect_signature"
                         android:textColor="@color/colorAccentDrawerPrimaryLight"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -154,8 +154,7 @@
                 android:id="@+id/lnrSignatory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                >
+                android:layout_marginTop="15dp">
 
                 <LinearLayout
                     android:id="@+id/imgSignatory"
@@ -187,7 +186,7 @@
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="7dp"
-                        android:text="Signatory Name"
+                        android:text="@string/signatory_name_signature"
                         android:textColor="@color/colorAccentDrawerPrimaryLight"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -211,8 +210,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/lnrCMSReason"
                 android:layout_width="match_parent"
@@ -225,6 +222,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:orientation="vertical">
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
@@ -234,7 +232,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="What work have you done?"
+                        android:text="@string/what_work_have_you_done_signature"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 
@@ -249,32 +247,30 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:textSize="14sp"
-                            android:textColor="@color/colorAccentDrawerPrimaryLight"
                             android:gravity="center_vertical"
+                            android:text="@string/only_flush_out_done_signature"
+                            android:textColor="@color/colorAccentDrawerPrimaryLight"
                             android:textDirection="rtl"
-                            android:text="Only Flush Out Done"
-                            />
+                            android:textSize="14sp" />
 
                         <RadioButton
                             android:id="@+id/rbComplete"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:textSize="14sp"
-                            android:textDirection="rtl"
                             android:gravity="center_vertical"
+                            android:text="@string/complete_service_signature"
                             android:textColor="@color/colorAccentDrawerPrimaryLight"
-                            android:text="Complete Service"
-                            />
+                            android:textDirection="rtl"
+                            android:textSize="14sp" />
                     </RadioGroup>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
+                        android:layout_marginLeft="15dp"
                         android:layout_marginTop="15dp"
                         android:layout_marginRight="15dp"
-                        android:layout_marginLeft="15dp"
                         android:background="@color/tab_textColor" />
 
 
@@ -286,9 +282,9 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:layout_marginTop="15dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginLeft="20dp"
+                android:layout_marginTop="15dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginRight="20dp"
                 android:background="@color/tab_textColor"
@@ -366,7 +362,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="36dp"
-                        android:text="Upload Job Card"
+                        android:text="@string/upload_job_card_signature"
                         android:textColor="@color/black"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -412,7 +408,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:text="Upload Job Card"
+                        android:text="@string/upload_job_card_signature"
                         android:textColor="@color/black"
                         android:textSize="15sp"
                         android:textStyle="bold"
@@ -465,7 +461,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="36dp"
                             android:layout_marginTop="15dp"
-                            android:text="No Job Cards"
+                            android:text="@string/no_job_cards_signature"
                             android:textColor="@color/colorAccentDrawerPrimaryLight"
                             android:textSize="14dp"
                             android:visibility="gone" />
@@ -497,7 +493,8 @@
                     android:layout_marginRight="15dp"
                     android:layout_marginBottom="15dp"
                     android:layout_weight="1"
-                    android:background="@drawable/button_background"                    android:clickable="true"
+                    android:background="@drawable/button_background"
+                    android:clickable="true"
                     android:onClick="@{(view) -> handler.onSendLinkClicked(view)}"
                     android:text="@string/send_feedback_link"
                     android:textAllCaps="false"

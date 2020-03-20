@@ -33,7 +33,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-
                 <LinearLayout
                     android:id="@+id/lnrHeader"
                     android:layout_width="wrap_content"
@@ -683,8 +682,8 @@
                                     android:id="@+id/lnrPartnerPic"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
-                                    android:layout_weight="0.8"
                                     android:layout_gravity="right"
+                                    android:layout_weight="0.8"
                                     android:gravity="right|bottom"
                                     android:orientation="vertical"
                                     android:visibility="gone">
@@ -693,22 +692,22 @@
                                         android:id="@+id/imgPartner"
                                         android:layout_width="45dp"
                                         android:layout_height="45dp"
-                                        android:elevation="4dp"
                                         android:layout_gravity="center"
                                         android:layout_margin="2dp"
-                                        app:srcCompat="@drawable/ic_profile"
+                                        android:elevation="4dp"
                                         app:civ_border_color="@color/smoke_gray"
-                                        app:civ_border_width="0.001dp" />
+                                        app:civ_border_width="0.001dp"
+                                        app:srcCompat="@drawable/ic_profile" />
 
                                     <TextView
                                         android:id="@+id/txtHelperName"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:textSize="10sp"
+                                        android:layout_gravity="center"
                                         android:layout_marginTop="1dp"
                                         android:gravity="center"
-                                        android:layout_gravity="center"
-                                        android:textColor="@color/black"/>
+                                        android:textColor="@color/black"
+                                        android:textSize="10sp" />
 
                                 </LinearLayout>
 

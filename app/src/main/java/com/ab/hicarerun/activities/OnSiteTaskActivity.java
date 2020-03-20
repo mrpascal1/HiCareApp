@@ -3,6 +3,7 @@ package com.ab.hicarerun.activities;
 import androidx.databinding.DataBindingUtil;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import com.ab.hicarerun.fragments.OnSiteAccountFragment;
 import com.ab.hicarerun.service.LocationManager;
 import com.ab.hicarerun.service.listner.LocationManagerListner;
 import com.ab.hicarerun.utils.GPSUtils;
+import com.ab.hicarerun.utils.LocaleHelper;
 
 import java.util.Objects;
 
@@ -24,6 +26,15 @@ public class OnSiteTaskActivity extends BaseActivity implements LocationManagerL
     private Location mLocation;
     private LocationManagerListner mListner;
     private boolean isGPS = false;
+
+
+
+    @Override
+    protected void attachBaseContext(Context base) {
+//        super.attachBaseContext(LocaleHelper.onAttach(base));
+        super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

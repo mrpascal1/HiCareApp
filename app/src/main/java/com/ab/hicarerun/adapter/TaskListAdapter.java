@@ -89,7 +89,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     long timeSwapBuff = 0L;
     long updatedTime = 0L;
     Runnable updateTimerThread;
-
     private int time = 20;
     private Timer timer;
     private String Flat = "";
@@ -162,7 +161,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         } else {
             holder.mTaskListAdapterBinding.lnrPartnerPic.setVisibility(View.GONE);
         }
-
         holder.mTaskListAdapterBinding.txtTime.setText(items.get(position).getTaskAssignmentStartTime() + " - " + items.get(position).getTaskAssignmentEndTime());
         holder.mTaskListAdapterBinding.txtName.setText(items.get(position).getAccountName());
         holder.mTaskListAdapterBinding.status.setText(items.get(position).getStatus());
@@ -174,7 +172,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         holder.mTaskListAdapterBinding.dispatchTaskMobileNo.setBackgroundResource(backgroundResource);
         holder.mTaskListAdapterBinding.dispatchTaskPhoneNo.setBackgroundResource(backgroundResource);
         holder.mTaskListAdapterBinding.lnrDetail.setBackgroundResource(backgroundResource);
-        holder.mTaskListAdapterBinding.lnrMain.setBackgroundResource(backgroundResource);
+//        holder.mTaskListAdapterBinding.lnrMain.setBackgroundResource(backgroundResource);
         holder.mTaskListAdapterBinding.constraint.setBackgroundResource(backgroundResource);
         holder.mTaskListAdapterBinding.constraint2.setBackgroundResource(backgroundResource);
         holder.mTaskListAdapterBinding.lnrMap.setBackgroundResource(backgroundResource);
@@ -199,9 +197,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.blink);
         holder.mTaskListAdapterBinding.imgWarning.startAnimation(animation);
         if (items.get(position).getSequenceNumber() == 1 && items.get(position).getAccountType().equals("Individual")) {
-            holder.mTaskListAdapterBinding.lnrMain.setBackgroundColor(Color.parseColor("#ffc0cb"));
+            holder.mTaskListAdapterBinding.constraint2.setBackgroundColor(Color.parseColor("#FFE6EE"));
         } else {
-            holder.mTaskListAdapterBinding.lnrMain.setBackgroundColor(Color.parseColor("#ffffff"));
+            holder.mTaskListAdapterBinding.constraint2.setBackgroundColor(Color.parseColor("#ffffff"));
         }
 
         if (items.get(position).getStatus().equalsIgnoreCase("Completed")) {
@@ -484,8 +482,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                 sequence.addSequenceItem(mTaskListAdapterBinding.status,
                         "You can check your task status here.", "GOT IT");
 
-                sequence.addSequenceItem(mTaskListAdapterBinding.helpline,
-                        "This is technician helpline number.", "GOT IT");
+//                sequence.addSequenceItem(mTaskListAdapterBinding.helpline,
+//                        "This is technician helpline number.", "GOT IT");
 
                 sequence.start();
                 isShown = true;

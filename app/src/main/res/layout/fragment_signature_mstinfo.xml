@@ -60,7 +60,7 @@
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="7dp"
-                        android:text="OTP"
+                        android:text="@string/otp_mst"
                         android:textColor="@color/colorAccentDrawerPrimaryLight"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -120,7 +120,7 @@
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="7dp"
-                        android:text="Amount To Collect"
+                        android:text="@string/amount_to_mst"
                         android:textColor="@color/colorAccentDrawerPrimaryLight"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -187,7 +187,7 @@
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="7dp"
-                        android:text="Signatory Name"
+                        android:text="@string/signatory_name_mst"
                         android:textColor="@color/colorAccentDrawerPrimaryLight"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -226,7 +226,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
-                    android:text="Signature"
+                    android:text="@string/signature"
                     android:textColor="@color/black"
                     android:textSize="15sp"
                     android:textStyle="bold"
@@ -294,7 +294,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="36dp"
-                        android:text="Upload Job Card"
+                        android:text="@string/upload_job_card_mst"
                         android:textColor="@color/black"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -352,7 +352,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="36dp"
                             android:layout_marginTop="15dp"
-                            android:text="No Job Cards"
+                            android:text="@string/no_job_cards_mst"
 
                             android:textColor="@color/colorAccentDrawerPrimaryLight"
                             android:textSize="14dp"
