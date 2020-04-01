@@ -43,6 +43,7 @@ import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ActivityHomeBinding;
 import com.ab.hicarerun.fragments.AttendanceViewFragment;
+import com.ab.hicarerun.fragments.BazaarFragment;
 import com.ab.hicarerun.fragments.HomeFragment;
 import com.ab.hicarerun.fragments.IncentiveFragment;
 import com.ab.hicarerun.fragments.NotificationFragment;
@@ -113,9 +114,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
     @Override
     protected void attachBaseContext(Context base) {
-//        super.attachBaseContext(LocaleHelper.onAttach(base));
         super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
-
     }
 
     @Override
@@ -200,8 +199,11 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
             case R.id.nav_incentive:
                 replaceFragment(IncentiveFragment.newInstance(), "INCENTIVE");
                 break;
+            case R.id.nav_bazaar:
+                replaceFragment(BazaarFragment.newInstance(), "BAZAAR");
+                break;
             case R.id.nav_rewards:
-                replaceFragment(VoucherFragment.newInstance(), "HomeActivity-NotificationFragment");
+//                replaceFragment(VoucherFragment.newInstance(), "HomeActivity-NotificationFragment");
                 break;
             case R.id.nav_attendance:
                 replaceFragment(AttendanceViewFragment.newInstance(), "ATTENDANCE");
@@ -238,6 +240,8 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                     promptsView.findViewById(R.id.lanTamil);
             final CardView lanTelugu =
                     promptsView.findViewById(R.id.lanTelugu);
+            final CardView lanKannad =
+                    promptsView.findViewById(R.id.lanKannad);
             final Button btnContinue = promptsView.findViewById(R.id.btnOk);
 
 
@@ -277,6 +281,12 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
             lanTelugu.setOnClickListener(view -> {
                 AppUtils.updateViews("te", HomeActivity.this);
+                alertDialog.dismiss();
+                recreate();
+            });
+
+            lanKannad.setOnClickListener(view -> {
+                AppUtils.updateViews("kn", HomeActivity.this);
                 alertDialog.dismiss();
                 recreate();
             });
@@ -519,6 +529,11 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                     startActivity(new Intent(HomeActivity.this, AttendanceActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
                     break;
 
+                case R.id.nav_bazaar:
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, BazaarActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                    break;
+
                 case R.id.nav_onsite:
                     mActivityHomeBinding.drawer.closeDrawers();
                     startActivity(new Intent(HomeActivity.this, OnSiteTaskActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
@@ -560,16 +575,21 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                     startActivity(new Intent(HomeActivity.this, TechIdActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
                     break;
 
+                case R.id.nav_language:
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    showLanguageDialog();
+                    break;
+
                 case R.id.nav_logout:
                     mActivityHomeBinding.drawer.closeDrawers();
                     final AlertDialog.Builder dialog = new AlertDialog.Builder(HomeActivity.this);
-                    dialog.setTitle("Logout");
-                    dialog.setMessage("Do you want to logout?");
-                    dialog.setPositiveButton("Yes", (dialogInterface, i) -> {
+                    dialog.setTitle(getString(R.string.logout_exit));
+                    dialog.setMessage(getString(R.string.logout_do_you_really_want_to_exit));
+                    dialog.setPositiveButton(getString(R.string.yes), (dialogInterface, i) -> {
                         dialogInterface.dismiss();
                         getLogout();
                     });
-                    dialog.setNegativeButton("No", (dialogInterface, i) -> dialogInterface.dismiss());
+                    dialog.setNegativeButton(getString(R.string.no), (dialogInterface, i) -> dialogInterface.dismiss());
                     dialog.show();
 
                     break;
@@ -642,13 +662,13 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
     private void showExitAlert() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Exit");
-        dialog.setMessage("Do you want to exit?");
-        dialog.setPositiveButton("Yes", (dialogInterface, i) -> {
+        dialog.setTitle(getString(R.string.logout_exit));
+        dialog.setMessage(getString(R.string.logout_do_you_really_want_to_exit));
+        dialog.setPositiveButton(getString(R.string.yes), (dialogInterface, i) -> {
             dialogInterface.dismiss();
             finishAffinity();
         });
-        dialog.setNegativeButton("No", (dialogInterface, i) -> dialogInterface.dismiss());
+        dialog.setNegativeButton(getString(R.string.no), (dialogInterface, i) -> dialogInterface.dismiss());
         dialog.show();
     }
 

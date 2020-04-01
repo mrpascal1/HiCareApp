@@ -211,6 +211,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private Double customerLongitude = 0.0;
     private String accountName = "";
     private String technicianMobileNo = "";
+    private String mActualAmountToCollect = "";
 
 
     @Override
@@ -242,6 +243,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 //        Tag = getIntent().getStringExtra(ARGS_TAG);
 //        sequenceNo = getIntent().getStringExtra(ARGS_SEQUENCE);
 //        bitUser = getIntent().getByteArrayExtra(ARG_USER);
+//        showCompletionDialog();
         new GPSUtils(this).turnGPSOn(isGPSEnable -> {
             // turn on GPS
             if (isGPSEnable) {
@@ -369,6 +371,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         customerLongitude = response.getData().getCustomerLongitude();
                         technicianMobileNo = response.getData().getTechnicianMobileNo();
                         referralDiscount = Integer.parseInt(response.getData().getReferralDiscount());
+                        mActualAmountToCollect = response.getData().getActualAmountToCollect();
                         setViewPagerView();
                     }
 
@@ -394,16 +397,16 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             mAdapter = new TaskViewPagerAdapter(getSupportFragmentManager(), this);
 
             if (sta.equals("Dispatched") || sta.equals("Incomplete")) {
-                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId), "Service Info");
+                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId), getResources().getString(R.string.service_info));
                 mActivityNewTaskDetailsBinding.viewpagertab.setDistributeEvenly(false);
             } else {
-                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId), "Service Info");
-                mAdapter.addFragment(ChemicalInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks), "Chemicals");
-                mAdapter.addFragment(ReferralFragment.newInstance(taskId, technicianMobileNo), "Referrals");
+                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId),  getResources().getString(R.string.service_info));
+                mAdapter.addFragment(ChemicalInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks), getResources().getString(R.string.chemical_info));
+                mAdapter.addFragment(ReferralFragment.newInstance(taskId, technicianMobileNo), getResources().getString(R.string.referral_info));
                 if (isCombinedTasks) {
-                    mAdapter.addFragment(SignatureMSTInfoFragment.newInstance(taskId, combinedTaskId, combinedTaskTypes), "Signature");
+                    mAdapter.addFragment(SignatureMSTInfoFragment.newInstance(taskId, combinedTaskId, combinedTaskTypes), getResources().getString(R.string.signature_info));
                 } else {
-                    mAdapter.addFragment(SignatureInfoFragment.newInstance(taskId), "Signature");
+                    mAdapter.addFragment(SignatureInfoFragment.newInstance(taskId), getResources().getString(R.string.signature_info));
                 }
                 mActivityNewTaskDetailsBinding.viewpagertab.setDistributeEvenly(true);
             }
@@ -915,6 +918,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         request.setChequeImage(chequeImage);
                         request.setFlushOutReason(flushoutReason);
                         request.setNext_Task_Id(nextTaskId);
+                        request.setActualAmountToCollect(mActualAmountToCollect);
 
                         NetworkCallController controller = new NetworkCallController();
                         controller.setListner(new NetworkResponseListner() {

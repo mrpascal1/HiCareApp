@@ -100,7 +100,7 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentTechnicianSeniorBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_technician_senior, container, false);
-        getActivity().setTitle("Grooming");
+        getActivity().setTitle(getString(R.string.grooming));
         return mFragmentTechnicianSeniorBinding.getRoot();
     }
 

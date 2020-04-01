@@ -147,7 +147,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         RelativeLayout relCoin = getActivity().findViewById(R.id.relCoin);
         tool.setVisibility(View.VISIBLE);
         relBottom.setVisibility(View.VISIBLE);
-        relCoin.setVisibility(View.GONE);
+        relCoin.setVisibility(View.VISIBLE);
 //        LinearLayout custom_toolbar = getActivity().findViewById(R.id.customToolbar);
 //        custom_toolbar.setVisibility(View.GONE);
         DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer);

@@ -92,7 +92,7 @@ public class VoucherFragment extends BaseFragment implements UserVoucherClickHan
             LinearLayout custom_toolbar = getActivity().findViewById(R.id.customToolbar);
             custom_toolbar.setVisibility(View.VISIBLE);
             TextView tool = getActivity().findViewById(R.id.txtTool);
-            tool.setText("Referral Code");
+            tool.setText(getString(R.string.referral_code));
         }
         return mFragmentVoucherBinding.getRoot();
     }

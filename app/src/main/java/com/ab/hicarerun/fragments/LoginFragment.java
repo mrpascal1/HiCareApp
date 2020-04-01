@@ -36,6 +36,8 @@ import com.ab.hicarerun.viewmodel.UserLoginViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
+
 
 public class LoginFragment extends BaseFragment implements UserLoginClickHandler {
     FragmentLoginBinding mFragmentLoginBinding;
@@ -45,6 +47,7 @@ public class LoginFragment extends BaseFragment implements UserLoginClickHandler
     private Boolean isGetInside = false;
     private UserLoginTask mAuthTask = null;
     private String profilePic = "";
+    private Locale myLocale;
 
     public LoginFragment() {
         // Required empty public constructor

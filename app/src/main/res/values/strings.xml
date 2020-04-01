@@ -65,21 +65,21 @@
     <string name="as_per_our_records">As per our records</string>
     <string name="property_size_not_same">Property Size Not Same?</string>
     <string name="actual_property_size">Actual Property size</string>
-    <string name="employee_code">Employee Code</string>
-    <string name="email_id">Email ID</string>
-    <string name="itsupport_hicare_in">info@hicare.in</string>
-    <string name="contact_no">Support no.</string>
-    <string name="_8828333888">8828333888</string>
+    <string name="employee_code" translatable="false">Employee Code</string>
+    <string name="email_id" translatable="false">Email ID</string>
+    <string name="itsupport_hicare_in" translatable="false">info@hicare.in</string>
+    <string name="contact_no" translatable="false">Support no.</string>
+    <string name="_8828333888" translatable="false">8828333888</string>
     <string name="verify_details">VERIFY DETAILS</string>
     <string name="otp_sent_to">OTP sent to</string>
     <string name="did_nt_receive_the_otp_resend">Did\'nt receive the OTP? RESEND</string>
     <string name="loading">Loading...</string>
     <string name="send">Send</string>
     <string name="excellent">Excellent!</string>
-    <string name="you_ve_earned_a_points">You\'ve earned a points!</string>
+    <string name="you_ve_earned_a_points">You\'ve earned points!</string>
     <string name="arjun_bhatt">Arjun Bhatt</string>
     <string name="sign_here">SIGN HERE</string>
-    <string name="_11_00_am_12_00_pm">11:00 AM - 12:00 PM</string>
+    <string name="_11_00_am_12_00_pm" translatable="false">11:00 AM - 12:00 PM</string>
     <string name="tag">Tag</string>
     <string name="sequence_no">Sequence No.</string>
     <string name="type">Type</string>
@@ -541,4 +541,42 @@
     <string name="task_deleted_successfully">Task deleted successfully</string>
     <string name="referral_added_successfully">Referral added successfully.</string>
     <string name="deleted_successfully">Deleted successfully.</string>
+    <string name="title_languagemodule">Hi_Language</string>
+    <string name="title_marathilanguage">MarathiLanguage</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="on_site_tasks">On-Site Tasks</string>
+    <string name="bazaar">Bazaar</string>
+    <string name="today_s_job_count">Today\'s Job Count</string>
+    <string name="home_bottom">Home</string>
+    <string name="incentives_home">Incentives</string>
+    <string name="attendance_bottom">Attendance</string>
+    <string name="id_card_bottom">ID Card</string>
+    <string name="service_info">Service Info</string>
+    <string name="chemical_info">Chemicals</string>
+    <string name="referral_info">Referrals</string>
+    <string name="signature_info">Signature</string>
+    <string name="onsite_tab">On-Site</string>
+    <string name="completed_tab">Completed</string>
+    <string name="rewards_section">Rewards</string>
+    <string name="rewards_history">Rewards History</string>
+    <string name="add_referral">Add Referral</string>
+    <string name="name_is_required">Name is required!</string>
+    <string name="mobile_number_is_required">Mobile number is required!</string>
+    <string name="mobile_number_is_invalid">Mobile number is invalid!</string>
+    <string name="failed">Failed.</string>
+    <string name="on_site_otp_is_sent_successfully">On-Site OTP is sent successfully</string>
+    <string name="this_field_is_required">This field is required</string>
+    <string name="spent_adequate_time">You are not allowed to send feedback link as you have not spent adequate time. Please follow the correct procedure and deliver the job properly</string>
+    <string name="feedback_link_spent_successfully">Feedback link sent successfully.</string>
+    <string name="jobcard_uploaded_successfully">Job card uploaded successfully</string>
+    <string name="uploading_failed">Uploading Failed</string>
+    <string name="save_tasks">SAVE</string>
+    <string name="service_order">Order</string>
+    <string name="there_is_no_recent_tasks_to_display">There is No Recent Tasks to display!</string>
+    <string name="there_is_no_tasks_to_display">There is No Tasks to display!</string>
+    <string name="logout_exit">Exit</string>
+    <string name="logout_do_you_really_want_to_exit">Do you want to exit?</string>
+
 </resources>

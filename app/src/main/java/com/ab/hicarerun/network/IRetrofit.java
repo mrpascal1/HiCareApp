@@ -27,6 +27,10 @@ import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
 import com.ab.hicarerun.network.models.NPSModel.NPSDataResponse;
+import com.ab.hicarerun.network.models.OffersModel.OffersHistoryResponse;
+import com.ab.hicarerun.network.models.OffersModel.OffersResponse;
+import com.ab.hicarerun.network.models.OffersModel.UpdateRewardScratchRequest;
+import com.ab.hicarerun.network.models.OffersModel.UpdateRewardScratchResponse;
 import com.ab.hicarerun.network.models.OnSiteModel.OnSiteAccountResponse;
 import com.ab.hicarerun.network.models.OnSiteModel.OnSiteAreaResponse;
 import com.ab.hicarerun.network.models.OnSiteModel.OnSiteRecentResponse;
@@ -328,4 +332,15 @@ public interface IRetrofit {
     @GET("ResourceActivity/GetResourceNPSData")
     Call<NPSDataResponse> getNPSData(@Query("resourceId") String resourceId);
 
+    @POST("Jeopardy/InsertLessPaymentJeopardy")
+    Call<CWFJeopardyResponse> insertLessPaymentJeopardy(@Body CWFJeopardyRequest request);
+
+    @GET("ResourceActivity/GetRewards")
+    Call<OffersResponse> getAllRewards(@Query("resourceId") String resourceId);
+
+    @POST("ResourceActivity/UpdateRewardScratch")
+    Call<UpdateRewardScratchResponse> updateRewardScratch(@Body UpdateRewardScratchRequest request);
+
+    @GET("ResourceActivity/GetRewardHistory")
+    Call<OffersHistoryResponse> getAllRewardsHistory(@Query("resourceId") String resourceId);
 }

@@ -58,14 +58,14 @@ public class TechIdFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentTechIdBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_tech_id, container, false);
-        getActivity().setTitle("ID Card");
+        getActivity().setTitle(getString(R.string.id_card_bottom));
         if ((HomeActivity) getActivity() != null) {
             LinearLayout toolbar = getActivity().findViewById(R.id.toolbar);
             toolbar.setVisibility(View.GONE);
             LinearLayout custom_toolbar = getActivity().findViewById(R.id.customToolbar);
             custom_toolbar.setVisibility(View.VISIBLE);
             TextView tool = getActivity().findViewById(R.id.txtTool);
-            tool.setText("ID Card");
+            tool.setText(getString(R.string.id_card_bottom));
         }
         return mFragmentTechIdBinding.getRoot();
 

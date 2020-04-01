@@ -134,6 +134,10 @@ public class UpdateTasksRequest {
     @Expose
     private String Next_Task_Id;
 
+    @SerializedName("ActualAmountToCollect")
+    @Expose
+    private String ActualAmountToCollect;
+
 
     public UpdateTasksRequest() {
         UserId = "";
@@ -175,6 +179,7 @@ public class UpdateTasksRequest {
         CombinedTaskId = "";
         FlushOutReason = "";
         Next_Task_Id = "";
+        ActualAmountToCollect = "";
     }
 
     public String getUserId() {
@@ -497,5 +502,13 @@ public class UpdateTasksRequest {
 
     public void setNext_Task_Id(String next_Task_Id) {
         Next_Task_Id = next_Task_Id;
+    }
+
+    public String getActualAmountToCollect() {
+        return ActualAmountToCollect;
+    }
+
+    public void setActualAmountToCollect(String actualAmountToCollect) {
+        ActualAmountToCollect = actualAmountToCollect;
     }
 }

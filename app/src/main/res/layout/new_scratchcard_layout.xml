@@ -55,8 +55,8 @@
 
 
                 <LinearLayout
-                    android:layout_width="255dp"
-                    android:layout_height="255dp"
+                    android:layout_width="245dp"
+                    android:layout_height="245dp"
                     android:layout_margin="10dp"
                     android:gravity="center">
 
@@ -71,30 +71,48 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
 
-                            <androidx.appcompat.widget.AppCompatImageView
-                                android:id="@+id/imgAward"
+
+                            <RelativeLayout
+                                android:id="@+id/relReward"
                                 android:layout_width="120dp"
                                 android:layout_height="120dp"
-                                android:layout_centerHorizontal="true"
+                                android:layout_gravity="center"
                                 android:layout_marginTop="15dp"
-                                android:foregroundGravity="center"
-                                app:srcCompat="@drawable/ic_scratch_trophy" />
+                                android:layout_centerHorizontal="true"
+                                android:background="@drawable/green_circle"
+                                android:gravity="center">
 
-                            <androidx.appcompat.widget.AppCompatImageView
-                                android:id="@+id/imgNoAward"
-                                android:layout_width="90dp"
-                                android:layout_height="90dp"
-                                android:layout_centerHorizontal="true"
-                                android:layout_marginTop="15dp"
-                                android:foregroundGravity="center"
-                                app:srcCompat="@drawable/ic_losstrophy"
-                                android:visibility="invisible" />
+                                <androidx.appcompat.widget.AppCompatImageView
+                                    android:id="@+id/imgAward"
+                                    android:layout_width="120dp"
+                                    android:layout_height="120dp"
+                                    android:layout_marginTop="15dp"
+                                    android:scaleType="fitXY"
+                                    android:visibility="visible"
+                                    app:srcCompat="@drawable/offer_poster" />
+
+
+                                <androidx.appcompat.widget.AppCompatImageView
+                                    android:id="@+id/imgNoAward"
+                                    android:layout_width="120dp"
+                                    android:layout_height="120dp"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_marginTop="15dp"
+                                    android:foregroundGravity="center"
+                                    android:tint="@color/colorPrimary"
+                                    app:srcCompat="@drawable/offer_poster"
+                                    android:visibility="invisible" />
+
+                            </RelativeLayout>
+
+
+
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/txtReward"
                                 android:layout_width="180dp"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@id/imgAward"
+                                android:layout_below="@id/relReward"
                                 android:layout_centerHorizontal="true"
                                 android:layout_marginTop="10dp"
                                 android:gravity="center"
@@ -117,7 +135,7 @@
                                 android:id="@+id/txtLose"
                                 android:layout_width="180dp"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@+id/imgAward"
+                                android:layout_below="@+id/relReward"
                                 android:layout_centerInParent="true"
                                 android:layout_marginTop="5dp"
                                 android:gravity="center"

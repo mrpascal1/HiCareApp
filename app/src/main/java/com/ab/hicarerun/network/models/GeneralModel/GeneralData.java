@@ -220,6 +220,11 @@ public class GeneralData implements RealmModel {
     @SerializedName("Show_Standard_Chemicals")
     @Expose
     private Boolean Show_Standard_Chemicals;
+
+    @SerializedName("ActualAmountToCollect")
+    @Expose
+    private String ActualAmountToCollect;
+
     public GeneralData() {
         SchedulingStatus = "NA";
         PaymentMode = "NA";
@@ -269,6 +274,7 @@ public class GeneralData implements RealmModel {
         TechnicianMobileNo = "";
         Payment_Jeopardy_Raised = false;
         Show_Standard_Chemicals = false;
+        ActualAmountToCollect = "NA";
     }
 
     public String getOrderNumber() {
@@ -693,5 +699,13 @@ public class GeneralData implements RealmModel {
 
     public void setShow_Standard_Chemicals(Boolean show_Standard_Chemicals) {
         Show_Standard_Chemicals = show_Standard_Chemicals;
+    }
+
+    public String getActualAmountToCollect() {
+        return ActualAmountToCollect;
+    }
+
+    public void setActualAmountToCollect(String actualAmountToCollect) {
+        ActualAmountToCollect = actualAmountToCollect;
     }
 }

@@ -53,7 +53,7 @@
                 android:id="@+id/container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@id/relBottom"
+                android:layout_above="@id/relCoin"
                 android:layout_below="@id/layoutTool"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
@@ -64,11 +64,11 @@
                 android:background="@color/white" />
 
             <View
-                            android:id="@+id/navigationBorder"
-                            android:layout_width="match_parent"
-                            android:layout_height="4dp"
-                            android:layout_above="@id/relBottom"
-                            android:background="@drawable/today_rect" />
+                android:id="@+id/navigationBorder"
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:layout_above="@id/relBottom"
+                android:background="@drawable/today_rect" />
 
             <!--            <com.google.android.material.bottomnavigation.BottomNavigationView-->
             <!--                android:id="@+id/bottom_navigation"-->
@@ -97,11 +97,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginEnd="2dp"
-                    android:layout_marginRight="2dp"
-                    android:layout_marginBottom="-2dp"
+                    app:itemBackground="@color/colorPrimary"
                     app:itemIconTint="@drawable/selector"
-                    app:itemBackground="@color/white"
                     app:itemTextColor="@drawable/selector"
                     app:labelVisibilityMode="labeled"
                     app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
@@ -116,8 +113,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerInParent="true"
                 android:layout_marginBottom="20dp"
-                android:background="@drawable/circle"
-                android:visibility="gone">
+                android:background="@drawable/circle">
 
                 <!--                <zone.com.lightsweep.ShineImageView-->
                 <!--                    android:id="@+id/img"-->

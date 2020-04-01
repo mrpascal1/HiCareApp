@@ -57,6 +57,7 @@ import com.ab.hicarerun.network.models.GeneralModel.GeneralPaymentMode;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralTaskStatus;
 import com.ab.hicarerun.network.models.GeneralModel.IncompleteReason;
 import com.ab.hicarerun.network.models.GeneralModel.OnSiteOtpResponse;
+import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyRequest;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
@@ -97,6 +98,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private static final int REQUEST_BANK = 2000;
     private static final int COMPLETION_REQUEST = 3000;
     private static final int CHEMICAL_REQ = 4000;
+    private static final int LESS_PAYMENT_REQ = 5000;
     private Integer pageNumber = 1;
     private String selectedStatus = "";
     private String status = "";
@@ -317,7 +319,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                     public void onResponse(int requestCode, Object data) {
                                         OnSiteOtpResponse response = (OnSiteOtpResponse) data;
                                         if (response.getSuccess()) {
-                                            Toasty.success(getActivity(), "On-Site OTP is sent successfully").show();
+                                            Toasty.success(getActivity(), getString(R.string.on_site_otp_is_sent_successfully)).show();
                                             alertDialog.dismiss();
                                         } else {
                                             Toasty.error(getActivity(), response.getErrorMessage()).show();
@@ -331,7 +333,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                 });
                                 controller.getOnSiteOTP(ONSITE_REQUEST, resourceId, taskId, edtName.getText().toString(), edtmobile.getText().toString());
                             } else {
-                                Toasty.error(getActivity(), "Invalid mobile no.").show();
+                                Toasty.error(getActivity(), getString(R.string.mobile_number_is_invalid)).show();
                             }
                         }
                     });
@@ -349,13 +351,13 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
     private boolean isOnSiteValidate(EditText edtmobile, EditText edtName) {
         if (edtName.getText().toString().length() == 0) {
-            edtName.setError("This field is required");
+            edtName.setError(getString(R.string.this_field_is_required));
             return false;
         } else if (edtmobile.getText().toString().length() == 0) {
-            edtmobile.setError("This field is required");
+            edtmobile.setError(getString(R.string.this_field_is_required));
             return false;
         } else if (edtmobile.getText().toString().length() < 10) {
-            edtmobile.setError("Invalid mobile no.");
+            edtmobile.setError(getString(R.string.mobile_number_is_invalid));
             return false;
         } else {
             return true;
@@ -419,11 +421,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                                 public void onClick(DialogInterface dialog, int whichButton) {
-                                    isRaiseJeopardyClicked = true;
-                                    mFragmentServiceInfoBinding.lnrPaymentOTP.setVisibility(View.VISIBLE);
-
-                                    getValidated(AmountToCollect);
-
+                                    getLessPaymentJeopardy();
                                 }
                             })
                             .setNegativeButton(android.R.string.no, null).show();
@@ -603,6 +601,29 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
     }
 
+    private void getLessPaymentJeopardy() {
+        NetworkCallController controller = new NetworkCallController(this);
+        CWFJeopardyRequest request = new CWFJeopardyRequest();
+        request.setTaskId(taskId);
+        request.setJeopardyText("Less Payment Jeopardy");
+        request.setBatchName("Less_Payment_Jeopardy");
+        request.setRemark("Less Payment Jeopardy");
+        controller.setListner(new NetworkResponseListner() {
+            @Override
+            public void onResponse(int requestCode, Object response) {
+                isRaiseJeopardyClicked = true;
+                mFragmentServiceInfoBinding.lnrPaymentOTP.setVisibility(View.VISIBLE);
+                getValidated(AmountToCollect);
+            }
+
+            @Override
+            public void onFailure(int requestCode) {
+
+            }
+        });
+        controller.insertLessPaymentJeopardy(LESS_PAYMENT_REQ, request);
+    }
+
     private void getServiceDetail() {
         try {
             if ((NewTaskDetailsActivity) getActivity() != null) {
@@ -632,9 +653,9 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     }
                     if (isCombinedTask) {
                         String service = combiedTaskOrders.replace(",", ", ");
-                        mFragmentServiceInfoBinding.txtOrder.setText("Order# " + service);
+                        mFragmentServiceInfoBinding.txtOrder.setText(getString(R.string.service_order)+"# " + service);
                     } else {
-                        mFragmentServiceInfoBinding.txtOrder.setText("Order# " + order);
+                        mFragmentServiceInfoBinding.txtOrder.setText(getString(R.string.service_order)+"# " + order);
                     }
 
                     mFragmentServiceInfoBinding.txtStartTime.setText(start);

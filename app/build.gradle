@@ -24,7 +24,7 @@ android {
         versionCode 21
         versionName "3.5"
         multiDexEnabled true
-
+        dynamicFeatures = [":ondemand"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [
                 onesignal_app_id               : '388766c1-4dc5-4e4d-a206-9b4f583d5d9d',
@@ -36,14 +36,14 @@ android {
         release {
             debuggable false
             minifyEnabled true
-            shrinkResources true
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
         debug {
             debuggable true
             minifyEnabled true
-            shrinkResources true
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -65,69 +65,65 @@ android {
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
     }
+    dynamicFeatures = [":LanguageModule", ":MarathiLanguage"]
+
+
 }
 
 dependencies {
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    api 'androidx.constraintlayout:constraintlayout:1.1.3'
+    api 'androidx.legacy:legacy-support-v4:1.0.0'
 //    compile(name: 'ezetapandroidsdk_2_0', ext: 'aar')
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'com.google.android.material:material:1.0.0'
+    api 'androidx.appcompat:appcompat:1.1.0'
+    api 'androidx.constraintlayout:constraintlayout:1.1.3'
+    api 'com.google.android.material:material:1.1.0'
 //    implementation 'uk.co.chrisjenx:calligraphy:2.2.0'
-    implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.12.1'
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
-    implementation 'com.google.android.gms:play-services-location:17.0.0'
-    implementation 'com.sothree.slidinguppanel:library:3.4.0'
-    implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'io.github.inflationx:calligraphy3:3.1.1'
-    implementation 'com.jcminarro:Philology:2.1.0'
-    implementation 'io.github.inflationx:viewpump:2.0.3'
-    implementation 'design.ivisionblog.apps:feedback-dialog:0.0.1-alpha'
-//    implementation 'com.thoughtbot:expandablerecyclerview:1.3'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation('com.onesignal:OneSignal:[3.11.4, 3.99.99]') {
-        exclude group: 'com.google.android.gms'
-    }
-//    implementation 'com.weiwangcn.betterspinner:library-material:1.1.0'
-    implementation 'com.orhanobut:logger:2.2.0'
-//    implementation 'net.igenius:customcheckbox:1.3'
-    implementation 'com.github.jrvansuita:PickImage:+'
+    api 'androidx.multidex:multidex:2.0.1'
+    api 'com.squareup.retrofit2:retrofit:2.5.0'
+    api 'com.squareup.retrofit2:converter-gson:2.5.0'
+    api 'com.squareup.okhttp3:logging-interceptor:3.12.0'
+    api 'com.squareup.okhttp3:okhttp:3.12.1'
+    api 'com.google.android.gms:play-services-maps:17.0.0'
+    api 'com.google.android.gms:play-services-location:17.0.0'
+    api 'com.sothree.slidinguppanel:library:3.4.0'
+    api 'com.squareup.picasso:picasso:2.71828'
+    api 'io.github.inflationx:calligraphy3:3.1.1'
+    api 'io.github.inflationx:viewpump:2.0.3'
+    api 'design.ivisionblog.apps:feedback-dialog:0.0.1-alpha'
+    api 'androidx.legacy:legacy-support-v4:1.0.0'
+//    implementation('com.onesignal:OneSignal:[3.11.4, 3.99.99]') {
+//        exclude group: 'com.google.android.gms'
+//    }
+    api 'com.onesignal:OneSignal:3.12.6'
+    api 'com.orhanobut:logger:2.2.0'
+    api 'com.github.jrvansuita:PickImage:+'
 //    implementation 'com.github.bumptech.glide:glide:4.9.0'
-//    implementation 'com.github.shts:TriangleLabelView:1.1.2'
-    implementation 'com.github.deano2390:MaterialShowcaseView:1.3.4@aar'
-    implementation 'com.github.GrenderG:Toasty:1.4.2'
-//    implementation 'com.mikhaellopez:circularimageview:4.0.2'
-//    implementation 'com.github.myinnos:AndroidScratchCard:v1.0'
-    implementation 'hyogeun.github.com.colorratingbar:ColorRatingBar:1.0.1'
-    implementation 'com.github.mukeshsolanki:android-otpview-pinview:2.0.3'
-    implementation "com.splunk.mint:mint:5.0.0"
-//    implementation 'com.ss.bannerslider:bannerslider:2.0.0'
-    implementation 'com.clock.scratch:Scratch:1.0.0'
-    implementation 'de.hdodenhof:circleimageview:3.0.1'
-    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    api 'com.github.deano2390:MaterialShowcaseView:1.3.4@aar'
+    api 'com.github.GrenderG:Toasty:1.4.2'
+    api 'hyogeun.github.com.colorratingbar:ColorRatingBar:1.0.1'
+    api 'com.github.mukeshsolanki:android-otpview-pinview:2.0.3'
+    api "com.splunk.mint:mint:5.0.0"
+    api 'com.clock.scratch:Scratch:1.0.0'
+    api 'de.hdodenhof:circleimageview:3.0.1'
+    api 'com.github.bumptech.glide:glide:4.9.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
-    implementation 'com.bogdwellers:pinchtozoom:0.1'
-    implementation 'com.ogaclejapan.smarttablayout:library:2.0.0@aar'
-//    implementation "com.daimajia.swipelayout:library:1.2.0@aar"
+    api 'com.bogdwellers:pinchtozoom:0.1'
+    api 'com.ogaclejapan.smarttablayout:library:2.0.0@aar'
     // ExoPlayer
-    implementation 'com.google.android.exoplayer:exoplayer:2.8.4' // 2.9.0 has min sdk 26
+    api 'com.google.android.exoplayer:exoplayer:2.8.4' // 2.9.0 has min sdk 26
     // lib for SMS verification (Phone Auth)
-    implementation 'com.google.android.gms:play-services-base:17.1.0'
-    implementation 'com.google.android.gms:play-services-identity:17.0.0'
-    implementation 'com.google.android.gms:play-services-auth:17.0.0'
-    implementation 'com.google.android.gms:play-services-auth-api-phone:17.3.0'
-    implementation 'com.github.armcha:SpaceNavigationView:1.6.0'
-    implementation 'com.karumi:dexter:4.2.0'
-    implementation 'com.waynell.library:drop-animation-view:1.0'
-    implementation 'com.facebook.shimmer:shimmer:0.4.0'
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.1.0'
-
+    api 'com.google.android.gms:play-services-base:17.1.0'
+    api 'com.google.android.gms:play-services-identity:17.0.0'
+    api 'com.google.android.gms:play-services-auth:17.0.0'
+    api 'com.google.android.gms:play-services-auth-api-phone:17.4.0'
+    api 'com.github.armcha:SpaceNavigationView:1.6.0'
+    api 'com.karumi:dexter:5.0.0'
+    api 'com.waynell.library:drop-animation-view:1.0'
+    api 'com.facebook.shimmer:shimmer:0.5.0'
+    api 'pl.droidsonroids.gif:android-gif-drawable:1.1.0'
+    //dynamic module injection
+//    api 'com.google.android.play:core:1.7.1'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'

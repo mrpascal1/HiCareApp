@@ -128,24 +128,6 @@ public class AppUtils {
         return resources;
     }
 
-
-    private void saveLanguage(String lang, Context context) {
-        // we can use this method to save language
-      SharedPreferencesUtility.savePrefString(context, SharedPreferencesUtility.PREF_LANG, lang);
-        // we have saved
-        // recreate activity after saving to load the new language, this is the same
-        // as refreshing activity to load new language
-
-    }
-
-    private String getLangCode(Context context) {
-        String code = SharedPreferencesUtility.getPrefString(context, SharedPreferencesUtility.PREF_LANG);
-        // save english 'en' as the default language
-        return code;
-    }
-
-
-
     public static boolean hasLollipop() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }

@@ -34,7 +34,12 @@
         <item
             android:id="@+id/nav_onsite"
             android:icon="@drawable/ic_onsite"
-            android:title="On-Site Tasks" />
+            android:title="@string/on_site_tasks" />
+
+        <item
+            android:id="@+id/nav_bazaar"
+            android:icon="@drawable/ic_bazaar"
+            android:title="@string/bazaar" />
 
         <item
             android:id="@+id/nav_groom"
@@ -44,7 +49,7 @@
         <item
             android:id="@+id/nav_summary"
             android:icon="@drawable/ic_data_table"
-            android:title="Today's Job Count" />
+            android:title="@string/today_s_job_count" />
 
         <item
             android:id="@+id/nav_myid"
@@ -71,17 +76,17 @@
             android:title="@string/referral_code" />
 
         <item
+            android:id="@+id/nav_language"
+            android:icon="@drawable/ic_language"
+            android:title="@string/change_language"
+            />
+
+        <item
             android:id="@+id/nav_help"
             android:icon="@drawable/ic_info"
             android:title="@string/help"
             />
 
-
-        <item
-            android:id="@+id/nav_language"
-            android:icon="@drawable/ic_language"
-            android:title="@string/change_language"
-            />
 
         <item
             android:id="@+id/nav_logout"

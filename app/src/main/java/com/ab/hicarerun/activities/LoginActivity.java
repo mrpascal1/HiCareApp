@@ -32,6 +32,7 @@ import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.GPSUtils;
 //import com.ab.hicarerun.utils.LocaleHelper;
 import com.ab.hicarerun.utils.LocaleHelper;
+
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -51,12 +52,12 @@ public class LoginActivity extends BaseActivity {
     private ProgressDialog progress;
     private boolean isGPS = false;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActivityLoginBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_login);
+
         progress = new ProgressDialog(this, R.style.TransparentProgressDialog);
         progress.setCancelable(false);
         new GPSUtils(this).turnGPSOn(isGPSEnable -> {
@@ -71,7 +72,6 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void attachBaseContext(Context base) {
-//        super.attachBaseContext(LocaleHelper.onAttach(base));
         super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
 
     }

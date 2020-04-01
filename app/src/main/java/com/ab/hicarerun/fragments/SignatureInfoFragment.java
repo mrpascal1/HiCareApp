@@ -481,7 +481,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                             sendFeedback();
                         } else {
                             Toasty.error(getActivity(),
-                                    "You are not allowed to send feedback link as you have not spent adequate time. Please follow the correct procedure and deliver the job properly",
+                                    getString(R.string.spent_adequate_time),
                                     Toasty.LENGTH_LONG).show();
                             getValidate();
                         }
@@ -538,7 +538,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     public void onResponse(int requestCode, Object response) {
                         FeedbackResponse refResponse = (FeedbackResponse) response;
                         if (refResponse.getSuccess()) {
-                            Toasty.success(getActivity(), "Feedback link sent successfully.", Toasty.LENGTH_LONG).show();
+                            Toasty.success(getActivity(), getString(R.string.feedback_link_spent_successfully), Toasty.LENGTH_LONG).show();
                             getValidate();
                         }
                     }
@@ -623,10 +623,10 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                                         public void onResponse(int requestCode, Object response) {
                                             PostAttachmentResponse postResponse = (PostAttachmentResponse) response;
                                             if (postResponse.getSuccess()) {
-                                                Toasty.success(getActivity(), "Job card uploaded successfully", Toast.LENGTH_LONG).show();
+                                                Toasty.success(getActivity(), getString(R.string.jobcard_uploaded_successfully), Toast.LENGTH_LONG).show();
                                                 getAttachmentList();
                                             } else {
-                                                Toasty.error(getActivity(), "Uploading Failed", Toast.LENGTH_LONG).show();
+                                                Toasty.error(getActivity(), getString(R.string.uploading_failed), Toast.LENGTH_LONG).show();
                                             }
                                         }
 

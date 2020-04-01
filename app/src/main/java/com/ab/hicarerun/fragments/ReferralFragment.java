@@ -65,7 +65,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
         // Required empty public constructor
     }
 
-    public static ReferralFragment newInstance(String taskId, String technicianMobileNo ) {
+    public static ReferralFragment newInstance(String taskId, String technicianMobileNo) {
         Bundle args = new Bundle();
         args.putString(ARG_TASK, taskId);
         args.putString(ARGS_MOBILE, technicianMobileNo);
@@ -73,7 +73,6 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
         fragment.setArguments(args);
         return fragment;
     }
-
 
 
     @Override
@@ -129,7 +128,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
             };
             ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeToDeleteCallback);
             itemTouchhelper.attachToRecyclerView(mfragmentReferralBinding.recycleView);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -148,7 +147,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
             NetworkCallController controller = new NetworkCallController(this);
             controller.setListner(this);
             controller.getDeleteReferrals(DELETE_REFERRAL_REQUEST, request);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -159,7 +158,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
             NetworkCallController controller = new NetworkCallController(this);
             controller.setListner(this);
             controller.getReferrals(GET_REFERRAL_REQUEST, taskId);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -179,7 +178,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
 
                     alertDialogBuilder.setView(promptsView);
 
-                    alertDialogBuilder.setTitle("Add Referral");
+                    alertDialogBuilder.setTitle(getString(R.string.add_referral));
                     final AlertDialog alertDialog = alertDialogBuilder.create();
                     final AppCompatEditText edt_fname =
                             (AppCompatEditText) promptsView.findViewById(R.id.edt_firstname);
@@ -208,7 +207,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                         if (mGeneralRealmModel.get(0).getAlternateMobileNumber() != null) {
                             Alt_Mobile = mGeneralRealmModel.get(0).getAlternateMobileNumber();
                         }
-                        if (technicianMobileNo != null && technicianMobileNo.length()>0) {
+                        if (technicianMobileNo != null && technicianMobileNo.length() > 0) {
                             Technicain_Mobile = technicianMobileNo;
                         }
 
@@ -282,7 +281,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
             NetworkCallController controller = new NetworkCallController(this);
             controller.setListner(this);
             controller.getDeleteReferrals(DELETE_REFERRAL_REQUEST, request);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -317,8 +316,8 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                     } else {
                         mfragmentReferralBinding.emptyTask.setVisibility(View.VISIBLE);
                     }
-                }catch (Exception e){
-                   e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
                 break;
@@ -334,9 +333,9 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
 
                         mAdapter.notifyDataSetChanged();
                     } else {
-                        Toast.makeText(getActivity(), "Failed.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), getString(R.string.failed), Toast.LENGTH_LONG).show();
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
@@ -354,7 +353,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
 
     private boolean validateSaveReferral(AppCompatEditText edt_fname, AppCompatEditText edt_lname, AppCompatEditText edt_contact, AppCompatEditText edtEmail, String mobile, String alt_Mobile, String technicain_Mobile) {
         if (edt_fname.getText().toString().trim().length() == 0) {
-            edt_fname.setError("Name is required!");
+            edt_fname.setError(getString(R.string.name_is_required));
             edt_fname.requestFocus();
             return false;
         } /*else if (edt_lname.getText().toString().trim().length() == 0) {
@@ -362,36 +361,26 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
             edt_lname.requestFocus();
             return false;
         }*/ else if (edt_contact.getText().toString().trim().length() == 0) {
-            edt_contact.setError("Mobile number is required!");
+            edt_contact.setError(getString(R.string.mobile_number_is_required));
             edt_contact.requestFocus();
             return false;
         } else if (edt_contact.getText().toString().trim().length() < 10) {
-            edt_contact.setError("Mobile number is invalid!");
+            edt_contact.setError(getString(R.string.mobile_number_is_invalid));
             edt_contact.requestFocus();
             return false;
         } else if (edt_contact.getText().toString().equals(mobile)) {
-            edt_contact.setError("Mobile number is invalid!");
+            edt_contact.setError(getString(R.string.mobile_number_is_invalid));
             edt_contact.requestFocus();
             return false;
         } else if (edt_contact.getText().toString().equals(alt_Mobile)) {
-            edt_contact.setError("Mobile number is invalid!");
+            edt_contact.setError(getString(R.string.mobile_number_is_invalid));
             edt_contact.requestFocus();
             return false;
         } else if (edt_contact.getText().toString().equals(technicain_Mobile)) {
-            edt_contact.setError("Mobile number is invalid!");
+            edt_contact.setError(getString(R.string.mobile_number_is_invalid));
             edt_contact.requestFocus();
             return false;
-        }
-        /* else if (edtEmail.getText().length() > 0) {
-            if (!edtEmail.getText().toString().trim().matches(emailPattern)) {
-                edtEmail.setError("Email id is invalid!");
-                edtEmail.requestFocus();
-                return false;
-            } else {
-                return true;
-            }
-        }*/
-        else {
+        } else {
             return true;
         }
     }

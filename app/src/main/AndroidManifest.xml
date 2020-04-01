@@ -14,8 +14,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <!-- <uses-permission -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- <uses-permission -->
     <!-- android:name="android.permission.RECEIVE_SMS" -->
     <!-- tools:node="remove" /> -->
     <!-- <uses-permission -->
@@ -51,9 +50,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".utils.notifications.ActivityTransparentPopup" />
-        <activity android:name=".activities.RewardsHistoryActivity" />
-        <activity android:name=".activities.OfferActivity" />
+        <activity android:name=".activities.OffersHistoryActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.BazaarActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".utils.notifications.ActivityTransparentPopup"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.RewardsHistoryActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.OfferActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.TechChemicalCountActivity"
             android:parentActivityName=".activities.HomeActivity"
@@ -234,7 +240,6 @@
                 android:resource="@xml/image_path" />
         </provider>
 
-
         <service
             android:name=".utils.notifications.OneSignalSilentNotificationHandlerService"
             android:exported="false"
@@ -244,8 +249,9 @@
             </intent-filter>
         </service>
 
-        <meta-data android:name="com.onesignal.NotificationOpened.DEFAULT"
-            android:value="DISABLE"/>
+        <meta-data
+            android:name="com.onesignal.NotificationOpened.DEFAULT"
+            android:value="DISABLE" />
     </application>
 
 </manifest>

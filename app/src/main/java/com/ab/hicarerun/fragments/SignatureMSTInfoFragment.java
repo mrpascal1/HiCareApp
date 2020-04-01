@@ -285,9 +285,9 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                     PostAttachmentResponse deleteResponse = (PostAttachmentResponse) data;
                     if (deleteResponse.getSuccess()) {
                         getAttachmentList();
-                        Toasty.success(getActivity(), "Deleted successfully.", Toasty.LENGTH_SHORT).show();
+                        Toasty.success(getActivity(), getString(R.string.deleted_successfully), Toasty.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(getActivity(), "Failed.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), getString(R.string.failed), Toast.LENGTH_LONG).show();
                     }
                 }
 
@@ -396,7 +396,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
             alertDialogBuilder.setView(promptsView);
 
             final AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialogBuilder.setTitle("Signature");
+            alertDialogBuilder.setTitle(getString(R.string.signature));
             final RelativeLayout lnr_screen =
                     (RelativeLayout) promptsView.findViewById(R.id.lnr_screen);
             final AppCompatImageView img_right =
@@ -474,7 +474,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                             sendFeedback();
                         } else {
                             Toasty.error(getActivity(),
-                                    "You are not allowed to send feedback link as you have not spent adequate time. Please follow the correct procedure and deliver the job properly",
+                                    getString(R.string.spent_adequate_time),
                                     Toasty.LENGTH_LONG).show();
                             getValidate();
                         }
@@ -502,7 +502,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
             View promptsView = li.inflate(R.layout.link_confirm_dialog, null);
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
             alertDialogBuilder.setView(promptsView);
-            alertDialogBuilder.setTitle("Feedback Link");
+            alertDialogBuilder.setTitle(getString(R.string.feedback_link));
             final AlertDialog alertDialog = alertDialogBuilder.create();
             final AppCompatEditText edtmobile =
                     promptsView.findViewById(R.id.edtmobile);
@@ -531,7 +531,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                     public void onResponse(int requestCode, Object response) {
                         FeedbackResponse refResponse = (FeedbackResponse) response;
                         if (refResponse.getSuccess()) {
-                            Toasty.success(getActivity(), "Feedback link sent successfully.", Toasty.LENGTH_LONG).show();
+                            Toasty.success(getActivity(), getString(R.string.feedback_link_spent_successfully), Toasty.LENGTH_LONG).show();
                             getValidate();
                         }
                     }
@@ -614,10 +614,10 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                                         public void onResponse(int requestCode, Object response) {
                                             PostAttachmentResponse postResponse = (PostAttachmentResponse) response;
                                             if (postResponse.getSuccess()) {
-                                                Toasty.success(getActivity(), "Job card uploaded successfully.", Toast.LENGTH_LONG).show();
+                                                Toasty.success(getActivity(), getString(R.string.jobcard_uploaded_successfully), Toast.LENGTH_LONG).show();
                                                 getAttachmentList();
                                             } else {
-                                                Toast.makeText(getActivity(), "Posting Failed.", Toast.LENGTH_LONG).show();
+                                                Toast.makeText(getActivity(), getString(R.string.uploading_failed), Toast.LENGTH_LONG).show();
                                             }
                                         }
 
@@ -1061,10 +1061,10 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                     public void onResponse(int requestCode, Object response) {
                         PostAttachmentResponse postResponse = (PostAttachmentResponse) response;
                         if (postResponse.getSuccess()) {
-                            Toasty.success(getActivity(), "Job card uploaded successfully.", Toast.LENGTH_LONG).show();
+                            Toasty.success(getActivity(), getString(R.string.jobcard_uploaded_successfully), Toast.LENGTH_LONG).show();
                             getAttachmentList();
                         } else {
-                            Toast.makeText(getActivity(), "Posting Failed.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(), getString(R.string.uploading_failed), Toast.LENGTH_LONG).show();
                         }
                     }
 

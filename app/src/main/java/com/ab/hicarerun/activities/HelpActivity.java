@@ -39,24 +39,21 @@ public class HelpActivity extends AppCompatActivity implements UserHelpClickHand
 
     @Override
     public void onContactNoClicked(View view) {
-
-        try{
+        try {
             String number = mActivityHelpBinding.txtNumber.getText().toString();
             Intent callIntent = new Intent(Intent.ACTION_DIAL);
             callIntent.setData(Uri.parse("tel:" + number));
             startActivity(callIntent);
-
-        }catch (Exception e){
+        } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
                 assert mLoginRealmModels.get(0) != null;
-                String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "onContactNoClicked", lineNo,userName,DeviceName);
+                String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "onContactNoClicked", lineNo, userName, DeviceName);
             }
         }
-
     }
 
 
@@ -64,7 +61,6 @@ public class HelpActivity extends AppCompatActivity implements UserHelpClickHand
     protected void attachBaseContext(Context base) {
 //        super.attachBaseContext(LocaleHelper.onAttach(base));
         super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
-
     }
 
     @Override
@@ -77,10 +73,10 @@ public class HelpActivity extends AppCompatActivity implements UserHelpClickHand
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
                 assert mLoginRealmModels.get(0) != null;
-                String userName = "TECHNICIAN NAME : "+mLoginRealmModels.get(0).getUserName();
+                String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                String DeviceName = "DEVICE_NAME : "+ Build.DEVICE+", DEVICE_VERSION : "+ Build.VERSION.SDK_INT;
-                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "onEmailClicked", lineNo,userName,DeviceName);
+                String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "onEmailClicked", lineNo, userName, DeviceName);
             }
         }
     }

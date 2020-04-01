@@ -8,16 +8,15 @@
     <color name="innerBlue">#7C9DFF</color>
     <color name="sky">#48b4e0</color>
     <color name="popup">#78b348</color>
-
     <color name="colorAccentOrange">#FF5722</color>
     <color name="lightorange">#ffff8800</color>
     <color name="maroon">#8B0000</color>
-    <color name="crimson">#DC143C	</color>
+    <color name="crimson">#DC143C</color>
     <color name="bggrey">#FFDDDDDD</color>
     <color name="link">#0000FF</color>
     <color name="teal">#008080</color>
     <color name="red">#ff0000</color>
-    <color name="indigo">	#4B0082</color>
+    <color name="indigo">#4B0082</color>
     <color name="pink">#ffc0cb</color>
     <color name="pink_sec">#EC8D8D</color>
     <color name="dodgeblue">#1E90FF</color>
@@ -68,5 +67,6 @@
     <color name="smoke_gray">#F5F5F5</color>
     <color name="late_pink">#eb9605</color>
     <color name="colorAccentTransparent">#501f5c10</color>
+    <color name="greenlight">#ddfada</color>
 
 </resources>

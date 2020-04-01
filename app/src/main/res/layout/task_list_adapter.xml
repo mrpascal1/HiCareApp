@@ -769,6 +769,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
                             android:text="@string/mobile_no"
+                            android:lines="1"
+                            android:ellipsize="end"
                             android:textColor="@color/colorPrimaryDark"
                             android:textSize="12sp" />
 
@@ -801,6 +803,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
                             android:text="@string/alt_mobile_no"
+                            android:lines="1"
+                            android:ellipsize="end"
                             android:textColor="@color/colorPrimaryDark"
                             android:textSize="12sp" />
 
@@ -832,6 +836,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
                             android:text="@string/phone_no"
+                            android:lines="1"
+                            android:ellipsize="end"
                             android:textColor="@color/colorPrimaryDark"
                             android:textSize="12sp" />
 

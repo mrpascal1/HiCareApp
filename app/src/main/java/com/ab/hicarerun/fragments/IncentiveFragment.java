@@ -69,7 +69,7 @@ public class IncentiveFragment extends BaseFragment {
         mFragmentIncentiveBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_incentive, container, false);
         getActivity().setTitle(getResources().getString(R.string.incentives_in));
 
-        if ( getActivity() != null) {
+        if (getActivity() != null) {
             LinearLayout toolbar = getActivity().findViewById(R.id.toolbar);
             toolbar.setVisibility(View.GONE);
             LinearLayout custom_toolbar = getActivity().findViewById(R.id.customToolbar);
@@ -83,7 +83,8 @@ public class IncentiveFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        String text = "<font>Incentive Earned</font><font color=#ff0000>*</font>";
+        String txtEarned = getString(R.string.incentive_earned_incentive);
+        String text = txtEarned + "<font color=#ff0000>*</font>";
         mFragmentIncentiveBinding.txtEarned.setText(Html.fromHtml(text));
 
         mFragmentIncentiveBinding.recycleView.setHasFixedSize(true);
@@ -97,7 +98,7 @@ public class IncentiveFragment extends BaseFragment {
 
     private void getTechDeails() {
         try {
-            if ( getActivity() != null) {
+            if (getActivity() != null) {
                 RealmResults<LoginResponse> LoginRealmModels =
                         BaseApplication.getRealm().where(LoginResponse.class).findAll();
                 assert LoginRealmModels.get(0) != null;
@@ -152,7 +153,7 @@ public class IncentiveFragment extends BaseFragment {
                             mFragmentIncentiveBinding.txtIncentive.setText("\u20B9" + response.getTotalIncentive());
                             if (response.getIncentiveDate() != null) {
                                 mFragmentIncentiveBinding.txtDate.setVisibility(View.VISIBLE);
-                                mFragmentIncentiveBinding.txtDate.setText(getResources().getString(R.string.incentive_as_on) + response.getIncentiveDate());
+                                mFragmentIncentiveBinding.txtDate.setText(getResources().getString(R.string.incentive_as_on) + " " + response.getIncentiveDate());
                             } else {
                                 mFragmentIncentiveBinding.txtDate.setVisibility(View.GONE);
                             }
@@ -161,6 +162,7 @@ public class IncentiveFragment extends BaseFragment {
                                 mAdapter.notifyDataSetChanged();
                             }
                         }
+
                         @Override
                         public void onFailure(int requestCode) {
 
