@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
+import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.network.models.AttachmentModel.AttachmentDeleteRequest;
 import com.ab.hicarerun.network.models.AttachmentModel.AttachmentMSTResponse;
@@ -38,6 +39,7 @@ import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonModel;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
+import com.ab.hicarerun.network.models.ModelQRCode.QRCodeResponse;
 import com.ab.hicarerun.network.models.NPSModel.NPSDataResponse;
 import com.ab.hicarerun.network.models.OffersModel.OffersHistoryResponse;
 import com.ab.hicarerun.network.models.OffersModel.OffersResponse;
@@ -231,7 +233,8 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<SendOtpResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
+
                         }
                     });
         } catch (Exception e) {
@@ -274,7 +277,8 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<LoginResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
+
                         }
                     });
         } catch (Exception e) {
@@ -372,7 +376,8 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<TaskListResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
+
                         }
                     });
         } catch (Exception e) {
@@ -453,7 +458,7 @@ public class NetworkCallController {
                             try {
                                 progress.dismiss();
                                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                builder.setMessage("Something went wrong, please try again!");
+                                builder.setMessage(mContext.getString(R.string.something_went_wrong));
                                 builder.setNeutralButton("Dismiss", (dialogInterface, i) -> dialogInterface.dismiss()).create().show();
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -501,7 +506,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<ReferralResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -571,7 +576,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<ReferralListResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -615,7 +620,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<ReferralResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -657,7 +662,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<FeedbackResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -700,7 +705,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<PostAttachmentResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -768,7 +773,7 @@ public class NetworkCallController {
 
                         @Override
                         public void onFailure(Call<GetAttachmentResponse> call, Throwable t) {
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -836,7 +841,7 @@ public class NetworkCallController {
 
                         @Override
                         public void onFailure(Call<AttachmentMSTResponse> call, Throwable t) {
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -881,7 +886,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<PostAttachmentResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -1019,7 +1024,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<ChemicalResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -1064,7 +1069,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<ChemicalResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -1170,7 +1175,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<HandShakeResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -1237,7 +1242,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<ContinueHandShakeResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -1280,7 +1285,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<TrainingResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -1408,7 +1413,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<PaymentLinkResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -1475,7 +1480,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<TechGroomingResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -1545,7 +1550,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<BasicResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -1617,7 +1622,7 @@ public class NetworkCallController {
                         public void onFailure(Call<TechnicianProfileDetails> call, Throwable t) {
                             if (mContext != null) {
                                 mContext.dismissProgressDialog();
-                                mContext.showServerError("Something went wrong, please try again !!!");
+                                mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                             }
                         }
                     });
@@ -1691,7 +1696,7 @@ public class NetworkCallController {
                         public void onFailure(Call<IncentiveResponse> call, Throwable t) {
                             if (mContext != null) {
                                 mContext.dismissProgressDialog();
-                                mContext.showServerError("Something went wrong, please try again !!!");
+                                mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                             }
                         }
                     });
@@ -1703,11 +1708,11 @@ public class NetworkCallController {
 
     /*[Get Jeopardy Reasons]*/
 
-    public void getJeopardyReasons(final int requestCode, final String taskId) {
+    public void getJeopardyReasons(final int requestCode, final String taskId, final String language) {
         try {
             mContext.showProgressDialog();
             BaseApplication.getRetrofitAPI(true)
-                    .getJeopardyReasons(taskId)
+                    .getJeopardyReasons(taskId, language)
                     .enqueue(new Callback<JeopardyReasonModel>() {
                         @Override
                         public void onResponse(Call<JeopardyReasonModel> call,
@@ -1740,7 +1745,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<JeopardyReasonModel> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -1786,7 +1791,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<CWFJeopardyResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -1832,7 +1837,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<CWFJeopardyResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -1876,7 +1881,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<AttendanceDetailResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -1941,7 +1946,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<VoucherResponseMain> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -1986,7 +1991,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<WelcomeVideoResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -2032,7 +2037,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<OnSiteOtpResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -2077,7 +2082,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<BasicResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -2122,7 +2127,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<BankResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -2166,7 +2171,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<OnSiteAccountResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -2210,7 +2215,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<OnSiteAreaResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -2254,7 +2259,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<SaveAccountAreaResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -2298,7 +2303,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<OnSiteRecentResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -2343,7 +2348,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<BankResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -2387,7 +2392,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<SaveAccountAreaResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -2454,7 +2459,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<ChemicalCountResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -2525,7 +2530,7 @@ public class NetworkCallController {
                         public void onFailure(Call<String> call, Throwable t) {
                             if (mContext != null) {
                                 mContext.dismissProgressDialog();
-                                mContext.showServerError("Something went wrong, please try again !!!");
+                                mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                             }
                         }
                     });
@@ -2598,7 +2603,7 @@ public class NetworkCallController {
                         public void onFailure(Call<RewardsResponse> call, Throwable t) {
                             if (mContext != null) {
                                 mContext.dismissProgressDialog();
-                                mContext.showServerError("Something went wrong, please try again !!!");
+                                mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                             }
                         }
                     });
@@ -2644,7 +2649,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<SaveRedeemResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -2710,7 +2715,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<NPSDataResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -2777,7 +2782,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<OffersResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -2821,7 +2826,7 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<UpdateRewardScratchResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
-                            mContext.showServerError("Something went wrong, please try again !!!");
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -2889,6 +2894,49 @@ public class NetworkCallController {
                         public void onFailure(Call<OffersHistoryResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
                             mContext.showServerError("Something went wrong, please try again !!!");
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void getTaskQRCode(final int requestCode, final String taskNo) {
+        try {
+            mContext.showProgressDialog();
+            BaseApplication.getQRCodeApi()
+                    .getTaskQRCode(taskNo)
+                    .enqueue(new Callback<QRCodeResponse>() {
+                        @Override
+                        public void onResponse(Call<QRCodeResponse> call,
+                                               Response<QRCodeResponse> response) {
+                            mContext.dismissProgressDialog();
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body().getData());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getGroomingTechnicians", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<QRCodeResponse> call, Throwable t) {
+                            mContext.dismissProgressDialog();
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {

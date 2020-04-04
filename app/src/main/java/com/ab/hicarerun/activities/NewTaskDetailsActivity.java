@@ -936,7 +936,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                                     }
                                 } else {
 //                                    progress.dismiss();
-                                    Toast.makeText(NewTaskDetailsActivity.this, updateResponse.getErrorMessage(), Toast.LENGTH_LONG).show();
+                                    Toasty.error(NewTaskDetailsActivity.this, updateResponse.getErrorMessage(), Toasty.LENGTH_LONG).show();
                                 }
                             }
 

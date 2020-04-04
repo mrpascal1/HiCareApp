@@ -504,6 +504,7 @@
     <string name="customer_signature_is_required">Customer signature is required</string>
     <string name="please_upload_your_job_card_service">Please upload your job card</string>
     <string name="please_complete_your_previous_job_first">Please complete your previous job first.</string>
+
     <string name="mark_attendance_home">Mark Attendance</string>
     <string name="welcome_attendance">Welcome</string>
     <string name="please_mark_your_attendance_with_the_face_recognition">, please mark your attendance with the face recognization.</string>
@@ -541,11 +542,9 @@
     <string name="task_deleted_successfully">Task deleted successfully</string>
     <string name="referral_added_successfully">Referral added successfully.</string>
     <string name="deleted_successfully">Deleted successfully.</string>
-    <string name="title_languagemodule">Hi_Language</string>
-    <string name="title_marathilanguage">MarathiLanguage</string>
+    <string name="title_languagemodule" translatable="false">Hi_Language</string>
+    <string name="title_marathilanguage" translatable="false">MarathiLanguage</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="on_site_tasks">On-Site Tasks</string>
     <string name="bazaar">Bazaar</string>
     <string name="today_s_job_count">Today\'s Job Count</string>
@@ -578,5 +577,6 @@
     <string name="there_is_no_tasks_to_display">There is No Tasks to display!</string>
     <string name="logout_exit">Exit</string>
     <string name="logout_do_you_really_want_to_exit">Do you want to exit?</string>
+    <string name="something_went_wrong">Something went wrong, please try again !!!</string>
 
 </resources>

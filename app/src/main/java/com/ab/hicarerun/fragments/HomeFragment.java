@@ -72,12 +72,14 @@ import com.ab.hicarerun.network.models.ProfileModel.Profile;
 import com.ab.hicarerun.network.models.TaskModel.TaskListResponse;
 import com.ab.hicarerun.network.models.TaskModel.Tasks;
 import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.utils.LocaleHelper;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -550,10 +552,10 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                         Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
                         startActivity(Intent.createChooser(intent, "HiCare Run"));
                     } else {
-                        Toast.makeText(getActivity(),  getResources().getString(R.string.customer_location_not_found), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getResources().getString(R.string.customer_location_not_found), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getActivity(),  getResources().getString(R.string.customer_location_not_found), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.customer_location_not_found), Toast.LENGTH_SHORT).show();
                 }
             }
         } catch (Exception e) {
@@ -579,6 +581,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                     public void onResponse(int requestCode, Object response) {
                         try {
                             List<JeopardyReasonsList> list = (List<JeopardyReasonsList>) response;
+                            HashMap<String, String> lanMap = new HashMap<>();
                             dismissProgressDialog();
                             final AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
                             LayoutInflater inflater = LayoutInflater.from(getActivity());
@@ -587,9 +590,10 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
                             if (list != null) {
                                 for (int i = 0; i < list.size(); i++) {
+                                    lanMap.put(list.get(i).getResonName(), list.get(position).getDisplayName());
                                     final RadioButton rbn = new RadioButton(getActivity());
                                     rbn.setId(i);
-                                    rbn.setText(list.get(i).getResonName());
+                                    rbn.setText(list.get(i).getDisplayName());
                                     rbn.setTextSize(15);
                                     RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
                                     params.setMargins(10, 10, 2, 1);
@@ -607,8 +611,9 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                 } else {
                                     if (items != null) {
                                         Log.i("taskId", items.get(position).getTaskId());
+                                        Log.i("reason_name", list.get(radioGroup.getCheckedRadioButtonId()).getResonName());
                                         techHelpline(items.get(position).getTaskId(), "Technician Helpline", "Technician_HelpLine"
-                                                , radioButton.getText().toString());
+                                                , /*radioButton.getText().toString()*/ list.get(radioGroup.getCheckedRadioButtonId()).getResonName());
                                     }
                                     dialogInterface.dismiss();
                                 }
@@ -632,7 +637,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
                     }
                 });
-                controller.getJeopardyReasons(JEOPARDY_REQUEST, items.get(position).getTaskId());
+                controller.getJeopardyReasons(JEOPARDY_REQUEST, items.get(position).getTaskId(), LocaleHelper.getLanguage(getActivity()));
             } else {
                 Toasty.info(Objects.requireNonNull(getActivity()), getResources().getString(R.string.complete_first_job), Toasty.LENGTH_SHORT).show();
             }

@@ -26,6 +26,7 @@ import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonModel;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
+import com.ab.hicarerun.network.models.ModelQRCode.QRCodeResponse;
 import com.ab.hicarerun.network.models.NPSModel.NPSDataResponse;
 import com.ab.hicarerun.network.models.OffersModel.OffersHistoryResponse;
 import com.ab.hicarerun.network.models.OffersModel.OffersResponse;
@@ -74,6 +75,7 @@ public interface IRetrofit {
     //    String ERROR_LOG_URL = "http://52.74.65.15/logging/api/";
     //    http://apps.hicare.in/cwf/datasync/InsertRenewalAppJeopardy
     String BASE_URL = "http://api.hicare.in/mobile/api/";
+    String SCAN_URL = "http://api.hicare.in/taskservice/api/";
     String EXOTEL_URL = "http://apps.hicare.in/api/api/";
     String ERROR_LOG_URL = "http://run.hicare.in/logging/api/";
     String JEOPARDY_URL = "http://apps.hicare.in/cwf/";
@@ -240,8 +242,8 @@ public interface IRetrofit {
     /*[Get Jeopardy Reasons]*/
 
     @GET("Jeopardy/GetHelpLineReasons")
-    Call<JeopardyReasonModel> getJeopardyReasons(@Query("taskId") String taskId);
-
+    Call<JeopardyReasonModel> getJeopardyReasons(@Query("taskId") String taskId,
+                                                 @Query("language") String language);
     /*[CWF JEOPARDY ]*/
 
     @POST("Jeopardy/InsertHelpLineJeopardy")
@@ -343,4 +345,7 @@ public interface IRetrofit {
 
     @GET("ResourceActivity/GetRewardHistory")
     Call<OffersHistoryResponse> getAllRewardsHistory(@Query("resourceId") String resourceId);
+
+    @GET("payment/GenerateTaskQRCode")
+    Call<QRCodeResponse> getTaskQRCode(@Query("taskNo") String taskNo);
 }
