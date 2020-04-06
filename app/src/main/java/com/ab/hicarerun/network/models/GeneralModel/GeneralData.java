@@ -3,6 +3,9 @@ package com.ab.hicarerun.network.models.GeneralModel;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.realm.RealmList;
 import io.realm.RealmModel;
 import io.realm.RealmObject;
@@ -224,6 +227,10 @@ public class GeneralData implements RealmModel {
     @SerializedName("ActualAmountToCollect")
     @Expose
     private String ActualAmountToCollect;
+
+    @SerializedName("TaskCheckList")
+    @Expose
+    private RealmList<TaskCheckList> TaskCheckList = null;
 
     public GeneralData() {
         SchedulingStatus = "NA";
@@ -707,5 +714,13 @@ public class GeneralData implements RealmModel {
 
     public void setActualAmountToCollect(String actualAmountToCollect) {
         ActualAmountToCollect = actualAmountToCollect;
+    }
+
+    public RealmList<TaskCheckList> getTaskCheckList() {
+        return TaskCheckList;
+    }
+
+    public void setTaskCheckList(RealmList<TaskCheckList> taskCheckList) {
+        TaskCheckList = taskCheckList;
     }
 }

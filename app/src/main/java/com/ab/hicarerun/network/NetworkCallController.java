@@ -2,7 +2,6 @@ package com.ab.hicarerun.network;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
@@ -22,6 +21,7 @@ import com.ab.hicarerun.network.models.AttendanceModel.AttendanceDetailResponse;
 import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
 import com.ab.hicarerun.network.models.AttendanceModel.ProfilePicRequest;
 import com.ab.hicarerun.network.models.BasicResponse;
+import com.ab.hicarerun.network.models.CheckListModel.CheckListResponse;
 import com.ab.hicarerun.network.models.ChemicalCountModel.ChemicalCountResponse;
 import com.ab.hicarerun.network.models.ChemicalModel.ChemicalResponse;
 import com.ab.hicarerun.network.models.ExotelModel.ExotelResponse;
@@ -72,6 +72,7 @@ import com.ab.hicarerun.network.models.TrainingModel.WelcomeVideoResponse;
 import com.ab.hicarerun.network.models.UpdateAppModel.UpdateResponse;
 import com.ab.hicarerun.network.models.voucher.VoucherResponseMain;
 import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.utils.LocaleHelper;
 
 import org.json.JSONObject;
 
@@ -386,10 +387,10 @@ public class NetworkCallController {
 
     }
 
-    public void getTaskDetailById(final int requestCode, final String userId, final String taskId, final Boolean isCombinedTask, final Activity context, ProgressDialog progress) {
+    public void getTaskDetailById(final int requestCode, final String userId, final String taskId, final Boolean isCombinedTask, String language, final Activity context, ProgressDialog progress) {
         try {
             BaseApplication.getRetrofitAPI(true)
-                    .getTasksDetailById(userId, taskId, isCombinedTask)
+                    .getTasksDetailById(userId, taskId, isCombinedTask, language)
                     .enqueue(new Callback<GeneralResponse>() {
                         @Override
                         public void onResponse(Call<GeneralResponse> call,
@@ -414,7 +415,7 @@ public class NetworkCallController {
                                             Realm.getDefaultInstance().beginTransaction();
                                             Realm.getDefaultInstance().copyToRealmOrUpdate(response);
                                             Realm.getDefaultInstance().commitTransaction();
-                                            getTaskDetailById(requestCode, userId, taskId, isCombinedTask, context, progress);
+                                            getTaskDetailById(requestCode, userId, taskId, isCombinedTask, language, context, progress);
                                         }
 
                                         @Override
@@ -2937,6 +2938,47 @@ public class NetworkCallController {
                         public void onFailure(Call<QRCodeResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
                             mContext.showServerError(mContext.getString(R.string.something_went_wrong));
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public void saveCheckList(final int requestCode, final String taskId, final String resourceId, final Integer checkListId, final String optionName) {
+        try {
+            BaseApplication.getRetrofitAPI(true)
+                    .saveCheckList(taskId, resourceId, checkListId, optionName)
+                    .enqueue(new Callback<CheckListResponse>() {
+                        @Override
+                        public void onResponse(Call<CheckListResponse> call,
+                                               Response<CheckListResponse> response) {
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+//                                        mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getGroomingTechnicians", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<CheckListResponse> call, Throwable t) {
+//                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {

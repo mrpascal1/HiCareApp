@@ -54,6 +54,7 @@
     <color name="gold">#FFD700</color>
     <color name="yellow2">#FFBD00</color>
     <color name="transparent_black">#55000000</color>
+    <color name="transparent_more_black">#45000000</color>
     <color name="transparent_white">#55ffffff</color>
     <color name="trans_primary">#b32bb77a</color>
     <color name="transparent_blacke">#b3000000</color>

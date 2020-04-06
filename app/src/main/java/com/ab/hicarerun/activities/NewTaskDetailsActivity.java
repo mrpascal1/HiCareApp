@@ -8,6 +8,8 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.animation.Animator;
@@ -17,7 +19,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -35,6 +36,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,7 +45,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,21 +52,23 @@ import android.widget.Toast;
 import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.R;
+import com.ab.hicarerun.adapter.CheckListAdapter;
 import com.ab.hicarerun.adapter.TaskViewPagerAdapter;
 import com.ab.hicarerun.databinding.ActivityNewTaskDetailsBinding;
 import com.ab.hicarerun.fragments.ChemicalInfoFragment;
-import com.ab.hicarerun.fragments.HomeFragment;
 import com.ab.hicarerun.fragments.ReferralFragment;
 import com.ab.hicarerun.fragments.ServiceInfoFragment;
 import com.ab.hicarerun.fragments.SignatureInfoFragment;
 import com.ab.hicarerun.fragments.SignatureMSTInfoFragment;
+import com.ab.hicarerun.handler.OnCheckListItemClickHandler;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
 import com.ab.hicarerun.handler.UserTaskDetailsClickListener;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
+import com.ab.hicarerun.network.models.CheckListModel.CheckListResponse;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralResponse;
+import com.ab.hicarerun.network.models.GeneralModel.TaskCheckList;
 import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.network.models.NPSModel.NPSData;
 import com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTaskResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
@@ -93,17 +96,13 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-import design.ivisionblog.apps.reviewdialoglibrary.FeedBackActionsListeners;
-import design.ivisionblog.apps.reviewdialoglibrary.FeedBackDialog;
 import es.dmoral.toasty.Toasty;
 import hyogeun.github.com.colorratingbarlib.ColorRatingBar;
 import io.realm.RealmResults;
@@ -114,7 +113,8 @@ import static com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState.EXPANDE
 public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, OnMapReadyCallback, UserTaskDetailsClickListener, OnSaveEventHandler {
     ActivityNewTaskDetailsBinding mActivityNewTaskDetailsBinding;
     private static final int TASK_BY_ID_REQUEST = 1000;
-    private static final int UPDATE_REQUEST = 1000;
+    private static final int UPDATE_REQUEST = 2000;
+    private static final int SAVE_CHECK_LIST = 3000;
     int height = 100;
     int width = 100;
     private ProgressDialog progress;
@@ -212,7 +212,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private String accountName = "";
     private String technicianMobileNo = "";
     private String mActualAmountToCollect = "";
-
+    private List<TaskCheckList> mTaskCheckList = null;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -243,7 +243,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 //        Tag = getIntent().getStringExtra(ARGS_TAG);
 //        sequenceNo = getIntent().getStringExtra(ARGS_SEQUENCE);
 //        bitUser = getIntent().getByteArrayExtra(ARG_USER);
-//        showCompletionDialog();
         new GPSUtils(this).turnGPSOn(isGPSEnable -> {
             // turn on GPS
             if (isGPSEnable) {
@@ -360,26 +359,28 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         getRealm().beginTransaction();
                         getRealm().copyToRealmOrUpdate(response.getData());
                         getRealm().commitTransaction();
+                        mTaskCheckList = new ArrayList<>();
                         sta = response.getData().getSchedulingStatus();
                         isIncentiveEnable = response.getData().getIncentiveEnable();
                         Incentive = Integer.parseInt(response.getData().getIncentivePoint());
                         isTechnicianFeedbackEnable = response.getData().getTechnicianFeedbackRequired();
                         TechnicianRating = Integer.parseInt(response.getData().getTechnicianRating());
-//                        customerLatitude = response.getData().
                         accountName = response.getData().getCustName();
                         customerLatitude = response.getData().getCustomerLatitude();
                         customerLongitude = response.getData().getCustomerLongitude();
                         technicianMobileNo = response.getData().getTechnicianMobileNo();
                         referralDiscount = Integer.parseInt(response.getData().getReferralDiscount());
                         mActualAmountToCollect = response.getData().getActualAmountToCollect();
+                        mTaskCheckList = response.getData().getTaskCheckList();
                         setViewPagerView();
+                        showCompletionDialog();
                     }
 
                     @Override
                     public void onFailure(int requestCode) {
                     }
                 });
-                controller.getTaskDetailById(TASK_BY_ID_REQUEST, userId, taskId, isCombinedTasks, NewTaskDetailsActivity.this, progress);
+                controller.getTaskDetailById(TASK_BY_ID_REQUEST, userId, taskId, isCombinedTasks, LocaleHelper.getLanguage(this), NewTaskDetailsActivity.this, progress);
             }
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
@@ -400,7 +401,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId), getResources().getString(R.string.service_info));
                 mActivityNewTaskDetailsBinding.viewpagertab.setDistributeEvenly(false);
             } else {
-                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId),  getResources().getString(R.string.service_info));
+                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId), getResources().getString(R.string.service_info));
                 mAdapter.addFragment(ChemicalInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks), getResources().getString(R.string.chemical_info));
                 mAdapter.addFragment(ReferralFragment.newInstance(taskId, technicianMobileNo), getResources().getString(R.string.referral_info));
                 if (isCombinedTasks) {
@@ -481,28 +482,31 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     public void onBackPressed() {
         try {
             Log.i("incompleteReason", incompleteReason);
-            if (mActivityNewTaskDetailsBinding.pager.getCurrentItem() == 0) {
-                try {
-                    AppUtils.getDataClean();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                passData();
-                finish();
-                super.onBackPressed();
-            } else {
-                if (sta.equals("On-Site") && Status.equals("Completed") && mActivityNewTaskDetailsBinding.pager.getCurrentItem() == 3) {
+
+                if (mActivityNewTaskDetailsBinding.pager.getCurrentItem() == 0) {
+                    try {
+                        AppUtils.getDataClean();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     passData();
                     finish();
+                    super.onBackPressed();
                 } else {
-                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(0, true);
-                }
+                    if (sta.equals("On-Site") && Status.equals("Completed") && mActivityNewTaskDetailsBinding.pager.getCurrentItem() == 3) {
+                        passData();
+                        finish();
+                    } else {
+                        mActivityNewTaskDetailsBinding.pager.setCurrentItem(0, true);
+                    }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
+
 
     private void passData() {
         SharedPreferencesUtility.savePrefBoolean(NewTaskDetailsActivity.this, SharedPreferencesUtility.PREF_REFRESH, true);
@@ -875,78 +879,81 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
                 progress.dismiss();
                 Toasty.error(this, getResources().getString(R.string.please_upload_your_job_card_service), Toast.LENGTH_SHORT, true).show();
-            } /*else if (Status.equals("Completed")) {
+            } else if (Status.equals("Completed") && isTechnicianFeedbackEnable && Rate == 0) {
                 progress.dismiss();
-                showCompletionDialog();
-            }*/ else {
+                showRatingDialog();
+//                showCompletionDialog();
+            }
+            /* else if(Status.equals("Completed") && isIncentiveEnable) {
                 if (isTechnicianFeedbackEnable && Rate == 0 && Status.equals("Completed")) {
                     showRatingDialog();
-                } else {
-                    RealmResults<LoginResponse> LoginRealmModels =
-                            getRealm().where(LoginResponse.class).findAll();
-                    if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-                        assert LoginRealmModels.get(0) != null;
-                        String UserId = LoginRealmModels.get(0).getUserID();
-                        UpdateTasksRequest request = new UpdateTasksRequest();
-                        request.setSchedulingStatus(Status);
-                        request.setPaymentMode(Payment_Mode);
-                        request.setAmountCollected(Amount_Collected);
-                        request.setAmountToCollect(Amount_To_Collected);
-                        request.setActualPropertySize(Actual_Size);
-                        request.setStandardPropertySize(Standard_Size);
-                        request.setTechnicianRating(Rate);
-                        request.setTechnicianOTP(Feedback_Code);
-                        request.setSignatory(signatory);
-                        request.setBankName(bankName);
-                        request.setChequeDate(chequeDate);
-                        request.setChequeNo(chequeNumber);
-                        request.setCustomerSign(Signature);
-                        request.setLatitude(String.valueOf(Lat));
-                        request.setLongitude(String.valueOf(Lon));
-                        if (isCombinedTasks) {
-                            request.setCombinedTaskId(combinedTaskId);
-                        } else {
-                            request.setTaskId(taskId);
-                        }
-                        request.setCombinedTask(isCombinedTasks);
-                        request.setDuration(Duration);
-                        request.setResourceId(UserId);
-                        request.setTechnicianOnsiteOTP(OnsiteOTP);
-                        request.setChemicalList(ChemReqList);
-                        request.setChemicalChanged(isActualChemicalChanged);
-                        request.setIncompleteReason(incompleteReason);
-                        request.setChequeImage(chequeImage);
-                        request.setFlushOutReason(flushoutReason);
-                        request.setNext_Task_Id(nextTaskId);
-                        request.setActualAmountToCollect(mActualAmountToCollect);
-
-                        NetworkCallController controller = new NetworkCallController();
-                        controller.setListner(new NetworkResponseListner() {
-                            @Override
-                            public void onResponse(int requestCode, Object response) {
-//                                progress.dismiss();
-                                UpdateTaskResponse updateResponse = (UpdateTaskResponse) response;
-                                if (updateResponse.getSuccess()) {
-//                                    progress.dismiss();
-                                    Toasty.success(NewTaskDetailsActivity.this, updateResponse.getErrorMessage(), Toast.LENGTH_SHORT).show();
-                                    if (isIncentiveEnable && Status.equals("Completed")) {
-                                        showIncentiveDialog();
-                                    } else {
-                                        onBackPressed();
-                                    }
-                                } else {
-//                                    progress.dismiss();
-                                    Toasty.error(NewTaskDetailsActivity.this, updateResponse.getErrorMessage(), Toasty.LENGTH_LONG).show();
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(int requestCode) {
-//                                progress.dismiss();
-                            }
-                        });
-                        controller.updateTasks(UPDATE_REQUEST, request, NewTaskDetailsActivity.this, progress);
+                }*/
+            else {
+                RealmResults<LoginResponse> LoginRealmModels =
+                        getRealm().where(LoginResponse.class).findAll();
+                if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                    assert LoginRealmModels.get(0) != null;
+                    String UserId = LoginRealmModels.get(0).getUserID();
+                    UpdateTasksRequest request = new UpdateTasksRequest();
+                    request.setSchedulingStatus(Status);
+                    request.setPaymentMode(Payment_Mode);
+                    request.setAmountCollected(Amount_Collected);
+                    request.setAmountToCollect(Amount_To_Collected);
+                    request.setActualPropertySize(Actual_Size);
+                    request.setStandardPropertySize(Standard_Size);
+                    request.setTechnicianRating(Rate);
+                    request.setTechnicianOTP(Feedback_Code);
+                    request.setSignatory(signatory);
+                    request.setBankName(bankName);
+                    request.setChequeDate(chequeDate);
+                    request.setChequeNo(chequeNumber);
+                    request.setCustomerSign(Signature);
+                    request.setLatitude(String.valueOf(Lat));
+                    request.setLongitude(String.valueOf(Lon));
+                    if (isCombinedTasks) {
+                        request.setCombinedTaskId(combinedTaskId);
+                    } else {
+                        request.setTaskId(taskId);
                     }
+                    request.setCombinedTask(isCombinedTasks);
+                    request.setDuration(Duration);
+                    request.setResourceId(UserId);
+                    request.setTechnicianOnsiteOTP(OnsiteOTP);
+                    request.setChemicalList(ChemReqList);
+                    request.setChemicalChanged(isActualChemicalChanged);
+                    request.setIncompleteReason(incompleteReason);
+                    request.setChequeImage(chequeImage);
+                    request.setFlushOutReason(flushoutReason);
+                    request.setNext_Task_Id(nextTaskId);
+                    request.setActualAmountToCollect(mActualAmountToCollect);
+
+                    NetworkCallController controller = new NetworkCallController();
+                    controller.setListner(new NetworkResponseListner() {
+                        @Override
+                        public void onResponse(int requestCode, Object response) {
+//                                progress.dismiss();
+                            UpdateTaskResponse updateResponse = (UpdateTaskResponse) response;
+                            if (updateResponse.getSuccess()) {
+//                                    progress.dismiss();
+                                Toasty.success(NewTaskDetailsActivity.this, updateResponse.getErrorMessage(), Toast.LENGTH_SHORT).show();
+                                if (isIncentiveEnable && Status.equals("Completed")) {
+                                    showIncentiveDialog();
+                                } else {
+                                    showCompletionDialog();
+//                                    onBackPressed();
+                                }
+                            } else {
+//                                    progress.dismiss();
+                                Toasty.error(NewTaskDetailsActivity.this, updateResponse.getErrorMessage(), Toasty.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int requestCode) {
+//                                progress.dismiss();
+                        }
+                    });
+                    controller.updateTasks(UPDATE_REQUEST, request, NewTaskDetailsActivity.this, progress);
                 }
             }
         } catch (Exception e) {
@@ -963,34 +970,78 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
     private void showCompletionDialog() {
         try {
-
             LayoutInflater li = LayoutInflater.from(NewTaskDetailsActivity.this);
             View promptsView = li.inflate(R.layout.completion_check_list_dialog, null);
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(NewTaskDetailsActivity.this));
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(NewTaskDetailsActivity.this, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
             alertDialogBuilder.setView(promptsView);
             final AlertDialog alertDialog = alertDialogBuilder.create();
-            final TextView txtTitle =
-                    promptsView.findViewById(R.id.txtTitle);
-            final TextView txtDescription =
-                    promptsView.findViewById(R.id.txtDescription);
-            final TextView txtQuery =
-                    promptsView.findViewById(R.id.txtQuery);
-            final LinearLayout btnYes =
-                    promptsView.findViewById(R.id.btnYes);
-            final LinearLayout btnNo =
-                    promptsView.findViewById(R.id.btnNo);
-            final LinearLayout btnNotRequired =
-                    promptsView.findViewById(R.id.btnNotRequired);
+            final RecyclerView recyclerView =
+                    promptsView.findViewById(R.id.recycleView);
+            CheckListAdapter mAdapter;
+//            final TextView txtTitle =
+//                    promptsView.findViewById(R.id.txtTitle);
+//            final TextView txtDescription =
+//                    promptsView.findViewById(R.id.txtDescription);
+//            final TextView txtQuery =
+//                    promptsView.findViewById(R.id.txtQuery);
+//            final LinearLayout btnYes =
+//                    promptsView.findViewById(R.id.btnYes);
+//            final LinearLayout btnNo =
+//                    promptsView.findViewById(R.id.btnNo);
+//            final LinearLayout btnNotRequired =
+//                    promptsView.findViewById(R.id.btnNotRequired);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+            mAdapter = new CheckListAdapter(this, mTaskCheckList);
+            recyclerView.setAdapter(mAdapter);
 
 
-            btnYes.setOnClickListener(view -> alertDialog.dismiss());
+            mAdapter.setOnItemClickHandler(new OnCheckListItemClickHandler() {
+                @Override
+                public void onPositiveButtonClicked(int position) {
+                    int id = mTaskCheckList.get(position).getCid();
+                    View v = recyclerView.findViewHolderForAdapterPosition(position).itemView;
+                    Animation anim = AnimationUtils.loadAnimation(NewTaskDetailsActivity.this,
+                            R.anim.top_to_bottom);
+                    v.startAnimation(anim);
+                    mTaskCheckList.remove(position);
+                    mAdapter.notifyItemRemoved(position);
+                    saveCheckList(mAdapter, id, "Yes");
 
-            btnNo.setOnClickListener(view -> alertDialog.dismiss());
+                }
 
-            btnNotRequired.setOnClickListener(view -> alertDialog.dismiss());
+                @Override
+                public void onNegativeButtonClicked(int position) {
+                    int id = mTaskCheckList.get(position).getCid();
+                    View v = recyclerView.findViewHolderForAdapterPosition(position).itemView;
+                    Animation anim = AnimationUtils.loadAnimation(NewTaskDetailsActivity.this,
+                            R.anim.top_to_bottom);
+                    v.startAnimation(anim);
+                    mTaskCheckList.remove(position);
+                    mAdapter.notifyItemRemoved(position);
+                    saveCheckList(mAdapter, id, "No");
+                }
+
+                @Override
+                public void onNotRequiredButtonClicked(int position) {
+
+                    int id = mTaskCheckList.get(position).getCid();
+                    View v = recyclerView.findViewHolderForAdapterPosition(position).itemView;
+                    Animation anim = AnimationUtils.loadAnimation(NewTaskDetailsActivity.this,
+                            R.anim.top_to_bottom);
+                    v.startAnimation(anim);
+                    mTaskCheckList.remove(position);
+                    mAdapter.notifyItemRemoved(position);
+//                    recyclerView.startAnimation(animation);
+                    saveCheckList(mAdapter, id, "Not Required");
+                }
+            });
+
 
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
             alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.setCancelable(false);
             alertDialog.show();
 
         } catch (Exception e) {
@@ -998,6 +1049,29 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         }
 
     }
+
+    private void saveCheckList(CheckListAdapter mAdapter, int id, String option) {
+        NetworkCallController controller = new NetworkCallController();
+        controller.setListner(new NetworkResponseListner<CheckListResponse>() {
+
+            @Override
+            public void onResponse(int requestCode, CheckListResponse response) {
+                if (response.getIsSuccess()) {
+                    mAdapter.notifyDataSetChanged();
+                    if (mTaskCheckList.size() == 0) {
+                        onBackPressed();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int requestCode) {
+
+            }
+        });
+        controller.saveCheckList(SAVE_CHECK_LIST, taskId, userId, id, option);
+    }
+
 
     private void showIncentiveDialog() {
         View view = getLayoutInflater().inflate(R.layout.new_scratchcard_layout, null);
@@ -1036,13 +1110,19 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
             Objects.requireNonNull(dialog.getWindow()).setLayout(width, height);
             imgCancel.setOnClickListener(v -> {
-                onBackPressed();
-                try {
-                    AppUtils.getDataClean();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (mTaskCheckList != null && mTaskCheckList.size() > 0) {
+                    dialog.dismiss();
+                    showCompletionDialog();
+                } else {
+                    onBackPressed();
+                    try {
+                        AppUtils.getDataClean();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    dialog.dismiss();
                 }
-                dialog.dismiss();
+
             });
 
             String[] array = getApplicationContext().getResources().getStringArray(R.array.randomApplause);
@@ -1112,17 +1192,15 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         btn_submit.setOnClickListener(v -> {
             Rate = (int) ratingBar.getRating();
             alertDialog.dismiss();
-//            if (AppUtils.isGpsEnabled(NewTaskDetailsActivity.this)) {
-//                saveTaskDetails();
-//            }
             new GPSUtils(this).turnGPSOn(isGPSEnable -> {
                 // turn on GPS
                 if (isGPSEnable) {
-                    saveTaskDetails();
+//                    saveTaskDetails();
                 } else {
                     isGPS = isGPSEnable;
                 }
             });
+
         });
 
         alertDialog.setIcon(R.mipmap.logo);

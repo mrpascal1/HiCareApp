@@ -9,6 +9,7 @@ import com.ab.hicarerun.network.models.AttendanceModel.AttendanceDetailResponse;
 import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
 import com.ab.hicarerun.network.models.AttendanceModel.ProfilePicRequest;
 import com.ab.hicarerun.network.models.BasicResponse;
+import com.ab.hicarerun.network.models.CheckListModel.CheckListResponse;
 import com.ab.hicarerun.network.models.ChemicalCountModel.ChemicalCountResponse;
 import com.ab.hicarerun.network.models.ChemicalModel.ChemicalResponse;
 import com.ab.hicarerun.network.models.ExotelModel.ExotelResponse;
@@ -117,7 +118,7 @@ public interface IRetrofit {
     /*[Task Details By ID]*/
 
     @GET("Task/GetTaskDetailsById")
-    Call<GeneralResponse> getTasksDetailById(@Query("resourceId") String resourceId, @Query("taskId") String taskId, @Query("IsCombinedTask") Boolean isCombinedTask);
+    Call<GeneralResponse> getTasksDetailById(@Query("resourceId") String resourceId, @Query("taskId") String taskId, @Query("IsCombinedTask") Boolean isCombinedTask, @Query("ln") String language);
 
     /*[Save Referral]*/
 
@@ -348,4 +349,10 @@ public interface IRetrofit {
 
     @GET("payment/GenerateTaskQRCode")
     Call<QRCodeResponse> getTaskQRCode(@Query("taskNo") String taskNo);
+
+    @GET("Task/SaveCheckList")
+    Call<CheckListResponse> saveCheckList(@Query("taskId") String taskId,
+                                          @Query("resourceId") String resourceId,
+                                          @Query("checkListId") Integer checkListId,
+                                          @Query("optionName") String optionName);
 }

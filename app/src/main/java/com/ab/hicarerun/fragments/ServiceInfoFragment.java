@@ -428,12 +428,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                             .setTitle("Raise Payment Jeopardy")
                             .setMessage("Do you really want to raise payment jeopardy?")
                             .setIcon(R.drawable.ic_caution)
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    getLessPaymentJeopardy();
-                                }
-                            })
+                            .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> getLessPaymentJeopardy())
                             .setNegativeButton(android.R.string.no, null).show();
                 });
 
