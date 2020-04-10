@@ -25,17 +25,19 @@
         android:title="" />
 
     <item
-        android:id="@+id/nav_attendance"
-        android:title="@string/attendance_bottom"
-        android:icon="@drawable/ic_icon"
+        android:id="@+id/nav_leader"
+        android:title="@string/leader_board"
+        android:icon="@drawable/ic_podium"
         app:showAsAction="ifRoom"
         android:enabled="true"
 
         />
+
+
     <item
-        android:id="@+id/nav_referral"
-        android:title="@string/id_card_bottom"
-        android:icon="@drawable/ic_idcard"
+        android:id="@+id/nav_attendance"
+        android:title="@string/attendance_bottom"
+        android:icon="@drawable/ic_icon"
         app:showAsAction="ifRoom"
         android:enabled="true"
 

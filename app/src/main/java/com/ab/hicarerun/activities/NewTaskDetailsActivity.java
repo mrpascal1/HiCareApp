@@ -216,7 +216,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
     @Override
     protected void attachBaseContext(Context base) {
-//        super.attachBaseContext(LocaleHelper.onAttach(base));
         super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
 
     }
@@ -236,13 +235,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         combinedOrderId = getIntent().getStringExtra(ARGS_COMBINED_ORDER);
         combinedTaskTypes = getIntent().getStringExtra(ARGS_COMBINED_TYPE);
         nextTaskId = getIntent().getStringExtra(ARGS_NEXT_TASK);
-//        customerLatitude = getIntent().getStringExtra(ARGS_LATITUDE);
-//        customerLongitude = getIntent().getStringExtra(ARGS_LONGITUDE);
-//        accountName = getIntent().getStringExtra(ARGS_NAME);
-//        technicianMobileNo = getIntent().getStringExtra(ARGS_MOBILE);
-//        Tag = getIntent().getStringExtra(ARGS_TAG);
-//        sequenceNo = getIntent().getStringExtra(ARGS_SEQUENCE);
-//        bitUser = getIntent().getByteArrayExtra(ARG_USER);
+
         new GPSUtils(this).turnGPSOn(isGPSEnable -> {
             // turn on GPS
             if (isGPSEnable) {
@@ -331,7 +324,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 isGPS = true; // flag maintain before get location
                 progress.show();
                 getTaskDetailsById();
-
             }
         }
     }
@@ -373,7 +365,10 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         mActualAmountToCollect = response.getData().getActualAmountToCollect();
                         mTaskCheckList = response.getData().getTaskCheckList();
                         setViewPagerView();
-                        showCompletionDialog();
+                        if (mTaskCheckList != null && mTaskCheckList.size() > 0 && sta.equals("On-Site")) {
+                            showCompletionDialog();
+                        }
+
                     }
 
                     @Override
@@ -475,7 +470,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -483,22 +477,22 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         try {
             Log.i("incompleteReason", incompleteReason);
 
-                if (mActivityNewTaskDetailsBinding.pager.getCurrentItem() == 0) {
-                    try {
-                        AppUtils.getDataClean();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+            if (mActivityNewTaskDetailsBinding.pager.getCurrentItem() == 0) {
+                try {
+                    AppUtils.getDataClean();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                passData();
+                finish();
+                super.onBackPressed();
+            } else {
+                if (sta.equals("On-Site") && Status.equals("Completed") && mActivityNewTaskDetailsBinding.pager.getCurrentItem() == 0) {
                     passData();
                     finish();
-                    super.onBackPressed();
                 } else {
-                    if (sta.equals("On-Site") && Status.equals("Completed") && mActivityNewTaskDetailsBinding.pager.getCurrentItem() == 3) {
-                        passData();
-                        finish();
-                    } else {
-                        mActivityNewTaskDetailsBinding.pager.setCurrentItem(0, true);
-                    }
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(0, true);
+                }
             }
 
         } catch (Exception e) {
@@ -514,25 +508,30 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        startLocationUpdates();
-        mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (mLocation == null) {
+        try {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             startLocationUpdates();
+            mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (mLocation == null) {
+                startLocationUpdates();
+            }
+            if (mLocation != null) {
+            } else {
+                Toast.makeText(this, "Location not Detected", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        if (mLocation != null) {
-        } else {
-            Toast.makeText(this, "Location not Detected", Toast.LENGTH_SHORT).show();
-        }
+
     }
 
     @Override
@@ -563,7 +562,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 onBackPressed();
                 break;
         }
-
         return true;
     }
 
@@ -572,43 +570,48 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         mGoogleMap = googleMap;
     }
 
-
     private void changeMap(Double lat, Double lon) {
 
-        Log.d(TAG, "Reaching map" + mGoogleMap);
+        try {
+            Log.d(TAG, "Reaching map" + mGoogleMap);
 
-        if (mCurrLocationMarker != null) {
-            mCurrLocationMarker.remove();
+            if (mCurrLocationMarker != null) {
+                mCurrLocationMarker.remove();
+            }
+
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+
+            // check if map is created successfully or not
+            if (mGoogleMap != null) {
+                LatLng latLong = new LatLng(lat, lon);
+                mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                mGoogleMap.setMyLocationEnabled(true);
+                mGoogleMap.setTrafficEnabled(false);
+                mGoogleMap.setIndoorEnabled(false);
+                mGoogleMap.getUiSettings().setCompassEnabled(false);
+                mGoogleMap.setBuildingsEnabled(false);
+                mGoogleMap.getUiSettings().setZoomControlsEnabled(false);
+                mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
+                setBounds(latLong);
+            } else {
+                Toast.makeText(this,
+                        "Sorry! unable to create maps", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
 
-        // check if map is created successfully or not
-        if (mGoogleMap != null) {
-            LatLng latLong = new LatLng(lat, lon);
-            mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-            mGoogleMap.setMyLocationEnabled(true);
-            mGoogleMap.setTrafficEnabled(false);
-            mGoogleMap.setIndoorEnabled(false);
-            mGoogleMap.getUiSettings().setCompassEnabled(false);
-            mGoogleMap.setBuildingsEnabled(false);
-            mGoogleMap.getUiSettings().setZoomControlsEnabled(false);
-            mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
-            setBounds(latLong);
-        } else {
-            Toast.makeText(this,
-                    "Sorry! unable to create maps", Toast.LENGTH_SHORT)
-                    .show();
-        }
     }
 
     private void setBounds(LatLng latLong) {
@@ -701,7 +704,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         }
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
@@ -718,29 +720,32 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         }
     }
 
-
     protected void startLocationUpdates() {
-        // Create the location request
-        mLocationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(UPDATE_INTERVAL)
-                .setFastestInterval(FASTEST_INTERVAL);
-        // Request location updates
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+        try {
+            // Create the location request
+            mLocationRequest = LocationRequest.create()
+                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                    .setInterval(UPDATE_INTERVAL)
+                    .setFastestInterval(FASTEST_INTERVAL);
+            // Request location updates
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+                    mLocationRequest, this);
+            Log.d("reque", "--->>>>");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
-                mLocationRequest, this);
-        Log.d("reque", "--->>>>");
-    }
 
+    }
 
     private boolean checkLocation() {
         if (!isLocationEnabled())
@@ -938,9 +943,11 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                                 Toasty.success(NewTaskDetailsActivity.this, updateResponse.getErrorMessage(), Toast.LENGTH_SHORT).show();
                                 if (isIncentiveEnable && Status.equals("Completed")) {
                                     showIncentiveDialog();
-                                } else {
-                                    showCompletionDialog();
+                                }else {
 //                                    onBackPressed();
+                                    AppUtils.getDataClean();
+                                    passData();
+                                    finish();
                                 }
                             } else {
 //                                    progress.dismiss();
@@ -978,18 +985,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             final RecyclerView recyclerView =
                     promptsView.findViewById(R.id.recycleView);
             CheckListAdapter mAdapter;
-//            final TextView txtTitle =
-//                    promptsView.findViewById(R.id.txtTitle);
-//            final TextView txtDescription =
-//                    promptsView.findViewById(R.id.txtDescription);
-//            final TextView txtQuery =
-//                    promptsView.findViewById(R.id.txtQuery);
-//            final LinearLayout btnYes =
-//                    promptsView.findViewById(R.id.btnYes);
-//            final LinearLayout btnNo =
-//                    promptsView.findViewById(R.id.btnNo);
-//            final LinearLayout btnNotRequired =
-//                    promptsView.findViewById(R.id.btnNotRequired);
+
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
             mAdapter = new CheckListAdapter(this, mTaskCheckList);
@@ -1037,9 +1033,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 }
             });
 
-
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-
             alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.setCancelable(false);
             alertDialog.show();
@@ -1051,69 +1045,71 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     }
 
     private void saveCheckList(CheckListAdapter mAdapter, int id, String option) {
-        NetworkCallController controller = new NetworkCallController();
-        controller.setListner(new NetworkResponseListner<CheckListResponse>() {
+        try {
+            NetworkCallController controller = new NetworkCallController();
+            controller.setListner(new NetworkResponseListner<CheckListResponse>() {
 
-            @Override
-            public void onResponse(int requestCode, CheckListResponse response) {
-                if (response.getIsSuccess()) {
-                    mAdapter.notifyDataSetChanged();
-                    if (mTaskCheckList.size() == 0) {
-                        onBackPressed();
+                @Override
+                public void onResponse(int requestCode, CheckListResponse response) {
+                    if (response.getIsSuccess()) {
+                        mAdapter.notifyDataSetChanged();
+                        if (mTaskCheckList.size() == 0) {
+//                            onBackPressed();
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(int requestCode) {
+                @Override
+                public void onFailure(int requestCode) {
 
-            }
-        });
-        controller.saveCheckList(SAVE_CHECK_LIST, taskId, userId, id, option);
+                }
+            });
+            controller.saveCheckList(SAVE_CHECK_LIST, taskId, userId, id, option);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 
     private void showIncentiveDialog() {
-        View view = getLayoutInflater().inflate(R.layout.new_scratchcard_layout, null);
-        final Dialog dialog = new Dialog(this, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
-        Window window = dialog.getWindow();
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        assert window != null;
-        window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        window.setBackgroundDrawableResource(R.color.darkblack);
-        dialog.setContentView(view);
-        dialog.show();
+        try {
+            View view = getLayoutInflater().inflate(R.layout.new_scratchcard_layout, null);
+            final Dialog dialog = new Dialog(this, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+            Window window = dialog.getWindow();
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            assert window != null;
+            window.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            window.setBackgroundDrawableResource(R.color.darkblack);
+            dialog.setContentView(view);
+            dialog.show();
 
-        final AppCompatTextView txtReward =
-                view.findViewById(R.id.txtReward);
-        final AppCompatTextView txtIncentive =
-                view.findViewById(R.id.txtIncentive);
-        final AppCompatTextView txtLose =
-                view.findViewById(R.id.txtLose);
-        final AppCompatImageView imgAward =
-                view.findViewById(R.id.imgAward);
-        final AppCompatImageView imgNoAward =
-                view.findViewById(R.id.imgNoAward);
-        final AppCompatImageView imgCancel =
-                view.findViewById(R.id.imgCancel);
-        final ScratchRelativeLayout scratch =
-                view.findViewById(R.id.scratch);
-        final AppCompatTextView txtMsg =
-                view.findViewById(R.id.winningMsg);
-        final AppCompatTextView txtEarned =
-                view.findViewById(R.id.txtEarned);
-        final AppCompatTextView txtHicare =
-                view.findViewById(R.id.txtHicare);
+            final AppCompatTextView txtReward =
+                    view.findViewById(R.id.txtReward);
+            final AppCompatTextView txtIncentive =
+                    view.findViewById(R.id.txtIncentive);
+            final AppCompatTextView txtLose =
+                    view.findViewById(R.id.txtLose);
+            final AppCompatImageView imgAward =
+                    view.findViewById(R.id.imgAward);
+            final AppCompatImageView imgNoAward =
+                    view.findViewById(R.id.imgNoAward);
+            final AppCompatImageView imgCancel =
+                    view.findViewById(R.id.imgCancel);
+            final ScratchRelativeLayout scratch =
+                    view.findViewById(R.id.scratch);
+            final AppCompatTextView txtMsg =
+                    view.findViewById(R.id.winningMsg);
+            final AppCompatTextView txtEarned =
+                    view.findViewById(R.id.txtEarned);
+            final AppCompatTextView txtHicare =
+                    view.findViewById(R.id.txtHicare);
 
-        if (dialog != null) {
-            int width = ViewGroup.LayoutParams.MATCH_PARENT;
-            int height = ViewGroup.LayoutParams.MATCH_PARENT;
-            Objects.requireNonNull(dialog.getWindow()).setLayout(width, height);
-            imgCancel.setOnClickListener(v -> {
-                if (mTaskCheckList != null && mTaskCheckList.size() > 0) {
-                    dialog.dismiss();
-                    showCompletionDialog();
-                } else {
+            if (dialog != null) {
+                int width = ViewGroup.LayoutParams.MATCH_PARENT;
+                int height = ViewGroup.LayoutParams.MATCH_PARENT;
+                Objects.requireNonNull(dialog.getWindow()).setLayout(width, height);
+                imgCancel.setOnClickListener(v -> {
                     onBackPressed();
                     try {
                         AppUtils.getDataClean();
@@ -1121,91 +1117,98 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         e.printStackTrace();
                     }
                     dialog.dismiss();
+
+
+                });
+
+                String[] array = getApplicationContext().getResources().getStringArray(R.array.randomApplause);
+                String randomStr = array[new Random().nextInt(array.length)];
+                if (Incentive == 0) {
+                    imgAward.setVisibility(View.INVISIBLE);
+                    imgNoAward.setVisibility(View.VISIBLE);
+                    txtLose.setVisibility(View.VISIBLE);
+                    txtIncentive.setVisibility(View.GONE);
+                    txtReward.setVisibility(View.GONE);
+                    txtMsg.setText("Oops!");
+
+                } else {
+                    imgAward.setVisibility(View.VISIBLE);
+                    imgNoAward.setVisibility(View.INVISIBLE);
+                    txtLose.setVisibility(View.GONE);
+                    txtIncentive.setVisibility(View.VISIBLE);
+                    txtReward.setVisibility(View.VISIBLE);
+                    txtIncentive.setText(Incentive + " Points");
+                    txtMsg.setText(randomStr);
                 }
 
-            });
+                int[] images = {R.drawable.gift_three, R.drawable.ift1, R.drawable.ift2};
+                Random rand = new Random();
+                scratch.setWatermark(images[rand.nextInt(images.length)]);
 
-            String[] array = getApplicationContext().getResources().getStringArray(R.array.randomApplause);
-            String randomStr = array[new Random().nextInt(array.length)];
-            if (Incentive == 0) {
-                imgAward.setVisibility(View.INVISIBLE);
-                imgNoAward.setVisibility(View.VISIBLE);
-                txtLose.setVisibility(View.VISIBLE);
-                txtIncentive.setVisibility(View.GONE);
-                txtReward.setVisibility(View.GONE);
-                txtMsg.setText("Oops!");
-
-            } else {
-                imgAward.setVisibility(View.VISIBLE);
-                imgNoAward.setVisibility(View.INVISIBLE);
-                txtLose.setVisibility(View.GONE);
-                txtIncentive.setVisibility(View.VISIBLE);
-                txtReward.setVisibility(View.VISIBLE);
-                txtIncentive.setText(Incentive + " Points");
-                txtMsg.setText(randomStr);
-            }
-
-            int[] images = {R.drawable.gift_three, R.drawable.ift1, R.drawable.ift2};
-            Random rand = new Random();
-            scratch.setWatermark(images[rand.nextInt(images.length)]);
-
-            scratch.setEraseStatusListener(new ScratchView.EraseStatusListener() {
-                @Override
-                public void onProgress(int percent) {
-                    if (percent > 30) {
-                        imgCancel.setVisibility(View.VISIBLE);
-                        txtMsg.setVisibility(View.VISIBLE);
-                        if (Incentive > 0) {
-                            txtEarned.setVisibility(View.VISIBLE);
-                            txtHicare.setVisibility(View.VISIBLE);
+                scratch.setEraseStatusListener(new ScratchView.EraseStatusListener() {
+                    @Override
+                    public void onProgress(int percent) {
+                        if (percent > 30) {
+                            imgCancel.setVisibility(View.VISIBLE);
+                            txtMsg.setVisibility(View.VISIBLE);
+                            if (Incentive > 0) {
+                                txtEarned.setVisibility(View.VISIBLE);
+                                txtHicare.setVisibility(View.VISIBLE);
+                            }
                         }
                     }
-                }
 
-                @Override
-                public void onCompleted(View view) {
+                    @Override
+                    public void onCompleted(View view) {
 
-                }
-            });
+                    }
+                });
 
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     private void showRatingDialog() {
-        LayoutInflater li = LayoutInflater.from(this);
+        try {
+            LayoutInflater li = LayoutInflater.from(this);
 
-        View promptsView = li.inflate(R.layout.dialog_rating, null);
+            View promptsView = li.inflate(R.layout.dialog_rating, null);
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
-        alertDialogBuilder.setView(promptsView);
+            alertDialogBuilder.setView(promptsView);
 
-        alertDialogBuilder.setTitle("Customer Ratings");
-        final AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialogBuilder.setTitle("Customer Ratings");
+            final AlertDialog alertDialog = alertDialogBuilder.create();
 
-        final ColorRatingBar ratingBar =
-                promptsView.findViewById(R.id.rating_bar);
+            final ColorRatingBar ratingBar =
+                    promptsView.findViewById(R.id.rating_bar);
 
-        final AppCompatButton btn_submit =
-                promptsView.findViewById(R.id.btn_submit);
+            final AppCompatButton btn_submit =
+                    promptsView.findViewById(R.id.btn_submit);
 
-        btn_submit.setOnClickListener(v -> {
-            Rate = (int) ratingBar.getRating();
-            alertDialog.dismiss();
-            new GPSUtils(this).turnGPSOn(isGPSEnable -> {
-                // turn on GPS
-                if (isGPSEnable) {
+            btn_submit.setOnClickListener(v -> {
+                Rate = (int) ratingBar.getRating();
+                alertDialog.dismiss();
+                new GPSUtils(this).turnGPSOn(isGPSEnable -> {
+                    // turn on GPS
+                    if (isGPSEnable) {
 //                    saveTaskDetails();
-                } else {
-                    isGPS = isGPSEnable;
-                }
+                    } else {
+                        isGPS = isGPSEnable;
+                    }
+                });
+
             });
+            alertDialog.setIcon(R.mipmap.logo);
+            alertDialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        });
-
-        alertDialog.setIcon(R.mipmap.logo);
-
-        alertDialog.show();
     }
 
 

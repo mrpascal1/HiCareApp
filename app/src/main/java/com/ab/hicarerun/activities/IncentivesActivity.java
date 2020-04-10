@@ -34,7 +34,6 @@ public class IncentivesActivity extends BaseActivity {
     protected void attachBaseContext(Context base) {
 //        super.attachBaseContext(LocaleHelper.onAttach(base));
         super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
-
     }
 
     @Override

@@ -10,6 +10,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.location.LocationManager;
@@ -20,6 +21,7 @@ import android.provider.Settings;
 
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -66,6 +68,7 @@ public class AppUtils {
     private static final int CAM_REQ = 1000;
     private static final int HANDSHAKE_REQUEST = 2000;
     private static final int ERROR_REQUEST = 3000;
+    private static final int RESOURCE_REQ = 4000;
 
 
     public class LocationConstants {
@@ -528,6 +531,45 @@ public class AppUtils {
         alert.show();
     }
 
+
+    public static Integer getBadgeImage(String type) {
+        int image = 0;
+        switch (type) {
+            case "Platinum":
+
+                image = R.drawable.ic_award_platinum;
+
+                break;
+
+            case "Gold":
+
+                image = R.drawable.ic_award_gold;
+
+                break;
+
+            case "Silver":
+
+                image = R.drawable.ic_award_silver;
+
+                break;
+
+            case "Bronze":
+
+                image = R.drawable.ic_award_bronze;
+
+                break;
+
+            default:
+
+                image = R.drawable.ic_award_bronze;
+
+                break;
+
+        }
+        return image;
+    }
+
+
     public static void sendErrorLogs(String error, String activityName, String methodName, String lineNo, String userName, String deviceName) {
         try {
             Gson gson = new Gson();
@@ -583,5 +625,29 @@ public class AppUtils {
         return s;
     }
 
+    public static void getResourceImage(String id, CircleImageView img) {
+        try {
+            NetworkCallController controller = new NetworkCallController();
+            controller.setListner(new NetworkResponseListner() {
+                @Override
+                public void onResponse(int requestCode, Object response) {
+                    String base64 = (String) response;
+                    byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    if (base64.length() > 0) {
+                        img.setImageBitmap(decodedByte);
+                    }
+                }
+
+                @Override
+                public void onFailure(int requestCode) {
+
+                }
+            });
+            controller.getResourceProfilePicture(RESOURCE_REQ, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

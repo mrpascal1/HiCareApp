@@ -19,8 +19,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_tick_list" />
-                            <entry key="sourceFile" value="D:\Image\tick (2).svg" />
+                            <entry key="outputName" value="ic_award_bronze" />
+                            <entry key="sourceFile" value="D:\Image\award_gold.svg" />
                           </map>
                         </option>
                       </PersistentState>

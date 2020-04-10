@@ -50,16 +50,28 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.OffersHistoryActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.BazaarActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".utils.notifications.ActivityTransparentPopup"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.RewardsHistoryActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.OfferActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.LeaderBoardActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".activities.HomeActivity"/>
+        <activity
+            android:name=".activities.OffersHistoryActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".activities.HomeActivity"/>
+        <activity
+            android:name=".activities.BazaarActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".activities.HomeActivity"/>
+        <activity
+            android:name=".utils.notifications.ActivityTransparentPopup"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.RewardsHistoryActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".activities.HomeActivity"/>
+        <activity
+            android:name=".activities.OfferActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".activities.HomeActivity"/>
         <activity
             android:name=".activities.TechChemicalCountActivity"
             android:parentActivityName=".activities.HomeActivity"

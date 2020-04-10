@@ -36,6 +36,7 @@ import com.ab.hicarerun.network.models.IncentiveModel.IncentiveResponse;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyRequest;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyResponse;
 import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonModel;
+import com.ab.hicarerun.network.models.LeaderBoardModel.RewardLeadersResponse;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
@@ -2794,20 +2795,20 @@ public class NetworkCallController {
 
     public void updateRewardScratch(final int requestCode, final UpdateRewardScratchRequest request) {
         try {
-            mContext.showProgressDialog();
+//            mContext.showProgressDialog();
             BaseApplication.getRetrofitAPI(true)
                     .updateRewardScratch(request)
                     .enqueue(new Callback<UpdateRewardScratchResponse>() {
                         @Override
                         public void onResponse(Call<UpdateRewardScratchResponse> call, Response<UpdateRewardScratchResponse> response) {
-                            mContext.dismissProgressDialog();
+//                            mContext.dismissProgressDialog();
                             if (response != null) {
                                 if (response.body() != null) {
                                     mListner.onResponse(requestCode, response.body());
                                 } else if (response.errorBody() != null) {
                                     try {
                                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                        mContext.showServerError(jObjError.getString("ErrorMessage"));
+//                                        mContext.showServerError(jObjError.getString("ErrorMessage"));
                                         RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                         if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
                                             String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
@@ -2819,15 +2820,13 @@ public class NetworkCallController {
                                         e.printStackTrace();
                                     }
                                 }
-                            } else {
-                                mContext.showServerError();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<UpdateRewardScratchResponse> call, Throwable t) {
-                            mContext.dismissProgressDialog();
-                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
+//                            mContext.dismissProgressDialog();
+//                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -2986,6 +2985,52 @@ public class NetworkCallController {
         }
 
     }
+
+    public void getRewardLeaders(final int requestCode, final String userId) {
+        try {
+            mContext.showProgressDialog();
+            BaseApplication.getRetrofitAPI(true)
+                    .getRewardLeaders(userId)
+                    .enqueue(new Callback<RewardLeadersResponse>() {
+                        @Override
+                        public void onResponse(Call<RewardLeadersResponse> call, Response<RewardLeadersResponse> response) {
+                            mContext.dismissProgressDialog();
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body().getData());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getChemicals", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            } else {
+                                mContext.showServerError();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<RewardLeadersResponse> call, Throwable t) {
+                            mContext.dismissProgressDialog();
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
 
 
     public String getRefreshToken() {

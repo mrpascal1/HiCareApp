@@ -578,5 +578,10 @@
     <string name="logout_exit">Exit</string>
     <string name="logout_do_you_really_want_to_exit">Do you want to exit?</string>
     <string name="something_went_wrong">Something went wrong, please try again !!!</string>
+    <string name="there_is_no_rewards_to_display">There is no Rewards to display!</string>
+    <string name="there_is_no_offers_to_display">There is no Offers to display!</string>
+    <string name="there_is_no_history_to_display">There is no History to display!</string>
+
+    <string name="leader_board">Leader Board</string>
 
 </resources>

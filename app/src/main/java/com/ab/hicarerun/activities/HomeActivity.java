@@ -46,6 +46,7 @@ import com.ab.hicarerun.fragments.AttendanceViewFragment;
 import com.ab.hicarerun.fragments.BazaarFragment;
 import com.ab.hicarerun.fragments.HomeFragment;
 import com.ab.hicarerun.fragments.IncentiveFragment;
+import com.ab.hicarerun.fragments.LeaderBoardFragment;
 import com.ab.hicarerun.fragments.NotificationFragment;
 import com.ab.hicarerun.fragments.OffersFragment;
 import com.ab.hicarerun.fragments.TechIdFragment;
@@ -208,8 +209,8 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
             case R.id.nav_attendance:
                 replaceFragment(AttendanceViewFragment.newInstance(), "ATTENDANCE");
                 break;
-            case R.id.nav_referral:
-                replaceFragment(TechIdFragment.newInstance(), "REFERRAL");
+            case R.id.nav_leader:
+                startActivity(new Intent(HomeActivity.this, LeaderBoardActivity.class));
                 break;
 
             case R.id.nav_language:
@@ -650,7 +651,8 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 //            super.onBackPressed();
 //        }
 
-        if (mActivityHomeBinding.customNavigation.getSelectedItemId() == R.id.nav_home) {
+
+        if (mActivityHomeBinding.customNavigation.getSelectedItemId() == R.id.nav_home || mActivityHomeBinding.customNavigation.getSelectedItemId() == R.id.nav_leader) {
             mActivityHomeBinding.navigationView.setCheckedItem(0);
             showExitAlert();
         } else {

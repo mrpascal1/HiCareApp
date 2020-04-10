@@ -410,7 +410,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 sta = mTaskDetailsData.get(0).getSchedulingStatus();
 
 
-                if (isPaymentOtpRequired && sta.equals("On-Site")) {
+                if (isPaymentOtpRequired && sta.equals("On-Site") && AmountToCollect != 0) {
                     mFragmentServiceInfoBinding.btnPaymentJeopardy.setVisibility(View.VISIBLE);
                 } else {
                     mFragmentServiceInfoBinding.btnPaymentJeopardy.setVisibility(GONE);
@@ -422,7 +422,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 }
                 mFragmentServiceInfoBinding.btnPaymentJeopardy.setOnClickListener(view -> {
 
-                    Mode = type.get(0);
+//                    Mode = type.get(0);
                     getValidated(AmountToCollect);
                     new AlertDialog.Builder(getActivity())
                             .setTitle("Raise Payment Jeopardy")
@@ -1261,10 +1261,10 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                         if (mFragmentServiceInfoBinding.txtCollected.getText().toString().trim().length() != 0) {
                             int amount = 0;
                             amount = Integer.parseInt(mFragmentServiceInfoBinding.txtCollected.getText().toString());
-                            if (amounttocollect == amount) {
-                                mCallback.isPaymentOtpRequired(false);
-                                mCallback.isPaymentOtpvalidated(false);
-                            } else {
+//                            if (amounttocollect == amount) {
+////                                mCallback.isPaymentOtpRequired(false);
+////                                mCallback.isPaymentOtpvalidated(false);
+//                            } else {
                                 if (PaymentOtp.length() > 0 && PaymentOtp != null) {
                                     mFragmentServiceInfoBinding.lnrPaymentOTP.setVisibility(View.VISIBLE);
                                     String otp = mFragmentServiceInfoBinding.edtPaymentOTP.getText().toString();
@@ -1302,7 +1302,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                     mCallback.isPaymentOtpRequired(false);
                                     mCallback.isPaymentOtpvalidated(false);
                                 }
-                            }
+//                            }
                         } else {
                             if (PaymentOtp.length() > 0 && PaymentOtp != null) {
                                 mFragmentServiceInfoBinding.lnrPaymentOTP.setVisibility(View.VISIBLE);
@@ -1420,10 +1420,10 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                         if (mFragmentServiceInfoBinding.txtCollected.getText().toString().trim().length() != 0) {
                             int amount = 0;
                             amount = Integer.parseInt(mFragmentServiceInfoBinding.txtCollected.getText().toString());
-                            if (amounttocollect == amount) {
-                                mCallback.isPaymentOtpRequired(false);
-                                mCallback.isPaymentOtpvalidated(false);
-                            } else {
+//                            if (amounttocollect == amount) {
+//                                mCallback.isPaymentOtpRequired(false);
+//                                mCallback.isPaymentOtpvalidated(false);
+//                            } else {
                                 if (PaymentOtp.length() > 0 && PaymentOtp != null) {
                                     mFragmentServiceInfoBinding.lnrPaymentOTP.setVisibility(View.VISIBLE);
                                     String otp = mFragmentServiceInfoBinding.edtPaymentOTP.getText().toString();
@@ -1460,7 +1460,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                     mCallback.isPaymentOtpvalidated(false);
                                     mCallback.isAmountCollectedRequired(true);
                                 }
-                            }
+//                            }
                         } else {
                             if (PaymentOtp.length() > 0 && PaymentOtp != null) {
                                 mFragmentServiceInfoBinding.lnrPaymentOTP.setVisibility(View.VISIBLE);

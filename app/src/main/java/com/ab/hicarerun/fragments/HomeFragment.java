@@ -106,6 +106,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     private String activityName = "";
     private String methodName = "";
     private NavigationView navigationView = null;
+
     private String taskId = "";
     List<Tasks> items = null;
     RealmResults<LoginResponse> LoginRealmModels = null;
@@ -886,6 +887,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
 
     private void apply() {
+
         navigationView.getMenu().getItem(0).setChecked(true);
         navigationView.getMenu().getItem(1).setChecked(false);
         navigationView.getMenu().getItem(2).setChecked(false);
