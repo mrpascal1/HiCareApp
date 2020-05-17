@@ -24,6 +24,9 @@ import com.ab.hicarerun.network.models.BasicResponse;
 import com.ab.hicarerun.network.models.CheckListModel.CheckListResponse;
 import com.ab.hicarerun.network.models.ChemicalCountModel.ChemicalCountResponse;
 import com.ab.hicarerun.network.models.ChemicalModel.ChemicalResponse;
+import com.ab.hicarerun.network.models.CovidModel.CovidRequest;
+import com.ab.hicarerun.network.models.CovidModel.CovidResponse;
+import com.ab.hicarerun.network.models.DialingModel.DialingResponse;
 import com.ab.hicarerun.network.models.ExotelModel.ExotelResponse;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackRequest;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackResponse;
@@ -982,6 +985,43 @@ public class NetworkCallController {
 
                         @Override
                         public void onFailure(Call<ExotelResponse> call, Throwable t) {
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void getExotelCalledV2(final int requestCode, String customerNo, String techNo) {
+        try {
+            BaseApplication.getExotelApi()
+                    .getDialNumber(customerNo, techNo)
+                    .enqueue(new Callback<DialingResponse>() {
+                        @Override
+                        public void onResponse(Call<DialingResponse> call, Response<DialingResponse> response) {
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getExotelCalled", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<DialingResponse> call, Throwable t) {
                         }
                     });
         } catch (Exception e) {
@@ -2833,6 +2873,49 @@ public class NetworkCallController {
             e.printStackTrace();
         }
     }
+
+
+    public void uploadOnsiteImage(final int requestCode, final CovidRequest request) {
+        try {
+//            mContext.showProgressDialog();
+            BaseApplication.getRetrofitAPI(true)
+                    .uploadOnsiteImage(request)
+                    .enqueue(new Callback<CovidResponse>() {
+                        @Override
+                        public void onResponse(Call<CovidResponse> call, Response<CovidResponse> response) {
+//                            mContext.dismissProgressDialog();
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+//                                        mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getChemicals", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<CovidResponse> call, Throwable t) {
+//                            mContext.dismissProgressDialog();
+//                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
     public void getAllRewardsHistory(final int requestCode, final String userId) {

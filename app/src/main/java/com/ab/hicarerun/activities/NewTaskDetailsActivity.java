@@ -7,6 +7,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,11 +29,16 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.hardware.Camera;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
@@ -45,12 +51,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.BaseApplication;
+import com.ab.hicarerun.BuildConfig;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.adapter.CheckListAdapter;
 import com.ab.hicarerun.adapter.TaskViewPagerAdapter;
@@ -66,6 +74,8 @@ import com.ab.hicarerun.handler.UserTaskDetailsClickListener;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.CheckListModel.CheckListResponse;
+import com.ab.hicarerun.network.models.CovidModel.CovidRequest;
+import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralResponse;
 import com.ab.hicarerun.network.models.GeneralModel.TaskCheckList;
 import com.ab.hicarerun.network.models.LoginResponse;
@@ -77,6 +87,7 @@ import com.ab.hicarerun.utils.GPSUtils;
 import com.ab.hicarerun.utils.LocaleHelper;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.ab.hicarerun.utils.notifications.ScratchRelativeLayout;
+import com.bumptech.glide.Glide;
 import com.clock.scratch.ScratchView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -95,9 +106,19 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -107,6 +128,7 @@ import es.dmoral.toasty.Toasty;
 import hyogeun.github.com.colorratingbarlib.ColorRatingBar;
 import io.realm.RealmResults;
 
+import static android.view.View.GONE;
 import static com.ab.hicarerun.BaseApplication.getRealm;
 import static com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState.EXPANDED;
 
@@ -115,6 +137,10 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private static final int TASK_BY_ID_REQUEST = 1000;
     private static final int UPDATE_REQUEST = 2000;
     private static final int SAVE_CHECK_LIST = 3000;
+    private static final int UPLOAD_REQ = 4000;
+    static final int REQUEST_TAKE_PHOTO = 1;
+    private String selectedImagePath = "";
+    private Bitmap bitmap;
     int height = 100;
     int width = 100;
     private ProgressDialog progress;
@@ -184,6 +210,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private boolean isPaymentOtpRequired = false;
     private boolean isPaymentOtpValidated = false;
     private boolean isPaymentModeNotChanged = false;
+    private boolean isOnsiteImageRequired = false;
     private String bankName = "";
     private String chequeNumber = "";
     private String chequeDate = "";
@@ -197,6 +224,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private Toasty mToastToShow;
     private double mCircleRadius = 150;
     private Bitmap bitUser;
+    private String onSiteMaskImage = "";
+    File mPhotoFile;
 //    private byte[] bitUser = null;
 
     LatLngBounds.Builder builder;
@@ -212,6 +241,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private String accountName = "";
     private String technicianMobileNo = "";
     private String mActualAmountToCollect = "";
+    private String mOnsiteImagePath = "";
+    private boolean showSignature = false;
     private List<TaskCheckList> mTaskCheckList = null;
 
     @Override
@@ -316,17 +347,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == GPSUtils.GPS_REQUEST) {
-                isGPS = true; // flag maintain before get location
-                progress.show();
-                getTaskDetailsById();
-            }
-        }
-    }
 
     private void getTaskDetailsById() {
         try {
@@ -364,6 +384,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         referralDiscount = Integer.parseInt(response.getData().getReferralDiscount());
                         mActualAmountToCollect = response.getData().getActualAmountToCollect();
                         mTaskCheckList = response.getData().getTaskCheckList();
+                        isOnsiteImageRequired = response.getData().getOnsite_Image_Required();
+                        mOnsiteImagePath = response.getData().getOnsite_Image_Path();
                         setViewPagerView();
                         if (mTaskCheckList != null && mTaskCheckList.size() > 0 && sta.equals("On-Site")) {
                             showCompletionDialog();
@@ -796,7 +818,12 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
                 Toasty.error(this, getResources().getString(R.string.please_change_status_service), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
-            } else if (isEarlyCompletion && Status.equals("Completed")) {
+            }
+//            else if (isOnsiteImageRequired && mOnsiteImagePath == null && Status.equals("On-Site")) {
+//                captureTechImage();
+//                progress.dismiss();
+//            }
+            else if (isEarlyCompletion && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
                 Toasty.error(this, getResources().getString(R.string.job_time_serice), Toasty.LENGTH_LONG, true).show();
                 progress.dismiss();
@@ -943,7 +970,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                                 Toasty.success(NewTaskDetailsActivity.this, updateResponse.getErrorMessage(), Toast.LENGTH_SHORT).show();
                                 if (isIncentiveEnable && Status.equals("Completed")) {
                                     showIncentiveDialog();
-                                }else {
+                                } else {
 //                                    onBackPressed();
                                     AppUtils.getDataClean();
                                     passData();
@@ -974,6 +1001,27 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             }
         }
     }
+
+
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            if (resultCode == RESULT_OK) {
+              if (requestCode == GPSUtils.GPS_REQUEST) {
+                    isGPS = true; // flag maintain before get location
+                    progress.show();
+                    getTaskDetailsById();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void showCompletionDialog() {
         try {

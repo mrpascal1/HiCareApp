@@ -127,6 +127,10 @@ public class GeneralData implements RealmModel {
     @Expose
     private String TaskAssignmentEndTime;
 
+    @SerializedName("ShowSignature")
+    @Expose
+    private Boolean showSignature;
+
     @SerializedName("StandardPropertySize")
     @Expose
     private String StandardPropertySize;
@@ -209,6 +213,14 @@ public class GeneralData implements RealmModel {
     @Expose
     private Boolean Payment_Jeopardy_Raised;
 
+    @SerializedName("Onsite_Image_Required")
+    @Expose
+    private Boolean Onsite_Image_Required;
+
+    @SerializedName("Onsite_Image_Path")
+    @Expose
+    private String Onsite_Image_Path;
+
     @SerializedName("CustomerLatitude")
     @Expose
     private Double CustomerLatitude;
@@ -282,6 +294,8 @@ public class GeneralData implements RealmModel {
         Payment_Jeopardy_Raised = false;
         Show_Standard_Chemicals = false;
         ActualAmountToCollect = "NA";
+        Onsite_Image_Required = false;
+        Onsite_Image_Path = "NA";
     }
 
     public String getOrderNumber() {
@@ -722,5 +736,29 @@ public class GeneralData implements RealmModel {
 
     public void setTaskCheckList(RealmList<TaskCheckList> taskCheckList) {
         TaskCheckList = taskCheckList;
+    }
+
+    public Boolean getOnsite_Image_Required() {
+        return Onsite_Image_Required;
+    }
+
+    public void setOnsite_Image_Required(Boolean onsite_Image_Required) {
+        Onsite_Image_Required = onsite_Image_Required;
+    }
+
+    public String getOnsite_Image_Path() {
+        return Onsite_Image_Path;
+    }
+
+    public void setOnsite_Image_Path(String onsite_Image_Path) {
+        Onsite_Image_Path = onsite_Image_Path;
+    }
+
+    public Boolean getShowSignature() {
+        return showSignature;
+    }
+
+    public void setShowSignature(Boolean showSignature) {
+        this.showSignature = showSignature;
     }
 }

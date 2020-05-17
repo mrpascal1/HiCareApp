@@ -280,6 +280,7 @@
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/signatureTitle"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:layout_marginStart="20dp"
@@ -305,6 +306,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <RelativeLayout
+                android:id="@+id/signatureBox"
                 android:layout_width="match_parent"
                 android:layout_height="170dp"
                 android:layout_marginLeft="15dp"

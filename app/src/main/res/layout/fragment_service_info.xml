@@ -19,10 +19,14 @@
         android:background="@color/white"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
+
 
             <View
                 android:layout_width="match_parent"
@@ -48,6 +52,19 @@
                     android:textColor="@color/black"
                     android:textSize="15sp"
                     android:textStyle="bold" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imgUser"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:elevation="5dp"
+                    app:srcCompat="@drawable/ic_profile"
+                    android:visibility="gone"
+                    android:layout_marginRight="15dp"
+                    app:civ_border_color="@color/black"
+                    app:civ_border_width="0.5dp" />
 
 
             </RelativeLayout>

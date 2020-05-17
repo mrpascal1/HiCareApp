@@ -12,6 +12,9 @@ import com.ab.hicarerun.network.models.BasicResponse;
 import com.ab.hicarerun.network.models.CheckListModel.CheckListResponse;
 import com.ab.hicarerun.network.models.ChemicalCountModel.ChemicalCountResponse;
 import com.ab.hicarerun.network.models.ChemicalModel.ChemicalResponse;
+import com.ab.hicarerun.network.models.CovidModel.CovidRequest;
+import com.ab.hicarerun.network.models.CovidModel.CovidResponse;
+import com.ab.hicarerun.network.models.DialingModel.DialingResponse;
 import com.ab.hicarerun.network.models.ExotelModel.ExotelResponse;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackRequest;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackResponse;
@@ -76,8 +79,8 @@ public interface IRetrofit {
     //        String BASE_URL = "http://52.74.65.15/mobileapi/api/";
     //    String ERROR_LOG_URL = "http://52.74.65.15/logging/api/";
     //    http://apps.hicare.in/cwf/datasync/InsertRenewalAppJeopardy
-    String BASE_URL = "http://run.hicare.in/mobile/api/";
-    String SCAN_URL = "http://run.hicare.in/taskservice/api/";
+    String BASE_URL = "http://api.hicare.in/mobile/api/";
+    String SCAN_URL = "http://api.hicare.in/taskservice/api/";
     String EXOTEL_URL = "http://apps.hicare.in/api/api/";
     String ERROR_LOG_URL = "http://run.hicare.in/logging/api/";
     String JEOPARDY_URL = "http://apps.hicare.in/cwf/";
@@ -345,6 +348,9 @@ public interface IRetrofit {
     @POST("ResourceActivity/UpdateRewardScratch")
     Call<UpdateRewardScratchResponse> updateRewardScratch(@Body UpdateRewardScratchRequest request);
 
+    @POST("Task/UploadOnsiteImage")
+    Call<CovidResponse> uploadOnsiteImage(@Body CovidRequest request);
+
     @GET("ResourceActivity/GetRewardHistory")
     Call<OffersHistoryResponse> getAllRewardsHistory(@Query("resourceId") String resourceId);
 
@@ -360,4 +366,8 @@ public interface IRetrofit {
     /*ResourceActivity/GetRewardLeaders*/
     @GET("ResourceActivity/GetRewardLeaders")
     Call<RewardLeadersResponse> getRewardLeaders(@Query("resourceId") String userId);
+
+    /*api/ApplicationLogic/DialNumber*/
+    @GET("ApplicationLogic/DialNumber")
+    Call<DialingResponse> getDialNumber(@Query("customerNo") String custNo, @Query("techNo") String techNo);
 }

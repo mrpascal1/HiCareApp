@@ -61,6 +61,7 @@ import com.ab.hicarerun.handler.OnCallListItemClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
+import com.ab.hicarerun.network.models.DialingModel.DialingResponse;
 import com.ab.hicarerun.network.models.ExotelModel.ExotelResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeResponse;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyRequest;
@@ -93,6 +94,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     //    final Handler timerHandler = new Handler();
     private static final int TASKS_REQ = 1000;
     private static final int EXOTEL_REQ = 2000;
+    private static final int EXOTEL_REQ_V2 = 9000;
     private static final int CALL_REQUEST = 3000;
     private static final int CAM_REQUEST = 4000;
     private static final int JEOPARDY_REQUEST = 5000;
@@ -463,7 +465,11 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 } else if (primaryNumber == null || primaryNumber.trim().length() == 0) {
                     AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.customer_mobile_number_is_unavailable), (dialogInterface, i) -> dialogInterface.cancel());
                 } else {
-                    getExotelCalled(primaryNumber, techNumber);
+                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                        getCallTriggered(primaryNumber, techNumber);
+                    } else {
+                        getExotelCalled(primaryNumber, techNumber);
+                    }
                 }
             } else {
                 AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.no_internet_connection), (dialogInterface, i) -> dialogInterface.dismiss());
@@ -473,6 +479,38 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         }
 
     }
+
+
+    private void getCallTriggered(String custNo, String techNo) {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+        mBuilder.setTitle("Trigger Call");
+        mBuilder.setIcon(R.mipmap.logo);
+        mBuilder.setMessage("Do you want to trigger call?");
+        mBuilder.setPositiveButton(getString(R.string.yes), (dialogInterface, i) -> {
+            dialogInterface.dismiss();
+            NetworkCallController controller = new NetworkCallController(this);
+            controller.setListner(new NetworkResponseListner<DialingResponse>() {
+                @Override
+                public void onResponse(int requestCode, DialingResponse response) {
+                    if (response.getIsSuccess()) {
+                        Toasty.success(getActivity(), response.getData(), Toasty.LENGTH_LONG).show();
+                    } else {
+                        Toasty.error(getActivity(), response.getData(), Toasty.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(int requestCode) {
+
+                }
+            });
+            controller.getExotelCalledV2(EXOTEL_REQ_V2, custNo, techNo);
+        });
+        mBuilder.setNegativeButton(getString(R.string.no), (dialogInterface, i) -> dialogInterface.dismiss());
+        mBuilder.setCancelable(true);
+        mBuilder.create().show();
+    }
+
 
     @Override
     public void onAlternateMobileClicked(int position) {
@@ -495,7 +533,11 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 } else if (secondaryNumber == null || secondaryNumber.trim().length() == 0) {
                     AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.customer_alternate_number_is_unavailable), (dialogInterface, i) -> dialogInterface.cancel());
                 } else {
-                    getExotelCalled(secondaryNumber, techNumber);
+                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
+                        getCallTriggered(secondaryNumber, techNumber);
+                    } else {
+                        getExotelCalled(secondaryNumber, techNumber);
+                    }
                 }
             } else {
 
@@ -528,7 +570,11 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 } else if (secondaryNumber == null || secondaryNumber.trim().length() == 0) {
                     AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.customer_phone_number_is_unnavailable), (dialogInterface, i) -> dialogInterface.cancel());
                 } else {
-                    getExotelCalled(secondaryNumber, techNumber);
+                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
+                        getCallTriggered(secondaryNumber, techNumber);
+                    } else {
+                        getExotelCalled(secondaryNumber, techNumber);
+                    }
                 }
             } else {
 

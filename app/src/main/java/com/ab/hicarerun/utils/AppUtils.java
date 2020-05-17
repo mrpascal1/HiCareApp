@@ -259,8 +259,8 @@ public class AppUtils {
         return simpleDateFormat.format(date);
     }
 
-    public static String reFormatDurationTime(String dateIn, String format) throws ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm aa", Locale.ENGLISH);
+    public static String reFormatRedeemedDate(String dateIn, String format) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy HH:mm:ss", Locale.ENGLISH);
         Date date = simpleDateFormat.parse(dateIn);
         simpleDateFormat = new SimpleDateFormat(format);
         return simpleDateFormat.format(date);

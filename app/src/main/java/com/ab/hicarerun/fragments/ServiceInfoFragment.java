@@ -1,11 +1,17 @@
 package com.ab.hicarerun.fragments;
 
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -15,6 +21,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -22,6 +29,9 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
@@ -40,6 +50,7 @@ import android.widget.Toast;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
+import com.ab.hicarerun.BuildConfig;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.NewTaskDetailsActivity;
 import com.ab.hicarerun.adapter.BankSearchAdapter;
@@ -52,6 +63,8 @@ import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.BasicResponse;
 import com.ab.hicarerun.network.models.ChemicalModel.Chemicals;
+import com.ab.hicarerun.network.models.CovidModel.CovidRequest;
+import com.ab.hicarerun.network.models.CovidModel.CovidResponse;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralPaymentMode;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralTaskStatus;
@@ -65,8 +78,14 @@ import com.ab.hicarerun.network.models.ModelQRCode.QRCodeResponse;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
 import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.utils.GPSUtils;
 import com.ab.hicarerun.utils.MyDividerItemDecoration;
 import com.bumptech.glide.Glide;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.squareup.picasso.Picasso;
 import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
@@ -74,15 +93,20 @@ import com.vansuita.pickimage.dialog.PickImageDialog;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.view.View.GONE;
 
@@ -104,10 +128,15 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private static final int CHEMICAL_REQ = 4000;
     private static final int LESS_PAYMENT_REQ = 5000;
     private static final int QR_CODE_REQ = 6000;
+    private static final int UPLOAD_REQ = 7000;
+
+    private AlertDialog alertDialog;
+
     private Integer pageNumber = 1;
     private String selectedStatus = "";
     private String status = "";
     private boolean showSandardChemicals = false;
+    private boolean isUploadOnsiteImage = false;
     private String OnSiteOtp = "";
     private String PaymentOtp = "";
     private String ScOtp = "";
@@ -121,6 +150,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private Boolean isPaymentJeopardyRaised = false;
     private int radiopos = 0;
     private String Selection = "";
+    private String onsiteTechImage = "";
     private String chequeImg = "";
     private String selectedImagePath = "";
     private Bitmap bitmap;
@@ -150,6 +180,9 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private AlertDialog mAlertDialog = null;
     private OnSaveEventHandler mCallback;
     private String combinedTaskId = "";
+    File mPhotoFile;
+    static final int REQUEST_TAKE_PHOTO = 1;
+
 
     public static ServiceInfoFragment newInstance(String taskId, String combinedTaskId, boolean isCombinedTasks, String combinedTypes, String combinedOrders) {
         Bundle args = new Bundle();
@@ -670,6 +703,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 if (mTaskDetailsData != null && mTaskDetailsData.size() > 0) {
                     status = mTaskDetailsData.get(0).getSchedulingStatus();
                     showSandardChemicals = mTaskDetailsData.get(0).getShow_Standard_Chemicals();
+                    isUploadOnsiteImage = mTaskDetailsData.get(0).getOnsite_Image_Required();
+                    onsiteTechImage = mTaskDetailsData.get(0).getOnsite_Image_Path();
                     String order = mTaskDetailsData.get(0).getOrderNumber();
                     String duration = mTaskDetailsData.get(0).getDuration();
                     String start = mTaskDetailsData.get(0).getTaskAssignmentStartTime();
@@ -685,6 +720,12 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     String hr_duration = split_sDuration[0];
                     String mn_duration = split_sDuration[1];
 
+                    if( isUploadOnsiteImage && onsiteTechImage!=null && !onsiteTechImage.equals("")){
+                        mFragmentServiceInfoBinding.imgUser.setVisibility(View.VISIBLE);
+                        Picasso.get().load(onsiteTechImage).into(mFragmentServiceInfoBinding.imgUser);
+                    }else {
+                        mFragmentServiceInfoBinding.imgUser.setVisibility(GONE);
+                    }
                     if (hr_duration.equals("00")) {
                         mFragmentServiceInfoBinding.txtDuration.setText(duration + " min");
                     } else {
@@ -762,9 +803,21 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                 mCallback.isGeneralChanged(false);
                                 mCallback.status(generalTaskRealmModel.get(position).getStatus());
                             }
+
+                            if (Mode.equals("On-Site") && status.equals("Dispatched")) {
+                                if (isUploadOnsiteImage && onsiteTechImage == null /*&& onsiteTechImage.equals("")*/) {
+                                    captureTechImage();
+                                } else if (showSandardChemicals) {
+                                    showChemicalsDialog();
+                                }
+
+                            }
+
                             if (Mode.equals("On-Site") && status.equals("Dispatched") && showSandardChemicals) {
                                 showChemicalsDialog();
                             }
+
+
                             getServiceValidate();
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -786,6 +839,208 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     mFragmentServiceInfoBinding.spnStatus.setSelection(i);
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void captureTechImage() {
+        try {
+
+            LayoutInflater li = LayoutInflater.from(getActivity());
+
+            View promptsView = li.inflate(R.layout.layout_covid_mask_dialog, null);
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+
+            alertDialogBuilder.setView(promptsView);
+           alertDialog = alertDialogBuilder.create();
+
+            final TextView txtCapture =
+                    promptsView.findViewById(R.id.txtCapture);
+
+            txtCapture.setTypeface(null, Typeface.BOLD);
+
+            int[] attrs = new int[]{R.attr.selectableItemBackground};
+            TypedArray typedArray = getActivity().obtainStyledAttributes(attrs);
+            int backgroundResource = typedArray.getResourceId(0, 0);
+            txtCapture.setBackgroundResource(backgroundResource);
+            txtCapture.setOnClickListener(view -> {
+                requestStoragePermission(true);
+            });
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.setCancelable(false);
+            alertDialog.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void requestStoragePermission(boolean isCamera) {
+        try {
+            Dexter.withActivity(getActivity())
+                    .withPermissions(Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+                    .withListener(new MultiplePermissionsListener() {
+                        @Override
+                        public void onPermissionsChecked(MultiplePermissionsReport report) {
+                            // check if all permissions are granted
+                            if (report.areAllPermissionsGranted()) {
+                                if (isCamera) {
+                                    dispatchTakePictureIntent();
+                                }
+                            }
+                            // check for permanent denial of any permission
+                            if (report.isAnyPermissionPermanentlyDenied()) {
+                                // show alert dialog navigating to Settings
+                                showSettingsDialog();
+                            }
+                        }
+
+                        @Override
+                        public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions,
+                                                                       PermissionToken token) {
+                            token.continuePermissionRequest();
+                        }
+                    })
+                    .withErrorListener(
+                            error -> Toast.makeText(getActivity(), "Error occurred! ", Toast.LENGTH_SHORT)
+                                    .show())
+                    .onSameThread()
+                    .check();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    private void dispatchTakePictureIntent() {
+        try {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                // Create the File where the photo should go
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    // Error occurred while creating the File
+                }
+                if (photoFile != null) {
+                    Uri photoURI = FileProvider.getUriForFile(getActivity(),
+                            BuildConfig.APPLICATION_ID + ".provider",
+                            photoFile);
+                    mPhotoFile = photoFile;
+                    takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", Camera.CameraInfo.CAMERA_FACING_FRONT);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void uploadOnsiteImage(String base64) {
+        RealmResults<LoginResponse> LoginRealmModels =
+                BaseApplication.getRealm().where(LoginResponse.class).findAll();
+        if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+            String UserId = LoginRealmModels.get(0).getUserID();
+            CovidRequest request = new CovidRequest();
+            request.setResourceId(UserId);
+            request.setTaskId(taskId);
+            request.setFile(base64);
+            NetworkCallController controller = new NetworkCallController();
+            controller.setListner(new NetworkResponseListner<CovidResponse>() {
+                @Override
+                public void onResponse(int requestCode, CovidResponse response) {
+                    if (response.getIsSuccess()) {
+                        mFragmentServiceInfoBinding.imgUser.setVisibility(View.VISIBLE);
+                        Picasso.get().load(response.getData()).into(mFragmentServiceInfoBinding.imgUser);
+                    } else {
+                        mFragmentServiceInfoBinding.imgUser.setVisibility(GONE);
+                        Toasty.error(getActivity(), response.getErrorMessage(), Toasty.LENGTH_SHORT).show();
+                        captureTechImage();
+                    }
+                }
+
+                @Override
+                public void onFailure(int requestCode) {
+
+                }
+            });
+            controller.uploadOnsiteImage(UPLOAD_REQ, request);
+
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        String mFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File mFile = File.createTempFile(mFileName, ".jpg", storageDir);
+        return mFile;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        try {
+            if (resultCode == RESULT_OK) {
+                if (requestCode == REQUEST_TAKE_PHOTO) {
+                    selectedImagePath = mPhotoFile.getPath();
+                    if (selectedImagePath != null || !selectedImagePath.equals("")) {
+                        Bitmap bit = new BitmapDrawable(getResources(),
+                                selectedImagePath).getBitmap();
+                        int i = (int) (bit.getHeight() * (1024.0 / bit.getWidth()));
+                        bitmap = Bitmap.createScaledBitmap(bit, 1024, i, true);
+                    }
+
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    byte[] b = baos.toByteArray();
+                    String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+                    alertDialog.dismiss();
+                    uploadOnsiteImage(encodedImage);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void showSettingsDialog() {
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Need Permissions");
+            builder.setMessage(
+                    "This app needs permission to use this feature. You can grant them in app settings.");
+            builder.setPositiveButton("GOTO SETTINGS", (dialog, which) -> {
+                dialog.cancel();
+                openSettings();
+            });
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+            builder.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    // navigating user to app settings
+    private void openSettings() {
+        try {
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+            intent.setData(uri);
+            startActivityForResult(intent, 101);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1265,43 +1520,43 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 ////                                mCallback.isPaymentOtpRequired(false);
 ////                                mCallback.isPaymentOtpvalidated(false);
 //                            } else {
-                                if (PaymentOtp.length() > 0 && PaymentOtp != null) {
-                                    mFragmentServiceInfoBinding.lnrPaymentOTP.setVisibility(View.VISIBLE);
-                                    String otp = mFragmentServiceInfoBinding.edtPaymentOTP.getText().toString();
-                                    if (otp.length() != 0) {
-                                        mCallback.isPaymentOtpRequired(false);
-                                        if (otp.equals(PaymentOtp)) {
+                            if (PaymentOtp.length() > 0 && PaymentOtp != null) {
+                                mFragmentServiceInfoBinding.lnrPaymentOTP.setVisibility(View.VISIBLE);
+                                String otp = mFragmentServiceInfoBinding.edtPaymentOTP.getText().toString();
+                                if (otp.length() != 0) {
+                                    mCallback.isPaymentOtpRequired(false);
+                                    if (otp.equals(PaymentOtp)) {
 //                                    mCallback.onSiteOtp(otp);
-                                            mCallback.isPaymentOtpvalidated(false);
-                                        } else {
-                                            mCallback.isPaymentOtpvalidated(true);
-                                        }
+                                        mCallback.isPaymentOtpvalidated(false);
                                     } else {
-                                        mCallback.isPaymentOtpRequired(true);
-                                    }
-//                                    mCallback.isPaymentOtpRequired(true);
-                                    mFragmentServiceInfoBinding.txtCollected.setEnabled(true);
-//                                    mFragmentServiceInfoBinding.lnrCollected.setVisibility(View.VISIBLE);
-                                    if (mFragmentServiceInfoBinding.txtCollected.getText().toString().trim().length() == 0) {
-                                        mCallback.isPaymentChanged(true);
-                                        if (Mode.equalsIgnoreCase("Online Payment Link")) {
-                                            mCallback.isAmountCollectedRequired(false);
-                                        } else {
-                                            mCallback.isAmountCollectedRequired(true);
-                                        }
-                                        if (Mode.equals("UPI")) {
-                                            mCallback.isAmountCollectedRequired(false);
-                                        } else {
-                                            mCallback.isAmountCollectedRequired(true);
-                                        }
-                                    } else {
-                                        mCallback.isPaymentChanged(false);
-                                        mCallback.isAmountCollectedRequired(false);
+                                        mCallback.isPaymentOtpvalidated(true);
                                     }
                                 } else {
-                                    mCallback.isPaymentOtpRequired(false);
-                                    mCallback.isPaymentOtpvalidated(false);
+                                    mCallback.isPaymentOtpRequired(true);
                                 }
+//                                    mCallback.isPaymentOtpRequired(true);
+                                mFragmentServiceInfoBinding.txtCollected.setEnabled(true);
+//                                    mFragmentServiceInfoBinding.lnrCollected.setVisibility(View.VISIBLE);
+                                if (mFragmentServiceInfoBinding.txtCollected.getText().toString().trim().length() == 0) {
+                                    mCallback.isPaymentChanged(true);
+                                    if (Mode.equalsIgnoreCase("Online Payment Link")) {
+                                        mCallback.isAmountCollectedRequired(false);
+                                    } else {
+                                        mCallback.isAmountCollectedRequired(true);
+                                    }
+                                    if (Mode.equals("UPI")) {
+                                        mCallback.isAmountCollectedRequired(false);
+                                    } else {
+                                        mCallback.isAmountCollectedRequired(true);
+                                    }
+                                } else {
+                                    mCallback.isPaymentChanged(false);
+                                    mCallback.isAmountCollectedRequired(false);
+                                }
+                            } else {
+                                mCallback.isPaymentOtpRequired(false);
+                                mCallback.isPaymentOtpvalidated(false);
+                            }
 //                            }
                         } else {
                             if (PaymentOtp.length() > 0 && PaymentOtp != null) {
@@ -1424,42 +1679,42 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 //                                mCallback.isPaymentOtpRequired(false);
 //                                mCallback.isPaymentOtpvalidated(false);
 //                            } else {
-                                if (PaymentOtp.length() > 0 && PaymentOtp != null) {
-                                    mFragmentServiceInfoBinding.lnrPaymentOTP.setVisibility(View.VISIBLE);
-                                    String otp = mFragmentServiceInfoBinding.edtPaymentOTP.getText().toString();
-                                    if (otp.length() != 0) {
-                                        mCallback.isPaymentOtpRequired(false);
-                                        if (otp.equals(PaymentOtp)) {
+                            if (PaymentOtp.length() > 0 && PaymentOtp != null) {
+                                mFragmentServiceInfoBinding.lnrPaymentOTP.setVisibility(View.VISIBLE);
+                                String otp = mFragmentServiceInfoBinding.edtPaymentOTP.getText().toString();
+                                if (otp.length() != 0) {
+                                    mCallback.isPaymentOtpRequired(false);
+                                    if (otp.equals(PaymentOtp)) {
 //                                    mCallback.onSiteOtp(otp);
-                                            mCallback.isPaymentOtpvalidated(false);
-                                        } else {
-                                            mCallback.isPaymentOtpvalidated(true);
-                                        }
+                                        mCallback.isPaymentOtpvalidated(false);
                                     } else {
-                                        mCallback.isPaymentOtpRequired(true);
-                                    }
-
-                                    if (mFragmentServiceInfoBinding.txtCollected.getText().toString().trim().length() == 0) {
-                                        mCallback.isPaymentChanged(true);
-                                        if (Mode.equalsIgnoreCase("Online Payment Link")) {
-                                            mCallback.isAmountCollectedRequired(false);
-                                        } else {
-                                            mCallback.isAmountCollectedRequired(true);
-                                        }
-                                        if (Mode.equals("UPI")) {
-                                            mCallback.isAmountCollectedRequired(false);
-                                        } else {
-                                            mCallback.isAmountCollectedRequired(true);
-                                        }
-                                    } else {
-                                        mCallback.isPaymentChanged(false);
-                                        mCallback.isAmountCollectedRequired(false);
+                                        mCallback.isPaymentOtpvalidated(true);
                                     }
                                 } else {
-                                    mCallback.isPaymentOtpRequired(false);
-                                    mCallback.isPaymentOtpvalidated(false);
-                                    mCallback.isAmountCollectedRequired(true);
+                                    mCallback.isPaymentOtpRequired(true);
                                 }
+
+                                if (mFragmentServiceInfoBinding.txtCollected.getText().toString().trim().length() == 0) {
+                                    mCallback.isPaymentChanged(true);
+                                    if (Mode.equalsIgnoreCase("Online Payment Link")) {
+                                        mCallback.isAmountCollectedRequired(false);
+                                    } else {
+                                        mCallback.isAmountCollectedRequired(true);
+                                    }
+                                    if (Mode.equals("UPI")) {
+                                        mCallback.isAmountCollectedRequired(false);
+                                    } else {
+                                        mCallback.isAmountCollectedRequired(true);
+                                    }
+                                } else {
+                                    mCallback.isPaymentChanged(false);
+                                    mCallback.isAmountCollectedRequired(false);
+                                }
+                            } else {
+                                mCallback.isPaymentOtpRequired(false);
+                                mCallback.isPaymentOtpvalidated(false);
+                                mCallback.isAmountCollectedRequired(true);
+                            }
 //                            }
                         } else {
                             if (PaymentOtp.length() > 0 && PaymentOtp != null) {

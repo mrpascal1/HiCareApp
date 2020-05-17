@@ -519,6 +519,11 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                     mActivityHomeBinding.drawer.closeDrawers();
                     break;
 
+                case R.id.nav_chat:
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, AssessChatActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                    break;
+
 
                 case R.id.nav_incentive:
                     mActivityHomeBinding.drawer.closeDrawers();

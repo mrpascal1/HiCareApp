@@ -139,6 +139,7 @@ public class UpdateTasksRequest {
     private String ActualAmountToCollect;
 
 
+
     public UpdateTasksRequest() {
         UserId = "";
         ResourceId = "";
@@ -511,4 +512,6 @@ public class UpdateTasksRequest {
     public void setActualAmountToCollect(String actualAmountToCollect) {
         ActualAmountToCollect = actualAmountToCollect;
     }
+
+
 }

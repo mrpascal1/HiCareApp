@@ -116,6 +116,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     private static final String ARG_TASK = "ARG_TASK";
     public static final String ARGS_COMBINED_TASKS_ID = "ARGS_COMBINED_TASKS_ID";
     public static final String ARGS_COMBINED_TYPE = "ARGS_COMBINED_TYPE";
+    public static final String ARGS_SHOW_SIGNATURE = "ARGS_SHOW_SIGNATURE";
     private static final String ARG_VAR = "ARG_VAR";
     private String status = "";
     static String mFeedback = "";
@@ -139,7 +140,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     private NewAttachmentListAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private Integer pageNumber = 1;
-//    private Tasks model;
+    //    private Tasks model;
     List<String> expandableListTitle;
     List<MSTAttachment> listTitle;
     List<MSTAttachment> mstAttachments;
@@ -316,6 +317,18 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
             if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
                 assert mGeneralRealmData.get(0) != null;
                 status = mGeneralRealmData.get(0).getSchedulingStatus();
+                if (mGeneralRealmData.get(0).getShowSignature()) {
+                    mFragmentSignatureInfoBinding.signatureTitle.setVisibility(View.VISIBLE);
+                    mFragmentSignatureInfoBinding.signatureBox.setVisibility(View.VISIBLE);
+                    mFragmentSignatureInfoBinding.lnrSignatory.setVisibility(View.VISIBLE);
+                } else {
+                    mCallback.isSignatureValidated(false);
+                    mCallback.isSignatureChanged(false);
+                    mFragmentSignatureInfoBinding.signatureTitle.setVisibility(GONE);
+                    mFragmentSignatureInfoBinding.signatureBox.setVisibility(GONE);
+                    mFragmentSignatureInfoBinding.lnrSignatory.setVisibility(GONE);
+
+                }
                 if (status.equals("Completed") || status.equals("Incomplete")) {
                     mFragmentSignatureInfoBinding.edtSignatory.setEnabled(false);
                     mFragmentSignatureInfoBinding.edtSignatory.setText(mGeneralRealmData.get(0).getSignatory());
@@ -741,6 +754,28 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                         mCallback.isOTPRequired(true);
                     }
 
+                    if(mGeneralRealmData.get(0).getShowSignature()){
+                        if (mFragmentSignatureInfoBinding.edtSignatory.getText().toString().length() == 0) {
+                            mCallback.isSignatureChanged(true);
+                        } else {
+                            mCallback.isSignatureChanged(false);
+                        }
+                        if (mFragmentSignatureInfoBinding.imgSign.getDrawable() == null) {
+                            mCallback.isSignatureValidated(true);
+                        } else {
+                            mCallback.isSignatureValidated(false);
+                        }
+                    }else {
+                        mCallback.isSignatureValidated(false);
+                        mCallback.isSignatureChanged(false);
+                    }
+
+                }
+            } else {
+                mFragmentSignatureInfoBinding.txtFeedback.setEnabled(false);
+                mFragmentSignatureInfoBinding.lnrOtp.setVisibility(GONE);
+                mFragmentSignatureInfoBinding.btnSendlink.setVisibility(View.GONE);
+                if(mGeneralRealmData.get(0).getShowSignature()){
                     if (mFragmentSignatureInfoBinding.edtSignatory.getText().toString().length() == 0) {
                         mCallback.isSignatureChanged(true);
                     } else {
@@ -751,21 +786,11 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                     } else {
                         mCallback.isSignatureValidated(false);
                     }
-                }
-            } else {
-                mFragmentSignatureInfoBinding.txtFeedback.setEnabled(false);
-                mFragmentSignatureInfoBinding.lnrOtp.setVisibility(GONE);
-                mFragmentSignatureInfoBinding.btnSendlink.setVisibility(View.GONE);
-                if (mFragmentSignatureInfoBinding.edtSignatory.getText().toString().length() == 0) {
-                    mCallback.isSignatureChanged(true);
-                } else {
+                }else {
                     mCallback.isSignatureChanged(false);
-                }
-                if (mFragmentSignatureInfoBinding.imgSign.getDrawable() == null) {
-                    mCallback.isSignatureValidated(true);
-                } else {
                     mCallback.isSignatureValidated(false);
                 }
+
             }
 
         } catch (Exception e) {

@@ -581,7 +581,10 @@
     <string name="there_is_no_rewards_to_display">There is no Rewards to display!</string>
     <string name="there_is_no_offers_to_display">There is no Offers to display!</string>
     <string name="there_is_no_history_to_display">There is no History to display!</string>
-
     <string name="leader_board">Leader Board</string>
+    <string name="bazaar_history">Bazaar History</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
