@@ -66,6 +66,10 @@ import com.ab.hicarerun.network.models.ReferralModel.ReferralResponse;
 import com.ab.hicarerun.network.models.RewardsModel.RewardsResponse;
 import com.ab.hicarerun.network.models.RewardsModel.SaveRedeemRequest;
 import com.ab.hicarerun.network.models.RewardsModel.SaveRedeemResponse;
+import com.ab.hicarerun.network.models.SelfAssessModel.AssessmentReportResponse;
+import com.ab.hicarerun.network.models.SelfAssessModel.ResourceCheckListResponse;
+import com.ab.hicarerun.network.models.SelfAssessModel.SelfAssessmentRequest;
+import com.ab.hicarerun.network.models.SelfAssessModel.SelfAssessmentResponse;
 import com.ab.hicarerun.network.models.TaskModel.TaskListResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTaskResponse;
@@ -1231,10 +1235,10 @@ public class NetworkCallController {
             mContext.showProgressDialog();
             BaseApplication.getRetrofitAPI(true)
                     .getTechAttendance(request)
-                    .enqueue(new Callback<ContinueHandShakeResponse>() {
+                    .enqueue(new Callback<SelfAssessmentResponse>() {
                         @Override
-                        public void onResponse(Call<ContinueHandShakeResponse> call,
-                                               Response<ContinueHandShakeResponse> response) {
+                        public void onResponse(Call<SelfAssessmentResponse> call,
+                                               Response<SelfAssessmentResponse> response) {
                             mContext.dismissProgressDialog();
                             if (response != null) {
                                 if (response.code() == 401) { // Unauthorised Access
@@ -1282,7 +1286,7 @@ public class NetworkCallController {
                         }
 
                         @Override
-                        public void onFailure(Call<ContinueHandShakeResponse> call, Throwable t) {
+                        public void onFailure(Call<SelfAssessmentResponse> call, Throwable t) {
                             mContext.dismissProgressDialog();
                             mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
@@ -3114,6 +3118,120 @@ public class NetworkCallController {
     }
 
 
+    public void getResourceCheckList(final int requestCode, String resourceId, String lang) {
+        try {
+            BaseApplication.getRetrofitAPI(true)
+                    .getResourceCheckList(resourceId, lang)
+                    .enqueue(new Callback<ResourceCheckListResponse>() {
+                        @Override
+                        public void onResponse(Call<ResourceCheckListResponse> call, Response<ResourceCheckListResponse> response) {
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body().getData());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getExotelCalled", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResourceCheckListResponse> call, Throwable t) {
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void saveSelfAssessment(final int requestCode, List<SelfAssessmentRequest> request) {
+        try {
+            BaseApplication.getRetrofitAPI(true)
+                    .saveResourceCheckList(request)
+                    .enqueue(new Callback<SelfAssessmentResponse>() {
+                        @Override
+                        public void onResponse(Call<SelfAssessmentResponse> call,
+                                               Response<SelfAssessmentResponse> response) {
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+//                                        mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getGroomingTechnicians", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<SelfAssessmentResponse> call, Throwable t) {
+//                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public void getAssessmentResponse(final int requestCode, String resourceId, String lang) {
+        try {
+            BaseApplication.getRetrofitAPI(true)
+                    .getAssessmentResponse(resourceId, lang)
+                    .enqueue(new Callback<AssessmentReportResponse>() {
+                        @Override
+                        public void onResponse(Call<AssessmentReportResponse> call, Response<AssessmentReportResponse> response) {
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body().getData());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getExotelCalled", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<AssessmentReportResponse> call, Throwable t) {
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
 
     public String getRefreshToken() {

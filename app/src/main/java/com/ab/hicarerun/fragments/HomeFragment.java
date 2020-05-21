@@ -25,8 +25,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -47,6 +50,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -55,12 +59,16 @@ import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.activities.NewTaskDetailsActivity;
+import com.ab.hicarerun.adapter.AssessmentReportAdapter;
+import com.ab.hicarerun.adapter.ChemicalDialogAdapter;
+import com.ab.hicarerun.adapter.ResourceCheckListAdapter;
 import com.ab.hicarerun.adapter.TaskListAdapter;
 import com.ab.hicarerun.databinding.FragmentHomeBinding;
 import com.ab.hicarerun.handler.OnCallListItemClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
+import com.ab.hicarerun.network.models.ChemicalModel.Chemicals;
 import com.ab.hicarerun.network.models.DialingModel.DialingResponse;
 import com.ab.hicarerun.network.models.ExotelModel.ExotelResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeResponse;
@@ -70,6 +78,11 @@ import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonsList;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.NPSModel.NPSData;
 import com.ab.hicarerun.network.models.ProfileModel.Profile;
+import com.ab.hicarerun.network.models.SelfAssessModel.AssessmentReport;
+import com.ab.hicarerun.network.models.SelfAssessModel.ResourceCheckList;
+import com.ab.hicarerun.network.models.SelfAssessModel.SelfAssessmentRequest;
+import com.ab.hicarerun.network.models.SelfAssessModel.SelfAssessmentResponse;
+import com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;
 import com.ab.hicarerun.network.models.TaskModel.TaskListResponse;
 import com.ab.hicarerun.network.models.TaskModel.Tasks;
 import com.ab.hicarerun.utils.AppUtils;
@@ -80,10 +93,12 @@ import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
 
@@ -101,6 +116,8 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     private static final int CWF_REQUEST = 6000;
     private static final int TECH_REQ = 7000;
     private static final int TECH_NPS = 8000;
+    private static final int ASSESS_REQUEST = 9000;
+    private static final int SAVE_ASSESSMENT = 9000;
     private boolean isBack = false;
     private boolean isSkip = false;
     private Integer pageNumber = 1;
@@ -108,6 +125,8 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     private String activityName = "";
     private String methodName = "";
     private NavigationView navigationView = null;
+    private HashMap<Integer, Boolean> checkMap = new HashMap<>();
+    private HashMap<Integer, String> tempMap = new HashMap<>();
 
     private String taskId = "";
     List<Tasks> items = null;
@@ -117,13 +136,18 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     private static final String ARG_USER = "ARG_USER";
     AlertDialog alertDialog = null;
     private boolean isShowNPS = false;
+    private ResourceCheckListAdapter mCheckListAdapter;
+    private AssessmentReportAdapter mAssessAdapter;
+    private List<SelfAssessmentRequest> checkList = null;
+    private List<ResourceCheckList> ResList = null;
 
     public HomeFragment() {
         // Required empty public constructor
     }
 
-    public static HomeFragment newInstance() {
+    public static HomeFragment newInstance(byte[] bitUser) {
         Bundle args = new Bundle();
+        args.putByteArray(ARG_USER,bitUser);
         HomeFragment fragment = new HomeFragment();
         fragment.setArguments(args);
         return fragment;
@@ -215,6 +239,240 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         if (isShowNPS)
             showNPSDialog();
         mFragmentHomeBinding.swipeRefreshLayout.setRefreshing(true);
+        mFragmentHomeBinding.lnrAssess.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAssessmentReport();
+            }
+        });
+    }
+
+    private void showAssessmentReport() {
+        try {
+            if ((HomeActivity) getActivity() != null) {
+                RealmResults<LoginResponse> LoginRealmModels =
+                        BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                    String resourceId = LoginRealmModels.get(0).getUserID();
+                    final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+                    LayoutInflater inflater = getLayoutInflater();
+                    final View dialogView = inflater.inflate(R.layout.layout_assessment_report, null);
+                    dialogBuilder.setView(dialogView);
+                    final AlertDialog alertDialog = dialogBuilder.create();
+                    final RecyclerView recycleView = (RecyclerView) dialogView.findViewById(R.id.recycleView);
+                    final Button btnOk = (Button) dialogView.findViewById(R.id.btnOk);
+                    final CircleImageView imgUser = (CircleImageView) dialogView.findViewById(R.id.imgUser);
+                    final TextView txtTitle = (TextView) dialogView.findViewById(R.id.txtTitle);
+                    final TextView txtUpdatedOn = (TextView) dialogView.findViewById(R.id.txtUpdatedOn);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bitUser, 0, bitUser.length);
+                    imgUser.setImageBitmap(bitmap);
+                    txtTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+
+                    RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity());
+                    recycleView.setLayoutManager(lm);
+                    recycleView.setItemAnimator(new DefaultItemAnimator());
+                    mAssessAdapter = new AssessmentReportAdapter(getActivity());
+                    recycleView.setAdapter(mAssessAdapter);
+
+                    NetworkCallController controller = new NetworkCallController(HomeFragment.this);
+                    controller.setListner(new NetworkResponseListner<List<AssessmentReport>>() {
+                        @Override
+                        public void onResponse(int requestCode, List<AssessmentReport> items) {
+                            try {
+                                if (items != null) {
+                                    txtUpdatedOn.setText("Updated " + AppUtils.covertTimeToText(items.get(0).getCreatedOn()));
+                                    if (pageNumber == 1 && items.size() > 0) {
+                                        mAssessAdapter.setData(items);
+                                        mAssessAdapter.notifyDataSetChanged();
+
+                                    } else if (items.size() > 0) {
+                                        mAssessAdapter.addData(items);
+                                        mAssessAdapter.notifyDataSetChanged();
+                                    } else {
+                                        pageNumber--;
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int requestCode) {
+
+                        }
+                    });
+                    controller.getAssessmentResponse(ASSESS_REQUEST, resourceId, LocaleHelper.getLanguage(getActivity()));
+                    btnOk.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            alertDialog.dismiss();
+                        }
+                    });
+                    dialogBuilder.setCancelable(false);
+                    alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.show();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void showResourceCheckList() {
+        try {
+            if ((HomeActivity) getActivity() != null) {
+                RealmResults<LoginResponse> LoginRealmModels =
+                        BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                    String resourceId = LoginRealmModels.get(0).getUserID();
+                    final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+                    LayoutInflater inflater = getLayoutInflater();
+                    final View dialogView = inflater.inflate(R.layout.layout_self_assess_list, null);
+                    dialogBuilder.setView(dialogView);
+                    final AlertDialog alertDialog = dialogBuilder.create();
+                    final RecyclerView recycleView = (RecyclerView) dialogView.findViewById(R.id.recycleView);
+                    final Button btnSave = (Button) dialogView.findViewById(R.id.btnSave);
+                    final TextView txtTitle = (TextView) dialogView.findViewById(R.id.txtTitle);
+
+                    txtTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+
+                    RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity());
+                    recycleView.setLayoutManager(lm);
+                    recycleView.setItemAnimator(new DefaultItemAnimator());
+                    mCheckListAdapter = new ResourceCheckListAdapter(getActivity(), (position, isChecked, temperature) -> {
+                        try {
+                            if (checkMap != null && tempMap != null) {
+                                checkMap.put(position, isChecked);
+                                tempMap.put(position, temperature);
+                                Log.i("MAP_VALUE", Objects.requireNonNull(tempMap.get(position)));
+                                checkList = new ArrayList<>();
+                                for (int i = 0; i < mCheckListAdapter.getItemCount(); i++) {
+                                    SelfAssessmentRequest checkModel = new SelfAssessmentRequest();
+                                    checkModel.setOptionId(mCheckListAdapter.getItem(i).getId());
+                                    checkModel.setOptionTitle(mCheckListAdapter.getItem(i).getTitle());
+                                    checkModel.setCreatedBy(resourceId);
+                                    checkModel.setDisplayOptionTitle(mCheckListAdapter.getItem(i).getDisplayTitle());
+                                    if (checkMap.containsKey(i)) {
+                                        checkModel.setIsSelected(checkMap.get(i));
+                                    } else {
+                                        checkModel.setIsSelected(false);
+                                    }
+
+                                    if (tempMap.containsKey(i)) {
+                                        checkModel.setOptionText(tempMap.get(i));
+                                    } else {
+                                        checkModel.setOptionText("");
+                                    }
+
+                                    checkList.add(checkModel);
+                                }
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    });
+                    recycleView.setAdapter(mCheckListAdapter);
+
+                    NetworkCallController controller = new NetworkCallController(HomeFragment.this);
+                    controller.setListner(new NetworkResponseListner<List<ResourceCheckList>>() {
+                        @Override
+                        public void onResponse(int requestCode, List<ResourceCheckList> items) {
+                            try {
+                                if (items != null) {
+                                    ResList = new ArrayList<>();
+                                    ResList = items;
+//                                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//                                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                    if (pageNumber == 1 && items.size() > 0) {
+                                        mCheckListAdapter.setData(items);
+                                        mCheckListAdapter.notifyDataSetChanged();
+
+                                    } else if (items.size() > 0) {
+                                        mCheckListAdapter.addData(items);
+                                        mCheckListAdapter.notifyDataSetChanged();
+                                    } else {
+                                        pageNumber--;
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int requestCode) {
+
+                        }
+                    });
+                    controller.getResourceCheckList(ASSESS_REQUEST, resourceId, LocaleHelper.getLanguage(getActivity()));
+                    btnSave.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (checkList != null) {
+                                if (checkList.get(0).getIsSelected()) {
+                                    if (!checkList.get(0).getOptionText().equals("")) {
+                                        NetworkCallController controller1 = new NetworkCallController(HomeFragment.this);
+                                        controller1.setListner(new NetworkResponseListner<SelfAssessmentResponse>() {
+                                            @Override
+                                            public void onResponse(int requestCode, SelfAssessmentResponse response) {
+                                                if (response.getIsSuccess()) {
+                                                    alertDialog.dismiss();
+                                                    Toast.makeText(getActivity(), response.getData(), Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(int requestCode) {
+
+                                            }
+                                        });
+                                        controller1.saveSelfAssessment(SAVE_ASSESSMENT, checkList);
+                                    } else {
+                                        Toasty.error(getActivity(), "Please enter your body temperature!", Toasty.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    NetworkCallController controller1 = new NetworkCallController(HomeFragment.this);
+                                    controller1.setListner(new NetworkResponseListner<SelfAssessmentResponse>() {
+                                        @Override
+                                        public void onResponse(int requestCode, SelfAssessmentResponse response) {
+                                            if (response.getIsSuccess()) {
+                                                alertDialog.dismiss();
+                                                Toasty.success(getActivity(), response.getData(), Toasty.LENGTH_LONG).show();
+                                            }else {
+                                                Toasty.error(getActivity(), response.getData(), Toasty.LENGTH_LONG).show();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(int requestCode) {
+
+                                        }
+                                    });
+                                    controller1.saveSelfAssessment(SAVE_ASSESSMENT, checkList);
+                                }
+                            }
+
+                        }
+                    });
+                    dialogBuilder.setCancelable(false);
+                    alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+//                    alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.show();
+
+                    alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -311,13 +569,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                         intent.putExtra(NewTaskDetailsActivity.ARGS_COMBINED_ORDER, items.get(position).getCombinedOrderNumber());
                         intent.putExtra(NewTaskDetailsActivity.ARGS_COMBINED_TYPE, items.get(position).getCombinedServiceType());
                         intent.putExtra(NewTaskDetailsActivity.ARGS_NEXT_TASK, items.get(position).getNext_Task_Id());
-//                        intent.putExtra(NewTaskDetailsActivity.ARGS_LATITUDE, items.get(position).getCustomerLatitude());
-//                        intent.putExtra(NewTaskDetailsActivity.ARGS_LONGITUDE, items.get(position).getCustomerLongitude());
-//                        intent.putExtra(NewTaskDetailsActivity.ARGS_NAME, items.get(position).getAccountName());
-//                        intent.putExtra(NewTaskDetailsActivity.ARGS_MOBILE, items.get(position).getTechnicianMobileNo());
-//                        intent.putExtra(NewTaskDetailsActivity.ARGS_SEQUENCE, String.valueOf(items.get(position).getSequenceNumber()));
-//                        intent.putExtra(NewTaskDetailsActivity.ARGS_TAG, items.get(position).getTag());
-//                        intent.putExtra(NewTaskDetailsActivity.ARG_USER, bitUser);
                         startActivity(intent);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -386,12 +637,17 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                 controller.setListner(new NetworkResponseListner() {
                                     @Override
                                     public void onResponse(int requestCode, Object data) {
-                                        ContinueHandShakeResponse response = (ContinueHandShakeResponse) data;
-                                        if (response.getSuccess()) {
+                                        SelfAssessmentResponse response = (SelfAssessmentResponse) data;
+                                        if (response.getIsSuccess()) {
                                             Toasty.success(getActivity(), getResources().getString(R.string.attendance_marked_successfully), Toasty.LENGTH_SHORT).show();
                                             alertDialog.dismiss();
                                             getAllTasks();
-                                            showNPSDialog();
+                                            if(response.getParam1()){
+                                                showResourceCheckList();
+                                            }else {
+                                                showNPSDialog();
+                                            }
+
 
                                         } else {
                                             Toast.makeText(getActivity(), getResources().getString(R.string.attendance_failed_please_try_again), Toast.LENGTH_SHORT).show();

@@ -104,6 +104,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     private AlarmManager mAlarmManager = null;
     private PendingIntent pendingUpdateIntent = null;
     private Bitmap bitUser = null;
+    private byte[] userByte = null;
     private ProgressDialog progress;
 
     @Override
@@ -195,7 +196,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         item.setChecked(true);
         switch (item.getItemId()) {
             case R.id.nav_home:
-                replaceFragment(HomeFragment.newInstance(), "HOME");
+                replaceFragment(HomeFragment.newInstance(userByte), "HOME");
                 break;
             case R.id.nav_incentive:
                 replaceFragment(IncentiveFragment.newInstance(), "INCENTIVE");
@@ -418,6 +419,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                                 bitUser.compress(Bitmap.CompressFormat.PNG, 100, stream);
                                 byte[] byteArray = stream.toByteArray();
+                                userByte = byteArray;
 
                                 SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_USER_PIC, base64);
 //                                addFragment(HomeFragment.newInstance(byteArray), "HomeActivity - HomeFragment");

@@ -54,6 +54,10 @@ import com.ab.hicarerun.network.models.ReferralModel.ReferralResponse;
 import com.ab.hicarerun.network.models.RewardsModel.RewardsResponse;
 import com.ab.hicarerun.network.models.RewardsModel.SaveRedeemRequest;
 import com.ab.hicarerun.network.models.RewardsModel.SaveRedeemResponse;
+import com.ab.hicarerun.network.models.SelfAssessModel.AssessmentReportResponse;
+import com.ab.hicarerun.network.models.SelfAssessModel.ResourceCheckListResponse;
+import com.ab.hicarerun.network.models.SelfAssessModel.SelfAssessmentRequest;
+import com.ab.hicarerun.network.models.SelfAssessModel.SelfAssessmentResponse;
 import com.ab.hicarerun.network.models.TaskModel.TaskListResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTaskResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
@@ -202,7 +206,7 @@ public interface IRetrofit {
 
     /*[Mark Attendance]*/
     @POST("ResourceActivity/PostResourceAttendance")
-    Call<ContinueHandShakeResponse> getTechAttendance(@Body AttendanceRequest request);
+    Call<SelfAssessmentResponse> getTechAttendance(@Body AttendanceRequest request);
 
     /*[Register Profile]*/
 
@@ -370,4 +374,17 @@ public interface IRetrofit {
     /*api/ApplicationLogic/DialNumber*/
     @GET("ApplicationLogic/DialNumber")
     Call<DialingResponse> getDialNumber(@Query("customerNo") String custNo, @Query("techNo") String techNo);
+
+    /*ResourceActivity/GetResourceChecklist*/
+    @GET("ResourceActivity/GetResourceChecklist")
+    Call<ResourceCheckListResponse> getResourceCheckList(@Query("resourceId") String mobile, @Query("ln") String isResend);
+
+    /*ResourceActivity/SaveResourceChecklistResponse*/
+    @POST("ResourceActivity/SaveResourceChecklistResponse")
+    Call<SelfAssessmentResponse> saveResourceCheckList(@Body List<SelfAssessmentRequest> request);
+
+    /*ResourceActivity/GetResourceChecklistResponse*/
+    @GET("ResourceActivity/GetResourceChecklistResponse")
+    Call<AssessmentReportResponse> getAssessmentResponse(@Query("resourceId") String mobile, @Query("ln") String lang);
+
 }

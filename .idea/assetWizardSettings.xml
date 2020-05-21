@@ -19,8 +19,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_award_bronze" />
-                            <entry key="sourceFile" value="D:\Image\award_gold.svg" />
+                            <entry key="outputName" value="ic_sethoscope" />
+                            <entry key="sourceFile" value="D:\Image\medical.svg" />
                           </map>
                         </option>
                       </PersistentState>

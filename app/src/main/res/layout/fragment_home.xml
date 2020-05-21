@@ -75,5 +75,34 @@
 
             </LinearLayout>
         </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/lnrAssess"
+        android:layout_width="145dp"
+        android:layout_height="45dp"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="7dp"
+        android:elevation="3dp"
+        android:clickable="true"
+        android:background="@drawable/raise_payment_btn"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            app:srcCompat="@drawable/ic_sethoscope"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Self Assess"
+            android:layout_gravity="center"
+            android:textSize="18dp"
+            android:textColor="@color/white"/>
+
+    </LinearLayout>
+
     </FrameLayout>
 </layout>
