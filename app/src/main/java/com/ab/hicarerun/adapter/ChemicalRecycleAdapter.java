@@ -64,95 +64,97 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
 
     @Override
     public void onBindViewHolder(@NotNull final ChemicalRecycleAdapter.ViewHolder holder, final int position) {
+        try {
+            final ChemicalViewModel model = items.get(position);
+            holder.mChemicalRecycleRowBinding.chemName.setText(model.getName());
+            holder.mChemicalRecycleRowBinding.chemConsumption.setText(model.getConsumption());
+            holder.mChemicalRecycleRowBinding.chemStandard.setText(model.getStandard());
 
-        final ChemicalViewModel model = items.get(position);
-        holder.mChemicalRecycleRowBinding.chemName.setText(model.getName());
-        holder.mChemicalRecycleRowBinding.chemConsumption.setText(model.getConsumption());
-        holder.mChemicalRecycleRowBinding.chemStandard.setText(model.getStandard());
-
-        if (showStadardChemicals) {
-            holder.mChemicalRecycleRowBinding.chemStandard.setVisibility(View.VISIBLE);
-        } else {
-            holder.mChemicalRecycleRowBinding.chemStandard.setVisibility(View.GONE);
-        }
-        if (isCombined) {
-            holder.mChemicalRecycleRowBinding.lnrType.setVisibility(View.VISIBLE);
-            holder.mChemicalRecycleRowBinding.chemType.setText(model.getChemType());
-            holder.mChemicalRecycleRowBinding.serviceArea.setText("(" + model.getServiceArea() + ")");
-        } else {
-            holder.mChemicalRecycleRowBinding.lnrType.setVisibility(View.GONE);
-        }
-
-        RealmResults<GeneralData> mGeneralRealmData =
-                getRealm().where(GeneralData.class).findAll();
-        if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
-            assert mGeneralRealmData.get(0) != null;
-            isVerified = mGeneralRealmData.get(0).getAutoSubmitChemicals();
-            assert mGeneralRealmData.get(0) != null;
-            String status = mGeneralRealmData.get(0).getSchedulingStatus();
-
-            if (isVerified || status.equals("Completed")) {
-                holder.mChemicalRecycleRowBinding.edtActual.setText(model.getEdtActual());
-                holder.mChemicalRecycleRowBinding.edtActual.setTextColor(Color.parseColor("#000000"));
-                holder.mChemicalRecycleRowBinding.edtActual.setEnabled(false);
-            } else if (status.equals("Incomplete")) {
-                holder.mChemicalRecycleRowBinding.edtActual.setText("-");
-                holder.mChemicalRecycleRowBinding.edtActual.setTextColor(Color.parseColor("#808080"));
-                holder.mChemicalRecycleRowBinding.edtActual.setEnabled(false);
-            } else if (status.equals("Dispatched")) {
-                holder.mChemicalRecycleRowBinding.edtActual.setEnabled(false);
-                holder.mChemicalRecycleRowBinding.edtActual.setBackgroundResource(R.drawable.disable_edit_borders);
+            if (showStadardChemicals) {
+                holder.mChemicalRecycleRowBinding.chemStandard.setVisibility(View.VISIBLE);
             } else {
-                if (model.getActual() != null) {
+                holder.mChemicalRecycleRowBinding.chemStandard.setVisibility(View.GONE);
+            }
+            if (isCombined) {
+                holder.mChemicalRecycleRowBinding.lnrType.setVisibility(View.VISIBLE);
+                holder.mChemicalRecycleRowBinding.chemType.setText(model.getChemType());
+                holder.mChemicalRecycleRowBinding.serviceArea.setText("(" + model.getServiceArea() + ")");
+            } else {
+                holder.mChemicalRecycleRowBinding.lnrType.setVisibility(View.GONE);
+            }
+
+            RealmResults<GeneralData> mGeneralRealmData =
+                    getRealm().where(GeneralData.class).findAll();
+            if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
+                assert mGeneralRealmData.get(0) != null;
+                isVerified = mGeneralRealmData.get(0).getAutoSubmitChemicals();
+                assert mGeneralRealmData.get(0) != null;
+                String status = mGeneralRealmData.get(0).getSchedulingStatus();
+
+                if (isVerified || status.equals("Completed")) {
                     holder.mChemicalRecycleRowBinding.edtActual.setText(model.getEdtActual());
+                    holder.mChemicalRecycleRowBinding.edtActual.setTextColor(Color.parseColor("#000000"));
+                    holder.mChemicalRecycleRowBinding.edtActual.setEnabled(false);
+                } else if (status.equals("Incomplete")) {
+                    holder.mChemicalRecycleRowBinding.edtActual.setText("-");
+                    holder.mChemicalRecycleRowBinding.edtActual.setTextColor(Color.parseColor("#808080"));
+                    holder.mChemicalRecycleRowBinding.edtActual.setEnabled(false);
+                } else if (status.equals("Dispatched")) {
+                    holder.mChemicalRecycleRowBinding.edtActual.setEnabled(false);
+                    holder.mChemicalRecycleRowBinding.edtActual.setBackgroundResource(R.drawable.disable_edit_borders);
                 } else {
-                    holder.mChemicalRecycleRowBinding.edtActual.setText("");
-                }
-
-                holder.mChemicalRecycleRowBinding.edtActual.requestFocus();
-                holder.mChemicalRecycleRowBinding.edtActual.setOnFocusChangeListener((view, b) -> {
-                    try {
-                        onEditTextChanged.onTextChanged(holder.getAdapterPosition(), holder.mChemicalRecycleRowBinding.edtActual.getText().toString());
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    if (model.getActual() != null) {
+                        holder.mChemicalRecycleRowBinding.edtActual.setText(model.getEdtActual());
+                    } else {
+                        holder.mChemicalRecycleRowBinding.edtActual.setText("");
                     }
-                });
 
-                holder.mChemicalRecycleRowBinding.edtActual.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    holder.mChemicalRecycleRowBinding.edtActual.requestFocus();
+                    holder.mChemicalRecycleRowBinding.edtActual.setOnFocusChangeListener((view, b) -> {
+                        try {
+                            onEditTextChanged.onTextChanged(holder.getAdapterPosition(), holder.mChemicalRecycleRowBinding.edtActual.getText().toString());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+
+                    holder.mChemicalRecycleRowBinding.edtActual.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 //                        try {
 //                            onEditTextChanged.onTextChanged(position, s.toString());
 //                        } catch (Exception e) {
 //                            e.printStackTrace();
 //                        }
-                    }
+                        }
 
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    }
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        }
 
-                    @Override
-                    public void afterTextChanged(Editable s) {
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                            try {
+                                onEditTextChanged.onTextChanged(holder.getAdapterPosition(), s.toString());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    });
+
+                    if (holder.mChemicalRecycleRowBinding.edtActual.getText().toString().length() != 0) {
                         try {
-                            onEditTextChanged.onTextChanged(holder.getAdapterPosition(), s.toString());
+                            onEditTextChanged.onTextChanged(holder.getAdapterPosition(), holder.mChemicalRecycleRowBinding.edtActual.getText().toString());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
-                    }
-                });
-
-                if (holder.mChemicalRecycleRowBinding.edtActual.getText().toString().length() != 0) {
-                    try {
-                        onEditTextChanged.onTextChanged(holder.getAdapterPosition(), holder.mChemicalRecycleRowBinding.edtActual.getText().toString());
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
 
     }
 

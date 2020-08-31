@@ -59,132 +59,95 @@ public class OnSiteTasksAdapter extends RecyclerView.Adapter<OnSiteTasksAdapter.
 
     @Override
     public void onBindViewHolder(@NotNull OnSiteTasksAdapter.ViewHolder holder, final int position) {
-        int[] attrs = new int[]{R.attr.selectableItemBackground};
-        TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
-        int backgroundResource = typedArray.getResourceId(0, 0);
-        holder.mOnsiteListAdapterBinding.swipemain.setBackgroundResource(backgroundResource);
-        holder.mOnsiteListAdapterBinding.txtAdd.setBackgroundResource(backgroundResource);
-        holder.mOnsiteListAdapterBinding.txtND.setBackgroundResource(backgroundResource);
-//        ((GradientDrawable) holder.mOnsiteListAdapterBinding.innerAdd.getBackground()).setColor(mContext.getResources().getColor(R.color.taskOuter));
-//        ((GradientDrawable) holder.mOnsiteListAdapterBinding.outerAdd.getBackground()).setColor(mContext.getResources().getColor(R.color.taskInner));
-//        ((GradientDrawable) holder.mOnsiteListAdapterBinding.innerNotDone.getBackground()).setColor(mContext.getResources().getColor(R.color.taskPink));
-//        ((GradientDrawable) holder.mOnsiteListAdapterBinding.outerNotdone.getBackground()).setColor(mContext.getResources().getColor(R.color.red));
-        holder.mOnsiteListAdapterBinding.lnrAdd.setOnClickListener(v -> onItemClickHandler.onAddActivityClick(position));
-        holder.mOnsiteListAdapterBinding.lnrNotDone.setOnClickListener(view -> onItemClickHandler.onNotDoneClick(position));
-        String service = items.get(position).getServiceName().replace(";", ", ");
-        holder.mOnsiteListAdapterBinding.txtServiceType.setText(service);
-        holder.mOnsiteListAdapterBinding.txtArea.setText(items.get(position).getArea());
-        holder.mOnsiteListAdapterBinding.txtSubArea.setText(items.get(position).getSubArea());
+        try {
+            int[] attrs = new int[]{R.attr.selectableItemBackground};
+            TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
+            int backgroundResource = typedArray.getResourceId(0, 0);
+            holder.mOnsiteListAdapterBinding.swipemain.setBackgroundResource(backgroundResource);
+            holder.mOnsiteListAdapterBinding.txtAdd.setBackgroundResource(backgroundResource);
+            holder.mOnsiteListAdapterBinding.txtND.setBackgroundResource(backgroundResource);
+            holder.mOnsiteListAdapterBinding.lnrAdd.setOnClickListener(v -> onItemClickHandler.onAddActivityClick(position));
+            holder.mOnsiteListAdapterBinding.lnrNotDone.setOnClickListener(view -> onItemClickHandler.onNotDoneClick(position));
+            String service = items.get(position).getServiceName().replace(";", ", ");
+            holder.mOnsiteListAdapterBinding.txtServiceType.setText(service);
+            holder.mOnsiteListAdapterBinding.txtArea.setText(items.get(position).getArea());
+            holder.mOnsiteListAdapterBinding.txtSubArea.setText(items.get(position).getSubArea());
 
-        switch (items.get(position).getTotalCompletedCount()) {
+            switch (items.get(position).getTotalCompletedCount()) {
 
-            case 0:
-                holder.mOnsiteListAdapterBinding.tick1.setVisibility(View.GONE);
-                holder.mOnsiteListAdapterBinding.tick2.setVisibility(View.GONE);
-                holder.mOnsiteListAdapterBinding.tick3.setVisibility(View.GONE);
-                holder.mOnsiteListAdapterBinding.tick4.setVisibility(View.GONE);
-                holder.mOnsiteListAdapterBinding.tick5.setVisibility(View.GONE);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
-                break;
+                case 0:
+                    holder.mOnsiteListAdapterBinding.tick1.setVisibility(View.GONE);
+                    holder.mOnsiteListAdapterBinding.tick2.setVisibility(View.GONE);
+                    holder.mOnsiteListAdapterBinding.tick3.setVisibility(View.GONE);
+                    holder.mOnsiteListAdapterBinding.tick4.setVisibility(View.GONE);
+                    holder.mOnsiteListAdapterBinding.tick5.setVisibility(View.GONE);
+                    break;
 
-            case 1:
-                holder.mOnsiteListAdapterBinding.tick1.setVisibility(View.VISIBLE);
-                holder.mOnsiteListAdapterBinding.tick2.setVisibility(View.GONE);
-                holder.mOnsiteListAdapterBinding.tick3.setVisibility(View.GONE);
-                holder.mOnsiteListAdapterBinding.tick4.setVisibility(View.GONE);
-                holder.mOnsiteListAdapterBinding.tick5.setVisibility(View.GONE);
+                case 1:
+                    holder.mOnsiteListAdapterBinding.tick1.setVisibility(View.VISIBLE);
+                    holder.mOnsiteListAdapterBinding.tick2.setVisibility(View.GONE);
+                    holder.mOnsiteListAdapterBinding.tick3.setVisibility(View.GONE);
+                    holder.mOnsiteListAdapterBinding.tick4.setVisibility(View.GONE);
+                    holder.mOnsiteListAdapterBinding.tick5.setVisibility(View.GONE);
+                    break;
 
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
-                break;
+                case 2:
+                    holder.mOnsiteListAdapterBinding.tick1.setVisibility(View.VISIBLE);
+                    holder.mOnsiteListAdapterBinding.tick2.setVisibility(View.VISIBLE);
+                    holder.mOnsiteListAdapterBinding.tick3.setVisibility(View.GONE);
+                    holder.mOnsiteListAdapterBinding.tick4.setVisibility(View.GONE);
+                    holder.mOnsiteListAdapterBinding.tick5.setVisibility(View.GONE);
+                    break;
 
-            case 2:
-                holder.mOnsiteListAdapterBinding.tick1.setVisibility(View.VISIBLE);
-                holder.mOnsiteListAdapterBinding.tick2.setVisibility(View.VISIBLE);
-                holder.mOnsiteListAdapterBinding.tick3.setVisibility(View.GONE);
-                holder.mOnsiteListAdapterBinding.tick4.setVisibility(View.GONE);
-                holder.mOnsiteListAdapterBinding.tick5.setVisibility(View.GONE);
+                case 3:
+                    holder.mOnsiteListAdapterBinding.tick1.setVisibility(View.VISIBLE);
+                    holder.mOnsiteListAdapterBinding.tick2.setVisibility(View.VISIBLE);
+                    holder.mOnsiteListAdapterBinding.tick3.setVisibility(View.VISIBLE);
+                    holder.mOnsiteListAdapterBinding.tick4.setVisibility(View.GONE);
+                    holder.mOnsiteListAdapterBinding.tick5.setVisibility(View.GONE);
+                    break;
 
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
-                break;
+                case 4:
+                    holder.mOnsiteListAdapterBinding.tick1.setVisibility(View.VISIBLE);
+                    holder.mOnsiteListAdapterBinding.tick2.setVisibility(View.VISIBLE);
+                    holder.mOnsiteListAdapterBinding.tick3.setVisibility(View.VISIBLE);
+                    holder.mOnsiteListAdapterBinding.tick4.setVisibility(View.VISIBLE);
+                    holder.mOnsiteListAdapterBinding.tick5.setVisibility(View.GONE);
+                    break;
 
-            case 3:
-                holder.mOnsiteListAdapterBinding.tick1.setVisibility(View.VISIBLE);
-                holder.mOnsiteListAdapterBinding.tick2.setVisibility(View.VISIBLE);
-                holder.mOnsiteListAdapterBinding.tick3.setVisibility(View.VISIBLE);
-                holder.mOnsiteListAdapterBinding.tick4.setVisibility(View.GONE);
-                holder.mOnsiteListAdapterBinding.tick5.setVisibility(View.GONE);
+                case 5:
+                    holder.mOnsiteListAdapterBinding.tick1.setVisibility(View.VISIBLE);
+                    holder.mOnsiteListAdapterBinding.tick2.setVisibility(View.VISIBLE);
+                    holder.mOnsiteListAdapterBinding.tick3.setVisibility(View.VISIBLE);
+                    holder.mOnsiteListAdapterBinding.tick4.setVisibility(View.VISIBLE);
+                    holder.mOnsiteListAdapterBinding.tick5.setVisibility(View.VISIBLE);
 
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
-                break;
+                    break;
 
-            case 4:
-                holder.mOnsiteListAdapterBinding.tick1.setVisibility(View.VISIBLE);
-                holder.mOnsiteListAdapterBinding.tick2.setVisibility(View.VISIBLE);
-                holder.mOnsiteListAdapterBinding.tick3.setVisibility(View.VISIBLE);
-                holder.mOnsiteListAdapterBinding.tick4.setVisibility(View.VISIBLE);
-                holder.mOnsiteListAdapterBinding.tick5.setVisibility(View.GONE);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick_unfilled);
-                break;
+                default:
+                    holder.mOnsiteListAdapterBinding.tick1.setVisibility(View.GONE);
+                    holder.mOnsiteListAdapterBinding.tick2.setVisibility(View.GONE);
+                    holder.mOnsiteListAdapterBinding.tick3.setVisibility(View.GONE);
+                    holder.mOnsiteListAdapterBinding.tick4.setVisibility(View.GONE);
+                    holder.mOnsiteListAdapterBinding.tick5.setVisibility(View.GONE);
 
-            case 5:
-                holder.mOnsiteListAdapterBinding.tick1.setVisibility(View.VISIBLE);
-                holder.mOnsiteListAdapterBinding.tick2.setVisibility(View.VISIBLE);
-                holder.mOnsiteListAdapterBinding.tick3.setVisibility(View.VISIBLE);
-                holder.mOnsiteListAdapterBinding.tick4.setVisibility(View.VISIBLE);
-                holder.mOnsiteListAdapterBinding.tick5.setVisibility(View.VISIBLE);
-
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
-                break;
-
-            default:
-                holder.mOnsiteListAdapterBinding.tick1.setVisibility(View.VISIBLE);
-                holder.mOnsiteListAdapterBinding.tick2.setVisibility(View.VISIBLE);
-                holder.mOnsiteListAdapterBinding.tick3.setVisibility(View.VISIBLE);
-                holder.mOnsiteListAdapterBinding.tick4.setVisibility(View.VISIBLE);
-                holder.mOnsiteListAdapterBinding.tick5.setVisibility(View.VISIBLE);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
-//                holder.mOnsiteListAdapterBinding.tick1.setImageResource(R.drawable.ic_tick);
-
-                break;
-        }
-
-        if (items.get(position).getLastActivity() != null && !items.get(position).getLastActivity().equals("")) {
-            try {
-                String mDate = AppUtils.reFormatDateAndTime(items.get(position).getLastActivity(), "dd MMM, yyyy hh:mm aa");
-                holder.mOnsiteListAdapterBinding.txtLastActivity.setText(items.get(position).getLastActivity());
-            } catch (ParseException e) {
-                e.printStackTrace();
+                    break;
             }
-        } else {
-            holder.mOnsiteListAdapterBinding.txtLastActivity.setText("NA");
+
+            if (items.get(position).getLastActivity() != null && !items.get(position).getLastActivity().equals("")) {
+                try {
+                    String mDate = AppUtils.reFormatDateAndTime(items.get(position).getLastActivity(), "dd MMM, yyyy hh:mm aa");
+                    holder.mOnsiteListAdapterBinding.txtLastActivity.setText(items.get(position).getLastActivity());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                holder.mOnsiteListAdapterBinding.txtLastActivity.setText("NA");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     public void setOnItemClickHandler(OnAddActivityClickHandler onItemClickHandler) {

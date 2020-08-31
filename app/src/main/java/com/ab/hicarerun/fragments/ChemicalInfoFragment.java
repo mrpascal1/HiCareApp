@@ -73,6 +73,13 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
         // Required empty public constructor
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle oldInstanceState)
+    {
+        super.onSaveInstanceState(oldInstanceState);
+        oldInstanceState.clear();
+    }
+
     public static ChemicalInfoFragment newInstance(String taskId, String combinedTaskId, boolean isCombinedTasks) {
         Bundle args = new Bundle();
         args.putString(ARGS_TASKS, taskId);

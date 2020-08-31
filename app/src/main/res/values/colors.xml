@@ -50,6 +50,7 @@
     <color name="lightest_grey">#ececec</color>
     <color name="lightest_greyish">#dedede</color>
     <color name="grey">#808080</color>
+    <color name="greyclose">#b1b1b1</color>
     <color name="altgrey">#999999</color>
     <color name="mint">#98fb98</color>
     <color name="textColorSecondary">#757575</color>
@@ -69,6 +70,7 @@
     <color name="yellow">#fce903</color>
     <color name="skyblue">#D9D9F3</color>
     <color name="smoke_gray">#F5F5F5</color>
+    <color name="smoke_g">#FAFAFA</color>
     <color name="late_pink">#eb9605</color>
     <color name="colorAccentTransparent">#501f5c10</color>
     <color name="greenlight">#ddfada</color>

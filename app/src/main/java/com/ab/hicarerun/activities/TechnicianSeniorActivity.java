@@ -22,7 +22,6 @@ public class TechnicianSeniorActivity extends BaseActivity {
 
     @Override
     protected void attachBaseContext(Context base) {
-//        super.attachBaseContext(LocaleHelper.onAttach(base));
         super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
 
     }

@@ -119,293 +119,303 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NotNull final ViewHolder holder, final int position) {
 
-        if (items.get(position).getHelperResourceId() != null && !items.get(position).getHelperResourceId().equals("")) {
-            try {
-                holder.mTaskListAdapterBinding.lnrPartnerPic.setVisibility(View.VISIBLE);
-                NetworkCallController controller = new NetworkCallController();
-                controller.setListner(new NetworkResponseListner() {
-                    @Override
-                    public void onResponse(int requestCode, Object response) {
-                        String base64 = (String) response;
-                        byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
-                        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                        if (base64.length() > 0) {
-                            holder.mTaskListAdapterBinding.imgPartner.setImageBitmap(decodedByte);
-                        }
-                        NetworkCallController controller1 = new NetworkCallController(mFragment);
-                        controller1.setListner(new NetworkResponseListner() {
-                            @Override
-                            public void onResponse(int requestCode, Object data) {
-                                Profile response = (Profile) data;
-                                profile = response;
-                                holder.mTaskListAdapterBinding.txtHelperName.setText(response.getFirstName());
-                            }
-
-                            @Override
-                            public void onFailure(int requestCode) {
-
-                            }
-                        });
-                        controller1.getTechnicianProfile(PROFILE_REQ, items.get(position).getHelperResourceId());
-                    }
-
-                    @Override
-                    public void onFailure(int requestCode) {
-
-                    }
-                });
-                controller.getResourceProfilePicture(RESOURCE_REQ, items.get(position).getHelperResourceId());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            holder.mTaskListAdapterBinding.lnrPartnerPic.setVisibility(View.GONE);
-        }
-        holder.mTaskListAdapterBinding.txtTime.setText(items.get(position).getTaskAssignmentStartTime() + " - " + items.get(position).getTaskAssignmentEndTime());
-        holder.mTaskListAdapterBinding.txtName.setText(items.get(position).getAccountName());
-        holder.mTaskListAdapterBinding.status.setText(items.get(position).getStatus());
-
-        int[] attrs = new int[]{R.attr.selectableItemBackground};
-        TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
-        int backgroundResource = typedArray.getResourceId(0, 0);
-        holder.mTaskListAdapterBinding.dispatchTaskAltMobileNo.setBackgroundResource(backgroundResource);
-        holder.mTaskListAdapterBinding.dispatchTaskMobileNo.setBackgroundResource(backgroundResource);
-        holder.mTaskListAdapterBinding.dispatchTaskPhoneNo.setBackgroundResource(backgroundResource);
-        holder.mTaskListAdapterBinding.lnrDetail.setBackgroundResource(backgroundResource);
-//        holder.mTaskListAdapterBinding.lnrMain.setBackgroundResource(backgroundResource);
-        holder.mTaskListAdapterBinding.constraint.setBackgroundResource(backgroundResource);
-        holder.mTaskListAdapterBinding.constraint2.setBackgroundResource(backgroundResource);
-        holder.mTaskListAdapterBinding.lnrMap.setBackgroundResource(backgroundResource);
-        holder.mTaskListAdapterBinding.btnHelpline.setBackgroundResource(backgroundResource);
-        if (items.get(position).getCombineTask()) {
-            String order = items.get(position).getCombineOrderNumber().replace(",", ", ");
-            holder.mTaskListAdapterBinding.txtOrderno.setText(order);
-            holder.mTaskListAdapterBinding.lnrMST.setVisibility(View.VISIBLE);
-        } else {
-            holder.mTaskListAdapterBinding.txtOrderno.setText(items.get(position).getOrderNumber());
-            holder.mTaskListAdapterBinding.lnrMST.setVisibility(View.GONE);
-        }
-
         try {
-            String mDate = AppUtils.reFormatDateTime(items.get(position).getTaskAssignmentStartDate(), "dd MMM, yyyy");
-            holder.mTaskListAdapterBinding.txtDate.setText(mDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+            if (items.get(position).getHelperResourceId() != null && !items.get(position).getHelperResourceId().equals("")) {
+                try {
+                    holder.mTaskListAdapterBinding.lnrPartnerPic.setVisibility(View.VISIBLE);
+                    NetworkCallController controller = new NetworkCallController();
+                    controller.setListner(new NetworkResponseListner() {
+                        @Override
+                        public void onResponse(int requestCode, Object response) {
+                            String base64 = (String) response;
+                            byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
+                            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                            if (base64.length() > 0) {
+                                holder.mTaskListAdapterBinding.imgPartner.setImageBitmap(decodedByte);
+                            }
+                            NetworkCallController controller1 = new NetworkCallController(mFragment);
+                            controller1.setListner(new NetworkResponseListner() {
+                                @Override
+                                public void onResponse(int requestCode, Object data) {
+                                    Profile response = (Profile) data;
+                                    profile = response;
+                                    holder.mTaskListAdapterBinding.txtHelperName.setText(response.getFirstName());
+                                }
 
-        holder.mTaskListAdapterBinding.status.setTypeface(Typeface.DEFAULT_BOLD, Typeface.NORMAL);
-        Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.blink);
-        holder.mTaskListAdapterBinding.imgWarning.startAnimation(animation);
-        if (items.get(position).getSequenceNumber() == 1 && items.get(position).getAccountType().equals("Individual")) {
-            holder.mTaskListAdapterBinding.constraint2.setBackgroundColor(Color.parseColor("#FFE6EE"));
-        } else {
-            holder.mTaskListAdapterBinding.constraint2.setBackgroundColor(Color.parseColor("#ffffff"));
-        }
+                                @Override
+                                public void onFailure(int requestCode) {
 
-        if (items.get(position).getStatus().equalsIgnoreCase("Completed")) {
-            holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
-            holder.mTaskListAdapterBinding.warning.setVisibility(View.GONE);
-            holder.mTaskListAdapterBinding.btnHelpline.setVisibility(View.GONE);
-//            holder.mTaskListAdapterBinding.status.setTextColor(Color.parseColor("#1E90FF"));
-            holder.mTaskListAdapterBinding.lnrStatus.setBackgroundColor(Color.parseColor("#1E90FF"));
-        } else if (items.get(position).getStatus().equalsIgnoreCase("Dispatched")) {
-//            holder.mTaskListAdapterBinding.status.setTextColor(Color.parseColor("#ff6700"));
-            holder.mTaskListAdapterBinding.lnrStatus.setBackgroundColor(Color.parseColor("#ff6700"));
-            holder.mTaskListAdapterBinding.btnHelpline.setVisibility(View.VISIBLE);
+                                }
+                            });
+                            controller1.getTechnicianProfile(PROFILE_REQ, items.get(position).getHelperResourceId());
+                        }
 
-        } else if (items.get(position).getStatus().equalsIgnoreCase("On-Site")) {
-            holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
-            holder.mTaskListAdapterBinding.warning.setVisibility(View.GONE);
-            holder.mTaskListAdapterBinding.btnHelpline.setVisibility(View.VISIBLE);
-//            holder.mTaskListAdapterBinding.status.setTextColor(Color.parseColor("#e1ad01"));
-            holder.mTaskListAdapterBinding.lnrStatus.setBackgroundColor(Color.parseColor("#e1ad01"));
-        } else if (items.get(position).getStatus().equalsIgnoreCase("Incomplete")) {
-            holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
-            holder.mTaskListAdapterBinding.warning.setVisibility(View.GONE);
-            holder.mTaskListAdapterBinding.btnHelpline.setVisibility(View.GONE);
-//            holder.mTaskListAdapterBinding.status.setTextColor(Color.parseColor("#FF69B4"));
-            holder.mTaskListAdapterBinding.lnrStatus.setBackgroundColor(Color.parseColor("#FF69B4"));
-        }
-        if (items.get(position).getTag() != null && items.get(position).getTag().length() > 0) {
-            holder.mTaskListAdapterBinding.lnrTag.setVisibility(View.VISIBLE);
-            holder.mTaskListAdapterBinding.txtTag.setText(items.get(position).getTag());
-        } else {
-            holder.mTaskListAdapterBinding.lnrTag.setVisibility(View.GONE);
-        }
-        if (items.get(position).getSequenceNumber() != 0) {
-            holder.mTaskListAdapterBinding.lnrSequence.setVisibility(View.VISIBLE);
-            holder.mTaskListAdapterBinding.txtSequence.setText(String.valueOf(items.get(position).getSequenceNumber()));
-        } else {
-            holder.mTaskListAdapterBinding.lnrSequence.setVisibility(View.GONE);
-        }
+                        @Override
+                        public void onFailure(int requestCode) {
 
-        if (items.get(position).getCombineTask()) {
-            String service = items.get(position).getCombineTaskType().replace(",", ", ");
-            holder.mTaskListAdapterBinding.txtService.setText(service);
-            holder.mTaskListAdapterBinding.txtType.setText(service);
-        } else {
-            holder.mTaskListAdapterBinding.txtService.setText(items.get(position).getServicePlan());
-            holder.mTaskListAdapterBinding.txtType.setText(items.get(position).getServiceType());
-        }
-
-        if (items.get(position).getStreet() != null) {
-            street = items.get(position).getStreet();
-        }
-
-        if (items.get(position).getBuildingName() != null && items.get(position).getBuildingName().trim().length() != 0) {
-            holder.mTaskListAdapterBinding.lnrAddress.setVisibility(View.VISIBLE);
-            if (items.get(position).getWingFlatOrUnitNumber() != null && !items.get(position).getWingFlatOrUnitNumber().equals("")) {
-                Flat = items.get(position).getWingFlatOrUnitNumber() + ", ";
-            }
-            holder.mTaskListAdapterBinding.txtAddress.setText(Flat + items.get(position).getBuildingName() + ", "
-                    + items.get(position).getLocality() + ", "
-                    + street);
-        } else {
-            holder.mTaskListAdapterBinding.lnrAddress.setVisibility(View.GONE);
-        }
-
-        if (items.get(position).getLandmark() != null && !items.get(position).getLandmark().equals("")) {
-            holder.mTaskListAdapterBinding.lnrLandmark.setVisibility(View.VISIBLE);
-            holder.mTaskListAdapterBinding.txtLandmark.setText(items.get(position).getLandmark());
-        } else {
-            holder.mTaskListAdapterBinding.lnrLandmark.setVisibility(View.GONE);
-        }
-        holder.mTaskListAdapterBinding.txtPostcode.setText(items.get(position).getPostalCode());
-        if (items.get(position).getAmount().equals("0")) {
-            holder.mTaskListAdapterBinding.lnrAmount.setVisibility(View.GONE);
-        } else {
-            holder.mTaskListAdapterBinding.lnrAmount.setVisibility(View.VISIBLE);
-            holder.mTaskListAdapterBinding.txtAmount.setText(items.get(position).getAmount());
-        }
-        holder.itemView.setOnClickListener(v -> onItemClickHandler.onItemClick(position));
-        holder.mTaskListAdapterBinding.dispatchTaskMobileNo.setOnClickListener(v -> onCallListItemClickHandler.onPrimaryMobileClicked(position));
-        holder.mTaskListAdapterBinding.dispatchTaskAltMobileNo.setOnClickListener(v -> onCallListItemClickHandler.onAlternateMobileClicked(position));
-        holder.mTaskListAdapterBinding.dispatchTaskPhoneNo.setOnClickListener(v -> onCallListItemClickHandler.onTelePhoneClicked(position));
-        holder.mTaskListAdapterBinding.lnrMap.setOnClickListener(v -> onCallListItemClickHandler.onTrackLocationIconClicked(position));
-        holder.mTaskListAdapterBinding.btnHelpline.setOnClickListener(view -> onCallListItemClickHandler.onTechnicianHelplineClicked(position));
-        holder.mTaskListAdapterBinding.lnrPartnerPic.setOnClickListener(view -> onCallListItemClickHandler.onResourcePartnerPic(profile));
-
-        final Handler ha = new Handler();
-        ha.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                //call function
-
-                if (items.get(position).getStatus().equalsIgnoreCase("Dispatched")) {
-                    startCountUpTimer(holder, position);
-                } else {
-                    holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
-                    holder.mTaskListAdapterBinding.warning.setVisibility(View.GONE);
+                        }
+                    });
+                    controller.getResourceProfilePicture(RESOURCE_REQ, items.get(position).getHelperResourceId());
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                ha.postDelayed(this, 1000);
+            } else {
+                holder.mTaskListAdapterBinding.lnrPartnerPic.setVisibility(View.GONE);
             }
-        }, 1000);
+            holder.mTaskListAdapterBinding.txtTime.setText(items.get(position).getTaskAssignmentStartTime() + " - " + items.get(position).getTaskAssignmentEndTime());
+            holder.mTaskListAdapterBinding.txtName.setText(items.get(position).getAccountName());
+            holder.mTaskListAdapterBinding.status.setText(items.get(position).getStatus());
 
+            int[] attrs = new int[]{R.attr.selectableItemBackground};
+            TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
+            int backgroundResource = typedArray.getResourceId(0, 0);
+            holder.mTaskListAdapterBinding.dispatchTaskAltMobileNo.setBackgroundResource(backgroundResource);
+            holder.mTaskListAdapterBinding.dispatchTaskMobileNo.setBackgroundResource(backgroundResource);
+            holder.mTaskListAdapterBinding.dispatchTaskPhoneNo.setBackgroundResource(backgroundResource);
+            holder.mTaskListAdapterBinding.lnrDetail.setBackgroundResource(backgroundResource);
+//        holder.mTaskListAdapterBinding.lnrMain.setBackgroundResource(backgroundResource);
+            holder.mTaskListAdapterBinding.constraint.setBackgroundResource(backgroundResource);
+            holder.mTaskListAdapterBinding.constraint2.setBackgroundResource(backgroundResource);
+            holder.mTaskListAdapterBinding.lnrMap.setBackgroundResource(backgroundResource);
+            holder.mTaskListAdapterBinding.btnHelpline.setBackgroundResource(backgroundResource);
+            if (items.get(position).getCombineTask()) {
+                String order = items.get(position).getCombineOrderNumber().replace(",", ", ");
+                holder.mTaskListAdapterBinding.txtOrderno.setText(order);
+                holder.mTaskListAdapterBinding.lnrMST.setVisibility(View.VISIBLE);
+            } else {
+                holder.mTaskListAdapterBinding.txtOrderno.setText(items.get(position).getOrderNumber());
+                holder.mTaskListAdapterBinding.lnrMST.setVisibility(View.GONE);
+            }
 
-        holder.mTaskListAdapterBinding.imgWarning.setOnClickListener(v -> {
             try {
-
-                String titleText = "Running Late...";
-                // Initialize a new foreground color span instance
-                ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(Color.BLACK);
-                // Initialize a new spannable string builder instance
-                SpannableStringBuilder ssBuilder = new SpannableStringBuilder(titleText);
-                // Apply the text color span
-                ssBuilder.setSpan(
-                        foregroundColorSpan,
-                        0,
-                        titleText.length(),
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                );
-                startCountUpTimer(holder, position);
-                String time = AppUtils.millisTOHr(milli);
-                getErrorDialog(ssBuilder, "You're running late by " + time + ".");
-
+                String mDate = AppUtils.reFormatDateTime(items.get(position).getTaskAssignmentStartDate(), "dd MMM, yyyy");
+                holder.mTaskListAdapterBinding.txtDate.setText(mDate);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-        });
+
+            holder.mTaskListAdapterBinding.status.setTypeface(Typeface.DEFAULT_BOLD, Typeface.NORMAL);
+            Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.blink);
+            holder.mTaskListAdapterBinding.imgWarning.startAnimation(animation);
+            if (items.get(position).getSequenceNumber() == 1 && items.get(position).getAccountType().equals("Individual")) {
+                holder.mTaskListAdapterBinding.constraint2.setBackgroundColor(Color.parseColor("#FFE6EE"));
+            } else {
+                holder.mTaskListAdapterBinding.constraint2.setBackgroundColor(Color.parseColor("#ffffff"));
+            }
+
+            if (items.get(position).getStatus().equalsIgnoreCase("Completed")) {
+                holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
+                holder.mTaskListAdapterBinding.warning.setVisibility(View.GONE);
+                holder.mTaskListAdapterBinding.btnHelpline.setVisibility(View.GONE);
+//            holder.mTaskListAdapterBinding.status.setTextColor(Color.parseColor("#1E90FF"));
+                holder.mTaskListAdapterBinding.lnrStatus.setBackgroundColor(Color.parseColor("#1E90FF"));
+            } else if (items.get(position).getStatus().equalsIgnoreCase("Dispatched")) {
+//            holder.mTaskListAdapterBinding.status.setTextColor(Color.parseColor("#ff6700"));
+                holder.mTaskListAdapterBinding.lnrStatus.setBackgroundColor(Color.parseColor("#ff6700"));
+                holder.mTaskListAdapterBinding.btnHelpline.setVisibility(View.VISIBLE);
+
+            } else if (items.get(position).getStatus().equalsIgnoreCase("On-Site")) {
+                holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
+                holder.mTaskListAdapterBinding.warning.setVisibility(View.GONE);
+                holder.mTaskListAdapterBinding.btnHelpline.setVisibility(View.VISIBLE);
+//            holder.mTaskListAdapterBinding.status.setTextColor(Color.parseColor("#e1ad01"));
+                holder.mTaskListAdapterBinding.lnrStatus.setBackgroundColor(Color.parseColor("#e1ad01"));
+            } else if (items.get(position).getStatus().equalsIgnoreCase("Incomplete")) {
+                holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
+                holder.mTaskListAdapterBinding.warning.setVisibility(View.GONE);
+                holder.mTaskListAdapterBinding.btnHelpline.setVisibility(View.GONE);
+//            holder.mTaskListAdapterBinding.status.setTextColor(Color.parseColor("#FF69B4"));
+                holder.mTaskListAdapterBinding.lnrStatus.setBackgroundColor(Color.parseColor("#FF69B4"));
+            }
+            if (items.get(position).getTag() != null && items.get(position).getTag().length() > 0) {
+                holder.mTaskListAdapterBinding.lnrTag.setVisibility(View.VISIBLE);
+                holder.mTaskListAdapterBinding.txtTag.setText(items.get(position).getTag());
+            } else {
+                holder.mTaskListAdapterBinding.lnrTag.setVisibility(View.GONE);
+            }
+            if (items.get(position).getSequenceNumber() != 0) {
+                holder.mTaskListAdapterBinding.lnrSequence.setVisibility(View.VISIBLE);
+                holder.mTaskListAdapterBinding.txtSequence.setText(String.valueOf(items.get(position).getSequenceNumber()));
+            } else {
+                holder.mTaskListAdapterBinding.lnrSequence.setVisibility(View.GONE);
+            }
+
+            if (items.get(position).getCombineTask()) {
+                String service = items.get(position).getCombineTaskType().replace(",", ", ");
+                holder.mTaskListAdapterBinding.txtService.setText(service);
+                holder.mTaskListAdapterBinding.txtType.setText(service);
+            } else {
+                holder.mTaskListAdapterBinding.txtService.setText(items.get(position).getServicePlan());
+                holder.mTaskListAdapterBinding.txtType.setText(items.get(position).getServiceType());
+            }
+
+            if (items.get(position).getStreet() != null) {
+                street = items.get(position).getStreet();
+            }
+
+            if (items.get(position).getBuildingName() != null && items.get(position).getBuildingName().trim().length() != 0) {
+                holder.mTaskListAdapterBinding.lnrAddress.setVisibility(View.VISIBLE);
+                if (items.get(position).getWingFlatOrUnitNumber() != null && !items.get(position).getWingFlatOrUnitNumber().equals("")) {
+                    Flat = items.get(position).getWingFlatOrUnitNumber() + ", ";
+                }
+                holder.mTaskListAdapterBinding.txtAddress.setText(Flat + items.get(position).getBuildingName() + ", "
+                        + items.get(position).getLocality() + ", "
+                        + street);
+            } else {
+                holder.mTaskListAdapterBinding.lnrAddress.setVisibility(View.GONE);
+            }
+
+            if (items.get(position).getLandmark() != null && !items.get(position).getLandmark().equals("")) {
+                holder.mTaskListAdapterBinding.lnrLandmark.setVisibility(View.VISIBLE);
+                holder.mTaskListAdapterBinding.txtLandmark.setText(items.get(position).getLandmark());
+            } else {
+                holder.mTaskListAdapterBinding.lnrLandmark.setVisibility(View.GONE);
+            }
+            holder.mTaskListAdapterBinding.txtPostcode.setText(items.get(position).getPostalCode());
+            if (items.get(position).getAmount().equals("0")) {
+                holder.mTaskListAdapterBinding.lnrAmount.setVisibility(View.GONE);
+            } else {
+                holder.mTaskListAdapterBinding.lnrAmount.setVisibility(View.VISIBLE);
+                holder.mTaskListAdapterBinding.txtAmount.setText(items.get(position).getAmount());
+            }
+            holder.itemView.setOnClickListener(v -> onItemClickHandler.onItemClick(position));
+            holder.mTaskListAdapterBinding.dispatchTaskMobileNo.setOnClickListener(v -> onCallListItemClickHandler.onPrimaryMobileClicked(position));
+            holder.mTaskListAdapterBinding.dispatchTaskAltMobileNo.setOnClickListener(v -> onCallListItemClickHandler.onAlternateMobileClicked(position));
+            holder.mTaskListAdapterBinding.dispatchTaskPhoneNo.setOnClickListener(v -> onCallListItemClickHandler.onTelePhoneClicked(position));
+            holder.mTaskListAdapterBinding.lnrMap.setOnClickListener(v -> onCallListItemClickHandler.onTrackLocationIconClicked(position));
+            holder.mTaskListAdapterBinding.btnHelpline.setOnClickListener(view -> onCallListItemClickHandler.onTechnicianHelplineClicked(position));
+            holder.mTaskListAdapterBinding.lnrPartnerPic.setOnClickListener(view -> onCallListItemClickHandler.onResourcePartnerPic(profile));
+
+            final Handler ha = new Handler();
+            ha.postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    //call function
+
+                    if (items.get(position).getStatus().equalsIgnoreCase("Dispatched")) {
+                        startCountUpTimer(holder, position);
+                    } else {
+                        holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
+                        holder.mTaskListAdapterBinding.warning.setVisibility(View.GONE);
+                    }
+                    ha.postDelayed(this, 1000);
+                }
+            }, 1000);
+
+
+            holder.mTaskListAdapterBinding.imgWarning.setOnClickListener(v -> {
+                try {
+
+                    String titleText = "Running Late...";
+                    // Initialize a new foreground color span instance
+                    ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(Color.BLACK);
+                    // Initialize a new spannable string builder instance
+                    SpannableStringBuilder ssBuilder = new SpannableStringBuilder(titleText);
+                    // Apply the text color span
+                    ssBuilder.setSpan(
+                            foregroundColorSpan,
+                            0,
+                            titleText.length(),
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    );
+                    startCountUpTimer(holder, position);
+                    String time = AppUtils.millisTOHr(milli);
+                    getErrorDialog(ssBuilder, "You're running late by " + time + ".");
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 
     private void startCountUpTimer(final ViewHolder holder, int position) {
-        String sdate = items.get(position).getTaskAssignmentStartDate();
-        String edate = items.get(position).getTaskAssignmentEndDate();
-//        yyyy-MM-dd HH:mm:ss
+        try {
+            String sdate = items.get(position).getTaskAssignmentStartDate();
+            String edate = items.get(position).getTaskAssignmentEndDate();
 
-        String[] split_start = sdate.split("T");
-        String start_date = (split_start[0]);
-        String start_time = (split_start[1]);
-        final String sDate = start_date + " " + start_time;
+            String[] split_start = sdate.split("T");
+            String start_date = (split_start[0]);
+            String start_time = (split_start[1]);
+            final String sDate = start_date + " " + start_time;
 
-        String[] split_end = edate.split("T");
-        String end_date = (split_end[0]);
-        String end_time = (split_end[1]);
-        String eDate = end_date + " " + end_time;
-
-
-        String[] split_sDate = start_date.split("-");
-        String year_start = split_sDate[0];
-        String month_start = split_sDate[1];
-        String day_start = split_sDate[2];
+            String[] split_end = edate.split("T");
+            String end_date = (split_end[0]);
+            String end_time = (split_end[1]);
+            String eDate = end_date + " " + end_time;
 
 
-        String[] split_sTime = start_time.split(":");
-        String hr_start = split_sTime[0];
-        String mn_start = split_sTime[1];
-        String secs_start = split_sTime[2];
+            String[] split_sDate = start_date.split("-");
+            String year_start = split_sDate[0];
+            String month_start = split_sDate[1];
+            String day_start = split_sDate[2];
 
 
-        String[] split_eDate = end_date.split("-");
-        String year_end = split_eDate[0];
-        String month_end = split_eDate[1];
-        String day_end = split_eDate[2];
-
-        String[] split_eTime = end_time.split(":");
-        String hr_end = split_eTime[0];
-        String mn_end = split_eTime[1];
-        String sec_end = split_eTime[2];
+            String[] split_sTime = start_time.split(":");
+            String hr_start = split_sTime[0];
+            String mn_start = split_sTime[1];
+            String secs_start = split_sTime[2];
 
 
-        final Time conferenceTime = new Time(Time.getCurrentTimezone());
+            String[] split_eDate = end_date.split("-");
+            String year_end = split_eDate[0];
+            String month_end = split_eDate[1];
+            String day_end = split_eDate[2];
 
-        final int hour = Integer.parseInt(hr_start);
-        final int minute = Integer.parseInt(mn_start);
-        final int second = Integer.parseInt(secs_start);
-        final int monthDay = Integer.parseInt(day_start);
-        final int month = Integer.parseInt(month_start) - 1;
-        final int year = Integer.parseInt(year_start);
-        String isStartDate = AppUtils.compareDates(AppUtils.currentDateTime(), sDate);
+            String[] split_eTime = end_time.split(":");
+            String hr_end = split_eTime[0];
+            String mn_end = split_eTime[1];
+            String sec_end = split_eTime[2];
 
-        if (items.get(position).getStatus().equalsIgnoreCase("Dispatched")) {
-            if (isStartDate.equalsIgnoreCase("afterdate")) {
-                conferenceTime.set(second, minute, hour, monthDay, month, year);
-                holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
-                holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.VISIBLE);
-                holder.mTaskListAdapterBinding.warning.setVisibility(View.VISIBLE);
 
+            final Time conferenceTime = new Time(Time.getCurrentTimezone());
+
+            final int hour = Integer.parseInt(hr_start);
+            final int minute = Integer.parseInt(mn_start);
+            final int second = Integer.parseInt(secs_start);
+            final int monthDay = Integer.parseInt(day_start);
+            final int month = Integer.parseInt(month_start) - 1;
+            final int year = Integer.parseInt(year_start);
+            String isStartDate = AppUtils.compareDates(AppUtils.currentDateTime(), sDate);
+
+            if (items.get(position).getStatus().equalsIgnoreCase("Dispatched")) {
+                if (isStartDate.equalsIgnoreCase("afterdate")) {
+                    conferenceTime.set(second, minute, hour, monthDay, month, year);
+                    holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
+                    holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.VISIBLE);
+                    holder.mTaskListAdapterBinding.warning.setVisibility(View.VISIBLE);
+
+                } else {
+                    holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
+                    holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
+                    holder.mTaskListAdapterBinding.warning.setVisibility(View.GONE);
+                    conferenceTime.set(second, minute, hour, monthDay, month, year);
+                }
             } else {
-                holder.mTaskListAdapterBinding.lnrTimer.setVisibility(View.GONE);
                 holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
                 holder.mTaskListAdapterBinding.warning.setVisibility(View.GONE);
-                conferenceTime.set(second, minute, hour, monthDay, month, year);
             }
-        } else {
-            holder.mTaskListAdapterBinding.imgWarning.setVisibility(View.GONE);
-            holder.mTaskListAdapterBinding.warning.setVisibility(View.GONE);
+
+            conferenceTime.normalize(true);
+            final long confMillis = conferenceTime.toMillis(true);
+            Time nowTime = new Time(Time.getCurrentTimezone());
+            nowTime.setToNow();
+            nowTime.normalize(true);
+            long nowMillis = nowTime.toMillis(true);
+            long milliDiff = nowMillis - confMillis;
+            milli = milliDiff;
+            long millis = 900000 - milliDiff;
+            timeSwapBuff += timeInMilliseconds;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        conferenceTime.normalize(true);
-        final long confMillis = conferenceTime.toMillis(true);
-        Time nowTime = new Time(Time.getCurrentTimezone());
-        nowTime.setToNow();
-        nowTime.normalize(true);
-        long nowMillis = nowTime.toMillis(true);
-        long milliDiff = nowMillis - confMillis;
-        milli = milliDiff;
-        long millis = 900000 - milliDiff;
-        timeSwapBuff += timeInMilliseconds;
     }
 
 
@@ -424,7 +434,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     @Override
     public int getItemCount() {
         return items.size();
-
     }
 
     public void setOnItemClickHandler(OnListItemClickHandler onItemClickHandler) {

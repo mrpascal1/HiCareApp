@@ -67,6 +67,7 @@ import com.ab.hicarerun.databinding.FragmentHomeBinding;
 import com.ab.hicarerun.handler.OnCallListItemClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
+import com.ab.hicarerun.network.models.AttachmentModel.MSTAttachment;
 import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
 import com.ab.hicarerun.network.models.ChemicalModel.Chemicals;
 import com.ab.hicarerun.network.models.DialingModel.DialingResponse;
@@ -93,6 +94,7 @@ import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -117,6 +119,8 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     private static final int TECH_REQ = 7000;
     private static final int TECH_NPS = 8000;
     private static final int ASSESS_REQUEST = 9000;
+    private static final int REQ_PROFILE = 31000;
+
     private static final int SAVE_ASSESSMENT = 9000;
     private boolean isBack = false;
     private boolean isSkip = false;
@@ -132,33 +136,36 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     List<Tasks> items = null;
     RealmResults<LoginResponse> LoginRealmModels = null;
     private boolean isParam = false;
-    private byte[] bitUser = null;
+    //    private byte[] bitUser = null;
     private static final String ARG_USER = "ARG_USER";
     AlertDialog alertDialog = null;
     private boolean isShowNPS = false;
+    private boolean isResourceSaved = false;
     private ResourceCheckListAdapter mCheckListAdapter;
     private AssessmentReportAdapter mAssessAdapter;
     private List<SelfAssessmentRequest> checkList = null;
+    private List<Boolean> isCheckList = null;
     private List<ResourceCheckList> ResList = null;
 
     public HomeFragment() {
         // Required empty public constructor
     }
 
-    public static HomeFragment newInstance(byte[] bitUser) {
+    public static HomeFragment newInstance(/*byte[] bitUser*/) {
         Bundle args = new Bundle();
-        args.putByteArray(ARG_USER,bitUser);
+//        args.putByteArray(ARG_USER, bitUser);
         HomeFragment fragment = new HomeFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            bitUser = getArguments().getByteArray(ARG_USER);
-        }
+//        if (getArguments() != null) {
+//            bitUser = getArguments().getByteArray(ARG_USER);
+//        }
     }
 
     @Override
@@ -174,7 +181,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         LinearLayout tool = getActivity().findViewById(R.id.customToolbar);
         RelativeLayout relBottom = getActivity().findViewById(R.id.relBottom);
         RelativeLayout relCoin = getActivity().findViewById(R.id.relCoin);
-        tool.setVisibility(View.VISIBLE);
+        tool.setVisibility(View.GONE);
         relBottom.setVisibility(View.VISIBLE);
         relCoin.setVisibility(View.VISIBLE);
 //        LinearLayout custom_toolbar = getActivity().findViewById(R.id.customToolbar);
@@ -220,7 +227,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         mFragmentHomeBinding.swipeRefreshLayout.setOnRefreshListener(
                 this::getAllTasks);
 
-
         mFragmentHomeBinding.recycleView.setLayoutManager(layoutManager);
 
         mFragmentHomeBinding.swipeRefreshLayout.setColorSchemeResources(
@@ -236,9 +242,13 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
         getAllTasks();
         isShowNPS = SharedPreferencesUtility.getPrefBoolean(getActivity(), SharedPreferencesUtility.PREF_SHOW_NPS);
+        isResourceSaved = SharedPreferencesUtility.getPrefBoolean(getActivity(), SharedPreferencesUtility.PREF_RESOURCE_SAVED);
         if (isShowNPS)
             showNPSDialog();
         mFragmentHomeBinding.swipeRefreshLayout.setRefreshing(true);
+        if (isResourceSaved)
+            showResourceCheckList();
+
         mFragmentHomeBinding.lnrAssess.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -264,8 +274,31 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                     final CircleImageView imgUser = (CircleImageView) dialogView.findViewById(R.id.imgUser);
                     final TextView txtTitle = (TextView) dialogView.findViewById(R.id.txtTitle);
                     final TextView txtUpdatedOn = (TextView) dialogView.findViewById(R.id.txtUpdatedOn);
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(bitUser, 0, bitUser.length);
-                    imgUser.setImageBitmap(bitmap);
+//                    Bitmap bitmap = BitmapFactory.decodeByteArray(bitUser, 0, bitUser.length);
+//                    imgUser.setImageBitmap(bitmap);
+
+                    NetworkCallController controller = new NetworkCallController();
+                    controller.setListner(new NetworkResponseListner() {
+                        @Override
+                        public void onResponse(int requestCode, Object data) {
+                            Profile response = (Profile) data;
+                            if (response.getProfilePic() != null) {
+                                String base64 = response.getProfilePic();
+                                byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
+                                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                if (base64.length() > 0) {
+                                    imgUser.setImageBitmap(decodedByte);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int requestCode) {
+
+                        }
+                    });
+                    controller.getTechnicianProfile(REQ_PROFILE, resourceId);
+
                     txtTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
 
                     RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity());
@@ -274,8 +307,8 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                     mAssessAdapter = new AssessmentReportAdapter(getActivity());
                     recycleView.setAdapter(mAssessAdapter);
 
-                    NetworkCallController controller = new NetworkCallController(HomeFragment.this);
-                    controller.setListner(new NetworkResponseListner<List<AssessmentReport>>() {
+                    NetworkCallController controller1 = new NetworkCallController(HomeFragment.this);
+                    controller1.setListner(new NetworkResponseListner<List<AssessmentReport>>() {
                         @Override
                         public void onResponse(int requestCode, List<AssessmentReport> items) {
                             try {
@@ -284,10 +317,12 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                     if (pageNumber == 1 && items.size() > 0) {
                                         mAssessAdapter.setData(items);
                                         mAssessAdapter.notifyDataSetChanged();
+                                        alertDialog.show();
 
                                     } else if (items.size() > 0) {
                                         mAssessAdapter.addData(items);
                                         mAssessAdapter.notifyDataSetChanged();
+                                        alertDialog.show();
                                     } else {
                                         pageNumber--;
                                     }
@@ -302,17 +337,17 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
                         }
                     });
-                    controller.getAssessmentResponse(ASSESS_REQUEST, resourceId, LocaleHelper.getLanguage(getActivity()));
+                    controller1.getAssessmentResponse(ASSESS_REQUEST, resourceId, LocaleHelper.getLanguage(getActivity()));
                     btnOk.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             alertDialog.dismiss();
                         }
                     });
-                    dialogBuilder.setCancelable(false);
+
                     alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
                     alertDialog.setCanceledOnTouchOutside(false);
-                    alertDialog.show();
+
                 }
             }
 
@@ -350,6 +385,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                 tempMap.put(position, temperature);
                                 Log.i("MAP_VALUE", Objects.requireNonNull(tempMap.get(position)));
                                 checkList = new ArrayList<>();
+                                isCheckList = new ArrayList<>();
                                 for (int i = 0; i < mCheckListAdapter.getItemCount(); i++) {
                                     SelfAssessmentRequest checkModel = new SelfAssessmentRequest();
                                     checkModel.setOptionId(mCheckListAdapter.getItem(i).getId());
@@ -369,7 +405,9 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                     }
 
                                     checkList.add(checkModel);
+                                    isCheckList.add(checkList.get(i).getIsSelected());
                                 }
+
                             }
 
                         } catch (Exception e) {
@@ -379,6 +417,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                     });
                     recycleView.setAdapter(mCheckListAdapter);
 
+
                     NetworkCallController controller = new NetworkCallController(HomeFragment.this);
                     controller.setListner(new NetworkResponseListner<List<ResourceCheckList>>() {
                         @Override
@@ -387,15 +426,22 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                 if (items != null) {
                                     ResList = new ArrayList<>();
                                     ResList = items;
-//                                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-//                                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+
                                     if (pageNumber == 1 && items.size() > 0) {
                                         mCheckListAdapter.setData(items);
                                         mCheckListAdapter.notifyDataSetChanged();
+                                        if (mCheckListAdapter.getItemCount() > 0) {
+                                            alertDialog.show();
+                                            alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+                                        }
 
                                     } else if (items.size() > 0) {
                                         mCheckListAdapter.addData(items);
                                         mCheckListAdapter.notifyDataSetChanged();
+                                        if (mCheckListAdapter.getItemCount() > 0) {
+                                            alertDialog.show();
+                                            alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+                                        }
                                     } else {
                                         pageNumber--;
                                     }
@@ -411,41 +457,21 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                         }
                     });
                     controller.getResourceCheckList(ASSESS_REQUEST, resourceId, LocaleHelper.getLanguage(getActivity()));
-                    btnSave.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (checkList != null) {
-                                if (checkList.get(0).getIsSelected()) {
-                                    if (!checkList.get(0).getOptionText().equals("")) {
-                                        NetworkCallController controller1 = new NetworkCallController(HomeFragment.this);
-                                        controller1.setListner(new NetworkResponseListner<SelfAssessmentResponse>() {
-                                            @Override
-                                            public void onResponse(int requestCode, SelfAssessmentResponse response) {
-                                                if (response.getIsSuccess()) {
-                                                    alertDialog.dismiss();
-                                                    Toast.makeText(getActivity(), response.getData(), Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onFailure(int requestCode) {
-
-                                            }
-                                        });
-                                        controller1.saveSelfAssessment(SAVE_ASSESSMENT, checkList);
-                                    } else {
-                                        Toasty.error(getActivity(), "Please enter your body temperature!", Toasty.LENGTH_SHORT).show();
-                                    }
-                                } else {
+                    btnSave.setOnClickListener(v -> {
+                        if (isCheckList != null && isListChecked(isCheckList) && checkList != null) {
+                            if (!checkList.get(0).getOptionText().equals("")) {
+                                double temperature = Double.parseDouble(checkList.get(0).getOptionText());
+                                if (temperature >= 95 && temperature <= 107) {
                                     NetworkCallController controller1 = new NetworkCallController(HomeFragment.this);
                                     controller1.setListner(new NetworkResponseListner<SelfAssessmentResponse>() {
                                         @Override
                                         public void onResponse(int requestCode, SelfAssessmentResponse response) {
                                             if (response.getIsSuccess()) {
                                                 alertDialog.dismiss();
-                                                Toasty.success(getActivity(), response.getData(), Toasty.LENGTH_LONG).show();
-                                            }else {
-                                                Toasty.error(getActivity(), response.getData(), Toasty.LENGTH_LONG).show();
+                                                SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_RESOURCE_SAVED, false);
+                                                Toasty.success(getActivity(), response.getData(), Toast.LENGTH_LONG).show();
+                                            } else {
+                                                Toasty.error(getActivity(), response.getErrorMessage(), Toast.LENGTH_LONG).show();
                                             }
                                         }
 
@@ -455,24 +481,38 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                         }
                                     });
                                     controller1.saveSelfAssessment(SAVE_ASSESSMENT, checkList);
+                                } else {
+                                    Toasty.error(getActivity(), "Enter correct temperature in °F", Toasty.LENGTH_LONG).show();
                                 }
+                            } else {
+                                Toasty.error(getActivity(), "Please enter your temperature in °F!", Toasty.LENGTH_SHORT).show();
                             }
-
+                        } else {
+                            Toasty.error(getActivity(), "All fields are mandatory.", Toasty.LENGTH_SHORT).show();
                         }
+
                     });
                     dialogBuilder.setCancelable(false);
                     alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 //                    alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
                     alertDialog.setCanceledOnTouchOutside(false);
-                    alertDialog.show();
+                    alertDialog.setCancelable(false);
 
-                    alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
                 }
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean isListChecked(List<Boolean> isCheckList) {
+        for (Boolean isChecked : isCheckList) {
+            if (!isChecked) {
+                return false;
+            }
+        }
+        return true;
     }
 
 
@@ -533,25 +573,29 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
             getAttendanceDialog();
 
         } else {
-            mFragmentHomeBinding.swipeRefreshLayout.setRefreshing(false);
-            if (items != null) {
-                items.clear();
-            }
-            items = data.getData();
-            if (items != null) {
-                if (pageNumber == 1 && items.size() > 0) {
-                    mAdapter.setData(items);
-                    mAdapter.notifyDataSetChanged();
-                    mFragmentHomeBinding.emptyTask.setVisibility(View.GONE);
-                } else if (items.size() > 0) {
-                    mAdapter.addData(items);
-                    mAdapter.notifyDataSetChanged();
-                    mFragmentHomeBinding.emptyTask.setVisibility(View.GONE);
+            try {
+                mFragmentHomeBinding.swipeRefreshLayout.setRefreshing(false);
+                if (items != null) {
+                    items.clear();
+                }
+                items = data.getData();
+                if (items != null) {
+                    if (pageNumber == 1 && items.size() > 0) {
+                        mAdapter.setData(items);
+                        mAdapter.notifyDataSetChanged();
+                        mFragmentHomeBinding.emptyTask.setVisibility(View.GONE);
+                    } else if (items.size() > 0) {
+                        mAdapter.addData(items);
+                        mAdapter.notifyDataSetChanged();
+                        mFragmentHomeBinding.emptyTask.setVisibility(View.GONE);
+                    } else {
+                        mFragmentHomeBinding.emptyTask.setVisibility(View.VISIBLE);
+                    }
                 } else {
                     mFragmentHomeBinding.emptyTask.setVisibility(View.VISIBLE);
                 }
-            } else {
-                mFragmentHomeBinding.emptyTask.setVisibility(View.VISIBLE);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
             mAdapter.setOnItemClickHandler(position -> {
@@ -564,6 +608,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                     try {
                         Intent intent = new Intent(getActivity(), NewTaskDetailsActivity.class);
                         intent.putExtra(NewTaskDetailsActivity.ARGS_TASKS, items.get(position).getTaskId());
+                        intent.putExtra(NewTaskDetailsActivity.ARGS_RESOURCE, UserId);
                         intent.putExtra(NewTaskDetailsActivity.ARGS_COMBINED_TASKS, items.get(position).getCombinedTask());
                         intent.putExtra(NewTaskDetailsActivity.ARGS_COMBINED_TASKS_ID, items.get(position).getCombinedTaskId());
                         intent.putExtra(NewTaskDetailsActivity.ARGS_COMBINED_ORDER, items.get(position).getCombinedOrderNumber());
@@ -642,9 +687,10 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                             Toasty.success(getActivity(), getResources().getString(R.string.attendance_marked_successfully), Toasty.LENGTH_SHORT).show();
                                             alertDialog.dismiss();
                                             getAllTasks();
-                                            if(response.getParam1()){
+                                            if (response.getParam1()) {
                                                 showResourceCheckList();
-                                            }else {
+                                                SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_RESOURCE_SAVED, true);
+                                            } else {
                                                 showNPSDialog();
                                             }
 
@@ -821,7 +867,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                     }
                 }
                 if (techNumber == null || techNumber.trim().length() == 0) {
-
                     AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.technicain_number_is_unavailable), (dialogInterface, i) -> dialogInterface.cancel());
                 } else if (secondaryNumber == null || secondaryNumber.trim().length() == 0) {
                     AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.customer_phone_number_is_unnavailable), (dialogInterface, i) -> dialogInterface.cancel());
@@ -884,16 +929,16 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                     public void onResponse(int requestCode, Object response) {
                         try {
                             List<JeopardyReasonsList> list = (List<JeopardyReasonsList>) response;
-                            HashMap<String, String> lanMap = new HashMap<>();
+//                            HashMap<String, String> lanMap = new HashMap<>();
                             dismissProgressDialog();
                             final AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
                             LayoutInflater inflater = LayoutInflater.from(getActivity());
                             final View v = inflater.inflate(R.layout.jeopardy_reasons_layout, null, false);
                             final RadioGroup radioGroup = (RadioGroup) v.findViewById(R.id.radiogrp);
 
-                            if (list != null) {
+                            if (list != null && list.size()>0) {
                                 for (int i = 0; i < list.size(); i++) {
-                                    lanMap.put(list.get(i).getResonName(), list.get(position).getDisplayName());
+//                                    lanMap.put(list.get(i).getResonName(), list.get(position).getDisplayName());
                                     final RadioButton rbn = new RadioButton(getActivity());
                                     rbn.setId(i);
                                     rbn.setText(list.get(i).getDisplayName());

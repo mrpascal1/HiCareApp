@@ -23,7 +23,7 @@
                     android:gravity="center"
                     android:textColor="@color/white"
                     android:textSize="18sp"
-                    android:text="Your attendance for current month"/>
+                    android:text="@string/your_attendance_for_current_month"/>
 
             </LinearLayout>
 

@@ -58,6 +58,13 @@ public class OnSiteAccountFragment extends BaseFragment implements OnAccountOnsi
         // Required empty public constructor
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle oldInstanceState)
+    {
+        super.onSaveInstanceState(oldInstanceState);
+        oldInstanceState.clear();
+    }
+
     public static OnSiteAccountFragment newInstance() {
         Bundle args = new Bundle();
         OnSiteAccountFragment fragment = new OnSiteAccountFragment();

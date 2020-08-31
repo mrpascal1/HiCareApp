@@ -60,6 +60,13 @@ public class OTP_LoginFragment extends BaseFragment implements UserOtpLoginClick
     }
 
     @Override
+    public void onSaveInstanceState(Bundle oldInstanceState)
+    {
+        super.onSaveInstanceState(oldInstanceState);
+        oldInstanceState.clear();
+    }
+
+    @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment

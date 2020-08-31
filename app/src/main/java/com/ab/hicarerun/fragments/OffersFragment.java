@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,28 +24,28 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.adapter.ChemicalDialogAdapter;
 import com.ab.hicarerun.adapter.RecycleOffersAdapter;
+import com.ab.hicarerun.adapter.RewardMissedAdapter;
 import com.ab.hicarerun.adapter.RewardsSummaryAdapter;
 import com.ab.hicarerun.databinding.FragmentOffersBinding;
 import com.ab.hicarerun.handler.OnRewardtemClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.LoginResponse;
+import com.ab.hicarerun.network.models.NewRewardsModel.MissedRewardDetailSummary;
+import com.ab.hicarerun.network.models.NewRewardsModel.NewRewardDetailSummary;
+import com.ab.hicarerun.network.models.NewRewardsModel.NewRewardsData;
+import com.ab.hicarerun.network.models.NewRewardsModel.RewardListData;
 import com.ab.hicarerun.network.models.OffersModel.OffersData;
 import com.ab.hicarerun.network.models.OffersModel.RewardDetailSummary;
 import com.ab.hicarerun.network.models.OffersModel.RewardList;
 import com.ab.hicarerun.network.models.OffersModel.UpdateRewardScratchRequest;
 import com.ab.hicarerun.network.models.OffersModel.UpdateRewardScratchResponse;
-import com.ab.hicarerun.network.models.RewardsModel.AvailableOffer;
-import com.ab.hicarerun.network.models.RewardsModel.RewardsData;
-import com.ab.hicarerun.network.models.RewardsModel.SaveRedeemRequest;
-import com.ab.hicarerun.network.models.RewardsModel.SaveRedeemResponse;
-import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.notifications.ScratchRelativeLayout;
 import com.clock.scratch.ScratchView;
 
@@ -61,18 +62,17 @@ import io.realm.RealmResults;
  */
 public class OffersFragment extends BaseFragment implements OnRewardtemClickHandler {
     FragmentOffersBinding mFragmentOffersBinding;
-    RecyclerView.LayoutManager layoutManager;
     private RecycleOffersAdapter mAdapter;
     private static final int REWARDS_REQ = 2000;
     private static final int UPDATE_SCRATCH_REQ = 3000;
     private TextView txtTotalPoints;
+    private TextView txtMissedPoints;
     private LinearLayout lnrRew;
     private Integer pageNumber = 1;
     private List<RewardList> offerList;
     private List<RewardDetailSummary> rewardSummaryList;
+    //    private List<MissedRewardDetailSummary> rewardsMissedList;
     private int Incentive = 0;
-    private RewardsSummaryAdapter summaryAdapter;
-    private boolean isRewardScratchDone = false;
 
 
     public OffersFragment() {
@@ -86,6 +86,11 @@ public class OffersFragment extends BaseFragment implements OnRewardtemClickHand
         return fragment;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle oldInstanceState) {
+        super.onSaveInstanceState(oldInstanceState);
+        oldInstanceState.clear();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -101,6 +106,7 @@ public class OffersFragment extends BaseFragment implements OnRewardtemClickHand
 //            tool.setText("RewardsData");
 //        }
         txtTotalPoints = getActivity().findViewById(R.id.txtPoints);
+        txtMissedPoints = getActivity().findViewById(R.id.txtMissedPoints);
         lnrRew = getActivity().findViewById(R.id.empty_task);
         return mFragmentOffersBinding.getRoot();
     }
@@ -109,14 +115,11 @@ public class OffersFragment extends BaseFragment implements OnRewardtemClickHand
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mFragmentOffersBinding.recycleView.setHasFixedSize(true);
-//        layoutManager = new GridLayoutManager(getActivity(), 2);
         mFragmentOffersBinding.recycleView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         mAdapter = new RecycleOffersAdapter(getActivity());
         mAdapter.setOnRewardClickListener(this);
         mFragmentOffersBinding.recycleView.setAdapter(mAdapter);
-//        setOffers();
         getAllRewards();
-
     }
 
     private void getAllRewards() {
@@ -129,39 +132,47 @@ public class OffersFragment extends BaseFragment implements OnRewardtemClickHand
                 controller.setListner(new NetworkResponseListner<OffersData>() {
                     @Override
                     public void onResponse(int requestCode, OffersData response) {
-                        DecimalFormat formatter = new DecimalFormat("#,###,###");
+                        try {
+                            DecimalFormat formatter = new DecimalFormat("#,###,###");
+                            if (response != null) {
+                                String formattedPoints = formatter.format(response.getTotalPointsEarned());
+                                txtTotalPoints.setText(formattedPoints);
+                                if(response.getTotalPointsMissed()!=null && !response.getTotalPointsMissed().equals("")){
+                                    txtMissedPoints.setVisibility(View.VISIBLE);
+                                    txtMissedPoints.setText("(Total Points Lost - "+response.getTotalPointsMissed()+")");
+                                }else {
+                                    txtMissedPoints.setVisibility(View.GONE);
+                                }
 
-                        if (response != null) {
-                            String formattedPoints = formatter.format(response.getTotalPointsEarned());
-                            txtTotalPoints.setText(formattedPoints);
-                            if (response.getRewardList() != null) {
-                                offerList = new ArrayList<>();
-                                offerList = response.getRewardList();
-                                if (pageNumber == 1 && response.getRewardList().size() > 0) {
-                                    mAdapter.setData(response.getRewardList());
-                                    mAdapter.notifyDataSetChanged();
-                                } else if (response.getRewardList().size() > 0) {
-                                    mAdapter.addData(response.getRewardList());
-                                    mAdapter.notifyDataSetChanged();
+                                if (response.getRewardList() != null) {
+                                    offerList = new ArrayList<>();
+                                    offerList = response.getRewardList();
+                                    if (pageNumber == 1 && response.getRewardList().size() > 0) {
+                                        mAdapter.setData(response.getRewardList());
+                                        mAdapter.notifyDataSetChanged();
+                                    } else if (response.getRewardList().size() > 0) {
+                                        mAdapter.addData(response.getRewardList());
+                                        mAdapter.notifyDataSetChanged();
+                                    } else {
+                                        lnrRew.setVisibility(View.VISIBLE);
+                                        pageNumber--;
+                                    }
                                 } else {
                                     lnrRew.setVisibility(View.VISIBLE);
-                                    pageNumber--;
                                 }
                             } else {
-                               lnrRew.setVisibility(View.VISIBLE);
+                                lnrRew.setVisibility(View.VISIBLE);
                             }
-                        } else {
-                            lnrRew.setVisibility(View.VISIBLE);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-
                     }
 
                     @Override
                     public void onFailure(int requestCode) {
-
                     }
                 });
-                controller.getAllRewards(REWARDS_REQ, userId);
+                controller.getRewardsWithMissedData(REWARDS_REQ, userId);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -178,7 +189,7 @@ public class OffersFragment extends BaseFragment implements OnRewardtemClickHand
     private void showRewardsDialog(int position) {
         try {
             View view = getLayoutInflater().inflate(R.layout.rewards_scrachcard_layout, null);
-            final Dialog dialog = new Dialog(getActivity(), android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+            final Dialog dialog = new Dialog(Objects.requireNonNull(getActivity()), android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
             Window window = dialog.getWindow();
             getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
             assert window != null;
@@ -208,19 +219,44 @@ public class OffersFragment extends BaseFragment implements OnRewardtemClickHand
                     view.findViewById(R.id.txtHicare);
             final RecyclerView recyclerView =
                     view.findViewById(R.id.recycleView);
+
+//            final LinearLayout lnrGain =
+//                    view.findViewById(R.id.lnrGain);
+//            final LinearLayout lnrPointsBoard =
+//                    view.findViewById(R.id.lnrPointsBoard);
+            final LinearLayout lnrDetails =
+                    view.findViewById(R.id.lnrDetails);
+            final AppCompatTextView txtTotalPointsGain =
+                    view.findViewById(R.id.txtTotalPointsGain);
+            final AppCompatTextView txtTotalPointsLose =
+                    view.findViewById(R.id.txtTotalPointsLose);
             rewardSummaryList = offerList.get(position).getRewardDetailSummary();
-            isRewardScratchDone = offerList.get(position).getIsRewardScratchDone();
+//            rewardsMissedList = offerList.get(position).getRewardMissedObject().getRewardDetailSummary();
+            boolean isRewardScratchDone = offerList.get(position).getIsRewardScratchDone();
             String scratchedId = offerList.get(position).getId();
+            txtTotalPointsGain.setText(String.valueOf(offerList.get(position).getTotalPointsEarned()));
+            txtTotalPointsLose.setText(String.valueOf(offerList.get(position).getTotalPointsMissed()));
             RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity());
             recyclerView.setLayoutManager(lm);
+//            recyclerView.setNestedScrollingEnabled(false);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
-            summaryAdapter = new RewardsSummaryAdapter(getActivity(), rewardSummaryList);
+//            RecyclerView.LayoutManager lm2 = new LinearLayoutManager(getActivity());
+//            missed_recyclerView.setLayoutManager(lm2);
+//            missed_recyclerView.setItemAnimator(new DefaultItemAnimator());
+            RewardsSummaryAdapter summaryAdapter = new RewardsSummaryAdapter(getActivity(), rewardSummaryList);
+//            RewardMissedAdapter missedAdapter = new RewardMissedAdapter(getActivity(), rewardsMissedList);
             recyclerView.setAdapter(summaryAdapter);
+//            missed_recyclerView.setAdapter(missedAdapter);
+
             if (rewardSummaryList != null && rewardSummaryList.size() > 0) {
                 summaryAdapter.addData(rewardSummaryList);
                 summaryAdapter.notifyDataSetChanged();
             }
 
+//            if (rewardsMissedList != null && rewardsMissedList.size() > 0) {
+//                missedAdapter.addData(rewardsMissedList);
+//                missedAdapter.notifyDataSetChanged();
+//            }
             Incentive = offerList.get(position).getTotalPointsEarned();
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -249,15 +285,19 @@ public class OffersFragment extends BaseFragment implements OnRewardtemClickHand
             if (isRewardScratchDone) {
                 scratch.setVisibility(View.GONE);
                 txtMsg.setVisibility(View.VISIBLE);
-                recyclerView.setVisibility(View.VISIBLE);
+                lnrDetails.setVisibility(View.VISIBLE);
+//                if (rewardsMissedList != null && rewardsMissedList.size() > 0) {
+//                    lnrLose.setVisibility(View.VISIBLE);
+//                }
+//                if (rewardSummaryList != null && rewardSummaryList.size() > 0) {
+//                    lnrGain.setVisibility(View.VISIBLE);
+//                }
                 txtEarned.setVisibility(View.VISIBLE);
                 txtHicare.setVisibility(View.VISIBLE);
             } else {
                 scratch.setVisibility(View.VISIBLE);
             }
 
-//            int[] images = {R.drawable.offer_cover_img};
-//            Random rand = new Random();
             scratch.setWatermark(R.drawable.offer_cover_img);
             scratch.setEraseStatusListener(new ScratchView.EraseStatusListener() {
                 @Override
@@ -266,7 +306,13 @@ public class OffersFragment extends BaseFragment implements OnRewardtemClickHand
                         if (percent >= 30 && percent <= 50) {
                             imgCancel.setVisibility(View.VISIBLE);
                             txtMsg.setVisibility(View.VISIBLE);
-                            recyclerView.setVisibility(View.VISIBLE);
+                            lnrDetails.setVisibility(View.VISIBLE);
+//                            if (rewardsMissedList != null && rewardsMissedList.size() > 0) {
+//                                lnrLose.setVisibility(View.VISIBLE);
+//                            }
+//                            if (rewardSummaryList != null && rewardSummaryList.size() > 0) {
+//                                lnrGain.setVisibility(View.VISIBLE);
+//                            }
                             RealmResults<LoginResponse> LoginRealmModels =
                                     BaseApplication.getRealm().where(LoginResponse.class).findAll();
                             if (LoginRealmModels != null && LoginRealmModels.size() > 0) {

@@ -3,23 +3,24 @@ package com.ab.hicarerun.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ab.hicarerun.network.models.IncentiveModel.IncentiveCriteriaList;
 import com.ab.hicarerun.network.models.IncentiveModel.Matrix;
 
 /**
  * Created by Arjun Bhatt on 10/16/2019.
  */
 public class IncentiveMatrixViewModel implements Parcelable {
-    private String matrix;
-    private String incentive;
+    private String Criteria;
+    private String Amount;
 
     public IncentiveMatrixViewModel() {
-        matrix = "NA";
-        incentive = "NA";
+        Criteria = "NA";
+        Amount = "NA";
     }
 
     protected IncentiveMatrixViewModel(Parcel in) {
-        matrix = in.readString();
-        incentive = in.readString();
+        Criteria = in.readString();
+        Amount = in.readString();
     }
 
     public static final Creator<IncentiveMatrixViewModel> CREATOR = new Creator<IncentiveMatrixViewModel>() {
@@ -35,19 +36,19 @@ public class IncentiveMatrixViewModel implements Parcelable {
     };
 
     public String getMatrix() {
-        return matrix;
+        return Criteria;
     }
 
-    public void setMatrix(String matrix) {
-        this.matrix = matrix;
+    public void setMatrix(String Criteria) {
+        this.Criteria = Criteria;
     }
 
     public String getIncentive() {
-        return incentive;
+        return Amount;
     }
 
-    public void setIncentive(String incentive) {
-        this.incentive = incentive;
+    public void setIncentive(String Amount) {
+        this.Amount = Amount;
     }
 
     @Override
@@ -57,12 +58,12 @@ public class IncentiveMatrixViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(matrix);
-        parcel.writeString(incentive);
+        parcel.writeString(Criteria);
+        parcel.writeString(Amount);
     }
 
-    public void clone(Matrix matrix) {
-        this.matrix = matrix.getMatrix();
-        this.incentive = matrix.getIncentiveAmount();
+    public void clone(IncentiveCriteriaList Criteria) {
+        this.Criteria = Criteria.getCriteria();
+        this.Amount = Criteria.getAmount();
     }
 }

@@ -83,6 +83,8 @@ public interface OnSaveEventHandler {
 
     public void isEarlyCompletion(Boolean b);
 
+    public void isUPIPaymentDone(Boolean b);
+
     public void isJobCardEnable(Boolean b);
 
     public void isWorkTypeNotChecked(Boolean b);

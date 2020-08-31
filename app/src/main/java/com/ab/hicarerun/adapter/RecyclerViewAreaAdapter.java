@@ -50,12 +50,16 @@ public class RecyclerViewAreaAdapter extends RecyclerView.Adapter<RecyclerViewAr
 
     @Override
     public void onBindViewHolder(@NotNull RecyclerViewAreaAdapter.ViewHolder holder, final int position) {
-        int[] attrs = new int[]{R.attr.selectableItemBackground};
-        TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
-        int backgroundResource = typedArray.getResourceId(0, 0);
-        holder.mLayoutAreaAdapterBinding.lnrloc.setBackgroundResource(backgroundResource);
-        holder.mLayoutAreaAdapterBinding.txtBranch.setText(areaList.get(position));
-        holder.itemView.setOnClickListener(v -> onItemClickHandler.onItemClick(position));
+        try {
+            int[] attrs = new int[]{R.attr.selectableItemBackground};
+            TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
+            int backgroundResource = typedArray.getResourceId(0, 0);
+            holder.mLayoutAreaAdapterBinding.lnrloc.setBackgroundResource(backgroundResource);
+            holder.mLayoutAreaAdapterBinding.txtBranch.setText(areaList.get(position));
+            holder.itemView.setOnClickListener(v -> onItemClickHandler.onItemClick(position));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void setOnItemClickHandler(OnListItemClickHandler onItemClickHandler) {

@@ -1,6 +1,7 @@
 package com.ab.hicarerun.fragments;
 
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,24 +25,34 @@ import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.NewTaskDetailsActivity;
 import com.ab.hicarerun.adapter.ReferralListAdapter;
+import com.ab.hicarerun.adapter.ReferralRelationAdapter;
+import com.ab.hicarerun.adapter.ReferralServiceAdapter;
 import com.ab.hicarerun.databinding.FragmentReferralBinding;
 import com.ab.hicarerun.handler.OnDeleteListItemClickHandler;
+import com.ab.hicarerun.handler.OnListItemClickHandler;
 import com.ab.hicarerun.handler.UserReferralClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.LoginResponse;
+import com.ab.hicarerun.network.models.ReferralModel.MultiSelectedService;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralDeleteRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
+import com.ab.hicarerun.network.models.ReferralModel.ReferralRelation;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralResponse;
+import com.ab.hicarerun.network.models.ReferralModel.ReferralSRData;
+import com.ab.hicarerun.network.models.SelfAssessModel.SelfAssessmentRequest;
 import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.utils.LocaleHelper;
 import com.ab.hicarerun.utils.SwipeToDeleteCallBack;
 import com.ab.hicarerun.viewmodel.ReferralViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
@@ -51,15 +63,22 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
     private static final int POST_REFERRAL_REQUEST = 1000;
     private static final int GET_REFERRAL_REQUEST = 2000;
     private static final int DELETE_REFERRAL_REQUEST = 3000;
+    private static final int REFERRAL_SR_REQUEST = 4000;
     private static final String ARG_TASK = "ARG_TASK";
     private static final String ARGS_MOBILE = "ARGS_MOBILE";
     private String taskId = "";
     private String technicianMobileNo = "";
+    private String service = "";
+    private String relation = "";
     ReferralListAdapter mAdapter;
+    ReferralServiceAdapter mServiceAdapter;
+    ReferralRelationAdapter mRelationAdapter;
     RecyclerView.LayoutManager layoutManager;
     private Integer pageNumber = 1;
     private String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
     RealmResults<GeneralData> mGeneralRealmModel;
+    ArrayList<String> checkedService = new ArrayList<>();
+
 
     public ReferralFragment() {
         // Required empty public constructor
@@ -74,6 +93,11 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
         return fragment;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle oldInstanceState) {
+        super.onSaveInstanceState(oldInstanceState);
+        oldInstanceState.clear();
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -115,6 +139,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
         mfragmentReferralBinding.swipeRefreshLayout.setRefreshing(true);
 
     }
+
 
     private void enableSwipeToDeleteAndUndo() {
         try {
@@ -171,31 +196,71 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                 mGeneralRealmModel = getRealm().where(GeneralData.class).findAll();
                 if (mGeneralRealmModel != null && mGeneralRealmModel.size() > 0) {
                     LayoutInflater li = LayoutInflater.from(getActivity());
-
                     View promptsView = li.inflate(R.layout.add_referral_dialog, null);
-
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-
                     alertDialogBuilder.setView(promptsView);
-
-                    alertDialogBuilder.setTitle(getString(R.string.add_referral));
                     final AlertDialog alertDialog = alertDialogBuilder.create();
                     final AppCompatEditText edt_fname =
                             (AppCompatEditText) promptsView.findViewById(R.id.edt_firstname);
-                    final AppCompatEditText edt_lname =
-                            (AppCompatEditText) promptsView.findViewById(R.id.edt_lastname);
                     final AppCompatEditText edt_contact =
                             (AppCompatEditText) promptsView.findViewById(R.id.edtmobile);
-                    final AppCompatEditText edt_alt_contact =
-                            (AppCompatEditText) promptsView.findViewById(R.id.edt_alt_mobile);
-                    final AppCompatEditText edt_interested =
-                            (AppCompatEditText) promptsView.findViewById(R.id.edt_interested);
-                    final AppCompatEditText edt_email =
-                            (AppCompatEditText) promptsView.findViewById(R.id.edtemail);
                     final AppCompatButton btn_send =
                             (AppCompatButton) promptsView.findViewById(R.id.btn_send);
                     final AppCompatButton btn_cancel =
                             (AppCompatButton) promptsView.findViewById(R.id.btn_cancel);
+                    final RecyclerView recycleService =
+                            (RecyclerView) promptsView.findViewById(R.id.recycleInterest);
+                    final RecyclerView recycleRelation =
+                            (RecyclerView) promptsView.findViewById(R.id.recycleRelation);
+
+                    mServiceAdapter = new ReferralServiceAdapter(getActivity(), (position, isChecked) -> {
+                        try {
+                            if (isChecked) {
+                                checkedService.add(mServiceAdapter.getItem(position).getName());
+                            } else {
+                                checkedService.remove(mServiceAdapter.getItem(position));
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    recycleService.setHasFixedSize(true);
+                    layoutManager = new GridLayoutManager(getActivity(), 2);
+                    recycleService.setLayoutManager(layoutManager);
+                    recycleService.setAdapter(mServiceAdapter);
+
+                    mRelationAdapter = new ReferralRelationAdapter(getActivity());
+                    recycleRelation.setHasFixedSize(true);
+                    layoutManager = new LinearLayoutManager(getActivity());
+                    recycleRelation.setLayoutManager(layoutManager);
+                    recycleRelation.setAdapter(mRelationAdapter);
+
+                    NetworkCallController Controller = new NetworkCallController(ReferralFragment.this);
+                    Controller.setListner(new NetworkResponseListner<ReferralSRData>() {
+                        @Override
+                        public void onResponse(int requestCode, ReferralSRData response) {
+                            if (response != null) {
+                                if (response.getServices() != null && response.getServices().size() > 0) {
+                                    mServiceAdapter.addData(response.getServices());
+                                    mServiceAdapter.notifyDataSetChanged();
+                                }
+
+                                if (response.getRelation() != null && response.getRelation().size() > 0) {
+                                    mRelationAdapter.addData(response.getRelation());
+                                    mRelationAdapter.notifyDataSetChanged();
+                                    mRelationAdapter.setOnItemClickHandler(position -> {
+                                        relation = mRelationAdapter.getItem(position).getName();
+                                    });
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int requestCode) {
+                        }
+                    });
+                    Controller.getReferralServiceAndRelation(REFERRAL_SR_REQUEST, taskId, LocaleHelper.getLanguage(getActivity()));
 
                     btn_send.setOnClickListener(v -> {
                         String mobile = "";
@@ -211,46 +276,68 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                             Technicain_Mobile = technicianMobileNo;
                         }
 
-                        if (validateSaveReferral(edt_fname, edt_lname, edt_contact, edt_email, mobile, Alt_Mobile, Technicain_Mobile)) {
 
-                            NetworkCallController controller = new NetworkCallController(ReferralFragment.this);
-                            ReferralRequest request = new ReferralRequest();
-                            request.setTaskId(taskId);
-                            request.setFirstName(edt_fname.getText().toString());
-                            request.setLastName("");
-                            request.setMobileNo(edt_contact.getText().toString());
-                            request.setAlternateMobileNo("");
-                            request.setEmail("");
-                            request.setInterestedService("");
+                        if (validateSaveReferral(edt_fname, edt_contact, mobile, Alt_Mobile, Technicain_Mobile)) {
+                            if(checkedService.size()>0){
+                                StringBuilder sbString = new StringBuilder("");
+                                //iterate through ArrayList
+                                for(String service : checkedService){
+                                    //append ArrayList element followed by comma
+                                    sbString.append(service).append(",");
+                                }
+                                //convert StringBuffer to String
+                                String strService = sbString.toString();
+                                //remove last comma from String if you want
+                                if( strService.length() > 0 )
+                                    strService = strService.substring(0, strService.length() - 1);
 
-                            controller.setListner(new NetworkResponseListner() {
-                                @Override
-                                public void onResponse(int requestCode, Object response) {
-                                    ReferralResponse refResponse = (ReferralResponse) response;
-                                    if (refResponse.getSuccess()) {
-                                        mAdapter.notifyDataSetChanged();
-                                        Toasty.success(getActivity(), getResources().getString(R.string.referral_added_successfully), Toast.LENGTH_SHORT).show();
-                                        getReferralList();
+
+                                NetworkCallController controller = new NetworkCallController(ReferralFragment.this);
+                                ReferralRequest request = new ReferralRequest();
+                                request.setTaskId(taskId);
+                                request.setFirstName(edt_fname.getText().toString());
+                                request.setLastName("");
+                                request.setMobileNo(edt_contact.getText().toString());
+                                request.setAlternateMobileNo("");
+                                request.setEmail("");
+                                request.setInterestedService(strService);
+                                request.setReferredCustomerService(mGeneralRealmModel.get(0).getServiceType());
+                                request.setRelationship(relation);
+
+                                controller.setListner(new NetworkResponseListner() {
+                                    @Override
+                                    public void onResponse(int requestCode, Object response) {
+                                        ReferralResponse refResponse = (ReferralResponse) response;
+                                        if (refResponse.getSuccess()) {
+                                            mAdapter.notifyDataSetChanged();
+                                            Toasty.success(getActivity(), getResources().getString(R.string.referral_added_successfully), Toast.LENGTH_SHORT).show();
+                                            getReferralList();
+                                        }
                                     }
-                                }
 
-                                @Override
-                                public void onFailure(int requestCode) {
+                                    @Override
+                                    public void onFailure(int requestCode) {
 
-                                }
-                            });
-                            controller.postReferrals(POST_REFERRAL_REQUEST, request);
-                            alertDialog.dismiss();
-                            mAdapter.notifyDataSetChanged();
+                                    }
+                                });
+                                controller.postReferrals(POST_REFERRAL_REQUEST, request);
+                                alertDialog.dismiss();
+                                mAdapter.notifyDataSetChanged();
+                            }else {
+                                Toasty.error(getActivity(), "Please select interested service", Toasty.LENGTH_SHORT).show();
+                            }
+
 
                         }
                     });
 
 
                     btn_cancel.setOnClickListener(v -> alertDialog.dismiss());
-                    alertDialog.setIcon(R.mipmap.logo);
 
                     alertDialog.show();
+                    alertDialog.setCancelable(false);
+                    Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    alertDialog.setCanceledOnTouchOutside(false);
                 }
             }
 
@@ -319,7 +406,6 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
                 break;
 
             case DELETE_REFERRAL_REQUEST:
@@ -328,9 +414,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                     if (DeleteResponse.getSuccess()) {
                         mAdapter.removeAll();
                         getReferralList();
-//                    Toast.makeText(getActivity(), "Deleted Successfully.", Toast.LENGTH_LONG).show();
                         Toasty.success(getActivity(), getResources().getString(R.string.deleted_successfully), Toast.LENGTH_SHORT).show();
-
                         mAdapter.notifyDataSetChanged();
                     } else {
                         Toast.makeText(getActivity(), getString(R.string.failed), Toast.LENGTH_LONG).show();
@@ -351,7 +435,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
         }
     }
 
-    private boolean validateSaveReferral(AppCompatEditText edt_fname, AppCompatEditText edt_lname, AppCompatEditText edt_contact, AppCompatEditText edtEmail, String mobile, String alt_Mobile, String technicain_Mobile) {
+    private boolean validateSaveReferral(AppCompatEditText edt_fname, AppCompatEditText edt_contact, String mobile, String alt_Mobile, String technicain_Mobile) {
         if (edt_fname.getText().toString().trim().length() == 0) {
             edt_fname.setError(getString(R.string.name_is_required));
             edt_fname.requestFocus();

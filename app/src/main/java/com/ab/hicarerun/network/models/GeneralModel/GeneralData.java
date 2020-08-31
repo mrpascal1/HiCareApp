@@ -14,6 +14,12 @@ import io.realm.annotations.RealmClass;
 
 @RealmClass
 public class GeneralData implements RealmModel {
+    @SerializedName("ResourceId")
+    @Expose
+    private String ResourceId;
+    @SerializedName("TaskId")
+    @Expose
+    private String TaskId;
     @SerializedName("SchedulingStatus")
     @Expose
     private String SchedulingStatus;
@@ -33,6 +39,10 @@ public class GeneralData implements RealmModel {
     @SerializedName("AmountCollected")
     @Expose
     private String AmountCollected;
+
+    @SerializedName("UpiTransactionId")
+    @Expose
+    private String UpiTransactionId;
 
     @SerializedName("MobileNumber")
     @Expose
@@ -57,6 +67,12 @@ public class GeneralData implements RealmModel {
     @SerializedName("OrderNumber")
     @Expose
     private String OrderNumber;
+    @SerializedName("TypeName")
+    @Expose
+    private String TaskTypeName;
+    @SerializedName("AccountId")
+    @Expose
+    private String AccountId;
 
     @SerializedName("NumberOfBhk")
     @Expose
@@ -217,6 +233,14 @@ public class GeneralData implements RealmModel {
     @Expose
     private Boolean Onsite_Image_Required;
 
+    @SerializedName("IsConsultationInspectionRequired")
+    @Expose
+    private Boolean IsConsultationInspectionRequired;
+
+    @SerializedName("IsConsultationInspectionDone")
+    @Expose
+    private Boolean IsConsultationInspectionDone;
+
     @SerializedName("Onsite_Image_Path")
     @Expose
     private String Onsite_Image_Path;
@@ -243,6 +267,14 @@ public class GeneralData implements RealmModel {
     @SerializedName("TaskCheckList")
     @Expose
     private RealmList<TaskCheckList> TaskCheckList = null;
+
+    @SerializedName("Renewal_Type")
+    @Expose
+    private String Renewal_Type;
+
+    @SerializedName("Renewal_Order_No")
+    @Expose
+    private String Renewal_Order_No;
 
     public GeneralData() {
         SchedulingStatus = "NA";
@@ -746,6 +778,14 @@ public class GeneralData implements RealmModel {
         Onsite_Image_Required = onsite_Image_Required;
     }
 
+    public String getTaskTypeName() {
+        return TaskTypeName;
+    }
+
+    public void setTaskTypeName(String taskTypeName) {
+        TaskTypeName = taskTypeName;
+    }
+
     public String getOnsite_Image_Path() {
         return Onsite_Image_Path;
     }
@@ -760,5 +800,69 @@ public class GeneralData implements RealmModel {
 
     public void setShowSignature(Boolean showSignature) {
         this.showSignature = showSignature;
+    }
+
+    public String getRenewal_Type() {
+        return Renewal_Type;
+    }
+
+    public void setRenewal_Type(String renewal_Type) {
+        Renewal_Type = renewal_Type;
+    }
+
+    public String getRenewal_Order_No() {
+        return Renewal_Order_No;
+    }
+
+    public void setRenewal_Order_No(String renewal_Order_No) {
+        Renewal_Order_No = renewal_Order_No;
+    }
+
+    public String getAccountId() {
+        return AccountId;
+    }
+
+    public void setAccountId(String accountId) {
+        AccountId = accountId;
+    }
+
+    public Boolean getConsultationInspectionRequired() {
+        return IsConsultationInspectionRequired;
+    }
+
+    public void setConsultationInspectionRequired(Boolean consultationInspectionRequired) {
+        IsConsultationInspectionRequired = consultationInspectionRequired;
+    }
+
+    public Boolean getConsultationInspectionDone() {
+        return IsConsultationInspectionDone;
+    }
+
+    public void setConsultationInspectionDone(Boolean consultationInspectionDone) {
+        IsConsultationInspectionDone = consultationInspectionDone;
+    }
+
+    public String getResourceId() {
+        return ResourceId;
+    }
+
+    public void setResourceId(String resourceId) {
+        ResourceId = resourceId;
+    }
+
+    public String getTaskId() {
+        return TaskId;
+    }
+
+    public void setTaskId(String taskId) {
+        TaskId = taskId;
+    }
+
+    public String getUpiTransactionId() {
+        return UpiTransactionId;
+    }
+
+    public void setUpiTransactionId(String upiTransactionId) {
+        UpiTransactionId = upiTransactionId;
     }
 }

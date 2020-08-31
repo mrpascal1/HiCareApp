@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="20dp"
+            android:background="@drawable/shape_rounded_corner_center_box_white">
+
+
+            <TextView
+                android:id="@+id/txtTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="15dp"
+                android:text="@string/payment_authentication"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/txtDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtTitle"
+                android:gravity="center"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:text="@string/we_ve_sent_an_otp_to_your_customer_s_registered_mobile_number"
+                android:textColor="@color/colorAccentDrawerPrimaryLight"
+                android:textSize="14sp" />
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="1.5dp"
+                android:layout_below="@id/txtDesc"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/dotted_line" />
+
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/view"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/lnrHeaderOtp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="@string/confirmation_code"
+            android:textColor="@color/colorPrimary" />
+
+        <LinearLayout
+            android:id="@+id/lnrOtp"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/round_border"
+            android:orientation="horizontal">
+
+
+            <EditText
+                android:id="@+id/edtOtp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@null"
+                android:textSize="14sp"
+                android:ems="10"
+                android:hint="OTP"
+                android:maxLength="6"
+                android:imeOptions="actionDone"
+                android:inputType="number"
+                android:lineSpacingMultiplier="1.2"
+                android:textColor="@color/black" />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtResend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="@string/resend_code"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:textSize="14sp"
+            android:layout_gravity="right"
+            android:gravity="right"
+            android:textColor="@color/innerBlue" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lnrCheque"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:id="@+id/lnrName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="@string/bank_name"
+                android:textColor="@color/colorPrimary" />
+
+            <RelativeLayout
+                android:id="@+id/relBankName"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@drawable/round_border"
+                android:orientation="horizontal">
+
+
+                <EditText
+                    android:id="@+id/edtBankName"
+                    android:hint="eg. State Bank of India"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:enabled="false"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="40dp"
+                    android:lines="1"
+                    android:ellipsize="end"
+                    android:background="@null"
+                    android:layout_toLeftOf="@id/imgArrow"
+                    android:ems="10"
+                    android:textSize="14sp"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:textColor="@color/black" />
+
+                <ImageView
+                    android:id="@+id/imgArrow"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="10dp"
+                    app:srcCompat="@drawable/ic_down_arrow"
+                    android:layout_centerVertical="true"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lnrDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="@string/cheque_date"
+                android:textColor="@color/colorPrimary" />
+
+            <RelativeLayout
+                android:id="@+id/relChequeDate"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@drawable/round_border"
+                android:orientation="horizontal">
+
+
+                <EditText
+                    android:id="@+id/edtChequeDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="40dp"
+                    android:background="@null"
+                    android:layout_toLeftOf="@id/imgDate"
+                    android:lines="1"
+                    android:ellipsize="end"
+                    android:enabled="false"
+                    android:textSize="14sp"
+                    android:hint="dd - mm - yy"
+                    android:ems="10"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:lineSpacingMultiplier="1.2"
+                    android:textColor="@color/black" />
+
+                <ImageView
+                    android:id="@+id/imgDate"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="10dp"
+                    app:srcCompat="@drawable/ic_cheque_date"
+                    android:layout_centerVertical="true"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lnrNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="@string/cheque_number"
+                android:textColor="@color/colorPrimary" />
+
+            <LinearLayout
+                android:id="@+id/lnrChequeNumber"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@drawable/round_border"
+                android:orientation="horizontal">
+
+
+                <EditText
+                    android:id="@+id/edtChequeNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:background="@null"
+                    android:ems="10"
+                    android:lines="1"
+                    android:maxLength="6"
+                    android:hint="Six digits cheque number"
+                    android:textSize="14sp"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:lineSpacingMultiplier="1.2"
+                    android:textColor="@color/black" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="15dp"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/round_border"
+            android:text="@string/cancel_feedback"
+            android:textAllCaps="false"
+            android:textSize="15sp"
+            android:textColor="@color/colorPrimary" />
+
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:textSize="15sp"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_border"
+            android:text="@string/confirm_payment"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+
+
+    </LinearLayout>
+
+</LinearLayout>
+
+
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

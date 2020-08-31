@@ -1,11 +1,12 @@
 package com.ab.hicarerun.utils.notifications;
 
+import android.app.Application;
 import android.content.Context;
 
 import com.onesignal.OneSignal;
 import com.orhanobut.logger.Logger;
 
-public class OneSIgnalHelper {
+public class OneSIgnalHelper extends Application {
 
      private String mStrUserID ;
 
@@ -14,6 +15,7 @@ public class OneSIgnalHelper {
         OneSignal.startInit(context)
                 .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
                 .unsubscribeWhenNotificationsAreDisabled(true)
+                .setNotificationOpenedHandler(new OneSignalSilentNotificationHandlerService(context))
                 .init();
         OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
         fetchPlayerID(new OneSignal.IdsAvailableHandler() {

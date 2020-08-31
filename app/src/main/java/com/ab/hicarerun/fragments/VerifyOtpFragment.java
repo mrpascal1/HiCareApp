@@ -2,6 +2,7 @@ package com.ab.hicarerun.fragments;
 
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -66,6 +67,7 @@ import com.google.android.gms.tasks.Task;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 
@@ -124,9 +126,9 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
         appSignatureHelper.getAppSignatures();
         mSmsBroadcastReceiver = new SMSListener();
         //set google api client for hint request
-        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
+        mGoogleApiClient = new GoogleApiClient.Builder(Objects.requireNonNull(getContext()))
                 .addConnectionCallbacks(this)
-                .enableAutoManage(getActivity(), this)
+                .enableAutoManage(Objects.requireNonNull(getActivity()), this)
                 .addApi(Auth.CREDENTIALS_API)
                 .build();
 
@@ -212,6 +214,7 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
         }
     }
 
+    @SuppressLint("HardwareIds")
     private void attemptLogin() {
         if (mAuthTask != null) {
             return;

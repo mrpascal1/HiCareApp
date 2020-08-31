@@ -13,6 +13,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -39,6 +41,7 @@ import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
+import com.ab.hicarerun.network.models.ConsulationModel.Data;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralPaymentMode;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralTaskStatus;
@@ -53,6 +56,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -69,6 +73,15 @@ public class AppUtils {
     private static final int HANDSHAKE_REQUEST = 2000;
     private static final int ERROR_REQUEST = 3000;
     private static final int RESOURCE_REQ = 4000;
+    private static final int CONSINS_REQ = 5000;
+    public static int Ins_Size = 0;
+
+
+    public static List<Data> dataList = new ArrayList<>();
+    public static List<Data> consulationList = null;
+    public static List<Data> inspectionList = null;
+    public static List<Data> ConsInsList = null;
+    public static boolean isInspectionDone = false;
 
 
     public class LocationConstants {
@@ -127,8 +140,7 @@ public class AppUtils {
 
     public static Resources updateViews(String languageCode, Context activity) {
         Context context = LocaleHelper.setLocale(activity, languageCode);
-        Resources resources = context.getResources();
-        return resources;
+        return context.getResources();
     }
 
     public static boolean hasLollipop() {
@@ -174,7 +186,6 @@ public class AppUtils {
 
     public static void showOkActionAlertBox(Context context, String mStrMessage, DialogInterface.OnClickListener mClickListener) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
-
         mBuilder.setMessage(mStrMessage);
         mBuilder.setPositiveButton("ok", mClickListener);
         mBuilder.setCancelable(false);
@@ -213,17 +224,14 @@ public class AppUtils {
 //            Date dateAfter = cal.getTime();
             if (date1.after(date2)) {
                 date_result = "afterdate";
-                Log.i("date", "afterdate");
 
             }
             if (date1.before(date2)) {
                 date_result = "beforedate";
-                Log.i("date", "beforedate");
             }
 
             if (date1.equals(date2)) {
                 date_result = "equalsdate";
-                Log.i("date", "equalsdate");
             }
         } catch (ParseException ex) {
             ex.printStackTrace();
@@ -347,6 +355,13 @@ public class AppUtils {
         return simpleDateFormat.format(date);
     }
 
+    public static String getFormatted(String dateIn, String format, String pattern) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern, Locale.ENGLISH);
+        Date date = simpleDateFormat.parse(dateIn);
+        simpleDateFormat = new SimpleDateFormat(format);
+        return simpleDateFormat.format(date);
+    }
+
     public static String currentDateTime() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.ENGLISH);
         Date date1 = new Date();
@@ -379,8 +394,20 @@ public class AppUtils {
 
     }
 
-    public static String reFormatDateTime(String dateIn, String format) throws ParseException {
+    public static void setBadgeCount(Context context, LayerDrawable icon, String count) {
+        BadgeDrawable badge;
+        Drawable reuse = icon.findDrawableByLayerId(R.id.ic_badge);
+        if (reuse != null && reuse instanceof BadgeDrawable) {
+            badge = (BadgeDrawable) reuse;
+        } else {
+            badge = new BadgeDrawable(context);
+        }
+        badge.setCount(count);
+        icon.mutate();
+        icon.setDrawableByLayerId(R.id.ic_badge, badge);
+    }
 
+    public static String reFormatDateTime(String dateIn, String format) throws ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         Date date = simpleDateFormat.parse(dateIn);
         simpleDateFormat = new SimpleDateFormat(format);
@@ -723,5 +750,45 @@ public class AppUtils {
             e.printStackTrace();
         }
     }
+
+
+    public static void getConsAndInsData(String taskId, String resourceId, String lang) {
+        try {
+            NetworkCallController controller = new NetworkCallController();
+            controller.setListner(new NetworkResponseListner<List<Data>>() {
+                @Override
+                public void onResponse(int requestCode, List<Data> items) {
+                    consulationList = new ArrayList<>();
+                    inspectionList = new ArrayList<>();
+                    ConsInsList = new ArrayList<>();
+                    if (items != null && items.size() > 0) {
+                        ConsInsList = items;
+                        for (Data data : items) {
+                            if (data.getQuestioncategory().equals("Consultation")) {
+                                consulationList.add(data);
+//                                mAdapter.addData(consulationList);
+//                                mAdapter.notifyDataSetChanged();
+                            } else {
+                                inspectionList.add(data);
+                                Ins_Size = inspectionList.size();
+                            }
+                        }
+//                        mAdapter.setOnItemClickHandler(position -> {
+//                            checkPosition = position;
+//                            requestStoragePermission(true);
+//                        });
+                    }
+                }
+
+                @Override
+                public void onFailure(int requestCode) {
+                }
+            });
+            controller.getConsolution(CONSINS_REQ, resourceId, taskId, lang);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

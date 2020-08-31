@@ -25,6 +25,13 @@ public class FragmentDatePicker extends DialogFragment
         this.mDatePickerListener = mDatePickerListener;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle oldInstanceState)
+    {
+        super.onSaveInstanceState(oldInstanceState);
+        oldInstanceState.clear();
+    }
+
     @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

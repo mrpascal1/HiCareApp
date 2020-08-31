@@ -12,6 +12,7 @@ import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.IncentiveMatrixAdapterBinding;
 import com.ab.hicarerun.databinding.OnJobTechniciansListBinding;
 import com.ab.hicarerun.handler.OnCaptureListItemClickHandler;
+import com.ab.hicarerun.network.models.IncentiveModel.IncentiveCriteriaList;
 import com.ab.hicarerun.network.models.IncentiveModel.Matrix;
 import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroom;
 import com.ab.hicarerun.viewmodel.GroomingViewModel;
@@ -50,8 +51,12 @@ public class IncentiveMatrixAdapter extends RecyclerView.Adapter<IncentiveMatrix
 
     @Override
     public void onBindViewHolder(@NotNull IncentiveMatrixAdapter.ViewHolder holder, final int position) {
-        holder.mIncentiveMatrixAdapterBinding.txtMatrix.setText(items.get(position).getMatrix());
-        holder.mIncentiveMatrixAdapterBinding.txtIncentive.setText(items.get(position).getIncentive());
+        try {
+            holder.mIncentiveMatrixAdapterBinding.txtMatrix.setText(items.get(position).getMatrix());
+            holder.mIncentiveMatrixAdapterBinding.txtIncentive.setText(items.get(position).getIncentive());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 
@@ -60,7 +65,7 @@ public class IncentiveMatrixAdapter extends RecyclerView.Adapter<IncentiveMatrix
         return items.size();
     }
 
-    public void setData(List<Matrix> data) {
+    public void setData(List<IncentiveCriteriaList> data) {
         items.clear();
         for (int index = 0; index < data.size(); index++) {
             IncentiveMatrixViewModel incentiveViewModel = new IncentiveMatrixViewModel();
@@ -69,7 +74,7 @@ public class IncentiveMatrixAdapter extends RecyclerView.Adapter<IncentiveMatrix
         }
     }
 
-    public void addData(List<Matrix> data) {
+    public void addData(List<IncentiveCriteriaList> data) {
         items.clear();
         for (int index = 0; index < data.size(); index++) {
             IncentiveMatrixViewModel incentiveViewModel = new IncentiveMatrixViewModel();

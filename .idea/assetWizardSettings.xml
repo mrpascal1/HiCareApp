@@ -19,8 +19,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_sethoscope" />
-                            <entry key="sourceFile" value="D:\Image\medical.svg" />
+                            <entry key="outputName" value="ic_routine_check" />
+                            <entry key="sourceFile" value="D:\Image\checklist (1).svg" />
                           </map>
                         </option>
                       </PersistentState>

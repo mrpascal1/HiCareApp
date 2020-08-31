@@ -30,6 +30,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.Editable;
@@ -73,6 +75,10 @@ import com.ab.hicarerun.network.models.GeneralModel.OnSiteOtpResponse;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyRequest;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyResponse;
 import com.ab.hicarerun.network.models.LoginResponse;
+import com.ab.hicarerun.network.models.ModelQRCode.CheckCodeResponse;
+import com.ab.hicarerun.network.models.ModelQRCode.CheckStatus;
+import com.ab.hicarerun.network.models.ModelQRCode.PhonePeData;
+import com.ab.hicarerun.network.models.ModelQRCode.PhonePeQRCode;
 import com.ab.hicarerun.network.models.ModelQRCode.QRCode;
 import com.ab.hicarerun.network.models.ModelQRCode.QRCodeResponse;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
@@ -102,6 +108,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
@@ -129,9 +137,9 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private static final int LESS_PAYMENT_REQ = 5000;
     private static final int QR_CODE_REQ = 6000;
     private static final int UPLOAD_REQ = 7000;
+    private static final int CHECK_REQ = 8000;
 
     private AlertDialog alertDialog;
-
     private Integer pageNumber = 1;
     private String selectedStatus = "";
     private String status = "";
@@ -182,7 +190,9 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private String combinedTaskId = "";
     File mPhotoFile;
     static final int REQUEST_TAKE_PHOTO = 1;
-
+    private Timer timer = new Timer();
+    private boolean hasStarted = false;
+    private String UpiTransactionId = "";
 
     public static ServiceInfoFragment newInstance(String taskId, String combinedTaskId, boolean isCombinedTasks, String combinedTypes, String combinedOrders) {
         Bundle args = new Bundle();
@@ -198,6 +208,12 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
     public ServiceInfoFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle oldInstanceState) {
+        super.onSaveInstanceState(oldInstanceState);
+        oldInstanceState.clear();
     }
 
 
@@ -421,7 +437,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 chequeImg = mTaskDetailsData.get(0).getChequeImageUrl();
                 AmountCollected = mTaskDetailsData.get(0).getAmountCollected();
                 AmountToCollect = Integer.parseInt(mTaskDetailsData.get(0).getAmountToCollect());
-                mFragmentServiceInfoBinding.txtAmountToCollect.setText(AmountToCollect + " " + "\u20B9");
+                mFragmentServiceInfoBinding.txtAmountToCollect.setText("₹ " + AmountToCollect);
                 mPaymentRealmModel = getRealm().where(GeneralPaymentMode.class).findAll().sort("Value");
                 type = new ArrayList<>();
                 type.clear();
@@ -578,30 +594,39 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                     sendPaymentLink();
                                 }
                             }
-
-                            if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("UPI")) {
+                            if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equalsIgnoreCase("paytm")) {
+                                mFragmentServiceInfoBinding.txtPaymentStatus.setText("Pending...");
+                                mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_processing);
+                                mFragmentServiceInfoBinding.txtPaymentStatus.setTextColor(getResources().getColor(R.color.orange));
                                 loadQRCOde();
+                            } else if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equalsIgnoreCase("phonepay")) {
+                                mFragmentServiceInfoBinding.txtPaymentStatus.setText("Pending...");
+                                mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_processing);
+                                mFragmentServiceInfoBinding.txtPaymentStatus.setTextColor(getResources().getColor(R.color.orange));
+                                loadPhonePeCode();
                             } else {
-                                mFragmentServiceInfoBinding.cardScanner.setVisibility(GONE);
+                                if (hasStarted) {
+                                    timer.cancel();
+                                }
+                                hasStarted = false;
+                                mFragmentServiceInfoBinding.lnrQrCode.setVisibility(GONE);
                             }
-                            if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("PayTm")) {
-                                mFragmentServiceInfoBinding.cardScanner.setVisibility(View.VISIBLE);
-                                getValidated(AmountToCollect);
-//                                Glide.with(getActivity()).load("http://52.74.65.15/MobileApi/images/PayTm.png").into(mFragmentServiceInfoBinding.imgPayscanner);
-                                Picasso.get().load("http://52.74.65.15/MobileApi/images/PayTm.png").into(mFragmentServiceInfoBinding.imgPayscanner);
-                            } else if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("Google Pay")) {
-                                mFragmentServiceInfoBinding.cardScanner.setVisibility(View.VISIBLE);
-                                getValidated(AmountToCollect);
-//                                Glide.with(getActivity()).load("http://52.74.65.15/MobileApi/images/gpay.png").into(mFragmentServiceInfoBinding.imgPayscanner);
-                                Picasso.get().load("http://52.74.65.15/MobileApi/images/gpay.png").into(mFragmentServiceInfoBinding.imgPayscanner);
-                            } else if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("PhonePe")) {
-                                mFragmentServiceInfoBinding.cardScanner.setVisibility(View.VISIBLE);
-                                getValidated(AmountToCollect);
-                                Picasso.get().load("http://52.74.65.15/MobileApi/images/PhonePay.png").into(mFragmentServiceInfoBinding.imgPayscanner);
-//                                Glide.with(getActivity()).load("http://52.74.65.15/MobileApi/images/PhonePay.png").into(mFragmentServiceInfoBinding.imgPayscanner);
-                            } else {
-                                mFragmentServiceInfoBinding.cardScanner.setVisibility(View.GONE);
-                            }
+
+//                            if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("PayTm")) {
+//                                mFragmentServiceInfoBinding.lnrQrCode.setVisibility(View.VISIBLE);
+//                                getValidated(AmountToCollect);
+//                                Picasso.get().load("http://52.74.65.15/MobileApi/images/PayTm.png").into(mFragmentServiceInfoBinding.imgPayscanner);
+//                            } else if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("Google Pay")) {
+//                                mFragmentServiceInfoBinding.lnrQrCode.setVisibility(View.VISIBLE);
+//                                getValidated(AmountToCollect);
+//                                Picasso.get().load("http://52.74.65.15/MobileApi/images/gpay.png").into(mFragmentServiceInfoBinding.imgPayscanner);
+//                            } else if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("PhonePe")) {
+//                                mFragmentServiceInfoBinding.lnrQrCode.setVisibility(View.VISIBLE);
+//                                getValidated(AmountToCollect);
+//                                Picasso.get().load("http://52.74.65.15/MobileApi/images/PhonePay.png").into(mFragmentServiceInfoBinding.imgPayscanner);
+//                            } else {
+//                                mFragmentServiceInfoBinding.lnrQrCode.setVisibility(View.GONE);
+//                            }
                             if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("None")) {
                                 getValidated(AmountToCollect);
                                 mFragmentServiceInfoBinding.txtCollected.setText("");
@@ -648,25 +673,160 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
     }
 
-    private void loadQRCOde() {
-        NetworkCallController controller = new NetworkCallController(ServiceInfoFragment.this);
-        controller.setListner(new NetworkResponseListner<QRCode>() {
+    private void loadPhonePeCode() {
+        if ((NewTaskDetailsActivity) getActivity() != null) {
+            mTaskDetailsData = getRealm().where(GeneralData.class).findAll();
+            if (mTaskDetailsData != null && mTaskDetailsData.size() > 0) {
+                String accountNo = mTaskDetailsData.get(0).getAccountId();
+                String amount = "10";
+                String orderNo = mTaskDetailsData.get(0).getOrderNumber();
+                String source = "HICARERUN";
+                NetworkCallController controller = new NetworkCallController(ServiceInfoFragment.this);
+                controller.setListner(new NetworkResponseListner<PhonePeQRCode>() {
 
-            @Override
-            public void onResponse(int requestCode, QRCode response) {
-                mFragmentServiceInfoBinding.cardScanner.setVisibility(View.VISIBLE);
-                mFragmentServiceInfoBinding.lnrCollected.setVisibility(GONE);
-                Picasso.get().load(response.getUrl()).into(mFragmentServiceInfoBinding.imgPayscanner);
-                getValidated(AmountToCollect);
+                    @Override
+                    public void onResponse(int requestCode, PhonePeQRCode response) {
+                        mFragmentServiceInfoBinding.lnrQrCode.setVisibility(View.VISIBLE);
+                        mFragmentServiceInfoBinding.lnrCollected.setVisibility(GONE);
+                        Picasso.get().load(response.getQRImageUrl()).into(mFragmentServiceInfoBinding.imgPayscanner);
+                        checkPhonePeStatus(response.getTransactionId(), response.getOrderNo());
+                        getValidated(AmountToCollect);
+                    }
+
+                    @Override
+                    public void onFailure(int requestCode) {
+                    }
+                });
+                controller.getPhonePayCode(QR_CODE_REQ, taskId, accountNo, orderNo, amount, source);
             }
-
-            @Override
-            public void onFailure(int requestCode) {
-
-            }
-        });
-        controller.getTaskQRCode(QR_CODE_REQ, taskId);
+        }
     }
+
+    private void checkPaymentStatus(String orderId) {
+        try {
+            hasStarted = true;
+            timer.scheduleAtFixedRate(new TimerTask() {
+                                          @Override
+                                          public void run() {
+                                              checkStatus(orderId, timer);
+                                          }
+                                      },
+                    0, 15000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void checkPhonePeStatus(String transactionId, String orderId) {
+        try {
+            hasStarted = true;
+            timer.scheduleAtFixedRate(new TimerTask() {
+                                          @Override
+                                          public void run() {
+                                              checkPhoneStatus(transactionId, orderId, timer);
+                                          }
+                                      },
+                    0, 15000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void checkPhoneStatus(String transactionId, String orderId, Timer timer) {
+        try {
+            NetworkCallController controller = new NetworkCallController();
+            controller.setListner(new NetworkResponseListner<PhonePeData>() {
+                @Override
+                public void onResponse(int requestCode, PhonePeData response) {
+                    if (response != null) {
+                        if (response.getPaymentStatus().equals("TXN_SUCCESS")) {
+                            mCallback.isUPIPaymentDone(true);
+                            mFragmentServiceInfoBinding.txtPaymentStatus.setText("Payment Successfull");
+                            mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_routine_done);
+                            mFragmentServiceInfoBinding.txtPaymentStatus.setTextColor(getResources().getColor(R.color.colorPrimary));
+                            timer.cancel();
+                        } else {
+                            mFragmentServiceInfoBinding.txtPaymentStatus.setText("Pending...");
+                            mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_processing);
+                            mFragmentServiceInfoBinding.txtPaymentStatus.setTextColor(getResources().getColor(R.color.yellow2));
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onFailure(int requestCode) {
+
+                }
+            });
+            controller.checkPhonePeStatus(CHECK_REQ, taskId, transactionId, orderId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void checkStatus(String orderId, Timer timer) {
+        try {
+            NetworkCallController controller = new NetworkCallController();
+            controller.setListner(new NetworkResponseListner<CheckStatus>() {
+                @Override
+                public void onResponse(int requestCode, CheckStatus response) {
+                    if (response != null) {
+                        if (response.getSTATUS().equals("TXN_SUCCESS")) {
+                            mFragmentServiceInfoBinding.txtPaymentStatus.setText("Payment Successfull");
+                            mCallback.isUPIPaymentDone(true);
+                            mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_routine_done);
+                            mFragmentServiceInfoBinding.txtPaymentStatus.setTextColor(getResources().getColor(R.color.colorPrimary));
+                            timer.cancel();
+                        } else {
+                            mFragmentServiceInfoBinding.txtPaymentStatus.setText("Pending...");
+                            mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_processing);
+                            mFragmentServiceInfoBinding.txtPaymentStatus.setTextColor(getResources().getColor(R.color.yellow2));
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onFailure(int requestCode) {
+
+                }
+            });
+            controller.checkPaymentStatus(CHECK_REQ, orderId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadQRCOde() {
+        if ((NewTaskDetailsActivity) getActivity() != null) {
+            mTaskDetailsData = getRealm().where(GeneralData.class).findAll();
+            if (mTaskDetailsData != null && mTaskDetailsData.size() > 0) {
+                String accountNo = mTaskDetailsData.get(0).getAccountId();
+                String amount = mTaskDetailsData.get(0).getAmountToCollect();
+                String orderNo = mTaskDetailsData.get(0).getOrderNumber();
+                String source = "HICARERUN";
+                NetworkCallController controller = new NetworkCallController(ServiceInfoFragment.this);
+                controller.setListner(new NetworkResponseListner<QRCode>() {
+
+                    @Override
+                    public void onResponse(int requestCode, QRCode response) {
+                        mFragmentServiceInfoBinding.lnrQrCode.setVisibility(View.VISIBLE);
+                        mFragmentServiceInfoBinding.lnrCollected.setVisibility(GONE);
+                        Picasso.get().load(response.getUrl()).into(mFragmentServiceInfoBinding.imgPayscanner);
+                        checkPaymentStatus(response.getOrderId());
+                        getValidated(AmountToCollect);
+                    }
+
+                    @Override
+                    public void onFailure(int requestCode) {
+                    }
+                });
+                controller.getUPICode(QR_CODE_REQ, taskId, accountNo, orderNo, amount, source);
+            }
+        }
+    }
+
 
     private void getLessPaymentJeopardy() {
         NetworkCallController controller = new NetworkCallController(this);
@@ -708,6 +868,15 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     String order = mTaskDetailsData.get(0).getOrderNumber();
                     String duration = mTaskDetailsData.get(0).getDuration();
                     String start = mTaskDetailsData.get(0).getTaskAssignmentStartTime();
+                    mFragmentServiceInfoBinding.txtConsIns.setTypeface(mFragmentServiceInfoBinding.txtConsIns.getTypeface(), Typeface.BOLD);
+                    mFragmentServiceInfoBinding.txtView.setTypeface(mFragmentServiceInfoBinding.txtView.getTypeface(), Typeface.BOLD);
+
+                    if (mTaskDetailsData.get(0).getConsultationInspectionRequired() && status.equals("On-Site")) {
+                        mFragmentServiceInfoBinding.lnrConsIns.setVisibility(View.VISIBLE);
+                    } else {
+                        mFragmentServiceInfoBinding.lnrConsIns.setVisibility(View.GONE);
+                    }
+
                     if (isCombinedTask) {
                         String type = combinedTypes.replace(",", ", ");
                         mFragmentServiceInfoBinding.txtType.setText(type);
@@ -720,10 +889,10 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     String hr_duration = split_sDuration[0];
                     String mn_duration = split_sDuration[1];
 
-                    if( isUploadOnsiteImage && onsiteTechImage!=null && !onsiteTechImage.equals("")){
+                    if (isUploadOnsiteImage && onsiteTechImage != null && !onsiteTechImage.equals("")) {
                         mFragmentServiceInfoBinding.imgUser.setVisibility(View.VISIBLE);
                         Picasso.get().load(onsiteTechImage).into(mFragmentServiceInfoBinding.imgUser);
-                    }else {
+                    } else {
                         mFragmentServiceInfoBinding.imgUser.setVisibility(GONE);
                     }
                     if (hr_duration.equals("00")) {
@@ -805,7 +974,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                             }
 
                             if (Mode.equals("On-Site") && status.equals("Dispatched")) {
-                                if (isUploadOnsiteImage && onsiteTechImage == null /*&& onsiteTechImage.equals("")*/) {
+                                if (isUploadOnsiteImage && (onsiteTechImage == null || onsiteTechImage.equals(""))) {
                                     captureTechImage();
                                 } else if (showSandardChemicals) {
                                     showChemicalsDialog();
@@ -855,7 +1024,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
 
             alertDialogBuilder.setView(promptsView);
-           alertDialog = alertDialogBuilder.create();
+            alertDialog = alertDialogBuilder.create();
 
             final TextView txtCapture =
                     promptsView.findViewById(R.id.txtCapture);
@@ -955,7 +1124,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             request.setResourceId(UserId);
             request.setTaskId(taskId);
             request.setFile(base64);
-            NetworkCallController controller = new NetworkCallController();
+            NetworkCallController controller = new NetworkCallController(this);
             controller.setListner(new NetworkResponseListner<CovidResponse>() {
                 @Override
                 public void onResponse(int requestCode, CovidResponse response) {
@@ -1269,6 +1438,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                     return false;
                                 }
 
+
                                 @Override
                                 public boolean onQueryTextChange(String query) {
                                     mAdapter.getFilter().filter(query);
@@ -1417,6 +1587,22 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
         }
     }
 
+    @Override
+    public void onViewBottonClicked(View view) {
+        try {
+            if (mTaskDetailsData.get(0).getTaskTypeName().equals("Termite for Post")) {
+                InspectionFragment alert = InspectionFragment.newInstance();
+                alert.show(getActivity().getSupportFragmentManager(), "Alert");
+            } else {
+                ConsultationFragment alert = ConsultationFragment.newInstance();
+                alert.show(getActivity().getSupportFragmentManager(), "Alert");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void uploadChequeImage() {
         try {
             if (images.size() < 1) {
@@ -1546,6 +1732,10 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                     }
                                     if (Mode.equals("UPI")) {
                                         mCallback.isAmountCollectedRequired(false);
+                                    } else if (Mode.equalsIgnoreCase("PayTM")) {
+                                        mCallback.isAmountCollectedRequired(false);
+                                    } else if (Mode.equalsIgnoreCase("PhonePay")) {
+                                        mCallback.isAmountCollectedRequired(false);
                                     } else {
                                         mCallback.isAmountCollectedRequired(true);
                                     }
@@ -1583,6 +1773,10 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                     }
                                     if (Mode.equals("UPI")) {
                                         mCallback.isAmountCollectedRequired(false);
+                                    } else if (Mode.equalsIgnoreCase("PayTM")) {
+                                        mCallback.isAmountCollectedRequired(false);
+                                    } else if (Mode.equalsIgnoreCase("PhonePay")) {
+                                        mCallback.isAmountCollectedRequired(false);
                                     } else {
                                         mCallback.isAmountCollectedRequired(true);
                                     }
@@ -1606,6 +1800,10 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                 mCallback.isAmountCollectedRequired(true);
                             }
                             if (Mode.equals("UPI")) {
+                                mCallback.isAmountCollectedRequired(false);
+                            } else if (Mode.equalsIgnoreCase("PayTM")) {
+                                mCallback.isAmountCollectedRequired(false);
+                            } else if (Mode.equalsIgnoreCase("PhonePay")) {
                                 mCallback.isAmountCollectedRequired(false);
                             } else {
                                 mCallback.isAmountCollectedRequired(true);
@@ -1642,6 +1840,10 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                 }
                                 if (Mode.equals("UPI")) {
                                     mCallback.isAmountCollectedRequired(false);
+                                } else if (Mode.equalsIgnoreCase("PayTM")) {
+                                    mCallback.isAmountCollectedRequired(false);
+                                } else if (Mode.equalsIgnoreCase("PhonePay")) {
+                                    mCallback.isAmountCollectedRequired(false);
                                 } else {
                                     mCallback.isAmountCollectedRequired(true);
                                 }
@@ -1660,6 +1862,10 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                         mCallback.isAmountCollectedRequired(true);
                     }
                     if (Mode.equals("UPI")) {
+                        mCallback.isAmountCollectedRequired(false);
+                    } else if (Mode.equalsIgnoreCase("PayTM")) {
+                        mCallback.isAmountCollectedRequired(false);
+                    } else if (Mode.equalsIgnoreCase("PhonePay")) {
                         mCallback.isAmountCollectedRequired(false);
                     } else {
                         mCallback.isAmountCollectedRequired(true);
@@ -1703,6 +1909,10 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                     }
                                     if (Mode.equals("UPI")) {
                                         mCallback.isAmountCollectedRequired(false);
+                                    } else if (Mode.equalsIgnoreCase("PayTM")) {
+                                        mCallback.isAmountCollectedRequired(false);
+                                    } else if (Mode.equalsIgnoreCase("PhonePay")) {
+                                        mCallback.isAmountCollectedRequired(false);
                                     } else {
                                         mCallback.isAmountCollectedRequired(true);
                                     }
@@ -1741,6 +1951,10 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                     }
                                     if (Mode.equals("UPI")) {
                                         mCallback.isAmountCollectedRequired(false);
+                                    } else if (Mode.equalsIgnoreCase("PayTM")) {
+                                        mCallback.isAmountCollectedRequired(false);
+                                    } else if (Mode.equalsIgnoreCase("PhonePay")) {
+                                        mCallback.isAmountCollectedRequired(false);
                                     } else {
                                         mCallback.isAmountCollectedRequired(true);
                                     }
@@ -1767,6 +1981,10 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                 mCallback.isAmountCollectedRequired(true);
                             }
                             if (Mode.equals("UPI")) {
+                                mCallback.isAmountCollectedRequired(false);
+                            } else if (Mode.equalsIgnoreCase("PayTM")) {
+                                mCallback.isAmountCollectedRequired(false);
+                            } else if (Mode.equalsIgnoreCase("PhonePay")) {
                                 mCallback.isAmountCollectedRequired(false);
                             } else {
                                 mCallback.isAmountCollectedRequired(true);
@@ -1951,3 +2169,5 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
         }
     }
 }
+
+

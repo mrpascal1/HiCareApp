@@ -36,8 +36,8 @@
             android:layout_marginRight="20dp">
             <ImageView
                 android:id="@+id/imgClose"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_gravity="center"
                 app:srcCompat="@drawable/ic_close" />
 

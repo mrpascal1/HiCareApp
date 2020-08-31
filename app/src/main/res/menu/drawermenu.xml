@@ -17,6 +17,12 @@
             android:title="Self Assess"
             />
 
+        <item
+            android:id="@+id/nav_products"
+            android:icon="@drawable/ic_bazaar"
+            android:title="HiCare Products"
+            android:visible="false"
+            />
 
         <item
             android:id="@+id/nav_reward"
@@ -53,6 +59,11 @@
             android:id="@+id/nav_groom"
             android:icon="@drawable/ic_groom"
             android:title="@string/grooming" />
+
+        <item
+            android:id="@+id/nav_routine"
+            android:icon="@drawable/ic_routine_check"
+            android:title="Daily Check-Up" />
 
         <item
             android:id="@+id/nav_summary"

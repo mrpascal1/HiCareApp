@@ -71,69 +71,6 @@ public class ChemicalRecycleMSTAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int listPosition, final int expandedListPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
-//        final Chemicals child = (Chemicals) getChild(listPosition, expandedListPosition);
-//        final ViewHolder holder;
-//        final int pos = expandedListPosition;
-//        if (convertView == null) {
-//            LayoutInflater layoutInflater = (LayoutInflater) this.context
-//                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//            convertView = layoutInflater.inflate(R.layout.chemical_recycle_row, null);
-//            holder = new ViewHolder();
-//            holder.txtName = convertView.findViewById(R.id.chem_name);
-//            holder.txtConsumption = convertView.findViewById(R.id.chem_consumption);
-//            holder.edtCurrent = convertView.findViewById(R.id.edt_actual);
-//            convertView.setTag(holder);
-//        } else {
-//            holder = (ViewHolder) convertView.getTag();
-//        }
-//
-//        RealmResults<GeneralData> mGeneralRealmData =
-//                getRealm().where(GeneralData.class).findAll();
-//        if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
-//            isVerified = mGeneralRealmData.get(0).getAutoSubmitChemicals();
-//            String status = mGeneralRealmData.get(0).getSchedulingStatus();
-//
-//            if (isVerified || status.equals("Completed")) {
-//                holder.edtCurrent.setText(child.getActual_Usage());
-//                holder.edtCurrent.setTextColor(Color.parseColor("#000000"));
-//                holder.edtCurrent.setEnabled(false);
-//            } else if (status.equals("Incomplete")) {
-//                holder.edtCurrent.setText("-");
-//                holder.edtCurrent.setTextColor(Color.parseColor("#808080"));
-//                holder.edtCurrent.setEnabled(false);
-//            } else if (status.equals("Dispatched")) {
-//                holder.edtCurrent.setEnabled(false);
-//                holder.edtCurrent.setBackgroundResource(R.drawable.disable_edit_borders);
-//            }
-//            else {
-//                holder.edtCurrent.setOnFocusChangeListener((view, b) -> {
-//
-//                });
-//                holder.edtCurrent.addTextChangedListener(new TextWatcher() {
-//                    @Override
-//                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                    }
-//
-//                    @Override
-//                    public void afterTextChanged(Editable s) {
-//                        try {
-//                            onEditTextChanged.onTextChanged(expandedListPosition, s.toString());
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                });
-
-//            }
-//        }
-//        holder.txtName.setText(child.getCWFProductName());
-//        holder.txtConsumption.setText(child.getConsumption());
-
         return convertView;
     }
 

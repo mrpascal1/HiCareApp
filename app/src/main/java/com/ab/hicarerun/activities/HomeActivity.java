@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -19,6 +20,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -55,8 +57,10 @@ import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShake;
 import com.ab.hicarerun.network.models.IncentiveModel.Incentive;
+import com.ab.hicarerun.network.models.IncentiveModel.IncentiveData;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
+import com.ab.hicarerun.network.models.ProductCartModel.ProductCart;
 import com.ab.hicarerun.network.models.ProfileModel.Profile;
 import com.ab.hicarerun.service.LocationManager;
 import com.ab.hicarerun.service.ServiceLocationSend;
@@ -79,6 +83,8 @@ import java.util.List;
 import java.util.Objects;
 
 import io.realm.RealmResults;
+
+import static com.ab.hicarerun.BaseApplication.getRealm;
 
 
 public class HomeActivity extends BaseActivity implements FragmentManager.OnBackStackChangedListener, LocationManagerListner {
@@ -104,14 +110,13 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     private AlarmManager mAlarmManager = null;
     private PendingIntent pendingUpdateIntent = null;
     private Bitmap bitUser = null;
-    private byte[] userByte = null;
+    //    private byte[] userByte = null;
     private ProgressDialog progress;
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         mActivityHomeBinding.bottomNavigation.onSaveInstanceState(outState);
-
     }
 
     @Override
@@ -124,7 +129,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         super.onCreate(savedInstanceState);
         mActivityHomeBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_home);
-//        setSupportActionBar(mActivityHomeBinding.toolbar)
+//        setSupportActionBar(mActivityHomeBinding.toolbar);
         progress = new ProgressDialog(this, R.style.TransparentProgressDialog);
         progress.setCancelable(false);
         mActivityHomeBinding.toolbar.lnrDrawer.setOnClickListener(view -> mActivityHomeBinding.drawer.openDrawer(GravityCompat.START));
@@ -135,7 +140,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                     progress.show();
                     getServiceCalled();
                     getTechDeails();
-                    getIncentiveDetails();
+//                    getIncentiveDetails();
                 } else {
                     isGPS = isGPSEnable;
                 }
@@ -196,7 +201,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         item.setChecked(true);
         switch (item.getItemId()) {
             case R.id.nav_home:
-                replaceFragment(HomeFragment.newInstance(userByte), "HOME");
+                replaceFragment(HomeFragment.newInstance(/*userByte*/), "HOME");
                 break;
             case R.id.nav_incentive:
                 replaceFragment(IncentiveFragment.newInstance(), "INCENTIVE");
@@ -313,7 +318,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 progress.show();
                 getServiceCalled();
                 getTechDeails();
-                getIncentiveDetails();
+//                getIncentiveDetails();
             }
         }
     }
@@ -408,24 +413,26 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                     @Override
                     public void onResponse(int requestCode, Object data) {
                         progress.dismiss();
-                        Profile response = (Profile) data;
-                        if (response.getProfilePic() != null) {
-                            String base64 = response.getProfilePic();
-                            byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
-                            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                            if (base64.length() > 0) {
-                                mActivityHomeBinding.toolbar.imgUser.setImageBitmap(decodedByte);
-                                bitUser = decodedByte;
-                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                bitUser.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                                byte[] byteArray = stream.toByteArray();
-                                userByte = byteArray;
-
-                                SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_USER_PIC, base64);
+                        if (data != null) {
+                            Profile response = (Profile) data;
+                            if (response.getProfilePic() != null) {
+                                String base64 = response.getProfilePic();
+                                byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
+                                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                if (base64.length() > 0) {
+                                    mActivityHomeBinding.toolbar.imgUser.setImageBitmap(decodedByte);
+                                    bitUser = decodedByte;
+                                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                                bitUser.compress(Bitmap.CompressFormat.PNG, 100, stream);
+//                                byte[] byteArray = stream.toByteArray();
+//                                userByte = byteArray;
+//                                SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_USER_PIC, base64);
 //                                addFragment(HomeFragment.newInstance(byteArray), "HomeActivity - HomeFragment");
-                                setupNavigationView();
+                                }
                             }
+
                         }
+                        setupNavigationView();
                         initNavigationDrawer();
                     }
 
@@ -442,34 +449,33 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
     }
 
-    private void getIncentiveDetails() {
-        try {
-            RealmResults<LoginResponse> LoginRealmModels =
-                    BaseApplication.getRealm().where(LoginResponse.class).findAll();
-            assert LoginRealmModels.get(0) != null;
-            String userId = LoginRealmModels.get(0).getUserID();
-            if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-                NetworkCallController controller = new NetworkCallController();
-                controller.setListner(new NetworkResponseListner() {
-                    @Override
-                    public void onResponse(int requestCode, Object data) {
-                        Incentive response = (Incentive) data;
-                        mActivityHomeBinding.toolbar.txtIncentive.setText("\u20B9" + " " + response.getTotalIncentive());
-                    }
-
-                    @Override
-                    public void onFailure(int requestCode) {
-
-                    }
-                });
-                controller.getTechnicianIncentive(REQ_INCENTIVE, userId);
-            }
-        } catch (Exception e) {
-            getLogout();
-            e.printStackTrace();
-        }
-    }
-
+//    private void getIncentiveDetails() {
+//        try {
+//            RealmResults<LoginResponse> LoginRealmModels =
+//                    BaseApplication.getRealm().where(LoginResponse.class).findAll();
+//            assert LoginRealmModels.get(0) != null;
+//            String userId = LoginRealmModels.get(0).getUserID();
+//            if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+//                NetworkCallController controller = new NetworkCallController();
+//                controller.setListner(new NetworkResponseListner() {
+//                    @Override
+//                    public void onResponse(int requestCode, Object data) {
+//                        IncentiveData response = (IncentiveData) data;
+//                        mActivityHomeBinding.toolbar.txtIncentive.setText("\u20B9" + " " + response.getTotalIncentiveAmount());
+//                    }
+//
+//                    @Override
+//                    public void onFailure(int requestCode) {
+//
+//                    }
+//                });
+//                controller.getTechnicianIncentive(REQ_INCENTIVE, userId);
+//            }
+//        } catch (Exception e) {
+//            getLogout();
+//            e.printStackTrace();
+//        }
+//    }
 
     public void initNavigationDrawer() {
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
@@ -481,12 +487,15 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
             Menu menu = navigationView.getMenu();
             MenuItem groom = menu.findItem(R.id.nav_groom);
             MenuItem jobCount = menu.findItem(R.id.nav_summary);
+            MenuItem routineCheck = menu.findItem(R.id.nav_routine);
             if (isTsEnable.equals("0")) {
                 groom.setVisible(true);
                 jobCount.setVisible(true);
+                routineCheck.setVisible(true);
             } else {
                 groom.setVisible(false);
                 jobCount.setVisible(false);
+                routineCheck.setVisible(false);
 
             }
             PackageInfo pInfo = null;
@@ -526,6 +535,10 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                     startActivity(new Intent(HomeActivity.this, AssessChatActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
                     break;
 
+                case R.id.nav_products:
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, HicareProductsActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                    break;
 
                 case R.id.nav_incentive:
                     mActivityHomeBinding.drawer.closeDrawers();
@@ -550,6 +563,11 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 case R.id.nav_groom:
                     mActivityHomeBinding.drawer.closeDrawers();
                     startActivity(new Intent(HomeActivity.this, TechnicianSeniorActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                    break;
+
+                case R.id.nav_routine:
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, TechnicianRoutineActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
                     break;
 
                 case R.id.nav_summary:
@@ -643,21 +661,21 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         controller.getLogout(LOGOUT_REQ, UserId, HomeActivity.this);
     }
 
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//        return super.onPrepareOptionsMenu(menu);
+//    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_matrix, menu);
+        //return true;
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
     @Override
     public void onBackPressed() {
-//        int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
-//        if (backStackEntryCount == 0) {
-//            finishAffinity();
-//        } else if(backStackEntryCount == 1) {
-//            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
-//            mActivityHomeBinding.customNavigation.getMenu().getItem(0).setChecked(true);
-//            getSupportFragmentManager().popBackStack();
-//            super.onBackPressed();
-//        }
-//        else {
-//            super.onBackPressed();
-//        }
-
 
         if (mActivityHomeBinding.customNavigation.getSelectedItemId() == R.id.nav_home || mActivityHomeBinding.customNavigation.getSelectedItemId() == R.id.nav_leader) {
             mActivityHomeBinding.navigationView.setCheckedItem(0);

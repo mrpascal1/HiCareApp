@@ -14,7 +14,7 @@ public class IncentiveResponse {
 
     @SerializedName("Data")
     @Expose
-    private Incentive Data;
+    private IncentiveData Data;
 
     @SerializedName("ErrorMessage")
     @Expose
@@ -28,11 +28,11 @@ public class IncentiveResponse {
         IsSuccess = success;
     }
 
-    public Incentive getData() {
+    public IncentiveData getData() {
         return Data;
     }
 
-    public void setData(Incentive data) {
+    public void setData(IncentiveData data) {
         Data = data;
     }
 

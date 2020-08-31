@@ -113,6 +113,13 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
     }
 
     @Override
+    public void onSaveInstanceState(Bundle oldInstanceState)
+    {
+        super.onSaveInstanceState(oldInstanceState);
+        oldInstanceState.clear();
+    }
+
+    @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -141,9 +148,14 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
 //                mFragmentOnSiteTaskBinding.spnArea.performClick();
         });
         mFragmentOnSiteTaskBinding.cardSheet.setOnClickListener(view1 -> {
-            BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
-            bottomSheetFragment.setListener(this);
-            bottomSheetFragment.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), bottomSheetFragment.getTag());
+            try {
+                BottomSheetFragment bottomSheetFragment = new BottomSheetFragment();
+                bottomSheetFragment.setListener(this);
+                bottomSheetFragment.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), bottomSheetFragment.getTag());
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
         });
     }
 
@@ -253,9 +265,14 @@ public class OnSiteTaskFragment extends BaseFragment implements OnAddActivityCli
 
     @Override
     public void onAddActivityClick(int position) {
-        serviceList = new ArrayList<>();
-        serviceList = subItems.get(position).getActivityDetail();
-        addActivityDialog(subItems.get(position));
+        try {
+            serviceList = new ArrayList<>();
+            serviceList = subItems.get(position).getActivityDetail();
+            addActivityDialog(subItems.get(position));
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     @Override

@@ -53,6 +53,13 @@ public class LoginFragment extends BaseFragment implements UserLoginClickHandler
         // Required empty public constructor
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle oldInstanceState)
+    {
+        super.onSaveInstanceState(oldInstanceState);
+        oldInstanceState.clear();
+    }
+
 
     public static LoginFragment newInstance() {
         Bundle args = new Bundle();

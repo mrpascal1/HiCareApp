@@ -5,20 +5,34 @@ import com.google.gson.annotations.SerializedName;
 
 public class ReferralRequest {
 
-    @SerializedName("TaskId") @Expose
+    @SerializedName("TaskId")
+    @Expose
     private String TaskId;
-    @SerializedName("FirstName") @Expose
+    @SerializedName("FirstName")
+    @Expose
     private String FirstName;
-    @SerializedName("LastName") @Expose
+    @SerializedName("LastName")
+    @Expose
     private String LastName;
-    @SerializedName("MobileNo") @Expose
+    @SerializedName("MobileNo")
+    @Expose
     private String MobileNo;
-    @SerializedName("AlternateMobileNo") @Expose
+    @SerializedName("AlternateMobileNo")
+    @Expose
     private String AlternateMobileNo;
-    @SerializedName("Email") @Expose
+    @SerializedName("Email")
+    @Expose
     private String Email;
-    @SerializedName("InterestedService") @Expose
+    @SerializedName("InterestedService")
+    @Expose
     private String InterestedService;
+    @SerializedName("Relationship")
+    @Expose
+    private String Relationship;
+    @SerializedName("ReferredCustomerService")
+    @Expose
+    private String ReferredCustomerService;
+
 
     public ReferralRequest() {
         TaskId = "NA";
@@ -28,8 +42,9 @@ public class ReferralRequest {
         AlternateMobileNo = "NA";
         Email = "NA";
         InterestedService = "NA";
+        Relationship = "NA";
+        ReferredCustomerService = "NA";
     }
-
 
 
     public String getTaskId() {
@@ -86,5 +101,21 @@ public class ReferralRequest {
 
     public void setInterestedService(String interestedService) {
         InterestedService = interestedService;
+    }
+
+    public String getRelationship() {
+        return Relationship;
+    }
+
+    public void setRelationship(String relationship) {
+        Relationship = relationship;
+    }
+
+    public String getReferredCustomerService() {
+        return ReferredCustomerService;
+    }
+
+    public void setReferredCustomerService(String referredCustomerService) {
+        ReferredCustomerService = referredCustomerService;
     }
 }

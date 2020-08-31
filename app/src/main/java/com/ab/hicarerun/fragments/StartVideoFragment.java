@@ -118,6 +118,8 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
         return fragment;
     }
 
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -183,6 +185,7 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
             handler.postDelayed(new Runnable() {
                 public void run() {
                     showSkip();
+
                     handler.postDelayed(this, SECONDS);
                 }
             }, SECONDS);
@@ -261,10 +264,10 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
         try {
             orientationState = state;
             if (state == OrientationState.LANDSCAPE) {
-                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                Objects.requireNonNull(getActivity()).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
                 animateVolumeControl();
             } else if (state == OrientationState.PORTRAIT) {
-                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                Objects.requireNonNull(getActivity()).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
                 animateVolumeControl();
             }
         } catch (Exception e) {
@@ -372,6 +375,9 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
 //                Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.push_left_in);
 //                mFragmentStartVideoBinding.lnrSkip.setVisibility(View.VISIBLE);
 //                mFragmentStartVideoBinding.lnrSkip.startAnimation(animation);
+                    SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.IS_SKIP_VIDEO, true);
+                    SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.IS_USER_LOGIN, true);
+                    AppUtils.getHandShakeCall(username, getActivity());
                     break;
                 case Player.STATE_IDLE:
 

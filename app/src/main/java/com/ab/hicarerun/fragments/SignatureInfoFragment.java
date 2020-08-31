@@ -2,11 +2,13 @@ package com.ab.hicarerun.fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -42,6 +44,8 @@ import android.widget.Toast;
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
+import com.ab.hicarerun.activities.NewTaskDetailsActivity;
+import com.ab.hicarerun.activities.ServiceRenewalActivity;
 import com.ab.hicarerun.adapter.NewAttachmentListAdapter;
 import com.ab.hicarerun.databinding.FragmentSignatureInfoBinding;
 import com.ab.hicarerun.handler.OnDeleteListItemClickHandler;
@@ -99,6 +103,8 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
 
     private static final String ARG_TASK = "ARG_TASK";
     private static final String ARG_VAR = "ARG_VAR";
+    private static final String RENEWAL_TYPE = "RENEWAL_TYPE";
+    private static final String RENEWAL_ORDER = "RENEWAL_ORDER";
     private static final String ARG_SEQUENCE = "ARG_SEQUENCE";
     private String status = "";
     static String mFeedback = "";
@@ -122,15 +128,20 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
     private RecyclerView.LayoutManager layoutManager;
     private Integer pageNumber = 1;
     private String taskId = "";
+    private String Renew_Type = "";
+    private String Renew_Order = "";
+    private String OTP = "";
 //    private Tasks model;
 
     public SignatureInfoFragment() {
         // Required empty public constructor
     }
 
-    public static SignatureInfoFragment newInstance(String taskId) {
+    public static SignatureInfoFragment newInstance(String taskId, String renewal_Type, String renewal_Order_No) {
         Bundle args = new Bundle();
         args.putString(ARG_TASK, taskId);
+        args.putString(RENEWAL_TYPE, renewal_Type);
+        args.putString(RENEWAL_ORDER, renewal_Order_No);
         SignatureInfoFragment fragment = new SignatureInfoFragment();
         fragment.setArguments(args);
         return fragment;
@@ -141,9 +152,16 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             taskId = getArguments().getString(ARG_TASK);
+            Renew_Type = getArguments().getString(RENEWAL_TYPE);
+            Renew_Order = getArguments().getString(RENEWAL_ORDER);
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle oldInstanceState) {
+        super.onSaveInstanceState(oldInstanceState);
+        oldInstanceState.clear();
+    }
 
     @Override
     public void onAttach(@NotNull Context context) {
@@ -184,6 +202,8 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
 //        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
 //        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         getSignature();
+        mFragmentSignatureInfoBinding.txtRenewTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD_ITALIC);
+        mFragmentSignatureInfoBinding.txtNew.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         mFragmentSignatureInfoBinding.txtFeedback.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -219,6 +239,14 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
             }
         });
         mFragmentSignatureInfoBinding.rgCMS.setOnCheckedChangeListener((radioGroup, i) -> getValidate());
+        mFragmentSignatureInfoBinding.btnRenew.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ServiceRenewalActivity.class);
+                intent.putExtra(ServiceRenewalActivity.ARGS_TASKS, taskId);
+                startActivity(intent);
+            }
+        });
         mFragmentSignatureInfoBinding.recycleView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         mFragmentSignatureInfoBinding.recycleView.setLayoutManager(layoutManager);
@@ -300,24 +328,52 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     getRealm().where(GeneralData.class).findAll();
 
             if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
-                if(mGeneralRealmData.get(0).getShowSignature()){
+                isJobcardEnable = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getJobCardRequired() : false;
+
+                isFeedBack = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getFeedBack() : false;
+                accountType = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getAccountType() : "NA";
+                status = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getSchedulingStatus() : "NA";
+
+                if (isJobcardEnable) {
+                    mFragmentSignatureInfoBinding.lnrJobCard.setVisibility(View.VISIBLE);
+                } else {
+                    mFragmentSignatureInfoBinding.lnrJobCard.setVisibility(View.GONE);
+                }
+
+                if (Renew_Type != null && Renew_Type.equals("Renewal")) {
+                    mFragmentSignatureInfoBinding.lnrRenew.setVisibility(View.VISIBLE);
+                    mFragmentSignatureInfoBinding.txtRenewTitle.setText(R.string.service_renewal);
+                    mFragmentSignatureInfoBinding.lnrRenew.setWeightSum(10);
+
+                } else {
+                    mFragmentSignatureInfoBinding.lnrRenew.setVisibility(GONE);
+                }
+
+                if (Renew_Order != null && !Renew_Order.equals("")) {
+                    mFragmentSignatureInfoBinding.lnrRenew.setVisibility(View.VISIBLE);
+                    mFragmentSignatureInfoBinding.btnRenew.setVisibility(GONE);
+                    mFragmentSignatureInfoBinding.lnrRenew.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    mFragmentSignatureInfoBinding.txtRenewTitle.setText("Order# " + Renew_Order + " Renewed Successfully");
+                    mFragmentSignatureInfoBinding.txtRenewDes.setText(R.string.you_did_a_great_job);
+                    mFragmentSignatureInfoBinding.txtRenewTitle.setTextSize(15f);
+                    mFragmentSignatureInfoBinding.txtRenewDes.setTextSize(15f);
+                    mFragmentSignatureInfoBinding.lnrRenew.setWeightSum(8);
+                }
+                if (mGeneralRealmData.get(0).getShowSignature() != null && mGeneralRealmData.get(0).getShowSignature()) {
                     mFragmentSignatureInfoBinding.signatureTitle.setVisibility(View.VISIBLE);
                     mFragmentSignatureInfoBinding.signatureBox.setVisibility(View.VISIBLE);
                     mFragmentSignatureInfoBinding.lnrSignatory.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     mCallback.isSignatureChanged(false);
                     mCallback.isSignatureValidated(false);
                     mFragmentSignatureInfoBinding.signatureTitle.setVisibility(GONE);
                     mFragmentSignatureInfoBinding.signatureBox.setVisibility(GONE);
                     mFragmentSignatureInfoBinding.lnrSignatory.setVisibility(GONE);
                 }
-                status = mGeneralRealmData.get(0).getSchedulingStatus();
                 if (status.equals("Completed") || status.equals("Incomplete")) {
                     mFragmentSignatureInfoBinding.edtSignatory.setEnabled(false);
-                    assert mGeneralRealmData.get(0) != null;
-                    mFragmentSignatureInfoBinding.edtSignatory.setText(mGeneralRealmData.get(0).getSignatory());
-                    assert mGeneralRealmData.get(0) != null;
-                    mFragmentSignatureInfoBinding.txtFeedback.setText(mGeneralRealmData.get(0).getTechnicianOTP());
+                    mFragmentSignatureInfoBinding.edtSignatory.setText(mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getSignatory() : "NA");
+                    mFragmentSignatureInfoBinding.txtFeedback.setText(mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getTechnicianOTP() : "NA");
                     mFragmentSignatureInfoBinding.txtHint.setVisibility(GONE);
                     mFragmentSignatureInfoBinding.txtFeedback.setEnabled(false);
                     mFragmentSignatureInfoBinding.btnSendlink.setVisibility(GONE);
@@ -340,24 +396,24 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     mFragmentSignatureInfoBinding.txtHint.setVisibility(View.VISIBLE);
                 }
 
-                if (mGeneralRealmData.get(0).getFlushOutRequired()) {
+                if (mGeneralRealmData.get(0).getFlushOutRequired() != null && mGeneralRealmData.get(0).getFlushOutRequired()) {
                     mFragmentSignatureInfoBinding.lnrCMSReason.setVisibility(View.VISIBLE);
                 } else {
                     mFragmentSignatureInfoBinding.lnrCMSReason.setVisibility(GONE);
                 }
 
-                assert mGeneralRealmData.get(0) != null;
-                String amount = mGeneralRealmData.get(0).getAmountToCollect();
-                assert mGeneralRealmData.get(0) != null;
-                mobile = mGeneralRealmData.get(0).getMobileNumber();
-                assert mGeneralRealmData.get(0) != null;
-                Order_Number = mGeneralRealmData.get(0).getOrderNumber();
-                assert mGeneralRealmData.get(0) != null;
-                Service_Name = mGeneralRealmData.get(0).getServicePlan();
-                assert mGeneralRealmData.get(0) != null;
-                name = mGeneralRealmData.get(0).getCustName();
-                assert mGeneralRealmData.get(0) != null;
-                code = mGeneralRealmData.get(0).getTechnicianOTP();
+                String amount = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getAmountToCollect() : "NA";
+                mFragmentSignatureInfoBinding.txtAmount.setText("₹" + " " + amount);
+
+                mobile = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getMobileNumber() : "NA";
+                Order_Number = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getOrderNumber() : "NA";
+                Service_Name = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getServicePlan() : "NA";
+                name = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getCustName() : "NA";
+                code = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getTechnicianOTP() : "NA";
+                Email = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getEmail() : "NA";
+//                feedback_code = mFragmentSignatureInfoBinding.txtFeedback.getText().toString();
+//                signatory = mFragmentSignatureInfoBinding.edtSignatory.getText().toString();
+
                 try {
                     if (mGeneralRealmData.get(0).getSignatureUrl() != null || !mGeneralRealmData.get(0).getSignatureUrl().equals("")) {
                         mFragmentSignatureInfoBinding.txtHint.setVisibility(GONE);
@@ -369,27 +425,14 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
+//
                 try {
                     if (mobile != null && mobile.length() > 0)
                         mask = mobile.replaceAll("\\w(?=\\w{4})", "*");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                Email = mGeneralRealmData.get(0).getEmail();
-                mFragmentSignatureInfoBinding.txtAmount.setText(amount + " " + "\u20B9");
-                feedback_code = mFragmentSignatureInfoBinding.txtFeedback.getText().toString();
-                signatory = mFragmentSignatureInfoBinding.edtSignatory.getText().toString();
-                isJobcardEnable = mGeneralRealmData.get(0).getJobCardRequired();
-                isFeedBack = mGeneralRealmData.get(0).getFeedBack();
-                accountType = mGeneralRealmData.get(0).getAccountType();
-                if (isJobcardEnable) {
-//                    mFragmentSignatureInfoBinding.btnUpload.setVisibility(View.VISIBLE);
-                    mFragmentSignatureInfoBinding.lnrJobCard.setVisibility(View.VISIBLE);
-                } else {
-//                    mFragmentSignatureInfoBinding.btnUpload.setVisibility(View.GONE);
-                    mFragmentSignatureInfoBinding.lnrJobCard.setVisibility(View.GONE);
-                }
+
                 getValidate();
             }
         } catch (Exception e) {
@@ -724,7 +767,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
 
     private void getValidate() {
         try {
-            if (mGeneralRealmData.get(0).getFlushOutRequired() && mFragmentSignatureInfoBinding.rgCMS.getCheckedRadioButtonId() == -1) {
+            if (mGeneralRealmData.get(0).getFlushOutRequired() != null && mGeneralRealmData.get(0).getFlushOutRequired() && mFragmentSignatureInfoBinding.rgCMS.getCheckedRadioButtonId() == -1) {
                 mCallback.isWorkTypeNotChecked(true);
             } else {
                 mCallback.isWorkTypeNotChecked(false);
@@ -736,24 +779,26 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
             }
             if (isFeedBack && accountType.equals("Individual")) {
                 mFragmentSignatureInfoBinding.lnrOtp.setVisibility(View.VISIBLE);
-                String otp = mFragmentSignatureInfoBinding.txtFeedback.getText().toString().trim();
-                String sc_otp = mGeneralRealmData.get(0).getSc_OTP();
-                String customer_otp = mGeneralRealmData.get(0).getCustomer_OTP();
-                if (status.equals("Completed")) {
-                    mFragmentSignatureInfoBinding.lnrAdd.setVisibility(View.GONE);
-                } else {
-                    mFragmentSignatureInfoBinding.lnrAdd.setVisibility(View.VISIBLE);
+                if (mFragmentSignatureInfoBinding.txtFeedback.getText().toString().length() > 0) {
+                    OTP = mFragmentSignatureInfoBinding.txtFeedback.getText().toString().trim();
                 }
+                String sc_otp = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getSc_OTP() : "";
+                String customer_otp = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getCustomer_OTP() : "";
+//                if (status.equals("Completed")) {
+//                    mFragmentSignatureInfoBinding.lnrAdd.setVisibility(View.GONE);
+//                } else {
+//                    mFragmentSignatureInfoBinding.lnrAdd.setVisibility(View.VISIBLE);
+//                }
                 if (status.equals("Completed") || status.equals("Incomplete")) {
                     mFragmentSignatureInfoBinding.txtFeedback.setEnabled(false);
                     mFragmentSignatureInfoBinding.btnSendlink.setVisibility(View.GONE);
                 } else {
                     mFragmentSignatureInfoBinding.txtFeedback.setEnabled(true);
                     mFragmentSignatureInfoBinding.btnSendlink.setVisibility(View.VISIBLE);
-                    if (otp.length() != 0) {
+                    if (OTP.length() != 0) {
                         mCallback.isOTPRequired(false);
-                        if (otp.equals(sc_otp) || otp.equals(customer_otp)) {
-                            mCallback.feedbackCode(otp);
+                        if (OTP.equals(sc_otp) || OTP.equals(customer_otp)) {
+                            mCallback.feedbackCode(OTP);
                             mCallback.isOTPValidated(false);
                         } else {
                             mCallback.isOTPValidated(true);
@@ -761,7 +806,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     } else {
                         mCallback.isOTPRequired(true);
                     }
-                    if(mGeneralRealmData.get(0).getShowSignature()){
+                    if (mGeneralRealmData.get(0).getShowSignature() != null && mGeneralRealmData.get(0).getShowSignature()) {
                         if (mFragmentSignatureInfoBinding.edtSignatory.getText().toString().length() == 0) {
                             mCallback.isSignatureChanged(true);
                         } else {
@@ -772,9 +817,9 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                         } else {
                             mCallback.isSignatureValidated(false);
                         }
-                    }else {
-                       mCallback.isSignatureValidated(false);
-                       mCallback.isSignatureChanged(false);
+                    } else {
+                        mCallback.isSignatureValidated(false);
+                        mCallback.isSignatureChanged(false);
                     }
 
                 }
@@ -782,7 +827,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                 mFragmentSignatureInfoBinding.txtFeedback.setEnabled(false);
                 mFragmentSignatureInfoBinding.lnrOtp.setVisibility(GONE);
                 mFragmentSignatureInfoBinding.btnSendlink.setVisibility(View.GONE);
-                if(mGeneralRealmData.get(0).getShowSignature()){
+                if (mGeneralRealmData.get(0).getShowSignature() != null && mGeneralRealmData.get(0).getShowSignature()) {
                     if (mFragmentSignatureInfoBinding.edtSignatory.getText().toString().length() == 0) {
                         mCallback.isSignatureChanged(true);
                     } else {
@@ -793,7 +838,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     } else {
                         mCallback.isSignatureValidated(false);
                     }
-                }else{
+                } else {
                     mCallback.isSignatureChanged(false);
                     mCallback.isSignatureValidated(false);
                 }

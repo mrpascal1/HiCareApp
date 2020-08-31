@@ -47,6 +47,7 @@ import com.ab.hicarerun.network.models.AttendanceModel.ProfilePicRequest;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShakeResponse;
 import com.ab.hicarerun.network.models.LoginResponse;
+import com.ab.hicarerun.network.models.SelfAssessModel.SelfAssessmentResponse;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 
@@ -90,6 +91,12 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
         // Required empty public constructor
     }
 
+//    @Override
+//    public void onSaveInstanceState(Bundle oldInstanceState)
+//    {
+//        super.onSaveInstanceState(oldInstanceState);
+//        oldInstanceState.clear();
+//    }
 
     public static FaceRecognizationFragment newInstance(boolean isAttendance, String username, String videoUrl) {
         Bundle args = new Bundle();
@@ -145,8 +152,6 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
         cameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
         mFragmentFaceRecognizationBinding.captureImage.setOnClickListener(v -> takeImage());
     }
@@ -320,8 +325,6 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                     // convert byte array into bitmap
                     Bitmap loadedImage = BitmapFactory.decodeByteArray(data, 0,
                             data.length);
-
-
                     // rotate Image
                     Matrix rotateMatrix = new Matrix();
                     rotateMatrix.postRotate(270);
@@ -343,15 +346,15 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                                 String BatteryStatistics = String.valueOf(AppUtils.getMyBatteryLevel(getActivity()));
                                 AttendanceRequest request = AppUtils.getDeviceInfo(getActivity(), encodedImage, BatteryStatistics, false);
                                 NetworkCallController controller = new NetworkCallController(FaceRecognizationFragment.this);
-                                controller.setListner(new NetworkResponseListner() {
+                                controller.setListner(new NetworkResponseListner<SelfAssessmentResponse>() {
                                     @Override
-                                    public void onResponse(int requestCode, Object data) {
-                                        ContinueHandShakeResponse response = (ContinueHandShakeResponse) data;
-                                        if (response.getSuccess()) {
+                                    public void onResponse(int requestCode, SelfAssessmentResponse data) {
+                                        SelfAssessmentResponse response = (SelfAssessmentResponse) data;
+                                        if (response.getIsSuccess()) {
                                             getAttendanceDetails();
-                                            Toasty.success(getActivity(), getResources().getString(R.string.attendance_marked_successfully_face), Toast.LENGTH_SHORT).show();
-                                            SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_SHOW_NPS, true);
-                                            startActivity(new Intent(getActivity(), HomeActivity.class));
+                                            Toasty.success((HomeActivity) getActivity(), getResources().getString(R.string.attendance_marked_successfully_face), Toast.LENGTH_SHORT).show();
+                                            SharedPreferencesUtility.savePrefBoolean((HomeActivity) getActivity(), SharedPreferencesUtility.PREF_SHOW_NPS, true);
+                                            startActivity(new Intent((HomeActivity)getActivity(), HomeActivity.class));
                                         } else {
                                             getErrorDialog("Attendance Failed", response.getErrorMessage());
                                         }

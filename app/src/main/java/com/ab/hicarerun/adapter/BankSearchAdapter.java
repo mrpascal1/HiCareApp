@@ -42,13 +42,18 @@ public class BankSearchAdapter extends RecyclerView.Adapter<BankSearchAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NotNull ViewHolder holder, final int position) {
-        final String name = itemsFiltered.get(position);
-        int[] attrs = new int[]{R.attr.selectableItemBackground};
-        TypedArray typedArray = context.obtainStyledAttributes(attrs);
-        int backgroundResource = typedArray.getResourceId(0, 0);
-        holder.layout.setBackgroundResource(backgroundResource);
-        holder.name.setText(name);
-        holder.name.setOnClickListener(v -> listener.onSelected(name, position));
+        try {
+            final String name = itemsFiltered.get(position);
+            int[] attrs = new int[]{R.attr.selectableItemBackground};
+            TypedArray typedArray = context.obtainStyledAttributes(attrs);
+            int backgroundResource = typedArray.getResourceId(0, 0);
+            holder.layout.setBackgroundResource(backgroundResource);
+            holder.name.setText(name);
+            holder.name.setOnClickListener(v -> listener.onSelected(name, position));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     @Override

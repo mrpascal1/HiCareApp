@@ -62,50 +62,53 @@ public class ChemicalMSTAdapter extends RecyclerView.Adapter<ChemicalMSTAdapter.
 
     @Override
     public void onBindViewHolder(final ChemicalMSTAdapter.ViewHolder holder, final int position) {
+        try {
+            final ChemicalViewModel model = items.get(position);
+            holder.mChemicalRecycleRowBinding.chemName.setText(model.getName());
+            holder.mChemicalRecycleRowBinding.chemConsumption.setText(model.getConsumption());
+            holder.mChemicalRecycleRowBinding.chemStandard.setText(model.getStandard());
+            RealmResults<GeneralData> mGeneralRealmData =
+                    getRealm().where(GeneralData.class).findAll();
+            if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
+                isVerified = mGeneralRealmData.get(0).getAutoSubmitChemicals();
+                String status = mGeneralRealmData.get(0).getSchedulingStatus();
 
-        final ChemicalViewModel model = items.get(position);
-        holder.mChemicalRecycleRowBinding.chemName.setText(model.getName());
-        holder.mChemicalRecycleRowBinding.chemConsumption.setText(model.getConsumption());
-        holder.mChemicalRecycleRowBinding.chemStandard.setText(model.getStandard());
-        RealmResults<GeneralData> mGeneralRealmData =
-                getRealm().where(GeneralData.class).findAll();
-        if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
-            isVerified = mGeneralRealmData.get(0).getAutoSubmitChemicals();
-            String status = mGeneralRealmData.get(0).getSchedulingStatus();
+                if (isVerified || status.equals("Completed")) {
+                    holder.mChemicalRecycleRowBinding.edtActual.setText(model.getEdtActual());
+                    holder.mChemicalRecycleRowBinding.edtActual.setTextColor(Color.parseColor("#000000"));
+                    holder.mChemicalRecycleRowBinding.edtActual.setEnabled(false);
+                } else if (status.equals("Incomplete")) {
+                    holder.mChemicalRecycleRowBinding.edtActual.setText("-");
+                    holder.mChemicalRecycleRowBinding.edtActual.setTextColor(Color.parseColor("#808080"));
+                    holder.mChemicalRecycleRowBinding.edtActual.setEnabled(false);
+                } else if (status.equals("Dispatched")) {
+                    holder.mChemicalRecycleRowBinding.edtActual.setEnabled(false);
+                    holder.mChemicalRecycleRowBinding.edtActual.setBackgroundResource(R.drawable.disable_edit_borders);
+                } else {
+                    holder.mChemicalRecycleRowBinding.edtActual.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            if (isVerified || status.equals("Completed")) {
-                holder.mChemicalRecycleRowBinding.edtActual.setText(model.getEdtActual());
-                holder.mChemicalRecycleRowBinding.edtActual.setTextColor(Color.parseColor("#000000"));
-                holder.mChemicalRecycleRowBinding.edtActual.setEnabled(false);
-            } else if (status.equals("Incomplete")) {
-                holder.mChemicalRecycleRowBinding.edtActual.setText("-");
-                holder.mChemicalRecycleRowBinding.edtActual.setTextColor(Color.parseColor("#808080"));
-                holder.mChemicalRecycleRowBinding.edtActual.setEnabled(false);
-            } else if (status.equals("Dispatched")) {
-                holder.mChemicalRecycleRowBinding.edtActual.setEnabled(false);
-                holder.mChemicalRecycleRowBinding.edtActual.setBackgroundResource(R.drawable.disable_edit_borders);
-            } else {
-                holder.mChemicalRecycleRowBinding.edtActual.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        try {
-                            onEditTextChanged.onTextChanged(position, s.toString());
-                        } catch (Exception e) {
-                            e.printStackTrace();
                         }
 
-                    }
-                });
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                            try {
+                                onEditTextChanged.onTextChanged(position, s.toString());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    });
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 

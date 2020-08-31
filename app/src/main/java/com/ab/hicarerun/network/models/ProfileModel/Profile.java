@@ -16,6 +16,13 @@ public class Profile {
     @SerializedName("EmployeeCode") @Expose
     private String EmployeeCode;
 
+    public Profile() {
+        FirstName = "NA";
+        Mobile = "NA";
+        ProfilePic = "NA";
+        EmployeeCode = "NA";
+    }
+
     public String getFirstName() {
         return FirstName;
     }

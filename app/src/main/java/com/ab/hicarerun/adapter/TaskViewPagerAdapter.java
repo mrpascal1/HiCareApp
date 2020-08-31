@@ -3,20 +3,10 @@ package com.ab.hicarerun.adapter;
 
 
 import android.app.Activity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.PagerAdapter;
-
-import com.ab.hicarerun.R;
-import com.ogaclejapan.smarttablayout.SmartTabLayout;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

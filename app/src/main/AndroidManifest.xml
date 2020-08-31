@@ -50,42 +50,55 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-
-        <activity android:name=".activities.AssessChatActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.TechnicianRoutineActivity"></activity>
+        <activity android:name=".activities.HicareProductsActivity" />
+        <activity android:name=".activities.ServiceRenewalActivity" />
+        <activity
+            android:name=".activities.AssessChatActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.LeaderBoardActivity"
             android:parentActivityName=".activities.HomeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.OffersHistoryActivity"
             android:parentActivityName=".activities.HomeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.BazaarActivity"
             android:parentActivityName=".activities.HomeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".utils.notifications.ActivityTransparentPopup"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.RewardsHistoryActivity"
             android:parentActivityName=".activities.HomeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.OfferActivity"
             android:parentActivityName=".activities.HomeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.TechChemicalCountActivity"
             android:parentActivityName=".activities.HomeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.OnSiteAccountDetailsActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.OnSiteTaskActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.StartVideoActivity"
             android:configChanges="orientation|screenSize|layoutDirection" />
@@ -95,34 +108,42 @@
             android:exported="true"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.VoucherActivity"
             android:parentActivityName=".activities.HomeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.AttendanceActivity"
             android:parentActivityName=".activities.HomeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.IncentivesActivity"
             android:parentActivityName=".activities.HomeActivity"
-            android:screenOrientation="portrait" /> <!-- <activity -->
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" /> <!-- <activity -->
         <activity
             android:name=".activities.TechIdActivity"
             android:configChanges="keyboardHidden"
             android:parentActivityName=".activities.HomeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.GrommingGalleryActivity"
             android:configChanges="keyboardHidden"
             android:parentActivityName=".activities.TechnicianSeniorActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.TechnicianSeniorActivity"
             android:configChanges="keyboardHidden"
+            android:launchMode="singleTop"
             android:parentActivityName=".activities.HomeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -133,51 +154,53 @@
             android:name=".activities.VerifyOtpActivity"
             android:configChanges="keyboardHidden"
             android:parentActivityName=".activities.LoginActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.TrainingActivity"
             android:configChanges="keyboardHidden"
             android:parentActivityName=".activities.HomeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.HelpActivity"
             android:configChanges="keyboardHidden"
             android:parentActivityName=".activities.HomeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.LoginActivity"
             android:configChanges="keyboardHidden"
-            android:screenOrientation="portrait" /> <!-- <activity -->
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" /> <!-- <activity -->
         <!-- android:name=".BaseApplication" -->
         <!-- android:screenOrientation="portrait" /> -->
         <activity
             android:name=".activities.HomeActivity"
             android:configChanges="keyboardHidden"
-            android:exported="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.SplashActiviy"
             android:exported="true"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <service
             android:name=".service.ServiceLocationSend"
-            android:enabled="true" />
-        <service
-            android:name=".utils.notifications.OneSignalSilentNotificationHandlerService"
-            android:exported="false"
-            android:permission="android.permission.BIND_JOB_SERVICE">
-            <intent-filter>
-                <action android:name="com.onesignal.NotificationExtender" />
-            </intent-filter>
-        </service>
-
+            android:enabled="true" /> <!-- <service -->
+        <!-- android:name=".utils.notifications.OneSignalSilentNotificationHandlerService" -->
+        <!-- android:exported="false" -->
+        <!-- android:permission="android.permission.BIND_JOB_SERVICE"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="com.onesignal.NotificationExtender" /> -->
+        <!-- </intent-filter> -->
+        <!-- </service> -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.com.vansuita.pickimage.provider"
@@ -258,8 +281,7 @@
 
         <service
             android:name=".utils.notifications.OneSignalSilentNotificationHandlerService"
-            android:exported="false"
-            android:permission="android.permission.BIND_JOB_SERVICE">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.onesignal.NotificationExtender" />
             </intent-filter>

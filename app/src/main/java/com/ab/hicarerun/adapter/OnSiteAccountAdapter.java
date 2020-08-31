@@ -58,35 +58,39 @@ public class OnSiteAccountAdapter extends RecyclerView.Adapter<OnSiteAccountAdap
 
     @Override
     public void onBindViewHolder(@NotNull OnSiteAccountAdapter.ViewHolder holder, final int position) {
-        int[] attrs = new int[]{R.attr.selectableItemBackground};
-        TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
-        int backgroundResource = typedArray.getResourceId(0, 0);
-        holder.mOnsiteAccountAdapterBinding.lnrAccount.setBackgroundResource(backgroundResource);
-        holder.mOnsiteAccountAdapterBinding.txtName.setText(items.get(position).getAccountName());
-        holder.mOnsiteAccountAdapterBinding.txtPostcode.setText(items.get(position).getPostalCode());
-        if (items.get(position).getBuildingName() != null && items.get(position).getBuildingName().trim().length() != 0) {
-            holder.mOnsiteAccountAdapterBinding.lnrAddress.setVisibility(View.VISIBLE);
-            if (items.get(position).getFlatNumber() != null && !items.get(position).getFlatNumber().equals("")) {
-                Flat = items.get(position).getFlatNumber() + ", ";
+        try {
+            int[] attrs = new int[]{R.attr.selectableItemBackground};
+            TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
+            int backgroundResource = typedArray.getResourceId(0, 0);
+            holder.mOnsiteAccountAdapterBinding.lnrAccount.setBackgroundResource(backgroundResource);
+            holder.mOnsiteAccountAdapterBinding.txtName.setText(items.get(position).getAccountName());
+            holder.mOnsiteAccountAdapterBinding.txtPostcode.setText(items.get(position).getPostalCode());
+            if (items.get(position).getBuildingName() != null && items.get(position).getBuildingName().trim().length() != 0) {
+                holder.mOnsiteAccountAdapterBinding.lnrAddress.setVisibility(View.VISIBLE);
+                if (items.get(position).getFlatNumber() != null && !items.get(position).getFlatNumber().equals("")) {
+                    Flat = items.get(position).getFlatNumber() + ", ";
+                }
+                if (items.get(position).getBillingStreet() != null) {
+                    Street = items.get(position).getBillingStreet();
+                }
+                holder.mOnsiteAccountAdapterBinding.txtAddress.setText(Flat
+                        + items.get(position).getBuildingName() + ", "
+                        + items.get(position).getLocality() + ", "
+                        + Street);
+            } else {
+                holder.mOnsiteAccountAdapterBinding.lnrAddress.setVisibility(View.GONE);
             }
-            if (items.get(position).getBillingStreet() != null) {
-                Street = items.get(position).getBillingStreet();
-            }
-            holder.mOnsiteAccountAdapterBinding.txtAddress.setText(Flat
-                    + items.get(position).getBuildingName() + ", "
-                    + items.get(position).getLocality() + ", "
-                    + Street);
-        } else {
-            holder.mOnsiteAccountAdapterBinding.lnrAddress.setVisibility(View.GONE);
+            holder.mOnsiteAccountAdapterBinding.lnrLocation.setOnClickListener(v -> onOnSiteClickHandler.onTrackLocationIconClicked(position));
+
+            holder.mOnsiteAccountAdapterBinding.mobilePrimary.setOnClickListener(view -> onOnSiteClickHandler.onPrimaryMobileClicked(position));
+
+            holder.mOnsiteAccountAdapterBinding.mobileSecondary.setOnClickListener(view -> onOnSiteClickHandler.onAlternateMobileClicked(position));
+
+            holder.mOnsiteAccountAdapterBinding.oldPhone.setOnClickListener(view -> onOnSiteClickHandler.onTelePhoneClicked(position));
+            holder.itemView.setOnClickListener(v -> onItemClickHandler.onItemClick(position));
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        holder.mOnsiteAccountAdapterBinding.lnrLocation.setOnClickListener(v -> onOnSiteClickHandler.onTrackLocationIconClicked(position));
-
-        holder.mOnsiteAccountAdapterBinding.mobilePrimary.setOnClickListener(view -> onOnSiteClickHandler.onPrimaryMobileClicked(position));
-
-        holder.mOnsiteAccountAdapterBinding.mobileSecondary.setOnClickListener(view -> onOnSiteClickHandler.onAlternateMobileClicked(position));
-
-        holder.mOnsiteAccountAdapterBinding.oldPhone.setOnClickListener(view -> onOnSiteClickHandler.onTelePhoneClicked(position));
-        holder.itemView.setOnClickListener(v -> onItemClickHandler.onItemClick(position));
     }
 
     public void setOnItemClickHandler(OnAccountOnsiteClickHandler onItemClickHandler) {

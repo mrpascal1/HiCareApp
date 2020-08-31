@@ -221,6 +221,13 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     }
 
     @Override
+    public void onSaveInstanceState(Bundle oldInstanceState)
+    {
+        super.onSaveInstanceState(oldInstanceState);
+        oldInstanceState.clear();
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getSignature();
@@ -509,7 +516,6 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     }
 
     private void sendFeedback() {
-
         try {
             LayoutInflater li = LayoutInflater.from(getActivity());
             View promptsView = li.inflate(R.layout.link_confirm_dialog, null);

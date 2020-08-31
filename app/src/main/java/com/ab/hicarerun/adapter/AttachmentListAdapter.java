@@ -67,24 +67,24 @@ public class AttachmentListAdapter extends RecyclerView.Adapter<AttachmentListAd
 
     @Override
     public void onBindViewHolder(@NotNull final AttachmentListAdapter.ViewHolder holder, final int position) {
-        final AttachmentListViewModel model = items.get(position);
-
-        Glide.with(mContext)
-                .load(model.getFilePath())
-                .error(android.R.drawable.stat_notify_error)
-                .into(holder.mAttachmentListAdapterBinding.imgJob);
-
         try {
-            String date = AppUtils.reFormatDateTime(items.get(position).getCreated_On(), "dd-MMM-yyyy");
-            holder.mAttachmentListAdapterBinding.txtDate.setText(date);
-        } catch (ParseException e) {
+            final AttachmentListViewModel model = items.get(position);
+
+            Glide.with(mContext)
+                    .load(model.getFilePath())
+                    .error(android.R.drawable.stat_notify_error)
+                    .into(holder.mAttachmentListAdapterBinding.imgJob);
+
+            try {
+                String date = AppUtils.reFormatDateTime(items.get(position).getCreated_On(), "dd-MMM-yyyy");
+                holder.mAttachmentListAdapterBinding.txtDate.setText(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            holder.mAttachmentListAdapterBinding.txtName.setText(model.getFileName());
+        }catch (Exception e){
             e.printStackTrace();
         }
-
-
-        holder.mAttachmentListAdapterBinding.txtName.setText(model.getFileName());
-
-
     }
 
     @Override

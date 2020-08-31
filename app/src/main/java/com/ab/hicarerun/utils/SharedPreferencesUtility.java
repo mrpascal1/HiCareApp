@@ -20,6 +20,7 @@ public class SharedPreferencesUtility {
     public static final String PREF_USERID = "PREF_USERID";
     public static final String PREF_ATTACHMENT = "PREF_ATTACHMENT";
     public static final String PREF_REFRESH = "PREF_REFRESH";
+    public static final String PREF_ROUTINE_REFRESH = "PREF_ROUTINE_REFRESH";
     public static final String PREF_RESTRICT = "PREF_RESTRICT";
     public static final String PREF_LOGOUT = "PREF_LOGOUT";
     public static final String PREF_INTERVAL = "PREF_INTERVAL";
@@ -30,6 +31,7 @@ public class SharedPreferencesUtility {
     public static final String PREF_SUB_AREA = "PREF_SUB_AREA";
     public static final String PREF_USER_PIC = "PREF_USER_PIC";
     public static final String PREF_SHOW_NPS = "PREF_SHOW_NPS";
+    public static final String PREF_RESOURCE_SAVED = "PREF_RESOURCE_SAVED";
     public static final String PREF_LANG = "en";
 
     public static boolean getPrefBoolean(Context context, String key) {

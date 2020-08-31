@@ -47,6 +47,13 @@ public class AttendanceViewFragment extends BaseFragment {
         return fragment;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle oldInstanceState)
+    {
+        super.onSaveInstanceState(oldInstanceState);
+        oldInstanceState.clear();
+    }
+
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
@@ -58,6 +65,8 @@ public class AttendanceViewFragment extends BaseFragment {
             toolbar.setVisibility(View.GONE);
             LinearLayout custom_toolbar = getActivity().findViewById(R.id.customToolbar);
             custom_toolbar.setVisibility(View.VISIBLE);
+            LinearLayout lnrInfo = getActivity().findViewById(R.id.lnrInfo);
+            lnrInfo.setVisibility(View.GONE);
             TextView tool = getActivity().findViewById(R.id.txtTool);
             tool.setText(getResources().getString(R.string.your_attendance));
         }

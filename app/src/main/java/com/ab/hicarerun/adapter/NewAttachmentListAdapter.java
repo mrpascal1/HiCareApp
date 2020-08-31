@@ -61,30 +61,35 @@ public class NewAttachmentListAdapter extends RecyclerView.Adapter<NewAttachment
 
     @Override
     public void onBindViewHolder(@NotNull final NewAttachmentListAdapter.ViewHolder holder, final int position) {
-        final AttachmentListViewModel model = items.get(position);
-        int[] attrs = new int[]{R.attr.selectableItemBackground};
-        TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
-        int backgroundResource = typedArray.getResourceId(0, 0);
-        holder.mAttachmentListAdapterBinding.lnrAttachment.setBackgroundResource(backgroundResource);
-        Glide.with(mContext)
-                .load(model.getFilePath())
-                .error(android.R.drawable.stat_notify_error)
-                .into(holder.mAttachmentListAdapterBinding.imgJob);
-
-        if(status.equalsIgnoreCase("Completed")){
-            holder.mAttachmentListAdapterBinding.imgDelete.setVisibility(View.GONE);
-        }else {
-            holder.mAttachmentListAdapterBinding.imgDelete.setVisibility(View.VISIBLE);
-        }
-
         try {
-            String date = AppUtils.reFormatDateTime(items.get(position).getCreated_On(), "dd-MMM-yyyy");
-            holder.mAttachmentListAdapterBinding.txtCreatedDate.setText(date);
-        } catch (ParseException e) {
+            final AttachmentListViewModel model = items.get(position);
+            int[] attrs = new int[]{R.attr.selectableItemBackground};
+            TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
+            int backgroundResource = typedArray.getResourceId(0, 0);
+            holder.mAttachmentListAdapterBinding.lnrAttachment.setBackgroundResource(backgroundResource);
+            Glide.with(mContext)
+                    .load(model.getFilePath())
+                    .error(android.R.drawable.stat_notify_error)
+                    .into(holder.mAttachmentListAdapterBinding.imgJob);
+
+            if(status.equalsIgnoreCase("Completed")){
+                holder.mAttachmentListAdapterBinding.imgDelete.setVisibility(View.GONE);
+            }else {
+                holder.mAttachmentListAdapterBinding.imgDelete.setVisibility(View.VISIBLE);
+            }
+
+            try {
+                String date = AppUtils.reFormatDateTime(items.get(position).getCreated_On(), "dd-MMM-yyyy");
+                holder.mAttachmentListAdapterBinding.txtCreatedDate.setText(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            holder.mAttachmentListAdapterBinding.txtTitle.setText(model.getFileName());
+            holder.mAttachmentListAdapterBinding.imgDelete.setOnClickListener(v -> onItemClickHandler.onDeleteItemClicked(position));
+        }catch (Exception e){
             e.printStackTrace();
         }
-        holder.mAttachmentListAdapterBinding.txtTitle.setText(model.getFileName());
-        holder.mAttachmentListAdapterBinding.imgDelete.setOnClickListener(v -> onItemClickHandler.onDeleteItemClicked(position));
+
     }
 
     @Override

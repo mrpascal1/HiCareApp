@@ -10,8 +10,15 @@ import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
 import com.ab.hicarerun.network.models.AttendanceModel.ProfilePicRequest;
 import com.ab.hicarerun.network.models.BasicResponse;
 import com.ab.hicarerun.network.models.CheckListModel.CheckListResponse;
+import com.ab.hicarerun.network.models.CheckListModel.SaveCheckListRequest;
+import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListRequest;
+import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListResponse;
 import com.ab.hicarerun.network.models.ChemicalCountModel.ChemicalCountResponse;
 import com.ab.hicarerun.network.models.ChemicalModel.ChemicalResponse;
+import com.ab.hicarerun.network.models.ConsulationModel.ConsulationResponse;
+import com.ab.hicarerun.network.models.ConsulationModel.Data;
+import com.ab.hicarerun.network.models.ConsulationModel.RecommendationResponse;
+import com.ab.hicarerun.network.models.ConsulationModel.SaveConsulationResponse;
 import com.ab.hicarerun.network.models.CovidModel.CovidRequest;
 import com.ab.hicarerun.network.models.CovidModel.CovidResponse;
 import com.ab.hicarerun.network.models.DialingModel.DialingResponse;
@@ -31,8 +38,12 @@ import com.ab.hicarerun.network.models.LeaderBoardModel.RewardLeadersResponse;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
+import com.ab.hicarerun.network.models.ModelQRCode.CheckCodeResponse;
+import com.ab.hicarerun.network.models.ModelQRCode.CheckPhonePeResponse;
+import com.ab.hicarerun.network.models.ModelQRCode.PhonePeQRCodeResponse;
 import com.ab.hicarerun.network.models.ModelQRCode.QRCodeResponse;
 import com.ab.hicarerun.network.models.NPSModel.NPSDataResponse;
+import com.ab.hicarerun.network.models.NewRewardsModel.NewRewardsResponse;
 import com.ab.hicarerun.network.models.OffersModel.OffersHistoryResponse;
 import com.ab.hicarerun.network.models.OffersModel.OffersResponse;
 import com.ab.hicarerun.network.models.OffersModel.UpdateRewardScratchRequest;
@@ -46,23 +57,34 @@ import com.ab.hicarerun.network.models.OtpModel.SendOtpResponse;
 import com.ab.hicarerun.network.models.PayementModel.BankResponse;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
+import com.ab.hicarerun.network.models.ProductModel.ProductResponse;
 import com.ab.hicarerun.network.models.ProfileModel.TechnicianProfileDetails;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralDeleteRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralListResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralResponse;
+import com.ab.hicarerun.network.models.ReferralModel.ReferralSRResponse;
 import com.ab.hicarerun.network.models.RewardsModel.RewardsResponse;
 import com.ab.hicarerun.network.models.RewardsModel.SaveRedeemRequest;
 import com.ab.hicarerun.network.models.RewardsModel.SaveRedeemResponse;
+import com.ab.hicarerun.network.models.RoutineModel.RoutineResponse;
+import com.ab.hicarerun.network.models.RoutineModel.SaveRoutineResponse;
+import com.ab.hicarerun.network.models.RoutineModel.TechRoutineData;
 import com.ab.hicarerun.network.models.SelfAssessModel.AssessmentReportResponse;
 import com.ab.hicarerun.network.models.SelfAssessModel.ResourceCheckListResponse;
 import com.ab.hicarerun.network.models.SelfAssessModel.SelfAssessmentRequest;
 import com.ab.hicarerun.network.models.SelfAssessModel.SelfAssessmentResponse;
+import com.ab.hicarerun.network.models.ServicePlanModel.RenewOrderRequest;
+import com.ab.hicarerun.network.models.ServicePlanModel.RenewOrderResponse;
+import com.ab.hicarerun.network.models.ServicePlanModel.RenewalOTPResponse;
+import com.ab.hicarerun.network.models.ServicePlanModel.ServicePlanResponse;
 import com.ab.hicarerun.network.models.TaskModel.TaskListResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTaskResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
 import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingRequest;
 import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingResponse;
+import com.ab.hicarerun.network.models.TechnicianRoutineModel.RoutineCheckListResponse;
+import com.ab.hicarerun.network.models.TechnicianRoutineModel.TechnicianRoutineResponse;
 import com.ab.hicarerun.network.models.TrainingModel.TrainingResponse;
 import com.ab.hicarerun.network.models.TrainingModel.WelcomeVideoResponse;
 import com.ab.hicarerun.network.models.UpdateAppModel.UpdateResponse;
@@ -127,6 +149,11 @@ public interface IRetrofit {
 
     @GET("Task/GetTaskDetailsById")
     Call<GeneralResponse> getTasksDetailById(@Query("resourceId") String resourceId, @Query("taskId") String taskId, @Query("IsCombinedTask") Boolean isCombinedTask, @Query("ln") String language);
+
+    /*[GetReferralServiceAndRelation]*/
+
+    @GET("CustomerReferral/GetReferralServiceAndRelation")
+    Call<ReferralSRResponse> getReferralServiceAndRelation(@Query("taskId") String taskId, @Query("language") String lang);
 
     /*[Save Referral]*/
 
@@ -263,6 +290,11 @@ public interface IRetrofit {
     @GET("ResourceActivity/GetResourceIncentive")
     Call<IncentiveResponse> getTechnicianIncentive(@Query("resourceId") String customerNo);
 
+    /*[GetIncentiveDataForResource]*/
+
+    @GET("ResourceActivity/GetIncentiveDataForResource")
+    Call<IncentiveResponse> getResourceIncentive(@Query("resourceId") String customerNo);
+
     /*[getAttendanceDetail]*/
 
     @GET("ResourceActivity/GetResourceAttendenceStatistics")
@@ -349,6 +381,9 @@ public interface IRetrofit {
     @GET("ResourceActivity/GetRewards")
     Call<OffersResponse> getAllRewards(@Query("resourceId") String resourceId);
 
+    @GET("ResourceActivity/GetRewardsWithMissedDetails")
+    Call<OffersResponse> getRewardsWithMissedData(@Query("resourceId") String resourceId);
+
     @POST("ResourceActivity/UpdateRewardScratch")
     Call<UpdateRewardScratchResponse> updateRewardScratch(@Body UpdateRewardScratchRequest request);
 
@@ -358,14 +393,28 @@ public interface IRetrofit {
     @GET("ResourceActivity/GetRewardHistory")
     Call<OffersHistoryResponse> getAllRewardsHistory(@Query("resourceId") String resourceId);
 
+    @GET("ResourceActivity/GetRewardHistoryWithMissedDetails")
+    Call<OffersHistoryResponse> getRewardHistoryWithMissedDetails(@Query("resourceId") String resourceId);
+
     @GET("payment/GenerateTaskQRCode")
     Call<QRCodeResponse> getTaskQRCode(@Query("taskNo") String taskNo);
 
-    @GET("Task/SaveCheckList")
-    Call<CheckListResponse> saveCheckList(@Query("taskId") String taskId,
-                                          @Query("resourceId") String resourceId,
-                                          @Query("checkListId") Integer checkListId,
-                                          @Query("optionName") String optionName);
+    @GET("payment/GenerateUPICode")
+    Call<QRCodeResponse> getUPICode(@Query("taskId") String taskId, @Query("accountNo") String accountNo, @Query("orderNo") String orderNo, @Query("amount") String amount,
+                                    @Query("source") String source);
+
+    @GET("phonepepayment/GeneratePhonePeQRCode")
+    Call<PhonePeQRCodeResponse> getPhonePeCode(@Query("taskid") String taskkId, @Query("accountNo") String accountNo, @Query("orderNo") String orderNo,
+                                               @Query("amount") String amount, @Query("source") String source);
+
+    @GET("payment/CheckUPIPaymentStatus")
+    Call<CheckCodeResponse> checkUPIPaymentStatus(@Query("orderNo") String orderNo);
+
+    @GET("phonepepayment/CheckPhonePEPaymentStatus")
+    Call<CheckPhonePeResponse> checkPhonePeStatus(@Query("taskid") String taskId, @Query("transactionId") String transactionId, @Query("orderNo") String orderNo);
+
+    @POST("Task/SaveCheckList")
+    Call<CheckListResponse> saveCheckList(@Body List<SaveCheckListRequest> request);
 
     /*ResourceActivity/GetRewardLeaders*/
     @GET("ResourceActivity/GetRewardLeaders")
@@ -387,4 +436,43 @@ public interface IRetrofit {
     @GET("ResourceActivity/GetResourceChecklistResponse")
     Call<AssessmentReportResponse> getAssessmentResponse(@Query("resourceId") String mobile, @Query("ln") String lang);
 
+    @GET("Renewal/GetRenewalDetails")
+    Call<ServicePlanResponse> getServicePlans(@Query("taskid") String taskid);
+
+    @GET("Renewal/GetProducts")
+    Call<ProductResponse> getProducts();
+
+    /*renewal/RenewOrder*/
+    @POST("Renewal/RenewOrder")
+    Call<RenewOrderResponse> renewOrder(@Body RenewOrderRequest request);
+
+    @GET("Renewal/ResendRenewalOTP")
+    Call<RenewalOTPResponse> getRenewalOTP(@Query("resourceId") String resourceId, @Query("taskid") String taskid);
+
+    /*renewal/RenewOrder*/
+    @POST("Consultation/UploadAttachment")
+    Call<UploadCheckListResponse> uploadCheckListAttachment(@Body UploadCheckListRequest request);
+
+    /*Consultation/GetConsultationAndInspectionQuestions*/
+    @GET("Consultation/GetConsultationAndInspectionQuestions")
+    Call<ConsulationResponse> getConsulation(@Query("resourceId") String resourceId, @Query("taskId") String taskid, @Query("lan") String lan);
+
+    /*Consultation/GetConsultationAndInspectionQuestions*/
+    @POST("Consultation/SaveConsultationAndInspectionAnswers")
+    Call<SaveConsulationResponse> saveConsultationNdInspection(@Body List<Data> request);
+
+    /*Consultation/GetRecommendations*/
+    @GET("Consultation/GetRecommendations")
+    Call<RecommendationResponse> getRecommendations(@Query("resourceId") String resourceId, @Query("taskId") String taskid, @Query("lan") String lan);
+
+    /*TechnicianGrooming/GetTechnicianForRoutineCheckList*/
+    @GET("TechnicianGrooming/GetTechnicianForRoutineCheckList")
+    Call<TechnicianRoutineResponse> getTechniciansForRoutineCheckList(@Query("resourceid") String resourceId);
+
+    /*TechnicianGrooming/GetRoutineCheckList*/
+    @GET("TechnicianGrooming/GetRoutineCheckList")
+    Call<RoutineResponse> getRoutineData(@Query("resourceid") String resourceId);
+
+    @POST("TechnicianGrooming/SaveRoutineCheckList")
+    Call<SaveRoutineResponse> saveRoutineCheckList(@Body TechRoutineData request);
 }

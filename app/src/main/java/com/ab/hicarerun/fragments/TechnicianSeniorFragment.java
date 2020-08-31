@@ -88,6 +88,7 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
         // Required empty public constructor
     }
 
+
     public static TechnicianSeniorFragment newInstance() {
         Bundle args = new Bundle();
         TechnicianSeniorFragment fragment = new TechnicianSeniorFragment();
@@ -102,6 +103,13 @@ public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureL
         mFragmentTechnicianSeniorBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_technician_senior, container, false);
         getActivity().setTitle(getString(R.string.grooming));
         return mFragmentTechnicianSeniorBinding.getRoot();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle oldInstanceState)
+    {
+        super.onSaveInstanceState(oldInstanceState);
+        oldInstanceState.clear();
     }
 
     @Override
