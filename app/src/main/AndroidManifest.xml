@@ -50,9 +50,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.TechnicianRoutineActivity"></activity>
+
+        <activity android:name=".activities.TechnicianRoutineActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"
+            android:windowSoftInputMode="stateHidden|adjustPan"/>
+
         <activity android:name=".activities.HicareProductsActivity" />
-        <activity android:name=".activities.ServiceRenewalActivity" />
+        <activity android:name=".activities.ServiceRenewalActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".activities.AssessChatActivity"
             android:screenOrientation="portrait"
@@ -281,6 +288,7 @@
 
         <service
             android:name=".utils.notifications.OneSignalSilentNotificationHandlerService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.onesignal.NotificationExtender" />

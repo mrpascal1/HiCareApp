@@ -235,6 +235,7 @@ public class OTP_LoginFragment extends BaseFragment implements UserOtpLoginClick
                         intent.putExtra(VerifyOtpActivity.ARGS_MOBILE, mobile);
                         intent.putExtra(VerifyOtpActivity.ARGS_USER, response.getData().getResourceName());
                         intent.putExtra(VerifyOtpActivity.ARGS_OTP, response.getData().getLoginotp());
+                        intent.putExtra(VerifyOtpActivity.ARGS_USER_ID, response.getData().getResourceId());
                         startActivity(intent);
                     } else {
                         Toast.makeText(getActivity(), response.getErrorMessage(), Toast.LENGTH_SHORT).show();

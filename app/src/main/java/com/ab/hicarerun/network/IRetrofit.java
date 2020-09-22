@@ -27,6 +27,7 @@ import com.ab.hicarerun.network.models.FeedbackModel.FeedbackRequest;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackResponse;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralResponse;
 import com.ab.hicarerun.network.models.GeneralModel.OnSiteOtpResponse;
+import com.ab.hicarerun.network.models.GeneralModel.TaskCheckList;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeRequest;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShakeResponse;
@@ -102,11 +103,11 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface IRetrofit {
-    //        String BASE_URL = "http://52.74.65.15/mobileapi/api/";
+    //    String BASE_URL = "http://52.74.65.15/mobileapi/api/";
     //    String ERROR_LOG_URL = "http://52.74.65.15/logging/api/";
     //    http://apps.hicare.in/cwf/datasync/InsertRenewalAppJeopardy
-    String BASE_URL = "http://api.hicare.in/mobile/api/";
-    String SCAN_URL = "http://api.hicare.in/taskservice/api/";
+    String BASE_URL = "http://run.hicare.in/mobile/api/";
+    String SCAN_URL = "http://run.hicare.in/taskservice/api/";
     String EXOTEL_URL = "http://apps.hicare.in/api/api/";
     String ERROR_LOG_URL = "http://run.hicare.in/logging/api/";
     String JEOPARDY_URL = "http://apps.hicare.in/cwf/";
@@ -308,7 +309,7 @@ public interface IRetrofit {
 
     /*[GetWelcomeVideo]*/
     @GET("VideoUploader/GetWelcomeVideo")
-    Call<WelcomeVideoResponse> getStartingVideos();
+    Call<WelcomeVideoResponse> getStartingVideos(@Query("resourceId") String resourceId);
 
 
     /*[ResendOnsiteOTP]*/
@@ -414,7 +415,7 @@ public interface IRetrofit {
     Call<CheckPhonePeResponse> checkPhonePeStatus(@Query("taskid") String taskId, @Query("transactionId") String transactionId, @Query("orderNo") String orderNo);
 
     @POST("Task/SaveCheckList")
-    Call<CheckListResponse> saveCheckList(@Body List<SaveCheckListRequest> request);
+    Call<CheckListResponse> saveCheckList(@Body List<TaskCheckList> request);
 
     /*ResourceActivity/GetRewardLeaders*/
     @GET("ResourceActivity/GetRewardLeaders")
@@ -471,7 +472,7 @@ public interface IRetrofit {
 
     /*TechnicianGrooming/GetRoutineCheckList*/
     @GET("TechnicianGrooming/GetRoutineCheckList")
-    Call<RoutineResponse> getRoutineData(@Query("resourceid") String resourceId);
+    Call<RoutineResponse> getRoutineData(@Query("resourceid") String resourceId, @Query("language") String lang);
 
     @POST("TechnicianGrooming/SaveRoutineCheckList")
     Call<SaveRoutineResponse> saveRoutineCheckList(@Body TechRoutineData request);

@@ -4,6 +4,7 @@ package com.ab.hicarerun.fragments;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -218,7 +219,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                             if (isChecked) {
                                 checkedService.add(mServiceAdapter.getItem(position).getName());
                             } else {
-                                checkedService.remove(mServiceAdapter.getItem(position));
+                                checkedService.remove(mServiceAdapter.getItem(position).getName());
                             }
 
                         } catch (Exception e) {
@@ -250,7 +251,10 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                                     mRelationAdapter.addData(response.getRelation());
                                     mRelationAdapter.notifyDataSetChanged();
                                     mRelationAdapter.setOnItemClickHandler(position -> {
+
                                         relation = mRelationAdapter.getItem(position).getName();
+                                        Log.i("RELATION", mRelationAdapter.getItem(position).getName());
+                                        Log.i("RELATION_STR", relation);
                                     });
                                 }
                             }
@@ -278,52 +282,60 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
 
 
                         if (validateSaveReferral(edt_fname, edt_contact, mobile, Alt_Mobile, Technicain_Mobile)) {
-                            if(checkedService.size()>0){
-                                StringBuilder sbString = new StringBuilder("");
-                                //iterate through ArrayList
-                                for(String service : checkedService){
-                                    //append ArrayList element followed by comma
-                                    sbString.append(service).append(",");
-                                }
-                                //convert StringBuffer to String
-                                String strService = sbString.toString();
-                                //remove last comma from String if you want
-                                if( strService.length() > 0 )
-                                    strService = strService.substring(0, strService.length() - 1);
+                            if (checkedService != null && checkedService.size() > 0) {
+                                if (relation != null && relation.length() > 0) {
+                                    StringBuilder sbString = new StringBuilder("");
+                                    //iterate through ArrayList
+                                    for (String service : checkedService) {
+                                        //append ArrayList element followed by comma
+                                        sbString.append(service).append(",");
+                                    }
+                                    //convert StringBuffer to String
+                                    String strService = sbString.toString();
+                                    //remove last comma from String if you want
+                                    if (strService.length() > 0){
+                                        strService = strService.substring(0, strService.length() - 1);
+                                    }
 
+                                    NetworkCallController controller = new NetworkCallController(ReferralFragment.this);
+                                    ReferralRequest request = new ReferralRequest();
+                                    request.setTaskId(taskId);
+                                    request.setFirstName(edt_fname.getText().toString());
+                                    request.setLastName("");
+                                    request.setMobileNo(edt_contact.getText().toString());
+                                    request.setAlternateMobileNo("");
+                                    request.setEmail("");
+                                    request.setInterestedService(strService);
+                                    request.setReferredCustomerService(mGeneralRealmModel.get(0).getServiceType());
+                                    Log.i("RELATION_SAVE", relation);
+                                    request.setRelationship(relation);
 
-                                NetworkCallController controller = new NetworkCallController(ReferralFragment.this);
-                                ReferralRequest request = new ReferralRequest();
-                                request.setTaskId(taskId);
-                                request.setFirstName(edt_fname.getText().toString());
-                                request.setLastName("");
-                                request.setMobileNo(edt_contact.getText().toString());
-                                request.setAlternateMobileNo("");
-                                request.setEmail("");
-                                request.setInterestedService(strService);
-                                request.setReferredCustomerService(mGeneralRealmModel.get(0).getServiceType());
-                                request.setRelationship(relation);
-
-                                controller.setListner(new NetworkResponseListner() {
-                                    @Override
-                                    public void onResponse(int requestCode, Object response) {
-                                        ReferralResponse refResponse = (ReferralResponse) response;
-                                        if (refResponse.getSuccess()) {
-                                            mAdapter.notifyDataSetChanged();
-                                            Toasty.success(getActivity(), getResources().getString(R.string.referral_added_successfully), Toast.LENGTH_SHORT).show();
-                                            getReferralList();
+                                    controller.setListner(new NetworkResponseListner() {
+                                        @Override
+                                        public void onResponse(int requestCode, Object response) {
+                                            ReferralResponse refResponse = (ReferralResponse) response;
+                                            if (refResponse.getSuccess()) {
+                                                checkedService.clear();
+                                                relation = "";
+                                                mAdapter.notifyDataSetChanged();
+                                                Toasty.success(getActivity(), getResources().getString(R.string.referral_added_successfully), Toast.LENGTH_SHORT).show();
+                                                getReferralList();
+                                            }
                                         }
-                                    }
 
-                                    @Override
-                                    public void onFailure(int requestCode) {
+                                        @Override
+                                        public void onFailure(int requestCode) {
 
-                                    }
-                                });
-                                controller.postReferrals(POST_REFERRAL_REQUEST, request);
-                                alertDialog.dismiss();
-                                mAdapter.notifyDataSetChanged();
-                            }else {
+                                        }
+                                    });
+                                    controller.postReferrals(POST_REFERRAL_REQUEST, request);
+                                    alertDialog.dismiss();
+                                    mAdapter.notifyDataSetChanged();
+                                } else {
+                                    Toasty.error(getActivity(), "Please select customer relation", Toasty.LENGTH_SHORT).show();
+                                }
+
+                            } else {
                                 Toasty.error(getActivity(), "Please select interested service", Toasty.LENGTH_SHORT).show();
                             }
 

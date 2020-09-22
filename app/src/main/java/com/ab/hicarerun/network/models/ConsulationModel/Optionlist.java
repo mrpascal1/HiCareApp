@@ -13,6 +13,9 @@ public class Optionlist {
     @Expose
     @SerializedName("OptionValue")
     private String Optionvalue;
+    @Expose
+    @SerializedName("OptionValueDisplayText")
+    private String OptionValueDisplayText;
 
 
 
@@ -32,5 +35,11 @@ public class Optionlist {
         this.Optionvalue = Optionvalue;
     }
 
+    public String getOptionValueDisplayText() {
+        return OptionValueDisplayText;
+    }
 
+    public void setOptionValueDisplayText(String optionValueDisplayText) {
+        OptionValueDisplayText = optionValueDisplayText;
+    }
 }

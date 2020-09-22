@@ -77,8 +77,9 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
     private static final String ARG_MOBILE = "ARG_MOBILE";
     private static final String ARG_OTP = "ARG_OTP";
     private static final String ARG_USER = "ARG_USER";
+    private static final String ARG_USER_ID = "ARG_USER_ID";
     private static final int LOGIN_REQUEST = 2000;
-    private String mobile = "", otp = "", user = "";
+    private String mobile = "", otp = "", user = "", userId;
     private static final int VIDEO_REQUEST = 2000;
 
     private static final int OTP_REQUEST = 1000;
@@ -94,11 +95,12 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
         // Required empty public constructor
     }
 
-    public static VerifyOtpFragment newInstance(String mobile, String otp, String user) {
+    public static VerifyOtpFragment newInstance(String mobile, String otp, String user, String userId) {
         Bundle args = new Bundle();
         args.putString(ARG_MOBILE, mobile);
         args.putString(ARG_OTP, otp);
         args.putString(ARG_USER, user);
+        args.putString(ARG_USER_ID, userId);
         VerifyOtpFragment fragment = new VerifyOtpFragment();
         fragment.setArguments(args);
         return fragment;
@@ -110,6 +112,7 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
         if (getArguments() != null) {
             mobile = getArguments().getString(ARG_MOBILE);
             user = getArguments().getString(ARG_USER);
+            userId = getArguments().getString(ARG_USER_ID);
             otp = getArguments().getString(ARG_OTP);
         }
     }
@@ -234,21 +237,6 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            try {
-////                imei = telephonyManager.getImei();
-//                imei = UUID.randomUUID().toString();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        } else {
-//            try {
-////                imei = telephonyManager.getDeviceId();
-//                imei = UUID.randomUUID().toString();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
         PackageInfo pinfo = null;
         try {
             pinfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
@@ -276,6 +264,7 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
                         getRealm().deleteAll();
                         getRealm().commitTransaction();
                         profilePic = response.getUserProfilePic();
+                        userId = response.getUserID();
                         // add new record
                         getRealm().beginTransaction();
                         getRealm().copyToRealmOrUpdate(response);
@@ -396,16 +385,6 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             if (success) {
-//                    if (profilePic.trim().length() == 0) {
-//                        replaceFragment(FaceRecognizationFragment.newInstance(false, mobile), "VerifyOtpFragment-FaceRecognizationFragment");
-//                    } else {
-//                        if(SharedPreferencesUtility.getPrefBoolean(getActivity(),SharedPreferencesUtility.IS_SKIP_VIDEO)){
-//                            AppUtils.getHandShakeCall(mobile, getActivity());
-//                        }else {
-//                            startActivity(new Intent(getActivity(), StartVideoActivity.class).putExtra(StartVideoActivity.ARG_USER,mobile));
-//                            getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-//                        }
-//                    }
                 getWelcomeVideo();
                 SharedPreferencesUtility.savePrefString(getActivity(), SharedPreferencesUtility.PREF_LOGOUT, AppUtils.currentDate());
 
@@ -446,7 +425,7 @@ public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClic
 
                 }
             });
-            controller.getStartingVideos(VIDEO_REQUEST);
+            controller.getStartingVideos(VIDEO_REQUEST, userId);
         }
 
 

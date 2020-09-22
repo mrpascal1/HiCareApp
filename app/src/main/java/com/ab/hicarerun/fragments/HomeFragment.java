@@ -461,7 +461,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                         if (isCheckList != null && isListChecked(isCheckList) && checkList != null) {
                             if (!checkList.get(0).getOptionText().equals("")) {
                                 double temperature = Double.parseDouble(checkList.get(0).getOptionText());
-                                if (temperature >= 95 && temperature <= 107) {
+                                if (temperature >= 97 && temperature <= 99) {
                                     NetworkCallController controller1 = new NetworkCallController(HomeFragment.this);
                                     controller1.setListner(new NetworkResponseListner<SelfAssessmentResponse>() {
                                         @Override
@@ -542,9 +542,13 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                             Settings.Secure.ANDROID_ID);
                     assert LoginRealmModels.get(0) != null;
                     UserId = LoginRealmModels.get(0).getUserID();
-                    NetworkCallController controller = new NetworkCallController(this);
-                    controller.setListner(this);
-                    controller.getTasksList(TASKS_REQ, UserId, IMEI);
+                    try {
+                        NetworkCallController controller = new NetworkCallController(this);
+                        controller.setListner(this);
+                        controller.getTasksList(TASKS_REQ, UserId, IMEI);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
 
                 }
             }

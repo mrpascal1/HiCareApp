@@ -39,6 +39,7 @@ import com.ab.hicarerun.network.models.FeedbackModel.FeedbackRequest;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackResponse;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralResponse;
 import com.ab.hicarerun.network.models.GeneralModel.OnSiteOtpResponse;
+import com.ab.hicarerun.network.models.GeneralModel.TaskCheckList;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeRequest;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShakeResponse;
@@ -139,21 +140,26 @@ public class NetworkCallController {
                     .enqueue(new Callback<HandShakeResponse>() {
                         @Override
                         public void onResponse(Call<HandShakeResponse> call, Response<HandShakeResponse> response) {
-                            if (response != null) {
-                                if (response.body() != null) {
-                                    mListner.onResponse(requestCode, response.body().getData());
-                                } else if (response.errorBody() != null) {
-                                    try {
-                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
-                                        AppUtils.sendErrorLogs(response.errorBody().string(), "", "getHandShake", lineNo, "", DeviceName);
+                            try {
+                                if (response != null) {
+                                    if (response.body() != null) {
+                                        mListner.onResponse(requestCode, response.body().getData());
+                                    } else if (response.errorBody() != null) {
+                                        try {
+                                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), "", "getHandShake", lineNo, "", DeviceName);
 
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
                                     }
                                 }
+                            }catch (Exception e){
+                                e.printStackTrace();
                             }
+
                         }
 
                         @Override
@@ -173,46 +179,54 @@ public class NetworkCallController {
                     .enqueue(new Callback<ContinueHandShakeResponse>() {
                         @Override
                         public void onResponse(Call<ContinueHandShakeResponse> call, Response<ContinueHandShakeResponse> response) {
-                            if (response != null) {
+                          try {
+                              if (response != null) {
 
-                                if (response.code() == 401) { // Unauthorised Access
-                                    NetworkCallController controller = new NetworkCallController();
-                                    controller.setListner(new NetworkResponseListner<LoginResponse>() {
-                                        @Override
-                                        public void onResponse(int reqCode, LoginResponse response) {
-                                            // delete all previous record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().deleteAll();
-                                            Realm.getDefaultInstance().commitTransaction();
+                                  if (response.code() == 401) { // Unauthorised Access
+                                      NetworkCallController controller = new NetworkCallController();
+                                      controller.setListner(new NetworkResponseListner<LoginResponse>() {
+                                          @Override
+                                          public void onResponse(int reqCode, LoginResponse response) {
+                                              try {
+                                                  // delete all previous record
+                                                  Realm.getDefaultInstance().beginTransaction();
+                                                  Realm.getDefaultInstance().deleteAll();
+                                                  Realm.getDefaultInstance().commitTransaction();
 
-                                            // add new record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().copyToRealmOrUpdate(response);
-                                            Realm.getDefaultInstance().commitTransaction();
-                                            getContinueHandShake(requestCode, request);
-                                        }
+                                                  // add new record
+                                                  Realm.getDefaultInstance().beginTransaction();
+                                                  Realm.getDefaultInstance().copyToRealmOrUpdate(response);
+                                                  Realm.getDefaultInstance().commitTransaction();
+                                                  getContinueHandShake(requestCode, request);
+                                              }catch (Exception e){
+                                                  e.printStackTrace();
+                                              }
+                                          }
 
-                                        @Override
-                                        public void onFailure(int requestCode) {
+                                          @Override
+                                          public void onFailure(int requestCode) {
 
-                                        }
-                                    });
-                                    controller.refreshToken(100, getRefreshToken());
-                                } else if (response.body() != null) {
-                                    mListner.onResponse(requestCode, response.body());
-                                } else if (response.errorBody() != null) {
-                                    try {
-                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                        String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                        String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
-                                        Log.e("Error Log", "Arjun Bhatt " + lineNo + DeviceName);
+                                          }
+                                      });
+                                      controller.refreshToken(100, getRefreshToken());
+                                  } else if (response.body() != null) {
+                                      mListner.onResponse(requestCode, response.body());
+                                  } else if (response.errorBody() != null) {
+                                      try {
+                                          JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                          String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                          String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                          Log.e("Error Log", "Arjun Bhatt " + lineNo + DeviceName);
 
 //                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getContinueHandShake", lineNo, "", DeviceName);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
+                                      } catch (Exception e) {
+                                          e.printStackTrace();
+                                      }
+                                  }
+                              }
+                          }catch (Exception e){
+                              e.printStackTrace();
+                          }
                         }
 
                         @Override
@@ -324,14 +338,18 @@ public class NetworkCallController {
                     .enqueue(new Callback<LoginResponse>() {
                         @Override
                         public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                            if (response != null) {
-                                if (response.body() != null) {
-                                    mListner.onResponse(requestCode, response.body());
+                            try {
+                                if (response != null) {
+                                    if (response.body() != null) {
+                                        mListner.onResponse(requestCode, response.body());
+                                    } else {
+                                        mListner.onFailure(requestCode);
+                                    }
                                 } else {
                                     mListner.onFailure(requestCode);
                                 }
-                            } else {
-                                mListner.onFailure(requestCode);
+                            }catch (Exception e){
+                                e.printStackTrace();
                             }
                         }
 
@@ -356,51 +374,59 @@ public class NetworkCallController {
                         @Override
                         public void onResponse(Call<TaskListResponse> call,
                                                Response<TaskListResponse> response) {
-                            mContext.dismissProgressDialog();
-                            if (response != null) {
-                                if (response.code() == 401) { // Unauthorised Access
-                                    NetworkCallController controller = new NetworkCallController();
-                                    controller.setListner(new NetworkResponseListner<LoginResponse>() {
-                                        @Override
-                                        public void onResponse(int reqCode, LoginResponse response) {
-                                            // delete all previous record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().deleteAll();
-                                            Realm.getDefaultInstance().commitTransaction();
+                            try {
+                                mContext.dismissProgressDialog();
+                                if (response != null) {
+                                    if (response.code() == 401) { // Unauthorised Access
+                                        NetworkCallController controller = new NetworkCallController();
+                                        controller.setListner(new NetworkResponseListner<LoginResponse>() {
+                                            @Override
+                                            public void onResponse(int reqCode, LoginResponse response) {
+                                                try {
+                                                    // delete all previous record
+                                                    Realm.getDefaultInstance().beginTransaction();
+                                                    Realm.getDefaultInstance().deleteAll();
+                                                    Realm.getDefaultInstance().commitTransaction();
 
-                                            // add new record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().copyToRealmOrUpdate(response);
-                                            Realm.getDefaultInstance().commitTransaction();
-                                            getTasksList(requestCode, userId, IMEI);
+                                                    // add new record
+                                                    Realm.getDefaultInstance().beginTransaction();
+                                                    Realm.getDefaultInstance().copyToRealmOrUpdate(response);
+                                                    Realm.getDefaultInstance().commitTransaction();
+                                                    getTasksList(requestCode, userId, IMEI);
+                                                }catch (Exception e){
+                                                    e.printStackTrace();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(int requestCode) {
+
+                                            }
+                                        });
+                                        controller.refreshToken(100, getRefreshToken());
+                                    } else if (response.body() != null) {
+                                        mListner.onResponse(requestCode, response.body());
+
+                                    } else if (response.errorBody() != null) {
+                                        try {
+                                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                            mContext.showServerError(jObjError.getString("Message"));
+                                            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                                String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                                String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                                AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getTasksList", lineNo, userName, DeviceName);
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
                                         }
-
-                                        @Override
-                                        public void onFailure(int requestCode) {
-
-                                        }
-                                    });
-                                    controller.refreshToken(100, getRefreshToken());
-                                } else if (response.body() != null) {
-                                    mListner.onResponse(requestCode, response.body());
-
-                                } else if (response.errorBody() != null) {
-                                    try {
-                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                        mContext.showServerError(jObjError.getString("Message"));
-                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
-                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
-                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
-                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getTasksList", lineNo, userName, DeviceName);
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
                                     }
+                                } else {
+                                    mContext.showServerError();
                                 }
-                            } else {
-                                mContext.showServerError();
+                            }catch (Exception e){
+                                e.printStackTrace();
                             }
                         }
 
@@ -425,63 +451,72 @@ public class NetworkCallController {
                         @Override
                         public void onResponse(Call<GeneralResponse> call,
                                                Response<GeneralResponse> response) {
-                            if (response != null) {
-                                try {
-                                    progress.dismiss();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                if (response.code() == 401) { // Unauthorised Access
-                                    NetworkCallController controller = new NetworkCallController();
-                                    controller.setListner(new NetworkResponseListner<LoginResponse>() {
-                                        @Override
-                                        public void onResponse(int reqCode, LoginResponse response) {
-                                            // delete all previous record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().deleteAll();
-                                            Realm.getDefaultInstance().commitTransaction();
-
-                                            // add new record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().copyToRealmOrUpdate(response);
-                                            Realm.getDefaultInstance().commitTransaction();
-                                            getTaskDetailById(requestCode, userId, taskId, isCombinedTask, language, context, progress);
-                                        }
-
-                                        @Override
-                                        public void onFailure(int requestCode) {
-                                            try {
-                                                progress.dismiss();
-
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    });
-                                    controller.refreshToken(100, getRefreshToken());
-                                } else if (response.body() != null) {
+                            try {
+                                if (response != null) {
                                     try {
-                                        mListner.onResponse(requestCode, response.body());
                                         progress.dismiss();
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
+                                    if (response.code() == 401) { // Unauthorised Access
+                                        NetworkCallController controller = new NetworkCallController();
+                                        controller.setListner(new NetworkResponseListner<LoginResponse>() {
+                                            @Override
+                                            public void onResponse(int reqCode, LoginResponse response) {
+                                                try {
+                                                    // delete all previous record
+                                                    Realm.getDefaultInstance().beginTransaction();
+                                                    Realm.getDefaultInstance().deleteAll();
+                                                    Realm.getDefaultInstance().commitTransaction();
 
-                                } else if (response.errorBody() != null) {
-                                    try {
-                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
-                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
-                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
-                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getTaskDetailById", lineNo, userName, DeviceName);
+                                                    // add new record
+                                                    Realm.getDefaultInstance().beginTransaction();
+                                                    Realm.getDefaultInstance().copyToRealmOrUpdate(response);
+                                                    Realm.getDefaultInstance().commitTransaction();
+                                                    getTaskDetailById(requestCode, userId, taskId, isCombinedTask, language, context, progress);
+                                                }catch (Exception e){
+                                                    e.printStackTrace();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(int requestCode) {
+                                                try {
+                                                    progress.dismiss();
+
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        });
+                                        controller.refreshToken(100, getRefreshToken());
+                                    } else if (response.body() != null) {
+                                        try {
+                                            mListner.onResponse(requestCode, response.body());
+                                            progress.dismiss();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
                                         }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+
+                                    } else if (response.errorBody() != null) {
+                                        try {
+                                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                                String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                                String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                                AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getTaskDetailById", lineNo, userName, DeviceName);
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
                                     }
                                 }
+                            }catch (Exception e){
+                                e.printStackTrace();
                             }
+
                         }
 
                         @Override
@@ -556,50 +591,58 @@ public class NetworkCallController {
                         public void onResponse(Call<ReferralSRResponse> call,
                                                Response<ReferralSRResponse> response) {
                             mContext.dismissProgressDialog();
-                            if (response != null) {
-                                if (response.code() == 401) { // Unauthorised Access
-                                    NetworkCallController controller = new NetworkCallController();
-                                    controller.setListner(new NetworkResponseListner<LoginResponse>() {
-                                        @Override
-                                        public void onResponse(int reqCode, LoginResponse response) {
-                                            // delete all previous record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().deleteAll();
-                                            Realm.getDefaultInstance().commitTransaction();
+                            try {
+                                if (response != null) {
+                                    if (response.code() == 401) { // Unauthorised Access
+                                        NetworkCallController controller = new NetworkCallController();
+                                        controller.setListner(new NetworkResponseListner<LoginResponse>() {
+                                            @Override
+                                            public void onResponse(int reqCode, LoginResponse response) {
+                                                try {
+                                                    // delete all previous record
+                                                    Realm.getDefaultInstance().beginTransaction();
+                                                    Realm.getDefaultInstance().deleteAll();
+                                                    Realm.getDefaultInstance().commitTransaction();
 
-                                            // add new record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().copyToRealmOrUpdate(response);
-                                            Realm.getDefaultInstance().commitTransaction();
-                                            getReferrals(requestCode, taskId);
+                                                    // add new record
+                                                    Realm.getDefaultInstance().beginTransaction();
+                                                    Realm.getDefaultInstance().copyToRealmOrUpdate(response);
+                                                    Realm.getDefaultInstance().commitTransaction();
+                                                    getReferrals(requestCode, taskId);
+                                                }catch (Exception e){
+                                                    e.printStackTrace();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(int requestCode) {
+
+                                            }
+                                        });
+                                        controller.refreshToken(100, getRefreshToken());
+                                    } else if (response.body() != null) {
+                                        mListner.onResponse(requestCode, response.body().getData());
+
+                                    } else if (response.errorBody() != null) {
+                                        try {
+                                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                            mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                                String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                                String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                                AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getReferrals", lineNo, userName, DeviceName);
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
                                         }
-
-                                        @Override
-                                        public void onFailure(int requestCode) {
-
-                                        }
-                                    });
-                                    controller.refreshToken(100, getRefreshToken());
-                                } else if (response.body() != null) {
-                                    mListner.onResponse(requestCode, response.body().getData());
-
-                                } else if (response.errorBody() != null) {
-                                    try {
-                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                        mContext.showServerError(jObjError.getString("ErrorMessage"));
-                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
-                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
-                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
-                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getReferrals", lineNo, userName, DeviceName);
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
                                     }
+                                } else {
+                                    mContext.showServerError();
                                 }
-                            } else {
-                                mContext.showServerError();
+                            }catch (Exception e){
+                                e.printStackTrace();
                             }
                         }
 
@@ -632,16 +675,20 @@ public class NetworkCallController {
                                     controller.setListner(new NetworkResponseListner<LoginResponse>() {
                                         @Override
                                         public void onResponse(int reqCode, LoginResponse response) {
-                                            // delete all previous record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().deleteAll();
-                                            Realm.getDefaultInstance().commitTransaction();
+                                            try {
+                                                // delete all previous record
+                                                Realm.getDefaultInstance().beginTransaction();
+                                                Realm.getDefaultInstance().deleteAll();
+                                                Realm.getDefaultInstance().commitTransaction();
 
-                                            // add new record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().copyToRealmOrUpdate(response);
-                                            Realm.getDefaultInstance().commitTransaction();
-                                            getReferrals(requestCode, taskId);
+                                                // add new record
+                                                Realm.getDefaultInstance().beginTransaction();
+                                                Realm.getDefaultInstance().copyToRealmOrUpdate(response);
+                                                Realm.getDefaultInstance().commitTransaction();
+                                                getReferrals(requestCode, taskId);
+                                            }catch (Exception e){
+                                                e.printStackTrace();
+                                            }
                                         }
 
                                         @Override
@@ -830,16 +877,20 @@ public class NetworkCallController {
                                     controller.setListner(new NetworkResponseListner<LoginResponse>() {
                                         @Override
                                         public void onResponse(int reqCode, LoginResponse response) {
-                                            // delete all previous record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().deleteAll();
-                                            Realm.getDefaultInstance().commitTransaction();
+                                            try {
+                                                // delete all previous record
+                                                Realm.getDefaultInstance().beginTransaction();
+                                                Realm.getDefaultInstance().deleteAll();
+                                                Realm.getDefaultInstance().commitTransaction();
 
-                                            // add new record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().copyToRealmOrUpdate(response);
-                                            Realm.getDefaultInstance().commitTransaction();
-                                            getAttachments(requestCode, userId, taskId);
+                                                // add new record
+                                                Realm.getDefaultInstance().beginTransaction();
+                                                Realm.getDefaultInstance().copyToRealmOrUpdate(response);
+                                                Realm.getDefaultInstance().commitTransaction();
+                                                getAttachments(requestCode, userId, taskId);
+                                            }catch (Exception e){
+                                                e.printStackTrace();
+                                            }
                                         }
 
                                         @Override
@@ -898,16 +949,20 @@ public class NetworkCallController {
                                     controller.setListner(new NetworkResponseListner<LoginResponse>() {
                                         @Override
                                         public void onResponse(int reqCode, LoginResponse response) {
-                                            // delete all previous record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().deleteAll();
-                                            Realm.getDefaultInstance().commitTransaction();
+                                            try {
+                                                // delete all previous record
+                                                Realm.getDefaultInstance().beginTransaction();
+                                                Realm.getDefaultInstance().deleteAll();
+                                                Realm.getDefaultInstance().commitTransaction();
 
-                                            // add new record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().copyToRealmOrUpdate(response);
-                                            Realm.getDefaultInstance().commitTransaction();
-                                            getAttachments(requestCode, userId, taskId);
+                                                // add new record
+                                                Realm.getDefaultInstance().beginTransaction();
+                                                Realm.getDefaultInstance().copyToRealmOrUpdate(response);
+                                                Realm.getDefaultInstance().commitTransaction();
+                                                getAttachments(requestCode, userId, taskId);
+                                            }catch (Exception e){
+                                                e.printStackTrace();
+                                            }
                                         }
 
                                         @Override
@@ -1271,16 +1326,20 @@ public class NetworkCallController {
                                     controller.setListner(new NetworkResponseListner<LoginResponse>() {
                                         @Override
                                         public void onResponse(int reqCode, LoginResponse response) {
-                                            // delete all previous record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().deleteAll();
-                                            Realm.getDefaultInstance().commitTransaction();
+                                            try {
+                                                // delete all previous record
+                                                Realm.getDefaultInstance().beginTransaction();
+                                                Realm.getDefaultInstance().deleteAll();
+                                                Realm.getDefaultInstance().commitTransaction();
 
-                                            // add new record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().copyToRealmOrUpdate(response);
-                                            Realm.getDefaultInstance().commitTransaction();
-                                            postResourceProfilePic(requestCode, request);
+                                                // add new record
+                                                Realm.getDefaultInstance().beginTransaction();
+                                                Realm.getDefaultInstance().copyToRealmOrUpdate(response);
+                                                Realm.getDefaultInstance().commitTransaction();
+                                                postResourceProfilePic(requestCode, request);
+                                            }catch (Exception e){
+                                                e.printStackTrace();
+                                            }
                                         }
 
                                         @Override
@@ -1337,16 +1396,20 @@ public class NetworkCallController {
                                     controller.setListner(new NetworkResponseListner<LoginResponse>() {
                                         @Override
                                         public void onResponse(int reqCode, LoginResponse response) {
-                                            // delete all previous record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().deleteAll();
-                                            Realm.getDefaultInstance().commitTransaction();
+                                            try {
+                                                // delete all previous record
+                                                Realm.getDefaultInstance().beginTransaction();
+                                                Realm.getDefaultInstance().deleteAll();
+                                                Realm.getDefaultInstance().commitTransaction();
 
-                                            // add new record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().copyToRealmOrUpdate(response);
-                                            Realm.getDefaultInstance().commitTransaction();
-                                            getTechAttendance(requestCode, request);
+                                                // add new record
+                                                Realm.getDefaultInstance().beginTransaction();
+                                                Realm.getDefaultInstance().copyToRealmOrUpdate(response);
+                                                Realm.getDefaultInstance().commitTransaction();
+                                                getTechAttendance(requestCode, request);
+                                            }catch (Exception e){
+                                                e.printStackTrace();
+                                            }
                                         }
 
                                         @Override
@@ -1575,16 +1638,20 @@ public class NetworkCallController {
                                     controller.setListner(new NetworkResponseListner<LoginResponse>() {
                                         @Override
                                         public void onResponse(int reqCode, LoginResponse response) {
-                                            // delete all previous record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().deleteAll();
-                                            Realm.getDefaultInstance().commitTransaction();
+                                            try {
+                                                // delete all previous record
+                                                Realm.getDefaultInstance().beginTransaction();
+                                                Realm.getDefaultInstance().deleteAll();
+                                                Realm.getDefaultInstance().commitTransaction();
 
-                                            // add new record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().copyToRealmOrUpdate(response);
-                                            Realm.getDefaultInstance().commitTransaction();
-                                            getGroomingTechnicians(requestCode, userId);
+                                                // add new record
+                                                Realm.getDefaultInstance().beginTransaction();
+                                                Realm.getDefaultInstance().copyToRealmOrUpdate(response);
+                                                Realm.getDefaultInstance().commitTransaction();
+                                                getGroomingTechnicians(requestCode, userId);
+                                            }catch (Exception e){
+                                                e.printStackTrace();
+                                            }
                                         }
 
                                         @Override
@@ -1645,16 +1712,20 @@ public class NetworkCallController {
                                     controller.setListner(new NetworkResponseListner<LoginResponse>() {
                                         @Override
                                         public void onResponse(int reqCode, LoginResponse response) {
-                                            // delete all previous record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().deleteAll();
-                                            Realm.getDefaultInstance().commitTransaction();
+                                            try {
+                                                // delete all previous record
+                                                Realm.getDefaultInstance().beginTransaction();
+                                                Realm.getDefaultInstance().deleteAll();
+                                                Realm.getDefaultInstance().commitTransaction();
 
-                                            // add new record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().copyToRealmOrUpdate(response);
-                                            Realm.getDefaultInstance().commitTransaction();
-                                            postGroomingImage(requestCode, request);
+                                                // add new record
+                                                Realm.getDefaultInstance().beginTransaction();
+                                                Realm.getDefaultInstance().copyToRealmOrUpdate(response);
+                                                Realm.getDefaultInstance().commitTransaction();
+                                                postGroomingImage(requestCode, request);
+                                            }catch (Exception e){
+                                                e.printStackTrace();
+                                            }
                                         }
 
                                         @Override
@@ -1717,16 +1788,20 @@ public class NetworkCallController {
                                     controller.setListner(new NetworkResponseListner<LoginResponse>() {
                                         @Override
                                         public void onResponse(int reqCode, LoginResponse response) {
-                                            // delete all previous record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().deleteAll();
-                                            Realm.getDefaultInstance().commitTransaction();
+                                            try {
+                                                // delete all previous record
+                                                Realm.getDefaultInstance().beginTransaction();
+                                                Realm.getDefaultInstance().deleteAll();
+                                                Realm.getDefaultInstance().commitTransaction();
 
-                                            // add new record
-                                            Realm.getDefaultInstance().beginTransaction();
-                                            Realm.getDefaultInstance().copyToRealmOrUpdate(response);
-                                            Realm.getDefaultInstance().commitTransaction();
-                                            getTechnicianProfile(requestCode, userId);
+                                                // add new record
+                                                Realm.getDefaultInstance().beginTransaction();
+                                                Realm.getDefaultInstance().copyToRealmOrUpdate(response);
+                                                Realm.getDefaultInstance().commitTransaction();
+                                                getTechnicianProfile(requestCode, userId);
+                                            }catch (Exception e){
+                                                e.printStackTrace();
+                                            }
                                         }
 
                                         @Override
@@ -2166,11 +2241,11 @@ public class NetworkCallController {
     }
 
 
-    public void getStartingVideos(final int requestCode) {
+    public void getStartingVideos(final int requestCode, final String userId) {
         try {
             mContext.showProgressDialog();
             BaseApplication.getRetrofitAPI(true)
-                    .getStartingVideos()
+                    .getStartingVideos(userId)
                     .enqueue(new Callback<WelcomeVideoResponse>() {
                         @Override
                         public void onResponse(Call<WelcomeVideoResponse> call, Response<WelcomeVideoResponse> response) {
@@ -3311,7 +3386,7 @@ public class NetworkCallController {
 
     }
 
-    public void getUPICode(final int requestCode,final String taskId, final String accountNo, final String orderNo, final String amount, final String source) {
+    public void getUPICode(final int requestCode, final String taskId, final String accountNo, final String orderNo, final String amount, final String source) {
         try {
             mContext.showProgressDialog();
             BaseApplication.getQRCodeApi()
@@ -3354,7 +3429,7 @@ public class NetworkCallController {
 
     }
 
-    public void getPhonePayCode(final int requestCode,final String taskId, final String accountNo, final String orderNo, final String amount, final String source) {
+    public void getPhonePayCode(final int requestCode, final String taskId, final String accountNo, final String orderNo, final String amount, final String source) {
         try {
             mContext.showProgressDialog();
             BaseApplication.getQRCodeApi()
@@ -3483,7 +3558,7 @@ public class NetworkCallController {
 
     }
 
-    public void saveCheckList(final int requestCode, List<SaveCheckListRequest> request) {
+    public void saveCheckList(final int requestCode, List<TaskCheckList> request) {
         try {
             BaseApplication.getRetrofitAPI(true)
                     .saveCheckList(request)
@@ -3969,16 +4044,19 @@ public class NetworkCallController {
 
     public void getTechnicianRoutineChecklist(final int requestCode, String resourceId) {
         try {
+            mContext.showProgressDialog();
             BaseApplication.getRetrofitAPI(true)
                     .getTechniciansForRoutineCheckList(resourceId)
                     .enqueue(new Callback<TechnicianRoutineResponse>() {
                         @Override
                         public void onResponse(Call<TechnicianRoutineResponse> call, Response<TechnicianRoutineResponse> response) {
+                            mContext.dismissProgressDialog();
                             if (response != null) {
                                 if (response.body() != null) {
                                     mListner.onResponse(requestCode, response.body().getData());
                                 } else if (response.errorBody() != null) {
                                     try {
+
                                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                                         RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                         if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
@@ -3996,6 +4074,8 @@ public class NetworkCallController {
 
                         @Override
                         public void onFailure(Call<TechnicianRoutineResponse> call, Throwable t) {
+                            mContext.dismissProgressDialog();
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -4004,10 +4084,10 @@ public class NetworkCallController {
 
     }
 
-    public void getRoutineResponse(final int requestCode, String resourceId) {
+    public void getRoutineResponse(final int requestCode, String resourceId,  final String lang) {
         try {
             BaseApplication.getRetrofitAPI(true)
-                    .getRoutineData(resourceId)
+                    .getRoutineData(resourceId, lang)
                     .enqueue(new Callback<RoutineResponse>() {
                         @Override
                         public void onResponse(Call<RoutineResponse> call, Response<RoutineResponse> response) {
@@ -4029,7 +4109,7 @@ public class NetworkCallController {
                                         }
                                     } catch (Exception e) {
                                         e.printStackTrace();
-                                        Log.i("RoutineCheckUp","res"+ e.getMessage());
+                                        Log.i("RoutineCheckUp", "res" + e.getMessage());
 
                                     }
                                 }
@@ -4042,7 +4122,7 @@ public class NetworkCallController {
                     });
         } catch (Exception e) {
             e.printStackTrace();
-            Log.i("RoutineCheckUp","res"+ e.getMessage());
+            Log.i("RoutineCheckUp", "res" + e.getMessage());
         }
 
     }

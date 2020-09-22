@@ -112,7 +112,7 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
                     holder.mChemicalRecycleRowBinding.edtActual.requestFocus();
                     holder.mChemicalRecycleRowBinding.edtActual.setOnFocusChangeListener((view, b) -> {
                         try {
-                            onEditTextChanged.onTextChanged(holder.getAdapterPosition(), holder.mChemicalRecycleRowBinding.edtActual.getText().toString());
+                            onEditTextChanged.onTextChanged(position, holder.mChemicalRecycleRowBinding.edtActual.getText().toString());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -135,7 +135,7 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
                         @Override
                         public void afterTextChanged(Editable s) {
                             try {
-                                onEditTextChanged.onTextChanged(holder.getAdapterPosition(), s.toString());
+                                onEditTextChanged.onTextChanged(position, s.toString());
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -145,7 +145,7 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
 
                     if (holder.mChemicalRecycleRowBinding.edtActual.getText().toString().length() != 0) {
                         try {
-                            onEditTextChanged.onTextChanged(holder.getAdapterPosition(), holder.mChemicalRecycleRowBinding.edtActual.getText().toString());
+                            onEditTextChanged.onTextChanged(position, holder.mChemicalRecycleRowBinding.edtActual.getText().toString());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

@@ -39,6 +39,7 @@ public class Data  {
     @Expose
     @SerializedName("IsPictureRequired")
     private boolean Ispicturerequired;
+    private boolean IsNoSelected;
     @Expose
     @SerializedName("PictureUrl")
     private String PictureUrl;
@@ -51,6 +52,11 @@ public class Data  {
     @Expose
     @SerializedName("QuestionTitle")
     private String Questiontitle;
+
+    @Expose
+    @SerializedName("QuestionTitleDisplayText")
+    private String QuestionTitleDisplayText;
+
     @Expose
     @SerializedName("Name")
     private String Name;
@@ -199,5 +205,21 @@ public class Data  {
 
     public void setShowQuestion(boolean showQuestion) {
         ShowQuestion = showQuestion;
+    }
+
+    public boolean isNoSelected() {
+        return IsNoSelected;
+    }
+
+    public void setNoSelected(boolean noSelected) {
+        IsNoSelected = noSelected;
+    }
+
+    public String getQuestionTitleDisplayText() {
+        return QuestionTitleDisplayText;
+    }
+
+    public void setQuestionTitleDisplayText(String questionTitleDisplayText) {
+        QuestionTitleDisplayText = questionTitleDisplayText;
     }
 }

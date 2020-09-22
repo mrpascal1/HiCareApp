@@ -83,7 +83,9 @@ public interface OnSaveEventHandler {
 
     public void isEarlyCompletion(Boolean b);
 
-    public void isUPIPaymentDone(Boolean b);
+    public void isUPIPaymentNotDone(Boolean b);
+
+    public void isJobCheckListDone(Boolean b);
 
     public void isJobCardEnable(Boolean b);
 

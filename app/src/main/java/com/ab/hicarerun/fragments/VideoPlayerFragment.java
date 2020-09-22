@@ -159,7 +159,6 @@ public class VideoPlayerFragment extends BaseFragment implements SurfaceHolder.C
 
             }
         });
-        controller.getStartingVideos(VIDEO_REQUEST);
 
     }
 
@@ -185,13 +184,13 @@ public class VideoPlayerFragment extends BaseFragment implements SurfaceHolder.C
         mFragmentVideoPlayerBinding.land.setOnClickListener(view1 -> {
             mFragmentVideoPlayerBinding.land.setVisibility(View.GONE);
             mFragmentVideoPlayerBinding.potrait.setVisibility(View.VISIBLE);
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         });
 
         mFragmentVideoPlayerBinding.potrait.setOnClickListener(view12 -> {
             mFragmentVideoPlayerBinding.land.setVisibility(View.VISIBLE);
             mFragmentVideoPlayerBinding.potrait.setVisibility(View.GONE);
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         });
 
 
@@ -293,7 +292,7 @@ public class VideoPlayerFragment extends BaseFragment implements SurfaceHolder.C
                 mFragmentVideoPlayerBinding.lnrSkip.startAnimation(animation);
                 putinside = false;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

@@ -115,13 +115,21 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mActivityHomeBinding.bottomNavigation.onSaveInstanceState(outState);
+        try {
+            super.onSaveInstanceState(outState);
+            mActivityHomeBinding.bottomNavigation.onSaveInstanceState(outState);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void attachBaseContext(Context base) {
-        super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
+        try {
+            super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -185,45 +193,53 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     }
 
     private void setupNavigationView() {
-
-        if (mActivityHomeBinding.bottomNavigation != null) {
-            // Select first menu item by default and show Fragment accordingly.
-            Menu menu = mActivityHomeBinding.customNavigation.getMenu();
-            selectFragment(menu.getItem(0));
-            mActivityHomeBinding.customNavigation.setOnNavigationItemSelectedListener(menuItem -> {
-                selectFragment(menuItem);
-                return false;
-            });
+        try {
+            if (mActivityHomeBinding.bottomNavigation != null) {
+                // Select first menu item by default and show Fragment accordingly.
+                Menu menu = mActivityHomeBinding.customNavigation.getMenu();
+                selectFragment(menu.getItem(0));
+                mActivityHomeBinding.customNavigation.setOnNavigationItemSelectedListener(menuItem -> {
+                    selectFragment(menuItem);
+                    return false;
+                });
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
     private void selectFragment(MenuItem item) {
-        item.setChecked(true);
-        switch (item.getItemId()) {
-            case R.id.nav_home:
-                replaceFragment(HomeFragment.newInstance(/*userByte*/), "HOME");
-                break;
-            case R.id.nav_incentive:
-                replaceFragment(IncentiveFragment.newInstance(), "INCENTIVE");
-                break;
-            case R.id.nav_bazaar:
-                replaceFragment(BazaarFragment.newInstance(), "BAZAAR");
-                break;
-            case R.id.nav_rewards:
+        try {
+            item.setChecked(true);
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    replaceFragment(HomeFragment.newInstance(/*userByte*/), "HOME");
+                    break;
+                case R.id.nav_incentive:
+                    replaceFragment(IncentiveFragment.newInstance(), "INCENTIVE");
+                    break;
+                case R.id.nav_bazaar:
+                    replaceFragment(BazaarFragment.newInstance(), "BAZAAR");
+                    break;
+                case R.id.nav_rewards:
 //                replaceFragment(VoucherFragment.newInstance(), "HomeActivity-NotificationFragment");
-                break;
-            case R.id.nav_attendance:
-                replaceFragment(AttendanceViewFragment.newInstance(), "ATTENDANCE");
-                break;
-            case R.id.nav_leader:
-                startActivity(new Intent(HomeActivity.this, LeaderBoardActivity.class));
-                break;
+                    break;
+                case R.id.nav_attendance:
+                    replaceFragment(AttendanceViewFragment.newInstance(), "ATTENDANCE");
+                    break;
+                case R.id.nav_leader:
+                    startActivity(new Intent(HomeActivity.this, LeaderBoardActivity.class));
+                    break;
 
-            case R.id.nav_language:
-                mActivityHomeBinding.drawer.closeDrawers();
-                showLanguageDialog();
-                break;
+                case R.id.nav_language:
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    showLanguageDialog();
+                    break;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
 
@@ -311,25 +327,38 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == GPSUtils.GPS_REQUEST) {
-                isGPS = true; // flag maintain before get location
-                progress.show();
-                getServiceCalled();
-                getTechDeails();
+        try {
+            super.onActivityResult(requestCode, resultCode, data);
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == GPSUtils.GPS_REQUEST) {
+                    try {
+                        isGPS = true; // flag maintain before get location
+                        progress.show();
+                        getServiceCalled();
+                        getTechDeails();
 //                getIncentiveDetails();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
 
     @Override
     protected void onResume() {
-        super.onResume();
-        if (AppUtils.checkConnection(HomeActivity.this)) {
-        } else {
-            AppUtils.showOkActionAlertBox(HomeActivity.this, "Please check your internet connection!", (dialogInterface, i) -> finish());
+        try {
+            super.onResume();
+            if (AppUtils.checkConnection(HomeActivity.this)) {
+            } else {
+                AppUtils.showOkActionAlertBox(HomeActivity.this, "Please check your internet connection!", (dialogInterface, i) -> finish());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -495,7 +524,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
             } else {
                 groom.setVisible(false);
                 jobCount.setVisible(false);
-                routineCheck.setVisible(false);
+                routineCheck.setVisible(true);
 
             }
             PackageInfo pInfo = null;
@@ -628,37 +657,42 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     }
 
     private void getLogout() {
-        NetworkCallController controller = new NetworkCallController();
-        String UserId = SharedPreferencesUtility.getPrefString(HomeActivity.this, SharedPreferencesUtility.PREF_USERID);
+        try {
+            NetworkCallController controller = new NetworkCallController();
+            String UserId = SharedPreferencesUtility.getPrefString(HomeActivity.this, SharedPreferencesUtility.PREF_USERID);
 
-        controller.setListner(new NetworkResponseListner() {
-            @Override
-            public void onResponse(int requestCode, Object response) {
-                LogoutResponse logres = (LogoutResponse) response;
+            controller.setListner(new NetworkResponseListner() {
+                @Override
+                public void onResponse(int requestCode, Object response) {
+                    LogoutResponse logres = (LogoutResponse) response;
 
-                if (logres.getSuccess()) {
-                    if (pendingUpdateIntent != null) {
-                        mAlarmManager.cancel(pendingUpdateIntent);
-                        getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
+                    if (logres.getSuccess()) {
+                        if (pendingUpdateIntent != null) {
+                            mAlarmManager.cancel(pendingUpdateIntent);
+                            getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
+                        }
+                        SharedPreferencesUtility.savePrefBoolean(getApplicationContext(), SharedPreferencesUtility.IS_USER_LOGIN,
+                                false);
+                        SharedPreferencesUtility.savePrefBoolean(getApplicationContext(), SharedPreferencesUtility.IS_SKIP_VIDEO,
+                                false);
+                        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                        finish();
+                    } else {
+                        Toast.makeText(HomeActivity.this, "Logout failed! try again.", Toast.LENGTH_SHORT).show();
                     }
-                    SharedPreferencesUtility.savePrefBoolean(getApplicationContext(), SharedPreferencesUtility.IS_USER_LOGIN,
-                            false);
-                    SharedPreferencesUtility.savePrefBoolean(getApplicationContext(), SharedPreferencesUtility.IS_SKIP_VIDEO,
-                            false);
-                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                    finish();
-                } else {
-                    Toast.makeText(HomeActivity.this, "Logout failed! try again.", Toast.LENGTH_SHORT).show();
                 }
-            }
 
-            @Override
-            public void onFailure(int requestCode) {
+                @Override
+                public void onFailure(int requestCode) {
 
-            }
-        });
+                }
+            });
 
-        controller.getLogout(LOGOUT_REQ, UserId, HomeActivity.this);
+            controller.getLogout(LOGOUT_REQ, UserId, HomeActivity.this);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
 //    @Override
@@ -676,13 +710,16 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
     @Override
     public void onBackPressed() {
-
-        if (mActivityHomeBinding.customNavigation.getSelectedItemId() == R.id.nav_home || mActivityHomeBinding.customNavigation.getSelectedItemId() == R.id.nav_leader) {
-            mActivityHomeBinding.navigationView.setCheckedItem(0);
-            showExitAlert();
-        } else {
-            mActivityHomeBinding.customNavigation.setSelectedItemId(R.id.nav_home);
-            mActivityHomeBinding.navigationView.setCheckedItem(0);
+        try {
+            if (mActivityHomeBinding.customNavigation.getSelectedItemId() == R.id.nav_home || mActivityHomeBinding.customNavigation.getSelectedItemId() == R.id.nav_leader) {
+                mActivityHomeBinding.navigationView.setCheckedItem(0);
+                showExitAlert();
+            } else {
+                mActivityHomeBinding.customNavigation.setSelectedItemId(R.id.nav_home);
+                mActivityHomeBinding.navigationView.setCheckedItem(0);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
     }

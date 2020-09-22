@@ -1,18 +1,5 @@
 package com.ab.hicarerun.activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -48,13 +35,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.BaseApplication;
@@ -62,17 +59,13 @@ import com.ab.hicarerun.BuildConfig;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.adapter.CheckListParentAdapter;
 import com.ab.hicarerun.adapter.SurveyAdapter;
-import com.ab.hicarerun.adapter.TaskSurveyAdapter;
 import com.ab.hicarerun.adapter.TaskViewPagerAdapter;
 import com.ab.hicarerun.databinding.ActivityNewTaskDetailsBinding;
 import com.ab.hicarerun.fragments.ChemicalInfoFragment;
-import com.ab.hicarerun.fragments.ConsultationFragment;
 import com.ab.hicarerun.fragments.ReferralFragment;
 import com.ab.hicarerun.fragments.ServiceInfoFragment;
 import com.ab.hicarerun.fragments.SignatureInfoFragment;
 import com.ab.hicarerun.fragments.SignatureMSTInfoFragment;
-import com.ab.hicarerun.handler.OnCheckListItemClickHandler;
-import com.ab.hicarerun.handler.OnConsultationClickHandler;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
 import com.ab.hicarerun.handler.UserTaskDetailsClickListener;
 import com.ab.hicarerun.network.NetworkCallController;
@@ -81,8 +74,6 @@ import com.ab.hicarerun.network.models.CheckListModel.CheckListResponse;
 import com.ab.hicarerun.network.models.CheckListModel.SaveCheckListRequest;
 import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListData;
 import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListRequest;
-import com.ab.hicarerun.network.models.CovidModel.CovidRequest;
-import com.ab.hicarerun.network.models.CovidModel.CovidResponse;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralResponse;
 import com.ab.hicarerun.network.models.GeneralModel.TaskCheckList;
 import com.ab.hicarerun.network.models.LoginResponse;
@@ -92,7 +83,6 @@ import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.GPSUtils;
 import com.ab.hicarerun.utils.LocaleHelper;
-import com.ab.hicarerun.utils.ProgressBarDrawable;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.ab.hicarerun.utils.notifications.ScratchRelativeLayout;
 import com.clock.scratch.ScratchView;
@@ -119,7 +109,6 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -138,7 +127,6 @@ import es.dmoral.toasty.Toasty;
 import hyogeun.github.com.colorratingbarlib.ColorRatingBar;
 import io.realm.RealmResults;
 
-import static android.view.View.GONE;
 import static com.ab.hicarerun.BaseApplication.getRealm;
 import static com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState.EXPANDED;
 
@@ -150,7 +138,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private static final int UPLOAD_REQ = 4000;
     static final int REQUEST_TAKE_PHOTO = 1;
     private String selectedImagePath = "";
-    private boolean isUpiPaymentDone = false;
+    private boolean isUpiPaymentNotDone = false;
+
     private int checkPosition = 0;
     private Bitmap bitmap;
     int height = 100;
@@ -170,10 +159,15 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     public static final String ARGS_LONGITUDE = "ARGS_LONGITUDE";
     public static final String ARGS_NAME = "ARGS_NAME";
     public static final String ARGS_NEXT_TASK = "ARGS_NEXT_TASK";
+    private boolean isFinalSave = false;
     //    public static final String ARG_USER = "ARG_USER";
 //    public static final String ARGS_MOBILE = "ARGS_MOBILE";
 //    public static final String ARGS_TAG = "ARGS_TAG";
 //    public static final String ARGS_SEQUENCE = "ARGS_SEQUENCE";
+    ServiceInfoFragment.ServiceInfoListener mCallback = () -> {
+        isFinalSave = false;
+        showCompletionDialog();
+    };
     public static final String LAT_LONG = "LAT_LONG";
     private static final String TAG = "NewTaskDetailsActivity";
     private Location mLocation;
@@ -229,6 +223,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private boolean isPaymentOtpValidated = false;
     private boolean isPaymentModeNotChanged = false;
     private boolean isOnsiteImageRequired = false;
+    private boolean isPostJobCompletionDone = false;
     private String bankName = "";
     private String chequeNumber = "";
     private String chequeDate = "";
@@ -267,10 +262,10 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private List<SaveCheckListRequest> mSaveList = new ArrayList<>();
     HashSet<SaveCheckListRequest> saveHashSet = null;
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
-    }
+    //   @Override
+    //  protected void attachBaseContext(Context base) {
+    //     super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
+    // }
 
 
     @Override
@@ -290,13 +285,18 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         combinedTaskTypes = getIntent().getStringExtra(ARGS_COMBINED_TYPE);
         nextTaskId = getIntent().getStringExtra(ARGS_NEXT_TASK);
         new GPSUtils(this).turnGPSOn(isGPSEnable -> {
-            // turn on GPS
-            if (isGPSEnable) {
-                progress.show();
-                getTaskDetailsById();
-            } else {
-                isGPS = isGPSEnable;
+            try {
+                // turn on GPS
+                if (isGPSEnable) {
+                    progress.show();
+                    getTaskDetailsById();
+                } else {
+                    isGPS = isGPSEnable;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
         });
 //        setViewPagerView();
         int[] attrs = new int[]{R.attr.selectableItemBackground};
@@ -388,40 +388,43 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
                     @Override
                     public void onResponse(int requestCode, GeneralResponse response) {
-                        // add new record
-                        getRealm().beginTransaction();
-                        getRealm().copyToRealmOrUpdate(response.getData());
-                        getRealm().commitTransaction();
-                        mTaskCheckList = new ArrayList<>();
-                        if(response.getData().getUpiTransactionId()!=null){
-                            isUpiPaymentDone = true;
-                        }else {
-                            isUpiPaymentDone = false;
-                        }
+                        try {
+                            // add new record
+                            getRealm().beginTransaction();
+                            getRealm().copyToRealmOrUpdate(response.getData());
+                            getRealm().commitTransaction();
+                            mTaskCheckList = new ArrayList<>();
+                            if (response.getData().getUpiTransactionId() == null) {
+                                isUpiPaymentNotDone = true;
+                            } else {
+                                isUpiPaymentNotDone = false;
+                            }
 
-                        sta = response.getData().getSchedulingStatus();
-                        AppUtils.isInspectionDone = response.getData().getConsultationInspectionDone();
-                        isIncentiveEnable = response.getData().getIncentiveEnable();
-                        isConsultationRequired = response.getData().getConsultationInspectionRequired();
-                        Incentive = Integer.parseInt(response.getData().getIncentivePoint());
-                        isTechnicianFeedbackEnable = response.getData().getTechnicianFeedbackRequired();
-                        TechnicianRating = Integer.parseInt(response.getData().getTechnicianRating());
-                        accountName = response.getData().getCustName();
-                        customerLatitude = response.getData().getCustomerLatitude();
-                        customerLongitude = response.getData().getCustomerLongitude();
-                        technicianMobileNo = response.getData().getTechnicianMobileNo();
-                        referralDiscount = Integer.parseInt(response.getData().getReferralDiscount());
-                        mActualAmountToCollect = response.getData().getActualAmountToCollect();
-                        mTaskCheckList = response.getData().getTaskCheckList();
-                        isOnsiteImageRequired = response.getData().getOnsite_Image_Required();
-                        mOnsiteImagePath = response.getData().getOnsite_Image_Path();
-                        Renewal_Type = response.getData().getRenewal_Type();
-                        Renewal_Order_No = response.getData().getRenewal_Order_No();
-                        setViewPagerView();
-//                        if(response.getData().getConsultationInspectionRequired()){
-//                        ConsultationFragment alert = ConsultationFragment.newInstance();
-//                        alert.show(getSupportFragmentManager(), "Alert");
-//                        }
+                            isPostJobCompletionDone = response.getData().getPostJob_Checklist_Done();
+                            sta = response.getData().getSchedulingStatus();
+                            AppUtils.isInspectionDone = response.getData().getConsultationInspectionDone();
+                            isIncentiveEnable = response.getData().getIncentiveEnable();
+                            isConsultationRequired = response.getData().getConsultationInspectionRequired();
+                            Incentive = Integer.parseInt(response.getData().getIncentivePoint());
+                            isTechnicianFeedbackEnable = response.getData().getTechnicianFeedbackRequired();
+                            TechnicianRating = Integer.parseInt(response.getData().getTechnicianRating());
+                            accountName = response.getData().getCustName();
+                            customerLatitude = response.getData().getCustomerLatitude();
+                            customerLongitude = response.getData().getCustomerLongitude();
+                            technicianMobileNo = response.getData().getTechnicianMobileNo();
+                            referralDiscount = Integer.parseInt(response.getData().getReferralDiscount());
+                            mActualAmountToCollect = response.getData().getActualAmountToCollect();
+                            mTaskCheckList = response.getData().getTaskCheckList();
+                            isOnsiteImageRequired = response.getData().getOnsite_Image_Required();
+                            mOnsiteImagePath = response.getData().getOnsite_Image_Path();
+                            Renewal_Type = response.getData().getRenewal_Type();
+                            Renewal_Order_No = response.getData().getRenewal_Order_No();
+                            mOnsiteCheckList = mTaskCheckList;
+
+                            setViewPagerView();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override
@@ -503,10 +506,10 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             mAdapter = new TaskViewPagerAdapter(getSupportFragmentManager(), this);
 
             if (sta.equals("Dispatched") || sta.equals("Incomplete")) {
-                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId), getResources().getString(R.string.service_info));
+                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId, mCallback), getResources().getString(R.string.service_info));
                 mActivityNewTaskDetailsBinding.viewpagertab.setDistributeEvenly(false);
             } else {
-                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId), getResources().getString(R.string.service_info));
+                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId, mCallback), getResources().getString(R.string.service_info));
                 mAdapter.addFragment(ChemicalInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks), getResources().getString(R.string.chemical_info));
                 mAdapter.addFragment(ReferralFragment.newInstance(taskId, technicianMobileNo), getResources().getString(R.string.referral_info));
                 if (isCombinedTasks) {
@@ -613,7 +616,11 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
 
     private void passData() {
-        SharedPreferencesUtility.savePrefBoolean(NewTaskDetailsActivity.this, SharedPreferencesUtility.PREF_REFRESH, true);
+        try {
+            SharedPreferencesUtility.savePrefBoolean(NewTaskDetailsActivity.this, SharedPreferencesUtility.PREF_REFRESH, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -646,20 +653,33 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.i(TAG, "Connection Suspended");
-        mGoogleApiClient.connect();
+        try {
+            Log.i(TAG, "Connection Suspended");
+            mGoogleApiClient.connect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.i(TAG, "Connection failed. Error: " + connectionResult.getErrorCode());
+        try {
+            Log.i(TAG, "Connection failed. Error: " + connectionResult.getErrorCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        Lat = location.getLatitude();
-        Lon = location.getLongitude();
-        changeMap(location.getLatitude(), location.getLongitude());
+        try {
+            Lat = location.getLatitude();
+            Lon = location.getLongitude();
+            changeMap(location.getLatitude(), location.getLongitude());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -677,7 +697,11 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mGoogleMap = googleMap;
+        try {
+            mGoogleMap = googleMap;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void changeMap(Double lat, Double lon) {
@@ -896,14 +920,18 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
     @Override
     public void onSaveTaskClick(View view) {
-        new GPSUtils(this).turnGPSOn(isGPSEnable -> {
-            // turn on GPS
-            if (isGPSEnable) {
-                saveTaskDetails();
-            } else {
-                isGPS = isGPSEnable;
-            }
-        });
+        try {
+            new GPSUtils(this).turnGPSOn(isGPSEnable -> {
+                // turn on GPS
+                if (isGPSEnable) {
+                    saveTaskDetails();
+                } else {
+                    isGPS = isGPSEnable;
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void saveTaskDetails() {
@@ -972,7 +1000,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
                 Toasty.error(this, getResources().getString(R.string.invalid_cheque_number), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
-            } else if (!isUpiPaymentDone && Status.equals("Completed") && !(Payment_Mode.equalsIgnoreCase("paytm") || (Payment_Mode.equalsIgnoreCase("phonepay")))) {
+            } else if (isUpiPaymentNotDone && Status.equals("Completed") && (Payment_Mode.equalsIgnoreCase("paytm") || (Payment_Mode.equalsIgnoreCase("phonepay")))) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
                 Toasty.error(this, "Please capture payment through UPI.", Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
@@ -1017,11 +1045,18 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
                 progress.dismiss();
                 Toasty.error(this, "Please complete Consultation & Inspection required for the service", Toast.LENGTH_SHORT, true).show();
+
+
+            } else if (Status.equals("Completed") && mTaskCheckList != null && !isPostJobCompletionDone) {
+                mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
+                progress.dismiss();
+                Toasty.error(this, "Please complete Post Job Check-List required for the service", Toast.LENGTH_SHORT, true).show();
             } else if (Status.equals("Completed") && isTechnicianFeedbackEnable && Rate == 0) {
                 progress.dismiss();
                 showRatingDialog();
-            } else if (Status.equals("Completed") && mTaskCheckList != null) {
+            } else if (Status.equals("Completed") && mTaskCheckList != null && !isPostJobCompletionDone) {
                 progress.dismiss();
+                isFinalSave = true;
                 showCompletionDialog();
             }
             /* else if(Status.equals("Completed") && isIncentiveEnable) {
@@ -1044,70 +1079,78 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     }
 
     private void finalSave() {
+        try {
+            RealmResults<LoginResponse> LoginRealmModels =
+                    getRealm().where(LoginResponse.class).findAll();
+            if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                assert LoginRealmModels.get(0) != null;
+                String UserId = LoginRealmModels.get(0).getUserID();
+                UpdateTasksRequest request = new UpdateTasksRequest();
+                request.setSchedulingStatus(Status);
+                request.setPaymentMode(Payment_Mode);
+                request.setAmountCollected(Amount_Collected);
+                request.setAmountToCollect(Amount_To_Collected);
+                request.setActualPropertySize(Actual_Size);
+                request.setStandardPropertySize(Standard_Size);
+                request.setTechnicianRating(Rate);
+                request.setTechnicianOTP(Feedback_Code);
+                request.setSignatory(signatory);
+                request.setBankName(bankName);
+                request.setChequeDate(chequeDate);
+                request.setChequeNo(chequeNumber);
+                request.setCustomerSign(Signature);
+                request.setLatitude(String.valueOf(Lat));
+                request.setLongitude(String.valueOf(Lon));
+                if (isCombinedTasks) {
+                    request.setCombinedTaskId(combinedTaskId);
+                } else {
+                    request.setTaskId(taskId);
+                }
+                request.setCombinedTask(isCombinedTasks);
+                request.setDuration(Duration);
+                request.setResourceId(UserId);
+                request.setTechnicianOnsiteOTP(OnsiteOTP);
+                request.setChemicalList(ChemReqList);
+                request.setChemicalChanged(isActualChemicalChanged);
+                request.setIncompleteReason(incompleteReason);
+                request.setChequeImage(chequeImage);
+                request.setFlushOutReason(flushoutReason);
+                request.setNext_Task_Id(nextTaskId);
+                request.setActualAmountToCollect(mActualAmountToCollect);
 
-        RealmResults<LoginResponse> LoginRealmModels =
-                getRealm().where(LoginResponse.class).findAll();
-        if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-            assert LoginRealmModels.get(0) != null;
-            String UserId = LoginRealmModels.get(0).getUserID();
-            UpdateTasksRequest request = new UpdateTasksRequest();
-            request.setSchedulingStatus(Status);
-            request.setPaymentMode(Payment_Mode);
-            request.setAmountCollected(Amount_Collected);
-            request.setAmountToCollect(Amount_To_Collected);
-            request.setActualPropertySize(Actual_Size);
-            request.setStandardPropertySize(Standard_Size);
-            request.setTechnicianRating(Rate);
-            request.setTechnicianOTP(Feedback_Code);
-            request.setSignatory(signatory);
-            request.setBankName(bankName);
-            request.setChequeDate(chequeDate);
-            request.setChequeNo(chequeNumber);
-            request.setCustomerSign(Signature);
-            request.setLatitude(String.valueOf(Lat));
-            request.setLongitude(String.valueOf(Lon));
-            if (isCombinedTasks) {
-                request.setCombinedTaskId(combinedTaskId);
-            } else {
-                request.setTaskId(taskId);
-            }
-            request.setCombinedTask(isCombinedTasks);
-            request.setDuration(Duration);
-            request.setResourceId(UserId);
-            request.setTechnicianOnsiteOTP(OnsiteOTP);
-            request.setChemicalList(ChemReqList);
-            request.setChemicalChanged(isActualChemicalChanged);
-            request.setIncompleteReason(incompleteReason);
-            request.setChequeImage(chequeImage);
-            request.setFlushOutReason(flushoutReason);
-            request.setNext_Task_Id(nextTaskId);
-            request.setActualAmountToCollect(mActualAmountToCollect);
-
-            NetworkCallController controller = new NetworkCallController();
-            controller.setListner(new NetworkResponseListner() {
-                @Override
-                public void onResponse(int requestCode, Object response) {
-                    UpdateTaskResponse updateResponse = (UpdateTaskResponse) response;
-                    if (updateResponse.getSuccess()) {
-                        Toasty.success(NewTaskDetailsActivity.this, updateResponse.getErrorMessage(), Toast.LENGTH_SHORT).show();
-                        if (isIncentiveEnable && Status.equals("Completed")) {
-                            showIncentiveDialog();
-                        } else {
-                            AppUtils.getDataClean();
-                            passData();
-                            finish();
+                NetworkCallController controller = new NetworkCallController();
+                controller.setListner(new NetworkResponseListner() {
+                    @Override
+                    public void onResponse(int requestCode, Object response) {
+                        try {
+                            UpdateTaskResponse updateResponse = (UpdateTaskResponse) response;
+                            if (updateResponse.getSuccess()) {
+                                Toasty.success(NewTaskDetailsActivity.this, updateResponse.getErrorMessage(), Toast.LENGTH_SHORT).show();
+                                if (isIncentiveEnable && Status.equals("Completed")) {
+                                    showIncentiveDialog();
+                                } else {
+                                    AppUtils.getDataClean();
+                                    passData();
+                                    finish();
+                                }
+                            } else {
+                                Toasty.error(NewTaskDetailsActivity.this, updateResponse.getErrorMessage(), Toasty.LENGTH_LONG).show();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    } else {
-                        Toasty.error(NewTaskDetailsActivity.this, updateResponse.getErrorMessage(), Toasty.LENGTH_LONG).show();
                     }
-                }
 
-                @Override
-                public void onFailure(int requestCode) {
-                }
-            });
-            controller.updateTasks(UPDATE_REQUEST, request, NewTaskDetailsActivity.this, progress);
+                    @Override
+                    public void onFailure(int requestCode) {
+                    }
+                });
+                controller.updateTasks(UPDATE_REQUEST, request, NewTaskDetailsActivity.this, progress);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
 
@@ -1121,19 +1164,23 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                     progress.show();
                     getTaskDetailsById();
                 } else if (requestCode == REQUEST_TAKE_PHOTO) {
-                    selectedImagePath = mPhotoFile.getPath();
-                    if (selectedImagePath != null || !selectedImagePath.equals("")) {
-                        Bitmap bit = new BitmapDrawable(getResources(),
-                                selectedImagePath).getBitmap();
-                        int i = (int) (bit.getHeight() * (1024.0 / bit.getWidth()));
-                        bitmap = Bitmap.createScaledBitmap(bit, 1024, i, true);
-                    }
+                    try {
+                        selectedImagePath = mPhotoFile.getPath();
+                        if (selectedImagePath.length() > 0) {
+                            Bitmap bit = new BitmapDrawable(getResources(),
+                                    selectedImagePath).getBitmap();
+                            int i = (int) (bit.getHeight() * (1024.0 / bit.getWidth()));
+                            bitmap = Bitmap.createScaledBitmap(bit, 1024, i, true);
+                        }
 
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-                    byte[] b = baos.toByteArray();
-                    String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-                    uploadOnsiteImage(encodedImage);
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+                        byte[] b = baos.toByteArray();
+                        String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+                        uploadOnsiteImage(encodedImage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -1161,30 +1208,23 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 map.clear();
             }
 
+
             mCheckAdapter = new CheckListParentAdapter(this, mTaskCheckList, (position, option) -> {
-                if (option.length() > 0) {
-                    mSaveList.clear();
-                    map.put(position, option);
-                    for (int i = 0; i < mTaskCheckList.size(); i++) {
-                        SaveCheckListRequest request = new SaveCheckListRequest();
-                        request.setTaskId(taskId);
-                        request.setResourceId(resourceId);
-                        if (mCheckAdapter.getItem(position).getTakePicture()) {
-                            request.setImagePath(mCheckAdapter.getItem(position).getIconUrl());
-                        } else {
-                            request.setImagePath(null);
-                        }
-                        request.setCheckListId(mCheckAdapter.getItem(position).getCid());
-                        request.setImageRequired(mCheckAdapter.getItem(position).getTakePicture());
-                        request.setOptionName(option);
-                        mSaveList.add(request);
+                mOnsiteCheckList.get(position).setTaskId(taskId);
+                mOnsiteCheckList.get(position).setResourceId(resourceId);
+                if (mCheckAdapter.getItem(position).getTakePicture()) {
+                    if (mCheckAdapter.getItem(position).getSelectedAnswer().equalsIgnoreCase("No")) {
+                        mOnsiteCheckList.get(position).setImageRequired(false);
+                    } else {
+                        mOnsiteCheckList.get(position).setImageRequired(true);
                     }
-
+                } else {
+                    mOnsiteCheckList.get(position).setImageRequired(false);
                 }
-
+                mOnsiteCheckList.get(position).setSelectedAnswer(mCheckAdapter.getItem(position).getSelectedAnswer());
+                mOnsiteCheckList.get(position).setImagePath(mCheckAdapter.getItem(position).getImagePath());
             });
             recyclerView.setAdapter(mCheckAdapter);
-
             mCheckAdapter.setOnItemClickHandler(position -> {
                 checkPosition = position;
                 requestStoragePermission(true);
@@ -1192,27 +1232,28 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             saveHashSet = new HashSet<>();
             btnSend.setOnClickListener(v -> {
 
-                if (mSaveList != null && mSaveList.size() > 0) {
-                    if (isListChecked(mSaveList)) {
-                        if (isImageChecked(mSaveList)) {
+                if (mOnsiteCheckList != null && mOnsiteCheckList.size() > 0) {
+                    if (isListChecked(mOnsiteCheckList)) {
+                        if (isImageChecked(mOnsiteCheckList)) {
                             saveCheckList(alertDialog);
+                            alertDialog.dismiss();
                         } else {
-                            Toasty.error(this, "All fields are required.", Toasty.LENGTH_SHORT).show();
+                            Toasty.error(this, "Image required!", Toasty.LENGTH_SHORT).show();
                         }
                     } else {
                         Toasty.error(this, "Please select your answer.", Toasty.LENGTH_SHORT).show();
                     }
                 } else {
                     Toasty.error(this, "Please select your answer.", Toasty.LENGTH_SHORT).show();
-
                 }
-
             });
 
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
             alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.setCancelable(false);
             alertDialog.show();
+            alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -1221,22 +1262,24 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     }
 
 
-    private boolean isImageChecked(List<SaveCheckListRequest> mSaveList) {
-        for (SaveCheckListRequest data : mSaveList) {
+    private boolean isImageChecked(List<TaskCheckList> mSaveList) {
+        boolean isRequired = true;
+        for (TaskCheckList data : mSaveList) {
             if (data.getImageRequired()) {
                 if (data.getImagePath() != null && !data.getImagePath().equals("")) {
-                    return true;
+                    isRequired = true;
+                } else {
+                    isRequired = false;
+                    break;
                 }
-            } else {
-                return true;
             }
         }
-        return false;
+        return isRequired;
     }
 
-    private boolean isListChecked(List<SaveCheckListRequest> mSaveList) {
-        for (SaveCheckListRequest data : mSaveList) {
-            if (data.getOptionName().equals("")) {
+    private boolean isListChecked(List<TaskCheckList> mSaveList) {
+        for (TaskCheckList data : mSaveList) {
+            if (data.getSelectedAnswer() == null || data.getSelectedAnswer().equals("")) {
                 return false;
             }
         }
@@ -1327,13 +1370,18 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                     // Error occurred while creating the File
                 }
                 if (photoFile != null) {
-                    Uri photoURI = FileProvider.getUriForFile(this,
-                            BuildConfig.APPLICATION_ID + ".provider",
-                            photoFile);
-                    mPhotoFile = photoFile;
-                    takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", Camera.CameraInfo.CAMERA_FACING_BACK);
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                    startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                    try {
+                        Uri photoURI = FileProvider.getUriForFile(this,
+                                BuildConfig.APPLICATION_ID + ".provider",
+                                photoFile);
+                        mPhotoFile = photoFile;
+                        takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", Camera.CameraInfo.CAMERA_FACING_BACK);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                        startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                 }
             }
         } catch (Exception e) {
@@ -1352,37 +1400,41 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
 
     private void uploadOnsiteImage(String base64) {
-        RealmResults<LoginResponse> LoginRealmModels =
-                BaseApplication.getRealm().where(LoginResponse.class).findAll();
-        if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-            String UserId = LoginRealmModels.get(0).getUserID();
-            UploadCheckListRequest request = new UploadCheckListRequest();
-            request.setResourceId(UserId);
-            request.setFileUrl("");
-            request.setFileName("");
-            request.setTaskId(taskId);
-            request.setFileContent(base64);
+        try {
+            RealmResults<LoginResponse> LoginRealmModels =
+                    BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                String UserId = LoginRealmModels.get(0).getUserID();
+                UploadCheckListRequest request = new UploadCheckListRequest();
+                request.setResourceId(UserId);
+                request.setFileUrl("");
+                request.setFileName("");
+                request.setTaskId(taskId);
+                request.setFileContent(base64);
 
-            NetworkCallController controller = new NetworkCallController();
-            controller.setListner(new NetworkResponseListner<UploadCheckListData>() {
-                @Override
-                public void onResponse(int requestCode, UploadCheckListData response) {
-                    mCheckAdapter.getItem(checkPosition).setIconUrl(response.getFileUrl());
-                    mTaskCheckList.get(checkPosition).setIconUrl(response.getFileUrl());
-                    if (mSaveList != null && mSaveList.size() > 0) {
-                        mSaveList.get(checkPosition).setImagePath(response.getFileUrl());
+                NetworkCallController controller = new NetworkCallController();
+                controller.setListner(new NetworkResponseListner<UploadCheckListData>() {
+                    @Override
+                    public void onResponse(int requestCode, UploadCheckListData response) {
+                        mCheckAdapter.getItem(checkPosition).setIconUrl(response.getFileUrl());
+                        mTaskCheckList.get(checkPosition).setIconUrl(response.getFileUrl());
+                        mTaskCheckList.get(checkPosition).setImagePath(response.getFileUrl());
+                        mOnsiteCheckList.get(checkPosition).setImagePath(response.getFileUrl());
+                        mCheckAdapter.notifyItemChanged(checkPosition);
                     }
-                    mCheckAdapter.notifyItemChanged(checkPosition);
-                }
 
-                @Override
-                public void onFailure(int requestCode) {
+                    @Override
+                    public void onFailure(int requestCode) {
 
-                }
-            });
-            controller.uploadCheckListAttachment(UPLOAD_REQ, request);
+                    }
+                });
+                controller.uploadCheckListAttachment(UPLOAD_REQ, request);
 
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     private void saveCheckList(AlertDialog alertDialog) {
@@ -1392,8 +1444,11 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 @Override
                 public void onResponse(int requestCode, CheckListResponse response) {
                     if (response.getIsSuccess()) {
-                        progress.show();
-                        finalSave();
+                        isPostJobCompletionDone = true;
+                        if (isFinalSave) {
+                            progress.show();
+                            finalSave();
+                        }
                         mSaveList.clear();
                         alertDialog.dismiss();
                     } else {
@@ -1406,7 +1461,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
                 }
             });
-            controller.saveCheckList(SAVE_CHECK_LIST, mSaveList);
+            controller.saveCheckList(SAVE_CHECK_LIST, mOnsiteCheckList);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1746,8 +1801,13 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     }
 
     @Override
-    public void isUPIPaymentDone(Boolean b) {
+    public void isUPIPaymentNotDone(Boolean b) {
+        isUpiPaymentNotDone = b;
+    }
 
+    @Override
+    public void isJobCheckListDone(Boolean b) {
+        isPostJobCompletionDone = b;
     }
 
     @Override

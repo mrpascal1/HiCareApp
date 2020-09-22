@@ -203,6 +203,10 @@ public class AppUtils {
         mBuilder.create().show();
     }
 
+    public static void showDownloadAlertBox(Context context){
+
+    }
+
     public static void getCurrentTimeUsingCalendar() {
         Calendar cal = Calendar.getInstance();
         Date date = cal.getTime();

@@ -88,7 +88,6 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
     private enum OrientationState {PORTRAIT, LANDSCAPE}
 
     private OrientationState orientationState;
-    //    private String video_url = "http://apps.hicare.in/video1.mp4";
     private Handler handler;
     private static final int VIDEO_REQUEST = 3000;
     private final int SECONDS = 1000;
@@ -156,28 +155,6 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
         setUp(URL);
     }
 
-    private void getWelcomeVideo() {
-        NetworkCallController controller = new NetworkCallController();
-        controller.setListner(new NetworkResponseListner() {
-            @Override
-            public void onResponse(int requestCode, Object response) {
-                Videos items = (Videos) response;
-                if (items != null) {
-                    if (items.getVideoUrl().length() > 0) {
-                        setUp(items.getVideoUrl());
-                    } else {
-                        startActivity(new Intent(getActivity(), HomeActivity.class));
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(int requestCode) {
-
-            }
-        });
-        controller.getStartingVideos(VIDEO_REQUEST);
-    }
 
     private void startTimer() {
         try {

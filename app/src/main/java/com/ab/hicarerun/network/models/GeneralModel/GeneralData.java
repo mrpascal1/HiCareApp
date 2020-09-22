@@ -260,6 +260,10 @@ public class GeneralData implements RealmModel {
     @Expose
     private Boolean Show_Standard_Chemicals;
 
+    @SerializedName("PostJob_Checklist_Done")
+    @Expose
+    private Boolean PostJob_Checklist_Done;
+
     @SerializedName("ActualAmountToCollect")
     @Expose
     private String ActualAmountToCollect;
@@ -864,5 +868,13 @@ public class GeneralData implements RealmModel {
 
     public void setUpiTransactionId(String upiTransactionId) {
         UpiTransactionId = upiTransactionId;
+    }
+
+    public Boolean getPostJob_Checklist_Done() {
+        return PostJob_Checklist_Done;
+    }
+
+    public void setPostJob_Checklist_Done(Boolean postJob_Checklist_Done) {
+        PostJob_Checklist_Done = postJob_Checklist_Done;
     }
 }
