@@ -55,10 +55,14 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
             int[] attrs = new int[]{R.attr.selectableItemBackground};
             TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
             int backgroundResource = typedArray.getResourceId(0, 0);
+            if (items.get(position).getRelationShip() != null && items.get(position).getRelationShip().toLowerCase().equals("self")) {
+                holder.mReferralListAdapterBinding.txtMobile.setText("NA");
+            } else {
+                holder.mReferralListAdapterBinding.txtMobile.setText(items.get(position).getMobileNo());
+            }
             holder.mReferralListAdapterBinding.lnrRef.setBackgroundResource(backgroundResource);
             holder.mReferralListAdapterBinding.imgDelete.setBackgroundResource(backgroundResource);
             holder.mReferralListAdapterBinding.txtName.setText(items.get(position).getFirstName() + " " + items.get(position).getLastName());
-            holder.mReferralListAdapterBinding.txtMobile.setText(items.get(position).getMobileNo());
             holder.mReferralListAdapterBinding.txtAltMobile.setText(items.get(position).getAlternateMobileNo());
             holder.mReferralListAdapterBinding.txtInterested.setText(items.get(position).getInterestedService());
             holder.mReferralListAdapterBinding.txtEmail.setText(items.get(position).getEmail());
@@ -76,7 +80,6 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
     @Override
     public int getItemCount() {
         return items.size();
-
     }
 
     public void setData(List<ReferralList> data) {

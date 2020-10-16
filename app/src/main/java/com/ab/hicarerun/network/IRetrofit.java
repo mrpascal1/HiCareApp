@@ -35,6 +35,12 @@ import com.ab.hicarerun.network.models.IncentiveModel.IncentiveResponse;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyRequest;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyResponse;
 import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonModel;
+import com.ab.hicarerun.network.models.KarmaModel.KarmaHistoryResponse;
+import com.ab.hicarerun.network.models.KarmaModel.KarmaResponse;
+import com.ab.hicarerun.network.models.KycModel.KycDocumentResponse;
+import com.ab.hicarerun.network.models.KycModel.KycTypeResponse;
+import com.ab.hicarerun.network.models.KycModel.SaveKycRequest;
+import com.ab.hicarerun.network.models.KycModel.SaveKycResponse;
 import com.ab.hicarerun.network.models.LeaderBoardModel.RewardLeadersResponse;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
 import com.ab.hicarerun.network.models.LoginResponse;
@@ -106,8 +112,8 @@ public interface IRetrofit {
     //    String BASE_URL = "http://52.74.65.15/mobileapi/api/";
     //    String ERROR_LOG_URL = "http://52.74.65.15/logging/api/";
     //    http://apps.hicare.in/cwf/datasync/InsertRenewalAppJeopardy
-    String BASE_URL = "http://run.hicare.in/mobile/api/";
-    String SCAN_URL = "http://run.hicare.in/taskservice/api/";
+    String BASE_URL = "http://api.hicare.in/mobile/api/";
+    String SCAN_URL = "http://api.hicare.in/taskservice/api/";
     String EXOTEL_URL = "http://apps.hicare.in/api/api/";
     String ERROR_LOG_URL = "http://run.hicare.in/logging/api/";
     String JEOPARDY_URL = "http://apps.hicare.in/cwf/";
@@ -476,4 +482,23 @@ public interface IRetrofit {
 
     @POST("TechnicianGrooming/SaveRoutineCheckList")
     Call<SaveRoutineResponse> saveRoutineCheckList(@Body TechRoutineData request);
+
+    /*ResourceActivity/GetKYCDocuments*/
+    @GET("ResourceActivity/GetKYCDocuments")
+    Call<KycDocumentResponse> getKYCDocuments(@Query("resourceid") String resourceId, @Query("language") String lang);
+
+    /*ResourceActivity/GetKYCTypes*/
+    @GET("ResourceActivity/GetKYCTypes")
+    Call<KycTypeResponse> getKYCTypes(@Query("resourceid") String resourceId, @Query("language") String lang);
+
+    @POST("ResourceActivity/SaveKYCDocuments")
+    Call<SaveKycResponse> saveKYCDocument(@Body SaveKycRequest request);
+
+    /*ResourceActivity/GetKarmaForResource*/
+    @GET("ResourceActivity/GetKarmaForResource")
+    Call<KarmaResponse> getKarmaForResource(@Query("resourceId") String userId);
+
+    /*ResourceActivity/GetKarmaForResource*/
+    @GET("ResourceActivity/GetKarmaHistoryForResource")
+    Call<KarmaHistoryResponse> getKarmaHistoryForResource(@Query("resourceId") String userId);
 }

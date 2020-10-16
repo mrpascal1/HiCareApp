@@ -35,7 +35,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     getSupportFragmentManager().beginTransaction()
             .replace(R.id.container, fragment, tag)
             .addToBackStack(tag)
-            .commit();
+            .commitAllowingStateLoss();
   }
 
   protected void viewFragment(BaseFragment fragment, String name, CustomBottomNavigation customNavigation){

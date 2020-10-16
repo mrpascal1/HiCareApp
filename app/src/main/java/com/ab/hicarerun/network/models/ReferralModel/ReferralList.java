@@ -12,6 +12,7 @@ public class ReferralList {
     @SerializedName("AlternateMobileNo") @Expose private String AlternateMobileNo;
     @SerializedName("Email") @Expose private String Email;
     @SerializedName("InterestedService") @Expose private String InterestedService;
+    @SerializedName("Relationship") @Expose private String Relationship;
 
     public Integer getId() {
         return id;
@@ -75,5 +76,13 @@ public class ReferralList {
 
     public void setInterestedService(String interestedService) {
         InterestedService = interestedService;
+    }
+
+    public String getRelationship() {
+        return Relationship;
+    }
+
+    public void setRelationship(String relationship) {
+        Relationship = relationship;
     }
 }

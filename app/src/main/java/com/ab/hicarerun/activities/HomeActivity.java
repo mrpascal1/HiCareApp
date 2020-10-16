@@ -5,15 +5,20 @@ import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.app.assist.AssistContent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.location.Location;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import android.util.Base64;
@@ -58,6 +63,7 @@ import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShake;
 import com.ab.hicarerun.network.models.IncentiveModel.Incentive;
 import com.ab.hicarerun.network.models.IncentiveModel.IncentiveData;
+import com.ab.hicarerun.network.models.KarmaModel.Karma;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
 import com.ab.hicarerun.network.models.ProductCartModel.ProductCart;
@@ -76,7 +82,12 @@ import com.luseen.spacenavigation.SpaceItem;
 import com.luseen.spacenavigation.SpaceOnClickListener;
 import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -89,11 +100,11 @@ import static com.ab.hicarerun.BaseApplication.getRealm;
 
 public class HomeActivity extends BaseActivity implements FragmentManager.OnBackStackChangedListener, LocationManagerListner {
     ActivityHomeBinding mActivityHomeBinding;
-
     private static final int LOGOUT_REQ = 1000;
     private static final int UPDATE_REQ = 2000;
     private static final int REQ_PROFILE = 3000;
     private static final int REQ_INCENTIVE = 4000;
+    private static final int REQ_KARMA = 5000;
     private Location mLocation;
     private LocationManagerListner mListner;
     public static final String ARG_HANDSHAKE = "ARG_HANDSHAKE";
@@ -117,8 +128,8 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     public void onSaveInstanceState(@NonNull Bundle outState) {
         try {
             super.onSaveInstanceState(outState);
-            mActivityHomeBinding.bottomNavigation.onSaveInstanceState(outState);
-        }catch (Exception e){
+            //  mActivityHomeBinding.bottomNavigation.onSaveInstanceState(outState);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -127,7 +138,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     protected void attachBaseContext(Context base) {
         try {
             super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -161,8 +172,13 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 //        CustomBottomNavigation curvedBottomNavigationView = findViewById(R.id.customBottomBar);
 //        curvedBottomNavigationView.inflateMenu(R.menu.bottom_navigation_menu);
 
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/Superhero.ttf");
+        mActivityHomeBinding.toolbar.txtLifeCount.setTypeface(typeface);
+        mActivityHomeBinding.toolbar.txtRemLife.setTypeface(typeface);
+        mActivityHomeBinding.toolbar.txtLife.setTypeface(typeface);
         mActivityHomeBinding.toolbar.lnrUser.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, TechIdActivity.class).putExtra(HomeActivity.ARG_EVENT, false)));
         mActivityHomeBinding.toolbar.lnrWallet.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, IncentivesActivity.class).putExtra(HomeActivity.ARG_EVENT, false)));
+        mActivityHomeBinding.toolbar.lnrKarma.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, KarmaActivity.class).putExtra(HomeActivity.ARG_EVENT, false)));
 
         try {
             isClicked = Objects.requireNonNull(getIntent().getExtras()).getBoolean(ARG_EVENT, false);
@@ -190,6 +206,47 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         mActivityHomeBinding.fab.bringToFront();
         mActivityHomeBinding.relCoin.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, OfferActivity.class)));
 
+        handleIntent(getIntent());
+        getResourcesKarma();
+    }
+
+    private void getResourcesKarma() {
+        try {
+            NetworkCallController controller = new NetworkCallController();
+            controller.setListner(new NetworkResponseListner<Karma>() {
+                @Override
+                public void onResponse(int requestCode, Karma response) {
+                    try {
+                        int progress = response.getTotalPointsPending();
+                        if(progress > 80){
+                            Drawable batteryProgressD = mActivityHomeBinding.toolbar.progressBar.getProgressDrawable();
+                            batteryProgressD.setLevel(progress*100);
+                            mActivityHomeBinding.toolbar.progressBar.setProgress(progress);
+                        }else if(progress > 40 && progress <= 80){
+                            Drawable batteryProgressD = mActivityHomeBinding.toolbar.progressBar.getProgressDrawable();
+                            batteryProgressD.setLevel(progress*100);
+                            mActivityHomeBinding.toolbar.progressBar.setProgress(progress);
+                        }else {
+                            Drawable batteryProgressD = mActivityHomeBinding.toolbar.progressBar.getProgressDrawable();
+                            batteryProgressD.setLevel(progress*100);
+                            mActivityHomeBinding.toolbar.progressBar.setProgress(progress);
+                        }
+                        mActivityHomeBinding.toolbar.txtRemLife.setText(String.valueOf(response.getTotalPointsPending()) + "/" + String.valueOf(response.getTotalPoints()));
+                        mActivityHomeBinding.toolbar.txtLifeCount.setText(String.valueOf(response.getLifeLineIndex()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int requestCode) {
+
+                }
+            });
+            controller.getKarmaResources(REQ_KARMA, userId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setupNavigationView() {
@@ -203,10 +260,29 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                     return false;
                 });
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void onProvideAssistContent(AssistContent outContent) {
+        super.onProvideAssistContent(outContent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            try {
+                outContent.setStructuredData((new JSONObject())
+                        .put("@type", "ExerciseObservation")
+                        .put("name", "My last runs")
+                        .put("url", "https://fit-actions.firebaseapp.com/stats")
+                        .toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+    }
+
 
     private void selectFragment(MenuItem item) {
         try {
@@ -236,7 +312,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                     showLanguageDialog();
                     break;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -337,13 +413,13 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                         getServiceCalled();
                         getTechDeails();
 //                getIncentiveDetails();
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -357,7 +433,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
             } else {
                 AppUtils.showOkActionAlertBox(HomeActivity.this, "Please check your internet connection!", (dialogInterface, i) -> finish());
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -599,6 +675,11 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                     startActivity(new Intent(HomeActivity.this, TechnicianRoutineActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
                     break;
 
+                case R.id.nav_kyc:
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, KycActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                    break;
+
                 case R.id.nav_summary:
                     mActivityHomeBinding.drawer.closeDrawers();
                     startActivity(new Intent(HomeActivity.this, TechChemicalCountActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
@@ -656,6 +737,23 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
     }
 
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        String appLinkAction = intent.getAction();
+        Uri appLinkData = intent.getData();
+        if (Intent.ACTION_VIEW.equals(appLinkAction) && appLinkData != null) {
+            String recipeId = appLinkData.getLastPathSegment();
+            Uri appData = Uri.parse("content://com.recipe_app/recipe/").buildUpon()
+                    .appendPath(recipeId).build();
+            //     showRecipe(appData);
+        }
+    }
+
+
     private void getLogout() {
         try {
             NetworkCallController controller = new NetworkCallController();
@@ -689,7 +787,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
             });
 
             controller.getLogout(LOGOUT_REQ, UserId, HomeActivity.this);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -718,7 +816,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 mActivityHomeBinding.customNavigation.setSelectedItemId(R.id.nav_home);
                 mActivityHomeBinding.navigationView.setCheckedItem(0);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

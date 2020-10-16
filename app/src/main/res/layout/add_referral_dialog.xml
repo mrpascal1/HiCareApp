@@ -85,6 +85,42 @@
 
 
                                 <LinearLayout
+                                    android:id="@+id/lnrRelation"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="15dp"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_marginRight="15dp"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="5dp"
+                                        android:text="Customer Relation :"
+                                        android:textColor="@color/colorPrimary" />
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/round_border"
+                                        >
+
+                                        <androidx.recyclerview.widget.RecyclerView
+                                            android:id="@+id/recycleRelation"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:scrollbars="vertical"
+                                            tools:listitem="@layout/layout_referral_relation_adapter" />
+
+
+                                    </LinearLayout>
+
+
+                                </LinearLayout>
+
+
+                                <LinearLayout
                                     android:id="@+id/lnrName"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -128,7 +164,7 @@
                                 </LinearLayout>
 
                                 <LinearLayout
-                                    android:id="@+id/lnrDate"
+                                    android:id="@+id/lnrMobile"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="15dp"
@@ -205,42 +241,6 @@
 
 
                                 </LinearLayout>
-
-                                <LinearLayout
-                                    android:id="@+id/lnrRelation"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="15dp"
-                                    android:layout_marginTop="10dp"
-                                    android:layout_marginRight="15dp"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginBottom="5dp"
-                                        android:text="Customer Relation :"
-                                        android:textColor="@color/colorPrimary" />
-
-                                    <LinearLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:background="@drawable/round_border"
-                                        >
-
-                                        <androidx.recyclerview.widget.RecyclerView
-                                            android:id="@+id/recycleRelation"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:scrollbars="vertical"
-                                            tools:listitem="@layout/layout_referral_relation_adapter" />
-
-
-                                    </LinearLayout>
-
-
-                                </LinearLayout>
-
 
                             </LinearLayout>
 

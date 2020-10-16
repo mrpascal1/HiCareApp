@@ -10,4 +10,6 @@ public interface UserSignatureClickHandler {
 
     void onUploadAttachmentClicked(View view);
 
+    void onScheduleDateClicked(View view);
+
 }

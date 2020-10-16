@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -71,6 +72,8 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
     private String technicianMobileNo = "";
     private String service = "";
     private String relation = "";
+    private String name = "";
+    private String mobileNo = "";
     ReferralListAdapter mAdapter;
     ReferralServiceAdapter mServiceAdapter;
     ReferralRelationAdapter mRelationAdapter;
@@ -213,6 +216,11 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                             (RecyclerView) promptsView.findViewById(R.id.recycleInterest);
                     final RecyclerView recycleRelation =
                             (RecyclerView) promptsView.findViewById(R.id.recycleRelation);
+                    final LinearLayout lnrName =
+                            (LinearLayout) promptsView.findViewById(R.id.lnrName);
+                    final LinearLayout lnrMobile =
+                            (LinearLayout) promptsView.findViewById(R.id.lnrMobile);
+
 
                     mServiceAdapter = new ReferralServiceAdapter(getActivity(), (position, isChecked) -> {
                         try {
@@ -255,6 +263,17 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                                         relation = mRelationAdapter.getItem(position).getName();
                                         Log.i("RELATION", mRelationAdapter.getItem(position).getName());
                                         Log.i("RELATION_STR", relation);
+                                        if(relation.toLowerCase().equals("self")){
+                                            lnrName.setVisibility(View.GONE);
+                                            lnrMobile.setVisibility(View.GONE);
+                                            name = mGeneralRealmModel.get(0).getCustName();
+                                            mobileNo = mGeneralRealmModel.get(0).getMobileNumber();
+                                        }else {
+                                            lnrName.setVisibility(View.VISIBLE);
+                                            lnrMobile.setVisibility(View.VISIBLE);
+                                            name = edt_fname.getText().toString();
+                                            mobileNo = edt_contact.getText().toString();
+                                        }
                                     });
                                 }
                             }
@@ -280,6 +299,13 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                             Technicain_Mobile = technicianMobileNo;
                         }
 
+                        if(relation.toLowerCase().equals("self")){
+                            name = mGeneralRealmModel.get(0).getCustName();
+                            mobileNo = mGeneralRealmModel.get(0).getMobileNumber();
+                        }else {
+                            name = edt_fname.getText().toString();
+                            mobileNo = edt_contact.getText().toString();
+                        }
 
                         if (validateSaveReferral(edt_fname, edt_contact, mobile, Alt_Mobile, Technicain_Mobile)) {
                             if (checkedService != null && checkedService.size() > 0) {
@@ -300,9 +326,14 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                                     NetworkCallController controller = new NetworkCallController(ReferralFragment.this);
                                     ReferralRequest request = new ReferralRequest();
                                     request.setTaskId(taskId);
-                                    request.setFirstName(edt_fname.getText().toString());
+                                    if(relation.toLowerCase().equals("self")){
+                                        request.setFirstName(mGeneralRealmModel.get(0).getCustName());
+                                        request.setMobileNo(mGeneralRealmModel.get(0).getMobileNumber());
+                                    }else {
+                                        request.setFirstName(edt_fname.getText().toString());
+                                        request.setMobileNo(edt_contact.getText().toString());
+                                    }
                                     request.setLastName("");
-                                    request.setMobileNo(edt_contact.getText().toString());
                                     request.setAlternateMobileNo("");
                                     request.setEmail("");
                                     request.setInterestedService(strService);
@@ -447,8 +478,8 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
         }
     }
 
-    private boolean validateSaveReferral(AppCompatEditText edt_fname, AppCompatEditText edt_contact, String mobile, String alt_Mobile, String technicain_Mobile) {
-        if (edt_fname.getText().toString().trim().length() == 0) {
+    private boolean validateSaveReferral(AppCompatEditText edt_fname, AppCompatEditText edt_contact, String mob, String alt_Mobile, String technicain_Mobile) {
+        if (name.trim().length() == 0) {
             edt_fname.setError(getString(R.string.name_is_required));
             edt_fname.requestFocus();
             return false;
@@ -456,23 +487,23 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
             edt_lname.setError("Last name is required!");
             edt_lname.requestFocus();
             return false;
-        }*/ else if (edt_contact.getText().toString().trim().length() == 0) {
+        }*/ else if (mobileNo.trim().length() == 0) {
             edt_contact.setError(getString(R.string.mobile_number_is_required));
             edt_contact.requestFocus();
             return false;
-        } else if (edt_contact.getText().toString().trim().length() < 10) {
+        } else if (mobileNo.trim().length() < 10) {
             edt_contact.setError(getString(R.string.mobile_number_is_invalid));
             edt_contact.requestFocus();
             return false;
-        } else if (edt_contact.getText().toString().equals(mobile)) {
+        } else if (!relation.toLowerCase().equals("self") && mobileNo.equals(mob)) {
             edt_contact.setError(getString(R.string.mobile_number_is_invalid));
             edt_contact.requestFocus();
             return false;
-        } else if (edt_contact.getText().toString().equals(alt_Mobile)) {
+        } else if (!relation.toLowerCase().equals("self") && mobileNo.equals(alt_Mobile)) {
             edt_contact.setError(getString(R.string.mobile_number_is_invalid));
             edt_contact.requestFocus();
             return false;
-        } else if (edt_contact.getText().toString().equals(technicain_Mobile)) {
+        } else if (!relation.toLowerCase().equals("self") && mobileNo.equals(technicain_Mobile)) {
             edt_contact.setError(getString(R.string.mobile_number_is_invalid));
             edt_contact.requestFocus();
             return false;

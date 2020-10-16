@@ -118,7 +118,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NotNull final ViewHolder holder, final int position) {
-
         try {
             if (items.get(position).getHelperResourceId() != null && !items.get(position).getHelperResourceId().equals("")) {
                 try {

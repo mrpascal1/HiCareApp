@@ -365,7 +365,6 @@ public class ServiceLocationSend extends Service implements LocationListener {
         }
     }
 
-
     public int getMyBatteryLevel(Context context) {
         Intent batteryIntent = context.registerReceiver(null,
                 new IntentFilter(Intent.ACTION_BATTERY_CHANGED));

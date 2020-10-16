@@ -37,6 +37,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.DatePicker;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -93,7 +94,7 @@ import static android.view.View.GONE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SignatureInfoFragment extends BaseFragment implements UserSignatureClickHandler, OnDeleteListItemClickHandler {
+public class SignatureInfoFragment extends BaseFragment implements UserSignatureClickHandler, OnDeleteListItemClickHandler, FragmentScheduleDatePicker.onDatePickerListener {
     FragmentSignatureInfoBinding mFragmentSignatureInfoBinding;
     private static final int POST_FEEDBACK_LINK = 1000;
     private static final int POST_ATTACHMENT_REQ = 2000;
@@ -709,6 +710,22 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
 
     }
 
+    @Override
+    public void onScheduleDateClicked(View view) {
+        showDatePicker();
+    }
+
+    private void showDatePicker() {
+        try {
+            FragmentScheduleDatePicker mFragDatePicker = new FragmentScheduleDatePicker();
+            mFragDatePicker.setmDatePickerListener(this);
+            mFragDatePicker.show(getActivity().getSupportFragmentManager(), "datepicker");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     private void getAttachmentList() {
         try {
             RealmResults<LoginResponse> LoginRealmModels =
@@ -856,6 +873,11 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
 
     @Override
     public void onItemClick(int position) {
+
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int day) {
 
     }
 

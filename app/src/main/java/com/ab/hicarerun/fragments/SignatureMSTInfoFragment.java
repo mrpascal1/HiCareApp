@@ -666,6 +666,11 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
         }
     }
 
+    @Override
+    public void onScheduleDateClicked(View view) {
+
+    }
+
     private void getAttachmentList() {
         try {
             RealmResults<LoginResponse> LoginRealmModels =

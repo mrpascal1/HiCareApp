@@ -257,6 +257,10 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         });
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+    }
+
     private void showAssessmentReport() {
         try {
             if ((HomeActivity) getActivity() != null) {
@@ -546,7 +550,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                         NetworkCallController controller = new NetworkCallController(this);
                         controller.setListner(this);
                         controller.getTasksList(TASKS_REQ, UserId, IMEI);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -940,7 +944,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                             final View v = inflater.inflate(R.layout.jeopardy_reasons_layout, null, false);
                             final RadioGroup radioGroup = (RadioGroup) v.findViewById(R.id.radiogrp);
 
-                            if (list != null && list.size()>0) {
+                            if (list != null && list.size() > 0) {
                                 for (int i = 0; i < list.size(); i++) {
 //                                    lanMap.put(list.get(i).getResonName(), list.get(position).getDisplayName());
                                     final RadioButton rbn = new RadioButton(getActivity());

@@ -74,5 +74,14 @@
     <color name="late_pink">#eb9605</color>
     <color name="colorAccentTransparent">#501f5c10</color>
     <color name="greenlight">#ddfada</color>
+    <color name="yellowlight">#ffffba</color>
+    <color name="green_rad">#deecb8</color>
+    <color name="neon_green">#39ff14</color>
+    <color name="highlight_yellow">#ffff00</color>
+    <color name="game_grey">#262626</color>
+    <color name="game_grey_light">#2e2e2e</color>
+    <color name="game_green">#5dda4c</color>
+    <color name="game_green_dark">#3b6b35</color>
+    <color name="amber">#ffbf00</color>
 
 </resources>

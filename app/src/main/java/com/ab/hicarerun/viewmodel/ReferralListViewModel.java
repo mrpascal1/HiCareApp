@@ -15,6 +15,7 @@ public class ReferralListViewModel implements Parcelable {
     private String AlternateMobileNo;
     private String Email;
     private String InterestedService;
+    private String RelationShip;
 
     public ReferralListViewModel() {
         id = 0;
@@ -25,10 +26,16 @@ public class ReferralListViewModel implements Parcelable {
         AlternateMobileNo = "NA";
         Email = "NA";
         InterestedService = "NA";
+        RelationShip = "NA";
     }
 
+
     protected ReferralListViewModel(Parcel in) {
-        id = in.readInt();
+        if (in.readByte() == 0) {
+            id = null;
+        } else {
+            id = in.readInt();
+        }
         TaskId = in.readString();
         FirstName = in.readString();
         LastName = in.readString();
@@ -36,6 +43,7 @@ public class ReferralListViewModel implements Parcelable {
         AlternateMobileNo = in.readString();
         Email = in.readString();
         InterestedService = in.readString();
+        RelationShip = in.readString();
     }
 
     public static final Creator<ReferralListViewModel> CREATOR = new Creator<ReferralListViewModel>() {
@@ -49,23 +57,6 @@ public class ReferralListViewModel implements Parcelable {
             return new ReferralListViewModel[size];
         }
     };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(TaskId);
-        dest.writeString(FirstName);
-        dest.writeString(LastName);
-        dest.writeString(MobileNo);
-        dest.writeString(AlternateMobileNo);
-        dest.writeString(Email);
-        dest.writeString(InterestedService);
-    }
 
     public Integer getId() {
         return id;
@@ -131,16 +122,47 @@ public class ReferralListViewModel implements Parcelable {
         InterestedService = interestedService;
     }
 
+    public String getRelationShip() {
+        return RelationShip;
+    }
+
+    public void setRelationShip(String relationShip) {
+        RelationShip = relationShip;
+    }
+
     public void clone(ReferralList referralList) {
         this.id = referralList.getId();
         this.TaskId = referralList.getTaskId();
         this.FirstName = referralList.getFirstName();
         this.LastName = referralList.getLastName();
         this.MobileNo = referralList.getMobileNo();
-        this.AlternateMobileNo= referralList.getAlternateMobileNo();
+        this.AlternateMobileNo = referralList.getAlternateMobileNo();
         this.Email = referralList.getEmail();
         this.InterestedService = referralList.getInterestedService();
+        this.RelationShip = referralList.getRelationship();
 
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (id == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(id);
+        }
+        dest.writeString(TaskId);
+        dest.writeString(FirstName);
+        dest.writeString(LastName);
+        dest.writeString(MobileNo);
+        dest.writeString(AlternateMobileNo);
+        dest.writeString(Email);
+        dest.writeString(InterestedService);
+        dest.writeString(RelationShip);
+    }
 }

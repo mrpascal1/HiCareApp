@@ -19,8 +19,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_warning_red" />
-                            <entry key="sourceFile" value="D:\Image\warning (1).svg" />
+                            <entry key="outputName" value="ic_user_grey" />
+                            <entry key="sourceFile" value="D:\Image\user-silhouette (1).svg" />
                           </map>
                         </option>
                       </PersistentState>

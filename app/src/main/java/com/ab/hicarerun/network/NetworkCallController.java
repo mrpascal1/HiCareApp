@@ -47,6 +47,12 @@ import com.ab.hicarerun.network.models.IncentiveModel.IncentiveResponse;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyRequest;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyResponse;
 import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonModel;
+import com.ab.hicarerun.network.models.KarmaModel.KarmaHistoryResponse;
+import com.ab.hicarerun.network.models.KarmaModel.KarmaResponse;
+import com.ab.hicarerun.network.models.KycModel.KycDocumentResponse;
+import com.ab.hicarerun.network.models.KycModel.KycTypeResponse;
+import com.ab.hicarerun.network.models.KycModel.SaveKycRequest;
+import com.ab.hicarerun.network.models.KycModel.SaveKycResponse;
 import com.ab.hicarerun.network.models.LeaderBoardModel.RewardLeadersResponse;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
 import com.ab.hicarerun.network.models.LoginResponse;
@@ -4127,6 +4133,92 @@ public class NetworkCallController {
 
     }
 
+    public void getKYCDocuments(final int requestCode, String resourceId,  final String lang) {
+        try {
+            BaseApplication.getRetrofitAPI(true)
+                    .getKYCDocuments(resourceId, lang)
+                    .enqueue(new Callback<KycDocumentResponse>() {
+                        @Override
+                        public void onResponse(Call<KycDocumentResponse> call, Response<KycDocumentResponse> response) {
+                            Log.i("RoutineCheckUp", "response_null");
+                            if (response != null) {
+                                Log.i("RoutineCheckUp", "response_nn");
+                                if (response.body() != null) {
+                                    Log.i("RoutineCheckUp", "response");
+                                    mListner.onResponse(requestCode, response.body().getData());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getExotelCalled", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        Log.i("RoutineCheckUp", "res" + e.getMessage());
+
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<KycDocumentResponse> call, Throwable t) {
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i("RoutineCheckUp", "res" + e.getMessage());
+        }
+
+    }
+
+    public void getKYCTypes(final int requestCode, String resourceId,  final String lang) {
+        try {
+            BaseApplication.getRetrofitAPI(true)
+                    .getKYCTypes(resourceId, lang)
+                    .enqueue(new Callback<KycTypeResponse>() {
+                        @Override
+                        public void onResponse(Call<KycTypeResponse> call, Response<KycTypeResponse> response) {
+                            Log.i("RoutineCheckUp", "response_null");
+                            if (response != null) {
+                                Log.i("RoutineCheckUp", "response_nn");
+                                if (response.body() != null) {
+                                    Log.i("RoutineCheckUp", "response");
+                                    mListner.onResponse(requestCode, response.body().getData());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getExotelCalled", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        Log.i("RoutineCheckUp", "res" + e.getMessage());
+
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<KycTypeResponse> call, Throwable t) {
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i("RoutineCheckUp", "res" + e.getMessage());
+        }
+
+    }
+
     public void saveRoutineCheckList(final int requestCode, TechRoutineData request) {
         try {
             BaseApplication.getRetrofitAPI(true)
@@ -4159,6 +4251,122 @@ public class NetworkCallController {
                         @Override
                         public void onFailure(Call<SaveRoutineResponse> call, Throwable t) {
 //                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public void saveKYCDocument(final int requestCode, SaveKycRequest request) {
+        try {
+            BaseApplication.getRetrofitAPI(true)
+                    .saveKYCDocument(request)
+                    .enqueue(new Callback<SaveKycResponse>() {
+                        @Override
+                        public void onResponse(Call<SaveKycResponse> call,
+                                               Response<SaveKycResponse> response) {
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+//                                        mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getGroomingTechnicians", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<SaveKycResponse> call, Throwable t) {
+//                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public void getKarmaResources(final int requestCode, final String userId) {
+        try {
+            BaseApplication.getRetrofitAPI(true)
+                    .getKarmaForResource(userId)
+                    .enqueue(new Callback<KarmaResponse>() {
+                        @Override
+                        public void onResponse(Call<KarmaResponse> call, Response<KarmaResponse> response) {
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body().getData());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getChemicals", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<KarmaResponse> call, Throwable t) {
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void getKarmaHistoryResources(final int requestCode, final String userId) {
+        try {
+            BaseApplication.getRetrofitAPI(true)
+                    .getKarmaHistoryForResource(userId)
+                    .enqueue(new Callback<KarmaHistoryResponse>() {
+                        @Override
+                        public void onResponse(Call<KarmaHistoryResponse> call, Response<KarmaHistoryResponse> response) {
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body().getData());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getChemicals", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<KarmaHistoryResponse> call, Throwable t) {
                         }
                     });
         } catch (Exception e) {

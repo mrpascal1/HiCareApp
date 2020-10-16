@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 
 import android.net.Uri;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -33,6 +35,17 @@ import com.ab.hicarerun.utils.GPSUtils;
 //import com.ab.hicarerun.utils.LocaleHelper;
 import com.ab.hicarerun.utils.LocaleHelper;
 
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.appupdate.testing.FakeAppUpdateManager;
+import com.google.android.play.core.install.InstallState;
+import com.google.android.play.core.install.InstallStateUpdatedListener;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.InstallStatus;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.Task;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -41,7 +54,7 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.util.List;
 
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseActivity implements InstallStateUpdatedListener{
     ActivityLoginBinding mActivityLoginBinding;
     private static final int PERMISSION_REQUEST_CODE = 1000;
     AlertDialog alert;
@@ -49,8 +62,16 @@ public class LoginActivity extends BaseActivity {
     private String Apk_URL = "";
     private String Apk_Type = "";
     private static final int UPDATE_REQ = 2000;
+    private static final int HIGH_PRIORITY_UPDATE = 5;
+    private static final int UPDATE_REQUEST_CODE = 11;
     private ProgressDialog progress;
     private boolean isGPS = false;
+    private AppUpdateManager mAppUpdateManager;
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +89,49 @@ public class LoginActivity extends BaseActivity {
                 isGPS = isGPSEnable;
             }
         });
+
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAppUpdateManager = AppUpdateManagerFactory.create(this);
+
+        mAppUpdateManager.registerListener(this);
+
+        mAppUpdateManager.getAppUpdateInfo().addOnSuccessListener(appUpdateInfo -> {
+
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE /*AppUpdateType.IMMEDIATE*/)){
+                try {
+                    mAppUpdateManager.startUpdateFlowForResult(
+                            appUpdateInfo, AppUpdateType.IMMEDIATE /*AppUpdateType.IMMEDIATE*/, this, UPDATE_REQUEST_CODE);
+                } catch (IntentSender.SendIntentException e) {
+                    e.printStackTrace();
+                }
+
+            } else if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED){
+                //CHECK THIS if AppUpdateType.FLEXIBLE, otherwise you can skip
+                popupSnackbarForCompleteUpdate();
+            } else {
+                Log.e("LoginActivity", "checkForAppUpdateAvailability: something else");
+            }
+        });
+    }
+
+
+    /* Displays the snackbar notification and call to action. */
+    private void popupSnackbarForCompleteUpdate() {
+        Snackbar snackbar =
+                Snackbar.make(
+                        findViewById(R.id.container),
+                        "An update has just been downloaded.",
+                        Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction("RESTART", view -> mAppUpdateManager.completeUpdate());
+        snackbar.setActionTextColor(
+                getResources().getColor(R.color.colorPrimary));
+        snackbar.show();
+    }
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
@@ -84,7 +146,29 @@ public class LoginActivity extends BaseActivity {
                 isGPS = true; // flag maintain before get location
                 requestPermission();
             }
+        }else if(resultCode == UPDATE_REQUEST_CODE){
+            if (resultCode != RESULT_OK) {
+                Log.i("LoginActivity", "Update flow failed! Result code: "+ resultCode);
+                // If the update is cancelled or fails,
+                // you can request to start the update again.
+            }
         }
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        mAppUpdateManager
+                .getAppUpdateInfo()
+                .addOnSuccessListener(appUpdateInfo -> {
+                    // If the update is downloaded but not installed,
+                    // notify the user to complete the update.
+                    if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+                        popupSnackbarForCompleteUpdate();
+                    }
+                });
     }
 
     private void requestPermission() {
@@ -285,4 +369,18 @@ public class LoginActivity extends BaseActivity {
 
     }
 
+    @Override
+    public void onStateUpdate(InstallState state) {
+        if (state.installStatus() == InstallStatus.DOWNLOADED){
+            //CHECK THIS if AppUpdateType.FLEXIBLE, otherwise you can skip
+            popupSnackbarForCompleteUpdate();
+        } else if (state.installStatus() == InstallStatus.INSTALLED){
+            if (mAppUpdateManager != null){
+                mAppUpdateManager.unregisterListener(this);
+            }
+
+        } else {
+            Log.i("LoginActivity", "InstallStateUpdatedListener: state: " + state.installStatus());
+        }
+    }
 }

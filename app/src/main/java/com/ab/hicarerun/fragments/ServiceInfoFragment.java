@@ -470,13 +470,9 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 } else {
                     mFragmentServiceInfoBinding.btnPaymentJeopardy.setVisibility(GONE);
                     mFragmentServiceInfoBinding.lnrPaymentOTP.setVisibility(GONE);
-                }=
-
-                if (sta.equals("On-Site") && !mTaskDetailsData.get(0).getPostJob_Checklist_Done() && mTaskDetailsData.get(0).getTaskCheckList()!=null) {
-                    mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
-                } else {
-                    mFragmentServiceInfoBinding.btnCheckList.setVisibility(GONE);
                 }
+
+
 
                 if (isPaymentJeopardyRaised && sta.equals("On-Site")) {
                     getValidated(AmountToCollect);
@@ -491,18 +487,6 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                             .setNegativeButton(android.R.string.no, null).show();
                 });
 
-                mFragmentServiceInfoBinding.btnCheckList.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(!isPostJobCompletionDone){
-                            isPostJobCompletionDone = true;
-                            mListCallback.onPostJobButtonClicked();
-                        }else {
-                            Toasty.success(getActivity(), "You have successfully submitted Post Job Check-List").show();
-                        }
-
-                    }
-                });
 
 
                 try {
@@ -939,6 +923,26 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     String start = mTaskDetailsData.get(0).getTaskAssignmentStartTime();
                     mFragmentServiceInfoBinding.txtConsIns.setTypeface(mFragmentServiceInfoBinding.txtConsIns.getTypeface(), Typeface.BOLD);
                     mFragmentServiceInfoBinding.txtView.setTypeface(mFragmentServiceInfoBinding.txtView.getTypeface(), Typeface.BOLD);
+
+                    if (status.equals("On-Site") && !mTaskDetailsData.get(0).getPostJob_Checklist_Done() && mTaskDetailsData.get(0).getTaskCheckList()!=null && mTaskDetailsData.get(0).getTaskCheckList().size()>0) {
+                        mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
+                    } else {
+                        mFragmentServiceInfoBinding.btnCheckList.setVisibility(GONE);
+                    }
+
+                    mFragmentServiceInfoBinding.btnCheckList.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(!isPostJobCompletionDone){
+                                isPostJobCompletionDone = true;
+                                mListCallback.onPostJobButtonClicked();
+                            }else {
+                                Toasty.success(getActivity(), "You have successfully submitted Post Job Check-List").show();
+                            }
+
+                        }
+                    });
+
 
                     if (mTaskDetailsData.get(0).getConsultationInspectionRequired() && (status.equals("On-Site") || status.equals("Completed"))) {
                         mFragmentServiceInfoBinding.lnrConsIns.setVisibility(View.VISIBLE);
