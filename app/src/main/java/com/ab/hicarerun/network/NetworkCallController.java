@@ -97,6 +97,7 @@ import com.ab.hicarerun.network.models.ServicePlanModel.RenewOrderRequest;
 import com.ab.hicarerun.network.models.ServicePlanModel.RenewOrderResponse;
 import com.ab.hicarerun.network.models.ServicePlanModel.RenewalOTPResponse;
 import com.ab.hicarerun.network.models.ServicePlanModel.ServicePlanResponse;
+import com.ab.hicarerun.network.models.SlotModel.SlotResponse;
 import com.ab.hicarerun.network.models.TaskModel.TaskListResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTaskResponse;
@@ -4367,6 +4368,47 @@ public class NetworkCallController {
 
                         @Override
                         public void onFailure(Call<KarmaHistoryResponse> call, Throwable t) {
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void getAppointmentSlots(final int requestCode, final String taskId, final String slotStartDate, final String slotEndDate) {
+        try {
+            mContext.showProgressDialog();
+            BaseApplication.getSlotApi()
+                    .getAppointmentSlots(taskId, slotStartDate, slotEndDate)
+                    .enqueue(new Callback<SlotResponse>() {
+                        @Override
+                        public void onResponse(Call<SlotResponse> call, Response<SlotResponse> response) {
+                            mContext.dismissProgressDialog();
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body().getTimeSlot());
+                                } else if (response.errorBody() != null) {
+                                    mContext.dismissProgressDialog();
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getChemicals", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        mContext.dismissProgressDialog();
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<SlotResponse> call, Throwable t) {
                         }
                     });
         } catch (Exception e) {

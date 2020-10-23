@@ -10,6 +10,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -22,7 +23,6 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,23 +31,23 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
+import android.view.WindowManager;
+import android.widget.CalendarView;
 import android.widget.DatePicker;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.activities.NewTaskDetailsActivity;
 import com.ab.hicarerun.activities.ServiceRenewalActivity;
 import com.ab.hicarerun.adapter.NewAttachmentListAdapter;
+import com.ab.hicarerun.adapter.SlotsAdapter;
 import com.ab.hicarerun.databinding.FragmentSignatureInfoBinding;
 import com.ab.hicarerun.handler.OnDeleteListItemClickHandler;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
@@ -56,7 +56,6 @@ import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.AttachmentModel.AttachmentDeleteRequest;
 import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentList;
-import com.ab.hicarerun.network.models.AttachmentModel.MSTAttachment;
 import com.ab.hicarerun.network.models.AttachmentModel.PostAttachmentRequest;
 import com.ab.hicarerun.network.models.AttachmentModel.PostAttachmentResponse;
 import com.ab.hicarerun.network.models.BasicResponse;
@@ -64,31 +63,27 @@ import com.ab.hicarerun.network.models.FeedbackModel.FeedbackRequest;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackResponse;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.network.models.TaskModel.Tasks;
+import com.ab.hicarerun.network.models.SlotModel.TimeSlot;
 import com.ab.hicarerun.utils.AppUtils;
-import com.ab.hicarerun.utils.MyDividerItemDecoration;
-import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.ab.hicarerun.utils.SwipeToDeleteCallBack;
-import com.ab.hicarerun.viewmodel.AttachmentListViewModel;
 import com.bumptech.glide.Glide;
-import com.google.android.material.snackbar.Snackbar;
-import com.vansuita.pickimage.bean.PickResult;
 import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
-import com.vansuita.pickimage.listeners.IPickResult;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
 
-import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.view.View.GONE;
 
 /**
@@ -101,6 +96,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
     private static final int GET_ATTACHMENT_REQ = 3000;
     private static final int DELETE_ATTACHMENT_REQ = 4000;
     private static final int COMPLETION_REQUEST = 5000;
+    private static final int SLOT_REQUEST = 6000;
 
     private static final String ARG_TASK = "ARG_TASK";
     private static final String ARG_VAR = "ARG_VAR";
@@ -132,6 +128,10 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
     private String Renew_Type = "";
     private String Renew_Order = "";
     private String OTP = "";
+    private String appointmentDate = "";
+    private String assignmentStartTime = "";
+    private String assignmentEndTime = "";
+    private SlotsAdapter mSlotsAdapter;
 //    private Tasks model;
 
     public SignatureInfoFragment() {
@@ -248,6 +248,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                 startActivity(intent);
             }
         });
+
         mFragmentSignatureInfoBinding.recycleView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         mFragmentSignatureInfoBinding.recycleView.setLayoutManager(layoutManager);
@@ -334,6 +335,14 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                 isFeedBack = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getFeedBack() : false;
                 accountType = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getAccountType() : "NA";
                 status = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getSchedulingStatus() : "NA";
+                mFragmentSignatureInfoBinding.txtPlannedDate.setText(AppUtils.reFormatDateAndTime(mGeneralRealmData.get(0).getNext_SR_Planned_Start_Date(), "dd-MMM-yyyy"));
+                mFragmentSignatureInfoBinding.txtPlannedDate.setTypeface(mFragmentSignatureInfoBinding.txtPlannedDate.getTypeface(), Typeface.BOLD);
+
+                if (mGeneralRealmData.get(0).getShowNextServiceAppointment() && status.equals("On-Site")) {
+                    mFragmentSignatureInfoBinding.lnrBook.setVisibility(View.VISIBLE);
+                } else {
+                    mFragmentSignatureInfoBinding.lnrBook.setVisibility(GONE);
+                }
 
                 if (isJobcardEnable) {
                     mFragmentSignatureInfoBinding.lnrJobCard.setVisibility(View.VISIBLE);
@@ -713,6 +722,151 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
     @Override
     public void onScheduleDateClicked(View view) {
         showDatePicker();
+    }
+
+    @Override
+    public void onBookAppointmentClicked(View view) {
+
+        try {
+            LayoutInflater li = LayoutInflater.from(getActivity());
+            View promptsView = li.inflate(R.layout.next_service_appointment_layout, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+            alertDialogBuilder.setView(promptsView);
+            final AlertDialog alertDialog = alertDialogBuilder.create();
+            final RecyclerView recyclerView =
+                    promptsView.findViewById(R.id.recycleSlots);
+            final CalendarView mCalendarView = promptsView.findViewById(R.id.calendarView);
+            final AppCompatButton btnBook = promptsView.findViewById(R.id.btnBook);
+            final AppCompatButton btnCancel = promptsView.findViewById(R.id.btnCancel);
+            final TextView txtDateHead = promptsView.findViewById(R.id.txtDateHead);
+            final TextView txtSlotHead = promptsView.findViewById(R.id.txtSlotHead);
+
+            txtDateHead.setTypeface(txtDateHead.getTypeface(), Typeface.BOLD);
+            txtSlotHead.setTypeface(txtSlotHead.getTypeface(), Typeface.BOLD);
+
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+            mSlotsAdapter = new SlotsAdapter(getActivity());
+            recyclerView.setAdapter(mSlotsAdapter);
+
+            String startDate = AppUtils.reFormatDateAndTime(mGeneralRealmData.get(0).getNext_SR_Planned_Start_Date(), "yyyy-MM-dd");
+            String endDate = AppUtils.reFormatDateAndTime(mGeneralRealmData.get(0).getNext_SR_Planned_End_Date(), "yyyy-MM-dd");
+            String sParts[] = startDate.split("-");
+            String eParts[] = endDate.split("-");
+
+            int sYear = Integer.parseInt(sParts[0]);
+            int sMonth = Integer.parseInt(sParts[1]);
+            int sDay = Integer.parseInt(sParts[2]);
+
+            int eYear = Integer.parseInt(eParts[0]);
+            int eMonth = Integer.parseInt(eParts[1]);
+            int eDay = Integer.parseInt(eParts[2]);
+
+            Calendar sCalendar = Calendar.getInstance();
+            sCalendar.set(Calendar.YEAR, sYear);
+            sCalendar.set(Calendar.MONTH, sMonth - 1);
+            sCalendar.set(Calendar.DAY_OF_MONTH, sDay);
+            long startTime = sCalendar.getTimeInMillis();
+
+            Calendar eCalendar = Calendar.getInstance();
+            eCalendar.set(Calendar.YEAR, eYear);
+            eCalendar.set(Calendar.MONTH, eMonth - 1);
+            eCalendar.set(Calendar.DAY_OF_MONTH, eDay);
+            long endTime = eCalendar.getTimeInMillis();
+            mCalendarView.setMinDate(startTime);
+            mCalendarView.setMaxDate(endTime);
+            mCalendarView.setDate(startTime);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            appointmentDate = sdf.format(new Date(mCalendarView.getDate()));
+            AppUtils.appointmentDate = appointmentDate;
+
+            getSlots(startDate);
+
+            mCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+                @Override
+                public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+                    appointmentDate = year + "-" + (month+1) + "-" + dayOfMonth;
+                    AppUtils.appointmentDate = appointmentDate;
+                    getSlots(appointmentDate);
+                }
+            });
+
+            btnBook.setOnClickListener(v -> {
+                try {
+                    if (!assignmentStartTime.equals("") && !assignmentEndTime.equals("")) {
+                        mCallback.assignmentStartDate(appointmentDate);
+                        mCallback.assignmentStartTime(assignmentStartTime);
+                        mCallback.assignmentEndTime(assignmentEndTime);
+                        Log.i("DATE", appointmentDate);
+
+                        String slotDate = AppUtils.getFormatted(appointmentDate, "MMM dd, yyyy", "yyyy-MM-dd");
+                        AppUtils.appointmentDate = appointmentDate;
+                        mFragmentSignatureInfoBinding.lnrSelectedDate.setVisibility(View.VISIBLE);
+                        mFragmentSignatureInfoBinding.txtAppointmentTitle.setTypeface(mFragmentSignatureInfoBinding.txtAppointmentTitle.getTypeface(), Typeface.BOLD);
+                        mFragmentSignatureInfoBinding.txtSelectdSlot.setText(slotDate+ " | " + assignmentStartTime + " - "+assignmentEndTime);
+                        mFragmentSignatureInfoBinding.lnrBook.setText("CHANGE YOUR SLOT");
+                        Toasty.success(getActivity(), "Appointment booked successfully.", Toasty.LENGTH_SHORT).show();
+                        alertDialog.dismiss();
+                    } else {
+                        Toasty.error(getActivity(), "Please select time slot.", Toasty.LENGTH_SHORT).show();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+
+            btnCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.setCancelable(false);
+            alertDialog.show();
+            alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getSlots(String date) {
+        NetworkCallController controller = new NetworkCallController(this);
+        controller.setListner(new NetworkResponseListner<List<TimeSlot>>() {
+
+            @Override
+            public void onResponse(int requestCode, List<TimeSlot> items) {
+                if (items != null && items.size() > 0) {
+                    mSlotsAdapter.setData(items);
+                    mSlotsAdapter.notifyDataSetChanged();
+
+                    mSlotsAdapter.setOnItemClickHandler(position -> {
+                        assignmentStartTime = mSlotsAdapter.getItem(position).getStartTime();
+                        AppUtils.appointmentStartTime = assignmentStartTime;
+                        assignmentEndTime = mSlotsAdapter.getItem(position).getFinishTime();
+                        AppUtils.appointmentEndTime = assignmentEndTime;
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(int requestCode) {
+
+            }
+        });
+        controller.getAppointmentSlots(SLOT_REQUEST, mGeneralRealmData.get(0).getTaskId(), date, date);
+    }
+
+    private Calendar dateToCalendar(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar;
     }
 
     private void showDatePicker() {

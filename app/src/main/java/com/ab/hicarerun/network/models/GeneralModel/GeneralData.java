@@ -280,6 +280,41 @@ public class GeneralData implements RealmModel {
     @Expose
     private String Renewal_Order_No;
 
+    @SerializedName("ShowNextServiceAppointment")
+    @Expose
+    private Boolean ShowNextServiceAppointment;
+
+    @SerializedName("Next_SR_Service_Date")
+    @Expose
+    private String Next_SR_Service_Date;
+
+    @SerializedName("Next_SR_Service_Start_Time")
+    @Expose
+    private String Next_SR_Service_Start_Time;
+
+    @SerializedName("Next_SR_Service_End_Time")
+    @Expose
+    private String Next_SR_Service_End_Time;
+
+    @SerializedName("SR_Date")
+    @Expose
+    private String SR_Date;
+
+    @SerializedName("Next_SR_Planned_Start_Date")
+    @Expose
+    private String Next_SR_Planned_Start_Date;
+
+    @SerializedName("Next_SR_Planned_End_Date")
+    @Expose
+    private String Next_SR_Planned_End_Date;
+
+    @SerializedName("TaskAssignmentStartDate")
+    @Expose
+    private String TaskAssignmentStartDate;
+
+    @SerializedName("TaskAssignmentEndDate")
+    @Expose
+    private String TaskAssignmentEndDate;
     public GeneralData() {
         SchedulingStatus = "NA";
         PaymentMode = "NA";
@@ -331,7 +366,16 @@ public class GeneralData implements RealmModel {
         Show_Standard_Chemicals = false;
         ActualAmountToCollect = "NA";
         Onsite_Image_Required = false;
-        Onsite_Image_Path = "NA";
+        ShowNextServiceAppointment = false;
+        Next_SR_Service_Date = "NA";
+        Next_SR_Service_Start_Time = "NA";
+        Next_SR_Service_End_Time = "NA";
+
+        SR_Date = "NA";
+        Next_SR_Planned_Start_Date = "NA";
+        Next_SR_Planned_End_Date = "NA";
+        TaskAssignmentStartDate = "NA";
+        TaskAssignmentEndDate = "NA";
     }
 
     public String getOrderNumber() {
@@ -876,5 +920,77 @@ public class GeneralData implements RealmModel {
 
     public void setPostJob_Checklist_Done(Boolean postJob_Checklist_Done) {
         PostJob_Checklist_Done = postJob_Checklist_Done;
+    }
+
+    public Boolean getShowNextServiceAppointment() {
+        return ShowNextServiceAppointment;
+    }
+
+    public void setShowNextServiceAppointment(Boolean showNextServiceAppointment) {
+        ShowNextServiceAppointment = showNextServiceAppointment;
+    }
+
+    public String getNext_SR_Service_Date() {
+        return Next_SR_Service_Date;
+    }
+
+    public void setNext_SR_Service_Date(String next_SR_Service_Date) {
+        Next_SR_Service_Date = next_SR_Service_Date;
+    }
+
+    public String getNext_SR_Service_Start_Time() {
+        return Next_SR_Service_Start_Time;
+    }
+
+    public void setNext_SR_Service_Start_Time(String next_SR_Service_Start_Time) {
+        Next_SR_Service_Start_Time = next_SR_Service_Start_Time;
+    }
+
+    public String getNext_SR_Service_End_Time() {
+        return Next_SR_Service_End_Time;
+    }
+
+    public void setNext_SR_Service_End_Time(String next_SR_Service_End_Time) {
+        Next_SR_Service_End_Time = next_SR_Service_End_Time;
+    }
+
+    public String getSR_Date() {
+        return SR_Date;
+    }
+
+    public void setSR_Date(String SR_Date) {
+        this.SR_Date = SR_Date;
+    }
+
+    public String getNext_SR_Planned_Start_Date() {
+        return Next_SR_Planned_Start_Date;
+    }
+
+    public void setNext_SR_Planned_Start_Date(String next_SR_Planned_Start_Date) {
+        Next_SR_Planned_Start_Date = next_SR_Planned_Start_Date;
+    }
+
+    public String getNext_SR_Planned_End_Date() {
+        return Next_SR_Planned_End_Date;
+    }
+
+    public void setNext_SR_Planned_End_Date(String next_SR_Planned_End_Date) {
+        Next_SR_Planned_End_Date = next_SR_Planned_End_Date;
+    }
+
+    public String getTaskAssignmentStartDate() {
+        return TaskAssignmentStartDate;
+    }
+
+    public void setTaskAssignmentStartDate(String taskAssignmentStartDate) {
+        TaskAssignmentStartDate = taskAssignmentStartDate;
+    }
+
+    public String getTaskAssignmentEndDate() {
+        return TaskAssignmentEndDate;
+    }
+
+    public void setTaskAssignmentEndDate(String taskAssignmentEndDate) {
+        TaskAssignmentEndDate = taskAssignmentEndDate;
     }
 }

@@ -19,8 +19,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_user_grey" />
-                            <entry key="sourceFile" value="D:\Image\user-silhouette (1).svg" />
+                            <entry key="outputName" value="ic_heart_home" />
+                            <entry key="sourceFile" value="D:\Image\heart.svg" />
                           </map>
                         </option>
                       </PersistentState>

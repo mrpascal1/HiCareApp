@@ -156,9 +156,14 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
             new GPSUtils(this).turnGPSOn(isGPSEnable -> {
                 // turn on GPS
                 if (isGPSEnable) {
-                    progress.show();
-                    getServiceCalled();
-                    getTechDeails();
+                    try {
+                        progress.show();
+                        getServiceCalled();
+                        getTechDeails();
+                    }catch (Exception e){
+                       e.printStackTrace();
+                    }
+
 //                    getIncentiveDetails();
                 } else {
                     isGPS = isGPSEnable;

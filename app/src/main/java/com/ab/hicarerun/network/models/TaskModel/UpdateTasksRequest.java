@@ -138,6 +138,19 @@ public class UpdateTasksRequest {
     @Expose
     private String ActualAmountToCollect;
 
+    @SerializedName("Next_SR_Service_Date")
+    @Expose
+    private String Next_SR_Service_Date;
+
+    @SerializedName("Next_SR_Service_Start_Time")
+    @Expose
+    private String Next_SR_Service_Start_Time;
+
+    @SerializedName("Next_SR_Service_End_Time")
+    @Expose
+    private String Next_SR_Service_End_Time;
+
+
 
 
     public UpdateTasksRequest() {
@@ -181,6 +194,9 @@ public class UpdateTasksRequest {
         FlushOutReason = "";
         Next_Task_Id = "";
         ActualAmountToCollect = "";
+        Next_SR_Service_Date = "";
+        Next_SR_Service_Start_Time = "";
+        Next_SR_Service_End_Time = "";
     }
 
     public String getUserId() {
@@ -513,5 +529,27 @@ public class UpdateTasksRequest {
         ActualAmountToCollect = actualAmountToCollect;
     }
 
+    public String getNext_SR_Service_Date() {
+        return Next_SR_Service_Date;
+    }
 
+    public void setNext_SR_Service_Date(String next_SR_Service_Date) {
+        Next_SR_Service_Date = next_SR_Service_Date;
+    }
+
+    public String getNext_SR_Service_Start_Time() {
+        return Next_SR_Service_Start_Time;
+    }
+
+    public void setNext_SR_Service_Start_Time(String next_SR_Service_Start_Time) {
+        Next_SR_Service_Start_Time = next_SR_Service_Start_Time;
+    }
+
+    public String getNext_SR_Service_End_Time() {
+        return Next_SR_Service_End_Time;
+    }
+
+    public void setNext_SR_Service_End_Time(String next_SR_Service_End_Time) {
+        Next_SR_Service_End_Time = next_SR_Service_End_Time;
+    }
 }

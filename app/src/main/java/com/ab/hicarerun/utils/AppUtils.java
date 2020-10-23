@@ -82,6 +82,9 @@ public class AppUtils {
     public static List<Data> inspectionList = null;
     public static List<Data> ConsInsList = null;
     public static boolean isInspectionDone = false;
+    public static String appointmentDate = "";
+    public static String appointmentStartTime = "";
+    public static String appointmentEndTime = "";
 
 
     public class LocationConstants {

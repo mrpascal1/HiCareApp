@@ -820,7 +820,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                 mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_routine_done);
                                 mFragmentServiceInfoBinding.txtPaymentStatus.setTextColor(getResources().getColor(R.color.colorPrimary));
                                 timer.cancel();
-                            } else {
+                            } else if(response.getSTATUS().equals("PENDING")){
                                 if (mTaskDetailsData.get(0).getUpiTransactionId() != null && !mTaskDetailsData.get(0).getUpiTransactionId().equals("")) {
                                     mCallback.isUPIPaymentNotDone(false);
                                     mFragmentServiceInfoBinding.txtPaymentStatus.setText("Payment Successfully Done");
@@ -831,6 +831,18 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                     mFragmentServiceInfoBinding.txtPaymentStatus.setText("Pending...");
                                     mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_processing);
                                     mFragmentServiceInfoBinding.txtPaymentStatus.setTextColor(getResources().getColor(R.color.orange));
+                                }
+                            }else {
+                                mCallback.isUPIPaymentNotDone(true);
+                                if (mTaskDetailsData.get(0).getUpiTransactionId() != null && !mTaskDetailsData.get(0).getUpiTransactionId().equals("")) {
+                                    mFragmentServiceInfoBinding.txtPaymentStatus.setText("Payment Successfully Done");
+                                    mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_routine_done);
+                                    mFragmentServiceInfoBinding.txtPaymentStatus.setTextColor(getResources().getColor(R.color.colorPrimary));
+                                } else {
+                                    timer.cancel();
+                                    mFragmentServiceInfoBinding.txtPaymentStatus.setText("Tansaction Failed");
+                                    mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_warning_red);
+                                    mFragmentServiceInfoBinding.txtPaymentStatus.setTextColor(getResources().getColor(R.color.red));
                                 }
                             }
                         }

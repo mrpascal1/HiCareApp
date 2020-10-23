@@ -26,8 +26,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="65dp"
                 android:background="@color/lightRed"
-                android:visibility="gone"
                 android:orientation="horizontal"
+                android:visibility="gone"
                 android:weightSum="8">
 
                 <LinearLayout
@@ -43,8 +43,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:text="Service Renewal has renewed Successfully"
                         android:layout_marginTop="2dp"
+                        android:text="Service Renewal has renewed Successfully"
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         android:textStyle="bold|italic" />
@@ -63,7 +63,6 @@
                 </LinearLayout>
 
 
-
                 <LinearLayout
                     android:id="@+id/btnRenew"
                     android:layout_width="0dp"
@@ -77,6 +76,7 @@
                         android:layout_marginTop="15dp"
                         android:layout_marginBottom="15dp"
                         android:background="@color/white" />
+
                     <TextView
                         android:id="@+id/txtNew"
                         android:layout_width="match_parent"
@@ -210,7 +210,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="200"
                         android:textColor="@color/colorAccentDrawerPrimaryLight"
                         android:textSize="15sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -281,14 +280,14 @@
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/lnrServiceDate"
+                android:id="@+id/lnrPlannedServiceDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 app:layout_constraintBottom_toBottomOf="@id/lnr_order">
 
                 <LinearLayout
-                    android:id="@+id/lnrScheduleDate"
+                    android:id="@+id/lnrPlannedScheduleDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -310,25 +309,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toRightOf="@id/lnrScheduleDate"
+                    app:layout_constraintLeft_toRightOf="@id/lnrPlannedScheduleDate"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
-                        android:layout_width="130dp"
+                        android:layout_width="200dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="7dp"
-                        android:text="Next Service Date"
+                        android:text="Your Next Service Planned Date"
                         android:textColor="@color/colorAccentDrawerPrimaryLight"
                         android:textSize="15sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
                 <RelativeLayout
-                    android:id="@+id/lnrDate"
+                    android:id="@+id/lnrPlannedDate"
                     android:layout_width="140dp"
                     android:layout_height="26dp"
                     android:layout_marginRight="20dp"
-                    android:background="@drawable/edit_box_border"
                     android:gravity="center"
                     android:onClick="@{(view) -> handler.onScheduleDateClicked(view)}"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -336,31 +334,84 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
-                        android:id="@+id/txt_date"
+                        android:id="@+id/txtPlannedDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
-                        android:layout_marginRight="12dp"
                         android:ellipsize="end"
+                        android:gravity="center"
                         android:singleLine="true"
-                        android:text="@string/select_date"
+                        android:text="NA"
                         android:textColor="@color/black"
                         android:textSize="14sp" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/imgCalendar"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        app:srcCompat="@drawable/ic_date_calendar" />
 
                 </RelativeLayout>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <RelativeLayout
+                android:id="@+id/lnrServiceDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginTop="15dp"
+                android:gravity="right"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="@id/lnr_order">
+
+
+                <Button
+                    android:id="@+id/lnrBook"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="85dp"
+                    android:layout_marginRight="85dp"
+                    android:background="@drawable/book_gradient"
+                    android:onClick="@{(view) -> handler.onBookAppointmentClicked(view)}"
+                    android:text="BOOK YOUR SLOT"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white">
+
+                </Button>
+
+                <LinearLayout
+                    android:id="@+id/lnrSelectedDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/lnrBook"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txtAppointmentTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Your Appointment Date"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/txtSelectdSlot"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/lnrBook"
+                        android:layout_marginTop="5dp"
+                        android:text="10-Jan-2020 | 1:00 PM - 3:00 PM"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -489,7 +540,7 @@
                     android:layout_centerInParent="true"
                     android:onClick="@{(view) -> handler.onSignatureClicked(view)}"
                     android:text="@string/tap_here_to_sign"
-                    android:textSize="22sp"/>
+                    android:textSize="22sp" />
 
             </RelativeLayout>
 

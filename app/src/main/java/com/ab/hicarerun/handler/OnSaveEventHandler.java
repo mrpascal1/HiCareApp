@@ -98,6 +98,10 @@ public interface OnSaveEventHandler {
     public void isPaymentOtpvalidated(Boolean b);
 
     public void isPaymentModeNotChanged(Boolean b);
-//
-//    public void AttachmentList(List<GetAttachmentList> mList);
+
+    public void assignmentStartDate(String s);
+
+    public void assignmentStartTime(String s);
+
+    public void assignmentEndTime(String s);
 }

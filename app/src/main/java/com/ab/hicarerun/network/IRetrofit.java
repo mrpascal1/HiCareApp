@@ -85,6 +85,7 @@ import com.ab.hicarerun.network.models.ServicePlanModel.RenewOrderRequest;
 import com.ab.hicarerun.network.models.ServicePlanModel.RenewOrderResponse;
 import com.ab.hicarerun.network.models.ServicePlanModel.RenewalOTPResponse;
 import com.ab.hicarerun.network.models.ServicePlanModel.ServicePlanResponse;
+import com.ab.hicarerun.network.models.SlotModel.SlotResponse;
 import com.ab.hicarerun.network.models.TaskModel.TaskListResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTaskResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
@@ -117,6 +118,7 @@ public interface IRetrofit {
     String EXOTEL_URL = "http://apps.hicare.in/api/api/";
     String ERROR_LOG_URL = "http://run.hicare.in/logging/api/";
     String JEOPARDY_URL = "http://apps.hicare.in/cwf/";
+    String SLOT_URL = "http://api.hicare.in/slot/api/";
 
     /*[Verify User]*/
 
@@ -501,4 +503,9 @@ public interface IRetrofit {
     /*ResourceActivity/GetKarmaForResource*/
     @GET("ResourceActivity/GetKarmaHistoryForResource")
     Call<KarmaHistoryResponse> getKarmaHistoryForResource(@Query("resourceId") String userId);
+
+
+    /*slot/GetAvailableSlotForMobile*/
+    @GET("slot/GetAvailableSlotForMobile")
+    Call<SlotResponse> getAppointmentSlots(@Query("taskId") String taskId, @Query("slotStartDate") String slotStartDate, @Query("slotEndDate") String slotEndDate);
 }

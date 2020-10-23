@@ -251,7 +251,7 @@ public class LoginActivity extends BaseActivity implements InstallStateUpdatedLi
                     Version = data.getVersion();
                     Apk_URL = data.getApkurl();
                     Apk_Type = data.getApktype();
-                    addFragment(NewLoginFragment.newInstance(Version, Apk_URL, Apk_Type), "LoginTrealActivity-CreateRealFragment");
+                    addFragment(NewLoginFragment.newInstance("5.0", Apk_URL, Apk_Type), "LoginTrealActivity-CreateRealFragment");
                 }
 
                 @Override

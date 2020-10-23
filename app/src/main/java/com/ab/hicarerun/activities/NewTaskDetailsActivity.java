@@ -261,6 +261,9 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private List<TaskCheckList> mOnsiteCheckList = new ArrayList<>();
     private List<SaveCheckListRequest> mSaveList = new ArrayList<>();
     HashSet<SaveCheckListRequest> saveHashSet = null;
+    private String assignmentStartDate = "";
+    private String assignmentStartTime = "";
+    private String assignmentEndTime = "";
 
     //   @Override
     //  protected void attachBaseContext(Context base) {
@@ -1117,6 +1120,9 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 request.setFlushOutReason(flushoutReason);
                 request.setNext_Task_Id(nextTaskId);
                 request.setActualAmountToCollect(mActualAmountToCollect);
+                request.setNext_SR_Service_Date(assignmentStartDate);
+                request.setNext_SR_Service_Start_Time(assignmentStartTime);
+                request.setNext_SR_Service_End_Time(assignmentEndTime);
 
                 NetworkCallController controller = new NetworkCallController();
                 controller.setListner(new NetworkResponseListner() {
@@ -1838,6 +1844,22 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     @Override
     public void isPaymentModeNotChanged(Boolean b) {
         isPaymentModeNotChanged = b;
+    }
+
+    @Override
+    public void assignmentStartDate(String s) {
+        assignmentStartDate = s;
+    }
+
+
+    @Override
+    public void assignmentStartTime(String s) {
+        assignmentStartTime = s;
+    }
+
+    @Override
+    public void assignmentEndTime(String s) {
+        assignmentEndTime = s;
     }
 
 }

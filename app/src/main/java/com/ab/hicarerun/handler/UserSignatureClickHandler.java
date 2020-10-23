@@ -12,4 +12,6 @@ public interface UserSignatureClickHandler {
 
     void onScheduleDateClicked(View view);
 
+    void onBookAppointmentClicked(View view);
+
 }
