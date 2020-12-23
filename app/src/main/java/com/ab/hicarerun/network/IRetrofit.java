@@ -37,6 +37,8 @@ import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyResponse;
 import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonModel;
 import com.ab.hicarerun.network.models.KarmaModel.KarmaHistoryResponse;
 import com.ab.hicarerun.network.models.KarmaModel.KarmaResponse;
+import com.ab.hicarerun.network.models.KarmaModel.SaveKarmaRequest;
+import com.ab.hicarerun.network.models.KarmaModel.SaveKarmaResponse;
 import com.ab.hicarerun.network.models.KycModel.KycDocumentResponse;
 import com.ab.hicarerun.network.models.KycModel.KycTypeResponse;
 import com.ab.hicarerun.network.models.KycModel.SaveKycRequest;
@@ -113,12 +115,12 @@ public interface IRetrofit {
     //    String BASE_URL = "http://52.74.65.15/mobileapi/api/";
     //    String ERROR_LOG_URL = "http://52.74.65.15/logging/api/";
     //    http://apps.hicare.in/cwf/datasync/InsertRenewalAppJeopardy
-    String BASE_URL = "http://api.hicare.in/mobile/api/";
-    String SCAN_URL = "http://api.hicare.in/taskservice/api/";
+    String BASE_URL = "http://run.hicare.in/mobile/api/";
+    String SCAN_URL = "http://run.hicare.in/taskservice/api/";
     String EXOTEL_URL = "http://apps.hicare.in/api/api/";
     String ERROR_LOG_URL = "http://run.hicare.in/logging/api/";
     String JEOPARDY_URL = "http://apps.hicare.in/cwf/";
-    String SLOT_URL = "http://api.hicare.in/slot/api/";
+    String SLOT_URL = "http://run.hicare.in/slot/api/";
 
     /*[Verify User]*/
 
@@ -504,8 +506,10 @@ public interface IRetrofit {
     @GET("ResourceActivity/GetKarmaHistoryForResource")
     Call<KarmaHistoryResponse> getKarmaHistoryForResource(@Query("resourceId") String userId);
 
-
     /*slot/GetAvailableSlotForMobile*/
     @GET("slot/GetAvailableSlotForMobile")
     Call<SlotResponse> getAppointmentSlots(@Query("taskId") String taskId, @Query("slotStartDate") String slotStartDate, @Query("slotEndDate") String slotEndDate);
+
+    @POST("ResourceActivity/SaveKarmaVideoDetails")
+    Call<SaveKarmaResponse> saveKarmaDetails(@Body SaveKarmaRequest request);
 }

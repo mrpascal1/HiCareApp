@@ -164,9 +164,18 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 //    public static final String ARGS_MOBILE = "ARGS_MOBILE";
 //    public static final String ARGS_TAG = "ARGS_TAG";
 //    public static final String ARGS_SEQUENCE = "ARGS_SEQUENCE";
-    ServiceInfoFragment.ServiceInfoListener mCallback = () -> {
-        isFinalSave = false;
-        showCompletionDialog();
+
+    ServiceInfoFragment.ServiceInfoListener mCallback = new ServiceInfoFragment.ServiceInfoListener() {
+        @Override
+        public void onPostJobButtonClicked() {
+            isFinalSave = false;
+            showCompletionDialog();
+        }
+
+        @Override
+        public void onRefreshClicked() {
+            getTaskDetailsById();
+        }
     };
     public static final String LAT_LONG = "LAT_LONG";
     private static final String TAG = "NewTaskDetailsActivity";
@@ -1247,10 +1256,10 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             Toasty.error(this, "Image required!", Toasty.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toasty.error(this, "Please select your answer.", Toasty.LENGTH_SHORT).show();
+                        Toasty.error(this, "All Questions are mandatory.", Toasty.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toasty.error(this, "Please select your answer.", Toasty.LENGTH_SHORT).show();
+                    Toasty.error(this, "All Questions are mandatory.", Toasty.LENGTH_SHORT).show();
                 }
             });
 

@@ -82,6 +82,7 @@
     <color name="game_grey_light">#2e2e2e</color>
     <color name="game_green">#5dda4c</color>
     <color name="game_green_dark">#3b6b35</color>
-    <color name="amber">#ffbf00</color>
+    <color name="amber">#ffa500</color>
+    <color name="karmaGreen">#008000</color>
 
 </resources>

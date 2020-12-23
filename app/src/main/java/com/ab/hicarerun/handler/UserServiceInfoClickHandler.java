@@ -13,4 +13,5 @@ public interface UserServiceInfoClickHandler {
     void onImageDeleteClicked(View view);
     void onBankNameClicked(View view);
     void onViewBottonClicked(View view);
+    void onBookAppointmentClicked(View view);
 }

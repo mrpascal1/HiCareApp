@@ -49,6 +49,8 @@ import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyResponse;
 import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonModel;
 import com.ab.hicarerun.network.models.KarmaModel.KarmaHistoryResponse;
 import com.ab.hicarerun.network.models.KarmaModel.KarmaResponse;
+import com.ab.hicarerun.network.models.KarmaModel.SaveKarmaRequest;
+import com.ab.hicarerun.network.models.KarmaModel.SaveKarmaResponse;
 import com.ab.hicarerun.network.models.KycModel.KycDocumentResponse;
 import com.ab.hicarerun.network.models.KycModel.KycTypeResponse;
 import com.ab.hicarerun.network.models.KycModel.SaveKycRequest;
@@ -4409,6 +4411,7 @@ public class NetworkCallController {
 
                         @Override
                         public void onFailure(Call<SlotResponse> call, Throwable t) {
+                            mContext.dismissProgressDialog();
                         }
                     });
         } catch (Exception e) {
@@ -4416,7 +4419,45 @@ public class NetworkCallController {
         }
 
     }
+    public void saveKarmaDetails(final int requestCode, SaveKarmaRequest request) {
+        try {
+            BaseApplication.getRetrofitAPI(true)
+                    .saveKarmaDetails(request)
+                    .enqueue(new Callback<SaveKarmaResponse>() {
+                        @Override
+                        public void onResponse(Call<SaveKarmaResponse> call,
+                                               Response<SaveKarmaResponse> response) {
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+//                                        mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getGroomingTechnicians", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
 
+                        @Override
+                        public void onFailure(Call<SaveKarmaResponse> call, Throwable t) {
+//                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     public String getRefreshToken() {
         String refreshToken = null;

@@ -1,41 +1,27 @@
 package com.ab.hicarerun.fragments;
-
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.activities.HomeActivity;
-import com.ab.hicarerun.activities.TechIdActivity;
-import com.ab.hicarerun.activities.TechnicianSeniorActivity;
 import com.ab.hicarerun.databinding.FragmentTechIdBinding;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.ProfileModel.Profile;
-import com.ab.hicarerun.network.models.ProfileModel.TechnicianProfileDetails;
 import com.ab.hicarerun.utils.AppUtils;
-
 import org.jetbrains.annotations.NotNull;
-
-import java.io.ByteArrayOutputStream;
-
 import io.realm.RealmResults;
-
 public class TechIdFragment extends BaseFragment {
 
     FragmentTechIdBinding mFragmentTechIdBinding;
@@ -97,14 +83,70 @@ public class TechIdFragment extends BaseFragment {
                         public void onResponse(int requestCode, Object data) {
                             Profile response = (Profile) data;
                             String TechName = response.getFirstName();
+                            mFragmentTechIdBinding.txtAdhaar.setTypeface(mFragmentTechIdBinding.txtAdhaar.getTypeface(), Typeface.BOLD);
+                            mFragmentTechIdBinding.txtAdhaarLabel.setTypeface(mFragmentTechIdBinding.txtAdhaarLabel.getTypeface(), Typeface.BOLD);
+                            mFragmentTechIdBinding.txtTechName.setTypeface(mFragmentTechIdBinding.txtTechName.getTypeface(), Typeface.BOLD);
+                            mFragmentTechIdBinding.txtReadings.setTypeface(mFragmentTechIdBinding.txtReadings.getTypeface(), Typeface.BOLD);
+                            mFragmentTechIdBinding.txtTemp.setTypeface(mFragmentTechIdBinding.txtTemp.getTypeface(), Typeface.BOLD);
+                            mFragmentTechIdBinding.txtPulse.setTypeface(mFragmentTechIdBinding.txtPulse.getTypeface(), Typeface.BOLD);
+                            mFragmentTechIdBinding.txtOxymeter.setTypeface(mFragmentTechIdBinding.txtOxymeter.getTypeface(), Typeface.BOLD);
+                            mFragmentTechIdBinding.txtFreeText1.setTypeface(mFragmentTechIdBinding.txtFreeText1.getTypeface(), Typeface.ITALIC);
+                            mFragmentTechIdBinding.txtFreeText2.setTypeface(mFragmentTechIdBinding.txtFreeText2.getTypeface(), Typeface.ITALIC);
+                            mFragmentTechIdBinding.txtGrp.setTypeface(mFragmentTechIdBinding.txtGrp.getTypeface(), Typeface.BOLD);
+                            mFragmentTechIdBinding.txtSymptoms.setTypeface(mFragmentTechIdBinding.txtSymptoms.getTypeface(), Typeface.BOLD);
+                            mFragmentTechIdBinding.txtSupp.setTypeface(mFragmentTechIdBinding.txtSupp.getTypeface(), Typeface.BOLD);
                             if (response.getEmployeeCode() != null) {
                                 String EmpCode = response.getEmployeeCode();
-                                mFragmentTechIdBinding.txtCode.setText(EmpCode);
-                                mFragmentTechIdBinding.lnrAdded.setVisibility(View.VISIBLE);
-                            } else {
-                                mFragmentTechIdBinding.lnrAdded.setVisibility(View.GONE);
+                                mFragmentTechIdBinding.txtEmpCode.setText(EmpCode);
                             }
                             mFragmentTechIdBinding.txtTechName.setText(TechName);
+                            if(response.getBloodGroup()!=null){
+                                mFragmentTechIdBinding.txtGrp.setText(response.getBloodGroup());
+                            }else {
+                                mFragmentTechIdBinding.txtGrp.setText("NA");
+                            }
+                            if(response.getAadharNo()!=null){
+                                mFragmentTechIdBinding.txtAdhaar.setText(response.getAadharNo());
+                            }else {
+                                mFragmentTechIdBinding.txtAdhaar.setText("NA");
+                            }
+
+                            if(response.getOxymeter()!=null){
+                                mFragmentTechIdBinding.txtOxymeter.setText(response.getOxymeter());
+                            }else {
+                                mFragmentTechIdBinding.txtOxymeter.setText("NA");
+                            }
+
+                            if(response.getTemperature()!=null){
+                                mFragmentTechIdBinding.txtTemp.setText(response.getTemperature());
+                            }else {
+                                mFragmentTechIdBinding.txtTemp.setText("NA");
+                            }
+
+                            if(response.getPulse()!=null){
+                                mFragmentTechIdBinding.txtPulse.setText(response.getPulse());
+                            }else {
+                                mFragmentTechIdBinding.txtPulse.setText("NA");
+                            }
+
+                            if(response.getServiceCenter()!=null){
+                                mFragmentTechIdBinding.txtSC.setVisibility(View.VISIBLE);
+                                mFragmentTechIdBinding.txtSC.setText(response.getServiceCenter()+", "+response.getCity());
+                            }else {
+                                mFragmentTechIdBinding.txtSC.setVisibility(View.GONE);
+                            }
+                            if(response.getSupplements()!=null){
+                                mFragmentTechIdBinding.txtSupp.setText(response.getSupplements());
+                            }else {
+                                mFragmentTechIdBinding.txtSupp.setText("NA");
+                            }
+
+                            if(response.getSymtoms()!=null){
+                                mFragmentTechIdBinding.txtSymptoms.setText(response.getSymtoms());
+                            }else {
+                                mFragmentTechIdBinding.txtSymptoms.setText("NA");
+                            }
+
                             if(response.getProfilePic()!= null){
                                 String base64 = response.getProfilePic();
                                 byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
@@ -113,7 +155,6 @@ public class TechIdFragment extends BaseFragment {
                                     mFragmentTechIdBinding.imgTech.setImageBitmap(decodedByte);
                                 }
                             }
-
                         }
 
                         @Override

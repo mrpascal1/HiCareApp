@@ -301,6 +301,67 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <RelativeLayout
+                android:id="@+id/lnrServiceDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginTop="15dp"
+                android:gravity="right"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="@id/lnr_order">
+
+
+                <Button
+                    android:id="@+id/lnrBook"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="120dp"
+                    android:layout_marginRight="120dp"
+                    android:background="@drawable/book_gradient"
+                    android:onClick="@{(view) -> handler.onBookAppointmentClicked(view)}"
+                    android:text="BOOK NEXT SLOT"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white">
+
+                </Button>
+
+                <LinearLayout
+                    android:id="@+id/lnrSelectedDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/lnrBook"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txtAppointmentTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Your Next Appointment Date"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/txtSelectdSlot"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/lnrBook"
+                        android:layout_marginTop="5dp"
+                        android:text="10-Jan-2020 | 1:00 PM - 3:00 PM"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/lnrType"
                 android:layout_width="match_parent"
@@ -595,6 +656,9 @@
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
 
 
             <View
@@ -1374,13 +1438,14 @@
                     android:visibility="gone">
 
                     <TextView
-                        android:layout_width="200dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:layout_marginTop="15dp"
-                        android:textSize="12sp"
+                        android:textSize="11sp"
                         android:text="Please show the QR Code to the customer"/>
+
 
                     <TextView
                         android:id="@+id/txtQrOrder"
@@ -1389,9 +1454,50 @@
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:layout_marginTop="7dp"
+                        android:textSize="11sp"
+                        android:textColor="@color/black"
+                        android:text="Order# 9099458450"/>
+
+                    <ImageView
+                        android:id="@+id/imgAmazonPay"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="-16dp"
+                        android:gravity="center"
+                        android:src="@drawable/amazon_pay"/>
+
+
+                    <TextView
+                        android:id="@+id/txtAmazonPay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:layout_marginTop="-16dp"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/txtAmazonBack"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textSize="12sp"
                         android:textColor="@color/black"
-                        android:text="Order# 90994589450"/>
+                        android:layout_marginTop="2dp" />
+
+                    <TextView
+                        android:id="@+id/txtTC"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textSize="10sp"
+                        android:layout_marginTop="5dp"
+                        android:text="*T&amp;C apply"
+                        android:textColor="@color/black"/>
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cardScanner"
@@ -1418,7 +1524,6 @@
                         android:layout_height="25dp"
                         android:gravity="center"
                         android:layout_marginBottom="10dp"
-                        android:paddingBottom="5dp"
                         android:orientation="horizontal"
                         android:layout_gravity="center">
 
@@ -1442,11 +1547,36 @@
 
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:id="@+id/lnrRefresh"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:elevation="2dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/book_gradient"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:text="Check Payment Status"
+                            android:textColor="@color/white"
+                            android:textSize="14sp" />
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_marginRight="10dp"
+                            app:srcCompat="@drawable/ic_refresh" />
+
+
+                    </LinearLayout>
 
 
                 </LinearLayout>
-
-
 
 
             </LinearLayout>

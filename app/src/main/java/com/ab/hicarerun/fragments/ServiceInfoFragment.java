@@ -32,6 +32,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
@@ -43,6 +44,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -56,6 +58,7 @@ import com.ab.hicarerun.activities.NewTaskDetailsActivity;
 import com.ab.hicarerun.adapter.BankSearchAdapter;
 import com.ab.hicarerun.adapter.CheckListParentAdapter;
 import com.ab.hicarerun.adapter.ChemicalDialogAdapter;
+import com.ab.hicarerun.adapter.SlotsAdapter;
 import com.ab.hicarerun.databinding.FragmentServiceInfoBinding;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
 import com.ab.hicarerun.handler.UserServiceInfoClickHandler;
@@ -84,6 +87,7 @@ import com.ab.hicarerun.network.models.ModelQRCode.PhonePeQRCode;
 import com.ab.hicarerun.network.models.ModelQRCode.QRCode;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
+import com.ab.hicarerun.network.models.SlotModel.TimeSlot;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.MyDividerItemDecoration;
 import com.bumptech.glide.Glide;
@@ -105,6 +109,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -139,6 +144,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private static final int QR_CODE_REQ = 6000;
     private static final int UPLOAD_REQ = 7000;
     private static final int CHECK_REQ = 8000;
+    private static final int SLOT_REQUEST = 6000;
+
 
     private AlertDialog alertDialog;
     private Integer pageNumber = 1;
@@ -150,6 +157,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private String PaymentOtp = "";
     private String ScOtp = "";
     private String[] arrayReason = null;
+    private Boolean[] arraySlots = null;
     private String[] arrayStatus = null;
     private Boolean isFeedback = false;
     private Boolean isChequeRequired = false;
@@ -162,6 +170,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
     private int radiopos = 0;
     private String Selection = "";
+    private Boolean isShowSlots = false;
     private String onsiteTechImage = "";
     private String chequeImg = "";
     private String selectedImagePath = "";
@@ -189,6 +198,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private RealmResults<GeneralData> mTaskDetailsData = null;
     private RealmResults<GeneralTaskStatus> generalTaskRealmModel;
     private RealmResults<IncompleteReason> ReasonRealmModel = null;
+    private RealmResults<IncompleteReason> SlotsRealmModel = null;
     private RealmResults<GeneralPaymentMode> mPaymentRealmModel;
 
     private AlertDialog mAlertDialog = null;
@@ -199,6 +209,12 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private Timer timer = new Timer();
     private boolean hasStarted = false;
     private String UpiTransactionId = "";
+    private String orderId = "";
+    private String txnId = "";
+    private String appointmentDate = "";
+    private String assignmentStartTime = "";
+    private String assignmentEndTime = "";
+    private SlotsAdapter mSlotsAdapter;
 
     public static ServiceInfoFragment newInstance(String taskId, String combinedTaskId, boolean isCombinedTasks, String combinedTypes, String combinedOrders, ServiceInfoListener mPostCallback) {
         Bundle args = new Bundle();
@@ -262,6 +278,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
         assert imm != null;
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        mFragmentServiceInfoBinding.lnrBook.setTypeface(mFragmentServiceInfoBinding.lnrBook.getTypeface(), Typeface.BOLD);
         bankList = new ArrayList<>();
         getServiceDetail();
         getPaymentData();
@@ -444,6 +461,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 AmountCollected = mTaskDetailsData.get(0).getAmountCollected();
                 AmountToCollect = Integer.parseInt(mTaskDetailsData.get(0).getAmountToCollect());
                 mFragmentServiceInfoBinding.txtAmountToCollect.setText("₹ " + AmountToCollect);
+                mFragmentServiceInfoBinding.txtQrOrder.setTypeface(mFragmentServiceInfoBinding.txtQrOrder.getTypeface(), Typeface.BOLD);
                 mPaymentRealmModel = getRealm().where(GeneralPaymentMode.class).findAll().sort("Value");
                 type = new ArrayList<>();
                 type.clear();
@@ -473,7 +491,6 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 }
 
 
-
                 if (isPaymentJeopardyRaised && sta.equals("On-Site")) {
                     getValidated(AmountToCollect);
                 }
@@ -486,7 +503,6 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                             .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> getLessPaymentJeopardy())
                             .setNegativeButton(android.R.string.no, null).show();
                 });
-
 
 
                 try {
@@ -603,6 +619,10 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                 }
                             }
                             if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equalsIgnoreCase("paytm")) {
+                                mFragmentServiceInfoBinding.imgAmazonPay.setVisibility(GONE);
+                                mFragmentServiceInfoBinding.txtAmazonPay.setVisibility(GONE);
+                                mFragmentServiceInfoBinding.txtAmazonBack.setVisibility(GONE);
+                                mFragmentServiceInfoBinding.txtTC.setVisibility(GONE);
                                 if (mTaskDetailsData.get(0).getUpiTransactionId() != null && !mTaskDetailsData.get(0).getUpiTransactionId().equals("")) {
                                     mFragmentServiceInfoBinding.txtPaymentStatus.setText("Payment Successfully Done");
                                     mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_routine_done);
@@ -614,6 +634,10 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                 }
                                 loadQRCOde();
                             } else if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equalsIgnoreCase("phonepe")) {
+                                mFragmentServiceInfoBinding.imgAmazonPay.setVisibility(GONE);
+                                mFragmentServiceInfoBinding.txtAmazonPay.setVisibility(GONE);
+                                mFragmentServiceInfoBinding.txtAmazonBack.setVisibility(GONE);
+                                mFragmentServiceInfoBinding.txtTC.setVisibility(GONE);
                                 if (mTaskDetailsData.get(0).getUpiTransactionId() != null && !mTaskDetailsData.get(0).getUpiTransactionId().equals("")) {
                                     mFragmentServiceInfoBinding.txtPaymentStatus.setText("Payment Successfully Done");
                                     mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_routine_done);
@@ -624,6 +648,26 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                     mFragmentServiceInfoBinding.txtPaymentStatus.setTextColor(getResources().getColor(R.color.orange));
                                 }
                                 loadPhonePeCode();
+                            } else if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equalsIgnoreCase("amazon pay")) {
+                                mFragmentServiceInfoBinding.imgAmazonPay.setVisibility(View.VISIBLE);
+                                mFragmentServiceInfoBinding.txtAmazonPay.setVisibility(View.VISIBLE);
+                                mFragmentServiceInfoBinding.txtAmazonBack.setVisibility(View.VISIBLE);
+                                mFragmentServiceInfoBinding.txtTC.setVisibility(View.VISIBLE);
+                                mFragmentServiceInfoBinding.txtAmazonBack.setTypeface(mFragmentServiceInfoBinding.txtAmazonBack.getTypeface(), Typeface.BOLD);
+                                mFragmentServiceInfoBinding.txtAmazonPay.setTypeface(mFragmentServiceInfoBinding.txtAmazonPay.getTypeface(), Typeface.BOLD);
+                                String text = "<font color=#000000>Scan and Pay using Amazon Pay UPI and win cashback upto </font> <font color=#e76e54>₹500</font><font color=#000000>.</font>";
+                                mFragmentServiceInfoBinding.txtAmazonPay.setText(Html.fromHtml(text));
+                                mFragmentServiceInfoBinding.txtAmazonBack.setText("Valid once per user during offer period.");
+                                if (mTaskDetailsData.get(0).getUpiTransactionId() != null && !mTaskDetailsData.get(0).getUpiTransactionId().equals("")) {
+                                    mFragmentServiceInfoBinding.txtPaymentStatus.setText("Payment Successfully Done");
+                                    mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_routine_done);
+                                    mFragmentServiceInfoBinding.txtPaymentStatus.setTextColor(getResources().getColor(R.color.colorPrimary));
+                                } else {
+                                    mFragmentServiceInfoBinding.txtPaymentStatus.setText("Pending...");
+                                    mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_processing);
+                                    mFragmentServiceInfoBinding.txtPaymentStatus.setTextColor(getResources().getColor(R.color.orange));
+                                }
+                                loadQRCOde();
                             } else {
                                 if (hasStarted) {
                                     timer.cancel();
@@ -637,6 +681,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 //                                getValidated(AmountToCollect);
 //                                Picasso.get().load("http://52.74.65.15/MobileApi/images/PayTm.png").into(mFragmentServiceInfoBinding.imgPayscanner);
 //                            } else if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("Google Pay")) {
+//
 //                                mFragmentServiceInfoBinding.lnrQrCode.setVisibility(View.VISIBLE);
 //                                getValidated(AmountToCollect);
 //                                Picasso.get().load("http://52.74.65.15/MobileApi/images/gpay.png").into(mFragmentServiceInfoBinding.imgPayscanner);
@@ -712,6 +757,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                         mFragmentServiceInfoBinding.lnrCollected.setVisibility(GONE);
                         Picasso.get().load(response.getQRImageUrl()).into(mFragmentServiceInfoBinding.imgPayscanner);
                         checkPhonePeStatus(response.getTransactionId(), response.getOrderNo());
+                        txnId = response.getTransactionId();
+                        orderId = response.getOrderNo();
                         getValidated(AmountToCollect);
                     }
 
@@ -766,7 +813,9 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                             mFragmentServiceInfoBinding.txtPaymentStatus.setText(response.getUserMessage());
                             mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_routine_done);
                             mFragmentServiceInfoBinding.txtPaymentStatus.setTextColor(getResources().getColor(R.color.colorPrimary));
-                            timer.cancel();
+                            if (timer != null) {
+                                timer.cancel();
+                            }
                         } else if (response.getUserMessage().toLowerCase().contains("pending")) {
                             mCallback.isUPIPaymentNotDone(true);
                             if (mTaskDetailsData.get(0).getUpiTransactionId() != null && !mTaskDetailsData.get(0).getUpiTransactionId().equals("")) {
@@ -785,7 +834,9 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                 mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_routine_done);
                                 mFragmentServiceInfoBinding.txtPaymentStatus.setTextColor(getResources().getColor(R.color.colorPrimary));
                             } else {
-                                timer.cancel();
+                                if (timer != null) {
+                                    timer.cancel();
+                                }
                                 mFragmentServiceInfoBinding.txtPaymentStatus.setText(response.getUserMessage());
                                 mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_warning_red);
                                 mFragmentServiceInfoBinding.txtPaymentStatus.setTextColor(getResources().getColor(R.color.red));
@@ -819,8 +870,11 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                 mCallback.isUPIPaymentNotDone(false);
                                 mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_routine_done);
                                 mFragmentServiceInfoBinding.txtPaymentStatus.setTextColor(getResources().getColor(R.color.colorPrimary));
-                                timer.cancel();
-                            } else if(response.getSTATUS().equals("PENDING")){
+                                if (timer != null) {
+                                    timer.cancel();
+                                }
+
+                            } else if (response.getSTATUS().equals("PENDING")) {
                                 if (mTaskDetailsData.get(0).getUpiTransactionId() != null && !mTaskDetailsData.get(0).getUpiTransactionId().equals("")) {
                                     mCallback.isUPIPaymentNotDone(false);
                                     mFragmentServiceInfoBinding.txtPaymentStatus.setText("Payment Successfully Done");
@@ -832,14 +886,16 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                     mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_processing);
                                     mFragmentServiceInfoBinding.txtPaymentStatus.setTextColor(getResources().getColor(R.color.orange));
                                 }
-                            }else {
+                            } else {
                                 mCallback.isUPIPaymentNotDone(true);
                                 if (mTaskDetailsData.get(0).getUpiTransactionId() != null && !mTaskDetailsData.get(0).getUpiTransactionId().equals("")) {
                                     mFragmentServiceInfoBinding.txtPaymentStatus.setText("Payment Successfully Done");
                                     mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_routine_done);
                                     mFragmentServiceInfoBinding.txtPaymentStatus.setTextColor(getResources().getColor(R.color.colorPrimary));
                                 } else {
-                                    timer.cancel();
+                                    if (timer != null) {
+                                        timer.cancel();
+                                    }
                                     mFragmentServiceInfoBinding.txtPaymentStatus.setText("Tansaction Failed");
                                     mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_warning_red);
                                     mFragmentServiceInfoBinding.txtPaymentStatus.setTextColor(getResources().getColor(R.color.red));
@@ -880,6 +936,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                         mFragmentServiceInfoBinding.txtQrOrder.setText("Order #" + response.getOrderId());
                         Picasso.get().load(response.getUrl()).into(mFragmentServiceInfoBinding.imgPayscanner);
                         checkPaymentStatus(response.getOrderId());
+                        orderId = response.getOrderId();
                         getValidated(AmountToCollect);
                     }
 
@@ -936,22 +993,33 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     mFragmentServiceInfoBinding.txtConsIns.setTypeface(mFragmentServiceInfoBinding.txtConsIns.getTypeface(), Typeface.BOLD);
                     mFragmentServiceInfoBinding.txtView.setTypeface(mFragmentServiceInfoBinding.txtView.getTypeface(), Typeface.BOLD);
 
-                    if (status.equals("On-Site") && !mTaskDetailsData.get(0).getPostJob_Checklist_Done() && mTaskDetailsData.get(0).getTaskCheckList()!=null && mTaskDetailsData.get(0).getTaskCheckList().size()>0) {
+                    if (status.equals("On-Site") && !mTaskDetailsData.get(0).getPostJob_Checklist_Done() && mTaskDetailsData.get(0).getTaskCheckList() != null && mTaskDetailsData.get(0).getTaskCheckList().size() > 0) {
                         mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
                     } else {
                         mFragmentServiceInfoBinding.btnCheckList.setVisibility(GONE);
                     }
 
-                    mFragmentServiceInfoBinding.btnCheckList.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(!isPostJobCompletionDone){
-                                isPostJobCompletionDone = true;
-                                mListCallback.onPostJobButtonClicked();
-                            }else {
-                                Toasty.success(getActivity(), "You have successfully submitted Post Job Check-List").show();
-                            }
+                    mFragmentServiceInfoBinding.btnCheckList.setOnClickListener(v -> {
+                        if (!isPostJobCompletionDone) {
+                            isPostJobCompletionDone = true;
+                            mListCallback.onPostJobButtonClicked();
+                        } else {
+                            Toasty.success(getActivity(), "You have successfully submitted Post Job Check-List").show();
+                        }
 
+                    });
+
+                    if (status.equals("On-Site")) {
+                        mFragmentServiceInfoBinding.lnrRefresh.setVisibility(View.VISIBLE);
+                    } else {
+                        mFragmentServiceInfoBinding.lnrRefresh.setVisibility(View.GONE);
+                    }
+
+                    mFragmentServiceInfoBinding.lnrRefresh.setOnClickListener(v -> {
+                        if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equalsIgnoreCase("paytm")) {
+                            checkStatus(orderId, timer);
+                        } else if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equalsIgnoreCase("phonepe")) {
+                            checkPhoneStatus(txnId, orderId, timer);
                         }
                     });
 
@@ -1041,13 +1109,23 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                 if (mFragmentServiceInfoBinding.txtReason.getText().toString().equals("Select Reason")) {
                                     mCallback.isIncompleteReason(true);
                                     mCallback.getIncompleteReason("");
+                                    mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(GONE);
 
+                                } else if (isShowSlots) {
+                                    mCallback.isIncompleteReason(false);
+                                    mCallback.getIncompleteReason(mFragmentServiceInfoBinding.txtReason.getText().toString());
+                                    mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(View.VISIBLE);
                                 } else {
                                     mCallback.isIncompleteReason(false);
                                     mCallback.getIncompleteReason(mFragmentServiceInfoBinding.txtReason.getText().toString());
+                                    mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(GONE);
                                 }
                             } else {
                                 mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(View.GONE);
+                                mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(GONE);
+                                appointmentDate = "";
+                                assignmentStartTime = "";
+                                assignmentEndTime = "";
                             }
                             mCallback.duration(mTaskDetailsData.get(0).getDuration());
                             if (selectedStatus.equals(generalTaskRealmModel.get(position).getStatus())) {
@@ -1259,8 +1337,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                     byte[] b = baos.toByteArray();
                     String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-                        uploadOnsiteImage(encodedImage);
-                        alertDialog.dismiss();
+                    uploadOnsiteImage(encodedImage);
+                    alertDialog.dismiss();
 
                 }
             }
@@ -1372,6 +1450,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private void setDefaultReason() {
         try {
             ReasonRealmModel = getRealm().where(IncompleteReason.class).findAll().sort("reason");
+            SlotsRealmModel = getRealm().where(IncompleteReason.class).findAll().sort("showSlot");
             String res = mTaskDetailsData.get(0).getIncompleteReason();
             if (res == null || res.length() == 0) {
                 mFragmentServiceInfoBinding.txtReason.setText("Select Reason");
@@ -1381,11 +1460,15 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             if (mFragmentServiceInfoBinding.txtReason.getText().toString().equals("Select Reason")) {
                 mCallback.getIncompleteReason("");
                 mCallback.isIncompleteReason(true);
-
+                mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(GONE);
+            } else if (isShowSlots) {
+                mCallback.isIncompleteReason(false);
+                mCallback.getIncompleteReason(mFragmentServiceInfoBinding.txtReason.getText().toString());
+                mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(View.VISIBLE);
             } else {
                 mCallback.getIncompleteReason(mFragmentServiceInfoBinding.txtReason.getText().toString());
                 mCallback.isIncompleteReason(false);
-
+                mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(GONE);
             }
 
         } catch (Exception e) {
@@ -1403,12 +1486,19 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     mTaskDetailsData = getRealm().where(GeneralData.class).findAll();
                     if (mTaskDetailsData != null && mTaskDetailsData.size() > 0) {
                         final ArrayList<String> type = new ArrayList<>();
+                        final ArrayList<Boolean> showSlots = new ArrayList<>();
                         type.add("Select Reason");
+                        showSlots.add(true);
                         for (IncompleteReason incompleteReason : ReasonRealmModel) {
                             type.add(incompleteReason.getReason());
                         }
+                        for (IncompleteReason slots : SlotsRealmModel) {
+                            showSlots.add(slots.getShowSlot());
+                        }
                         arrayReason = new String[type.size()];
                         arrayReason = type.toArray(arrayReason);
+                        arraySlots = new Boolean[showSlots.size()];
+                        arraySlots = showSlots.toArray(arraySlots);
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
                         builder.setTitle("Incomplete Reason");
@@ -1416,13 +1506,20 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                         builder.setSingleChoiceItems(arrayReason, radiopos, (dialog, which) -> {
                             radiopos = which;
                             Selection = arrayReason[which];
+                            isShowSlots = arraySlots[which];
                             mFragmentServiceInfoBinding.txtReason.setText(Selection);
                             if (mFragmentServiceInfoBinding.txtReason.getText().toString().equals("Select Reason")) {
                                 mCallback.getIncompleteReason("");
                                 mCallback.isIncompleteReason(true);
+                                mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(GONE);
+                            } else if (isShowSlots) {
+                                mCallback.isIncompleteReason(false);
+                                mCallback.getIncompleteReason(mFragmentServiceInfoBinding.txtReason.getText().toString());
+                                mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(View.VISIBLE);
                             } else {
                                 mCallback.getIncompleteReason(mFragmentServiceInfoBinding.txtReason.getText().toString());
                                 mCallback.isIncompleteReason(false);
+                                mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(GONE);
                             }
                             mAlertDialog.dismiss();
                         });
@@ -1686,6 +1783,163 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onBookAppointmentClicked(View view) {
+        try {
+            LayoutInflater li = LayoutInflater.from(getActivity());
+            View promptsView = li.inflate(R.layout.next_service_appointment_layout, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+            alertDialogBuilder.setView(promptsView);
+            final AlertDialog alertDialog = alertDialogBuilder.create();
+            final RecyclerView recyclerView =
+                    promptsView.findViewById(R.id.recycleSlots);
+            final CalendarView mCalendarView = promptsView.findViewById(R.id.calendarView);
+            final AppCompatButton btnBook = promptsView.findViewById(R.id.btnBook);
+            final AppCompatButton btnCancel = promptsView.findViewById(R.id.btnCancel);
+            final TextView txtDateHead = promptsView.findViewById(R.id.txtDateHead);
+            final TextView txtSlotHead = promptsView.findViewById(R.id.txtSlotHead);
+            txtDateHead.setTypeface(txtDateHead.getTypeface(), Typeface.BOLD);
+            txtSlotHead.setTypeface(txtSlotHead.getTypeface(), Typeface.BOLD);
+
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+            mSlotsAdapter = new SlotsAdapter(getActivity());
+            recyclerView.setAdapter(mSlotsAdapter);
+
+//            String startDate = AppUtils.reFormatDateAndTime(mTaskDetailsData.get(0).getNext_SR_Planned_Start_Date(), "yyyy-MM-dd");
+            String startDate = AppUtils.currentDate();
+            String endDate = AppUtils.currentDate();
+
+            String sParts[] = startDate.split("-");
+            String eParts[] = endDate.split("-");
+
+            int sYear = Integer.parseInt(sParts[0]);
+            int sMonth = Integer.parseInt(sParts[1]);
+            int sDay = Integer.parseInt(sParts[2]);
+
+            int eYear = Integer.parseInt(eParts[0]);
+            int eMonth = Integer.parseInt(eParts[1]);
+            int eDay = Integer.parseInt(eParts[2]);
+
+            Calendar sCalendar = Calendar.getInstance();
+            sCalendar.set(Calendar.YEAR, sYear);
+            sCalendar.set(Calendar.MONTH, sMonth - 1);
+            sCalendar.set(Calendar.DAY_OF_MONTH, sDay + 1);
+            long startTime = sCalendar.getTimeInMillis();
+
+            Calendar eCalendar = Calendar.getInstance();
+            eCalendar.set(Calendar.YEAR, eYear);
+            eCalendar.set(Calendar.MONTH, eMonth - 1);
+            eCalendar.set(Calendar.DAY_OF_MONTH, eDay + 7);
+            long endTime = eCalendar.getTimeInMillis();
+            mCalendarView.setMinDate(startTime);
+            mCalendarView.setMaxDate(endTime);
+
+
+            if (!appointmentDate.equals("")) {
+                String selectedDate = appointmentDate;
+                String cParts[] = selectedDate.split("-");
+                int cYear = Integer.parseInt(cParts[0]);
+                int cMonth = Integer.parseInt(cParts[1]);
+                int cDay = Integer.parseInt(cParts[2]);
+                Calendar cCalendar = Calendar.getInstance();
+                cCalendar.set(Calendar.YEAR, cYear);
+                cCalendar.set(Calendar.MONTH, cMonth - 1);
+                cCalendar.set(Calendar.DAY_OF_MONTH, cDay);
+                long selectedTime = cCalendar.getTimeInMillis();
+                mCalendarView.setDate(selectedTime);
+            } else {
+                mCalendarView.setDate(startTime);
+            }
+
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            appointmentDate = sdf.format(new Date(mCalendarView.getDate()));
+            AppUtils.appointmentDate = appointmentDate;
+
+            getSlots(startDate);
+
+            mCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+                @Override
+                public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+                    appointmentDate = year + "-" + (month + 1) + "-" + dayOfMonth;
+                    AppUtils.appointmentDate = appointmentDate;
+                    getSlots(appointmentDate);
+                }
+            });
+
+            btnBook.setOnClickListener(v -> {
+                try {
+                    if (!assignmentStartTime.equals("") && !assignmentEndTime.equals("")) {
+                        mCallback.assignmentStartDate(appointmentDate);
+                        mCallback.assignmentStartTime(assignmentStartTime);
+                        mCallback.assignmentEndTime(assignmentEndTime);
+                        Log.i("DATE", appointmentDate);
+                        String slotDate = AppUtils.getFormatted(appointmentDate, "MMM dd, yyyy", "yyyy-MM-dd");
+                        AppUtils.appointmentDate = appointmentDate;
+                        mFragmentServiceInfoBinding.lnrSelectedDate.setVisibility(View.VISIBLE);
+                        mFragmentServiceInfoBinding.txtAppointmentTitle.setTypeface(mFragmentServiceInfoBinding.txtAppointmentTitle.getTypeface(), Typeface.BOLD);
+                        mFragmentServiceInfoBinding.txtSelectdSlot.setText(slotDate + " | " + assignmentStartTime + " - " + assignmentEndTime);
+                        mFragmentServiceInfoBinding.lnrBook.setText("CHANGE YOUR SLOT");
+                        assignmentEndTime = "";
+                        assignmentStartTime = "";
+                        Toasty.success(getActivity(), "Your next appointment booked successfully.", Toasty.LENGTH_SHORT).show();
+                        alertDialog.dismiss();
+                    } else {
+                        Toasty.error(getActivity(), "Please select time slot.", Toasty.LENGTH_SHORT).show();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+
+            btnCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.setCancelable(false);
+            alertDialog.show();
+            alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getSlots(String date) {
+        NetworkCallController controller = new NetworkCallController(this);
+        controller.setListner(new NetworkResponseListner<List<TimeSlot>>() {
+
+            @Override
+            public void onResponse(int requestCode, List<TimeSlot> items) {
+                if (items != null && items.size() > 0) {
+                    mSlotsAdapter.setData(items);
+                    mSlotsAdapter.notifyDataSetChanged();
+
+                    mSlotsAdapter.setOnItemClickHandler(position -> {
+                        assignmentStartTime = mSlotsAdapter.getItem(position).getStartTime();
+                        AppUtils.appointmentStartTime = assignmentStartTime;
+                        assignmentEndTime = mSlotsAdapter.getItem(position).getFinishTime();
+                        AppUtils.appointmentEndTime = assignmentEndTime;
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(int requestCode) {
+
+            }
+        });
+        controller.getAppointmentSlots(SLOT_REQUEST, mTaskDetailsData.get(0).getTaskId(), date, date);
     }
 
     private void uploadChequeImage() {
@@ -2191,9 +2445,15 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                         mFragmentServiceInfoBinding.layoutOtp.setVisibility(View.VISIBLE);
                         mFragmentServiceInfoBinding.lnrNoCustomer.setVisibility(View.VISIBLE);
                         mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(GONE);
+                        mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(GONE);
+                    } else if (isShowSlots) {
+                        mCallback.isIncompleteReason(false);
+                        mCallback.getIncompleteReason(mFragmentServiceInfoBinding.txtReason.getText().toString());
+                        mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(View.VISIBLE);
                     } else {
                         mFragmentServiceInfoBinding.layoutOtp.setVisibility(View.GONE);
                         mFragmentServiceInfoBinding.lnrNoCustomer.setVisibility(View.GONE);
+                        mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(GONE);
                     }
                     assert mTaskDetailsData.get(0) != null;
                     OnSiteOtp = mTaskDetailsData.get(0).getOnsite_OTP();
@@ -2244,6 +2504,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             } else if (Mode.equals("Dispatched")) {
                 mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(GONE);
                 mFragmentServiceInfoBinding.layoutOtp.setVisibility(GONE);
+                mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(GONE);
             } else if (Mode.equals("Incomplete")) {
                 mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(View.VISIBLE);
                 mFragmentServiceInfoBinding.layoutOtp.setVisibility(GONE);
@@ -2262,8 +2523,10 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
         }
     }
 
-   public interface ServiceInfoListener {
+    public interface ServiceInfoListener {
         void onPostJobButtonClicked();
+
+        void onRefreshClicked();
     }
 }
 

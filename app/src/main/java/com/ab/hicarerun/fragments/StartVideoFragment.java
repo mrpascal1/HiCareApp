@@ -162,7 +162,6 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
             handler.postDelayed(new Runnable() {
                 public void run() {
                     showSkip();
-
                     handler.postDelayed(this, SECONDS);
                 }
             }, SECONDS);
@@ -305,11 +304,11 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
 
     private void showSkip() {
         try {
-            Log.i("video_position", String.valueOf(player.getCurrentPosition()));
-            if (duration - player.getCurrentPosition() < 10000 && !isShown) {
+            if (duration - player.getCurrentPosition() < 6000 && !isShown) {
                 Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.push_left_in);
                 mFragmentStartVideoBinding.lnrSkip.setVisibility(View.VISIBLE);
                 mFragmentStartVideoBinding.lnrSkip.startAnimation(animation);
+                player.stop();
                 isShown = true;
             }
         }catch (Exception e){
@@ -355,6 +354,7 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
                     SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.IS_SKIP_VIDEO, true);
                     SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.IS_USER_LOGIN, true);
                     AppUtils.getHandShakeCall(username, getActivity());
+
                     break;
                 case Player.STATE_IDLE:
 
@@ -403,5 +403,12 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
     @Override
     public void onSeekProcessed() {
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        player.stop();
+        handler.removeCallbacksAndMessages(null);
     }
 }

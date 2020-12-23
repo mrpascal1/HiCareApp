@@ -14,6 +14,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
@@ -37,6 +38,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
 import com.ab.hicarerun.BaseApplication;
+import com.ab.hicarerun.R;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeRequest;
@@ -77,9 +79,10 @@ public class ServiceLocationSend extends Service implements LocationListener {
 
     @Override
     public void onCreate() {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O)
             startMyOwnForeground();
-        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR) {
+        else {
             startForeground(1, new Notification());
         }
         super.onCreate();
@@ -87,7 +90,7 @@ public class ServiceLocationSend extends Service implements LocationListener {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private void startMyOwnForeground() {
-        String NOTIFICATION_CHANNEL_ID = "com.hicarerun";
+        String NOTIFICATION_CHANNEL_ID = "com.ab.hicarerun";
         String channelName = "Background Service";
         NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
         chan.setLightColor(Color.BLUE);
@@ -102,6 +105,9 @@ public class ServiceLocationSend extends Service implements LocationListener {
                 .setContentTitle("HiCare is running in background")
                 .setPriority(NotificationManager.IMPORTANCE_MIN)
                 .setCategory(Notification.CATEGORY_SERVICE)
+                .setSmallIcon(R.mipmap.logo)
+                .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                        R.mipmap.logo))
                 .build();
         startForeground(2, notification);
     }
@@ -115,9 +121,10 @@ public class ServiceLocationSend extends Service implements LocationListener {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+                locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
 
                 Log.e("Running", "Running call");
+
 
                 final Location location = getLastKnownLocation();
                 if (location != null) {
@@ -162,7 +169,8 @@ public class ServiceLocationSend extends Service implements LocationListener {
     public void onTaskRemoved(Intent rootIntent) {
         try {
             String time = SharedPreferencesUtility.getPrefString(getApplicationContext(), SharedPreferencesUtility.PREF_INTERVAL);
-            long REPEATED_TIME = Long.parseLong(time);
+//            long REPEATED_TIME = Long.parseLong(time);
+            long REPEATED_TIME = 1000 * 60 * 6;
             getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
             Log.e("TAG", "Service Killed");
             Intent intent = new Intent(getApplicationContext(), HandShakeReceiver.class);
@@ -189,6 +197,7 @@ public class ServiceLocationSend extends Service implements LocationListener {
         try {
             Calendar c = Calendar.getInstance();
             SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss aa");
+
 
 
             TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
@@ -401,8 +410,6 @@ public class ServiceLocationSend extends Service implements LocationListener {
     }
 
     public Location getLastKnownLocation() {
-
-        locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
         List<String> providers = locationManager.getProviders(true);
         Location bestLocation = null;
         for (String provider : providers) {
@@ -423,6 +430,8 @@ public class ServiceLocationSend extends Service implements LocationListener {
             if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
                 // Found best last known location: %s", l);
                 bestLocation = l;
+            }else {
+                bestLocation= l;
             }
         }
         return bestLocation;

@@ -64,6 +64,7 @@ import com.ab.hicarerun.adapter.ChemicalDialogAdapter;
 import com.ab.hicarerun.adapter.ResourceCheckListAdapter;
 import com.ab.hicarerun.adapter.TaskListAdapter;
 import com.ab.hicarerun.databinding.FragmentHomeBinding;
+import com.ab.hicarerun.handler.CovidCheckListHandler;
 import com.ab.hicarerun.handler.OnCallListItemClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
@@ -247,7 +248,10 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
             showNPSDialog();
         mFragmentHomeBinding.swipeRefreshLayout.setRefreshing(true);
         if (isResourceSaved)
-            showResourceCheckList();
+            showCovidCheckList();
+//            showResourceCheckList();
+
+
 
         mFragmentHomeBinding.lnrAssess.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -255,6 +259,15 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 showAssessmentReport();
             }
         });
+    }
+
+    private void showCovidCheckList() {
+        try {
+            CovidCheckFragment dialog = CovidCheckFragment.newInstance();
+            dialog.show(getActivity().getSupportFragmentManager(), "check_up");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -407,11 +420,9 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                     } else {
                                         checkModel.setOptionText("");
                                     }
-
                                     checkList.add(checkModel);
                                     isCheckList.add(checkList.get(i).getIsSelected());
                                 }
-
                             }
 
                         } catch (Exception e) {
@@ -420,8 +431,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
                     });
                     recycleView.setAdapter(mCheckListAdapter);
-
-
                     NetworkCallController controller = new NetworkCallController(HomeFragment.this);
                     controller.setListner(new NetworkResponseListner<List<ResourceCheckList>>() {
                         @Override
@@ -430,7 +439,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                 if (items != null) {
                                     ResList = new ArrayList<>();
                                     ResList = items;
-
                                     if (pageNumber == 1 && items.size() > 0) {
                                         mCheckListAdapter.setData(items);
                                         mCheckListAdapter.notifyDataSetChanged();
@@ -438,7 +446,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                             alertDialog.show();
                                             alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
                                         }
-
                                     } else if (items.size() > 0) {
                                         mCheckListAdapter.addData(items);
                                         mCheckListAdapter.notifyDataSetChanged();
@@ -457,7 +464,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
                         @Override
                         public void onFailure(int requestCode) {
-
                         }
                     });
                     controller.getResourceCheckList(ASSESS_REQUEST, resourceId, LocaleHelper.getLanguage(getActivity()));
@@ -494,11 +500,10 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                         } else {
                             Toasty.error(getActivity(), "All fields are mandatory.", Toasty.LENGTH_SHORT).show();
                         }
-
                     });
                     dialogBuilder.setCancelable(false);
                     alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-//                    alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+//                  alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
                     alertDialog.setCanceledOnTouchOutside(false);
                     alertDialog.setCancelable(false);
 
@@ -696,7 +701,8 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                             alertDialog.dismiss();
                                             getAllTasks();
                                             if (response.getParam1()) {
-                                                showResourceCheckList();
+                                                showCovidCheckList();
+//                                                showResourceCheckList();
                                                 SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_RESOURCE_SAVED, true);
                                             } else {
                                                 showNPSDialog();

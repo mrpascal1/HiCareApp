@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -54,7 +55,7 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.util.List;
 
-public class LoginActivity extends BaseActivity implements InstallStateUpdatedListener{
+public class LoginActivity extends BaseActivity implements InstallStateUpdatedListener {
     ActivityLoginBinding mActivityLoginBinding;
     private static final int PERMISSION_REQUEST_CODE = 1000;
     AlertDialog alert;
@@ -67,6 +68,7 @@ public class LoginActivity extends BaseActivity implements InstallStateUpdatedLi
     private ProgressDialog progress;
     private boolean isGPS = false;
     private AppUpdateManager mAppUpdateManager;
+    public static final int REQUEST_CODE_PERMISSIONS = 101;
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -85,6 +87,7 @@ public class LoginActivity extends BaseActivity implements InstallStateUpdatedLi
             // turn on GPS
             if (isGPSEnable) {
                 requestPermission();
+
             } else {
                 isGPS = isGPSEnable;
             }
@@ -102,7 +105,7 @@ public class LoginActivity extends BaseActivity implements InstallStateUpdatedLi
         mAppUpdateManager.getAppUpdateInfo().addOnSuccessListener(appUpdateInfo -> {
 
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE /*AppUpdateType.IMMEDIATE*/)){
+                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE /*AppUpdateType.IMMEDIATE*/)) {
                 try {
                     mAppUpdateManager.startUpdateFlowForResult(
                             appUpdateInfo, AppUpdateType.IMMEDIATE /*AppUpdateType.IMMEDIATE*/, this, UPDATE_REQUEST_CODE);
@@ -110,7 +113,7 @@ public class LoginActivity extends BaseActivity implements InstallStateUpdatedLi
                     e.printStackTrace();
                 }
 
-            } else if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED){
+            } else if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
                 //CHECK THIS if AppUpdateType.FLEXIBLE, otherwise you can skip
                 popupSnackbarForCompleteUpdate();
             } else {
@@ -132,6 +135,7 @@ public class LoginActivity extends BaseActivity implements InstallStateUpdatedLi
                 getResources().getColor(R.color.colorPrimary));
         snackbar.show();
     }
+
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
@@ -146,9 +150,9 @@ public class LoginActivity extends BaseActivity implements InstallStateUpdatedLi
                 isGPS = true; // flag maintain before get location
                 requestPermission();
             }
-        }else if(resultCode == UPDATE_REQUEST_CODE){
+        } else if (resultCode == UPDATE_REQUEST_CODE) {
             if (resultCode != RESULT_OK) {
-                Log.i("LoginActivity", "Update flow failed! Result code: "+ resultCode);
+                Log.i("LoginActivity", "Update flow failed! Result code: " + resultCode);
                 // If the update is cancelled or fails,
                 // you can request to start the update again.
             }
@@ -171,6 +175,78 @@ public class LoginActivity extends BaseActivity implements InstallStateUpdatedLi
                 });
     }
 
+    private void requestLocationPermission() {
+
+        boolean foreground = ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+
+        if (foreground) {
+            boolean background = ActivityCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED;
+
+            if (background) {
+                handleLocationUpdates();
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, REQUEST_CODE_PERMISSIONS);
+            }
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_BACKGROUND_LOCATION}, REQUEST_CODE_PERMISSIONS);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+
+            boolean foreground = false, background = false;
+
+            for (int i = 0; i < permissions.length; i++) {
+                if (permissions[i].equalsIgnoreCase(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                    //foreground permission allowed
+                    if (grantResults[i] >= 0) {
+                        foreground = true;
+                        Toast.makeText(getApplicationContext(), "Foreground location permission allowed", Toast.LENGTH_SHORT).show();
+                        continue;
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Location Permission denied", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                }
+
+                if (permissions[i].equalsIgnoreCase(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+                    if (grantResults[i] >= 0) {
+                        foreground = true;
+                        background = true;
+                    } else {
+//                        Toast.makeText(getApplicationContext(), "Background location location permission denied", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }
+
+            if (foreground) {
+                if (background) {
+                    handleLocationUpdates();
+                } else {
+                    handleForegroundLocationUpdates();
+                }
+            }
+        }
+    }
+
+    private void handleLocationUpdates() {
+        //foreground and background
+    }
+
+    private void handleForegroundLocationUpdates() {
+        //handleForeground Location Updates
+        Toast.makeText(getApplicationContext(), "Start foreground location updates", Toast.LENGTH_SHORT).show();
+    }
+
     private void requestPermission() {
         try {
             Dexter.withActivity(this)
@@ -183,6 +259,7 @@ public class LoginActivity extends BaseActivity implements InstallStateUpdatedLi
                             // check if all permissions are granted
                             if (report.areAllPermissionsGranted()) {
                                 getVersionFromApi();
+                                requestLocationPermission();
                             }
                             // check for permanent denial of any permission
                             if (report.isAnyPermissionPermanentlyDenied()) {
@@ -202,6 +279,7 @@ public class LoginActivity extends BaseActivity implements InstallStateUpdatedLi
                                     .show())
                     .onSameThread()
                     .check();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -251,7 +329,7 @@ public class LoginActivity extends BaseActivity implements InstallStateUpdatedLi
                     Version = data.getVersion();
                     Apk_URL = data.getApkurl();
                     Apk_Type = data.getApktype();
-                    addFragment(NewLoginFragment.newInstance("5.0", Apk_URL, Apk_Type), "LoginTrealActivity-CreateRealFragment");
+                    addFragment(NewLoginFragment.newInstance(Version, Apk_URL, Apk_Type), "LoginTrealActivity-CreateRealFragment");
                 }
 
                 @Override
@@ -371,11 +449,11 @@ public class LoginActivity extends BaseActivity implements InstallStateUpdatedLi
 
     @Override
     public void onStateUpdate(InstallState state) {
-        if (state.installStatus() == InstallStatus.DOWNLOADED){
+        if (state.installStatus() == InstallStatus.DOWNLOADED) {
             //CHECK THIS if AppUpdateType.FLEXIBLE, otherwise you can skip
             popupSnackbarForCompleteUpdate();
-        } else if (state.installStatus() == InstallStatus.INSTALLED){
-            if (mAppUpdateManager != null){
+        } else if (state.installStatus() == InstallStatus.INSTALLED) {
+            if (mAppUpdateManager != null) {
                 mAppUpdateManager.unregisterListener(this);
             }
 

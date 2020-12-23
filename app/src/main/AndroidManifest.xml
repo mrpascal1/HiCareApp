@@ -50,8 +50,7 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true"
-        >
+        android:usesCleartextTraffic="true">
         <activity android:name=".activities.KarmaActivity"></activity>
         <activity
             android:name=".activities.KycActivity"
@@ -223,7 +222,9 @@
 
         <service
             android:name=".service.ServiceLocationSend"
-            android:enabled="true" /> <!-- <service -->
+            android:enabled="true"
+            android:foregroundServiceType="location"
+            android:stopWithTask="false" /> <!-- <service -->
         <!-- android:name=".utils.notifications.OneSignalSilentNotificationHandlerService" -->
         <!-- android:exported="false" -->
         <!-- android:permission="android.permission.BIND_JOB_SERVICE"> -->
@@ -302,9 +303,10 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyCUIlD8EdLLTp5VtyZl1ZOprbq_7az3zIM" />
-        <meta-data
-            android:name="com.google.android.actions"
-            android:resource="@xml/actions" />
+
+        <!--        <meta-data-->
+        <!--            android:name="com.google.android.actions"-->
+        <!--            android:resource="@xml/actions" />-->
 
         <provider
             android:name=".utils.ShareFileProvider"

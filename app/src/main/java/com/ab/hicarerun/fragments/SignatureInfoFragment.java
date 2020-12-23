@@ -340,8 +340,10 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
 
                 if (mGeneralRealmData.get(0).getShowNextServiceAppointment() && status.equals("On-Site")) {
                     mFragmentSignatureInfoBinding.lnrBook.setVisibility(View.VISIBLE);
+                    mFragmentSignatureInfoBinding.lnrPlannedServiceDate.setVisibility(View.VISIBLE);
                 } else {
                     mFragmentSignatureInfoBinding.lnrBook.setVisibility(GONE);
+                    mFragmentSignatureInfoBinding.lnrPlannedServiceDate.setVisibility(GONE);
                 }
 
                 if (isJobcardEnable) {
@@ -726,7 +728,6 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
 
     @Override
     public void onBookAppointmentClicked(View view) {
-
         try {
             LayoutInflater li = LayoutInflater.from(getActivity());
             View promptsView = li.inflate(R.layout.next_service_appointment_layout, null);
@@ -740,7 +741,6 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
             final AppCompatButton btnCancel = promptsView.findViewById(R.id.btnCancel);
             final TextView txtDateHead = promptsView.findViewById(R.id.txtDateHead);
             final TextView txtSlotHead = promptsView.findViewById(R.id.txtSlotHead);
-
             txtDateHead.setTypeface(txtDateHead.getTypeface(), Typeface.BOLD);
             txtSlotHead.setTypeface(txtSlotHead.getTypeface(), Typeface.BOLD);
 
@@ -751,6 +751,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
 
             String startDate = AppUtils.reFormatDateAndTime(mGeneralRealmData.get(0).getNext_SR_Planned_Start_Date(), "yyyy-MM-dd");
             String endDate = AppUtils.reFormatDateAndTime(mGeneralRealmData.get(0).getNext_SR_Planned_End_Date(), "yyyy-MM-dd");
+
             String sParts[] = startDate.split("-");
             String eParts[] = endDate.split("-");
 
@@ -775,7 +776,24 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
             long endTime = eCalendar.getTimeInMillis();
             mCalendarView.setMinDate(startTime);
             mCalendarView.setMaxDate(endTime);
-            mCalendarView.setDate(startTime);
+
+
+            if (!appointmentDate.equals("")) {
+                String selectedDate = appointmentDate;
+                String cParts[] = selectedDate.split("-");
+                int cYear = Integer.parseInt(cParts[0]);
+                int cMonth = Integer.parseInt(cParts[1]);
+                int cDay = Integer.parseInt(cParts[2]);
+                Calendar cCalendar = Calendar.getInstance();
+                cCalendar.set(Calendar.YEAR, cYear);
+                cCalendar.set(Calendar.MONTH, cMonth - 1);
+                cCalendar.set(Calendar.DAY_OF_MONTH, cDay);
+                long selectedTime = cCalendar.getTimeInMillis();
+                mCalendarView.setDate(selectedTime);
+            } else {
+                mCalendarView.setDate(startTime);
+            }
+
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             appointmentDate = sdf.format(new Date(mCalendarView.getDate()));
@@ -786,7 +804,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
             mCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
                 @Override
                 public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                    appointmentDate = year + "-" + (month+1) + "-" + dayOfMonth;
+                    appointmentDate = year + "-" + (month + 1) + "-" + dayOfMonth;
                     AppUtils.appointmentDate = appointmentDate;
                     getSlots(appointmentDate);
                 }
@@ -799,13 +817,14 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                         mCallback.assignmentStartTime(assignmentStartTime);
                         mCallback.assignmentEndTime(assignmentEndTime);
                         Log.i("DATE", appointmentDate);
-
                         String slotDate = AppUtils.getFormatted(appointmentDate, "MMM dd, yyyy", "yyyy-MM-dd");
                         AppUtils.appointmentDate = appointmentDate;
                         mFragmentSignatureInfoBinding.lnrSelectedDate.setVisibility(View.VISIBLE);
                         mFragmentSignatureInfoBinding.txtAppointmentTitle.setTypeface(mFragmentSignatureInfoBinding.txtAppointmentTitle.getTypeface(), Typeface.BOLD);
-                        mFragmentSignatureInfoBinding.txtSelectdSlot.setText(slotDate+ " | " + assignmentStartTime + " - "+assignmentEndTime);
+                        mFragmentSignatureInfoBinding.txtSelectdSlot.setText(slotDate + " | " + assignmentStartTime + " - " + assignmentEndTime);
                         mFragmentSignatureInfoBinding.lnrBook.setText("CHANGE YOUR SLOT");
+                        assignmentEndTime = "";
+                        assignmentStartTime = "";
                         Toasty.success(getActivity(), "Appointment booked successfully.", Toasty.LENGTH_SHORT).show();
                         alertDialog.dismiss();
                     } else {

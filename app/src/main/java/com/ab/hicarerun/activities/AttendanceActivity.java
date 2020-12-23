@@ -18,7 +18,8 @@ import com.ab.hicarerun.utils.LocaleHelper;
 import java.util.Objects;
 
 public class AttendanceActivity extends BaseActivity {
-ActivityAttendanceBinding mActivityAttendanceBinding;
+    ActivityAttendanceBinding mActivityAttendanceBinding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

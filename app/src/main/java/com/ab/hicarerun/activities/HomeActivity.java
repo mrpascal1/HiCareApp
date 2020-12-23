@@ -160,8 +160,8 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                         progress.show();
                         getServiceCalled();
                         getTechDeails();
-                    }catch (Exception e){
-                       e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
 
 //                    getIncentiveDetails();
@@ -222,22 +222,18 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 @Override
                 public void onResponse(int requestCode, Karma response) {
                     try {
-                        int progress = response.getTotalPointsPending();
-                        if(progress > 80){
+                        if (response != null) {
+                            mActivityHomeBinding.toolbar.lnrKarma.setVisibility(View.VISIBLE);
+                            int progress = response.getTotalPointsPending();
                             Drawable batteryProgressD = mActivityHomeBinding.toolbar.progressBar.getProgressDrawable();
-                            batteryProgressD.setLevel(progress*100);
+                            batteryProgressD.setLevel(progress * 100);
                             mActivityHomeBinding.toolbar.progressBar.setProgress(progress);
-                        }else if(progress > 40 && progress <= 80){
-                            Drawable batteryProgressD = mActivityHomeBinding.toolbar.progressBar.getProgressDrawable();
-                            batteryProgressD.setLevel(progress*100);
-                            mActivityHomeBinding.toolbar.progressBar.setProgress(progress);
+                            mActivityHomeBinding.toolbar.txtRemLife.setText(String.valueOf(response.getTotalPointsPending()) + "/" + String.valueOf(response.getTotalPoints()));
+                            mActivityHomeBinding.toolbar.txtLifeCount.setText(String.valueOf(response.getLifeLineIndex()));
                         }else {
-                            Drawable batteryProgressD = mActivityHomeBinding.toolbar.progressBar.getProgressDrawable();
-                            batteryProgressD.setLevel(progress*100);
-                            mActivityHomeBinding.toolbar.progressBar.setProgress(progress);
+                            mActivityHomeBinding.toolbar.lnrKarma.setVisibility(View.GONE);
                         }
-                        mActivityHomeBinding.toolbar.txtRemLife.setText(String.valueOf(response.getTotalPointsPending()) + "/" + String.valueOf(response.getTotalPoints()));
-                        mActivityHomeBinding.toolbar.txtLifeCount.setText(String.valueOf(response.getLifeLineIndex()));
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -453,7 +449,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                     items = (List<HandShake>) getIntent().getSerializableExtra(ARG_HANDSHAKE);
                     assert items != null;
                     value = Integer.parseInt(items.get(1).getValue());
-                    long REPEATED_TIME = 1000 * 60 * value;
+                    long REPEATED_TIME = 1000 * 60 * 6;
                     SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_INTERVAL, String.valueOf(REPEATED_TIME));
                     Log.i("callHandshake", String.valueOf(REPEATED_TIME));
                     SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_TIME, items.get(1).getValue());
@@ -484,10 +480,12 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                         getApplicationContext().stopService(new Intent(getApplicationContext(), ServiceLocationSend.class));
                     }
                     String time = SharedPreferencesUtility.getPrefString(HomeActivity.this, SharedPreferencesUtility.PREF_TIME);
-                    if (time != null) {
-                        value = Integer.parseInt(time);
-                    }
-                    long REPEATED_TIME = 1000 * 60 * value;
+//                    if (time != null) {
+//                        Log.i("TIMEX", time);
+//                        int t = Integer.parseInt(time);
+//                        value = t;
+//                    }
+                    long REPEATED_TIME = 1000 * 60 * 6;
                     Intent intent = new Intent(getApplicationContext(), HandShakeReceiver.class);
                     intent.setAction("HandshakeAction");
                     pendingUpdateIntent = PendingIntent.getBroadcast(getApplicationContext(),
@@ -533,11 +531,6 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                                     mActivityHomeBinding.toolbar.imgUser.setImageBitmap(decodedByte);
                                     bitUser = decodedByte;
                                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//                                bitUser.compress(Bitmap.CompressFormat.PNG, 100, stream);
-//                                byte[] byteArray = stream.toByteArray();
-//                                userByte = byteArray;
-//                                SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_USER_PIC, base64);
-//                                addFragment(HomeFragment.newInstance(byteArray), "HomeActivity - HomeFragment");
                                 }
                             }
 
@@ -605,8 +598,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
             } else {
                 groom.setVisible(false);
                 jobCount.setVisible(false);
-                routineCheck.setVisible(true);
-
+                routineCheck.setVisible(false);
             }
             PackageInfo pInfo = null;
             try {
