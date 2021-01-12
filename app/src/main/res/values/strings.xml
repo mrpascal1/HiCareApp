@@ -620,4 +620,7 @@
     <string name="hicare_products">HiCare Products</string>
     <string name="renew">RENEW</string>
     <string name="_8226">•</string>
+    <string name="use_location_to_effectively_track_and_infom_clients_about_real_time_field_service_agent_s_location">Use location to effectively track and infom clients about real time field service agent\'s location.</string>
+    <string name="hicare_technician_app_will_collect_location_data_even_when_the_app_is_closed_or_not_in_use">HiCare Technician App will collect location data even when the app is closed or not in use.</string>
+    <string name="use_your_location">Use your location</string>
 </resources>

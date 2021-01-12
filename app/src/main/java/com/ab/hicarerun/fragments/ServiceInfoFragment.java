@@ -2,10 +2,12 @@ package com.ab.hicarerun.fragments;
 
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -56,7 +58,6 @@ import com.ab.hicarerun.BuildConfig;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.NewTaskDetailsActivity;
 import com.ab.hicarerun.adapter.BankSearchAdapter;
-import com.ab.hicarerun.adapter.CheckListParentAdapter;
 import com.ab.hicarerun.adapter.ChemicalDialogAdapter;
 import com.ab.hicarerun.adapter.SlotsAdapter;
 import com.ab.hicarerun.databinding.FragmentServiceInfoBinding;
@@ -65,10 +66,6 @@ import com.ab.hicarerun.handler.UserServiceInfoClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.BasicResponse;
-import com.ab.hicarerun.network.models.CheckListModel.CheckListResponse;
-import com.ab.hicarerun.network.models.CheckListModel.SaveCheckListRequest;
-import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListData;
-import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListRequest;
 import com.ab.hicarerun.network.models.ChemicalModel.Chemicals;
 import com.ab.hicarerun.network.models.CovidModel.CovidRequest;
 import com.ab.hicarerun.network.models.CovidModel.CovidResponse;
@@ -77,7 +74,6 @@ import com.ab.hicarerun.network.models.GeneralModel.GeneralPaymentMode;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralTaskStatus;
 import com.ab.hicarerun.network.models.GeneralModel.IncompleteReason;
 import com.ab.hicarerun.network.models.GeneralModel.OnSiteOtpResponse;
-import com.ab.hicarerun.network.models.GeneralModel.TaskCheckList;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyRequest;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyResponse;
 import com.ab.hicarerun.network.models.LoginResponse;
@@ -177,7 +173,6 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private Bitmap bitmap;
     private BankSearchAdapter mAdapter;
     private ChemicalDialogAdapter mChemicalAdapter;
-
     //    private OnSaveEventHandler mCallback;
     private int checkPosition = 0;
     private List<String> bankList;
@@ -215,6 +210,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private String assignmentStartTime = "";
     private String assignmentEndTime = "";
     private SlotsAdapter mSlotsAdapter;
+    private boolean isBooked = false;
 
     public static ServiceInfoFragment newInstance(String taskId, String combinedTaskId, boolean isCombinedTasks, String combinedTypes, String combinedOrders, ServiceInfoListener mPostCallback) {
         Bundle args = new Bundle();
@@ -357,12 +353,10 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
         });
 
         mFragmentServiceInfoBinding.btnOnsiteOtp.setOnClickListener(view1 -> getCommercialDialog());
-
-
+        Context context;
     }
 
     private void getCommercialDialog() {
-
         try {
             if (getActivity() != null) {
                 RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
@@ -1105,15 +1099,22 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                             assert generalTaskRealmModel.get(position) != null;
                             mCallback.status(generalTaskRealmModel.get(position).getStatus());
                             if (generalTaskRealmModel.get(position).getStatus().equals("Incomplete")) {
+                                mFragmentServiceInfoBinding.lnrBook.setText("BOOK NEXT SLOT");
+                                mFragmentServiceInfoBinding.txtSelectdSlot.setVisibility(View.GONE);
+                                mFragmentServiceInfoBinding.txtAppointmentTitle.setVisibility(View.GONE);
+                                mFragmentServiceInfoBinding.txtReason.setText("Select Reason");
+                                appointmentDate = "";
+                                assignmentStartTime = "";
+                                assignmentEndTime = "";
                                 mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(View.VISIBLE);
                                 if (mFragmentServiceInfoBinding.txtReason.getText().toString().equals("Select Reason")) {
                                     mCallback.isIncompleteReason(true);
                                     mCallback.getIncompleteReason("");
                                     mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(GONE);
-
                                 } else if (isShowSlots) {
                                     mCallback.isIncompleteReason(false);
                                     mCallback.getIncompleteReason(mFragmentServiceInfoBinding.txtReason.getText().toString());
+                                    showSlotsDialog();
                                     mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(View.VISIBLE);
                                 } else {
                                     mCallback.isIncompleteReason(false);
@@ -1464,6 +1465,10 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             } else if (isShowSlots) {
                 mCallback.isIncompleteReason(false);
                 mCallback.getIncompleteReason(mFragmentServiceInfoBinding.txtReason.getText().toString());
+                appointmentDate = "";
+                assignmentStartTime = "";
+                assignmentEndTime = "";
+                showSlotsDialog();
                 mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(View.VISIBLE);
             } else {
                 mCallback.getIncompleteReason(mFragmentServiceInfoBinding.txtReason.getText().toString());
@@ -1504,17 +1509,27 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                         builder.setTitle("Incomplete Reason");
                         builder.setIcon(R.mipmap.logo);
                         builder.setSingleChoiceItems(arrayReason, radiopos, (dialog, which) -> {
-                            radiopos = which;
+//                            radiopos = which;
                             Selection = arrayReason[which];
                             isShowSlots = arraySlots[which];
                             mFragmentServiceInfoBinding.txtReason.setText(Selection);
+                            appointmentDate = "";
+                            assignmentStartTime = "";
+                            assignmentEndTime = "";
+                            mFragmentServiceInfoBinding.lnrBook.setText("BOOK NEXT SLOT");
+                            mFragmentServiceInfoBinding.txtSelectdSlot.setVisibility(View.GONE);
+                            mFragmentServiceInfoBinding.txtAppointmentTitle.setVisibility(View.GONE);
                             if (mFragmentServiceInfoBinding.txtReason.getText().toString().equals("Select Reason")) {
                                 mCallback.getIncompleteReason("");
                                 mCallback.isIncompleteReason(true);
                                 mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(GONE);
                             } else if (isShowSlots) {
+                                appointmentDate = "";
+                                assignmentStartTime = "";
+                                assignmentEndTime = "";
                                 mCallback.isIncompleteReason(false);
                                 mCallback.getIncompleteReason(mFragmentServiceInfoBinding.txtReason.getText().toString());
+                                showSlotsDialog();
                                 mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(View.VISIBLE);
                             } else {
                                 mCallback.getIncompleteReason(mFragmentServiceInfoBinding.txtReason.getText().toString());
@@ -1787,12 +1802,17 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
     @Override
     public void onBookAppointmentClicked(View view) {
+        showSlotsDialog();
+    }
+
+    private void showSlotsDialog() {
         try {
             LayoutInflater li = LayoutInflater.from(getActivity());
             View promptsView = li.inflate(R.layout.next_service_appointment_layout, null);
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
             alertDialogBuilder.setView(promptsView);
             final AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
             final RecyclerView recyclerView =
                     promptsView.findViewById(R.id.recycleSlots);
             final CalendarView mCalendarView = promptsView.findViewById(R.id.calendarView);
@@ -1800,6 +1820,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             final AppCompatButton btnCancel = promptsView.findViewById(R.id.btnCancel);
             final TextView txtDateHead = promptsView.findViewById(R.id.txtDateHead);
             final TextView txtSlotHead = promptsView.findViewById(R.id.txtSlotHead);
+            final TextView txtNoSlots = promptsView.findViewById(R.id.txtNoSlots);
+            final TextView txtSelectDate = promptsView.findViewById(R.id.txtSelectDate);
             txtDateHead.setTypeface(txtDateHead.getTypeface(), Typeface.BOLD);
             txtSlotHead.setTypeface(txtSlotHead.getTypeface(), Typeface.BOLD);
 
@@ -1808,9 +1830,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             mSlotsAdapter = new SlotsAdapter(getActivity());
             recyclerView.setAdapter(mSlotsAdapter);
 
-//            String startDate = AppUtils.reFormatDateAndTime(mTaskDetailsData.get(0).getNext_SR_Planned_Start_Date(), "yyyy-MM-dd");
-            String startDate = AppUtils.currentDate();
-            String endDate = AppUtils.currentDate();
+            String startDate = AppUtils.getTomorrowDate();
+            String endDate = AppUtils.getTomorrowDate();
 
             String sParts[] = startDate.split("-");
             String eParts[] = endDate.split("-");
@@ -1826,19 +1847,18 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             Calendar sCalendar = Calendar.getInstance();
             sCalendar.set(Calendar.YEAR, sYear);
             sCalendar.set(Calendar.MONTH, sMonth - 1);
-            sCalendar.set(Calendar.DAY_OF_MONTH, sDay + 1);
+            sCalendar.set(Calendar.DAY_OF_MONTH, sDay);
             long startTime = sCalendar.getTimeInMillis();
 
             Calendar eCalendar = Calendar.getInstance();
             eCalendar.set(Calendar.YEAR, eYear);
             eCalendar.set(Calendar.MONTH, eMonth - 1);
-            eCalendar.set(Calendar.DAY_OF_MONTH, eDay + 7);
+            eCalendar.set(Calendar.DAY_OF_MONTH, eDay + 6);
             long endTime = eCalendar.getTimeInMillis();
             mCalendarView.setMinDate(startTime);
             mCalendarView.setMaxDate(endTime);
 
-
-            if (!appointmentDate.equals("")) {
+            if (/*!appointmentDate.equals("")*/isBooked) {
                 String selectedDate = appointmentDate;
                 String cParts[] = selectedDate.split("-");
                 int cYear = Integer.parseInt(cParts[0]);
@@ -1850,24 +1870,20 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 cCalendar.set(Calendar.DAY_OF_MONTH, cDay);
                 long selectedTime = cCalendar.getTimeInMillis();
                 mCalendarView.setDate(selectedTime);
+                @SuppressLint("SimpleDateFormat")
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                appointmentDate = sdf.format(new Date(mCalendarView.getDate()));
+                AppUtils.appointmentDate = appointmentDate;
+                getSlots(appointmentDate, txtNoSlots, txtSelectDate, recyclerView);
             } else {
                 mCalendarView.setDate(startTime);
+//                getSlots(startDate, txtNoSlots, recyclerView);
             }
 
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            appointmentDate = sdf.format(new Date(mCalendarView.getDate()));
-            AppUtils.appointmentDate = appointmentDate;
-
-            getSlots(startDate);
-
-            mCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-                @Override
-                public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                    appointmentDate = year + "-" + (month + 1) + "-" + dayOfMonth;
-                    AppUtils.appointmentDate = appointmentDate;
-                    getSlots(appointmentDate);
-                }
+            mCalendarView.setOnDateChangeListener((view1, year, month, dayOfMonth) -> {
+                appointmentDate = year + "-" + (month + 1) + "-" + dayOfMonth;
+                AppUtils.appointmentDate = appointmentDate;
+                getSlots(appointmentDate, txtNoSlots, txtSelectDate, recyclerView);
             });
 
             btnBook.setOnClickListener(v -> {
@@ -1880,14 +1896,20 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                         String slotDate = AppUtils.getFormatted(appointmentDate, "MMM dd, yyyy", "yyyy-MM-dd");
                         AppUtils.appointmentDate = appointmentDate;
                         mFragmentServiceInfoBinding.lnrSelectedDate.setVisibility(View.VISIBLE);
+                        mFragmentServiceInfoBinding.txtSelectdSlot.setVisibility(View.VISIBLE);
+                        mFragmentServiceInfoBinding.txtAppointmentTitle.setVisibility(View.VISIBLE);
                         mFragmentServiceInfoBinding.txtAppointmentTitle.setTypeface(mFragmentServiceInfoBinding.txtAppointmentTitle.getTypeface(), Typeface.BOLD);
                         mFragmentServiceInfoBinding.txtSelectdSlot.setText(slotDate + " | " + assignmentStartTime + " - " + assignmentEndTime);
                         mFragmentServiceInfoBinding.lnrBook.setText("CHANGE YOUR SLOT");
                         assignmentEndTime = "";
                         assignmentStartTime = "";
                         Toasty.success(getActivity(), "Your next appointment booked successfully.", Toasty.LENGTH_SHORT).show();
+                        isBooked = true;
                         alertDialog.dismiss();
                     } else {
+                        isBooked = false;
+                        mFragmentServiceInfoBinding.txtSelectdSlot.setVisibility(GONE);
+                        mFragmentServiceInfoBinding.txtAppointmentTitle.setVisibility(GONE);
                         Toasty.error(getActivity(), "Please select time slot.", Toasty.LENGTH_SHORT).show();
                     }
 
@@ -1896,41 +1918,43 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 }
             });
 
-            btnCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    alertDialog.dismiss();
+            btnCancel.setOnClickListener(v ->{
+                if(!isBooked){
+                    appointmentDate = "";
                 }
+                alertDialog.dismiss();
             });
-
-            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.setCancelable(false);
-            alertDialog.show();
             alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void getSlots(String date) {
+    ;
+
+    private void getSlots(String date, TextView txtNoSlots, TextView txtSelectDate, RecyclerView recyclerView) {
         NetworkCallController controller = new NetworkCallController(this);
         controller.setListner(new NetworkResponseListner<List<TimeSlot>>() {
-
             @Override
             public void onResponse(int requestCode, List<TimeSlot> items) {
+                txtSelectDate.setVisibility(View.GONE);
                 if (items != null && items.size() > 0) {
                     mSlotsAdapter.setData(items);
                     mSlotsAdapter.notifyDataSetChanged();
-
+                    txtNoSlots.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
                     mSlotsAdapter.setOnItemClickHandler(position -> {
                         assignmentStartTime = mSlotsAdapter.getItem(position).getStartTime();
                         AppUtils.appointmentStartTime = assignmentStartTime;
                         assignmentEndTime = mSlotsAdapter.getItem(position).getFinishTime();
                         AppUtils.appointmentEndTime = assignmentEndTime;
                     });
+                } else {
+                    recyclerView.setVisibility(GONE);
+                    txtNoSlots.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -2447,8 +2471,12 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                         mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(GONE);
                         mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(GONE);
                     } else if (isShowSlots) {
+                        appointmentDate = "";
+                        assignmentStartTime = "";
+                        assignmentEndTime = "";
                         mCallback.isIncompleteReason(false);
                         mCallback.getIncompleteReason(mFragmentServiceInfoBinding.txtReason.getText().toString());
+                        showSlotsDialog();
                         mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(View.VISIBLE);
                     } else {
                         mFragmentServiceInfoBinding.layoutOtp.setVisibility(View.GONE);

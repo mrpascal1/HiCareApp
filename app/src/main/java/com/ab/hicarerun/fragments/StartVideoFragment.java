@@ -143,9 +143,7 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
         mFragmentStartVideoBinding.progress.setVisibility(View.VISIBLE);
         mFragmentStartVideoBinding.lnrSkip.setVisibility(View.GONE);
         mFragmentStartVideoBinding.exoPlayerView.setOnClickListener(view1 -> animateVolumeControl());
-
         mFragmentStartVideoBinding.view.setOnClickListener(view12 -> animateVolumeControl());
-
         mFragmentStartVideoBinding.imgOrientation.setOnClickListener(view13 -> toggleOrientation());
         mFragmentStartVideoBinding.lnrSkip.setOnClickListener(view14 -> {
             SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.IS_SKIP_VIDEO, true);
@@ -232,9 +230,7 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
         }catch (Exception e){
             e.printStackTrace();
         }
-
     }
-
 
     private void setOrientationState(OrientationState state) {
         try {
@@ -249,7 +245,6 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void animateVolumeControl() {

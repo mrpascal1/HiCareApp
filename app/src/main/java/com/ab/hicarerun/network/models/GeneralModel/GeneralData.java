@@ -102,6 +102,14 @@ public class GeneralData implements RealmModel {
     @Expose
     private String Signatory;
 
+    @SerializedName("Tag")
+    @Expose
+    private String Tag;
+
+    @SerializedName("Infestation Level")
+    @Expose
+    private String InfestationLevel;
+
     @SerializedName("SignatureUrl")
     @Expose
     private String SignatureUrl;
@@ -139,9 +147,25 @@ public class GeneralData implements RealmModel {
     @Expose
     private Boolean IsChequeRequired;
 
+    @SerializedName("FlushoutRequired")
+    @Expose
+    private Boolean FlushoutRequired;
+
+    @SerializedName("GelTreatmentRequired")
+    @Expose
+    private Boolean GelTreatmentRequired;
+
     @SerializedName("TaskAssignmentEndTime")
     @Expose
     private String TaskAssignmentEndTime;
+
+    @SerializedName("InspectionInfestationLevel")
+    @Expose
+    private String InspectionInfestationLevel;
+
+    @SerializedName("ConsultationInfestationLevel")
+    @Expose
+    private String ConsultationInfestationLevel;
 
     @SerializedName("ShowSignature")
     @Expose
@@ -738,11 +762,11 @@ public class GeneralData implements RealmModel {
         ReferralDiscount = referralDiscount;
     }
 
-    public Boolean getFlushOutRequired() {
+    public Boolean getIsFlushOutRequired() {
         return IsFlushOutRequired;
     }
 
-    public void setFlushOutRequired(Boolean flushOutRequired) {
+    public void setIsFlushOutRequired(Boolean flushOutRequired) {
         IsFlushOutRequired = flushOutRequired;
     }
 
@@ -992,5 +1016,53 @@ public class GeneralData implements RealmModel {
 
     public void setTaskAssignmentEndDate(String taskAssignmentEndDate) {
         TaskAssignmentEndDate = taskAssignmentEndDate;
+    }
+
+    public String getTag() {
+        return Tag;
+    }
+
+    public void setTag(String tag) {
+        Tag = tag;
+    }
+
+    public String getInfestationLevel() {
+        return InfestationLevel;
+    }
+
+    public void setInfestationLevel(String infestation) {
+        InfestationLevel = infestation;
+    }
+
+    public Boolean getFlushoutRequired() {
+        return FlushoutRequired;
+    }
+
+    public void setFlushoutRequired(Boolean flushoutRequired) {
+        FlushoutRequired = flushoutRequired;
+    }
+
+    public Boolean getGelTreatmentRequired() {
+        return GelTreatmentRequired;
+    }
+
+    public void setGelTreatmentRequired(Boolean gelTreatmentRequired) {
+        GelTreatmentRequired = gelTreatmentRequired;
+    }
+
+    public String getInspectionInfestationLevel() {
+        return InspectionInfestationLevel;
+    }
+
+    public void setInspectionInfestationLevel(String inspectionInfestationLevel) {
+        InspectionInfestationLevel = inspectionInfestationLevel;
+    }
+
+    public String getConsultationInfestationLevel() {
+        return ConsultationInfestationLevel;
+    }
+
+    public void setConsultationInfestationLevel(String consultationInfestationLevel) {
+        ConsultationInfestationLevel = consultationInfestationLevel;
     }
 }

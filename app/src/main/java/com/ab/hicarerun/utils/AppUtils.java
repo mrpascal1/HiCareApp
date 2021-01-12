@@ -1,6 +1,7 @@
 package com.ab.hicarerun.utils;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -59,6 +60,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -206,7 +208,7 @@ public class AppUtils {
         mBuilder.create().show();
     }
 
-    public static void showDownloadAlertBox(Context context){
+    public static void showDownloadAlertBox(Context context) {
 
     }
 
@@ -379,6 +381,13 @@ public class AppUtils {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date1 = new Date();
         return dateFormat.format(date1);
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    public static String getTomorrowDate() {
+        Calendar cal = new GregorianCalendar();
+        cal.add(Calendar.DATE, 1);
+        return new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
     }
 
     public static String formattedCurrentDate() {

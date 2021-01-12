@@ -341,8 +341,16 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                 if (mGeneralRealmData.get(0).getShowNextServiceAppointment() && status.equals("On-Site")) {
                     mFragmentSignatureInfoBinding.lnrBook.setVisibility(View.VISIBLE);
                     mFragmentSignatureInfoBinding.lnrPlannedServiceDate.setVisibility(View.VISIBLE);
-                } else {
-                    mFragmentSignatureInfoBinding.lnrBook.setVisibility(GONE);
+                } else if((mGeneralRealmData.get(0).getFlushoutRequired() || mGeneralRealmData.get(0).getGelTreatmentRequired()) && status.equals("On-Site")){
+                    mFragmentSignatureInfoBinding.lnrBook.setVisibility(View.VISIBLE);
+                    mFragmentSignatureInfoBinding.lnrPlannedServiceDate.setVisibility(GONE);
+                    if(mGeneralRealmData.get(0).getTag().equalsIgnoreCase("complaint")){
+                        mFragmentSignatureInfoBinding.lnrBook.setText("Schedule Flush Out");
+                    }else if(mGeneralRealmData.get(0).getTag().equalsIgnoreCase("gel")){
+                        mFragmentSignatureInfoBinding.lnrBook.setText("Schedule Gel Treatment");
+                    }
+                }else {
+                    mFragmentSignatureInfoBinding.lnrBook.setVisibility(View.VISIBLE);
                     mFragmentSignatureInfoBinding.lnrPlannedServiceDate.setVisibility(GONE);
                 }
 
@@ -408,7 +416,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     mFragmentSignatureInfoBinding.txtHint.setVisibility(View.VISIBLE);
                 }
 
-                if (mGeneralRealmData.get(0).getFlushOutRequired() != null && mGeneralRealmData.get(0).getFlushOutRequired()) {
+                if (mGeneralRealmData.get(0).getIsFlushOutRequired() != null && mGeneralRealmData.get(0).getIsFlushOutRequired()) {
                     mFragmentSignatureInfoBinding.lnrCMSReason.setVisibility(View.VISIBLE);
                 } else {
                     mFragmentSignatureInfoBinding.lnrCMSReason.setVisibility(GONE);
@@ -957,7 +965,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
 
     private void getValidate() {
         try {
-            if (mGeneralRealmData.get(0).getFlushOutRequired() != null && mGeneralRealmData.get(0).getFlushOutRequired() && mFragmentSignatureInfoBinding.rgCMS.getCheckedRadioButtonId() == -1) {
+            if (mGeneralRealmData.get(0).getIsFlushOutRequired() != null && mGeneralRealmData.get(0).getIsFlushOutRequired() && mFragmentSignatureInfoBinding.rgCMS.getCheckedRadioButtonId() == -1) {
                 mCallback.isWorkTypeNotChecked(true);
             } else {
                 mCallback.isWorkTypeNotChecked(false);

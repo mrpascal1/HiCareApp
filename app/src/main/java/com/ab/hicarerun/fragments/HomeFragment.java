@@ -253,12 +253,8 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
 
 
-        mFragmentHomeBinding.lnrAssess.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAssessmentReport();
-            }
-        });
+//
+        mFragmentHomeBinding.lnrAssess.setOnClickListener(v -> showAssessmentReport());
     }
 
     private void showCovidCheckList() {
@@ -717,7 +713,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
                                     @Override
                                     public void onFailure(int requestCode) {
-
                                     }
                                 });
                                 controller.getTechAttendance(CAM_REQUEST, request);

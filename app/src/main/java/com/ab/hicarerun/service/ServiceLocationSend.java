@@ -28,6 +28,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -69,6 +70,7 @@ public class ServiceLocationSend extends Service implements LocationListener {
     Location location;
     String highestSpeed = "-";
     String lowestSpeed = "-";
+    private PowerManager.WakeLock mWakeLock = null;
 
 
     @Nullable
@@ -116,41 +118,40 @@ public class ServiceLocationSend extends Service implements LocationListener {
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
         Log.e("Service Started", "Service Started");
+        try {
+            final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "sample:myapp");
+            mWakeLock.acquire();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         Handler handler = new Handler(Looper.getMainLooper());
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+        handler.post((Runnable) () -> {
+            locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+            Log.e("Running", "Running call");
+            final Location location = getLastKnownLocation();
+            if (location != null) {
+                lat = (double) (location.getLatitude());
+                lng = (double) (location.getLongitude());
+                Log.e("lat", "Lattitude:" + lat);
+                Log.e("long", "Longitude:" + lng);
+                onLocationChanged(location);
+            } else {
 
-                Log.e("Running", "Running call");
+                Log.e("lat_long ", "null");
+                onLocationChanged(location);
+            }
 
+            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                Log.e("Called to GPS", "APi Hit ifff");
+                getDeviceDetails(ServiceLocationSend.this, true, false);
+                getContinueHandShake(ServiceLocationSend.this);
 
-                final Location location = getLastKnownLocation();
-                if (location != null) {
-
-                    lat = (double) (location.getLatitude());
-                    lng = (double) (location.getLongitude());
-                    Log.e("lat", "Lattitude:" + lat);
-                    Log.e("long", "Longitude:" + lng);
-                    onLocationChanged(location);
-
-                } else {
-
-                    Log.e("lat_long ", "null");
-                    onLocationChanged(location);
-                }
-
-                if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                    Log.e("Called to GPS", "APi Hit ifff");
-                    getDeviceDetails(ServiceLocationSend.this, true, false);
-                    getContinueHandShake(ServiceLocationSend.this);
-
-                } else {
-                    Log.e("Called to GPS", "APi Hit else");
-                    getDeviceDetails(ServiceLocationSend.this, true, true);
-                    getContinueHandShake(ServiceLocationSend.this);
-                }
+            } else {
+                Log.e("Called to GPS", "APi Hit else");
+                getDeviceDetails(ServiceLocationSend.this, true, true);
+                getContinueHandShake(ServiceLocationSend.this);
             }
         });
 
@@ -160,8 +161,15 @@ public class ServiceLocationSend extends Service implements LocationListener {
 
     @Override
     public void onDestroy() {
-        Log.e("onDestroy", "onDestroy Call");
         super.onDestroy();
+        try {
+            if (mWakeLock!=null && mWakeLock.isHeld())
+                mWakeLock.release();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
     }
 
 
@@ -197,7 +205,6 @@ public class ServiceLocationSend extends Service implements LocationListener {
         try {
             Calendar c = Calendar.getInstance();
             SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss aa");
-
 
 
             TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
@@ -430,8 +437,8 @@ public class ServiceLocationSend extends Service implements LocationListener {
             if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
                 // Found best last known location: %s", l);
                 bestLocation = l;
-            }else {
-                bestLocation= l;
+            } else {
+                bestLocation = l;
             }
         }
         return bestLocation;

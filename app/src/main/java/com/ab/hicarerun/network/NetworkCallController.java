@@ -3397,21 +3397,21 @@ public class NetworkCallController {
 
     public void getUPICode(final int requestCode, final String taskId, final String accountNo, final String orderNo, final String amount, final String source) {
         try {
-            mContext.showProgressDialog();
+//            mContext.showProgressDialog();
             BaseApplication.getQRCodeApi()
                     .getUPICode(taskId, accountNo, orderNo, amount, source)
                     .enqueue(new Callback<QRCodeResponse>() {
                         @Override
                         public void onResponse(Call<QRCodeResponse> call,
                                                Response<QRCodeResponse> response) {
-                            mContext.dismissProgressDialog();
+//                            mContext.dismissProgressDialog();
                             if (response != null) {
                                 if (response.body() != null) {
                                     mListner.onResponse(requestCode, response.body().getData());
                                 } else if (response.errorBody() != null) {
                                     try {
                                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                        mContext.showServerError(jObjError.getString("ErrorMessage"));
+//                                        mContext.showServerError(jObjError.getString("ErrorMessage"));
                                         RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                         if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
                                             String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
@@ -3428,8 +3428,8 @@ public class NetworkCallController {
 
                         @Override
                         public void onFailure(Call<QRCodeResponse> call, Throwable t) {
-                            mContext.dismissProgressDialog();
-                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
+//                            mContext.dismissProgressDialog();
+//                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
                     });
         } catch (Exception e) {
@@ -4411,7 +4411,7 @@ public class NetworkCallController {
 
                         @Override
                         public void onFailure(Call<SlotResponse> call, Throwable t) {
-                            mContext.dismissProgressDialog();
+//                            mContext.dismissProgressDialog();
                         }
                     });
         } catch (Exception e) {
@@ -4458,6 +4458,50 @@ public class NetworkCallController {
         }
 
     }
+
+    public void getRenewalUPICode(final int requestCode, final String taskId, final String accountNo, final String orderNo, final String amount, final String source) {
+        try {
+            mContext.showProgressDialog();
+            BaseApplication.getQRCodeApi()
+                    .getRenewalUPICode(taskId, accountNo, orderNo, amount, source)
+                    .enqueue(new Callback<QRCodeResponse>() {
+                        @Override
+                        public void onResponse(Call<QRCodeResponse> call,
+                                               Response<QRCodeResponse> response) {
+                            mContext.dismissProgressDialog();
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body().getData());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getGroomingTechnicians", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<QRCodeResponse> call, Throwable t) {
+                            mContext.dismissProgressDialog();
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     public String getRefreshToken() {
         String refreshToken = null;

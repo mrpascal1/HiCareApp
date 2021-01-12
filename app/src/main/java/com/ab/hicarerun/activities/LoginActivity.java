@@ -26,6 +26,7 @@ import androidx.databinding.DataBindingUtil;
 import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ActivityLoginBinding;
+import com.ab.hicarerun.fragments.LocationConfirmationFragment;
 import com.ab.hicarerun.fragments.LoginFragment;
 import com.ab.hicarerun.fragments.NewLoginFragment;
 import com.ab.hicarerun.network.NetworkCallController;
@@ -70,10 +71,6 @@ public class LoginActivity extends BaseActivity implements InstallStateUpdatedLi
     private AppUpdateManager mAppUpdateManager;
     public static final int REQUEST_CODE_PERMISSIONS = 101;
 
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +84,6 @@ public class LoginActivity extends BaseActivity implements InstallStateUpdatedLi
             // turn on GPS
             if (isGPSEnable) {
                 requestPermission();
-
             } else {
                 isGPS = isGPSEnable;
             }
@@ -139,7 +135,6 @@ public class LoginActivity extends BaseActivity implements InstallStateUpdatedLi
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
-
     }
 
     @Override
@@ -176,14 +171,11 @@ public class LoginActivity extends BaseActivity implements InstallStateUpdatedLi
     }
 
     private void requestLocationPermission() {
-
         boolean foreground = ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-
         if (foreground) {
             boolean background = ActivityCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED;
-
             if (background) {
                 handleLocationUpdates();
             } else {
@@ -209,7 +201,7 @@ public class LoginActivity extends BaseActivity implements InstallStateUpdatedLi
                     //foreground permission allowed
                     if (grantResults[i] >= 0) {
                         foreground = true;
-                        Toast.makeText(getApplicationContext(), "Foreground location permission allowed", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(), "Foreground location permission allowed", Toast.LENGTH_SHORT).show();
                         continue;
                     } else {
                         Toast.makeText(getApplicationContext(), "Location Permission denied", Toast.LENGTH_SHORT).show();
@@ -240,45 +232,84 @@ public class LoginActivity extends BaseActivity implements InstallStateUpdatedLi
 
     private void handleLocationUpdates() {
         //foreground and background
+        addFragment(NewLoginFragment.newInstance(Version, Apk_URL, Apk_Type), "LoginTrealActivity-CreateRealFragment");
+
     }
 
     private void handleForegroundLocationUpdates() {
+        addFragment(NewLoginFragment.newInstance(Version, Apk_URL, Apk_Type), "LoginTrealActivity-CreateRealFragment");
         //handleForeground Location Updates
-        Toast.makeText(getApplicationContext(), "Start foreground location updates", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(), "Start foreground location updates", Toast.LENGTH_SHORT).show();
     }
 
     private void requestPermission() {
         try {
-            Dexter.withActivity(this)
-                    .withPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,
-                            Manifest.permission.CAMERA, Manifest.permission.READ_PHONE_STATE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE/*, Manifest.permission.SYSTEM_ALERT_WINDOW*/)
-                    .withListener(new MultiplePermissionsListener() {
-                        @Override
-                        public void onPermissionsChecked(MultiplePermissionsReport report) {
-                            // check if all permissions are granted
-                            if (report.areAllPermissionsGranted()) {
-                                getVersionFromApi();
-                                requestLocationPermission();
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                Dexter.withActivity(this)
+                        .withPermissions(/*Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,*/
+                                Manifest.permission.CAMERA, Manifest.permission.READ_PHONE_STATE,
+                                Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE/*, Manifest.permission.SYSTEM_ALERT_WINDOW*/)
+                        .withListener(new MultiplePermissionsListener() {
+                            @Override
+                            public void onPermissionsChecked(MultiplePermissionsReport report) {
+                                // check if all permissions are granted
+                                if (report.areAllPermissionsGranted()) {
+                                    getVersionFromApi();
+//                                addFragment(LocationConfirmationFragment.newInstance(), "LoginTrealActivity-LocationConfirmationFragment");
+//                                requestLocationPermission();
+                                }
+                                // check for permanent denial of any permission
+                                if (report.isAnyPermissionPermanentlyDenied()) {
+                                    // show alert dialog navigating to Settings
+                                    showSettingsDialog();
+                                }
                             }
-                            // check for permanent denial of any permission
-                            if (report.isAnyPermissionPermanentlyDenied()) {
-                                // show alert dialog navigating to Settings
-                                showSettingsDialog();
-                            }
-                        }
 
-                        @Override
-                        public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions,
-                                                                       PermissionToken token) {
-                            token.continuePermissionRequest();
-                        }
-                    })
-                    .withErrorListener(
-                            error -> Toast.makeText(this, "Error occurred! ", Toast.LENGTH_SHORT)
-                                    .show())
-                    .onSameThread()
-                    .check();
+                            @Override
+                            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions,
+                                                                           PermissionToken token) {
+                                token.continuePermissionRequest();
+                            }
+                        })
+                        .withErrorListener(
+                                error -> Toast.makeText(this, "Error occurred! ", Toast.LENGTH_SHORT)
+                                        .show())
+                        .onSameThread()
+                        .check();
+            } else {
+                Dexter.withActivity(this)
+                        .withPermissions(/*Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,*/
+                                Manifest.permission.CAMERA, Manifest.permission.READ_PHONE_STATE,
+                                Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        .withListener(new MultiplePermissionsListener() {
+                            @Override
+                            public void onPermissionsChecked(MultiplePermissionsReport report) {
+                                // check if all permissions are granted
+                                if (report.areAllPermissionsGranted()) {
+                                    getVersionFromApi();
+//                                addFragment(LocationConfirmationFragment.newInstance(), "LoginTrealActivity-LocationConfirmationFragment");
+//                                requestLocationPermission();
+                                }
+                                // check for permanent denial of any permission
+                                if (report.isAnyPermissionPermanentlyDenied()) {
+                                    // show alert dialog navigating to Settings
+                                    showSettingsDialog();
+                                }
+                            }
+
+                            @Override
+                            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions,
+                                                                           PermissionToken token) {
+                                token.continuePermissionRequest();
+                            }
+                        })
+                        .withErrorListener(
+                                error -> Toast.makeText(this, "Error occurred! ", Toast.LENGTH_SHORT)
+                                        .show())
+                        .onSameThread()
+                        .check();
+            }
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -300,7 +331,6 @@ public class LoginActivity extends BaseActivity implements InstallStateUpdatedLi
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     // navigating user to app settings
@@ -330,6 +360,24 @@ public class LoginActivity extends BaseActivity implements InstallStateUpdatedLi
                     Apk_URL = data.getApkurl();
                     Apk_Type = data.getApktype();
                     addFragment(NewLoginFragment.newInstance(Version, Apk_URL, Apk_Type), "LoginTrealActivity-CreateRealFragment");
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                        boolean foreground = ActivityCompat.checkSelfPermission(LoginActivity.this,
+                                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+                        if (foreground) {
+                            boolean background = ActivityCompat.checkSelfPermission(LoginActivity.this,
+                                    Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED;
+                            if (background) {
+                                handleLocationUpdates();
+                            } else {
+                                addFragment(LocationConfirmationFragment.newInstance(), "LoginTrealActivity-LocationConfirmationFragment");
+                            }
+                        } else {
+                            addFragment(LocationConfirmationFragment.newInstance(), "LoginTrealActivity-LocationConfirmationFragment");
+                        }
+                    } else {
+
+                    }
+
                 }
 
                 @Override
