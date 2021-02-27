@@ -1,6 +1,7 @@
 package com.ab.hicarerun.fragments;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,6 +18,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -27,6 +29,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
@@ -42,9 +45,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
+import com.ab.hicarerun.activities.NewTaskDetailsActivity;
 import com.ab.hicarerun.activities.ServiceRenewalActivity;
 import com.ab.hicarerun.adapter.NewAttachmentListAdapter;
 import com.ab.hicarerun.adapter.SlotsAdapter;
@@ -65,6 +70,7 @@ import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.SlotModel.TimeSlot;
 import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.ab.hicarerun.utils.SwipeToDeleteCallBack;
 import com.bumptech.glide.Glide;
 import com.vansuita.pickimage.bundle.PickSetup;
@@ -74,12 +80,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
@@ -89,7 +97,7 @@ import static android.view.View.GONE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SignatureInfoFragment extends BaseFragment implements UserSignatureClickHandler, OnDeleteListItemClickHandler, FragmentScheduleDatePicker.onDatePickerListener {
+public class SignatureInfoFragment extends BaseFragment implements UserSignatureClickHandler, OnDeleteListItemClickHandler, FragmentScheduleDatePicker.onDatePickerListener, NewTaskDetailsActivity.OnAboutDataReceivedListener {
     FragmentSignatureInfoBinding mFragmentSignatureInfoBinding;
     private static final int POST_FEEDBACK_LINK = 1000;
     private static final int POST_ATTACHMENT_REQ = 2000;
@@ -132,6 +140,10 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
     private String assignmentStartTime = "";
     private String assignmentEndTime = "";
     private SlotsAdapter mSlotsAdapter;
+    private int source = 0;
+    private NewTaskDetailsActivity mActivity = null;
+    CountDownTimer timer;
+    private static final String FORMAT = "%02d:%02d";
 //    private Tasks model;
 
     public SignatureInfoFragment() {
@@ -183,6 +195,8 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
         mFragmentSignatureInfoBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_signature_info, container, false);
         feedback_code = Objects.requireNonNull(mFragmentSignatureInfoBinding.txtFeedback.getText()).toString();
         signatory = Objects.requireNonNull(mFragmentSignatureInfoBinding.edtSignatory.getText()).toString();
+        mActivity = (NewTaskDetailsActivity) getActivity();
+        Objects.requireNonNull(mActivity).setAboutDataListener(this);
         assert getArguments() != null;
         mFeedback = getArguments().getString(ARG_VAR);
         mPaint = new Paint();
@@ -202,61 +216,66 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
         super.onViewCreated(view, savedInstanceState);
 //        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
 //        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        getSignature();
-        mFragmentSignatureInfoBinding.txtRenewTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD_ITALIC);
-        mFragmentSignatureInfoBinding.txtNew.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        mFragmentSignatureInfoBinding.txtFeedback.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        try {
+            getSignature();
+            mFragmentSignatureInfoBinding.txtRenewTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD_ITALIC);
+            mFragmentSignatureInfoBinding.txtNew.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+            mFragmentSignatureInfoBinding.txtFeedback.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
+                }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-            }
+                }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                getValidate();
-            }
-        });
+                @Override
+                public void afterTextChanged(Editable s) {
+                    getValidate();
+                }
+            });
 
 
-        mFragmentSignatureInfoBinding.edtSignatory.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            mFragmentSignatureInfoBinding.edtSignatory.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
+                }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-            }
+                }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                getValidate();
-            }
-        });
-        mFragmentSignatureInfoBinding.rgCMS.setOnCheckedChangeListener((radioGroup, i) -> getValidate());
-        mFragmentSignatureInfoBinding.btnRenew.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ServiceRenewalActivity.class);
-                intent.putExtra(ServiceRenewalActivity.ARGS_TASKS, taskId);
-                startActivity(intent);
-            }
-        });
+                @Override
+                public void afterTextChanged(Editable s) {
+                    getValidate();
+                }
+            });
+            mFragmentSignatureInfoBinding.rgCMS.setOnCheckedChangeListener((radioGroup, i) -> getValidate());
+            mFragmentSignatureInfoBinding.btnRenew.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), ServiceRenewalActivity.class);
+                    intent.putExtra(ServiceRenewalActivity.ARGS_TASKS, taskId);
+                    startActivity(intent);
+                }
+            });
 
-        mFragmentSignatureInfoBinding.recycleView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(getActivity());
-        mFragmentSignatureInfoBinding.recycleView.setLayoutManager(layoutManager);
-        assert mGeneralRealmData.get(0) != null;
-        mAdapter = new NewAttachmentListAdapter(getActivity(), mGeneralRealmData.get(0).getSchedulingStatus());
-        mFragmentSignatureInfoBinding.recycleView.setAdapter(mAdapter);
-        mAdapter.setOnItemClickHandler(this);
-        getAttachmentList();
+            mFragmentSignatureInfoBinding.recycleView.setHasFixedSize(true);
+            layoutManager = new LinearLayoutManager(getActivity());
+            mFragmentSignatureInfoBinding.recycleView.setLayoutManager(layoutManager);
+            assert mGeneralRealmData.get(0) != null;
+            mAdapter = new NewAttachmentListAdapter(getActivity(), mGeneralRealmData.get(0).getSchedulingStatus());
+            mFragmentSignatureInfoBinding.recycleView.setAdapter(mAdapter);
+            mAdapter.setOnItemClickHandler(this);
+            getAttachmentList();
+            resetTimer();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -326,6 +345,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
 
     private void getSignature() {
         try {
+
             mGeneralRealmData =
                     getRealm().where(GeneralData.class).findAll();
 
@@ -335,23 +355,47 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                 isFeedBack = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getFeedBack() : false;
                 accountType = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getAccountType() : "NA";
                 status = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getSchedulingStatus() : "NA";
-                mFragmentSignatureInfoBinding.txtPlannedDate.setText(AppUtils.reFormatDateAndTime(mGeneralRealmData.get(0).getNext_SR_Planned_Start_Date(), "dd-MMM-yyyy"));
+                if (mGeneralRealmData.get(0).getNext_SR_Planned_Start_Date() != null) {
+                    try {
+                        mFragmentSignatureInfoBinding.txtPlannedDate.setText(AppUtils.reFormatDateAndTime(mGeneralRealmData.get(0).getNext_SR_Planned_Start_Date(), "dd-MMM-yyyy"));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    mFragmentSignatureInfoBinding.txtPlannedDate.setText("NA");
+                }
                 mFragmentSignatureInfoBinding.txtPlannedDate.setTypeface(mFragmentSignatureInfoBinding.txtPlannedDate.getTypeface(), Typeface.BOLD);
 
                 if (mGeneralRealmData.get(0).getShowNextServiceAppointment() && status.equals("On-Site")) {
                     mFragmentSignatureInfoBinding.lnrBook.setVisibility(View.VISIBLE);
                     mFragmentSignatureInfoBinding.lnrPlannedServiceDate.setVisibility(View.VISIBLE);
-                } else if((mGeneralRealmData.get(0).getFlushoutRequired() || mGeneralRealmData.get(0).getGelTreatmentRequired()) && status.equals("On-Site")){
-                    mFragmentSignatureInfoBinding.lnrBook.setVisibility(View.VISIBLE);
-                    mFragmentSignatureInfoBinding.lnrPlannedServiceDate.setVisibility(GONE);
-                    if(mGeneralRealmData.get(0).getTag().equalsIgnoreCase("complaint")){
-                        mFragmentSignatureInfoBinding.lnrBook.setText("Schedule Flush Out");
-                    }else if(mGeneralRealmData.get(0).getTag().equalsIgnoreCase("gel")){
-                        mFragmentSignatureInfoBinding.lnrBook.setText("Schedule Gel Treatment");
+                    source = 0;
+                } else if ((mGeneralRealmData.get(0).getFlushoutRequired() || mGeneralRealmData.get(0).getGelTreatmentRequired()) && status.equals("On-Site") && mGeneralRealmData.get(0).getTag() != null) {
+                    if (mGeneralRealmData.get(0).getTag().equalsIgnoreCase("complaint") && AppUtils.infestationLevel.equalsIgnoreCase("high infestation")) {
+                        mFragmentSignatureInfoBinding.lnrBook.setText("SCHEDULE FLUSH OUT SERVICE");
+                        mFragmentSignatureInfoBinding.lnrBook.setVisibility(View.VISIBLE);
+                        mFragmentSignatureInfoBinding.lnrPlannedServiceDate.setVisibility(GONE);
+                        source = 1;
+                    } else if (mGeneralRealmData.get(0).getTag().equalsIgnoreCase("flushout") || mGeneralRealmData.get(0).getTag().equalsIgnoreCase("incomplete flushout")) {
+                        mFragmentSignatureInfoBinding.lnrBook.setText("SCHEDULE GEL TREATMENT");
+                        mFragmentSignatureInfoBinding.lnrBook.setVisibility(View.VISIBLE);
+                        mFragmentSignatureInfoBinding.lnrPlannedServiceDate.setVisibility(GONE);
+                        source = 2;
+                    } else if (mGeneralRealmData.get(0).getTag().equalsIgnoreCase("gel") || mGeneralRealmData.get(0).getTag().equalsIgnoreCase("incomplete gel")) {
+                        mFragmentSignatureInfoBinding.lnrBook.setVisibility(GONE);
+                        mFragmentSignatureInfoBinding.lnrPlannedServiceDate.setVisibility(GONE);
+                    } else {
+                        mFragmentSignatureInfoBinding.lnrBook.setVisibility(GONE);
+                        mFragmentSignatureInfoBinding.lnrPlannedServiceDate.setVisibility(GONE);
                     }
-                }else {
-                    mFragmentSignatureInfoBinding.lnrBook.setVisibility(View.VISIBLE);
-                    mFragmentSignatureInfoBinding.lnrPlannedServiceDate.setVisibility(GONE);
+                } else {
+                    if (mGeneralRealmData.get(0).getTag() != null && status.equalsIgnoreCase("completed") && (mGeneralRealmData.get(0).getTag().equalsIgnoreCase("complaint") || mGeneralRealmData.get(0).getTag().equalsIgnoreCase("flushout") || mGeneralRealmData.get(0).getTag().equalsIgnoreCase("incomplete flushout"))) {
+                        mFragmentSignatureInfoBinding.lnrPlannedServiceDate.setVisibility(View.VISIBLE);
+                    } else {
+                        mFragmentSignatureInfoBinding.lnrPlannedServiceDate.setVisibility(GONE);
+                    }
+                    mFragmentSignatureInfoBinding.lnrBook.setVisibility(GONE);
+
                 }
 
                 if (isJobcardEnable) {
@@ -421,10 +465,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                 } else {
                     mFragmentSignatureInfoBinding.lnrCMSReason.setVisibility(GONE);
                 }
-
-                String amount = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getAmountToCollect() : "NA";
-                mFragmentSignatureInfoBinding.txtAmount.setText("₹" + " " + amount);
-
+                mFragmentSignatureInfoBinding.txtAmount.setText("₹" + " " + 0);
                 mobile = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getMobileNumber() : "NA";
                 Order_Number = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getOrderNumber() : "NA";
                 Service_Name = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getServicePlan() : "NA";
@@ -435,7 +476,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
 //                signatory = mFragmentSignatureInfoBinding.edtSignatory.getText().toString();
 
                 try {
-                    if (mGeneralRealmData.get(0).getSignatureUrl() != null || !mGeneralRealmData.get(0).getSignatureUrl().equals("")) {
+                    if (mGeneralRealmData.get(0).getSignatureUrl() != null && !mGeneralRealmData.get(0).getSignatureUrl().equals("")) {
                         mFragmentSignatureInfoBinding.txtHint.setVisibility(GONE);
                         Glide.with(getActivity())
                                 .load(mGeneralRealmData.get(0).getSignatureUrl())
@@ -452,7 +493,6 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
                 getValidate();
             }
         } catch (Exception e) {
@@ -495,7 +535,6 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     view.setDrawingCacheEnabled(false);
                     onCallBack(bmp);
                     alertDialog.dismiss();
-
                 });
 
                 img_wrong.setOnClickListener(v -> {
@@ -538,6 +577,28 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
         }
     }
 
+    void resetTimer() {
+        timer = new CountDownTimer(30000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                mFragmentSignatureInfoBinding.feedBackTimer.setText("Resend in " + String.format(FORMAT,
+                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
+                                TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
+                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
+                                TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+//                mFragmentSignatureInfoBinding.feedBackTimer.setText(String.valueOf(millisUntilFinished / 1000));
+            }
+
+            @Override
+            public void onFinish() {
+                mFragmentSignatureInfoBinding.btnSendlink.setAlpha(1.0f);
+                mFragmentSignatureInfoBinding.feedBackTimer.setVisibility(View.GONE);
+                mFragmentSignatureInfoBinding.btnSendlink.setEnabled(true);
+
+            }
+        };
+    }
+
     @Override
     public void onSendLinkClicked(View view) {
         sendFeedbackLink();
@@ -553,6 +614,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                         BasicResponse response = (BasicResponse) data;
                         if (response.getSuccess()) {
                             sendFeedback();
+
                         } else {
                             Toasty.error(getActivity(),
                                     getString(R.string.spent_adequate_time),
@@ -612,6 +674,13 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     public void onResponse(int requestCode, Object response) {
                         FeedbackResponse refResponse = (FeedbackResponse) response;
                         if (refResponse.getSuccess()) {
+                            mFragmentSignatureInfoBinding.btnSendlink.setAlpha(0.5f);
+                            mFragmentSignatureInfoBinding.feedBackTimer.setVisibility(View.VISIBLE);
+                            mFragmentSignatureInfoBinding.btnSendlink.setEnabled(false);
+                            if (timer != null)
+                                timer.cancel();
+
+                            timer.start();
                             Toasty.success(getActivity(), getString(R.string.feedback_link_spent_successfully), Toasty.LENGTH_LONG).show();
                             getValidate();
                         }
@@ -742,6 +811,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
             alertDialogBuilder.setView(promptsView);
             final AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
             final RecyclerView recyclerView =
                     promptsView.findViewById(R.id.recycleSlots);
             final CalendarView mCalendarView = promptsView.findViewById(R.id.calendarView);
@@ -749,16 +819,29 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
             final AppCompatButton btnCancel = promptsView.findViewById(R.id.btnCancel);
             final TextView txtDateHead = promptsView.findViewById(R.id.txtDateHead);
             final TextView txtSlotHead = promptsView.findViewById(R.id.txtSlotHead);
+            final TextView txtNoSlots = promptsView.findViewById(R.id.txtNoSlots);
+            final TextView txtSelectDate = promptsView.findViewById(R.id.txtSelectDate);
             txtDateHead.setTypeface(txtDateHead.getTypeface(), Typeface.BOLD);
             txtSlotHead.setTypeface(txtSlotHead.getTypeface(), Typeface.BOLD);
+            String startDate = "";
+            String endDate = "";
 
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
             mSlotsAdapter = new SlotsAdapter(getActivity());
             recyclerView.setAdapter(mSlotsAdapter);
 
-            String startDate = AppUtils.reFormatDateAndTime(mGeneralRealmData.get(0).getNext_SR_Planned_Start_Date(), "yyyy-MM-dd");
-            String endDate = AppUtils.reFormatDateAndTime(mGeneralRealmData.get(0).getNext_SR_Planned_End_Date(), "yyyy-MM-dd");
+
+            if (mGeneralRealmData.get(0).getTag() != null && (mGeneralRealmData.get(0).getTag().equalsIgnoreCase("complaint"))) {
+                startDate = AppUtils.reFormatDateAndTime(mGeneralRealmData.get(0).getFlushout_Start_Date(), "yyyy-MM-dd");
+                endDate = AppUtils.reFormatDateAndTime(mGeneralRealmData.get(0).getFlushout_End_Date(), "yyyy-MM-dd");
+            } else if (mGeneralRealmData.get(0).getTag() != null && (mGeneralRealmData.get(0).getTag().equalsIgnoreCase("flushout") || mGeneralRealmData.get(0).getTag().equalsIgnoreCase("incomplete flushout"))) {
+                startDate = AppUtils.reFormatDateAndTime(mGeneralRealmData.get(0).getGelTreatment_Start_Date(), "yyyy-MM-dd");
+                endDate = AppUtils.reFormatDateAndTime(mGeneralRealmData.get(0).getGelTreatment_End_Date(), "yyyy-MM-dd");
+            } else {
+                startDate = AppUtils.reFormatDateAndTime(mGeneralRealmData.get(0).getNext_SR_Planned_Start_Date(), "yyyy-MM-dd");
+                endDate = AppUtils.reFormatDateAndTime(mGeneralRealmData.get(0).getNext_SR_Planned_End_Date(), "yyyy-MM-dd");
+            }
 
             String sParts[] = startDate.split("-");
             String eParts[] = endDate.split("-");
@@ -807,14 +890,14 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
             appointmentDate = sdf.format(new Date(mCalendarView.getDate()));
             AppUtils.appointmentDate = appointmentDate;
 
-            getSlots(startDate);
+//            getSlots(startDate);
 
             mCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
                 @Override
                 public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                     appointmentDate = year + "-" + (month + 1) + "-" + dayOfMonth;
                     AppUtils.appointmentDate = appointmentDate;
-                    getSlots(appointmentDate);
+                    getSlots(appointmentDate, txtNoSlots, txtSelectDate, recyclerView);
                 }
             });
 
@@ -854,7 +937,6 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
             alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.setCancelable(false);
-            alertDialog.show();
             alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 
 
@@ -863,22 +945,27 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
         }
     }
 
-    private void getSlots(String date) {
+    private void getSlots(String date, TextView txtNoSlots, TextView txtSelectDate, RecyclerView recyclerView) {
         NetworkCallController controller = new NetworkCallController(this);
         controller.setListner(new NetworkResponseListner<List<TimeSlot>>() {
 
             @Override
             public void onResponse(int requestCode, List<TimeSlot> items) {
+                txtSelectDate.setVisibility(View.GONE);
                 if (items != null && items.size() > 0) {
                     mSlotsAdapter.setData(items);
                     mSlotsAdapter.notifyDataSetChanged();
-
+                    txtNoSlots.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
                     mSlotsAdapter.setOnItemClickHandler(position -> {
                         assignmentStartTime = mSlotsAdapter.getItem(position).getStartTime();
                         AppUtils.appointmentStartTime = assignmentStartTime;
                         assignmentEndTime = mSlotsAdapter.getItem(position).getFinishTime();
                         AppUtils.appointmentEndTime = assignmentEndTime;
                     });
+                } else {
+                    recyclerView.setVisibility(GONE);
+                    txtNoSlots.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -887,7 +974,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
 
             }
         });
-        controller.getAppointmentSlots(SLOT_REQUEST, mGeneralRealmData.get(0).getTaskId(), date, date);
+        controller.getAppointmentSlots(SLOT_REQUEST, mGeneralRealmData.get(0).getTaskId(), date, date, source);
     }
 
     private Calendar dateToCalendar(Date date) {
@@ -1060,6 +1147,28 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day) {
 
+    }
+
+    @Override
+    public void onDataReceived(String amount, String type) {
+        if (type.equalsIgnoreCase("upi") || type.equalsIgnoreCase("paytm") || type.equalsIgnoreCase("amazon pay")) {
+            mFragmentSignatureInfoBinding.txtType.setText(type);
+            mFragmentSignatureInfoBinding.lnrOrder.setVisibility(View.GONE);
+            mFragmentSignatureInfoBinding.lnrType.setVisibility(View.VISIBLE);
+        } else if (type.equalsIgnoreCase("none")) {
+            mFragmentSignatureInfoBinding.lnrType.setVisibility(View.GONE);
+            mFragmentSignatureInfoBinding.lnrOrder.setVisibility(View.GONE);
+        } else if (type.equalsIgnoreCase("cash") || type.equalsIgnoreCase("cheque")) {
+            if (amount.equals("0") || amount.equals("")) {
+                mFragmentSignatureInfoBinding.lnrType.setVisibility(View.GONE);
+                mFragmentSignatureInfoBinding.lnrOrder.setVisibility(View.GONE);
+            } else {
+                mFragmentSignatureInfoBinding.txtAmount.setText("₹" + " " + amount);
+                mFragmentSignatureInfoBinding.txtType.setText(type);
+                mFragmentSignatureInfoBinding.lnrType.setVisibility(View.VISIBLE);
+                mFragmentSignatureInfoBinding.lnrOrder.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     public class DrawingView extends View {

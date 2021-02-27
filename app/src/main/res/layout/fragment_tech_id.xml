@@ -192,9 +192,9 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginRight="15dp">
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp">
 
                     <ImageView
                         android:id="@+id/imgTech"
@@ -202,35 +202,36 @@
                         android:layout_height="180dp"
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
-                        app:srcCompat="@drawable/ic_user_grey"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_user_grey" />
 
                     <ImageView
                         android:id="@+id/imgLogo"
-                        android:layout_width="170dp"
-                        android:layout_height="70dp"
+                        android:layout_width="125dp"
+                        android:layout_height="65dp"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginLeft="8dp"
+                        android:layout_marginLeft="15dp"
                         android:layout_marginTop="8dp"
+                        android:layout_marginRight="12dp"
                         android:src="@drawable/hicare_logo"
                         app:layout_constraintLeft_toRightOf="@id/imgTech"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
 
-<!--                    <TextView-->
-<!--                        android:id="@+id/txtBloodLabel"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginTop="10dp"-->
-<!--                        android:text="7890 1234 789"-->
-<!--                        android:textColor="@color/black"-->
-<!--                        android:textSize="16sp"-->
-<!--                        android:textStyle="bold"-->
-<!--                        app:layout_constraintLeft_toRightOf="@id/imgTech"-->
-<!--                        app:layout_constraintRight_toRightOf="parent"-->
-<!--                        app:layout_constraintTop_toBottomOf="@id/imgLogo" />-->
+                    <!--                    <TextView-->
+                    <!--                        android:id="@+id/txtBloodLabel"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginTop="10dp"-->
+                    <!--                        android:text="7890 1234 789"-->
+                    <!--                        android:textColor="@color/black"-->
+                    <!--                        android:textSize="16sp"-->
+                    <!--                        android:textStyle="bold"-->
+                    <!--                        app:layout_constraintLeft_toRightOf="@id/imgTech"-->
+                    <!--                        app:layout_constraintRight_toRightOf="parent"-->
+                    <!--                        app:layout_constraintTop_toBottomOf="@id/imgLogo" />-->
 
                     <!--                    <TextView-->
                     <!--                        android:id="@+id/txtBloodGroup"-->
@@ -250,16 +251,16 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="10dp"
-                        app:layout_constraintTop_toBottomOf="@id/imgLogo"
+                        android:orientation="horizontal"
                         app:layout_constraintLeft_toRightOf="@id/imgTech"
                         app:layout_constraintRight_toRightOf="parent"
-                        android:orientation="horizontal">
+                        app:layout_constraintTop_toBottomOf="@id/imgLogo">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Blood Group"
                             android:layout_marginRight="5dp"
+                            android:text="Blood Group"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
 
@@ -269,12 +270,13 @@
                             android:text=":"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
+
                         <TextView
                             android:id="@+id/txtGrp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="NA"
                             android:layout_marginLeft="5dp"
+                            android:text="NA"
                             android:textColor="@color/black"
                             android:textSize="16sp"
                             app:layout_constraintLeft_toRightOf="parent" />
@@ -338,7 +340,6 @@
                             android:textSize="16sp" />
 
 
-
                         <LinearLayout
                             android:id="@+id/lEmpCode"
                             android:layout_width="wrap_content"
@@ -351,8 +352,8 @@
                                 android:id="@+id/txtEmpLabel"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Emp ID"
                                 android:layout_marginRight="5dp"
+                                android:text="Emp ID"
                                 android:textColor="@color/black"
                                 android:textSize="16sp" />
 
@@ -367,14 +368,13 @@
                                 android:id="@+id/txtEmpCode"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="123464"
                                 android:layout_marginLeft="5dp"
+                                android:text="123464"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
                                 app:layout_constraintLeft_toRightOf="parent" />
 
                         </LinearLayout>
-
 
 
                     </LinearLayout>
@@ -383,8 +383,8 @@
                         android:id="@+id/cardDetails"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="8dp"
                         android:layout_marginTop="8dp"
+                        app:cardCornerRadius="8dp"
                         app:cardElevation="3dp"
                         app:cardUseCompatPadding="true"
                         app:layout_constraintTop_toBottomOf="@id/lnrDetails">
@@ -412,8 +412,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="15dp"
-                                android:layout_marginRight="15dp"
                                 android:layout_marginTop="15dp"
+                                android:layout_marginRight="15dp"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/lnr_service">
 
@@ -461,8 +461,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="15dp"
-                                android:layout_marginRight="15dp"
                                 android:layout_marginTop="8dp"
+                                android:layout_marginRight="15dp"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/lnr_service">
 
@@ -511,8 +511,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="15dp"
-                                android:layout_marginRight="15dp"
                                 android:layout_marginTop="8dp"
+                                android:layout_marginRight="15dp"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/lnr_service">
 
@@ -558,8 +558,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="15dp"
-                                android:layout_marginRight="15dp"
                                 android:layout_marginTop="8dp"
+                                android:layout_marginRight="15dp"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/lnr_service">
 
@@ -605,9 +605,9 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="15dp"
+                                android:layout_marginTop="8dp"
                                 android:layout_marginRight="15dp"
                                 android:layout_marginBottom="10dp"
-                                android:layout_marginTop="8dp"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toBottomOf="@id/lnr_service">
 
@@ -655,11 +655,11 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_marginTop="15dp"
-                                android:visibility="gone"
                                 android:text="No symptoms today,"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
-                                android:textStyle="italic" />
+                                android:textStyle="italic"
+                                android:visibility="gone" />
 
                             <TextView
                                 android:id="@+id/txtFreeText2"
@@ -667,12 +667,12 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_marginTop="2dp"
-                                android:visibility="gone"
                                 android:layout_marginBottom="5dp"
                                 android:text="head-to-toe disinfection done"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
-                                android:textStyle="italic" />
+                                android:textStyle="italic"
+                                android:visibility="gone" />
 
                         </LinearLayout>
 

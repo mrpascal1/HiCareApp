@@ -62,6 +62,7 @@ import com.ab.hicarerun.adapter.SurveyAdapter;
 import com.ab.hicarerun.adapter.TaskViewPagerAdapter;
 import com.ab.hicarerun.databinding.ActivityNewTaskDetailsBinding;
 import com.ab.hicarerun.fragments.ChemicalInfoFragment;
+import com.ab.hicarerun.fragments.ConsultationFragment;
 import com.ab.hicarerun.fragments.ReferralFragment;
 import com.ab.hicarerun.fragments.ServiceInfoFragment;
 import com.ab.hicarerun.fragments.SignatureInfoFragment;
@@ -132,6 +133,7 @@ import static com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState.EXPANDE
 
 public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, OnMapReadyCallback, UserTaskDetailsClickListener, OnSaveEventHandler {
     ActivityNewTaskDetailsBinding mActivityNewTaskDetailsBinding;
+    private OnAboutDataReceivedListener mAboutDataListener;
     private static final int TASK_BY_ID_REQUEST = 1000;
     private static final int UPDATE_REQUEST = 2000;
     private static final int SAVE_CHECK_LIST = 3000;
@@ -139,7 +141,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     static final int REQUEST_TAKE_PHOTO = 1;
     private String selectedImagePath = "";
     private boolean isUpiPaymentNotDone = false;
-
     private int checkPosition = 0;
     private Bitmap bitmap;
     int height = 100;
@@ -160,22 +161,15 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     public static final String ARGS_NAME = "ARGS_NAME";
     public static final String ARGS_NEXT_TASK = "ARGS_NEXT_TASK";
     private boolean isFinalSave = false;
+
     //    public static final String ARG_USER = "ARG_USER";
 //    public static final String ARGS_MOBILE = "ARGS_MOBILE";
 //    public static final String ARGS_TAG = "ARGS_TAG";
 //    public static final String ARGS_SEQUENCE = "ARGS_SEQUENCE";
 
-    ServiceInfoFragment.ServiceInfoListener mCallback = new ServiceInfoFragment.ServiceInfoListener() {
-        @Override
-        public void onPostJobButtonClicked() {
-            isFinalSave = false;
-            showCompletionDialog();
-        }
-
-        @Override
-        public void onRefreshClicked() {
-            getTaskDetailsById();
-        }
+    ServiceInfoFragment.ServiceInfoListener mCallback = () -> {
+        isFinalSave = false;
+        showCompletionDialog();
     };
     public static final String LAT_LONG = "LAT_LONG";
     private static final String TAG = "NewTaskDetailsActivity";
@@ -239,6 +233,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private String chequeImage = "";
     private String incompleteReason = "";
     private String flushoutReason = "";
+    private String SRAppointmentType = "";
     private HashMap<Integer, String> map = new HashMap<>();
     private HashMap<Integer, String> mMap = null;
     private List<TaskChemicalList> ChemReqList = null;
@@ -278,7 +273,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     //  protected void attachBaseContext(Context base) {
     //     super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
     // }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -381,7 +375,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     }
 
 
-    private void getTaskDetailsById() {
+    public void getTaskDetailsById() {
         try {
 
             try {
@@ -415,6 +409,9 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             isPostJobCompletionDone = response.getData().getPostJob_Checklist_Done();
                             sta = response.getData().getSchedulingStatus();
                             AppUtils.isInspectionDone = response.getData().getConsultationInspectionDone();
+                            if (response.getData().getInspectionInfestationLevel() != null) {
+                                AppUtils.infestationLevel = response.getData().getInspectionInfestationLevel();
+                            }
                             isIncentiveEnable = response.getData().getIncentiveEnable();
                             isConsultationRequired = response.getData().getConsultationInspectionRequired();
                             Incentive = Integer.parseInt(response.getData().getIncentivePoint());
@@ -431,8 +428,10 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             mOnsiteImagePath = response.getData().getOnsite_Image_Path();
                             Renewal_Type = response.getData().getRenewal_Type();
                             Renewal_Order_No = response.getData().getRenewal_Order_No();
+                            if (response.getData().getTag() != null) {
+                                SRAppointmentType = response.getData().getTag();
+                            }
                             mOnsiteCheckList = mTaskCheckList;
-
                             setViewPagerView();
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -946,6 +945,11 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         }
     }
 
+
+    public void refreshMyData() {
+        getTaskDetailsById();
+    }
+
     private void saveTaskDetails() {
         try {
             progress.show();
@@ -1029,7 +1033,12 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(1);
                 Toasty.error(this, getResources().getString(R.string.chamical_should_be_verified), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
-            } else if (isOTPRequired && Status.equals("Completed")) {
+            }  else if (isSignatureChanged && Status.equals("Completed")) {
+                mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                progress.dismiss();
+                Toasty.error(this, getResources().getString(R.string.signatory_field_is_required), Toast.LENGTH_SHORT, true).show();
+            }
+            else if (isOTPRequired && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
                 progress.dismiss();
                 Toasty.error(this, getResources().getString(R.string.otp_field_is_required), Toast.LENGTH_SHORT, true).show();
@@ -1037,10 +1046,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
                 progress.dismiss();
                 Toasty.error(this, getResources().getString(R.string.invalid_otp_ss), Toast.LENGTH_SHORT, true).show();
-            } else if (isSignatureChanged && Status.equals("Completed")) {
-                mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
-                progress.dismiss();
-                Toasty.error(this, getResources().getString(R.string.signatory_field_is_required), Toast.LENGTH_SHORT, true).show();
             } else if (isWorkTypeNotChecked && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
                 progress.dismiss();
@@ -1063,6 +1068,14 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
                 progress.dismiss();
                 Toasty.error(this, "Please complete Post Job Check-List required for the service", Toast.LENGTH_SHORT, true).show();
+            } else if (Status.equals("Completed") && SRAppointmentType.equalsIgnoreCase("complaint") && assignmentStartDate.equals("") && (AppUtils.infestationLevel != null && AppUtils.infestationLevel.equalsIgnoreCase("high infestation"))) {
+                mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                progress.dismiss();
+                Toasty.error(this, "Please select flush-out appointment", Toast.LENGTH_SHORT, true).show();
+            } else if (Status.equals("Completed") && (SRAppointmentType.equalsIgnoreCase("flushout") || SRAppointmentType.equalsIgnoreCase("incomplete flushout")) && assignmentStartDate.equals("") && (AppUtils.infestationLevel != null && AppUtils.infestationLevel.equalsIgnoreCase("high infestation"))) {
+                mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                progress.dismiss();
+                Toasty.error(this, "Please select gel appointment", Toast.LENGTH_SHORT, true).show();
             } else if (Status.equals("Completed") && isTechnicianFeedbackEnable && Rate == 0) {
                 progress.dismiss();
                 showRatingDialog();
@@ -1140,6 +1153,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         try {
                             UpdateTaskResponse updateResponse = (UpdateTaskResponse) response;
                             if (updateResponse.getSuccess()) {
+                                AppUtils.infestationLevel = "";
                                 Toasty.success(NewTaskDetailsActivity.this, updateResponse.getErrorMessage(), Toast.LENGTH_SHORT).show();
                                 if (isIncentiveEnable && Status.equals("Completed")) {
                                     showIncentiveDialog();
@@ -1636,7 +1650,15 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
     @Override
     public void amountCollected(String s) {
+//        String tag = "android:switcher:" + R.id.viewpagertab + ":" + 1;
         Amount_Collected = s;
+//        Log.i("AMOUNT_COLLECTED", s);
+//        mAboutDataListener.onDataReceived(s);
+    }
+
+    @Override
+    public void amountCollectedAndType(String amount, String type) {
+        mAboutDataListener.onDataReceived(amount, type);
     }
 
     @Override
@@ -1869,6 +1891,15 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     @Override
     public void assignmentEndTime(String s) {
         assignmentEndTime = s;
+    }
+
+
+    public interface OnAboutDataReceivedListener {
+        void onDataReceived(String amount, String type);
+    }
+
+    public void setAboutDataListener(OnAboutDataReceivedListener listener) {
+        this.mAboutDataListener = listener;
     }
 
 }

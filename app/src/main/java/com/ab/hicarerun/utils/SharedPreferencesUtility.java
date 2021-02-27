@@ -32,6 +32,7 @@ public class SharedPreferencesUtility {
     public static final String PREF_USER_PIC = "PREF_USER_PIC";
     public static final String PREF_SHOW_NPS = "PREF_SHOW_NPS";
     public static final String PREF_RESOURCE_SAVED = "PREF_RESOURCE_SAVED";
+    public static final String PREF_AMOUNT = "PREF_AMOUNT";
     public static final String PREF_LANG = "en";
 
     public static boolean getPrefBoolean(Context context, String key) {

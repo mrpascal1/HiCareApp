@@ -502,7 +502,7 @@
     <string name="invalid_cheque_number">Invalid cheque number</string>
     <string name="please_upload_cheque_image">Please upload cheque image</string>
     <string name="enter_the_collect_values_of_chemicals_used">Enter the correct value of chemicals used</string>
-    <string name="chamical_should_be_verified">Chemical should be verified</string>
+    <string name="chamical_should_be_verified">Please verify chemical &amp; select checkbox</string>
     <string name="otp_field_is_required">OTP field is required</string>
     <string name="invalid_otp_ss">Invalid OTP</string>
     <string name="signatory_field_is_required">Signatory field is required</string>
@@ -623,4 +623,5 @@
     <string name="use_location_to_effectively_track_and_infom_clients_about_real_time_field_service_agent_s_location">Use location to effectively track and infom clients about real time field service agent\'s location.</string>
     <string name="hicare_technician_app_will_collect_location_data_even_when_the_app_is_closed_or_not_in_use">HiCare Technician App will collect location data even when the app is closed or not in use.</string>
     <string name="use_your_location">Use your location</string>
+    <string name="property_size">Property Size</string>
 </resources>

@@ -7,22 +7,23 @@
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home"
-            android:title="@string/home"
-           />
+            android:title="@string/home" />
+        <item
+            android:id="@+id/nav_quiz"
+            android:icon="@drawable/ic_home"
+            android:title="Quiz" />
 
         <item
             android:id="@+id/nav_chat"
             android:icon="@drawable/ic_sethoscope"
-            android:visible="false"
             android:title="Self Assess"
-            />
+            android:visible="false" />
 
         <item
             android:id="@+id/nav_products"
             android:icon="@drawable/ic_bazaar"
             android:title="HiCare Products"
-            android:visible="false"
-            />
+            android:visible="false" />
 
         <item
             android:id="@+id/nav_reward"
@@ -78,8 +79,7 @@
         <item
             android:id="@+id/nav_myid"
             android:icon="@drawable/ic_id_card"
-            android:title="@string/my_id_card"
-           />
+            android:title="@string/my_id_card" />
 
         <item
             android:id="@+id/nav_notifications"
@@ -95,20 +95,18 @@
         <item
             android:id="@+id/nav_voucher"
             android:icon="@drawable/ic_voucher"
-            android:visible="false"
-            android:title="@string/referral_code" />
+            android:title="@string/referral_code"
+            android:visible="false" />
 
         <item
             android:id="@+id/nav_language"
             android:icon="@drawable/ic_language"
-            android:title="@string/change_language"
-            />
+            android:title="@string/change_language" />
 
         <item
             android:id="@+id/nav_help"
             android:icon="@drawable/ic_info"
-            android:title="@string/help"
-            />
+            android:title="@string/help" />
 
 
         <item

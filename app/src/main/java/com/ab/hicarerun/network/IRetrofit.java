@@ -10,7 +10,6 @@ import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
 import com.ab.hicarerun.network.models.AttendanceModel.ProfilePicRequest;
 import com.ab.hicarerun.network.models.BasicResponse;
 import com.ab.hicarerun.network.models.CheckListModel.CheckListResponse;
-import com.ab.hicarerun.network.models.CheckListModel.SaveCheckListRequest;
 import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListRequest;
 import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListResponse;
 import com.ab.hicarerun.network.models.ChemicalCountModel.ChemicalCountResponse;
@@ -52,7 +51,6 @@ import com.ab.hicarerun.network.models.ModelQRCode.CheckPhonePeResponse;
 import com.ab.hicarerun.network.models.ModelQRCode.PhonePeQRCodeResponse;
 import com.ab.hicarerun.network.models.ModelQRCode.QRCodeResponse;
 import com.ab.hicarerun.network.models.NPSModel.NPSDataResponse;
-import com.ab.hicarerun.network.models.NewRewardsModel.NewRewardsResponse;
 import com.ab.hicarerun.network.models.OffersModel.OffersHistoryResponse;
 import com.ab.hicarerun.network.models.OffersModel.OffersResponse;
 import com.ab.hicarerun.network.models.OffersModel.UpdateRewardScratchRequest;
@@ -68,6 +66,8 @@ import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
 import com.ab.hicarerun.network.models.ProductModel.ProductResponse;
 import com.ab.hicarerun.network.models.ProfileModel.TechnicianProfileDetails;
+import com.ab.hicarerun.network.models.QuizModel.QuizCategoryResponse;
+import com.ab.hicarerun.network.models.QuizModel.QuizResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralDeleteRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralListResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralRequest;
@@ -93,7 +93,6 @@ import com.ab.hicarerun.network.models.TaskModel.UpdateTaskResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
 import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingRequest;
 import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingResponse;
-import com.ab.hicarerun.network.models.TechnicianRoutineModel.RoutineCheckListResponse;
 import com.ab.hicarerun.network.models.TechnicianRoutineModel.TechnicianRoutineResponse;
 import com.ab.hicarerun.network.models.TrainingModel.TrainingResponse;
 import com.ab.hicarerun.network.models.TrainingModel.WelcomeVideoResponse;
@@ -115,12 +114,12 @@ public interface IRetrofit {
     //    String BASE_URL = "http://52.74.65.15/mobileapi/api/";
     //    String ERROR_LOG_URL = "http://52.74.65.15/logging/api/";
     //    http://apps.hicare.in/cwf/datasync/InsertRenewalAppJeopardy
-    String BASE_URL = "http://api.hicare.in/mobile/api/";
-    String SCAN_URL = "http://api.hicare.in/taskservice/api/";
+    String BASE_URL = "http://run.hicare.in/mobile/api/";
+    String SCAN_URL = "http://run.hicare.in/taskservice/api/";
     String EXOTEL_URL = "http://apps.hicare.in/api/api/";
     String ERROR_LOG_URL = "http://run.hicare.in/logging/api/";
     String JEOPARDY_URL = "http://apps.hicare.in/cwf/";
-    String SLOT_URL = "http://api.hicare.in/slot/api/";
+    String SLOT_URL = "http://run.hicare.in/slot/api/";
 
     /*[Verify User]*/
 
@@ -414,12 +413,19 @@ public interface IRetrofit {
     Call<QRCodeResponse> getUPICode(@Query("taskId") String taskId, @Query("accountNo") String accountNo, @Query("orderNo") String orderNo, @Query("amount") String amount,
                                     @Query("source") String source);
 
+    @GET("payment/GenerateRenewalUPICode")
+    Call<QRCodeResponse> getGenerateUPICode(@Query("taskId") String taskId, @Query("accountNo") String accountNo, @Query("orderNo") String orderNo, @Query("amount") String amount,
+                                    @Query("source") String source);
+
     @GET("phonepepayment/GeneratePhonePeQRCode")
     Call<PhonePeQRCodeResponse> getPhonePeCode(@Query("taskid") String taskkId, @Query("accountNo") String accountNo, @Query("orderNo") String orderNo,
                                                @Query("amount") String amount, @Query("source") String source);
 
     @GET("payment/CheckUPIPaymentStatus")
     Call<CheckCodeResponse> checkUPIPaymentStatus(@Query("orderNo") String orderNo);
+
+    @GET("payment/CheckRenewalUPIPaymentStatus")
+    Call<CheckCodeResponse> checkUPIRenewalPaymentStatus(@Query("orderNo") String orderNo);
 
     @GET("phonepepayment/CheckPhonePEPaymentStatus")
     Call<CheckPhonePeResponse> checkPhonePeStatus(@Query("taskid") String taskId, @Query("transactionId") String transactionId, @Query("orderNo") String orderNo);
@@ -508,12 +514,22 @@ public interface IRetrofit {
 
     /*slot/GetAvailableSlotForMobile*/
     @GET("slot/GetAvailableSlotForMobile")
-    Call<SlotResponse> getAppointmentSlots(@Query("taskId") String taskId, @Query("slotStartDate") String slotStartDate, @Query("slotEndDate") String slotEndDate);
+    Call<SlotResponse> getAppointmentSlots(@Query("taskId") String taskId, @Query("slotStartDate") String slotStartDate, @Query("slotEndDate") String slotEndDate, @Query("source") int source);
 
     @POST("ResourceActivity/SaveKarmaVideoDetails")
     Call<SaveKarmaResponse> saveKarmaDetails(@Body SaveKarmaRequest request);
 
     @GET("payment/GenerateRenewalUPICode")
     Call<QRCodeResponse> getRenewalUPICode(@Query("taskId") String taskId, @Query("accountNo") String accountNo, @Query("orderNo") String orderNo, @Query("amount") String amount,
-                                    @Query("source") String source);
+                                           @Query("source") String source);
+
+    /*[puzzle/getpuzzlelist]*/
+
+    @GET("puzzle/getpuzzlelist")
+    Call<QuizCategoryResponse> getQuizCategory(@Query("resourceId") String resourceId);
+
+    /*[puzzle/GetPuzzleQuestionListById]*/
+
+    @GET("puzzle/GetPuzzleQuestionListById")
+    Call<QuizResponse> getQuizQuestions(@Query("resourceId") String resourceId, @Query("puzzleId") int puzzleId);
 }

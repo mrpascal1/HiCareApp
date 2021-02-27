@@ -42,6 +42,10 @@ public class Tasks implements Parcelable {
     @Expose
     private String BuildingName;
 
+    @SerializedName("Standard_Property")
+    @Expose
+    private String StandardProperty;
+
     @SerializedName("Locality")
     @Expose
     private String Locality;
@@ -198,6 +202,7 @@ public class Tasks implements Parcelable {
         AssignmentEndDate = "NA";
         MobileNo = "NA";
         AlternateMobileNo = "NA";
+        StandardProperty = "NA";
         TechnicianMobileNo = "NA";
         AccountLat = "NA";
         AccountLong = "NA";
@@ -230,6 +235,7 @@ public class Tasks implements Parcelable {
         TaskId = in.readString();
         WingFlatOrUnitNumber = in.readString();
         BuildingName = in.readString();
+        StandardProperty = in.readString();
         Locality = in.readString();
         Landmark = in.readString();
         Street = in.readString();
@@ -301,6 +307,14 @@ public class Tasks implements Parcelable {
 
     public void setBuildingName(String buildingName) {
         BuildingName = buildingName;
+    }
+
+    public String getStandardProperty() {
+        return StandardProperty;
+    }
+
+    public void setStandardProperty(String standardProperty) {
+        StandardProperty = standardProperty;
     }
 
     public String getLocality() {
@@ -620,10 +634,9 @@ public class Tasks implements Parcelable {
         return 0;
     }
 
-
-
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+
         parcel.writeString(AccountName);
         parcel.writeString(ServicePlan);
         parcel.writeString(ServiceType);
@@ -633,6 +646,7 @@ public class Tasks implements Parcelable {
         parcel.writeString(TaskId);
         parcel.writeString(WingFlatOrUnitNumber);
         parcel.writeString(BuildingName);
+        parcel.writeString(StandardProperty);
         parcel.writeString(Locality);
         parcel.writeString(Landmark);
         parcel.writeString(Street);
@@ -667,4 +681,6 @@ public class Tasks implements Parcelable {
         parcel.writeString(Helper_Resource_Id);
         parcel.writeString(Next_Task_Id);
     }
+
+
 }

@@ -248,8 +248,11 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
             showNPSDialog();
         mFragmentHomeBinding.swipeRefreshLayout.setRefreshing(true);
         if (isResourceSaved)
-            showCovidCheckList();
-//            showResourceCheckList();
+            showResourceCheckList();
+//            showCovidCheckList();
+
+
+
 
 
 
@@ -697,8 +700,13 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                             alertDialog.dismiss();
                                             getAllTasks();
                                             if (response.getParam1()) {
-                                                showCovidCheckList();
-//                                                showResourceCheckList();
+                                                showResourceCheckList();
+//                                                showCovidCheckList();
+
+
+
+
+
                                                 SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_RESOURCE_SAVED, true);
                                             } else {
                                                 showNPSDialog();

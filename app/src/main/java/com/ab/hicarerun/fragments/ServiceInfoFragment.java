@@ -5,6 +5,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -86,6 +87,7 @@ import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
 import com.ab.hicarerun.network.models.SlotModel.TimeSlot;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.MyDividerItemDecoration;
+import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.bumptech.glide.Glide;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
@@ -212,6 +214,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private SlotsAdapter mSlotsAdapter;
     private boolean isBooked = false;
 
+
     public static ServiceInfoFragment newInstance(String taskId, String combinedTaskId, boolean isCombinedTasks, String combinedTypes, String combinedOrders, ServiceInfoListener mPostCallback) {
         Bundle args = new Bundle();
         args.putString(ARGS_TASKS, taskId);
@@ -280,14 +283,13 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
         getPaymentData();
         mTaskDetailsData =
                 getRealm().where(GeneralData.class).findAll();
-        if (mTaskDetailsData != null && mTaskDetailsData.size() > 0) {
-            AmountToCollect = Integer.parseInt(mTaskDetailsData.get(0).getAmountToCollect());
+        if (mTaskDetailsData != null && mTaskDetailsData.size() > 0 && mTaskDetailsData.get(0).getAmountToCollect() != null) {
+            AmountToCollect = Integer.parseInt(Objects.requireNonNull(mTaskDetailsData.get(0)).getAmountToCollect());
         }
 
         mFragmentServiceInfoBinding.edtOnsiteOtp.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
@@ -315,7 +317,9 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             @Override
             public void afterTextChanged(Editable s) {
                 mCallback.amountCollected(s.toString());
+                mCallback.amountCollectedAndType(s.toString(), mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString());
                 getValidated(AmountToCollect);
+                SharedPreferencesUtility.savePrefString(Objects.requireNonNull(getActivity()), SharedPreferencesUtility.PREF_AMOUNT, s.toString());
             }
         });
 
@@ -453,7 +457,9 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 }
                 chequeImg = mTaskDetailsData.get(0).getChequeImageUrl();
                 AmountCollected = mTaskDetailsData.get(0).getAmountCollected();
-                AmountToCollect = Integer.parseInt(mTaskDetailsData.get(0).getAmountToCollect());
+                if (mTaskDetailsData.get(0).getAmountToCollect() != null) {
+                    AmountToCollect = Integer.parseInt(mTaskDetailsData.get(0).getAmountToCollect());
+                }
                 mFragmentServiceInfoBinding.txtAmountToCollect.setText("₹ " + AmountToCollect);
                 mFragmentServiceInfoBinding.txtQrOrder.setTypeface(mFragmentServiceInfoBinding.txtQrOrder.getTypeface(), Typeface.BOLD);
                 mPaymentRealmModel = getRealm().where(GeneralPaymentMode.class).findAll().sort("Value");
@@ -582,6 +588,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                         try {
                             mFragmentServiceInfoBinding.btnSendPaymentLink.setVisibility(GONE);
                             Mode = mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString();
+                            mCallback.amountCollectedAndType(mFragmentServiceInfoBinding.txtCollected.getText().toString(), Mode);
+
                             if (Mode.equals("None")) {
                                 mCallback.mode("");
                             } else {
@@ -612,10 +620,15 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                     sendPaymentLink();
                                 }
                             }
-                            if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equalsIgnoreCase("paytm")) {
-                                mFragmentServiceInfoBinding.imgAmazonPay.setVisibility(GONE);
+                            if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equalsIgnoreCase("paytm") || mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equalsIgnoreCase("upi")) {
+                                mFragmentServiceInfoBinding.imgAmazonPay.setVisibility(View.VISIBLE);
                                 mFragmentServiceInfoBinding.txtAmazonPay.setVisibility(GONE);
                                 mFragmentServiceInfoBinding.txtAmazonBack.setVisibility(GONE);
+                                mFragmentServiceInfoBinding.imgPhonePay.setVisibility(View.VISIBLE);
+                                mFragmentServiceInfoBinding.imgGpay.setVisibility(View.VISIBLE);
+                                mFragmentServiceInfoBinding.imgWhatsapp.setVisibility(View.VISIBLE);
+                                mFragmentServiceInfoBinding.imgPaytm.setVisibility(View.VISIBLE);
+                                mFragmentServiceInfoBinding.imgBhimUpi.setVisibility(View.VISIBLE);
                                 mFragmentServiceInfoBinding.txtTC.setVisibility(GONE);
                                 if (mTaskDetailsData.get(0).getUpiTransactionId() != null && !mTaskDetailsData.get(0).getUpiTransactionId().equals("")) {
                                     mFragmentServiceInfoBinding.txtPaymentStatus.setText("Payment Successfully Done");
@@ -629,6 +642,11 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                 loadQRCOde();
                             } else if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equalsIgnoreCase("phonepe")) {
                                 mFragmentServiceInfoBinding.imgAmazonPay.setVisibility(GONE);
+                                mFragmentServiceInfoBinding.imgPhonePay.setVisibility(View.GONE);
+                                mFragmentServiceInfoBinding.imgGpay.setVisibility(View.GONE);
+                                mFragmentServiceInfoBinding.imgWhatsapp.setVisibility(View.GONE);
+                                mFragmentServiceInfoBinding.imgPaytm.setVisibility(View.GONE);
+                                mFragmentServiceInfoBinding.imgBhimUpi.setVisibility(View.GONE);
                                 mFragmentServiceInfoBinding.txtAmazonPay.setVisibility(GONE);
                                 mFragmentServiceInfoBinding.txtAmazonBack.setVisibility(GONE);
                                 mFragmentServiceInfoBinding.txtTC.setVisibility(GONE);
@@ -644,6 +662,11 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                 loadPhonePeCode();
                             } else if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equalsIgnoreCase("amazon pay")) {
                                 mFragmentServiceInfoBinding.imgAmazonPay.setVisibility(View.VISIBLE);
+                                mFragmentServiceInfoBinding.imgPhonePay.setVisibility(View.GONE);
+                                mFragmentServiceInfoBinding.imgGpay.setVisibility(View.GONE);
+                                mFragmentServiceInfoBinding.imgWhatsapp.setVisibility(View.GONE);
+                                mFragmentServiceInfoBinding.imgPaytm.setVisibility(View.GONE);
+                                mFragmentServiceInfoBinding.imgBhimUpi.setVisibility(View.GONE);
                                 mFragmentServiceInfoBinding.txtAmazonPay.setVisibility(View.VISIBLE);
                                 mFragmentServiceInfoBinding.txtAmazonBack.setVisibility(View.VISIBLE);
                                 mFragmentServiceInfoBinding.txtTC.setVisibility(View.VISIBLE);
@@ -860,7 +883,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     try {
                         if (response != null) {
                             if (response.getSTATUS().equals("TXN_SUCCESS")) {
-                                mFragmentServiceInfoBinding.txtPaymentStatus.setText("Payment Successfull");
+                                mFragmentServiceInfoBinding.txtPaymentStatus.setText("Payment Successfull Done");
                                 mCallback.isUPIPaymentNotDone(false);
                                 mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_routine_done);
                                 mFragmentServiceInfoBinding.txtPaymentStatus.setTextColor(getResources().getColor(R.color.colorPrimary));
@@ -870,6 +893,9 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
                             } else if (response.getSTATUS().equals("PENDING")) {
                                 if (mTaskDetailsData.get(0).getUpiTransactionId() != null && !mTaskDetailsData.get(0).getUpiTransactionId().equals("")) {
+                                    if (timer != null) {
+                                        timer.cancel();
+                                    }
                                     mCallback.isUPIPaymentNotDone(false);
                                     mFragmentServiceInfoBinding.txtPaymentStatus.setText("Payment Successfully Done");
                                     mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_routine_done);
@@ -886,6 +912,9 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                     mFragmentServiceInfoBinding.txtPaymentStatus.setText("Payment Successfully Done");
                                     mFragmentServiceInfoBinding.imgStatus.setImageResource(R.drawable.ic_routine_done);
                                     mFragmentServiceInfoBinding.txtPaymentStatus.setTextColor(getResources().getColor(R.color.colorPrimary));
+                                    if (timer != null) {
+                                        timer.cancel();
+                                    }
                                 } else {
                                     if (timer != null) {
                                         timer.cancel();
@@ -1010,7 +1039,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     }
 
                     mFragmentServiceInfoBinding.lnrRefresh.setOnClickListener(v -> {
-                        if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equalsIgnoreCase("paytm")) {
+                        if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equalsIgnoreCase("paytm")
+                                || mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equalsIgnoreCase("amazon pay")) {
                             checkStatus(orderId, timer);
                         } else if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equalsIgnoreCase("phonepe")) {
                             checkPhoneStatus(txnId, orderId, timer);
@@ -1022,6 +1052,13 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                         mFragmentServiceInfoBinding.lnrConsIns.setVisibility(View.VISIBLE);
                     } else {
                         mFragmentServiceInfoBinding.lnrConsIns.setVisibility(View.GONE);
+                    }
+
+                    if (AppUtils.isInspectionDone) {
+                        mFragmentServiceInfoBinding.lnrConsIns.setBackgroundColor(Objects.requireNonNull(getActivity()).getResources().getColor(R.color.colorPrimary));
+                    } else {
+                        mFragmentServiceInfoBinding.lnrConsIns.setBackgroundColor(Objects.requireNonNull(getActivity()).getResources().getColor(R.color.yelold));
+
                     }
 
                     if (isCombinedTask) {
@@ -1268,7 +1305,15 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                             BuildConfig.APPLICATION_ID + ".provider",
                             photoFile);
                     mPhotoFile = photoFile;
-                    takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", Camera.CameraInfo.CAMERA_FACING_FRONT);
+//                    takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", Camera.CameraInfo.CAMERA_FACING_FRONT);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                        takePictureIntent.putExtra("android.intent.extra.USE_FRONT_CAMERA", true);
+                        takePictureIntent.putExtra("android.intent.extras.LENS_FACING_FRONT", 1);
+                        takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", 1);
+                    } else {
+                        takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", 1);
+                        takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", Camera.CameraInfo.CAMERA_FACING_FRONT);
+                    }
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                     startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
                 }
@@ -1918,8 +1963,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 }
             });
 
-            btnCancel.setOnClickListener(v ->{
-                if(!isBooked){
+            btnCancel.setOnClickListener(v -> {
+                if (!isBooked) {
                     appointmentDate = "";
                 }
                 alertDialog.dismiss();
@@ -1963,7 +2008,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
             }
         });
-        controller.getAppointmentSlots(SLOT_REQUEST, mTaskDetailsData.get(0).getTaskId(), date, date);
+        controller.getAppointmentSlots(SLOT_REQUEST, mTaskDetailsData.get(0).getTaskId(), date, date, 0);
     }
 
     private void uploadChequeImage() {
@@ -2099,6 +2144,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                         mCallback.isAmountCollectedRequired(false);
                                     } else if (Mode.equalsIgnoreCase("phonePe")) {
                                         mCallback.isAmountCollectedRequired(false);
+                                    } else if (Mode.equalsIgnoreCase("amazon pay")) {
+                                        mCallback.isAmountCollectedRequired(false);
                                     } else {
                                         mCallback.isAmountCollectedRequired(true);
                                     }
@@ -2140,6 +2187,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                         mCallback.isAmountCollectedRequired(false);
                                     } else if (Mode.equalsIgnoreCase("phonePe")) {
                                         mCallback.isAmountCollectedRequired(false);
+                                    } else if (Mode.equalsIgnoreCase("amazon pay")) {
+                                        mCallback.isAmountCollectedRequired(false);
                                     } else {
                                         mCallback.isAmountCollectedRequired(true);
                                     }
@@ -2168,16 +2217,20 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                 mCallback.isAmountCollectedRequired(false);
                             } else if (Mode.equalsIgnoreCase("phonePe")) {
                                 mCallback.isAmountCollectedRequired(false);
+                            } else if (Mode.equalsIgnoreCase("amazon pay")) {
+                                mCallback.isAmountCollectedRequired(false);
                             } else {
                                 mCallback.isAmountCollectedRequired(true);
                             }
                         } else {
                             if (mFragmentServiceInfoBinding.txtCollected.getText().toString().trim().length() != 0) {
                                 int amount = 0;
+                                int extraAmount = 0;
                                 Log.i("amount", String.valueOf(amount));
                                 try {
                                     amount = Integer.parseInt(mFragmentServiceInfoBinding.txtCollected.getText().toString());
-                                    if (amounttocollect == amount) {
+                                    extraAmount = amounttocollect + 10;
+                                    if (amounttocollect == amount || (amount >= amounttocollect && amount <= extraAmount)) {
                                         mCallback.isPaymentChanged(false);
                                         mCallback.isAmountCollectedRequired(false);
                                         mCallback.isACEquals(false);
@@ -2207,6 +2260,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                     mCallback.isAmountCollectedRequired(false);
                                 } else if (Mode.equalsIgnoreCase("phonePe")) {
                                     mCallback.isAmountCollectedRequired(false);
+                                } else if (Mode.equalsIgnoreCase("amazon pay")) {
+                                    mCallback.isAmountCollectedRequired(false);
                                 } else {
                                     mCallback.isAmountCollectedRequired(true);
                                 }
@@ -2229,6 +2284,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     } else if (Mode.equalsIgnoreCase("PayTM")) {
                         mCallback.isAmountCollectedRequired(false);
                     } else if (Mode.equalsIgnoreCase("phonePe")) {
+                        mCallback.isAmountCollectedRequired(false);
+                    } else if (Mode.equalsIgnoreCase("amazon pay")) {
                         mCallback.isAmountCollectedRequired(false);
                     } else {
                         mCallback.isAmountCollectedRequired(true);
@@ -2276,6 +2333,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                         mCallback.isAmountCollectedRequired(false);
                                     } else if (Mode.equalsIgnoreCase("phonePe")) {
                                         mCallback.isAmountCollectedRequired(false);
+                                    } else if (Mode.equalsIgnoreCase("amazon pay")) {
+                                        mCallback.isAmountCollectedRequired(false);
                                     } else {
                                         mCallback.isAmountCollectedRequired(true);
                                     }
@@ -2318,6 +2377,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                         mCallback.isAmountCollectedRequired(false);
                                     } else if (Mode.equalsIgnoreCase("phonePe")) {
                                         mCallback.isAmountCollectedRequired(false);
+                                    } else if (Mode.equalsIgnoreCase("amazon pay")) {
+                                        mCallback.isAmountCollectedRequired(false);
                                     } else {
                                         mCallback.isAmountCollectedRequired(true);
                                     }
@@ -2348,6 +2409,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                             } else if (Mode.equalsIgnoreCase("PayTM")) {
                                 mCallback.isAmountCollectedRequired(false);
                             } else if (Mode.equalsIgnoreCase("phonePe")) {
+                                mCallback.isAmountCollectedRequired(false);
+                            } else if (Mode.equalsIgnoreCase("amazon pay")) {
                                 mCallback.isAmountCollectedRequired(false);
                             } else {
                                 mCallback.isAmountCollectedRequired(true);
@@ -2518,7 +2581,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                             if (response.getSuccess()) {
                                 mCallback.isEarlyCompletion(false);
                             } else {
-                                mCallback.isEarlyCompletion(true);
+                                mCallback.isEarlyCompletion(false);
                             }
                         }
 
@@ -2554,7 +2617,6 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     public interface ServiceInfoListener {
         void onPostJobButtonClicked();
 
-        void onRefreshClicked();
     }
 }
 

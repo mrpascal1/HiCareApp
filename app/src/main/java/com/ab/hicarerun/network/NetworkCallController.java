@@ -22,7 +22,6 @@ import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
 import com.ab.hicarerun.network.models.AttendanceModel.ProfilePicRequest;
 import com.ab.hicarerun.network.models.BasicResponse;
 import com.ab.hicarerun.network.models.CheckListModel.CheckListResponse;
-import com.ab.hicarerun.network.models.CheckListModel.SaveCheckListRequest;
 import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListRequest;
 import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListResponse;
 import com.ab.hicarerun.network.models.ChemicalCountModel.ChemicalCountResponse;
@@ -64,7 +63,6 @@ import com.ab.hicarerun.network.models.ModelQRCode.CheckPhonePeResponse;
 import com.ab.hicarerun.network.models.ModelQRCode.PhonePeQRCodeResponse;
 import com.ab.hicarerun.network.models.ModelQRCode.QRCodeResponse;
 import com.ab.hicarerun.network.models.NPSModel.NPSDataResponse;
-import com.ab.hicarerun.network.models.NewRewardsModel.NewRewardsResponse;
 import com.ab.hicarerun.network.models.OffersModel.OffersHistoryResponse;
 import com.ab.hicarerun.network.models.OffersModel.OffersResponse;
 import com.ab.hicarerun.network.models.OffersModel.UpdateRewardScratchRequest;
@@ -80,6 +78,8 @@ import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
 import com.ab.hicarerun.network.models.ProductModel.ProductResponse;
 import com.ab.hicarerun.network.models.ProfileModel.TechnicianProfileDetails;
+import com.ab.hicarerun.network.models.QuizModel.QuizCategoryResponse;
+import com.ab.hicarerun.network.models.QuizModel.QuizResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralDeleteRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralListResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralRequest;
@@ -105,14 +105,12 @@ import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTaskResponse;
 import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingRequest;
 import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingResponse;
-import com.ab.hicarerun.network.models.TechnicianRoutineModel.RoutineCheckListResponse;
 import com.ab.hicarerun.network.models.TechnicianRoutineModel.TechnicianRoutineResponse;
 import com.ab.hicarerun.network.models.TrainingModel.TrainingResponse;
 import com.ab.hicarerun.network.models.TrainingModel.WelcomeVideoResponse;
 import com.ab.hicarerun.network.models.UpdateAppModel.UpdateResponse;
 import com.ab.hicarerun.network.models.voucher.VoucherResponseMain;
 import com.ab.hicarerun.utils.AppUtils;
-import com.ab.hicarerun.utils.LocaleHelper;
 
 import org.json.JSONObject;
 
@@ -165,7 +163,7 @@ public class NetworkCallController {
                                         }
                                     }
                                 }
-                            }catch (Exception e){
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
 
@@ -188,54 +186,54 @@ public class NetworkCallController {
                     .enqueue(new Callback<ContinueHandShakeResponse>() {
                         @Override
                         public void onResponse(Call<ContinueHandShakeResponse> call, Response<ContinueHandShakeResponse> response) {
-                          try {
-                              if (response != null) {
+                            try {
+                                if (response != null) {
 
-                                  if (response.code() == 401) { // Unauthorised Access
-                                      NetworkCallController controller = new NetworkCallController();
-                                      controller.setListner(new NetworkResponseListner<LoginResponse>() {
-                                          @Override
-                                          public void onResponse(int reqCode, LoginResponse response) {
-                                              try {
-                                                  // delete all previous record
-                                                  Realm.getDefaultInstance().beginTransaction();
-                                                  Realm.getDefaultInstance().deleteAll();
-                                                  Realm.getDefaultInstance().commitTransaction();
+                                    if (response.code() == 401) { // Unauthorised Access
+                                        NetworkCallController controller = new NetworkCallController();
+                                        controller.setListner(new NetworkResponseListner<LoginResponse>() {
+                                            @Override
+                                            public void onResponse(int reqCode, LoginResponse response) {
+                                                try {
+                                                    // delete all previous record
+                                                    Realm.getDefaultInstance().beginTransaction();
+                                                    Realm.getDefaultInstance().deleteAll();
+                                                    Realm.getDefaultInstance().commitTransaction();
 
-                                                  // add new record
-                                                  Realm.getDefaultInstance().beginTransaction();
-                                                  Realm.getDefaultInstance().copyToRealmOrUpdate(response);
-                                                  Realm.getDefaultInstance().commitTransaction();
-                                                  getContinueHandShake(requestCode, request);
-                                              }catch (Exception e){
-                                                  e.printStackTrace();
-                                              }
-                                          }
+                                                    // add new record
+                                                    Realm.getDefaultInstance().beginTransaction();
+                                                    Realm.getDefaultInstance().copyToRealmOrUpdate(response);
+                                                    Realm.getDefaultInstance().commitTransaction();
+                                                    getContinueHandShake(requestCode, request);
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
 
-                                          @Override
-                                          public void onFailure(int requestCode) {
+                                            @Override
+                                            public void onFailure(int requestCode) {
 
-                                          }
-                                      });
-                                      controller.refreshToken(100, getRefreshToken());
-                                  } else if (response.body() != null) {
-                                      mListner.onResponse(requestCode, response.body());
-                                  } else if (response.errorBody() != null) {
-                                      try {
-                                          JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                          String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                                          String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
-                                          Log.e("Error Log", "Arjun Bhatt " + lineNo + DeviceName);
+                                            }
+                                        });
+                                        controller.refreshToken(100, getRefreshToken());
+                                    } else if (response.body() != null) {
+                                        mListner.onResponse(requestCode, response.body());
+                                    } else if (response.errorBody() != null) {
+                                        try {
+                                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            Log.e("Error Log", "Arjun Bhatt " + lineNo + DeviceName);
 
 //                                    AppUtils.sendErrorLogs(response.errorBody().string(), "", "getContinueHandShake", lineNo, "", DeviceName);
-                                      } catch (Exception e) {
-                                          e.printStackTrace();
-                                      }
-                                  }
-                              }
-                          }catch (Exception e){
-                              e.printStackTrace();
-                          }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
 
                         @Override
@@ -357,7 +355,7 @@ public class NetworkCallController {
                                 } else {
                                     mListner.onFailure(requestCode);
                                 }
-                            }catch (Exception e){
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
@@ -402,7 +400,7 @@ public class NetworkCallController {
                                                     Realm.getDefaultInstance().copyToRealmOrUpdate(response);
                                                     Realm.getDefaultInstance().commitTransaction();
                                                     getTasksList(requestCode, userId, IMEI);
-                                                }catch (Exception e){
+                                                } catch (Exception e) {
                                                     e.printStackTrace();
                                                 }
                                             }
@@ -434,7 +432,7 @@ public class NetworkCallController {
                                 } else {
                                     mContext.showServerError();
                                 }
-                            }catch (Exception e){
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
@@ -483,7 +481,7 @@ public class NetworkCallController {
                                                     Realm.getDefaultInstance().copyToRealmOrUpdate(response);
                                                     Realm.getDefaultInstance().commitTransaction();
                                                     getTaskDetailById(requestCode, userId, taskId, isCombinedTask, language, context, progress);
-                                                }catch (Exception e){
+                                                } catch (Exception e) {
                                                     e.printStackTrace();
                                                 }
                                             }
@@ -522,7 +520,7 @@ public class NetworkCallController {
                                         }
                                     }
                                 }
-                            }catch (Exception e){
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
 
@@ -618,7 +616,7 @@ public class NetworkCallController {
                                                     Realm.getDefaultInstance().copyToRealmOrUpdate(response);
                                                     Realm.getDefaultInstance().commitTransaction();
                                                     getReferrals(requestCode, taskId);
-                                                }catch (Exception e){
+                                                } catch (Exception e) {
                                                     e.printStackTrace();
                                                 }
                                             }
@@ -650,7 +648,7 @@ public class NetworkCallController {
                                 } else {
                                     mContext.showServerError();
                                 }
-                            }catch (Exception e){
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
@@ -695,7 +693,7 @@ public class NetworkCallController {
                                                 Realm.getDefaultInstance().copyToRealmOrUpdate(response);
                                                 Realm.getDefaultInstance().commitTransaction();
                                                 getReferrals(requestCode, taskId);
-                                            }catch (Exception e){
+                                            } catch (Exception e) {
                                                 e.printStackTrace();
                                             }
                                         }
@@ -897,7 +895,7 @@ public class NetworkCallController {
                                                 Realm.getDefaultInstance().copyToRealmOrUpdate(response);
                                                 Realm.getDefaultInstance().commitTransaction();
                                                 getAttachments(requestCode, userId, taskId);
-                                            }catch (Exception e){
+                                            } catch (Exception e) {
                                                 e.printStackTrace();
                                             }
                                         }
@@ -969,7 +967,7 @@ public class NetworkCallController {
                                                 Realm.getDefaultInstance().copyToRealmOrUpdate(response);
                                                 Realm.getDefaultInstance().commitTransaction();
                                                 getAttachments(requestCode, userId, taskId);
-                                            }catch (Exception e){
+                                            } catch (Exception e) {
                                                 e.printStackTrace();
                                             }
                                         }
@@ -1346,7 +1344,7 @@ public class NetworkCallController {
                                                 Realm.getDefaultInstance().copyToRealmOrUpdate(response);
                                                 Realm.getDefaultInstance().commitTransaction();
                                                 postResourceProfilePic(requestCode, request);
-                                            }catch (Exception e){
+                                            } catch (Exception e) {
                                                 e.printStackTrace();
                                             }
                                         }
@@ -1416,7 +1414,7 @@ public class NetworkCallController {
                                                 Realm.getDefaultInstance().copyToRealmOrUpdate(response);
                                                 Realm.getDefaultInstance().commitTransaction();
                                                 getTechAttendance(requestCode, request);
-                                            }catch (Exception e){
+                                            } catch (Exception e) {
                                                 e.printStackTrace();
                                             }
                                         }
@@ -1658,7 +1656,7 @@ public class NetworkCallController {
                                                 Realm.getDefaultInstance().copyToRealmOrUpdate(response);
                                                 Realm.getDefaultInstance().commitTransaction();
                                                 getGroomingTechnicians(requestCode, userId);
-                                            }catch (Exception e){
+                                            } catch (Exception e) {
                                                 e.printStackTrace();
                                             }
                                         }
@@ -1732,7 +1730,7 @@ public class NetworkCallController {
                                                 Realm.getDefaultInstance().copyToRealmOrUpdate(response);
                                                 Realm.getDefaultInstance().commitTransaction();
                                                 postGroomingImage(requestCode, request);
-                                            }catch (Exception e){
+                                            } catch (Exception e) {
                                                 e.printStackTrace();
                                             }
                                         }
@@ -1808,7 +1806,7 @@ public class NetworkCallController {
                                                 Realm.getDefaultInstance().copyToRealmOrUpdate(response);
                                                 Realm.getDefaultInstance().commitTransaction();
                                                 getTechnicianProfile(requestCode, userId);
-                                            }catch (Exception e){
+                                            } catch (Exception e) {
                                                 e.printStackTrace();
                                             }
                                         }
@@ -3349,7 +3347,6 @@ public class NetworkCallController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public void getTaskQRCode(final int requestCode, final String taskNo) {
@@ -3392,7 +3389,6 @@ public class NetworkCallController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public void getUPICode(final int requestCode, final String taskId, final String accountNo, final String orderNo, final String amount, final String source) {
@@ -3437,6 +3433,50 @@ public class NetworkCallController {
         }
 
     }
+
+    public void getGenerateUPICode(final int requestCode, final String taskId, final String accountNo, final String orderNo, final String amount, final String source) {
+        try {
+//            mContext.showProgressDialog();
+            BaseApplication.getQRCodeApi()
+                    .getGenerateUPICode(taskId, accountNo, orderNo, amount, source)
+                    .enqueue(new Callback<QRCodeResponse>() {
+                        @Override
+                        public void onResponse(Call<QRCodeResponse> call,
+                                               Response<QRCodeResponse> response) {
+//                            mContext.dismissProgressDialog();
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body().getData());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+//                                        mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getGroomingTechnicians", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<QRCodeResponse> call, Throwable t) {
+//                            mContext.dismissProgressDialog();
+//                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     public void getPhonePayCode(final int requestCode, final String taskId, final String accountNo, final String orderNo, final String amount, final String source) {
         try {
@@ -3486,6 +3526,49 @@ public class NetworkCallController {
 //            mContext.showProgressDialog();
             BaseApplication.getQRCodeApi()
                     .checkUPIPaymentStatus(orderNo)
+                    .enqueue(new Callback<CheckCodeResponse>() {
+                        @Override
+                        public void onResponse(Call<CheckCodeResponse> call,
+                                               Response<CheckCodeResponse> response) {
+//                            mContext.dismissProgressDialog();
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body().getData());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+//                                        mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getGroomingTechnicians", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<CheckCodeResponse> call, Throwable t) {
+//                            mContext.dismissProgressDialog();
+//                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void checkRenewalPaymentStatus(final int requestCode, final String orderNo) {
+        try {
+//            mContext.showProgressDialog();
+            BaseApplication.getQRCodeApi()
+                    .checkUPIRenewalPaymentStatus(orderNo)
                     .enqueue(new Callback<CheckCodeResponse>() {
                         @Override
                         public void onResponse(Call<CheckCodeResponse> call,
@@ -4093,7 +4176,7 @@ public class NetworkCallController {
 
     }
 
-    public void getRoutineResponse(final int requestCode, String resourceId,  final String lang) {
+    public void getRoutineResponse(final int requestCode, String resourceId, final String lang) {
         try {
             BaseApplication.getRetrofitAPI(true)
                     .getRoutineData(resourceId, lang)
@@ -4136,7 +4219,7 @@ public class NetworkCallController {
 
     }
 
-    public void getKYCDocuments(final int requestCode, String resourceId,  final String lang) {
+    public void getKYCDocuments(final int requestCode, String resourceId, final String lang) {
         try {
             BaseApplication.getRetrofitAPI(true)
                     .getKYCDocuments(resourceId, lang)
@@ -4179,7 +4262,7 @@ public class NetworkCallController {
 
     }
 
-    public void getKYCTypes(final int requestCode, String resourceId,  final String lang) {
+    public void getKYCTypes(final int requestCode, String resourceId, final String lang) {
         try {
             BaseApplication.getRetrofitAPI(true)
                     .getKYCTypes(resourceId, lang)
@@ -4378,11 +4461,11 @@ public class NetworkCallController {
 
     }
 
-    public void getAppointmentSlots(final int requestCode, final String taskId, final String slotStartDate, final String slotEndDate) {
+    public void getAppointmentSlots(final int requestCode, final String taskId, final String slotStartDate, final String slotEndDate, int source) {
         try {
             mContext.showProgressDialog();
             BaseApplication.getSlotApi()
-                    .getAppointmentSlots(taskId, slotStartDate, slotEndDate)
+                    .getAppointmentSlots(taskId, slotStartDate, slotEndDate, source)
                     .enqueue(new Callback<SlotResponse>() {
                         @Override
                         public void onResponse(Call<SlotResponse> call, Response<SlotResponse> response) {
@@ -4394,6 +4477,7 @@ public class NetworkCallController {
                                     mContext.dismissProgressDialog();
                                     try {
                                         JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        mContext.showServerError(jObjError.getString("ErrorMessage"));
                                         RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
                                         if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
                                             String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
@@ -4403,6 +4487,9 @@ public class NetworkCallController {
                                         }
                                     } catch (Exception e) {
                                         mContext.dismissProgressDialog();
+                                        mContext.showServerError(e.getMessage()
+                                        );
+
                                         e.printStackTrace();
                                     }
                                 }
@@ -4411,7 +4498,9 @@ public class NetworkCallController {
 
                         @Override
                         public void onFailure(Call<SlotResponse> call, Throwable t) {
-//                            mContext.dismissProgressDialog();
+                            mContext.dismissProgressDialog();
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
+
                         }
                     });
         } catch (Exception e) {
@@ -4419,6 +4508,7 @@ public class NetworkCallController {
         }
 
     }
+
     public void saveKarmaDetails(final int requestCode, SaveKarmaRequest request) {
         try {
             BaseApplication.getRetrofitAPI(true)
@@ -4502,6 +4592,80 @@ public class NetworkCallController {
 
     }
 
+    public void getQuizCategory(final int requestCode, final String resourceId) {
+        try {
+            BaseApplication.getRetrofitAPI(true)
+                    .getQuizCategory(resourceId)
+                    .enqueue(new Callback<QuizCategoryResponse>() {
+                        @Override
+                        public void onResponse(Call<QuizCategoryResponse> call, Response<QuizCategoryResponse> response) {
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body().getData());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getChemicals", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<QuizCategoryResponse> call, Throwable t) {
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public void getQuizQuestions(final int requestCode, final String resourceId, final int puzzleId) {
+        try {
+            BaseApplication.getRetrofitAPI(true)
+                    .getQuizQuestions(resourceId, puzzleId)
+                    .enqueue(new Callback<QuizResponse>() {
+                        @Override
+                        public void onResponse(Call<QuizResponse> call, Response<QuizResponse> response) {
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body().getData());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getChemicals", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<QuizResponse> call, Throwable t) {
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     public String getRefreshToken() {
         String refreshToken = null;

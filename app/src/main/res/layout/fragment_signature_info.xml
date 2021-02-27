@@ -91,17 +91,18 @@
 
             </LinearLayout>
 
-
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/lnrOtp"
+                android:id="@+id/lnrType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp">
 
                 <LinearLayout
-                    android:id="@+id/lnrCollected"
+                    android:id="@+id/lnr_Typeimg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -109,45 +110,52 @@
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="center"
                         android:text="@string/order_no"
                         android:textSize="15sp"
                         android:textStyle="bold"
-                        app:srcCompat="@drawable/ic_key" />
+                        app:srcCompat="@drawable/ic_payment_method" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toRightOf="@id/lnrCollected"
+                    app:layout_constraintLeft_toRightOf="@id/lnr_Typeimg"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="7dp"
-                        android:text="@string/otp_signature"
+                        android:text="Payment Method"
                         android:textColor="@color/colorAccentDrawerPrimaryLight"
                         android:textSize="15sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/txt_feedback"
+
+                <LinearLayout
                     android:layout_width="140dp"
                     android:layout_height="26dp"
                     android:layout_marginRight="20dp"
-                    android:background="@drawable/edit_box_border"
+                    android:background="@drawable/edit_default_border"
                     android:gravity="center"
-                    android:imeOptions="actionDone"
-                    android:inputType="number"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/txt_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textColor="@color/colorAccentDrawerPrimaryLight"
+                        android:textSize="15sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -188,7 +196,7 @@
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="7dp"
-                        android:text="@string/amount_to_collect_signature"
+                        android:text="@string/amount_collected_service"
                         android:textColor="@color/colorAccentDrawerPrimaryLight"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -351,6 +359,103 @@
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/lnr_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginTop="15dp"
+                android:orientation="vertical"
+                android:weightSum="1">
+
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_sendlink"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_below="@id/view"
+                    android:layout_marginLeft="85dp"
+                    android:layout_marginRight="85dp"
+                    android:background="@drawable/button_background"
+                    android:clickable="true"
+                    android:onClick="@{(view) -> handler.onSendLinkClicked(view)}"
+                    android:text="@string/send_feedback_link"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@+id/feedBackTimer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="16sp"
+                    android:visibility="gone"
+                    android:textColor="@color/colorPrimary"
+                    android:text="Retry in 00:30"/>
+            </LinearLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/lnrOtp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp">
+
+                <LinearLayout
+                    android:id="@+id/lnrCollected"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:text="@string/order_no"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        app:srcCompat="@drawable/ic_key" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/lnrCollected"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:layout_width="130dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="7dp"
+                        android:text="@string/otp_signature"
+                        android:textColor="@color/colorAccentDrawerPrimaryLight"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/txt_feedback"
+                    android:layout_width="140dp"
+                    android:layout_height="26dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/edit_box_border"
+                    android:gravity="center"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <RelativeLayout
                 android:id="@+id/lnrServiceDate"
@@ -600,6 +705,7 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycleView"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false" />
@@ -676,33 +782,7 @@
             </LinearLayout>
 
 
-            <LinearLayout
-                android:id="@+id/lnr_bottom"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginTop="2dp"
-                android:orientation="horizontal"
-                android:weightSum="1">
 
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btn_sendlink"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_below="@id/view"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginBottom="15dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/button_background"
-                    android:clickable="true"
-                    android:onClick="@{(view) -> handler.onSendLinkClicked(view)}"
-                    android:text="@string/send_feedback_link"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white" />
-            </LinearLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

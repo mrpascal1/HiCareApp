@@ -5,10 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="handler"
             type="com.ab.hicarerun.handler.UserServiceInfoClickHandler" />
-
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -17,14 +17,10 @@
         android:background="@color/white"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
-
 
             <View
                 android:layout_width="match_parent"
@@ -57,12 +53,12 @@
                     android:layout_height="36dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:elevation="5dp"
-                    app:srcCompat="@drawable/ic_profile"
-                    android:visibility="gone"
                     android:layout_marginRight="15dp"
+                    android:elevation="5dp"
+                    android:visibility="gone"
                     app:civ_border_color="@color/black"
-                    app:civ_border_width="0.5dp" />
+                    app:civ_border_width="0.5dp"
+                    app:srcCompat="@drawable/ic_profile" />
 
 
             </RelativeLayout>
@@ -77,8 +73,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@color/yelold"
-                android:visibility="gone"
                 android:orientation="horizontal"
+                android:visibility="gone"
                 android:weightSum="8">
 
                 <LinearLayout
@@ -94,14 +90,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:text="Consultation and Inspection"
                         android:layout_marginTop="2dp"
+                        android:text="Consultation and Inspection"
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         android:textStyle="bold|italic" />
 
                 </LinearLayout>
-
 
 
                 <LinearLayout
@@ -117,13 +112,14 @@
                         android:layout_marginTop="15dp"
                         android:layout_marginBottom="15dp"
                         android:background="@color/white" />
+
                     <TextView
                         android:id="@+id/txtView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:text="VIEW"
                         android:onClick="@{(view) -> handler.onViewBottonClicked(view)}"
+                        android:text="VIEW"
                         android:textColor="@color/white"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -131,7 +127,6 @@
                 </LinearLayout>
 
             </LinearLayout>
-
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -332,10 +327,10 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/lnrBook"
                     android:layout_centerInParent="true"
-                    android:visibility="gone"
                     android:layout_marginTop="5dp"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/txtAppointmentTitle"
@@ -657,9 +652,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
-
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.3dp"
@@ -688,36 +680,36 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true">
+                    android:layout_centerVertical="true"
+                    android:orientation="horizontal">
+
                     <Button
                         android:id="@+id/btnCheckList"
                         android:layout_width="wrap_content"
                         android:layout_height="26dp"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/post_job_bg"
                         android:layout_alignParentRight="true"
-                        android:layout_toLeftOf="@id/btnPaymentJeopardy"
-                        android:text="Post Job Check-List"
-                        android:textSize="9sp"
+                        android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
-                        android:textColor="@color/white"
+                        android:layout_toLeftOf="@id/btnPaymentJeopardy"
+                        android:background="@drawable/post_job_bg"
+                        android:text="Post Job Check-List"
                         android:textAllCaps="false"
-                        />
+                        android:textColor="@color/white"
+                        android:textSize="9sp" />
+
                     <Button
                         android:id="@+id/btnPaymentJeopardy"
                         android:layout_width="wrap_content"
                         android:layout_height="26dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"
                         android:background="@drawable/raise_payment_btn"
                         android:text="@string/raise_jeopardy_service"
-                        android:textSize="9sp"
-                        android:layout_marginRight="15dp"
-                        android:textColor="@color/white"
                         android:textAllCaps="false"
-                        />
+                        android:textColor="@color/white"
+                        android:textSize="9sp" />
 
 
                 </LinearLayout>
@@ -730,21 +722,21 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="15dp"
-                    android:visibility="gone"
-                    android:elevation="5dp"
                     android:background="@drawable/raise_payment_btn"
-                    android:gravity="center">
+                    android:elevation="5dp"
+                    android:gravity="center"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:textSize="10sp"
                         android:layout_marginLeft="4dp"
                         android:layout_marginRight="4dp"
                         android:gravity="center_vertical"
                         android:text="@string/payment_jeopardy_service"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/white"
+                        android:textSize="10sp" />
 
                 </LinearLayout>
 
@@ -759,6 +751,75 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/lnrAmountToCollect"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp">
+
+                    <LinearLayout
+                        android:id="@+id/lnrToCollect"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:text="@string/order_no"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            app:srcCompat="@drawable/ic_amount_to_collect" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toRightOf="@id/lnrToCollect"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:layout_width="130dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="7dp"
+                            android:text="@string/amount_to_collect_service"
+                            android:textColor="@color/colorAccentDrawerPrimaryLight"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="140dp"
+                        android:layout_height="26dp"
+                        android:layout_marginRight="20dp"
+                        android:background="@drawable/edit_default_border"
+                        android:gravity="center"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+
+                        <TextView
+                            android:id="@+id/txtAmountToCollect"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:textColor="@color/colorAccentDrawerPrimaryLight"
+                            android:textSize="15sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -836,80 +897,11 @@
 
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/lnrAmountToCollect"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp">
-
-                    <LinearLayout
-                        android:id="@+id/lnrToCollect"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginLeft="10dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:text="@string/order_no"
-                            android:textSize="15sp"
-                            android:textStyle="bold"
-                            app:srcCompat="@drawable/ic_amount_to_collect" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintLeft_toRightOf="@id/lnrToCollect"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <TextView
-                            android:layout_width="130dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="7dp"
-                            android:text="@string/amount_to_collect_service"
-                            android:textColor="@color/colorAccentDrawerPrimaryLight"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="140dp"
-                        android:layout_height="26dp"
-                        android:layout_marginRight="20dp"
-                        android:background="@drawable/edit_default_border"
-                        android:gravity="center"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-
-                        <TextView
-                            android:id="@+id/txtAmountToCollect"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:gravity="center"
-                            android:textColor="@color/colorAccentDrawerPrimaryLight"
-                            android:textSize="15sp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-                    </LinearLayout>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/lnrPaymentOTP"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:layout_marginTop="15dp">
+                    android:layout_marginTop="15dp"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:id="@+id/lnrInnerPayment"
@@ -1440,10 +1432,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:gravity="center"
                         android:layout_marginTop="15dp"
-                        android:textSize="11sp"
-                        android:text="Please show the QR Code to the customer"/>
+                        android:gravity="center"
+                        android:text="Please show the QR Code to the customer"
+                        android:textSize="11sp" />
 
 
                     <TextView
@@ -1451,41 +1443,105 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:gravity="center"
                         android:layout_marginTop="7dp"
-                        android:textSize="11sp"
-                        android:textColor="@color/black"
-                        android:text="Order# 9099458450"/>
-
-                    <ImageView
-                        android:id="@+id/imgAmazonPay"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="-16dp"
                         android:gravity="center"
-                        android:src="@drawable/amazon_pay"/>
+                        android:text="Order# 9099458450"
+                        android:textColor="@color/black"
+                        android:textSize="11sp" />
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:id="@+id/imgPhonePay"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:src="@drawable/phone_pe" />
+
+                            <ImageView
+                                android:id="@+id/imgPaytm"
+                                android:layout_width="70dp"
+                                android:layout_height="50dp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="8dp"
+                                android:gravity="center"
+                                app:srcCompat="@drawable/paytm" />
+
+                            <ImageView
+                                android:id="@+id/imgWhatsapp"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="8dp"
+                                android:gravity="center"
+                                app:srcCompat="@drawable/ic_whatsapp" />
+
+                            <ImageView
+                                android:id="@+id/imgAmazonPay"
+                                android:layout_width="80dp"
+                                android:layout_height="50dp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="8dp"
+                                android:gravity="center"
+                                android:src="@drawable/amazon_pay" />
+
+                            <ImageView
+                                android:id="@+id/imgGpay"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="8dp"
+                                android:gravity="center"
+                                android:src="@drawable/gpay" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:id="@+id/imgBhimUpi"
+                                android:layout_width="120dp"
+                                android:layout_height="40dp"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:src="@drawable/bhimupi" />
+                        </LinearLayout>
+
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/txtAmazonPay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:gravity="center"
-                        android:textSize="12sp"
                         android:layout_marginTop="-16dp"
-                        android:textColor="@color/black" />
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
 
                     <TextView
                         android:id="@+id/txtAmazonBack"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_marginTop="2dp"
                         android:gravity="center"
-                        android:textSize="12sp"
                         android:textColor="@color/black"
-                        android:layout_marginTop="2dp" />
+                        android:textSize="12sp"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/txtTC"
@@ -1493,56 +1549,54 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:textSize="10sp"
-                        android:layout_marginTop="5dp"
                         android:text="*T&amp;C apply"
-                        android:textColor="@color/black"/>
+                        android:textColor="@color/black"
+                        android:layout_marginTop="5dp"
+                        android:textSize="10sp"
+                        android:visibility="gone" />
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cardScanner"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginTop="7dp"
-                        app:cardUseCompatPadding="true"
-                        app:cardElevation="2dp"
-                        app:cardCornerRadius="4dp"
+                        android:layout_marginTop="5dp"
                         android:layout_marginBottom="7dp"
-                       >
+                        app:cardCornerRadius="4dp"
+                        app:cardElevation="2dp"
+                        app:cardUseCompatPadding="true">
 
                         <ImageView
                             android:id="@+id/img_payscanner"
                             android:layout_width="200dp"
                             android:layout_height="200dp"
-                            android:scaleType="fitXY"/>
+                            android:scaleType="fitXY" />
 
                     </androidx.cardview.widget.CardView>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="25dp"
-                        android:gravity="center"
+                        android:layout_gravity="center"
                         android:layout_marginBottom="10dp"
-                        android:orientation="horizontal"
-                        android:layout_gravity="center">
+                        android:gravity="center"
+                        android:orientation="horizontal">
 
                         <ImageView
                             android:id="@+id/imgStatus"
                             android:layout_width="16dp"
                             android:layout_height="16sp"
-                            app:srcCompat="@drawable/ic_processing"/>
+                            app:srcCompat="@drawable/ic_processing" />
 
                         <TextView
                             android:id="@+id/txtPaymentStatus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Prending..."
-                            android:layout_marginLeft="5dp"
                             android:layout_gravity="center"
+                            android:layout_marginLeft="5dp"
                             android:gravity="center"
-                            android:textColor="@color/yellow2"/>
-
-
+                            android:text="Prending..."
+                            android:textColor="@color/yellow2" />
 
                     </LinearLayout>
 
@@ -1550,10 +1604,10 @@
                         android:id="@+id/lnrRefresh"
                         android:layout_width="wrap_content"
                         android:layout_height="35dp"
-                        android:elevation="2dp"
-                        android:layout_marginBottom="10dp"
                         android:layout_gravity="center"
+                        android:layout_marginBottom="10dp"
                         android:background="@drawable/book_gradient"
+                        android:elevation="2dp"
                         android:gravity="center">
 
                         <TextView

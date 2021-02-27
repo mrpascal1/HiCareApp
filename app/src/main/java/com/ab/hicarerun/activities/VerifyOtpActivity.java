@@ -47,10 +47,14 @@ public class VerifyOtpActivity extends BaseActivity {
             e.printStackTrace();
         }
 
-        mobile = getIntent().getStringExtra(ARGS_MOBILE);
-        otp = getIntent().getStringExtra(ARGS_OTP);
-        user = getIntent().getStringExtra(ARGS_USER);
-        userId = getIntent().getStringExtra(ARGS_USER_ID);
+        try {
+            mobile = getIntent().getStringExtra(ARGS_MOBILE);
+            otp = getIntent().getStringExtra(ARGS_OTP);
+            user = getIntent().getStringExtra(ARGS_USER);
+            userId = getIntent().getStringExtra(ARGS_USER_ID);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         addFragment(VerifyMobileOTPFragment.newInstance(mobile, otp, user, userId), "VerifyOTPActivity - VerifyMobileOTPFragment");
     }
 

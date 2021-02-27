@@ -106,10 +106,6 @@ public class GeneralData implements RealmModel {
     @Expose
     private String Tag;
 
-    @SerializedName("Infestation Level")
-    @Expose
-    private String InfestationLevel;
-
     @SerializedName("SignatureUrl")
     @Expose
     private String SignatureUrl;
@@ -166,6 +162,22 @@ public class GeneralData implements RealmModel {
     @SerializedName("ConsultationInfestationLevel")
     @Expose
     private String ConsultationInfestationLevel;
+
+    @SerializedName("Flushout_Start_Date")
+    @Expose
+    private String Flushout_Start_Date;
+
+    @SerializedName("Flushout_End_Date")
+    @Expose
+    private String Flushout_End_Date;
+
+    @SerializedName("GelTreatment_Start_Date")
+    @Expose
+    private String GelTreatment_Start_Date;
+
+    @SerializedName("GelTreatment_End_Date")
+    @Expose
+    private String GelTreatment_End_Date;
 
     @SerializedName("ShowSignature")
     @Expose
@@ -1026,13 +1038,6 @@ public class GeneralData implements RealmModel {
         Tag = tag;
     }
 
-    public String getInfestationLevel() {
-        return InfestationLevel;
-    }
-
-    public void setInfestationLevel(String infestation) {
-        InfestationLevel = infestation;
-    }
 
     public Boolean getFlushoutRequired() {
         return FlushoutRequired;
@@ -1050,13 +1055,7 @@ public class GeneralData implements RealmModel {
         GelTreatmentRequired = gelTreatmentRequired;
     }
 
-    public String getInspectionInfestationLevel() {
-        return InspectionInfestationLevel;
-    }
 
-    public void setInspectionInfestationLevel(String inspectionInfestationLevel) {
-        InspectionInfestationLevel = inspectionInfestationLevel;
-    }
 
     public String getConsultationInfestationLevel() {
         return ConsultationInfestationLevel;
@@ -1064,5 +1063,45 @@ public class GeneralData implements RealmModel {
 
     public void setConsultationInfestationLevel(String consultationInfestationLevel) {
         ConsultationInfestationLevel = consultationInfestationLevel;
+    }
+
+    public String getFlushout_Start_Date() {
+        return Flushout_Start_Date;
+    }
+
+    public void setFlushout_Start_Date(String flushout_Start_Date) {
+        Flushout_Start_Date = flushout_Start_Date;
+    }
+
+    public String getFlushout_End_Date() {
+        return Flushout_End_Date;
+    }
+
+    public void setFlushout_End_Date(String flushout_End_Date) {
+        Flushout_End_Date = flushout_End_Date;
+    }
+
+    public String getGelTreatment_Start_Date() {
+        return GelTreatment_Start_Date;
+    }
+
+    public void setGelTreatment_Start_Date(String gelTreatment_Start_Date) {
+        GelTreatment_Start_Date = gelTreatment_Start_Date;
+    }
+
+    public String getGelTreatment_End_Date() {
+        return GelTreatment_End_Date;
+    }
+
+    public void setGelTreatment_End_Date(String gelTreatment_End_Date) {
+        GelTreatment_End_Date = gelTreatment_End_Date;
+    }
+
+    public String getInspectionInfestationLevel() {
+        return InspectionInfestationLevel;
+    }
+
+    public void setInspectionInfestationLevel(String inspectionInfestationLevel) {
+        InspectionInfestationLevel = inspectionInfestationLevel;
     }
 }

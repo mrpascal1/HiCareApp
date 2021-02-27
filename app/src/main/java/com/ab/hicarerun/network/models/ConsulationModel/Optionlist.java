@@ -16,8 +16,9 @@ public class Optionlist {
     @Expose
     @SerializedName("OptionValueDisplayText")
     private String OptionValueDisplayText;
-
-
+    @Expose
+    @SerializedName("isSelectedAndDisabled")
+    private boolean isSelectedAndDisabled;
 
     public boolean getIsselected() {
         return Isselected;
@@ -41,5 +42,13 @@ public class Optionlist {
 
     public void setOptionValueDisplayText(String optionValueDisplayText) {
         OptionValueDisplayText = optionValueDisplayText;
+    }
+
+    public boolean isSelectedAndDisabled() {
+        return isSelectedAndDisabled;
+    }
+
+    public void setSelectedAndDisabled(boolean selectedAndDisabled) {
+        isSelectedAndDisabled = selectedAndDisabled;
     }
 }

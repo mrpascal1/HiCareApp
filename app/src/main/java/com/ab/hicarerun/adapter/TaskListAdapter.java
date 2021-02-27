@@ -232,6 +232,14 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             } else {
                 holder.mTaskListAdapterBinding.lnrTag.setVisibility(View.GONE);
             }
+
+            if(items.get(position).getStandardProperty()!=null && !items.get(position).getStandardProperty().equals("") && !items.get(position).getStandardProperty().equals("NA")){
+                holder.mTaskListAdapterBinding.lnrBhk.setVisibility(View.VISIBLE);
+                holder.mTaskListAdapterBinding.txtBhk.setText(items.get(position).getStandardProperty());
+            }else {
+                holder.mTaskListAdapterBinding.lnrBhk.setVisibility(View.GONE);
+            }
+
             if (items.get(position).getSequenceNumber() != 0) {
                 holder.mTaskListAdapterBinding.lnrSequence.setVisibility(View.VISIBLE);
                 holder.mTaskListAdapterBinding.txtSequence.setText(String.valueOf(items.get(position).getSequenceNumber()));
@@ -271,7 +279,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                 holder.mTaskListAdapterBinding.lnrLandmark.setVisibility(View.GONE);
             }
             holder.mTaskListAdapterBinding.txtPostcode.setText(items.get(position).getPostalCode());
-            if (items.get(position).getAmount().equals("0")) {
+            if (items.get(position).getAmount()!=null && items.get(position).getAmount().equals("0") ) {
                 holder.mTaskListAdapterBinding.lnrAmount.setVisibility(View.GONE);
             } else {
                 holder.mTaskListAdapterBinding.lnrAmount.setVisibility(View.VISIBLE);

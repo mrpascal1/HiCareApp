@@ -193,8 +193,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 LocationManager.Builder builder = new LocationManager.Builder(this);
                 builder.setLocationListner(this);
                 builder.build();
-                assert LoginRealmModels.get(0) != null;
-                userId = LoginRealmModels.get(0).getUserID();
+                userId = Objects.requireNonNull(LoginRealmModels.get(0)).getUserID();
                 SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_USERID, userId);
             }
 
@@ -217,37 +216,42 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
     private void getResourcesKarma() {
         try {
-            NetworkCallController controller = new NetworkCallController();
-            controller.setListner(new NetworkResponseListner<Karma>() {
-                @Override
-                public void onResponse(int requestCode, Karma response) {
-                    try {
-                        if (response != null) {
-                            mActivityHomeBinding.toolbar.lnrKarma.setVisibility(View.VISIBLE);
-                            int progress = response.getTotalPointsPending();
-                            Drawable batteryProgressD = mActivityHomeBinding.toolbar.progressBar.getProgressDrawable();
-                            batteryProgressD.setLevel(progress * 100);
-                            mActivityHomeBinding.toolbar.progressBar.setProgress(progress);
-                            mActivityHomeBinding.toolbar.txtRemLife.setText(String.valueOf(response.getTotalPointsPending()) + "/" + String.valueOf(response.getTotalPoints()));
-                            mActivityHomeBinding.toolbar.txtLifeCount.setText(String.valueOf(response.getLifeLineIndex()));
-                        }else {
-                            mActivityHomeBinding.toolbar.lnrKarma.setVisibility(View.GONE);
+            LoginRealmModels =
+                    BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                userId = Objects.requireNonNull(LoginRealmModels.get(0)).getUserID();
+                NetworkCallController controller = new NetworkCallController();
+                controller.setListner(new NetworkResponseListner<Karma>() {
+                    @Override
+                    public void onResponse(int requestCode, Karma response) {
+                        try {
+                            if (response != null) {
+                                mActivityHomeBinding.toolbar.lnrKarma.setVisibility(View.VISIBLE);
+                                int progress = response.getTotalPointsPending();
+                                Drawable batteryProgressD = mActivityHomeBinding.toolbar.progressBar.getProgressDrawable();
+                                batteryProgressD.setLevel(progress * 100);
+                                mActivityHomeBinding.toolbar.progressBar.setProgress(progress);
+                                mActivityHomeBinding.toolbar.txtRemLife.setText(String.valueOf(response.getTotalPointsPending()) + "/" + String.valueOf(response.getTotalPoints()));
+                                mActivityHomeBinding.toolbar.txtLifeCount.setText(String.valueOf(response.getLifeLineIndex()));
+                            } else {
+                                mActivityHomeBinding.toolbar.lnrKarma.setVisibility(View.GONE);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
-                }
 
-                @Override
-                public void onFailure(int requestCode) {
+                    @Override
+                    public void onFailure(int requestCode) {
 
-                }
-            });
-            controller.getKarmaResources(REQ_KARMA, userId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                    }
+                });
+                controller.getKarmaResources(REQ_KARMA, userId);
+            }
+            } catch(Exception e){
+                e.printStackTrace();
+            }
+
     }
 
     private void setupNavigationView() {
@@ -413,6 +417,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                         progress.show();
                         getServiceCalled();
                         getTechDeails();
+                        getResourcesKarma();
 //                getIncentiveDetails();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -567,7 +572,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 //                        mActivityHomeBinding.toolbar.txtIncentive.setText("\u20B9" + " " + response.getTotalIncentiveAmount());
 //                    }
 //
-//                    @Override
+//                    @Overrideco
 //                    public void onFailure(int requestCode) {
 //
 //                    }
@@ -631,6 +636,11 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 //                    getSupportFragmentManager().beginTransaction().replace(mActivityHomeBinding.container.getId(), HomeFragment.newInstance()).addToBackStack(null).commit();
                     mActivityHomeBinding.drawer.closeDrawers();
                     break;
+
+//                case R.id.nav_quiz:
+//                    mActivityHomeBinding.drawer.closeDrawers();
+//                    startActivity(new Intent(HomeActivity.this, ActivityQuizCategory.class).putExtra(HomeActivity.ARG_EVENT, false));
+//                    break;
 
                 case R.id.nav_chat:
                     mActivityHomeBinding.drawer.closeDrawers();

@@ -13,6 +13,8 @@ public interface OnSaveEventHandler {
 
     public void amountCollected(String s);
 
+    public void amountCollectedAndType(String amount, String type);
+
     public void amountToCollect(String s);
 
     public void feedbackCode(String s);

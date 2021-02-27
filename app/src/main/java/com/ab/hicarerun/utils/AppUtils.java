@@ -85,6 +85,7 @@ public class AppUtils {
     public static List<Data> ConsInsList = null;
     public static boolean isInspectionDone = false;
     public static String appointmentDate = "";
+    public static String infestationLevel = "";
     public static String appointmentStartTime = "";
     public static String appointmentEndTime = "";
 

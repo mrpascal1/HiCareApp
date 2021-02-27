@@ -10,6 +10,7 @@ public class TaskViewModel implements Parcelable {
     private String AccountName;
     private String WingFlatOrUnitNumber;
     private String BuildingName;
+    private String StandardProperty;
     private String Locality;
     private String Landmark;
     private String Street;
@@ -52,6 +53,7 @@ public class TaskViewModel implements Parcelable {
         AccountName = "NA";
         WingFlatOrUnitNumber = "NA";
         BuildingName = "NA";
+        StandardProperty = "NA";
         Locality = "NA";
         Landmark = "NA";
         Street = "NA";
@@ -95,6 +97,7 @@ public class TaskViewModel implements Parcelable {
         AccountName = in.readString();
         WingFlatOrUnitNumber = in.readString();
         BuildingName = in.readString();
+        StandardProperty = in.readString();
         Locality = in.readString();
         Landmark = in.readString();
         Street = in.readString();
@@ -134,6 +137,56 @@ public class TaskViewModel implements Parcelable {
         CombineTaskType = in.readString();
         CombineOrderNumber = in.readString();
         HelperResourceId = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(AccountName);
+        dest.writeString(WingFlatOrUnitNumber);
+        dest.writeString(BuildingName);
+        dest.writeString(StandardProperty);
+        dest.writeString(Locality);
+        dest.writeString(Landmark);
+        dest.writeString(Street);
+        dest.writeString(District);
+        dest.writeString(Country);
+        dest.writeString(Amount);
+        dest.writeString(PostalCode);
+        dest.writeString(OrderNumber);
+        dest.writeString(TaskAssignmentStartDate);
+        dest.writeString(TaskAssignmentStartTime);
+        dest.writeString(TaskAssignmentEndDate);
+        dest.writeString(TaskAssignmentEndTime);
+        dest.writeString(AssignmentStartDate);
+        dest.writeString(AssignmentEndDate);
+        dest.writeString(Status);
+        dest.writeString(TaskId);
+        dest.writeString(ServicePlan);
+        dest.writeString(ServiceType);
+        dest.writeString(primaryMobile);
+        dest.writeString(altMobile);
+        dest.writeString(techMobile);
+        dest.writeString(AccountLat);
+        dest.writeString(AccountLong);
+        dest.writeString(OnsiteLat);
+        dest.writeString(OnsiteLong);
+        dest.writeString(CompletedLat);
+        dest.writeString(CompletedLong);
+        dest.writeString(CustomerLat);
+        dest.writeString(CustomerLong);
+        dest.writeString(Tag);
+        dest.writeString(AccountType);
+        dest.writeInt(SequenceNumber);
+        dest.writeByte((byte) (IsDetailVisible == null ? 0 : IsDetailVisible ? 1 : 2));
+        dest.writeByte((byte) (IsCombineTask == null ? 0 : IsCombineTask ? 1 : 2));
+        dest.writeString(CombineTaskType);
+        dest.writeString(CombineOrderNumber);
+        dest.writeString(HelperResourceId);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<TaskViewModel> CREATOR = new Creator<TaskViewModel>() {
@@ -468,6 +521,15 @@ public class TaskViewModel implements Parcelable {
         HelperResourceId = helperResourceId;
     }
 
+
+    public String getStandardProperty() {
+        return StandardProperty;
+    }
+
+    public void setStandardProperty(String standardProperty) {
+        StandardProperty = standardProperty;
+    }
+
     public void clone(Tasks tasks) {
         this.AccountName = tasks.getAccountName();
         this.BuildingName = tasks.getBuildingName();
@@ -509,56 +571,10 @@ public class TaskViewModel implements Parcelable {
         this.CombineTaskType = tasks.getCombinedServiceType();
         this.CombineOrderNumber = tasks.getCombinedOrderNumber();
         this.HelperResourceId = tasks.getHelper_Resource_Id();
+        this.StandardProperty = tasks.getStandardProperty();
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(AccountName);
-        parcel.writeString(WingFlatOrUnitNumber);
-        parcel.writeString(BuildingName);
-        parcel.writeString(Locality);
-        parcel.writeString(Landmark);
-        parcel.writeString(Street);
-        parcel.writeString(District);
-        parcel.writeString(Country);
-        parcel.writeString(Amount);
-        parcel.writeString(PostalCode);
-        parcel.writeString(OrderNumber);
-        parcel.writeString(TaskAssignmentStartDate);
-        parcel.writeString(TaskAssignmentStartTime);
-        parcel.writeString(TaskAssignmentEndDate);
-        parcel.writeString(TaskAssignmentEndTime);
-        parcel.writeString(AssignmentStartDate);
-        parcel.writeString(AssignmentEndDate);
-        parcel.writeString(Status);
-        parcel.writeString(TaskId);
-        parcel.writeString(ServicePlan);
-        parcel.writeString(ServiceType);
-        parcel.writeString(primaryMobile);
-        parcel.writeString(altMobile);
-        parcel.writeString(techMobile);
-        parcel.writeString(AccountLat);
-        parcel.writeString(AccountLong);
-        parcel.writeString(OnsiteLat);
-        parcel.writeString(OnsiteLong);
-        parcel.writeString(CompletedLat);
-        parcel.writeString(CompletedLong);
-        parcel.writeString(CustomerLat);
-        parcel.writeString(CustomerLong);
-        parcel.writeString(Tag);
-        parcel.writeString(AccountType);
-        parcel.writeInt(SequenceNumber);
-        parcel.writeByte((byte) (IsDetailVisible == null ? 0 : IsDetailVisible ? 1 : 2));
-        parcel.writeByte((byte) (IsCombineTask == null ? 0 : IsCombineTask ? 1 : 2));
-        parcel.writeString(CombineTaskType);
-        parcel.writeString(CombineOrderNumber);
-        parcel.writeString(HelperResourceId);
-    }
 }
 
 
