@@ -3,9 +3,11 @@ package com.ab.hicarerun.fragments;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -23,9 +25,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -57,6 +62,7 @@ import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.BuildConfig;
 import com.ab.hicarerun.R;
+import com.ab.hicarerun.activities.Camera2Activity;
 import com.ab.hicarerun.activities.NewTaskDetailsActivity;
 import com.ab.hicarerun.adapter.BankSearchAdapter;
 import com.ab.hicarerun.adapter.ChemicalDialogAdapter;
@@ -89,6 +95,7 @@ import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.MyDividerItemDecoration;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.bumptech.glide.Glide;
+import com.google.android.material.snackbar.Snackbar;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -114,6 +121,7 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
 
@@ -126,13 +134,14 @@ import static android.view.View.GONE;
  */
 public class ServiceInfoFragment extends BaseFragment implements UserServiceInfoClickHandler, FragmentDatePicker.onDatePickerListener {
 
-    FragmentServiceInfoBinding mFragmentServiceInfoBinding;
+    public FragmentServiceInfoBinding mFragmentServiceInfoBinding;
     private static final int POST_PAYMENT_LINK = 1000;
     public static final String ARGS_TASKS = "ARGS_TASKS";
     public static final String ARGS_COMBINED_TASKS = "ARGS_COMBINED_TASKS";
     public static final String ARGS_COMBINED_TYPE = "ARGS_COMBINED_TYPE";
     public static final String ARGS_COMBINED_ORDER = "ARGS_COMBINED_ORDER";
     public static final String ARGS_COMBINED_ID = "ARGS_COMBINED_ID";
+
     private static final int SAVE_CHECK_LIST = 3000;
     private static final int ONSITE_REQUEST = 1000;
     private static final int REQUEST_BANK = 2000;
@@ -144,7 +153,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private static final int CHECK_REQ = 8000;
     private static final int SLOT_REQUEST = 6000;
 
-
+    private static final int REQUEST_CODE = 1234;
+    private boolean mPermissions;
     private AlertDialog alertDialog;
     private Integer pageNumber = 1;
     private String selectedStatus = "";
@@ -260,7 +270,22 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             combinedTypes = getArguments().getString(ARGS_COMBINED_TYPE);
             isCombinedTask = getArguments().getBoolean(ARGS_COMBINED_TASKS);
         }
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
+                new IntentFilter("Onsite-Image"));
     }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            String base64 = intent.getStringExtra("base64");
+            if (alertDialog != null) {
+                alertDialog.dismiss();
+            }
+            uploadOnsiteImage(base64);
+            Log.d("receiver", "Got message: " + base64);
+        }
+    };
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
@@ -317,7 +342,9 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             @Override
             public void afterTextChanged(Editable s) {
                 mCallback.amountCollected(s.toString());
-                mCallback.amountCollectedAndType(s.toString(), mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString());
+                if (sta.equals("On-Site")) {
+                    mCallback.amountCollectedAndType(s.toString(), mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString());
+                }
                 getValidated(AmountToCollect);
                 SharedPreferencesUtility.savePrefString(Objects.requireNonNull(getActivity()), SharedPreferencesUtility.PREF_AMOUNT, s.toString());
             }
@@ -588,7 +615,6 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                         try {
                             mFragmentServiceInfoBinding.btnSendPaymentLink.setVisibility(GONE);
                             Mode = mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString();
-                            mCallback.amountCollectedAndType(mFragmentServiceInfoBinding.txtCollected.getText().toString(), Mode);
 
                             if (Mode.equals("None")) {
                                 mCallback.mode("");
@@ -598,6 +624,9 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                 imm.showSoftInput(mFragmentServiceInfoBinding.edtPaymentOTP, InputMethodManager.SHOW_IMPLICIT);
                                 mFragmentServiceInfoBinding.edtPaymentOTP.requestFocus();
                                 mCallback.mode(Mode);
+                                if (sta.equals("On-Site")) {
+                                    mCallback.amountCollectedAndType(mFragmentServiceInfoBinding.txtCollected.getText().toString(), Mode);
+                                }
                             }
                             mCallback.amountToCollect(String.valueOf(AmountToCollect));
 
@@ -1237,7 +1266,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             int backgroundResource = typedArray.getResourceId(0, 0);
             txtCapture.setBackgroundResource(backgroundResource);
             txtCapture.setOnClickListener(view -> {
-                requestStoragePermission(true);
+//                requestStoragePermission(true);
+                init();
             });
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
             alertDialog.setCanceledOnTouchOutside(false);
@@ -1248,6 +1278,81 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             e.printStackTrace();
         }
     }
+
+    private void startCamera2() {
+//        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+//        transaction.replace(R.id.container, Camera2Fragment.newInstance(), getString(R.string.fragment_camera2));
+//        transaction.commit();
+        Intent intent = new Intent(getActivity(), Camera2Activity.class);
+        intent.putExtra(AppUtils.CAMERA_ORIENTATION, "FRONT");
+        startActivity(intent);
+    }
+
+    private void init() {
+        if (mPermissions) {
+            if (checkCameraHardware(getActivity())) {
+
+                // Open the Camera
+                startCamera2();
+            } else {
+                showSnackBar("You need a camera to use this application", Snackbar.LENGTH_INDEFINITE);
+            }
+        } else {
+            verifyPermissions();
+        }
+    }
+
+    /**
+     * Check if this device has a camera
+     */
+    private boolean checkCameraHardware(Context context) {
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+            // this device has a camera
+            return true;
+        } else {
+            // no camera on this device
+            return false;
+        }
+    }
+
+    public void verifyPermissions() {
+        Log.d("TAG", "verifyPermissions: asking user for permissions.");
+        String[] permissions = {
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA};
+        if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
+                permissions[0]) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
+                permissions[1]) == PackageManager.PERMISSION_GRANTED) {
+            mPermissions = true;
+            init();
+        } else {
+            ActivityCompat.requestPermissions(
+                    getActivity(),
+                    permissions,
+                    REQUEST_CODE
+            );
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_CODE) {
+            if (mPermissions) {
+                init();
+            } else {
+                verifyPermissions();
+            }
+        }
+    }
+
+    private void showSnackBar(final String text, final int length) {
+        View view = getActivity().findViewById(android.R.id.content).getRootView();
+        Snackbar.make(view, text, length).show();
+    }
+
 
     private void requestStoragePermission(boolean isCamera) {
         try {
@@ -1260,7 +1365,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                             // check if all permissions are granted
                             if (report.areAllPermissionsGranted()) {
                                 if (isCamera) {
-                                    dispatchTakePictureIntent();
+//                                    dispatchTakePictureIntent();
+//                                    openFrontFacingCamera();
                                 }
                             }
                             // check for permanent denial of any permission
@@ -1324,7 +1430,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
     }
 
-    private void uploadOnsiteImage(String base64) {
+    public void uploadOnsiteImage(String base64) {
         RealmResults<LoginResponse> LoginRealmModels =
                 BaseApplication.getRealm().where(LoginResponse.class).findAll();
         if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
@@ -1340,6 +1446,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     if (response.getIsSuccess()) {
                         mFragmentServiceInfoBinding.imgUser.setVisibility(View.VISIBLE);
                         Picasso.get().load(response.getData()).into(mFragmentServiceInfoBinding.imgUser);
+
                     } else {
                         mFragmentServiceInfoBinding.imgUser.setVisibility(GONE);
                         Toasty.error(getActivity(), response.getErrorMessage(), Toasty.LENGTH_SHORT).show();
@@ -1383,7 +1490,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                     byte[] b = baos.toByteArray();
                     String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-                    uploadOnsiteImage(encodedImage);
+//                    uploadOnsiteImage(encodedImage, info.mFragmentServiceInfoBinding.imgUser);
                     alertDialog.dismiss();
 
                 }
@@ -2508,7 +2615,6 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 mCallback.isChequeDateRequired(false);
                 mCallback.isInvalidChequeNumber(false);
                 mCallback.isChequeNumberRequired(false);
-
             }
             if (sta != null) {
                 if (sta.equals("Completed") || sta.equals("Incompleted")) {
@@ -2609,6 +2715,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     @Override
     public void onDestroy() {
         super.onDestroy();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
         if (hasStarted) {
             timer.cancel();
         }

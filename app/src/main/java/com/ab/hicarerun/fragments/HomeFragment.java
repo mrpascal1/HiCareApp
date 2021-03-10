@@ -2,9 +2,12 @@ package com.ab.hicarerun.fragments;
 
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -50,6 +53,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -91,6 +95,11 @@ import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.LocaleHelper;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.play.core.review.ReviewInfo;
+import com.google.android.play.core.review.ReviewManager;
+import com.google.android.play.core.review.ReviewManagerFactory;
+import com.google.android.play.core.review.testing.FakeReviewManager;
+import com.google.android.play.core.tasks.Task;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
@@ -110,6 +119,8 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     RecyclerView.LayoutManager layoutManager;
     TaskListAdapter mAdapter;
     //    final Handler timerHandler = new Handler();
+    private static final String COVID_CHECK = "COVID_CHECK";
+
     private static final int TASKS_REQ = 1000;
     private static final int EXOTEL_REQ = 2000;
     private static final int EXOTEL_REQ_V2 = 9000;
@@ -147,6 +158,8 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     private List<SelfAssessmentRequest> checkList = null;
     private List<Boolean> isCheckList = null;
     private List<ResourceCheckList> ResList = null;
+    FakeReviewManager manager;
+    private ReviewInfo reviewInfo;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -161,13 +174,19 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     }
 
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            bitUser = getArguments().getByteArray(ARG_USER);
+//    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            // Get extra data included in the Intent
+//            String message = intent.getStringExtra("message");
+//            if (message.equalsIgnoreCase("recieved")) {
+//                showCovidCheckList();
+//                getAllTasks();
+//                showResourceCheckList();
+//            }
+//
 //        }
-    }
+//    };
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
@@ -240,24 +259,36 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         mAdapter = new TaskListAdapter(getActivity(), this);
         mAdapter.setOnCallClickHandler(this);
         mFragmentHomeBinding.recycleView.setAdapter(mAdapter);
-
+//        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
+//                new IntentFilter(COVID_CHECK));
         getAllTasks();
+        launchMarket();
         isShowNPS = SharedPreferencesUtility.getPrefBoolean(getActivity(), SharedPreferencesUtility.PREF_SHOW_NPS);
+
         isResourceSaved = SharedPreferencesUtility.getPrefBoolean(getActivity(), SharedPreferencesUtility.PREF_RESOURCE_SAVED);
-        if (isShowNPS)
-            showNPSDialog();
+
+//        if (isShowNPS)
+//            showNPSDialog();
         mFragmentHomeBinding.swipeRefreshLayout.setRefreshing(true);
-        if (isResourceSaved)
-            showResourceCheckList();
+//        if (isResourceSaved)
 //            showCovidCheckList();
-
-
-
-
-
-
-//
+//            showResourceCheckList();
         mFragmentHomeBinding.lnrAssess.setOnClickListener(v -> showAssessmentReport());
+    }
+
+    private void launchMarket() {
+//        manager = ReviewManagerFactory.create(getActivity());
+        manager = new FakeReviewManager(getActivity());
+        Task<ReviewInfo> request = manager.requestReviewFlow();
+        request.addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                reviewInfo = task.getResult();
+                Task<Void> flow = manager.launchReviewFlow(getActivity(), reviewInfo);
+                flow.addOnCompleteListener(taskdone -> {
+                    // This is the next follow of your app
+                });
+            }
+        });
     }
 
     private void showCovidCheckList() {
@@ -574,6 +605,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
     @Override
     public void onResponse(int requestCode, TaskListResponse data) {
+//        getAttendanceDialog();
         try {
             AppUtils.getDataClean();
         } catch (Exception e) {
@@ -670,11 +702,12 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 btnSkip.setVisibility(View.GONE);
             }
 
-            txt_head.setText(getResources().getString(R.string.welcome_attendance) + UserName + getResources().getString(R.string.please_mark_your_attendance_with_the_face_recognition));
+            txt_head.setText(getResources().getString(R.string.welcome_attendance) + " " + UserName + getResources().getString(R.string.please_mark_your_attendance_with_the_face_recognition));
 
             btn_send.setOnClickListener(v -> {
                 alertDialog.dismiss();
                 replaceFragment(FaceRecognizationFragment.newInstance(true, "", ""), "HomeFragment-FaceRecognizationFragment");
+
             });
 
             btnSkip.setOnClickListener(new View.OnClickListener() {
@@ -702,9 +735,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                             if (response.getParam1()) {
                                                 showResourceCheckList();
 //                                                showCovidCheckList();
-
-
-
 
 
                                                 SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_RESOURCE_SAVED, true);
@@ -761,6 +791,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         if (alertDialog != null) {
             alertDialog.dismiss();
         }
+//        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
     }
 
     @Override
@@ -1259,4 +1290,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         navigationView.getMenu().getItem(4).setChecked(false);
 
     }
+
+
 }

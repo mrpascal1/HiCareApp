@@ -2,8 +2,11 @@ package com.ab.hicarerun.fragments;
 
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -31,6 +34,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
@@ -70,6 +74,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
     SurfaceTexture surfceTexture;
     private Camera camera;
     private int cameraId;
+    private static final String COVID_CHECK = "COVID_CHECK";
     private static final String ARG_ATTENDANCE = "ARG_ATTENDANCE";
     private static final String ARG_USER = "ARG_USER";
     private static final String ARG_URL = "ARG_URL";
@@ -117,7 +122,9 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
             username = getArguments().getString(ARG_USER);
             uri = getArguments().getString(ARG_URL);
         }
+
     }
+
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
@@ -354,7 +361,11 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                                             getAttendanceDetails();
                                             Toasty.success((HomeActivity) getActivity(), getResources().getString(R.string.attendance_marked_successfully_face), Toast.LENGTH_SHORT).show();
                                             SharedPreferencesUtility.savePrefBoolean((HomeActivity) getActivity(), SharedPreferencesUtility.PREF_SHOW_NPS, true);
-                                            startActivity(new Intent((HomeActivity)getActivity(), HomeActivity.class));
+                                            startActivity(new Intent((HomeActivity) getActivity(), HomeActivity.class));
+                                            Intent intent = new Intent(COVID_CHECK);
+                                            intent.putExtra("message", "recieved");
+                                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                                            releaseCamera();
                                         } else {
                                             getErrorDialog("Attendance Failed", response.getErrorMessage());
                                         }
@@ -362,11 +373,9 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
 
                                     @Override
                                     public void onFailure(int requestCode) {
-
                                     }
                                 });
                                 controller.getTechAttendance(ATTENDANCE_REQ, request);
-
                             }
                         }
 
@@ -393,6 +402,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                                             } else {
                                                 if (uri.length() > 0) {
                                                     startActivity(new Intent(getActivity(), StartVideoActivity.class));
+                                                    releaseCamera();
                                                 } else {
                                                     AppUtils.getHandShakeCall(username, getActivity());
                                                 }

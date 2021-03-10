@@ -19,7 +19,7 @@ android {
     compileSdkVersion 30
     defaultConfig {
         applicationId "com.ab.hicarerun"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 30
         versionCode 48
         versionName "6.1"
@@ -137,6 +137,7 @@ dependencies {
     api 'pl.droidsonroids.gif:android-gif-drawable:1.1.0'
     api 'com.google.android:flexbox:1.1.0'
     api 'org.apmem.tools:layouts:1.10@aar'
+
     implementation 'com.eyalbira.loadingdots:loading-dots:1.0.2'
 
     //dynamic module injection

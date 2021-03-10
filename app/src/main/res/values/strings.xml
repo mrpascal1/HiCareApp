@@ -15,6 +15,7 @@
     <string name="start_time">Start Time</string>
     <string name="duration">Duration</string>
     <string name="deprected">Deprected</string>
+    <string name="fragment_camera2">Camera2</string>
 
     <string name="customer_name">Customer Name</string>
     <string name="payment_mode">Payment Mode</string>

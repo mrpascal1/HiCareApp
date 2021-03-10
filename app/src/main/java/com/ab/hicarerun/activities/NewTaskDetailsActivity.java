@@ -6,8 +6,10 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -50,6 +52,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -104,6 +107,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.snackbar.Snackbar;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -161,7 +165,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     public static final String ARGS_NAME = "ARGS_NAME";
     public static final String ARGS_NEXT_TASK = "ARGS_NEXT_TASK";
     private boolean isFinalSave = false;
-
+    private static final int REQUEST_CODE = 1234;
+    private boolean mPermissions;
     //    public static final String ARG_USER = "ARG_USER";
 //    public static final String ARGS_MOBILE = "ARGS_MOBILE";
 //    public static final String ARGS_TAG = "ARGS_TAG";
@@ -371,8 +376,20 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 }
             }
         });
-
+        AppUtils.CAMERA_SCREEN = "Post_Job";
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter(AppUtils.CAMERA_SCREEN));
     }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            String base64 = intent.getStringExtra("base64");
+            uploadOnsiteImage(base64);
+            Log.d("receiver", "Got message: " + base64);
+        }
+    };
 
 
     public void getTaskDetailsById() {
@@ -1033,12 +1050,11 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(1);
                 Toasty.error(this, getResources().getString(R.string.chamical_should_be_verified), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
-            }  else if (isSignatureChanged && Status.equals("Completed")) {
+            } else if (isSignatureChanged && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
                 progress.dismiss();
                 Toasty.error(this, getResources().getString(R.string.signatory_field_is_required), Toast.LENGTH_SHORT, true).show();
-            }
-            else if (isOTPRequired && Status.equals("Completed")) {
+            } else if (isOTPRequired && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
                 progress.dismiss();
                 Toasty.error(this, getResources().getString(R.string.otp_field_is_required), Toast.LENGTH_SHORT, true).show();
@@ -1206,7 +1222,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
                         byte[] b = baos.toByteArray();
                         String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-                        uploadOnsiteImage(encodedImage);
+//                        uploadOnsiteImage(encodedImage);
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1217,6 +1234,74 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             e.printStackTrace();
         }
     }
+
+    private void init() {
+        if (mPermissions) {
+            if (checkCameraHardware(this)) {
+                // Open the Camera
+                startCamera2();
+            } else {
+                showSnackBar("You need a camera to use this application", Snackbar.LENGTH_INDEFINITE);
+            }
+        } else {
+            verifyPermissions();
+        }
+    }
+
+    private boolean checkCameraHardware(Context context) {
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+            // this device has a camera
+            return true;
+        } else {
+            // no camera on this device
+            return false;
+        }
+    }
+
+    private void startCamera2() {
+        Intent intent = new Intent(this, Camera2Activity.class);
+        intent.putExtra(AppUtils.CAMERA_ORIENTATION, "BACK");
+        startActivity(intent);
+    }
+
+    private void showSnackBar(final String text, final int length) {
+        View view = findViewById(android.R.id.content).getRootView();
+        Snackbar.make(view, text, length).show();
+    }
+
+    public void verifyPermissions() {
+        Log.d("TAG", "verifyPermissions: asking user for permissions.");
+        String[] permissions = {
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA};
+        if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                permissions[0]) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(getApplicationContext(),
+                permissions[1]) == PackageManager.PERMISSION_GRANTED) {
+            mPermissions = true;
+            init();
+        } else {
+            ActivityCompat.requestPermissions(
+                    this,
+                    permissions,
+                    REQUEST_CODE
+            );
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_CODE) {
+            if (mPermissions) {
+                init();
+            } else {
+                verifyPermissions();
+            }
+        }
+    }
+
 
     private void showCompletionDialog() {
         try {
@@ -1256,7 +1341,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             recyclerView.setAdapter(mCheckAdapter);
             mCheckAdapter.setOnItemClickHandler(position -> {
                 checkPosition = position;
-                requestStoragePermission(true);
+//                requestStoragePermission(true);
+                init();
             });
             saveHashSet = new HashSet<>();
             btnSend.setOnClickListener(v -> {
@@ -1658,7 +1744,9 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
     @Override
     public void amountCollectedAndType(String amount, String type) {
-        mAboutDataListener.onDataReceived(amount, type);
+        if (amount != null && type != null) {
+            mAboutDataListener.onDataReceived(amount, type);
+        }
     }
 
     @Override
@@ -1670,6 +1758,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     public void feedbackCode(String s) {
         Feedback_Code = s;
     }
+
 
     @Override
     public void signatory(String s) {
@@ -1902,4 +1991,9 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         this.mAboutDataListener = listener;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+    }
 }

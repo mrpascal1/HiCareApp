@@ -100,6 +100,7 @@ import static com.ab.hicarerun.BaseApplication.getRealm;
 
 public class HomeActivity extends BaseActivity implements FragmentManager.OnBackStackChangedListener, LocationManagerListner {
     ActivityHomeBinding mActivityHomeBinding;
+
     private static final int LOGOUT_REQ = 1000;
     private static final int UPDATE_REQ = 2000;
     private static final int REQ_PROFILE = 3000;
@@ -637,10 +638,10 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                     mActivityHomeBinding.drawer.closeDrawers();
                     break;
 
-//                case R.id.nav_quiz:
-//                    mActivityHomeBinding.drawer.closeDrawers();
-//                    startActivity(new Intent(HomeActivity.this, ActivityQuizCategory.class).putExtra(HomeActivity.ARG_EVENT, false));
-//                    break;
+                case R.id.nav_quiz:
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, ActivityQuizCategory.class).putExtra(HomeActivity.ARG_EVENT, false));
+                    break;
 
                 case R.id.nav_chat:
                     mActivityHomeBinding.drawer.closeDrawers();

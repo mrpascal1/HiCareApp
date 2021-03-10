@@ -51,6 +51,7 @@ import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.BuildConfig;
 import com.ab.hicarerun.R;
+import com.ab.hicarerun.activities.NewTaskDetailsActivity;
 import com.ab.hicarerun.adapter.JobCardMSTAdapter;
 import com.ab.hicarerun.adapter.NewAttachmentListAdapter;
 import com.ab.hicarerun.databinding.FragmentSignatureMstinfoBinding;
@@ -104,7 +105,7 @@ import static android.view.View.GONE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SignatureMSTInfoFragment extends BaseFragment implements UserSignatureClickHandler, OnJobCardDeleteClickHandler, OnAddJobCardClickHandler {
+public class SignatureMSTInfoFragment extends BaseFragment implements UserSignatureClickHandler, OnJobCardDeleteClickHandler, OnAddJobCardClickHandler, NewTaskDetailsActivity.OnAboutDataReceivedListener {
     FragmentSignatureMstinfoBinding mFragmentSignatureInfoBinding;
     private static final int POST_FEEDBACK_LINK = 1000;
     private static final int POST_ATTACHMENT_REQ = 2000;
@@ -152,6 +153,8 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     private String taskId = "";
     private String combinedTaskId = "";
     private String combinedTaskType = "";
+    private NewTaskDetailsActivity mActivity = null;
+
 
     public SignatureMSTInfoFragment() {
         // Required empty public constructor
@@ -175,6 +178,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
             combinedTaskId = getArguments().getString(ARGS_COMBINED_TASKS_ID);
             combinedTaskType = getArguments().getString(ARGS_COMBINED_TYPE);
         }
+
     }
 
     @Override
@@ -217,12 +221,13 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeWidth(8);
         mFragmentSignatureInfoBinding.setHandler(this);
+        mActivity = (NewTaskDetailsActivity) getActivity();
+        Objects.requireNonNull(mActivity).setAboutDataListener(this);
         return mFragmentSignatureInfoBinding.getRoot();
     }
 
     @Override
-    public void onSaveInstanceState(Bundle oldInstanceState)
-    {
+    public void onSaveInstanceState(Bundle oldInstanceState) {
         super.onSaveInstanceState(oldInstanceState);
         oldInstanceState.clear();
     }
@@ -384,7 +389,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                     e.printStackTrace();
                 }
                 Email = mGeneralRealmData.get(0).getEmail();
-                mFragmentSignatureInfoBinding.txtAmount.setText(amount + " " + "\u20B9");
+                mFragmentSignatureInfoBinding.txtAmount.setText("₹" + " " + amount);
                 feedback_code = mFragmentSignatureInfoBinding.txtFeedback.getText().toString();
                 signatory = mFragmentSignatureInfoBinding.edtSignatory.getText().toString();
                 isJobcardEnable = mGeneralRealmData.get(0).getJobCardRequired();
@@ -770,7 +775,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                         mCallback.isOTPRequired(true);
                     }
 
-                    if(mGeneralRealmData.get(0).getShowSignature()){
+                    if (mGeneralRealmData.get(0).getShowSignature()) {
                         if (mFragmentSignatureInfoBinding.edtSignatory.getText().toString().length() == 0) {
                             mCallback.isSignatureChanged(true);
                         } else {
@@ -781,7 +786,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                         } else {
                             mCallback.isSignatureValidated(false);
                         }
-                    }else {
+                    } else {
                         mCallback.isSignatureValidated(false);
                         mCallback.isSignatureChanged(false);
                     }
@@ -791,7 +796,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                 mFragmentSignatureInfoBinding.txtFeedback.setEnabled(false);
                 mFragmentSignatureInfoBinding.lnrOtp.setVisibility(GONE);
                 mFragmentSignatureInfoBinding.btnSendlink.setVisibility(View.GONE);
-                if(mGeneralRealmData.get(0).getShowSignature()){
+                if (mGeneralRealmData.get(0).getShowSignature()) {
                     if (mFragmentSignatureInfoBinding.edtSignatory.getText().toString().length() == 0) {
                         mCallback.isSignatureChanged(true);
                     } else {
@@ -802,7 +807,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                     } else {
                         mCallback.isSignatureValidated(false);
                     }
-                }else {
+                } else {
                     mCallback.isSignatureChanged(false);
                     mCallback.isSignatureValidated(false);
                 }
@@ -1131,6 +1136,28 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     @Override
     public void onDeleteJobCard(int parent, int child) {
         getJobCardDeleted(parent, child);
+    }
+
+    @Override
+    public void onDataReceived(String amount, String type) {
+        if (type.equalsIgnoreCase("upi") || type.equalsIgnoreCase("paytm") || type.equalsIgnoreCase("amazon pay")) {
+            mFragmentSignatureInfoBinding.txtType.setText(type);
+            mFragmentSignatureInfoBinding.lnrOrder.setVisibility(View.GONE);
+            mFragmentSignatureInfoBinding.lnrType.setVisibility(View.VISIBLE);
+        } else if (type.equalsIgnoreCase("none")) {
+            mFragmentSignatureInfoBinding.lnrType.setVisibility(View.GONE);
+            mFragmentSignatureInfoBinding.lnrOrder.setVisibility(View.GONE);
+        } else if (type.equalsIgnoreCase("cash") || type.equalsIgnoreCase("cheque")) {
+            if (amount.equals("0") || amount.equals("")) {
+                mFragmentSignatureInfoBinding.lnrType.setVisibility(View.GONE);
+                mFragmentSignatureInfoBinding.lnrOrder.setVisibility(View.GONE);
+            } else {
+                mFragmentSignatureInfoBinding.txtAmount.setText("₹" + " " + amount);
+                mFragmentSignatureInfoBinding.txtType.setText(type);
+                mFragmentSignatureInfoBinding.lnrType.setVisibility(View.VISIBLE);
+                mFragmentSignatureInfoBinding.lnrOrder.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     public class DrawingView extends View {

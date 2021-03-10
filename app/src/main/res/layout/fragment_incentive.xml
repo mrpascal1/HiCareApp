@@ -47,7 +47,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="8dp"
-                        android:text="Arjun Bhatt"
                         android:textColor="@color/black"
                         android:textSize="21sp"
                         android:textStyle="bold" />
@@ -118,7 +117,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="7dp"
-                        android:text="Incentive as on: 10 July 2020"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
@@ -168,7 +166,6 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="25dp"
                                         android:layout_marginRight="7dp"
-                                        android:text="100 Pts."
                                         android:textColor="@color/black"
                                         android:textSize="22sp" />
 
@@ -231,7 +228,6 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="25dp"
                                         android:layout_marginRight="7dp"
-                                        android:text="100 Rs."
                                         android:textColor="@color/black"
                                         android:textSize="22sp" />
 
