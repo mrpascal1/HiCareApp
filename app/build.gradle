@@ -21,8 +21,8 @@ android {
         applicationId "com.ab.hicarerun"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 48
-        versionName "6.1"
+        versionCode 49
+        versionName "6.2"
         multiDexEnabled true
         dynamicFeatures = [":ondemand"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -33,19 +33,19 @@ android {
         ]
     }
     buildTypes {
-        //    release {
-        //  debuggable false
-        //  minifyEnabled true
-        //  shrinkResources false
-        //  proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        //}
+            release {
+          debuggable false
+          minifyEnabled true
+          shrinkResources false
+          proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
 
-        //debug {
-        //  debuggable true
-        //  minifyEnabled true
-        //  shrinkResources false
-        //  proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        //}
+        debug {
+          debuggable true
+          minifyEnabled true
+          shrinkResources false
+          proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
     }
 
     lintOptions {

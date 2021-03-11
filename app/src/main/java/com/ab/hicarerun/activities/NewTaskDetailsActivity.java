@@ -284,6 +284,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         super.onCreate(savedInstanceState);
         mActivityNewTaskDetailsBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_new_task_details);
+
         mActivityNewTaskDetailsBinding.setHandler(this);
         progress = new ProgressDialog(this, R.style.TransparentProgressDialog);
         progress.setCancelable(false);
@@ -376,9 +377,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 }
             }
         });
-        AppUtils.CAMERA_SCREEN = "Post_Job";
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
-                new IntentFilter(AppUtils.CAMERA_SCREEN));
+
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -1340,6 +1339,9 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             });
             recyclerView.setAdapter(mCheckAdapter);
             mCheckAdapter.setOnItemClickHandler(position -> {
+                AppUtils.CAMERA_SCREEN = "Post-Job";
+                LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                        new IntentFilter(AppUtils.CAMERA_SCREEN));
                 checkPosition = position;
 //                requestStoragePermission(true);
                 init();
@@ -1516,6 +1518,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
     private void uploadOnsiteImage(String base64) {
         try {
+
             RealmResults<LoginResponse> LoginRealmModels =
                     BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
@@ -1540,7 +1543,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
                     @Override
                     public void onFailure(int requestCode) {
-
                     }
                 });
                 controller.uploadCheckListAttachment(UPLOAD_REQ, request);

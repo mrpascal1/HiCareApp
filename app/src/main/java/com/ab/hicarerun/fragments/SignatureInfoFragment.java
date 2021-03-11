@@ -367,25 +367,25 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                 mFragmentSignatureInfoBinding.txtPlannedDate.setTypeface(mFragmentSignatureInfoBinding.txtPlannedDate.getTypeface(), Typeface.BOLD);
 
                 if (mGeneralRealmData.get(0).getShowNextServiceAppointment() && status.equals("On-Site")) {
-                    mFragmentSignatureInfoBinding.lnrBook.setVisibility(View.VISIBLE);
+                    mFragmentSignatureInfoBinding.lnrServiceDate.setVisibility(View.VISIBLE);
                     mFragmentSignatureInfoBinding.lnrPlannedServiceDate.setVisibility(View.VISIBLE);
                     source = 0;
                 } else if ((mGeneralRealmData.get(0).getFlushoutRequired() || mGeneralRealmData.get(0).getGelTreatmentRequired()) && status.equals("On-Site") && mGeneralRealmData.get(0).getTag() != null) {
                     if (mGeneralRealmData.get(0).getTag().equalsIgnoreCase("complaint") && AppUtils.infestationLevel.equalsIgnoreCase("high infestation")) {
                         mFragmentSignatureInfoBinding.lnrBook.setText("SCHEDULE FLUSH OUT SERVICE");
-                        mFragmentSignatureInfoBinding.lnrBook.setVisibility(View.VISIBLE);
+                        mFragmentSignatureInfoBinding.lnrServiceDate.setVisibility(View.VISIBLE);
                         mFragmentSignatureInfoBinding.lnrPlannedServiceDate.setVisibility(GONE);
                         source = 1;
                     } else if (mGeneralRealmData.get(0).getTag().equalsIgnoreCase("flushout") || mGeneralRealmData.get(0).getTag().equalsIgnoreCase("incomplete flushout")) {
                         mFragmentSignatureInfoBinding.lnrBook.setText("SCHEDULE GEL TREATMENT");
-                        mFragmentSignatureInfoBinding.lnrBook.setVisibility(View.VISIBLE);
+                        mFragmentSignatureInfoBinding.lnrServiceDate.setVisibility(View.VISIBLE);
                         mFragmentSignatureInfoBinding.lnrPlannedServiceDate.setVisibility(GONE);
                         source = 2;
                     } else if (mGeneralRealmData.get(0).getTag().equalsIgnoreCase("gel") || mGeneralRealmData.get(0).getTag().equalsIgnoreCase("incomplete gel")) {
-                        mFragmentSignatureInfoBinding.lnrBook.setVisibility(GONE);
+                        mFragmentSignatureInfoBinding.lnrServiceDate.setVisibility(GONE);
                         mFragmentSignatureInfoBinding.lnrPlannedServiceDate.setVisibility(GONE);
                     } else {
-                        mFragmentSignatureInfoBinding.lnrBook.setVisibility(GONE);
+                        mFragmentSignatureInfoBinding.lnrServiceDate.setVisibility(GONE);
                         mFragmentSignatureInfoBinding.lnrPlannedServiceDate.setVisibility(GONE);
                     }
                 } else {
@@ -394,7 +394,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     } else {
                         mFragmentSignatureInfoBinding.lnrPlannedServiceDate.setVisibility(GONE);
                     }
-                    mFragmentSignatureInfoBinding.lnrBook.setVisibility(GONE);
+                    mFragmentSignatureInfoBinding.lnrServiceDate.setVisibility(GONE);
 
                 }
 
@@ -440,10 +440,23 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     mFragmentSignatureInfoBinding.txtFeedback.setText(mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getTechnicianOTP() : "NA");
                     mFragmentSignatureInfoBinding.txtHint.setVisibility(GONE);
                     mFragmentSignatureInfoBinding.txtFeedback.setEnabled(false);
-                    mFragmentSignatureInfoBinding.btnSendlink.setVisibility(GONE);
+                    mFragmentSignatureInfoBinding.lnrBottom.setVisibility(GONE);
 //                    mFragmentSignatureInfoBinding.btnUpload.setVisibility(GONE);
                     mFragmentSignatureInfoBinding.lnrJobCard.setVisibility(GONE);
                     mFragmentSignatureInfoBinding.imgSign.setVisibility(View.VISIBLE);
+                    if(mGeneralRealmData.get(0).getAmountCollected()!=null && !mGeneralRealmData.get(0).getAmountCollected().equals("0")){
+                        mFragmentSignatureInfoBinding.lnrOrder.setVisibility(View.VISIBLE);
+                        mFragmentSignatureInfoBinding.txtAmount.setText("₹" + " "+mGeneralRealmData.get(0).getAmountCollected());
+                    }else {
+                        mFragmentSignatureInfoBinding.lnrOrder.setVisibility(View.GONE);
+                    }
+
+                    if(mGeneralRealmData.get(0).getPaymentMode() != null && !mGeneralRealmData.get(0).getPaymentMode().equals("") && !mGeneralRealmData.get(0).getPaymentMode().equalsIgnoreCase("none")){
+                        mFragmentSignatureInfoBinding.lnrType.setVisibility(View.VISIBLE);
+                        mFragmentSignatureInfoBinding.txtType.setText(mGeneralRealmData.get(0).getPaymentMode());
+                    }else {
+                        mFragmentSignatureInfoBinding.lnrType.setVisibility(View.GONE);
+                    }
 
                 } else if (status.equals("Dispatched")) {
                     mFragmentSignatureInfoBinding.edtSignatory.setBackgroundResource(R.drawable.disable_edit_borders);
@@ -451,13 +464,14 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     mFragmentSignatureInfoBinding.edtSignatory.setEnabled(false);
                     mFragmentSignatureInfoBinding.txtHint.setVisibility(GONE);
                     mFragmentSignatureInfoBinding.txtFeedback.setEnabled(false);
-                    mFragmentSignatureInfoBinding.btnSendlink.setVisibility(GONE);
+                    mFragmentSignatureInfoBinding.lnrBottom.setVisibility(GONE);
 //                    mFragmentSignatureInfoBinding.btnUpload.setVisibility(GONE);
                     mFragmentSignatureInfoBinding.lnrJobCard.setVisibility(GONE);
                 } else {
                     mFragmentSignatureInfoBinding.edtSignatory.setEnabled(true);
                     mFragmentSignatureInfoBinding.imgSign.setEnabled(true);
                     mFragmentSignatureInfoBinding.txtHint.setVisibility(View.VISIBLE);
+                    mFragmentSignatureInfoBinding.txtAmount.setText("₹" + " " + 0);
                 }
 
                 if (mGeneralRealmData.get(0).getIsFlushOutRequired() != null && mGeneralRealmData.get(0).getIsFlushOutRequired()) {
@@ -465,7 +479,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                 } else {
                     mFragmentSignatureInfoBinding.lnrCMSReason.setVisibility(GONE);
                 }
-                mFragmentSignatureInfoBinding.txtAmount.setText("₹" + " " + 0);
+
                 mobile = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getMobileNumber() : "NA";
                 Order_Number = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getOrderNumber() : "NA";
                 Service_Name = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getServicePlan() : "NA";
@@ -1076,10 +1090,10 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
 //                }
                 if (status.equals("Completed") || status.equals("Incomplete")) {
                     mFragmentSignatureInfoBinding.txtFeedback.setEnabled(false);
-                    mFragmentSignatureInfoBinding.btnSendlink.setVisibility(View.GONE);
+                    mFragmentSignatureInfoBinding.lnrBottom.setVisibility(View.GONE);
                 } else {
                     mFragmentSignatureInfoBinding.txtFeedback.setEnabled(true);
-                    mFragmentSignatureInfoBinding.btnSendlink.setVisibility(View.VISIBLE);
+                    mFragmentSignatureInfoBinding.lnrBottom.setVisibility(View.VISIBLE);
                     if (OTP.length() != 0) {
                         mCallback.isOTPRequired(false);
                         if (OTP.equals(sc_otp) || OTP.equals(customer_otp)) {
@@ -1111,7 +1125,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
             } else {
                 mFragmentSignatureInfoBinding.txtFeedback.setEnabled(false);
                 mFragmentSignatureInfoBinding.lnrOtp.setVisibility(GONE);
-                mFragmentSignatureInfoBinding.btnSendlink.setVisibility(View.GONE);
+                mFragmentSignatureInfoBinding.lnrBottom.setVisibility(View.GONE);
                 if (mGeneralRealmData.get(0).getShowSignature() != null && mGeneralRealmData.get(0).getShowSignature()) {
                     if (mFragmentSignatureInfoBinding.edtSignatory.getText().toString().length() == 0) {
                         mCallback.isSignatureChanged(true);
@@ -1151,6 +1165,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
 
     @Override
     public void onDataReceived(String amount, String type) {
+
         if (type.equalsIgnoreCase("upi") || type.equalsIgnoreCase("paytm") || type.equalsIgnoreCase("amazon pay")) {
             mFragmentSignatureInfoBinding.txtType.setText(type);
             mFragmentSignatureInfoBinding.lnrOrder.setVisibility(View.GONE);

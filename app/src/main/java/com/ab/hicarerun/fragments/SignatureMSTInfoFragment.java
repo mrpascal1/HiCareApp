@@ -347,9 +347,23 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                     mFragmentSignatureInfoBinding.txtFeedback.setText(mGeneralRealmData.get(0).getTechnicianOTP());
                     mFragmentSignatureInfoBinding.txtHint.setVisibility(GONE);
                     mFragmentSignatureInfoBinding.txtFeedback.setEnabled(false);
-                    mFragmentSignatureInfoBinding.btnSendlink.setVisibility(GONE);
+                    mFragmentSignatureInfoBinding.lnrBottom.setVisibility(GONE);
                     mFragmentSignatureInfoBinding.lnrJobCard.setVisibility(GONE);
                     mFragmentSignatureInfoBinding.imgSign.setVisibility(View.VISIBLE);
+
+                    if(mGeneralRealmData.get(0).getAmountCollected()!=null && !mGeneralRealmData.get(0).getAmountCollected().equals("0")){
+                        mFragmentSignatureInfoBinding.lnrOrder.setVisibility(View.VISIBLE);
+                        mFragmentSignatureInfoBinding.txtAmount.setText("₹" + " "+mGeneralRealmData.get(0).getAmountCollected());
+                    }else {
+                        mFragmentSignatureInfoBinding.lnrOrder.setVisibility(View.GONE);
+                    }
+
+                    if(mGeneralRealmData.get(0).getPaymentMode() != null && !mGeneralRealmData.get(0).getPaymentMode().equals("") && !mGeneralRealmData.get(0).getPaymentMode().equalsIgnoreCase("none")){
+                        mFragmentSignatureInfoBinding.lnrType.setVisibility(View.VISIBLE);
+                        mFragmentSignatureInfoBinding.txtType.setText(mGeneralRealmData.get(0).getPaymentMode());
+                    }else {
+                        mFragmentSignatureInfoBinding.lnrType.setVisibility(View.GONE);
+                    }
 
                 } else if (status.equals("Dispatched")) {
                     mFragmentSignatureInfoBinding.edtSignatory.setBackgroundResource(R.drawable.disable_edit_borders);
@@ -357,7 +371,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                     mFragmentSignatureInfoBinding.edtSignatory.setEnabled(false);
                     mFragmentSignatureInfoBinding.txtHint.setVisibility(GONE);
                     mFragmentSignatureInfoBinding.txtFeedback.setEnabled(false);
-                    mFragmentSignatureInfoBinding.btnSendlink.setVisibility(GONE);
+                    mFragmentSignatureInfoBinding.lnrBottom.setVisibility(GONE);
                     mFragmentSignatureInfoBinding.lnrJobCard.setVisibility(GONE);
                 } else {
                     mFragmentSignatureInfoBinding.edtSignatory.setEnabled(true);
@@ -759,10 +773,10 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                 if (status.equals("Completed") || status.equals("Incomplete")) {
 //                mCallback.isFeedbackRequired(false);
                     mFragmentSignatureInfoBinding.txtFeedback.setEnabled(false);
-                    mFragmentSignatureInfoBinding.btnSendlink.setVisibility(View.GONE);
+                    mFragmentSignatureInfoBinding.lnrBottom.setVisibility(View.GONE);
                 } else {
                     mFragmentSignatureInfoBinding.txtFeedback.setEnabled(true);
-                    mFragmentSignatureInfoBinding.btnSendlink.setVisibility(View.VISIBLE);
+                    mFragmentSignatureInfoBinding.lnrBottom.setVisibility(View.VISIBLE);
                     if (otp.length() != 0) {
                         mCallback.isOTPRequired(false);
                         if (otp.equals(sc_otp) || otp.equals(customer_otp)) {
@@ -795,7 +809,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
             } else {
                 mFragmentSignatureInfoBinding.txtFeedback.setEnabled(false);
                 mFragmentSignatureInfoBinding.lnrOtp.setVisibility(GONE);
-                mFragmentSignatureInfoBinding.btnSendlink.setVisibility(View.GONE);
+                mFragmentSignatureInfoBinding.lnrBottom.setVisibility(View.GONE);
                 if (mGeneralRealmData.get(0).getShowSignature()) {
                     if (mFragmentSignatureInfoBinding.edtSignatory.getText().toString().length() == 0) {
                         mCallback.isSignatureChanged(true);

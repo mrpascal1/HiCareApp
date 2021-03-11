@@ -790,7 +790,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             mTaskDetailsData = getRealm().where(GeneralData.class).findAll();
             if (mTaskDetailsData != null && mTaskDetailsData.size() > 0) {
                 String accountNo = mTaskDetailsData.get(0).getAccountId();
-                String amount = "10";
+                String amount = mTaskDetailsData.get(0).getAmountToCollect();
                 String orderNo = mTaskDetailsData.get(0).getOrderNumber();
                 String source = "HICARERUN";
                 NetworkCallController controller = new NetworkCallController(ServiceInfoFragment.this);
@@ -2687,7 +2687,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                             if (response.getSuccess()) {
                                 mCallback.isEarlyCompletion(false);
                             } else {
-                                mCallback.isEarlyCompletion(false);
+                                mCallback.isEarlyCompletion(true);
                             }
                         }
 
