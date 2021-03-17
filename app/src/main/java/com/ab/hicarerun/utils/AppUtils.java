@@ -90,6 +90,7 @@ public class AppUtils {
     public static String appointmentEndTime = "";
     public static String CAMERA_ORIENTATION = "CAMERA_ORIENTATION";
     public static String CAMERA_SCREEN = "";
+    public static boolean NOT_RENEWAL_DONE = false;
 
 
     public static Bitmap createCustomMarker(Context context, Bitmap resource, String accountName, String _name) {

@@ -6,15 +6,19 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.ab.hicarerun.BaseFragment;
@@ -24,18 +28,30 @@ import com.ab.hicarerun.adapter.ServiceRenewalAdapter;
 import com.ab.hicarerun.databinding.FragmentServiceRenewalBinding;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
+import com.ab.hicarerun.network.models.BasicResponse;
+import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonsList;
+import com.ab.hicarerun.network.models.ServicePlanModel.NotRenewalReasons;
 import com.ab.hicarerun.network.models.ServicePlanModel.PlanData;
+import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.utils.LocaleHelper;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-public class ServiceRenewalFragment extends BaseFragment  {
+import es.dmoral.toasty.Toasty;
+
+public class ServiceRenewalFragment extends BaseFragment {
     FragmentServiceRenewalBinding mFragmentServiceRenewalBinding;
     private static final int SERVICE_REQ = 1000;
+    private static final int NOT_RENEW_REQ = 2000;
+
     private static final String ARG_TASK = "ARG_TASK";
     private String taskId;
     private ServiceRenewalAdapter mAdapter;
     private Integer pageNumber = 1;
     private Double mDiscount = 0.0;
+    private List<NotRenewalReasons> notRenewalReasonsList = new ArrayList<>();
 
     public ServiceRenewalFragment() {
         // Required empty public constructor
@@ -49,12 +65,11 @@ public class ServiceRenewalFragment extends BaseFragment  {
         return fragment;
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle oldInstanceState)
-    {
-        super.onSaveInstanceState(oldInstanceState);
-        oldInstanceState.clear();
-    }
+//    @Override
+//    public void onSaveInstanceState(Bundle oldInstanceState) {
+//        super.onSaveInstanceState(oldInstanceState);
+//        oldInstanceState.clear();
+//    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,6 +98,82 @@ public class ServiceRenewalFragment extends BaseFragment  {
         mFragmentServiceRenewalBinding.recycleView.setAdapter(mAdapter);
 //        mFragmentServiceRenewalBinding.waveHeader.stop();
         getServicePlans();
+        mFragmentServiceRenewalBinding.btnNotInterested.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showNotInterestedReasons();
+            }
+        });
+    }
+
+    private void showNotInterestedReasons() {
+        try {
+
+            if (notRenewalReasonsList != null && notRenewalReasonsList.size() > 0) {
+                try {
+
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+                    LayoutInflater inflater = LayoutInflater.from(getActivity());
+                    final View v = inflater.inflate(R.layout.jeopardy_reasons_layout, null, false);
+                    final RadioGroup radioGroup = (RadioGroup) v.findViewById(R.id.radiogrp);
+
+                    for (int i = 0; i < notRenewalReasonsList.size(); i++) {
+                        final RadioButton rbn = new RadioButton(getActivity());
+                        rbn.setId(i);
+                        rbn.setText(notRenewalReasonsList.get(i).getValue());
+                        rbn.setTextSize(15);
+                        RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
+                        params.setMargins(10, 10, 2, 1);
+                        radioGroup.addView(rbn, params);
+                    }
+                    builder.setView(v);
+                    builder.setCancelable(false);
+                    builder.setPositiveButton(getResources().getString(R.string.submit_helpline), (dialogInterface, i) -> {
+                        RadioButton radioButton = (RadioButton) v.findViewById(radioGroup.getCheckedRadioButtonId());
+                        if (radioGroup.getCheckedRadioButtonId() == -1) {
+                            Toast.makeText(getActivity(), getResources().getString(R.string.please_select_atleast_one_reason), Toast.LENGTH_SHORT).show();
+                            builder.setCancelable(false);
+                        } else {
+                            NetworkCallController controller = new NetworkCallController(this);
+                            controller.setListner(new NetworkResponseListner() {
+                                @Override
+                                public void onResponse(int requestCode, Object data) {
+
+                                    BasicResponse response = (BasicResponse) data;
+                                    if (response.getSuccess()) {
+                                        AppUtils.NOT_RENEWAL_DONE = false;
+                                        dialogInterface.dismiss();
+                                        getActivity().finish();
+                                    } else {
+                                        Toasty.error(getActivity(),
+                                                "Please try again!",
+                                                Toasty.LENGTH_LONG).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(int requestCode) {
+
+                                }
+                            });
+                            controller.updateNoRenewalReason(NOT_RENEW_REQ, taskId, radioButton.getText().toString());
+                        }
+                    });
+                    builder.setNegativeButton(getResources().getString(R.string.cancel_helpline), (dialogInterface, i) -> dialogInterface.cancel());
+                    final AlertDialog dialog = builder.create();
+                    Objects.requireNonNull(dialog.getWindow()).getAttributes().windowAnimations = R.style.DialogAnimation_2;
+                    dialog.show();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    dismissProgressDialog();
+                }
+            } else {
+                Toasty.info(Objects.requireNonNull(getActivity()), getResources().getString(R.string.complete_first_job), Toasty.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void getServicePlans() {
@@ -91,15 +182,32 @@ public class ServiceRenewalFragment extends BaseFragment  {
             controller.setListner(new NetworkResponseListner<PlanData>() {
                 @Override
                 public void onResponse(int requestCode, PlanData response) {
+                    if (response.getRenewalReasonsList() != null && response.getRenewalReasonsList().size() > 0) {
+                        notRenewalReasonsList = response.getRenewalReasonsList();
+                    }
+                    if (response.getTechScript() != null && !response.getTechScript().equals("")) {
+                        mFragmentServiceRenewalBinding.relNotInterested.setVisibility(View.VISIBLE);
+                        mFragmentServiceRenewalBinding.txtScript.setText(response.getTechScript());
+                        mFragmentServiceRenewalBinding.txtRating.setText(String.valueOf(response.getAverageRating()));
+                        mFragmentServiceRenewalBinding.ratingBar.setRating(response.getAverageRating());
+                        mFragmentServiceRenewalBinding.txtCompletedServices.setText(String.valueOf(response.getCompletedServices() + "/" + String.valueOf(response.getTotalServices())));
+                        mFragmentServiceRenewalBinding.txtComplaint.setText(String.valueOf(response.getComplaints()));
+                    } else {
+                        mFragmentServiceRenewalBinding.relNotInterested.setVisibility(View.GONE);
+                    }
                     mFragmentServiceRenewalBinding.txtCurrentTitle.setText(response.getPlanName());
                     mFragmentServiceRenewalBinding.txtCurrentDesc.setText(response.getServiceDescription());
-                    mFragmentServiceRenewalBinding.txtCurrentAmount.setText("\u20B9"+" "+ response.getDiscountedOrderAmount());
-                    mFragmentServiceRenewalBinding.txtCurrentDisAmount.setText("\u20B9"+" "+ response.getActualOrderAmount());
-                    mFragmentServiceRenewalBinding.txtCurrentDiscount.setText(response.getDiscount()+"%"+" OFF");
+                    mFragmentServiceRenewalBinding.txtCurrentAmount.setText("\u20B9" + " " + response.getDiscountedOrderAmount());
+                    mFragmentServiceRenewalBinding.txtCurrentDisAmount.setText("\u20B9" + " " + response.getActualOrderAmount());
+                    mFragmentServiceRenewalBinding.txtCurrentDiscount.setText(response.getDiscount() + "%" + " OFF");
                     mFragmentServiceRenewalBinding.txtCurrentDiscount.setTypeface(mFragmentServiceRenewalBinding.txtCurrentDiscount.getTypeface(), Typeface.BOLD);
                     mFragmentServiceRenewalBinding.txtCurrentAmount.setTypeface(mFragmentServiceRenewalBinding.txtCurrentAmount.getTypeface(), Typeface.BOLD);
                     mFragmentServiceRenewalBinding.txtCurrentAmount.setTypeface(mFragmentServiceRenewalBinding.txtCurrentAmount.getTypeface(), Typeface.BOLD);
                     mFragmentServiceRenewalBinding.txtNow.setTypeface(mFragmentServiceRenewalBinding.txtNow.getTypeface(), Typeface.BOLD);
+                    mFragmentServiceRenewalBinding.txtTitle.setTypeface(mFragmentServiceRenewalBinding.txtTitle.getTypeface(), Typeface.BOLD);
+                    mFragmentServiceRenewalBinding.txtCompletedServices.setTypeface(mFragmentServiceRenewalBinding.txtCompletedServices.getTypeface(), Typeface.BOLD);
+                    mFragmentServiceRenewalBinding.txtComplaint.setTypeface(mFragmentServiceRenewalBinding.txtComplaint.getTypeface(), Typeface.BOLD);
+                    mFragmentServiceRenewalBinding.txtRating.setTypeface(mFragmentServiceRenewalBinding.txtRating.getTypeface(), Typeface.BOLD);
                     mFragmentServiceRenewalBinding.txtHeaderOther.setTypeface(mFragmentServiceRenewalBinding.txtHeaderOther.getTypeface(), Typeface.BOLD);
 //                    mFragmentServiceRenewalBinding.txtCurrentInstant.setText("Get instant "+response.getDiscount()+"% OFF"+ " discount");
                     mFragmentServiceRenewalBinding.txtCurrentDisAmount.setPaintFlags(mFragmentServiceRenewalBinding.txtCurrentDisAmount.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -108,17 +216,15 @@ public class ServiceRenewalFragment extends BaseFragment  {
 //                        mDiscount = Double.parseDouble(response.getDiscount());
 //                    }
 
-                    if(response.getDiscount()!=null && !response.getDiscount().equals("0.00")){
+                    if (response.getDiscount() != null && !response.getDiscount().equals("0.00")) {
                         mFragmentServiceRenewalBinding.txtCurrentDiscount.setVisibility(View.VISIBLE);
                         mFragmentServiceRenewalBinding.txtNow.setVisibility(View.VISIBLE);
                         mFragmentServiceRenewalBinding.txtCurrentDisAmount.setVisibility(View.VISIBLE);
-                    }else {
+                    } else {
                         mFragmentServiceRenewalBinding.txtCurrentDiscount.setVisibility(View.GONE);
                         mFragmentServiceRenewalBinding.txtNow.setVisibility(View.GONE);
                         mFragmentServiceRenewalBinding.txtCurrentDisAmount.setVisibility(View.GONE);
                     }
-
-
                     mFragmentServiceRenewalBinding.lnrCurrentContinue.setOnClickListener(v -> {
                         ServicePlanBottomSheet bottomSheet = new ServicePlanBottomSheet(response);
                         bottomSheet.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), bottomSheet.getTag());
@@ -148,6 +254,5 @@ public class ServiceRenewalFragment extends BaseFragment  {
             e.printStackTrace();
         }
     }
-
 
 }

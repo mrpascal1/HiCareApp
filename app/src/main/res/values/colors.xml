@@ -83,6 +83,7 @@
     <color name="highlight_yellow">#ffff00</color>
     <color name="game_grey">#262626</color>
     <color name="game_grey_light">#2e2e2e</color>
+    <color name="soft_grey">#f4f4f4</color>
     <color name="game_green">#5dda4c</color>
     <color name="game_green_dark">#3b6b35</color>
     <color name="amber">#ffa500</color>
@@ -91,3 +92,6 @@
     <color name="transparentGrey">#21737373 </color>
 
 </resources>
+
+
+

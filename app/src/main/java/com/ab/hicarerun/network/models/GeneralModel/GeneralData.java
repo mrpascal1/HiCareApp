@@ -63,6 +63,11 @@ public class GeneralData implements RealmModel {
     @SerializedName("Duration")
     @Expose
     private String Duration;
+
+    @SerializedName("No_Renewal_Reason")
+    @Expose
+    private String No_Renewal_Reason;
+
     @PrimaryKey
     @SerializedName("OrderNumber")
     @Expose
@@ -1103,5 +1108,13 @@ public class GeneralData implements RealmModel {
 
     public void setInspectionInfestationLevel(String inspectionInfestationLevel) {
         InspectionInfestationLevel = inspectionInfestationLevel;
+    }
+
+    public String getNo_Renewal_Reason() {
+        return No_Renewal_Reason;
+    }
+
+    public void setNo_Renewal_Reason(String no_Renewal_Reason) {
+        No_Renewal_Reason = no_Renewal_Reason;
     }
 }

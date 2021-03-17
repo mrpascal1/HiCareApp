@@ -405,10 +405,14 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                 }
 
                 if (Renew_Type != null && Renew_Type.equals("Renewal")) {
-                    mFragmentSignatureInfoBinding.lnrRenew.setVisibility(View.VISIBLE);
-                    mFragmentSignatureInfoBinding.txtRenewTitle.setText(R.string.service_renewal);
-                    mFragmentSignatureInfoBinding.lnrRenew.setWeightSum(10);
-
+                    if(mGeneralRealmData.get(0).getNo_Renewal_Reason() !=null && !mGeneralRealmData.get(0).getNo_Renewal_Reason().equals("")){
+                        mFragmentSignatureInfoBinding.lnrRenew.setVisibility(GONE);
+                    }else {
+                        mFragmentSignatureInfoBinding.lnrRenew.setVisibility(View.VISIBLE);
+                        mFragmentSignatureInfoBinding.txtRenewTitle.setText(R.string.service_renewal);
+                        mFragmentSignatureInfoBinding.lnrRenew.setWeightSum(10);
+                    }
+//                    mFragmentSignatureInfoBinding.lnrRenew.setVisibility(View.VISIBLE);
                 } else {
                     mFragmentSignatureInfoBinding.lnrRenew.setVisibility(GONE);
                 }
@@ -444,17 +448,17 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
 //                    mFragmentSignatureInfoBinding.btnUpload.setVisibility(GONE);
                     mFragmentSignatureInfoBinding.lnrJobCard.setVisibility(GONE);
                     mFragmentSignatureInfoBinding.imgSign.setVisibility(View.VISIBLE);
-                    if(mGeneralRealmData.get(0).getAmountCollected()!=null && !mGeneralRealmData.get(0).getAmountCollected().equals("0")){
+                    if (mGeneralRealmData.get(0).getAmountCollected() != null && !mGeneralRealmData.get(0).getAmountCollected().equals("0")) {
                         mFragmentSignatureInfoBinding.lnrOrder.setVisibility(View.VISIBLE);
-                        mFragmentSignatureInfoBinding.txtAmount.setText("₹" + " "+mGeneralRealmData.get(0).getAmountCollected());
-                    }else {
+                        mFragmentSignatureInfoBinding.txtAmount.setText("₹" + " " + mGeneralRealmData.get(0).getAmountCollected());
+                    } else {
                         mFragmentSignatureInfoBinding.lnrOrder.setVisibility(View.GONE);
                     }
 
-                    if(mGeneralRealmData.get(0).getPaymentMode() != null && !mGeneralRealmData.get(0).getPaymentMode().equals("") && !mGeneralRealmData.get(0).getPaymentMode().equalsIgnoreCase("none")){
+                    if (mGeneralRealmData.get(0).getPaymentMode() != null && !mGeneralRealmData.get(0).getPaymentMode().equals("") && !mGeneralRealmData.get(0).getPaymentMode().equalsIgnoreCase("none")) {
                         mFragmentSignatureInfoBinding.lnrType.setVisibility(View.VISIBLE);
                         mFragmentSignatureInfoBinding.txtType.setText(mGeneralRealmData.get(0).getPaymentMode());
-                    }else {
+                    } else {
                         mFragmentSignatureInfoBinding.lnrType.setVisibility(View.GONE);
                     }
 

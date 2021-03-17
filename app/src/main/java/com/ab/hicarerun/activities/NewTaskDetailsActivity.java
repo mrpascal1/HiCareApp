@@ -233,6 +233,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private boolean isOnsiteImageRequired = false;
     private boolean isPostJobCompletionDone = false;
     private String bankName = "";
+    private String NotRenewalReason = "";
     private String chequeNumber = "";
     private String chequeDate = "";
     private String chequeImage = "";
@@ -422,7 +423,23 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                                 isUpiPaymentNotDone = false;
                             }
 
+                            if (Renewal_Type != null && Renewal_Type.equals("Renewal")) {
+                                if (Renewal_Order_No != null && !Renewal_Order_No.equals("")) {
+                                    AppUtils.NOT_RENEWAL_DONE = false;
+                                } else {
+                                    if (response.getData().getNo_Renewal_Reason() != null && !response.getData().getRenewal_Order_No().equals("")) {
+                                        AppUtils.NOT_RENEWAL_DONE = false;
+                                    } else {
+                                        AppUtils.NOT_RENEWAL_DONE = true;
+                                    }
+                                }
+                            } else {
+                                AppUtils.NOT_RENEWAL_DONE = false;
+                            }
+
+
                             isPostJobCompletionDone = response.getData().getPostJob_Checklist_Done();
+
                             sta = response.getData().getSchedulingStatus();
                             AppUtils.isInspectionDone = response.getData().getConsultationInspectionDone();
                             if (response.getData().getInspectionInfestationLevel() != null) {
@@ -772,7 +789,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             e.printStackTrace();
         }
 
-
     }
 
     private void setBounds(LatLng latLong) {
@@ -791,13 +807,11 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                     markerOptionsCust.title("Customer's Location");
                     markerOptionsCust.icon(CustomerMarkerIcon);
 //                    String techPic = SharedPreferencesUtility.getPrefString(NewTaskDetailsActivity.this, SharedPreferencesUtility.PREF_USER_PIC);
-
 //                    if (techPic != null) {
 //                        byte[] decodedString = Base64.decode(techPic, Base64.DEFAULT);
 //                        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 //                        bitUser = decodedByte;
 //                    }
-
 //                    Bitmap bmp = BitmapFactory.decodeByteArray(bitUser, 0, bitUser.length);
                     BitmapDescriptor homeMarkerIcon = BitmapDescriptorFactory.fromBitmap(AppUtils.createCustomMarker(this, b, LoginRealmModels.get(0).getUserName(), "Resource"));
                     MarkerOptions markerOptions = new MarkerOptions();
@@ -1091,6 +1105,10 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
                 progress.dismiss();
                 Toasty.error(this, "Please select gel appointment", Toast.LENGTH_SHORT, true).show();
+            } else if (Status.equals("Completed") && AppUtils.NOT_RENEWAL_DONE) {
+                mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                progress.dismiss();
+                Toasty.error(this, "This is the last service, kindly ask customer for Service Renewal", Toast.LENGTH_SHORT, true).show();
             } else if (Status.equals("Completed") && isTechnicianFeedbackEnable && Rate == 0) {
                 progress.dismiss();
                 showRatingDialog();
@@ -1967,6 +1985,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     public void isPaymentModeNotChanged(Boolean b) {
         isPaymentModeNotChanged = b;
     }
+
 
     @Override
     public void assignmentStartDate(String s) {

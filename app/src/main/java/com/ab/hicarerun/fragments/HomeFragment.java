@@ -158,7 +158,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     private List<SelfAssessmentRequest> checkList = null;
     private List<Boolean> isCheckList = null;
     private List<ResourceCheckList> ResList = null;
-    FakeReviewManager manager;
+    ReviewManager manager;
     private ReviewInfo reviewInfo;
 
     public HomeFragment() {
@@ -172,7 +172,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         fragment.setArguments(args);
         return fragment;
     }
-
 
 //    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
 //        @Override
@@ -210,7 +209,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         activityName = getActivity().getClass().getSimpleName();
         apply();
-
         return mFragmentHomeBinding.getRoot();
     }
 
@@ -277,8 +275,8 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     }
 
     private void launchMarket() {
-//        manager = ReviewManagerFactory.create(getActivity());
-        manager = new FakeReviewManager(getActivity());
+        manager = ReviewManagerFactory.create(getActivity());
+//        manager = new FakeReviewManager(getActivity());
         Task<ReviewInfo> request = manager.requestReviewFlow();
         request.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -402,7 +400,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
             e.printStackTrace();
         }
     }
-
 
     private void showResourceCheckList() {
         try {
@@ -733,8 +730,8 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                             alertDialog.dismiss();
                                             getAllTasks();
                                             if (response.getParam1()) {
-                                                showResourceCheckList();
-//                                                showCovidCheckList();
+//                                                showResourceCheckList();
+                                                showCovidCheckList();
 
 
                                                 SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_RESOURCE_SAVED, true);
@@ -1009,7 +1006,8 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                         Log.i("taskId", items.get(position).getTaskId());
                                         Log.i("reason_name", list.get(radioGroup.getCheckedRadioButtonId()).getResonName());
                                         techHelpline(items.get(position).getTaskId(), "Technician Helpline", "Technician_HelpLine"
-                                                , /*radioButton.getText().toString()*/ list.get(radioGroup.getCheckedRadioButtonId()).getResonName());
+                                                , /*radioButton.getText().toString()*/
+                                                list.get(radioGroup.getCheckedRadioButtonId()).getResonName());
                                     }
                                     dialogInterface.dismiss();
                                 }
@@ -1018,7 +1016,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                             builder.setNegativeButton(getResources().getString(R.string.cancel_helpline), (dialogInterface, i) -> dialogInterface.cancel());
                             final AlertDialog dialog = builder.create();
                             Objects.requireNonNull(dialog.getWindow()).getAttributes().windowAnimations = R.style.DialogAnimation_2;
-
                             dialog.show();
 
                         } catch (Exception e) {
@@ -1179,7 +1176,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
             });
 
             lnrView.setOnClickListener(view -> alertDialog.dismiss());
-
             alertDialog.show();
             alertDialog.setIcon(R.mipmap.logo);
         } catch (Exception e) {
@@ -1280,7 +1276,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         super.onPause();
     }
 
-
     private void apply() {
 
         navigationView.getMenu().getItem(0).setChecked(true);
@@ -1290,6 +1285,4 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         navigationView.getMenu().getItem(4).setChecked(false);
 
     }
-
-
 }
