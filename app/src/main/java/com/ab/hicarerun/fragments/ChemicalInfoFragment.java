@@ -153,7 +153,6 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
                     if (map.containsValue("")) {
                         map.remove(position);
                     } else {
-//                        Toast.makeText(getActivity(), String.valueOf(map.get(position)), Toast.LENGTH_SHORT).show();
                         ChemList.clear();
                         for (int i = 0; i < map.size(); i++) {
                             TaskChemicalList ChemModel = new TaskChemicalList();

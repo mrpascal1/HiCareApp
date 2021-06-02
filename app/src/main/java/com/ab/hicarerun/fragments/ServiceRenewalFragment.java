@@ -1,5 +1,7 @@
 package com.ab.hicarerun.fragments;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -23,6 +25,8 @@ import android.widget.Toast;
 
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
+import com.ab.hicarerun.activities.HomeActivity;
+import com.ab.hicarerun.activities.NewTaskDetailsActivity;
 import com.ab.hicarerun.adapter.AssessmentReportAdapter;
 import com.ab.hicarerun.adapter.ServiceRenewalAdapter;
 import com.ab.hicarerun.databinding.FragmentServiceRenewalBinding;
@@ -52,9 +56,17 @@ public class ServiceRenewalFragment extends BaseFragment {
     private Integer pageNumber = 1;
     private Double mDiscount = 0.0;
     private List<NotRenewalReasons> notRenewalReasonsList = new ArrayList<>();
+    private Context mContext;
+
 
     public ServiceRenewalFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mContext = context;
     }
 
     public static ServiceRenewalFragment newInstance(String taskId) {
@@ -65,11 +77,11 @@ public class ServiceRenewalFragment extends BaseFragment {
         return fragment;
     }
 
-//    @Override
-//    public void onSaveInstanceState(Bundle oldInstanceState) {
-//        super.onSaveInstanceState(oldInstanceState);
-//        oldInstanceState.clear();
-//    }
+    @Override
+    public void onSaveInstanceState(Bundle oldInstanceState) {
+        super.onSaveInstanceState(oldInstanceState);
+        oldInstanceState.clear();
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -143,7 +155,9 @@ public class ServiceRenewalFragment extends BaseFragment {
                                     if (response.getSuccess()) {
                                         AppUtils.NOT_RENEWAL_DONE = false;
                                         dialogInterface.dismiss();
-                                        getActivity().finish();
+                                        Intent intent = new Intent(mContext, HomeActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        mContext.startActivity(intent);
                                     } else {
                                         Toasty.error(getActivity(),
                                                 "Please try again!",
@@ -186,28 +200,53 @@ public class ServiceRenewalFragment extends BaseFragment {
                         notRenewalReasonsList = response.getRenewalReasonsList();
                     }
                     if (response.getTechScript() != null && !response.getTechScript().equals("")) {
-                        mFragmentServiceRenewalBinding.relNotInterested.setVisibility(View.VISIBLE);
+//                        mFragmentServiceRenewalBinding.relNotInterested.setVisibility(View.VISIBLE);
                         mFragmentServiceRenewalBinding.txtScript.setText(response.getTechScript());
+                        mFragmentServiceRenewalBinding.txtScript.setVisibility(View.VISIBLE);
+                    } else {
+                        mFragmentServiceRenewalBinding.txtScript.setVisibility(View.GONE);
+//                        mFragmentServiceRenewalBinding.relNotInterested.setVisibility(View.GONE);
+                    }
+
+                    if (response.getAverageRating() != null && response.getAverageRating() != 0) {
                         mFragmentServiceRenewalBinding.txtRating.setText(String.valueOf(response.getAverageRating()));
+                        mFragmentServiceRenewalBinding.ratingBar.setVisibility(View.VISIBLE);
+                        mFragmentServiceRenewalBinding.txtRating.setTextSize(28f);
                         mFragmentServiceRenewalBinding.ratingBar.setRating(response.getAverageRating());
-                        mFragmentServiceRenewalBinding.txtCompletedServices.setText(String.valueOf(response.getCompletedServices() + "/" + String.valueOf(response.getTotalServices())));
+
+                    } else {
+                        mFragmentServiceRenewalBinding.txtRating.setText("N/A");
+                        mFragmentServiceRenewalBinding.txtRating.setTextSize(16f);
+                        mFragmentServiceRenewalBinding.ratingBar.setVisibility(View.GONE);
+                    }
+
+                    if (response.getComplaints() != null) {
                         mFragmentServiceRenewalBinding.txtComplaint.setText(String.valueOf(response.getComplaints()));
                     } else {
-                        mFragmentServiceRenewalBinding.relNotInterested.setVisibility(View.GONE);
+                        mFragmentServiceRenewalBinding.txtComplaint.setText("0");
                     }
+
+                    if (response.getCompletedServices() != null) {
+                        mFragmentServiceRenewalBinding.txtCompletedServices.setText(String.valueOf(response.getCompletedServices() + "/" + String.valueOf(response.getTotalServices())));
+                        mFragmentServiceRenewalBinding.lnrCompletedServices.setVisibility(View.VISIBLE);
+                    } else {
+                        mFragmentServiceRenewalBinding.lnrCompletedServices.setVisibility(View.GONE);
+                    }
+
+
                     mFragmentServiceRenewalBinding.txtCurrentTitle.setText(response.getPlanName());
                     mFragmentServiceRenewalBinding.txtCurrentDesc.setText(response.getServiceDescription());
                     mFragmentServiceRenewalBinding.txtCurrentAmount.setText("\u20B9" + " " + response.getDiscountedOrderAmount());
                     mFragmentServiceRenewalBinding.txtCurrentDisAmount.setText("\u20B9" + " " + response.getActualOrderAmount());
                     mFragmentServiceRenewalBinding.txtCurrentDiscount.setText(response.getDiscount() + "%" + " OFF");
                     mFragmentServiceRenewalBinding.txtCurrentDiscount.setTypeface(mFragmentServiceRenewalBinding.txtCurrentDiscount.getTypeface(), Typeface.BOLD);
+                    mFragmentServiceRenewalBinding.txtRating.setTypeface(mFragmentServiceRenewalBinding.txtRating.getTypeface(), Typeface.BOLD);
                     mFragmentServiceRenewalBinding.txtCurrentAmount.setTypeface(mFragmentServiceRenewalBinding.txtCurrentAmount.getTypeface(), Typeface.BOLD);
                     mFragmentServiceRenewalBinding.txtCurrentAmount.setTypeface(mFragmentServiceRenewalBinding.txtCurrentAmount.getTypeface(), Typeface.BOLD);
                     mFragmentServiceRenewalBinding.txtNow.setTypeface(mFragmentServiceRenewalBinding.txtNow.getTypeface(), Typeface.BOLD);
                     mFragmentServiceRenewalBinding.txtTitle.setTypeface(mFragmentServiceRenewalBinding.txtTitle.getTypeface(), Typeface.BOLD);
                     mFragmentServiceRenewalBinding.txtCompletedServices.setTypeface(mFragmentServiceRenewalBinding.txtCompletedServices.getTypeface(), Typeface.BOLD);
                     mFragmentServiceRenewalBinding.txtComplaint.setTypeface(mFragmentServiceRenewalBinding.txtComplaint.getTypeface(), Typeface.BOLD);
-                    mFragmentServiceRenewalBinding.txtRating.setTypeface(mFragmentServiceRenewalBinding.txtRating.getTypeface(), Typeface.BOLD);
                     mFragmentServiceRenewalBinding.txtHeaderOther.setTypeface(mFragmentServiceRenewalBinding.txtHeaderOther.getTypeface(), Typeface.BOLD);
 //                    mFragmentServiceRenewalBinding.txtCurrentInstant.setText("Get instant "+response.getDiscount()+"% OFF"+ " discount");
                     mFragmentServiceRenewalBinding.txtCurrentDisAmount.setPaintFlags(mFragmentServiceRenewalBinding.txtCurrentDisAmount.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);

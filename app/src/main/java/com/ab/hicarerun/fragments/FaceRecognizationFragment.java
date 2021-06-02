@@ -361,6 +361,7 @@ public class FaceRecognizationFragment extends BaseFragment implements SurfaceHo
                                             getAttendanceDetails();
                                             Toasty.success((HomeActivity) getActivity(), getResources().getString(R.string.attendance_marked_successfully_face), Toast.LENGTH_SHORT).show();
                                             SharedPreferencesUtility.savePrefBoolean((HomeActivity) getActivity(), SharedPreferencesUtility.PREF_SHOW_NPS, true);
+                                            SharedPreferencesUtility.savePrefBoolean((HomeActivity) getActivity(), SharedPreferencesUtility.PREF_RESOURCE_SAVED, true);
                                             startActivity(new Intent((HomeActivity) getActivity(), HomeActivity.class));
                                             Intent intent = new Intent(COVID_CHECK);
                                             intent.putExtra("message", "recieved");

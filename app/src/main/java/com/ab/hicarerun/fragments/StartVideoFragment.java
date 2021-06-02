@@ -236,10 +236,10 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
         try {
             orientationState = state;
             if (state == OrientationState.LANDSCAPE) {
-                Objects.requireNonNull(getActivity()).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 animateVolumeControl();
             } else if (state == OrientationState.PORTRAIT) {
-                Objects.requireNonNull(getActivity()).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 animateVolumeControl();
             }
         } catch (Exception e) {

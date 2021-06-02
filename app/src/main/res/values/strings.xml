@@ -603,7 +603,7 @@
     <string name="current_points">Current Points</string>
     <string name="earned">Earned</string>
     <string name="continue_plan">Continue</string>
-    <string name="other_service_plans">Other Service Plans</string>
+    <string name="other_service_plans">Recommended Service Plans</string>
     <string name="payment_authentication">Payment Authentication</string>
     <string name="we_ve_sent_an_otp_to_your_customer_s_registered_mobile_number">We\'ve sent an OTP to your customer\'s registered mobile number</string>
     <string name="confirmation_code">Confirmation Code</string>

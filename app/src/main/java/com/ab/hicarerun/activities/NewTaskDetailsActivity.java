@@ -311,6 +311,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             }
 
         });
+
+
 //        setViewPagerView();
         int[] attrs = new int[]{R.attr.selectableItemBackground};
         TypedArray typedArray = obtainStyledAttributes(attrs);
@@ -423,20 +425,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                                 isUpiPaymentNotDone = false;
                             }
 
-                            if (Renewal_Type != null && Renewal_Type.equals("Renewal")) {
-                                if (Renewal_Order_No != null && !Renewal_Order_No.equals("")) {
-                                    AppUtils.NOT_RENEWAL_DONE = false;
-                                } else {
-                                    if (response.getData().getNo_Renewal_Reason() != null && !response.getData().getRenewal_Order_No().equals("")) {
-                                        AppUtils.NOT_RENEWAL_DONE = false;
-                                    } else {
-                                        AppUtils.NOT_RENEWAL_DONE = true;
-                                    }
-                                }
-                            } else {
-                                AppUtils.NOT_RENEWAL_DONE = false;
-                            }
-
 
                             isPostJobCompletionDone = response.getData().getPostJob_Checklist_Done();
 
@@ -461,6 +449,20 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             mOnsiteImagePath = response.getData().getOnsite_Image_Path();
                             Renewal_Type = response.getData().getRenewal_Type();
                             Renewal_Order_No = response.getData().getRenewal_Order_No();
+                            if (Renewal_Type != null && Renewal_Type.equals("Renewal")) {
+                                if (Renewal_Order_No != null && !Renewal_Order_No.equals("")) {
+                                    AppUtils.NOT_RENEWAL_DONE = false;
+                                } else {
+                                    if (response.getData().getNo_Renewal_Reason() != null && !response.getData().getNo_Renewal_Reason().equals("")) {
+                                        AppUtils.NOT_RENEWAL_DONE = false;
+                                    } else {
+                                        AppUtils.NOT_RENEWAL_DONE = true;
+                                    }
+                                }
+                            } else {
+                                AppUtils.NOT_RENEWAL_DONE = false;
+                            }
+
                             if (response.getData().getTag() != null) {
                                 SRAppointmentType = response.getData().getTag();
                             }
@@ -1063,6 +1065,10 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(1);
                 Toasty.error(this, getResources().getString(R.string.chamical_should_be_verified), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
+            } else if (Status.equals("Completed") && AppUtils.NOT_RENEWAL_DONE) {
+                mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                progress.dismiss();
+                Toasty.error(this, "This is the last service, kindly ask the customer for Service Renewal", Toast.LENGTH_SHORT, true).show();
             } else if (isSignatureChanged && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
                 progress.dismiss();
@@ -1105,10 +1111,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
                 progress.dismiss();
                 Toasty.error(this, "Please select gel appointment", Toast.LENGTH_SHORT, true).show();
-            } else if (Status.equals("Completed") && AppUtils.NOT_RENEWAL_DONE) {
-                mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
-                progress.dismiss();
-                Toasty.error(this, "This is the last service, kindly ask customer for Service Renewal", Toast.LENGTH_SHORT, true).show();
             } else if (Status.equals("Completed") && isTechnicianFeedbackEnable && Rate == 0) {
                 progress.dismiss();
                 showRatingDialog();
@@ -1338,7 +1340,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             if (map != null) {
                 map.clear();
             }
-
 
             mCheckAdapter = new CheckListParentAdapter(this, mTaskCheckList, (position, option) -> {
                 mOnsiteCheckList.get(position).setTaskId(taskId);

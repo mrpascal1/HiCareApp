@@ -6,16 +6,16 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/lightest_grey"
+        android:background="@color/med_grey"
         android:orientation="vertical">
 
         <RelativeLayout
             android:id="@+id/relCurrent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="8dp"
             android:layout_alignParentBottom="true"
-            android:background="@drawable/grey_round_top">
+            android:background="@drawable/grey_round_top"
+            android:elevation="8dp">
 
 
             <RelativeLayout
@@ -36,8 +36,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="18sp"
-                        />
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/txtCurrentDesc"
@@ -95,9 +94,9 @@
                         android:id="@+id/lnrCurrentContinue"
                         android:layout_width="125dp"
                         android:layout_height="32dp"
-                        android:elevation="2dp"
                         android:layout_marginTop="5dp"
                         android:background="@drawable/button_border"
+                        android:elevation="2dp"
                         android:gravity="center">
 
                         <TextView
@@ -119,17 +118,16 @@
                     </LinearLayout>
 
 
-
                     <Button
                         android:id="@+id/btnNotInterested"
                         android:layout_width="125dp"
                         android:layout_height="32dp"
                         android:layout_alignParentRight="true"
                         android:layout_marginTop="12dp"
-                        android:paddingRight="10dp"
-                        android:paddingLeft="10dp"
-                        android:elevation="0dp"
                         android:background="@drawable/raise_payment_btn"
+                        android:elevation="0dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
                         android:text="Not Interested"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
@@ -280,9 +278,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_above="@id/relCurrent"
             android:layout_below="@id/relNotInterested"
-            android:layout_above="@id/relCurrent">
+            android:orientation="vertical">
 
             <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
@@ -321,7 +319,6 @@
                             android:id="@+id/recycleView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            tools:itemCount="3"
                             tools:listitem="@layout/renewal_service_plans_adapter" />
 
                     </LinearLayout>
@@ -337,49 +334,48 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:visibility="gone"
-            android:background="@color/smoke_gray">
+            android:background="@color/white"
+           >
 
             <TextView
                 android:id="@+id/txtTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Average Rating"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:textStyle="bold"
-                android:textColor="@color/black"/>
+                android:text="Average Rating"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
             <LinearLayout
                 android:id="@+id/lnrRating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/txtTitle"
-                android:orientation="horizontal"
+                android:layout_marginLeft="5dp"
                 android:layout_marginTop="2dp"
-                android:layout_marginLeft="5dp">
+                android:layout_marginBottom="5dp"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/txtRating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="28dp"
-                    android:text="7.5"
-                    android:textStyle="bold"
                     android:layout_marginLeft="5dp"
-                    android:textColor="@color/black"/>
+                    android:textColor="@color/black"
+                    android:textSize="28dp"
+                    android:textStyle="bold" />
 
                 <RatingBar
                     android:id="@+id/rating_bar"
-                    android:layout_height="wrap_content"
+                    style="@style/RatingBar"
                     android:layout_width="wrap_content"
-                    android:rating="7.5"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="top"
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="5dp"
-                    android:numStars="10"
                     android:isIndicator="false"
-                    style="@style/RatingBar"
-                    />
+                    android:numStars="10" />
 
             </LinearLayout>
 
@@ -387,82 +383,86 @@
                 android:id="@+id/txtScript"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/lnrRating"
-                android:layout_marginTop="5dp"
+                android:layout_below="@id/lnrDetail"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="10dp"
-                android:textColor="@color/black"
-                android:text="Jaise ki mai dekh sakta hoo k aap ki sari services ache se puri ho gayi hai aur avg rating (var) hai. Aapko humare (Recommended plan) pe upgrade karna chahiye."/>
+                android:textColor="@color/black" />
 
             <LinearLayout
+                android:id="@+id/lnrDetail"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true">
+                android:layout_height="60dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="10dp">
 
                 <LinearLayout
+                    android:id="@+id/lnrCompletedServices"
                     android:layout_width="60dp"
-                    android:layout_height="55dp"
-                    android:orientation="vertical"
+                    android:layout_height="60dp"
                     android:layout_marginEnd="15dp"
-                    android:background="@color/late_pink">
+                    android:background="@color/late_pink"
+                    android:orientation="vertical">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:gravity="center"
-                        android:textColor="@color/white"
-                        android:textSize="11sp"
+                        android:layout_marginLeft="2dp"
                         android:layout_marginTop="4dp"
                         android:layout_marginRight="2dp"
-                        android:layout_marginLeft="2dp"
-                        android:text="Completed Services"/>
+                        android:gravity="center"
+                        android:text="Completed Services"
+                        android:textColor="@color/white"
+                        android:textSize="11sp" />
 
                     <TextView
                         android:id="@+id/txtCompletedServices"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="0/3"
                         android:layout_gravity="center_horizontal"
-                        android:gravity="bottom|center_horizontal"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
                         android:layout_marginTop="1dp"
                         android:layout_marginBottom="2dp"
-                        android:textStyle="bold"/>
+                        android:gravity="bottom|center_horizontal"
+                        android:text="0"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/lnrComplaint"
                     android:layout_width="60dp"
-                    android:layout_height="55dp"
-                    android:orientation="vertical"
-                    android:elevation="3dp"
+                    android:layout_height="60dp"
                     android:layout_marginEnd="15dp"
-                    android:background="@color/colorBrick">
+                    android:background="@color/colorBrick"
+                    android:elevation="3dp"
+                    android:orientation="vertical">
+
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:gravity="center"
-                        android:textColor="@color/white"
-                        android:textSize="11sp"
-                        android:layout_marginTop="12dp"
                         android:layout_marginLeft="2dp"
                         android:layout_marginRight="2dp"
-                        android:text="Complaints"/>
+                        android:gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:text="Complaints"
+                        android:textColor="@color/white"
+                        android:textSize="11sp" />
 
                     <TextView
                         android:id="@+id/txtComplaint"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="0"
                         android:layout_gravity="center_horizontal"
-                        android:gravity="bottom|center_horizontal"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
                         android:layout_marginTop="1dp"
                         android:layout_marginBottom="2dp"
-                        android:textStyle="bold"/>
+                        android:gravity="bottom|center_horizontal"
+                        android:text="0"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
             </LinearLayout>

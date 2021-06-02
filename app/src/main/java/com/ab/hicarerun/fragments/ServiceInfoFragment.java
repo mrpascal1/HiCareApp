@@ -502,6 +502,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
                 isChequeRequired = mTaskDetailsData.get(0).getChequeRequired();
                 type.add(0, "None");
+//                type.add(1, "PhonePe");
                 Log.i("type", String.valueOf(type.size()));
                 arrayMode = new String[type.size()];
                 arrayMode = type.toArray(arrayMode);
@@ -1051,6 +1052,13 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                         mFragmentServiceInfoBinding.btnCheckList.setVisibility(GONE);
                     }
 
+                    mFragmentServiceInfoBinding.imgUser.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            captureTechImage();
+                        }
+                    });
+
                     mFragmentServiceInfoBinding.btnCheckList.setOnClickListener(v -> {
                         if (!isPostJobCompletionDone) {
                             isPostJobCompletionDone = true;
@@ -1280,9 +1288,6 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     }
 
     private void startCamera2() {
-//        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-//        transaction.replace(R.id.container, Camera2Fragment.newInstance(), getString(R.string.fragment_camera2));
-//        transaction.commit();
         Intent intent = new Intent(getActivity(), Camera2Activity.class);
         intent.putExtra(AppUtils.CAMERA_ORIENTATION, "FRONT");
         startActivity(intent);

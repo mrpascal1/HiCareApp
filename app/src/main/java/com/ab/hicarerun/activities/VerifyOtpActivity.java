@@ -27,7 +27,8 @@ public class VerifyOtpActivity extends BaseActivity {
     public static final String ARGS_USER = "ARGS_USER";
     public static final String ARGS_USER_ID = "ARGS_USER_ID";
     public static final String ARGS_OTP = "ARGS_OTP";
-    String mobile = "", otp = "", user = "", userId = "";
+    String mobile = "", otp = "", user = "";
+    public int userId = 0;
 
 
 
@@ -51,11 +52,11 @@ public class VerifyOtpActivity extends BaseActivity {
             mobile = getIntent().getStringExtra(ARGS_MOBILE);
             otp = getIntent().getStringExtra(ARGS_OTP);
             user = getIntent().getStringExtra(ARGS_USER);
-            userId = getIntent().getStringExtra(ARGS_USER_ID);
+            userId = getIntent().getIntExtra(ARGS_USER_ID, 0);
         }catch (Exception e){
             e.printStackTrace();
         }
-        addFragment(VerifyMobileOTPFragment.newInstance(mobile, otp, user, userId), "VerifyOTPActivity - VerifyMobileOTPFragment");
+        addFragment(VerifyMobileOTPFragment.newInstance(mobile, otp, user, String.valueOf(userId)), "VerifyOTPActivity - VerifyMobileOTPFragment");
     }
 
     @Override

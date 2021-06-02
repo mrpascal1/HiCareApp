@@ -194,7 +194,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         mFragmentHomeBinding =
                 DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
 //        getActivity().setTitle("Home");
-        navigationView = Objects.requireNonNull(getActivity()).findViewById(R.id.navigation_view);
+        navigationView = getActivity().findViewById(R.id.navigation_view);
         LinearLayout toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
         LinearLayout tool = getActivity().findViewById(R.id.customToolbar);
@@ -218,7 +218,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         super.onResume();
 //        timerHandler.postDelayed(timerRunnable, 500);
         try {
-            isBack = SharedPreferencesUtility.getPrefBoolean(Objects.requireNonNull(getActivity()), SharedPreferencesUtility.PREF_REFRESH);
+            isBack = SharedPreferencesUtility.getPrefBoolean(getActivity(), SharedPreferencesUtility.PREF_REFRESH);
             if (isBack) {
                 getAllTasks();
                 AppUtils.getDataClean();
@@ -237,7 +237,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         int[] attrs = new int[]{R.attr.selectableItemBackground};
-        TypedArray typedArray = Objects.requireNonNull(getActivity()).obtainStyledAttributes(attrs);
+        TypedArray typedArray = getActivity().obtainStyledAttributes(attrs);
         int backgroundResource = typedArray.getResourceId(0, 0);
         view.setBackgroundResource(backgroundResource);
         mFragmentHomeBinding.recycleView.setHasFixedSize(true);
@@ -268,9 +268,11 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 //        if (isShowNPS)
 //            showNPSDialog();
         mFragmentHomeBinding.swipeRefreshLayout.setRefreshing(true);
-//        if (isResourceSaved)
-//            showCovidCheckList();
+        if (isResourceSaved) {
 //            showResourceCheckList();
+            showCovidCheckList();
+        }
+
         mFragmentHomeBinding.lnrAssess.setOnClickListener(v -> showAssessmentReport());
     }
 
@@ -463,6 +465,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                         @Override
                         public void onResponse(int requestCode, List<ResourceCheckList> items) {
                             try {
+
                                 if (items != null) {
                                     ResList = new ArrayList<>();
                                     ResList = items;
@@ -703,8 +706,8 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
             btn_send.setOnClickListener(v -> {
                 alertDialog.dismiss();
+//                SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_RESOURCE_SAVED, true);
                 replaceFragment(FaceRecognizationFragment.newInstance(true, "", ""), "HomeFragment-FaceRecognizationFragment");
-
             });
 
             btnSkip.setOnClickListener(new View.OnClickListener() {
@@ -732,9 +735,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                             if (response.getParam1()) {
 //                                                showResourceCheckList();
                                                 showCovidCheckList();
-
-
-                                                SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_RESOURCE_SAVED, true);
                                             } else {
                                                 showNPSDialog();
                                             }
@@ -885,6 +885,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                     } else {
                         getExotelCalled(secondaryNumber, techNumber);
                     }
+
                 }
             } else {
 

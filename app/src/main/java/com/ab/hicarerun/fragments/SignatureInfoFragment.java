@@ -405,9 +405,16 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                 }
 
                 if (Renew_Type != null && Renew_Type.equals("Renewal")) {
-                    if(mGeneralRealmData.get(0).getNo_Renewal_Reason() !=null && !mGeneralRealmData.get(0).getNo_Renewal_Reason().equals("")){
-                        mFragmentSignatureInfoBinding.lnrRenew.setVisibility(GONE);
-                    }else {
+                    if (mGeneralRealmData.get(0).getNo_Renewal_Reason() != null && !mGeneralRealmData.get(0).getNo_Renewal_Reason().equals("")) {
+                        mFragmentSignatureInfoBinding.lnrRenew.setVisibility(View.VISIBLE);
+                        mFragmentSignatureInfoBinding.btnRenew.setVisibility(GONE);
+                        mFragmentSignatureInfoBinding.txtRenewTitle.setText("Renewal Not Interested");
+                        mFragmentSignatureInfoBinding.txtRenewDes.setText(mGeneralRealmData.get(0).getNo_Renewal_Reason());
+                        mFragmentSignatureInfoBinding.txtRenewTitle.setTextSize(15f);
+                        mFragmentSignatureInfoBinding.txtRenewDes.setTextSize(15f);
+                        mFragmentSignatureInfoBinding.lnrRenew.setWeightSum(8);
+
+                    } else {
                         mFragmentSignatureInfoBinding.lnrRenew.setVisibility(View.VISIBLE);
                         mFragmentSignatureInfoBinding.txtRenewTitle.setText(R.string.service_renewal);
                         mFragmentSignatureInfoBinding.lnrRenew.setWeightSum(10);
@@ -450,7 +457,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     mFragmentSignatureInfoBinding.imgSign.setVisibility(View.VISIBLE);
                     if (mGeneralRealmData.get(0).getAmountCollected() != null && !mGeneralRealmData.get(0).getAmountCollected().equals("0")) {
                         mFragmentSignatureInfoBinding.lnrOrder.setVisibility(View.VISIBLE);
-                        mFragmentSignatureInfoBinding.txtAmount.setText("₹" + " " + mGeneralRealmData.get(0).getAmountCollected());
+                        mFragmentSignatureInfoBinding.txtAmount.setText("₹ " + mGeneralRealmData.get(0).getAmountCollected());
                     } else {
                         mFragmentSignatureInfoBinding.lnrOrder.setVisibility(View.GONE);
                     }
