@@ -1,0 +1,18 @@
+[
+  {
+    "1": "Please note that information from this chat will be used for monitoring & management of the current health crisis and research in the fight againt COVID-19.",
+    "2": "Are you experiencing any of the following symptoms?",
+    "3": "Have you ever had any of the following:",
+    "4": "Have you traveled anywhere internationally in the last 28-45 days?",
+    "5": "Which of the following apply to you?",
+    "6": "You are safe."
+  },
+
+  {
+    "1": ["Cough","Fever","Difficulty in Breathing","None of the Above"],
+    "2": ["Diabetes","Hypertension","Lung disease","Heart Disease","None of the Above"],
+    "3": ["Yes","No"],
+    "4": ["I have recently interacted or lived with someone who has tested positive for COVID-19","I am healthcare worker and I examined a COVID-19 confirmed case without protective gear","None of the above"],
+    "5": ["Ok"]
+  }
+]

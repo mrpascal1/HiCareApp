@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:layout_width="315dp"
+        android:layout_height="560dp"
+        android:layout_centerInParent="true"
+        android:background="@color/transparent">
+
+        <RelativeLayout
+            android:layout_width="300dp"
+            android:layout_height="550dp"
+            android:layout_centerInParent="true">
+
+
+            <ImageView
+                android:id="@+id/imgNPS"
+                android:layout_width="300dp"
+                android:layout_height="540dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/new_nps"
+              />
+
+            <TextView
+                android:id="@+id/txtMonth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:paddingTop="15dp"
+                android:textColor="@color/white"
+                android:textSize="18sp"/>
+
+            <LinearLayout
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginBottom="135dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtNPS"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:lines="1"
+                    android:text="0"
+                    android:textColor="@color/white"
+                    android:textSize="50sp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="43.5dp"
+                android:layout_marginBottom="175dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtScore"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:lines="1"
+                    android:text="0"
+                    android:textColor="@color/white"
+                    android:textSize="26sp" />
+
+            </LinearLayout>
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/imgCancel"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:elevation="4dp"
+            android:layout_alignParentRight="true"
+            app:srcCompat="@drawable/ic_cancel_nps" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

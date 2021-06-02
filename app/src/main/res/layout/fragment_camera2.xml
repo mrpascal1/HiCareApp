@@ -1,0 +1,48 @@
+<layout>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <SurfaceView
+            android:id="@+id/surfaceView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/cam_widget_margin_bottom"
+            android:padding="@dimen/cam_content_inset_primary"
+            android:background="@drawable/circle_opaque"
+            >
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="1dp"
+                android:background="@drawable/circle_white"
+                android:layout_centerInParent="true">
+
+                <ImageButton
+                    android:id="@+id/captureImage"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/cam_circle_selector"
+                    android:padding="@dimen/cam_content_inset_secondary"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/cam_action_stillshot"
+                    tools:ignore="ContentDescription"
+                    />
+
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+</layout>

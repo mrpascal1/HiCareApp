@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/shape_rounded_corner_center_box_white">
+
+            <LinearLayout
+                android:id="@+id/lnrChem"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/relOk"
+
+                android:orientation="vertical">
+
+
+                <LinearLayout
+                    android:id="@+id/relativeLayout1"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/green_round_corner_popup_bg"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/txtType"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.1"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:text="@string/type_chem_dialog"
+                        android:textColor="@color/white"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.7"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:text="@string/name"
+                        android:textColor="@color/white"
+                        app:tabTextAppearance="@style/calligraphy_font" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.7"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:text="Unit"
+                        android:textColor="@color/white"
+                        app:tabTextAppearance="@style/calligraphy_font" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.1"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:text="@string/standard"
+                        android:textColor="#ffffff"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.9"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:text="@string/standard"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycleView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@null"
+                    tools:listitem="@layout/layout_chemicals_dialog_adapter" />
+
+
+                <RelativeLayout
+                    android:id="@+id/rel_chemicals"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="10dp"
+                    android:paddingTop="10dp"
+                    android:visibility="gone">
+
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/check_chem_verified"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="-3dp"
+                        android:buttonTint="@color/colorAccentDrawerPrimaryLight"
+                        android:paddingLeft="5dp"
+                        android:text="@string/chemical_verified"
+                        android:textColor="@color/black"
+                        android:textSize="18dp"
+                        app:tabTextAppearance="@style/calligraphy_font" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/relOk"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true">
+
+
+                <Button
+                    android:id="@+id/btnOk"
+                    android:layout_width="90dp"
+                    android:layout_height="32dp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="7dp"
+                    android:background="@drawable/chemical_button_bg"
+                    android:text="@string/ok_chem_dialog"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+</layout>

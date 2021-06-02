@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:id="@+id/lnrQuestions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/txtQuest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="In what age range did you write?"
+                android:textSize="17dp"
+                android:layout_toLeftOf="@id/relPhoto"
+                android:textColor="@color/black"
+                android:layout_marginTop="12dp"
+                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+            <RelativeLayout
+                android:id="@+id/relPhoto"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/dotted_box"
+                android:orientation="vertical"
+                android:layout_alignParentEnd="true">
+
+
+                <LinearLayout
+                    android:id="@+id/lnrImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:visibility="gone">
+
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardPhoto1"
+                        android:layout_width="46dp"
+                        android:layout_height="46dp"
+                        android:layout_gravity="center"
+                        android:elevation="10dp"
+                        app:cardCornerRadius="10dp">
+
+                        <ImageView
+                            android:id="@+id/imgUploadedCheque"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/sample" />
+
+                        <ImageButton
+                            android:id="@+id/imageCancel"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="right"
+                            android:elevation="10dp"
+                            app:srcCompat="@drawable/ic_remove" />
+
+                    </androidx.cardview.widget.CardView>
+
+
+                </LinearLayout>
+
+
+
+                <LinearLayout
+                    android:id="@+id/lnrUpload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        app:srcCompat="@drawable/ic_addimage" />
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycleChild"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="3dp"
+                android:layout_below="@id/txtQuest"
+                android:layout_toLeftOf="@id/relPhoto"
+                tools:listitem="@layout/layout_consulation_child_adapter"/>
+
+        </RelativeLayout>
+
+
+
+
+
+
+    </LinearLayout>
+</layout>

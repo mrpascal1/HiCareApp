@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imgCancel"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_cancel" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center">
+
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/scratch_amp_earn_points"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="242dp"
+                    android:layout_height="242dp"
+                    android:layout_margin="10dp"
+                    android:gravity="center">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/white"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="10dp"
+                        app:cardCornerRadius="5dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+
+                            <RelativeLayout
+                                android:id="@+id/relReward"
+                                android:layout_width="120dp"
+                                android:layout_height="120dp"
+                                android:layout_centerHorizontal="true"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="15dp"
+                                android:background="@drawable/green_circle"
+                                android:gravity="center">
+
+                                <androidx.appcompat.widget.AppCompatImageView
+                                    android:id="@+id/imgAward"
+                                    android:layout_width="120dp"
+                                    android:layout_height="120dp"
+                                    android:layout_marginTop="15dp"
+                                    android:scaleType="fitXY"
+                                    android:visibility="visible"
+                                    app:srcCompat="@drawable/offer_poster" />
+
+
+                                <androidx.appcompat.widget.AppCompatImageView
+                                    android:id="@+id/imgNoAward"
+                                    android:layout_width="120dp"
+                                    android:layout_height="120dp"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_marginTop="15dp"
+                                    android:foregroundGravity="center"
+                                    android:tint="@color/colorPrimary"
+                                    android:visibility="invisible"
+                                    app:srcCompat="@drawable/offer_poster" />
+
+                            </RelativeLayout>
+
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/txtReward"
+                                android:layout_width="180dp"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/relReward"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="10dp"
+                                android:gravity="center"
+                                android:text="@string/you_ve_won"
+                                android:textColor="@color/black"
+                                android:textSize="24sp" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/txtIncentive"
+                                android:layout_width="180dp"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/txtReward"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="5dp"
+                                android:gravity="center"
+                                android:textColor="@color/black"
+                                android:textSize="24sp" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/txtLose"
+                                android:layout_width="180dp"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/relReward"
+                                android:layout_centerInParent="true"
+                                android:layout_marginTop="5dp"
+                                android:gravity="center"
+                                android:text="@string/better_luck_next_time"
+                                android:textColor="@color/black"
+                                android:textSize="24sp"
+                                android:visibility="gone" />
+
+                            <com.ab.hicarerun.utils.notifications.ScratchRelativeLayout
+                                android:id="@+id/scratch"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" />
+
+
+                        </RelativeLayout>
+                    </androidx.cardview.widget.CardView>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/winningMsg"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/excellent"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtEarned"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:text="@string/you_ve_earned_a_points"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtHicare"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/from_hicare"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+                <androidx.core.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="15dp">
+
+                    <LinearLayout
+                        android:focusable="true"
+                        android:descendantFocusability="blocksDescendants"
+                        android:id="@+id/lnrDetails"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:visibility="gone"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="70dp"
+                            android:layout_marginLeft="25dp"
+                            android:layout_marginRight="25dp"
+                            android:orientation="horizontal"
+                            android:weightSum="2">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:background="@drawable/rewards_cell_right"
+                                android:orientation="vertical">
+
+                                <androidx.appcompat.widget.AppCompatTextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:gravity="center"
+                                    android:text="Total Points Earned"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="12sp" />
+
+                                <androidx.appcompat.widget.AppCompatTextView
+                                    android:id="@+id/txtTotalPointsGain"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_marginBottom="2dp"
+                                    android:gravity="center"
+                                    android:text="100"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="26sp" />
+
+
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="0.5dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/white" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:background="@drawable/rewards_cell_left"
+                                android:orientation="vertical">
+
+                                <androidx.appcompat.widget.AppCompatTextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:gravity="center"
+                                    android:text="Total Points Lost"
+                                    android:textColor="@color/lightRed"
+                                    android:textSize="12sp" />
+
+                                <androidx.appcompat.widget.AppCompatTextView
+                                    android:id="@+id/txtTotalPointsLose"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_marginBottom="2dp"
+                                    android:gravity="center"
+                                    android:text="100"
+                                    android:textColor="@color/lightRed"
+                                    android:textSize="26sp" />
+
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/recycleView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:nestedScrollingEnabled="true"
+                                android:background="@color/transparent"
+                                tools:listitem="@layout/layout_scratch_detail_adapter" />
+
+
+                    </LinearLayout>
+
+
+                </androidx.core.widget.NestedScrollView>
+
+
+            </LinearLayout>
+
+
+
+
+    </FrameLayout>
+</layout>

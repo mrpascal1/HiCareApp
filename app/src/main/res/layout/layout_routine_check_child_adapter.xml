@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RadioButton
+            android:id="@+id/rbAnswers"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="2dp"
+            android:layout_height="wrap_content"
+            android:text="xyz"
+            />
+        <EditText
+            android:id="@+id/edtValue"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:background="@drawable/edit_box_border_green"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:visibility="gone"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginBottom="8dp"
+            android:textSize="14sp"
+            android:hint="Type here..."
+            android:layout_marginRight="10dp"
+
+            />
+
+        <LinearLayout
+            android:id="@+id/lnrSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"
+            android:background="@drawable/edit_box_border_green"
+            android:gravity="right">
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/spnValue"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:ems="10"
+                android:popupBackground="@color/colorTextDrawerSecondary"
+                android:spinnerMode="dialog"
+                android:textSize="20sp"
+              />
+
+        </LinearLayout>
+    </LinearLayout>
+</layout>

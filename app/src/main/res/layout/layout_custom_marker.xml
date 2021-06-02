@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/custom_marker_view"
+    android:layout_width="80dp"
+    android:layout_height="wrap_content">
+
+
+    <RelativeLayout
+        android:id="@+id/marker"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_below="@id/name"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/location_marker">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/user_dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="3dp"
+            android:contentDescription="@null"
+            app:srcCompat="@drawable/ic_profile"
+            app:civ_border_color="@color/white" />
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:lines="1"
+        android:shadowColor="@color/white"
+        android:shadowDx="3"
+        android:shadowDy="4"
+        android:shadowRadius="4"
+        android:textAllCaps="true"
+        android:textColor="@color/black"
+        android:textSize="12sp" />
+</RelativeLayout>

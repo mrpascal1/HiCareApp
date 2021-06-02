@@ -1,0 +1,47 @@
+{
+  "IsSuccess": true,
+  "Data": {
+    "RoutineQuestions": [
+      {
+        "QuestionTitle": "Temperature Recorded",
+        "QuestionType": "Radio",
+        "Values": [
+          {
+            "Key": "Yes",
+            "Value": "Yes",
+            "IsSelected": false
+          },
+          {
+            "Key": "No",
+            "Value": "No",
+            "IsSelected": false
+          }
+        ],
+        "Yes": {
+          "Type": "TextBox",
+          "Values": null
+        },
+        "No": {
+          "Type": "DropDown",
+          "Values": [
+            {
+              "Key": "Directly on field",
+              "Value": "Directly on field",
+              "IsSelected": false
+            },
+            {
+              "Key": "Others",
+              "Value": "Others",
+              "IsSelected": false
+            }
+          ]
+        },
+        "PrimarySelection": "Yes",
+        "SecondarySelection": "98"
+      }
+    ]
+  },
+  "ErrorMessage": "",
+  "Param1": false,
+  "ResponseMessage": null
+}

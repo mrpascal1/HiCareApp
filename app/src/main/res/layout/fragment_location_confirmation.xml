@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+
+        <variable
+            name="handler"
+            type="com.ab.hicarerun.handler.UserLocationClickHandler" />
+
+    </data>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".fragments.LocationConfirmationFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imgPointer"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="60dp"
+            app:srcCompat="@drawable/ic_pin"/>
+
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imgPointer"
+            android:layout_centerHorizontal="true"
+            android:text="@string/use_your_location"
+            android:textSize="22sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="10dp"
+            />
+
+        <TextView
+            android:id="@+id/txtDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtTitle"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:textSize="14sp"
+            android:text="@string/use_location_to_effectively_track_and_infom_clients_about_real_time_field_service_agent_s_location"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:gravity="center"
+            />
+
+        <TextView
+            android:id="@+id/txtSubDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtDescription"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:text="@string/hicare_technician_app_will_collect_location_data_even_when_the_app_is_closed_or_not_in_use"
+            />
+
+        <LinearLayout
+            android:layout_width="230dp"
+            android:layout_height="230dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="20dp"
+            android:layout_below="@id/txtSubDesc"
+            android:gravity="center"
+            android:background="@drawable/circle_background">
+
+            <ImageView
+                android:id="@+id/imgMap"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+               
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/ic_direction"
+                android:layout_below="@id/txtSubDesc"/>
+            
+        </LinearLayout>
+        
+       
+        <TextView
+            android:id="@+id/txtNoThanks"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:text="No thanks"
+            android:gravity="center"
+            android:layout_marginBottom="20dp"
+            android:onClick="@{(view) -> handler.onNoThanksClicked(view)}"
+            android:layout_marginLeft="15dp"
+            android:textColor="@color/colorPrimary"
+            android:textSize="16sp"
+            />
+
+        <Button
+            android:id="@+id/btnTurnOn"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/button_bg"
+            android:text="Turn on"
+            android:textAllCaps="false"
+            android:onClick="@{(view) -> handler.onTurnOnClicked(view)}"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_marginRight="20dp"
+            />
+    </RelativeLayout>
+
+</FrameLayout>
+</layout>

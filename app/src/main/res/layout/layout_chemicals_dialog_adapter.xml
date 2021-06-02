@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout  xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <LinearLayout
+        android:id = "@+id/relativeLayout1"
+        android:layout_width = "fill_parent"
+        android:layout_height = "35dp"
+        android:gravity="center">
+
+
+        <LinearLayout
+            android:id="@+id/lnrType"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.1"
+            android:visibility="gone"
+            android:background="@drawable/chemical_cells"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/chemType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/serviceArea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:textSize="10sp"
+                android:singleLine="true"
+                />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id = "@+id/chem_name"
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "1.7"
+            android:background = "@drawable/chemical_cells"
+            android:ellipsize = "end"
+            android:padding = "5dp"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:singleLine = "true" />
+
+        <TextView
+            android:id = "@+id/chem_consumption"
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight = "0.7"
+            android:background = "@drawable/chemical_cells"
+            android:ellipsize = "end"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:padding = "5dp"
+            android:singleLine = "true" />
+
+        <TextView
+            android:id = "@+id/chem_standard"
+            android:layout_width = "0dp"
+            android:layout_height = "match_parent"
+            android:layout_weight="0.9"
+            android:background = "@drawable/chemical_cells"
+            android:ellipsize = "end"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:padding = "5dp"
+            android:singleLine = "true" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background = "@drawable/chemical_cells"
+            android:ellipsize = "end"
+            android:padding = "5dp"
+            android:visibility="gone"
+            android:layout_weight="0.9">
+            <EditText
+                android:id = "@+id/edt_actual"
+                android:layout_width = "match_parent"
+                android:layout_height = "match_parent"
+                android:inputType="numberDecimal"
+                android:textSize="15dp"
+                android:digits="0123456789."
+                android:focusableInTouchMode="true"
+                android:descendantFocusability="beforeDescendants"
+                android:textColor="@color/black"
+                android:background="@drawable/edit_border"
+                android:focusable="true"
+                android:gravity="center"
+                android:singleLine = "true" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</layout>

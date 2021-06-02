@@ -1,0 +1,583 @@
+<resources>
+    <string name="app_name">HiCare Run</string>
+    <string name="openDrawer">open_drawer</string>
+    <string name="closeDrawer">close_drawer</string>
+    <string name="invalid_userid">अवैध यूजरआयडी</string>
+    <string name="invalid_password">अवैध पासवर्ड</string>
+    <string name="runtime_permissions_txt">Permissions</string>
+    <string name="upload_job_card">जॉब कार्ड अपलोड करा</string>
+    <string name="send_feedback_link">अभिप्राय दुवा पाठवा</string>
+    <string name="contact"><u>8828333888</u></string>
+    <string name="helpmail"><u>itsupport@hicare.in</u></string>
+    <string name="login_sign_up">लॉगिन / साइन अप करा</string>
+    <string name="status">स्थिती</string>
+    <string name="fragment_camera2">Camera2</string>
+
+    <string name="finish_time">समाप्त वेळ</string>
+    <string name="start_time">सुरवातीची वेळ</string>
+    <string name="duration">कालावधी</string>
+    <string name="deprected">नापसंत</string>
+    <string name="customer_name">ग्राहकाचे नाव</string>
+    <string name="payment_mode">देय मोड</string>
+    <string name="bank_name">बँकेचे नाव</string>
+    <string name="cheque_date">चेकची तारीख</string>
+    <string name="cheque_number">चेक नंबर</string>
+    <string name="otp">OTP</string>
+    <string name="signatory">स्वाक्षरी करणारा</string>
+    <string name="amount_collected">गोळा केलेली रक्कम</string>
+    <string name="payment_link">HiCare आपल्या फोन नंबर आणि ईमेल-आयडीवर देय दुवा पाठवेल.</string>
+    <string name="feedback_link">HiCare आपल्या फोन नंबर आणि ईमेल-आयडी वर एक अभिप्राय दुवा पाठवेल.</string>
+    <string name="close">बंद</string>
+    <string name="standard">Standard</string>
+    <string name="actual">Actual</string>
+    <string name="consumption">Consumption</string>
+    <string name="name">नाव</string>
+    <string name="chemical_verified">केमिकल सत्यापित</string>
+    <string name="last_name">आडनाव</string>
+    <string name="email">ईमेल</string>
+    <string name="interested_service">स्वारस्य सेवा</string>
+    <string name="cancel">रद्द करा</string>
+    <string name="added">जोडले</string>
+    <string name="search">शोधा</string>
+    <string name="ok">ठीक आहे</string>
+    <string name="mark_attendance">मार्क अटेंडेंस</string>
+    <string name="skip">वगळा</string>
+    <string name="submit">प्रस्तुत करणे</string>
+    <string name="no_items">आयटम नाहीत</string>
+    <string name="please_upload_your_photo_to_complete_the_registration">कृपया नोंदणी पूर्ण करण्यासाठी आपला फोटो अपलोड करा.</string>
+    <string name="position_your_head_within_the_circle_to_take_a_photo_of_yourself_when_you_are_ready">आपण तयार असता तेव्हा स्वत: चा फोटो घेण्यासाठी बाह्यरेखामध्ये आपले डोके ठेवा.</string>
+    <string name="incomplete_reason">अपूर्ण कारण</string>
+    <string name="no_tasks_found">कोणतीही कार्ये आढळली नाहीत!</string>
+    <string name="look_like_you_have_no_tasks_at_the_moment">याक्षणी आपल्याकडे कोणतीही कार्ये नसल्याचे पहा.</string>
+    <string name="no_notifications_yet">अद्याप सूचना नाहीत</string>
+    <string name="look_like_you_have_no_notifications_at_the_moment">याक्षणी आपल्याकडे कोणत्याही सूचना नसल्यासारखे दिसत आहे</string>
+    <string name="mobile_number">मोबाइल नंबर</string>
+    <string name="login">लॉगिन</string>
+    <string name="enter_your_phone_number_to_proceed">पुढे जाण्यासाठी आपला फोन नंबर प्रविष्ट करा</string>
+    <string name="_10_digit_mobile_number">10 अंकी मोबाइल नंबर</string>
+    <string name="enter_phone_number">फोन नंबर प्रविष्ट करा</string>
+    <string name="select_bank">बँक निवडा</string>
+    <string name="select_date">तारीख निवडा</string>
+    <string name="resend_payment_link">देयक दुवा पुन्हा पाठवा</string>
+    <string name="better_luck_next_time">पुढच्या वेळेसाठी शुभेच्छा!</string>
+    <string name="from_hicare">Hicare कडून</string>
+    <string name="you_ve_won">आपण जिंकलात</string>
+    <string name="scratch_amp_earn_points"><![CDATA[Scratch & Earn points!]]></string>
+    <string name="as_per_our_records">आमच्या नोंदीनुसार</string>
+    <string name="property_size_not_same">मालमत्तेचा आकार समान नाही?</string>
+    <string name="actual_property_size">वास्तविक मालमत्तेचा आकार</string>
+
+    <string name="verify_details">VERIFY DETAILS</string>
+    <string name="otp_sent_to">OTP sent to</string>
+    <string name="did_nt_receive_the_otp_resend">Did\'nt receive the OTP? RESEND</string>
+    <string name="loading">लोड करीत आहे ...</string>
+    <string name="send">पाठवा</string>
+    <string name="excellent">उत्कृष्ट!</string>
+    <string name="you_ve_earned_a_points">You\'ve earned a points!</string>
+    <string name="arjun_bhatt">Arjun Bhatt</string>
+    <string name="sign_here">इथे सही करा</string>
+    <string name="_11_00_am_12_00_pm">11:00 AM - 12:00 PM</string>
+    <string name="tag">टॅग</string>
+    <string name="sequence_no">क्रम क्रमांक</string>
+    <string name="type">प्रकार</string>
+    <string name="address">पत्ता</string>
+    <string name="landmark">लँडमार्क</string>
+    <string name="postal_code">पिनकोड</string>
+    <string name="order_no">ऑर्डर नंबर</string>
+    <string name="amount_to_collect">गोळा करण्यासाठी रक्कम</string>
+    <string name="running_late">उशीर चालू आहे!</string>
+    <string name="mobile_no">मोबाइल नंबर</string>
+    <string name="alt_mobile_no">वैकल्पिक मोबाइल नंबर</string>
+    <string name="phone_no">फोन नंबर</string>
+    <string name="general">General</string>
+    <string name="chemicals">Chemicals</string>
+    <string name="referral">Referral</string>
+    <string name="payment">Payment</string>
+    <string name="home">होम</string>
+    <string name="grooming">ग्रूमिंग</string>
+    <string name="my_id_card">माझे ओळखपत्र</string>
+    <string name="notifications">अधिसूचना</string>
+    <string name="training">प्रशिक्षण</string>
+    <string name="help">मदत करा</string>
+    <string name="logout">लॉगआउट</string>
+    <string name="save">जतन करा</string>
+    <string name="service_plan">सेवा योजना</string>
+    <string name="enter_otp">ओटीपी प्रविष्ट करा</string>
+    <string name="tap_here_to_sign">स्वाक्षरी करण्यासाठी येथे टॅप करा</string>
+    <string name="upload_cheque">अपलोड चेक</string>
+    <string name="no_videos_found">कोणतेही व्हिडिओ सापडले नाहीत!</string>
+    <string name="look_like_you_no_videos_at_the_moment">याक्षणी आपल्यासारखे कोणतेही व्हिडिओ दिसत नाहीत.</string>
+    <string name="technician_helpline">टेक्निशियन हेल्पलाइन</string>
+    <string name="on_site_otp">साइटवर ओटीपी</string>
+    <string name="incentive">प्रोत्साहन देणारा</string>
+
+    <string-array name="randomApplause">
+        <item>उत्कृष्ट!</item>
+        <item>अप्रतिम!</item>
+        <item>Woohoo!</item>
+        <item>हुर्रे!</item>
+        <item>अभिनंदन!</item>
+    </string-array>
+
+    <string-array name="payment_mode">
+        <item>None</item>
+        <item>Cash</item>
+        <item>Cheque</item>
+        <item>Paytm</item>
+    </string-array>
+
+    <string-array name="bank_name">
+        <!--<item>None</item>-->
+        <item>Bank of Baroda</item>
+        <item>Bank of India</item>
+        <item>Bank of Maharashtra</item>
+        <item>Canara Bank</item>
+        <item>Central Bank of India</item>
+        <item>Corporation Bank</item>
+        <item>Dena Bank</item>
+        <item>Indian Bank</item>
+        <item>Indian Overseas Bank</item>
+        <item>IDBI Bank</item>
+        <item>Oriental Bank of Commerce</item>
+        <item>Punjab &amp; Sindh Bank</item>
+        <item>Punjab National Bank</item>
+        <item>State Bank of India</item>
+        <item>Syndicate Bank</item>
+        <item>UCO Bank</item>
+        <item>Union Bank of India</item>
+        <item>Vijaya Bank</item>
+        <item>Axis Bank</item>
+        <item>Bandhan Bank</item>
+        <item>Catholic Syrian Bank</item>
+        <item>City Union Bank</item>
+        <item>DCB Bank</item>
+        <item>Dhanlaxmi Bank</item>
+        <item>Federal Bank</item>
+        <item>HDFC Bank</item>
+        <item>ICICI Bank</item>
+        <item>IndusInd Bank</item>
+        <item>Jammu and Kashmir Bank</item>
+        <item>Karnataka Bank</item>
+        <item>Karur Vysya Bank</item>
+        <item>Kotak Mahindra Bank</item>
+        <item>Lakshmi Vilas Bank</item>
+        <item>Nainital Bank</item>
+        <item>RBL Bank</item>
+        <item>South Indian Bank</item>
+        <item>Tamilnad Mercantile Bank</item>
+        <item>YES Bank</item>
+        <item>A U Small Finance Bank</item>
+        <item>Equitas Small Finance Bank</item>
+        <item>Ujjivan Small Finance Bank</item>
+        <item>Utkarsh Small Finance Bank</item>
+        <item>Janalakshmi Small Finance Bank</item>
+        <item>Capital Lab Small Finance Bank</item>
+        <item>Disha Small Finance Bank</item>
+        <item>ESAF Small Finance Bank</item>
+        <item>RGVN Small Finance Bank</item>
+        <item>Suryoday Small Finance Bank</item>
+        <item>Coastal Local Area Bank Limited</item>
+        <item>Krishna Bhima Samruddhi Local Area Bank Limited</item>
+        <item>Subhadra Local Area Bank Limited</item>
+        <item>India Post Payments Bank</item>
+        <item>Fino Payment Bank</item>
+        <item>Fino Payment Bank</item>
+        <item>Airtel Payments Bank</item>
+        <item>Paytm Payments Bank</item>
+        <item>Australia and New Zealand Banking Group</item>
+        <item>Commonwealth Bank of Australia</item>
+        <item>National Australia Bank</item>
+        <item>Westpac Banking Corporation</item>
+        <item>Bank of Bahrain and Kuwait</item>
+        <item>AB Bank</item>
+        <item>Sonali Bank</item>
+        <item>Antwerp Diamond Bank</item>
+        <item>Bank of Nova Scotia</item>
+        <item>Industrial &amp; Commercial Bank of China</item>
+        <item>BNP Paribas</item>
+        <item>Credit Agricole</item>
+        <item>Societe Generale</item>
+        <item>Deutsche Bank</item>
+        <item>Mizuho Corporate Bank</item>
+        <item>Sumitomo Mitsui Banking</item>
+        <item>Bank of Tokyo-Mitsubishi</item>
+        <item>State Bank of Mauritius</item>
+        <item>Rabobank</item>
+        <item>Doha bank</item>
+        <item>Sberbank</item>
+        <item>Saraswat Bank</item>
+        <item>VTB</item>
+        <item>HSBC Bank Oman</item>
+        <item>DBS Bank United Overseas Bank</item>
+        <item>FirstRand Bank</item>
+        <item>Shinhan Bank</item>
+        <item>Woori Bank</item>
+        <item>Bank of Ceylon</item>
+        <item>Credit Suisse</item>
+        <item>UBS AG</item>
+        <item>Chinatrust Commercial Bank</item>
+        <item>Krung Thai Bank</item>
+        <item>Abu Dhabi Commercial Bank</item>
+        <item>Mashreq Bank</item>
+        <item>HSBC</item>
+        <item>Barclays Bank</item>
+        <item>Standard Chartered Bank</item>
+        <item>American Express</item>
+        <item>Bank of America</item>
+        <item>Citibank</item>
+        <item>J.P. Morgan Chase Bank</item>
+        <item>Andaman and Nicobar State Co-operative Bank Ltd.</item>
+        <item>Andhra Pradesh State Co-operative Bank Ltd.</item>
+        <item>Arunachal Pradesh State co-operative Apex Bank Ltd.</item>
+        <item>Assam Co-operative Apex Bank Ltd.</item>
+        <item>Bihar State Co-operative Bank Ltd.</item>
+        <item>Chandigarh State Co-operative Bank Ltd.</item>
+        <item>Delhi State Co-operative Bank Ltd.</item>
+        <item>Goa State Co-operative Bank Ltd.</item>
+        <item>Gujarat State Co-operative Bank Ltd.</item>
+        <item>Haryana State Co-opertive Apex Bank Ltd.</item>
+        <item>Himachal Pradesh State Co-operative Bank Ltd.</item>
+        <item>Jammu and Kashmir State Co-operative Bank Ltd.</item>
+        <item>Karnataka State Co-operative Apex Bank Ltd.</item>
+        <item>Madhya Pradesh Rajya Sahakari Bank Maryadit</item>
+        <item>Maharashtra State Co-operative Bank Ltd.</item>
+        <item>Manipur State Co-operative Bank Ltd.</item>
+        <item>Meghalaya Co-operative Apex Bank Ltd.</item>
+        <item>Mizoram Co-operative Apex Bank Ltd.</item>
+        <item>Nagaland State Co-operative Bank Ltd.</item>
+        <item>Orissa State Co-operative Bank Ltd.</item>
+        <item>Pondichery State Co-opertive Bank Ltd.</item>
+        <item>Punjab State Co-operative Bank Ltd.</item>
+        <item>Rajasthan State Co-operative Bank Ltd.</item>
+        <item>Sikkim State Co-operative Bank Ltd.</item>
+        <item>Tamil Nadu State Apex Co-operative Bank Ltd.</item>
+        <item>Tripura State Co-operative Bank Ltd.</item>
+        <item>Uttar Pradesh Co-operative Bank Ltd.</item>
+        <item>West Bengal State Co-operative Bank Ltd.</item>
+        <item>Chhattisgarh RajyaSahakari Bank Maryadit</item>
+        <item>Uttarakhand State Co-operative Bank Ltd.</item>
+        <item>Raiffeisen Zentralbank</item>
+        <item>KBC Bank</item>
+        <item>Royal Bank of Canada</item>
+        <item>Toronto Dominion Bank</item>
+        <item>Thane Janta State Bank</item>
+        <item>Credit Industriel et Commercial</item>
+        <item>Natixis</item>
+        <item>Commerzbank</item>
+        <item>Commerzbank</item>
+        <item>DZ Bank</item>
+        <item>KfW</item>
+        <item>Landesbank Baden</item>
+        <item>Banca Monte dei Paschi di Siena</item>
+        <item>Banca Popolare di Milano</item>
+        <item>Intesa Sanpaolo</item>
+        <item>UBI Banca"</item>
+        <item>CIMB</item>
+        <item>Everest Bank</item>
+        <item>DNB ASA</item>
+        <item>Caixa Geral de Depositos</item>
+        <item>Gazprombank</item>
+        <item>Promsvyazbank</item>
+        <item>Vnesheconombank</item>
+        <item>Industrial Bank of Korea</item>
+        <item>Kookmin Bank</item>
+        <item>Korea Exchange Bank</item>
+        <item>Banco de Sabadell</item>
+        <item>Banco Bilbao Vizcaya Argentaria</item>
+        <item>Caixabank</item>
+        <item>Hatton National Bank</item>
+        <item>Skandinaviska Enskilda Banken</item>
+        <item>Zurich Cantonal Bank</item>
+        <item>Bank of Taiwan</item>
+        <item>Mega International Commercial Bank</item>
+        <item>Bank Asya</item>
+        <item>Emirates NBD</item>
+        <item>First Gulf Bank</item>
+        <item>Duncan Lawrie</item>
+        <item>Bank of New York Mellon</item>
+        <item>Wells Fargo Bank</item>
+        <item>Development Bank of Singapore</item>
+        <item>Andhra Pradesh Grameena Vikas Bank</item>
+        <item>Chaitanya Godavari Grameena Bank</item>
+        <item>Saptagiri Grameena Bank</item>
+        <item>Assam Gramin Vikash Bank</item>
+        <item>Langpi Dehangi Rural Bank</item>
+        <item>Arunachal Pradesh Rural Bank</item>
+        <item>Uttar Bihar Gramin Bank</item>
+        <item>Madhya Bihar Gramin Bank</item>
+        <item>Bihar Gramin Bank</item>
+        <item>Chhattisgarh Rajya Gramin Bank</item>
+        <item>Dena Gujarat Gramin Bank</item>
+        <item>Baroda Gujarat Gramin Bank</item>
+        <item>Saurashtra Gramin Bank</item>
+        <item>Sarva Haryana Gramin Bank</item>
+        <item>Himachal Pradesh Gramin Bank</item>
+        <item>Jharkhand Gramin Bank</item>
+        <item>Vananchal Gramin Bank</item>
+        <item>Jammu And Kashmir Grameen Bank</item>
+        <item>Ellaquai Dehati Bank</item>
+        <item>Kaveri Grameena Bank</item>
+        <item>Karnataka Vikas Grameena Bank</item>
+        <item>Pragathi Krishna Gramin Bank</item>
+        <item>Kerala Gramin Bank</item>
+        <item>Narmada Jhabua Gramin Bank</item>
+        <item>Central Madhya Pradesh Gramin Bank</item>
+        <item>Madhyanchal Gramin Bank</item>
+        <item>Maharashtra Gramin Bank</item>
+        <item>Vidarbha Kokan Gramin Bank</item>
+        <item>Manipur Rural Bank</item>
+        <item>Meghalaya Rural Bank</item>
+        <item>Mizoram Rural Bank</item>
+        <item>IDFC Bank</item>
+        <item>Nagaland Rural Bank</item>
+        <item>Odisha Gramya Bank</item>
+        <item>Utkal Grameen Bank</item>
+        <item>Punjab Gramin Bank</item>
+        <item>Malwa Gramin Bank</item>
+        <item>Sutlej Gramin Bank</item>
+        <item>Puduvai Bharathiar Grama Bank</item>
+        <item>Baroda Rajasthan Kshetriya Gramin Bank</item>
+        <item>Marudhara Rajasthan Gramin Bank</item>
+        <item>Pandyan Grama Bank</item>
+        <item>Pallavan Grama Bank</item>
+        <item>Telangana Grameena Bank</item>
+        <item>Tripura Gramin Bank</item>
+        <item>Sarva UP Gramin Bank</item>
+        <item>Prathama Bank</item>
+        <item>Allahabad UP Gramin Bank</item>
+        <item>Baroda UP Gramin Bank</item>
+        <item>Gramin Bank Of Aryavrat</item>
+        <item>Kashi Gomti Samyukt Gramin Bank</item>
+        <item>Purvanchal Bank</item>
+        <item>Uttarakhand Gramin Bank</item>
+        <item>Bangiya Gramin Vikash Bank</item>
+        <item>Paschim Banga Gramin Bank</item>
+        <item>Uttarbanga Kshetriya Gramin Bank</item>
+    </string-array>
+
+    <string name="estimated">*अनुमानित</string>
+    <string name="matrix_metro">पॉईंट स्लॅब</string>
+    <string name="your_attendance">आपली उपस्थिती</string>
+    <string name="referral_code">संदर्भ कोड</string>
+    <string name="click_here_if_customer_is_not_available">(ग्राहक उपलब्ध नसल्यास येथे क्लिक करा)</string>
+    <string name="by_proceeding_you_agree_to_hicare_s">By proceeding, you agree to HiCare\'s </string>
+    <string name="terms_of_services">Terms of Services</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="enter_your_mobile_number">आपला मोबाइल नंबर प्रविष्ट करा</string>
+    <string name="Question">Question?</string>
+    <string name="brand_description">Looks like you\'ve completed your job</string>
+    <string name="technician_completion_question">Have you applied job on basin?</string>
+    <string name="not_required">Not Required</string>
+    <string name="Welcome">स्वागत आहे</string>
+    <string name="verify_your_mobile_number">आपला मोबाइल नंबर सत्यापित करा</string>
+    <string name="login_to_know_your_incentives_offers_and_jobs_for_the_day">दिवसासाठी आपल्या प्रोत्साहने, ऑफर आणि नोकर्या जाणून घेण्यासाठी लॉगिन करा</string>
+    <string name="proceed">प्रक्रिया</string>
+    <string name="change_language">भाषा बदला</string>
+    <string name="contact_number_help">संपर्क क्रमांक</string>
+    <string name="support_email_id_help">समर्थन ईमेल-आयडी</string>
+    <string name="total_reward_points">एकूण पुरस्कार गुण</string>
+    <string name="payment_successfull_dialog">देय सक्सेसफुल</string>
+    <string name="payment_details_dialog">देय तपशील</string>
+    <string name="customer_name_dialog">ग्राहकाचे नाव</string>
+    <string name="service_name_dialog">सेवेचे नाव</string>
+    <string name="order_number_dialog">ऑर्डर नंबर</string>
+    <string name="amount_dialog">रक्कम</string>
+    <string name="date_dialog">तारीख</string>
+    <string name="payment_method_dialog">देय द्यायची पद्धत</string>
+    <string name="status_dialog">स्थिती</string>
+    <string name="ok_dialog">ठीक आहे</string>
+    <string name="not_required_completion">Not Required</string>
+    <string name="no_completion">नाही</string>
+    <string name="yes_completion">होय</string>
+    <string name="your_attendance_for_current_month_attendance">चालू महिन्यासाठी आपली उपस्थिती</string>
+    <string name="total_days_present">एकूण दिवस उपस्थित</string>
+    <string name="present_attendance">उपस्थित</string>
+    <string name="days_attendance">दिवस</string>
+    <string name="absent">अनुपस्थित</string>
+    <string name="late">उशीर</string>
+    <string name="select_area">क्षेत्र निवडा</string>
+    <string name="type_chemicals">Type</string>
+    <string name="unit_chemicals">Unit</string>
+    <string name="number_of_points_incentive">गुणांची संख्या</string>
+    <string name="incentive_earned_incentive">प्रोत्साहन मिळवले</string>
+    <string name="incentive_amount_incentive">प्रोत्साहन रक्कम</string>
+    <string name="select_area_area">क्षेत्र निवडा</string>
+    <string name="add_customer_referrals">ग्राहक संदर्भ जोडा</string>
+    <string name="nothing">काही नाही!</string>
+    <string name="your_referral_list_is_empty">आपली रेफरल यादी रिक्त आहे!</string>
+    <string name="status_service">स्थिती</string>
+    <string name="incomplete_reason_service">अपूर्ण कारण</string>
+    <string name="type_sevice">प्रकार</string>
+    <string name="start_time_service">सुरवातीची वेळ</string>
+    <string name="duration_service">कालावधी</string>
+    <string name="on_site_otp_service">साइटवर ओटीपी</string>
+    <string name="click_here_if_customer_is_not_available_service">(ग्राहक उपलब्ध नसल्यास येथे क्लिक करा)</string>
+    <string name="payment_service">देय</string>
+    <string name="raise_jeopardy_service">Raise Jeopardy</string>
+    <string name="payment_jeopardy_service">Payment Jeopardy</string>
+    <string name="payment_mode_service">देय मोड</string>
+    <string name="amount_to_collect_service">गोळा करण्यासाठी रक्कम</string>
+    <string name="payment_otp_service">पेमेंट ओटीपी</string>
+    <string name="amount_collected_service">गोळा केलेली रक्कम</string>
+    <string name="bank_name_service">बँकेचे नाव</string>
+    <string name="cheque_date_service">चेकची तारीख</string>
+    <string name="cheque_number_service">चेक नंबर</string>
+    <string name="upload_cheque_service">अपलोड चेक</string>
+    <string name="otp_signature">OTP</string>
+    <string name="amount_to_collect_signature">गोळा करण्यासाठी रक्कम</string>
+    <string name="signatory_name_signature">स्वाक्षरीकर्ता नाव</string>
+    <string name="what_work_have_you_done_signature">तुम्ही काय काम केले?</string>
+    <string name="only_flush_out_done_signature">केवळ फ्लश आउट पूर्ण झाले</string>
+    <string name="complete_service_signature">पूर्ण सेवा</string>
+    <string name="upload_job_card_signature">जॉब कार्ड अपलोड करा</string>
+    <string name="no_job_cards_signature">जॉब कार्डे नाहीत</string>
+    <string name="otp_mst">OTP</string>
+    <string name="amount_to_mst">गोळा करण्यासाठी रक्कम</string>
+    <string name="signatory_name_mst">स्वाक्षरीकर्ता नाव</string>
+    <string name="signature">स्वाक्षरी</string>
+    <string name="upload_job_card_mst">जॉब कार्ड अपलोड करा</string>
+    <string name="no_job_cards_mst">जॉब कार्डे नाहीत</string>
+    <string name="otp_has_been_sent_to_login">ओटीपीला पाठविले गेले आहे</string>
+    <string name="enter_otp_verify">ओटीपी प्रविष्ट करा</string>
+    <string name="resend_otp_verify">ओटीपी पुन्हा पाठवा</string>
+    <string name="submit_verify">प्रस्तुत करणे</string>
+    <string name="skip_video">वगळा</string>
+    <string name="select_reason_jeopardy">कारण निवडा</string>
+    <string name="add_on_site_activity">साइटवरील क्रियाकलाप जोडा</string>
+    <string name="service_osite">सेवा</string>
+    <string name="yes">होय</string>
+    <string name="no">नाही</string>
+    <string name="cancel_onsite">रद्द करा</string>
+    <string name="done_onsite">पूर्ण झाले</string>
+    <string name="submit_chemical">प्रस्तुत करणे</string>
+    <string name="type_chem_dialog">प्रकार</string>
+    <string name="ok_chem_dialog">ठीक आहे</string>
+    <string name="choose_mst">निवडा</string>
+    <string name="use_previous_job_card_mst">मागील जॉब कार्ड वापरा</string>
+    <string name="camera_mst">कॅमेरा</string>
+    <string name="gallery_mst">गॅलरी</string>
+    <string name="cancel_mst">रद्द करा</string>
+    <string name="on_site_confirmation_service">साइटवर पुष्टीकरण</string>
+    <string name="username_service">वापरकर्तानाव</string>
+    <string name="mobile_number_service">मोबाइल नंबर</string>
+    <string name="cancel_service">रद्द करा</string>
+    <string name="send_otp_service">ओटीपी पाठवा</string>
+    <string name="home_hicare">होम</string>
+    <string name="cancel_feedback">रद्द करा</string>
+    <string name="take_me_there_onsite">मला तेथे घेऊन जा</string>
+    <string name="area_onsite">क्षेत्र</string>
+    <string name="service_type_onsite">सेवा प्रकार</string>
+    <string name="last_added_on_onsite">अंतिम जोडलेले</string>
+    <string name="add_oniste">जोडा</string>
+    <string name="not_done_onsite">झाले नाही</string>
+    <string name="area_recent">क्षेत्र</string>
+    <string name="service_type_recent">सेवा प्रकार</string>
+    <string name="reason_recent">कारण</string>
+    <string name="added_on_recent">जोडले</string>
+    <string name="started_on_onsite">चालू झाले</string>
+    <string name="cancel_payment">रद्द करा</string>
+    <string name="please_change_status_service">कृपया स्थिती बदला</string>
+    <string name="job_time_serice">आपण पुरेसा वेळ न घालविल्यामुळे आपल्याला नोकरी बंद करण्याची परवानगी नाही. कृपया योग्य प्रक्रियेचे अनुसरण करा आणि कार्य योग्यरित्या वितरित करा</string>
+    <string name="onsite_otp_required_service">ऑन-साइट ओटीपी आवश्यक आहे</string>
+    <string name="invalid_onsite_otp_service">अवैध ऑन-साइट ओटीपी</string>
+    <string name="please_select_incomplete_reason">कृपया अपूर्ण कारण निवडा</string>
+    <string name="please_change_payment_mode">कृपया पेमेंट मोड बदला</string>
+    <string name="payment_otp_is_required">पेमेंट ओटीपी आवश्यक आहे</string>
+    <string name="invalid_payment_otp">अवैध पेमेंट ओटीपी</string>
+    <string name="amount_collected_field_is_required">गोळा केलेली फील्ड आवश्यक आहे</string>
+    <string name="invalid_otp_service">अवैध रक्कम</string>
+    <string name="please_select_bank_name">कृपया बँकेचे नाव निवडा</string>
+    <string name="please_select_cheque_date">कृपया चेकची तारीख निवडा</string>
+    <string name="cheque_number_is_required">चेक नंबर आवश्यक आहे</string>
+    <string name="invalid_cheque_number">अवैध चेक नंबर</string>
+    <string name="please_upload_cheque_image">कृपया चेक प्रतिमा अपलोड करा</string>
+    <string name="enter_the_collect_values_of_chemicals_used">वापरलेल्या केमिकलचे योग्य मूल्य प्रविष्ट करा</string>
+    <string name="chamical_should_be_verified">केमिकल पडताळले पाहिजे</string>
+    <string name="otp_field_is_required">ओटीपी फील्ड आवश्यक आहे</string>
+    <string name="invalid_otp_ss">अवैध ओटीपी</string>
+    <string name="signatory_field_is_required">स्वाक्षरी फील्ड आवश्यक आहे</string>
+    <string name="please_select_correct_type_of_service_done">कृपया पूर्ण केलेली सेवा निवडा</string>
+    <string name="customer_signature_is_required">ग्राहकांची स्वाक्षरी आवश्यक आहे</string>
+    <string name="please_upload_your_job_card_service">कृपया आपले जॉब कार्ड अपलोड करा</string>
+    <string name="please_complete_your_previous_job_first">कृपया आधी आपली आधीची कार्य पूर्ण करा</string>
+
+
+
+    <string name="mark_attendance_home">मार्क अटेंडेंस</string>
+    <string name="welcome_attendance">स्वागत आहे</string>
+    <string name="please_mark_your_attendance_with_the_face_recognition">, कृपया चेहरा ओळखीसह आपली उपस्थिती चिन्हांकित करा.</string>
+    <string name="attendance_marked_successfully">उपस्थिती यशस्वीरित्या चिन्हांकित केली.</string>
+    <string name="attendance_failed_please_try_again">उपस्थिती अयशस्वी, कृपया पुन्हा प्रयत्न करा.</string>
+    <string name="technicain_number_is_unavailable">टेक्निशियन नंबर अनुपलब्ध आहे, कृपया प्रशासकाशी संपर्क साधा.</string>
+    <string name="customer_mobile_number_is_unavailable">ग्राहक मोबाइल नंबर अनुपलब्ध आहे.</string>
+    <string name="no_internet_connection">इंटरनेट कनेक्शन नाही</string>
+    <string name="customer_alternate_number_is_unavailable">ग्राहक वैकल्पिक मोबाइल नंबर अवांछनीय आहे.</string>
+    <string name="customer_phone_number_is_unnavailable">ग्राहक फोन नंबर अवांछनीय आहे.</string>
+    <string name="customer_location_not_found">ग्राहक स्थान सापडले नाही!</string>
+    <string name="please_select_atleast_one_reason">कृपया किमान एक कारण निवडा ...</string>
+    <string name="submit_helpline">प्रस्तुत करणे</string>
+    <string name="cancel_helpline">रद्द करा</string>
+    <string name="complete_first_job">कृपया आधी आपली आधीची जॉब पूर्ण करा.</string>
+    <string name="tool_your_attendance">आपली उपस्थिती</string>
+    <string name="no_area_available">कोणतेही क्षेत्र उपलब्ध नाही!</string>
+    <string name="please_upload_your_photo_to_mark_attendance_face">कृपया उपस्थिती चिन्हांकित करण्यासाठी आपला फोटो अपलोड करा.</string>
+    <string name="please_upload_your_photo_to_complete_the_registration_face">कृपया नोंदणी पूर्ण करण्यासाठी आपला फोटो अपलोड करा.</string>
+    <string name="unable_to_extract_camera">कॅमेरा उघडण्यात अक्षम ...</string>
+    <string name="attendance_marked_successfully_face">उपस्थिती यशस्वीरित्या चिन्हांकित केली.</string>
+    <string name="unable_to_capture_your_photo_please_try_again">आपला फोटो कॅप्चर करण्यात अक्षम, कृपया पुन्हा प्रयत्न करा</string>
+    <string name="incentives_in">प्रोत्साहन</string>
+    <string name="incentive_as_on">Incentive as on:</string>
+    <string name="on_site_activity_details">ऑन-साइट खात्यांचा तपशील</string>
+    <string name="on_site_tasks_tab">ऑन-साइट कार्य</string>
+    <string name="recent_tasks_tab">अलीकडील कार्ये</string>
+    <string name="tool_onsite_account">ऑन-साइट खाती</string>
+    <string name="tool_activities">उपक्रम</string>
+    <string name="button_select">निवडा</string>
+    <string name="activity_successfully_added">क्रियाकलाप यशस्वीरित्या जोडला</string>
+    <string name="reason_submitted_successfully">कारण यशस्वीरित्या सबमिट केले</string>
+    <string name="delete_activity">क्रियाकलाप हटवा</string>
+    <string name="are_you_sure_you_want_to_delete_activity">आपली खात्री आहे की आपण हा क्रियाकलाप हटवू इच्छिता?</string>
+    <string name="task_deleted_successfully">कार्य यशस्वीरित्या हटविले</string>
+    <string name="referral_added_successfully">संदर्भ यशस्वीरित्या जोडला.</string>
+    <string name="deleted_successfully">यशस्वीरित्या हटविला.</string>
+
+
+    <string name="on_site_tasks">ऑन-साइट कार्ये</string>
+    <string name="bazaar">बाजार</string>
+    <string name="today_s_job_count">आजची जॉब काउंट</string>
+    <string name="home_bottom">होम</string>
+    <string name="incentives_home">प्रोत्साहन</string>
+    <string name="attendance_bottom">अटेंडेंस</string>
+    <string name="id_card_bottom">आईडी कार्ड</string>
+    <string name="service_info">सर्विस माहिती</string>
+    <string name="chemical_info">केमिकल</string>
+    <string name="referral_info">रेफ़रल</string>
+    <string name="signature_info">स्वाक्षरी</string>
+    <string name="onsite_tab">ऑन-साइट</string>
+    <string name="completed_tab">पूर्ण झाले</string>
+    <string name="rewards_section">बक्षिसे</string>
+    <string name="rewards_history">पुरस्कार इतिहास</string>
+    <string name="add_referral">रेफरल जोडा</string>
+    <string name="name_is_required">नाव आवश्यक आहे!</string>
+    <string name="mobile_number_is_required">मोबाइल नंबर आवश्यक आहे!</string>
+    <string name="mobile_number_is_invalid">मोबाइल नंबर अवैध आहे!</string>
+    <string name="failed">अयशस्वी.</string>
+    <string name="on_site_otp_is_sent_successfully">ऑन-साइट ओटीपी यशस्वीरित्या पाठविले गेले आहे</string>
+    <string name="this_field_is_required">हे क्षेत्र आवश्यक आहे</string>
+    <string name="spent_adequate_time">आपण पुरेसा वेळ न दिल्यामुळे आपल्याला अभिप्राय दुवा पाठविण्याची परवानगी नाही. कृपया योग्य प्रक्रियेचे अनुसरण करा आणि कार्य योग्यरित्या वितरित करा</string>
+    <string name="feedback_link_spent_successfully">फीडबैक लिंक यशस्वीरित्या पाठविला.</string>
+    <string name="jobcard_uploaded_successfully">जॉब कार्ड यशस्वीरित्या अपलोड केले</string>
+    <string name="uploading_failed">अपलोड करणे अयशस्वी</string>
+    <string name="save_tasks">जतन करा</string>
+    <string name="service_order">ऑर्डर</string>
+    <string name="there_is_no_recent_tasks_to_display">प्रदर्शित करण्यासाठी अलीकडील कोणतीही कार्ये नाहीत!</string>
+    <string name="there_is_no_tasks_to_display">प्रदर्शित करण्यासाठी कोणतीही कार्ये नाहीत!</string>
+    <string name="logout_exit">एक्झिट</string>
+    <string name="logout_do_you_really_want_to_exit">आपण बाहेर पडू इच्छिता?</string>
+    <string name="something_went_wrong">कृपया पुन्हा प्रयत्न करा !!!</string>
+    <string name="there_is_no_rewards_to_display">प्रदर्शित करण्यासाठी कोणतेही पुरस्कार नाहीत!</string>
+    <string name="there_is_no_offers_to_display">प्रदर्शित करण्यासाठी ऑफर नाहीत!</string>
+    <string name="there_is_no_history_to_display">प्रदर्शित करण्यासाठी कोणताही इतिहास नाही!</string>
+    <string name="leader_board">लीडर बोर्ड</string>
+    <string name="bazaar_history">Bazaar History</string>
+</resources>

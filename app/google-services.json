@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "752621213488",
+    "firebase_url": "https://hicare-run-254006.firebaseio.com",
+    "project_id": "hicare-run-254006",
+    "storage_bucket": "hicare-run-254006.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:752621213488:android:d765cdb5d204d0c7b4daf5",
+        "android_client_info": {
+          "package_name": "com.ab.hicarerun"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "752621213488-q8713eeh0u84baq3q5lvgavdgdfm81st.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUIlD8EdLLTp5VtyZl1ZOprbq_7az3zIM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "752621213488-q8713eeh0u84baq3q5lvgavdgdfm81st.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
