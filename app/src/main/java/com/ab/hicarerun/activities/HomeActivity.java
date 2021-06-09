@@ -688,6 +688,11 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                     startActivity(new Intent(HomeActivity.this, KycActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
                     break;
 
+                case R.id.nav_tsScanner:
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, TSScannerActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                    break;
+
                 case R.id.nav_summary:
                     mActivityHomeBinding.drawer.closeDrawers();
                     startActivity(new Intent(HomeActivity.this, TechChemicalCountActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
