@@ -100,6 +100,7 @@ import com.ab.hicarerun.network.models.ServicePlanModel.RenewOrderResponse;
 import com.ab.hicarerun.network.models.ServicePlanModel.RenewalOTPResponse;
 import com.ab.hicarerun.network.models.ServicePlanModel.ServicePlanResponse;
 import com.ab.hicarerun.network.models.SlotModel.SlotResponse;
+import com.ab.hicarerun.network.models.TSScannerModel.OrderDetails;
 import com.ab.hicarerun.network.models.TaskModel.TaskListResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTaskResponse;
@@ -4712,6 +4713,26 @@ public class NetworkCallController {
 
     }
 
+    public void getOrderNoDetails(String orderId, String userId){
+        BaseApplication.getUatApi()
+                .getOrderDetails(orderId, userId)
+                .enqueue(new Callback<OrderDetails>() {
+                    @Override
+                    public void onResponse(Call<OrderDetails> call, Response<OrderDetails> response) {
+                        if (response.body() != null) {
+                            String responseBody = response.body().toString();
+                            mListner.onResponse(20211, response.body());
+                            //Log.d("TAG-UAT", responseBody);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<OrderDetails> call, Throwable t) {
+                        Log.d("TAG-UAT-Error", t.getMessage());
+                        mListner.onFailure(20211);
+                    }
+                });
+    }
     public String getRefreshToken() {
         String refreshToken = null;
         try {

@@ -88,6 +88,7 @@ import com.ab.hicarerun.network.models.ServicePlanModel.RenewOrderResponse;
 import com.ab.hicarerun.network.models.ServicePlanModel.RenewalOTPResponse;
 import com.ab.hicarerun.network.models.ServicePlanModel.ServicePlanResponse;
 import com.ab.hicarerun.network.models.SlotModel.SlotResponse;
+import com.ab.hicarerun.network.models.TSScannerModel.OrderDetails;
 import com.ab.hicarerun.network.models.TaskModel.TaskListResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTaskResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
@@ -120,6 +121,7 @@ public interface IRetrofit {
     String ERROR_LOG_URL = "http://run.hicare.in/logging/api/";
     String JEOPARDY_URL = "http://apps.hicare.in/cwf/";
     String SLOT_URL = "http://run.hicare.in/slot/api/";
+    String UAT = "http://api.hicare.in/Mobile/api/";
 
     /*[Verify User]*/
 
@@ -535,4 +537,8 @@ public interface IRetrofit {
 
     @GET("puzzle/GetPuzzleQuestionListById")
     Call<QuizResponse> getQuizQuestions(@Query("resourceId") String resourceId, @Query("puzzleId") int puzzleId);
+
+    @GET("Barcode/GetOrderDetails")
+    Call<OrderDetails> getOrderDetails(@Query("orderNo") String orderNo, @Query("userId") String userId);
+
 }
