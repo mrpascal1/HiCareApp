@@ -58,6 +58,9 @@ android {
     dataBinding {
         enabled = true
     }
+    buildFeatures {
+        viewBinding true
+    }
     compileOptions {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
@@ -119,6 +122,7 @@ dependencies {
     api 'com.clock.scratch:Scratch:1.0.0'
     api 'de.hdodenhof:circleimageview:3.1.0'
     api 'com.github.bumptech.glide:glide:4.11.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
     api 'com.bogdwellers:pinchtozoom:0.1'
     api 'com.ogaclejapan.smarttablayout:library:2.0.0@aar'
@@ -139,6 +143,10 @@ dependencies {
 
     implementation 'com.eyalbira.loadingdots:loading-dots:1.0.2'
 
+    //QR code
+    implementation 'com.google.zxing:core:3.4.0'
+    implementation 'com.journeyapps:zxing-android-embedded:3.4.0'
+
     //dynamic module injection
 //    api 'com.google.android.play:core:1.7.1'
 
@@ -147,3 +155,4 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'kotlin-android'

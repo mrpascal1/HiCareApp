@@ -44,6 +44,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".activities.TSScannerActivity" />
         <activity android:name=".activities.Camera2Activity" />
         <activity android:name=".activities.ActivityQuizCategory" />
         <activity android:name=".activities.QuizActivity" />
@@ -310,7 +311,8 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/image_path" />
         </provider>
-  <!--      <provider
+        <!--
+      <provider
             android:name=".utils.MySliceProvider"
             android:authorities="com.ab.hicarerun"
             android:exported="true">
@@ -324,8 +326,8 @@
                     android:pathPrefix="/"
                     android:scheme="http" />
             </intent-filter>
-        </provider>-->
-
+        </provider>
+        -->
         <service
             android:name=".utils.notifications.OneSignalSilentNotificationHandlerService"
             android:exported="false"
