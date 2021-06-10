@@ -81,31 +81,49 @@
         app:layout_constraintTop_toBottomOf="@+id/progressBar">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="12dp">
+            android:layout_height="wrap_content">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/dataCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
                 <LinearLayout
+                    android:id="@+id/dataCard"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="4dp">
                     <TextView
-                        android:id="@+id/dataTv"
+                        android:id="@+id/errorTv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
-                        android:text="Please Enter Order Number"/>
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/barcodeRecycler"
-                        android:layout_width="match_parent"
+                        android:textColor="@color/red"
+                        android:text="Please enter valid order number"
+                        android:visibility="gone"/>
+                    <TextView
+                        android:id="@+id/accountNameTv"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"/>
+                        android:textSize="16sp"
+                        android:text=""/>
+                    <TextView
+                        android:id="@+id/regionNameTv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:text=""/>
+                    <TextView
+                        android:id="@+id/servicePlanTv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:text="" />
+
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/barcodeRecycler"
+                android:layout_below="@id/dataCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:background="@color/lightest_grey"/>
         </RelativeLayout>
     </ScrollView>
     <com.google.android.material.floatingactionbutton.FloatingActionButton

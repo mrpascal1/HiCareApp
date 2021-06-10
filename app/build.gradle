@@ -143,6 +143,10 @@ dependencies {
 
     implementation 'com.eyalbira.loadingdots:loading-dots:1.0.2'
 
+    //QR code
+    implementation 'com.google.zxing:core:3.4.0'
+    implementation 'com.journeyapps:zxing-android-embedded:3.4.0'
+
     //dynamic module injection
 //    api 'com.google.android.play:core:1.7.1'
 

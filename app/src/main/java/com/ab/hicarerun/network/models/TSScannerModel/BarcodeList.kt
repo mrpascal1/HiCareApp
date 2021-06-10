@@ -6,9 +6,9 @@ import com.google.gson.annotations.SerializedName
 data class BarcodeList (
 	@SerializedName("Id") val id : Int?,
 	@SerializedName("Account_No") val account_No : String?,
-	@SerializedName("Order_No") val order_No : Int?,
+	@SerializedName("Order_No") val order_No : String?,
 	@SerializedName("Account_Name") val account_Name : String?,
-	@SerializedName("Barcode_Data") val barcode_Data : Int?,
+	@SerializedName("Barcode_Data") val barcode_Data : String?,
 	@SerializedName("Last_Verified_On") val last_Verified_On : String?,
 	@SerializedName("Last_Verified_By") val last_Verified_By : Int?,
 	@SerializedName("Created_On") val created_On : String?,
