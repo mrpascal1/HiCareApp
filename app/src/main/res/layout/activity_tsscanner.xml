@@ -40,17 +40,19 @@
             <EditText
                 android:id="@+id/searchEt"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="40dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_edittext"
                 android:drawableStart="@drawable/ic_search_black"
                 android:drawablePadding="4dp"
                 android:hint="Enter Order No"
+                android:layout_gravity=""
+                android:textSize="15sp"
                 android:padding="12dp" />
             <androidx.cardview.widget.CardView
                 android:id="@+id/searchBtn"
                 android:layout_width="100dp"
-                android:layout_height="45dp"
+                android:layout_height="40dp"
                 android:background="@color/barGreenLight"
                 android:text="Search"
                 android:layout_marginStart="8dp"
@@ -72,67 +74,166 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headerLayout"
         android:visibility="gone"/>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/saveBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progressBar">
+
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="8dp">
 
-                <LinearLayout
-                    android:id="@+id/dataCard"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="4dp">
-                    <TextView
-                        android:id="@+id/errorTv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:textColor="@color/red"
-                        android:text="Please enter valid order number"
-                        android:visibility="gone"/>
-                    <TextView
-                        android:id="@+id/accountNameTv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:text=""/>
-                    <TextView
-                        android:id="@+id/regionNameTv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:text=""/>
-                    <TextView
-                        android:id="@+id/servicePlanTv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:text="" />
-
-                </LinearLayout>
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/barcodeRecycler"
-                android:layout_below="@id/dataCard"
+            <LinearLayout
+                android:id="@+id/dataCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:background="@color/lightest_grey"/>
+                android:orientation="vertical"
+                android:padding="4dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/errorTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Please enter valid order number"
+                    android:textColor="@color/red"
+                    android:textSize="16sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/accountNameTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/roboto_bold"
+                    android:gravity="start"
+                    android:maxLines="2"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/regionName_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:id="@+id/regionLabel"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="Region Name"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=":"
+                        android:textSize="14sp" />
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="15dp"
+                        android:gravity="right">
+
+                        <TextView
+                            android:id="@+id/regionNameTv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:gravity="start"
+                            android:maxLines="2"
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/servicePlan_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:id="@+id/servicePlanLabel"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/service_plan"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=":"
+                        android:textSize="14sp" />
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="15dp"
+                        android:gravity="right">
+
+                        <TextView
+                            android:id="@+id/servicePlanTv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:gravity="start"
+                            android:maxLines="2"
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Boxes Added: "
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="12dp"
+                    android:textColor="@color/black"/>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/barcodeRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/dataCard"
+                android:layout_marginTop="5dp" />
         </RelativeLayout>
     </ScrollView>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
+        android:src="@drawable/ic_add_activity"
+        app:layout_constraintBottom_toTopOf="@+id/saveBtn"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/saveBtn"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="12dp"
-        android:layout_marginEnd="12dp"
-        android:src="@drawable/ic_add_activity"/>
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="Save"
+        android:textSize="18sp"
+        android:textColor="@color/white"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
