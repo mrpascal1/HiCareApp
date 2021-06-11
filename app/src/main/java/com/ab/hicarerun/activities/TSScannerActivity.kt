@@ -19,8 +19,12 @@ import com.ab.hicarerun.network.NetworkResponseListner
 import com.ab.hicarerun.network.models.TSScannerModel.BarcodeList
 import com.ab.hicarerun.network.models.TSScannerModel.Data
 import com.ab.hicarerun.network.models.TSScannerModel.OrderDetails
+import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.LocaleHelper
 import com.google.zxing.integration.android.IntentIntegrator
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class TSScannerActivity : BaseActivity() {
 
@@ -60,6 +64,8 @@ class TSScannerActivity : BaseActivity() {
             getBack()
         }
         binding.dataCard.setOnClickListener {
+            Log.d("TAG-MODEL", modelBarcodeList.toString())
+            Log.d("TAG-TIME", AppUtils.currentDateTimeWithTimeZone())
         }
         binding.searchBtn.setOnClickListener {
             binding.progressBar.visibility = View.VISIBLE
@@ -77,14 +83,19 @@ class TSScannerActivity : BaseActivity() {
     private fun populateViews(accountNo: String?, orderNo: Long?, accountName: String?,
                               startDate: String?, endDate: String?, regionName: String?,
                               serviceGroup: String?, servicePlan: String?){
+        binding.dataCard.visibility = View.VISIBLE
         binding.errorTv.visibility = View.GONE
         binding.accountNameTv.text = accountName
         binding.regionNameTv.text = regionName
-        if (servicePlan != ""){
-            binding.servicePlanTv.text = servicePlan
-            binding.servicePlanTv.visibility = View.VISIBLE
-        }else{
-            binding.servicePlanTv.visibility = View.GONE
+        binding.servicePlanTv.text = servicePlan
+        if (accountName == ""){
+            binding.accountNameTv.text = "N/A"
+        }
+        if (regionName == ""){
+            binding.regionNameTv.text = "N/A"
+        }
+        if (servicePlan == ""){
+            binding.servicePlanTv.text = "N/A"
         }
         binding.progressBar.visibility = View.GONE
     }
@@ -218,11 +229,12 @@ class TSScannerActivity : BaseActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+        val currentDateTime = AppUtils.currentDateTimeWithTimeZone()
         if (result != null){
             if (result.contents != null){
-                addNewData(account_No, order_No, account_Name, result.contents, last_Verified_On, last_Verified_By,
-                    created_On, created_By_Id_User, verified_By, created_By, false)
+                addNewData(account_No, order_No, account_Name, result.contents, currentDateTime, last_Verified_By,
+                    currentDateTime, created_By_Id_User, verified_By, created_By, false)
                 barcodeAdapter.notifyItemInserted(modelBarcodeList.size)
                 Log.d("TAG-QR", result.contents)
             }else{

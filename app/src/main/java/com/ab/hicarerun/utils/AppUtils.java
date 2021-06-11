@@ -359,6 +359,12 @@ public class AppUtils {
         return dateFormat.format(date1);
     }
 
+    public static String currentDateTimeWithTimeZone() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSZZZZZ", Locale.ENGLISH);
+        Date date1 = new Date();
+        return dateFormat.format(date1);
+    }
+
     public static String currentDate() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date1 = new Date();
