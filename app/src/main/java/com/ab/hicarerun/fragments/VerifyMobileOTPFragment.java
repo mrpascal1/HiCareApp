@@ -177,7 +177,7 @@ public class VerifyMobileOTPFragment extends BaseFragment implements UserVerifyO
     public void onVerifyOtpClicked(View view) {
         if (mFragmentVerifyMobileOtBinding.otpView.length() == 6) {
             attemptLogin();
-        }else {
+        } else {
             mFragmentVerifyMobileOtBinding.otpView.setError("Invalid OTP!");
         }
     }
@@ -216,38 +216,38 @@ public class VerifyMobileOTPFragment extends BaseFragment implements UserVerifyO
         try {
             imei = Settings.Secure.getString(getActivity().getContentResolver(),
                     Settings.Secure.ANDROID_ID);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
 //            if (mFragmentVerifyMobileOtBinding.otpView.getText().toString().equals(otp)) {
-                String OTP = mFragmentVerifyMobileOtBinding.otpView.getText().toString();
-                NetworkCallController controller = new NetworkCallController(VerifyMobileOTPFragment.this);
-                controller.setListner(new NetworkResponseListner<LoginResponse>() {
-                    @Override
-                    public void onResponse(int requestCode, LoginResponse response) {
-                        // delete all previous record
-                        getRealm().beginTransaction();
-                        getRealm().deleteAll();
-                        getRealm().commitTransaction();
-                        profilePic = response.getUserProfilePic();
-                        userId = response.getUserID();
-                        // add new record
-                        getRealm().beginTransaction();
-                        getRealm().copyToRealmOrUpdate(response);
-                        getRealm().commitTransaction();
-                        isGetInside = true;
-                        new UserLoginTask(isGetInside).execute((Void) null);
+            String OTP = mFragmentVerifyMobileOtBinding.otpView.getText().toString();
+            NetworkCallController controller = new NetworkCallController(VerifyMobileOTPFragment.this);
+            controller.setListner(new NetworkResponseListner<LoginResponse>() {
+                @Override
+                public void onResponse(int requestCode, LoginResponse response) {
+                    // delete all previous record
+                    getRealm().beginTransaction();
+                    getRealm().deleteAll();
+                    getRealm().commitTransaction();
+                    profilePic = response.getUserProfilePic();
+                    userId = response.getUserID();
+                    // add new record
+                    getRealm().beginTransaction();
+                    getRealm().copyToRealmOrUpdate(response);
+                    getRealm().commitTransaction();
+                    isGetInside = true;
+                    new UserLoginTask(isGetInside).execute((Void) null);
 
-                    }
+                }
 
-                    @Override
-                    public void onFailure(int requestCode) {
-                    }
+                @Override
+                public void onFailure(int requestCode) {
+                }
 
-                });
-                controller.login(LOGIN_REQUEST, mobile, OTP, versionName, imei, device_info, mStrPlayerId);
+            });
+            controller.login(LOGIN_REQUEST, mobile, OTP, versionName, imei, device_info, mStrPlayerId);
 //            }
 //        else {
 //                startSMSListener();
@@ -404,7 +404,7 @@ public class VerifyMobileOTPFragment extends BaseFragment implements UserVerifyO
         super.onDestroy();
     }
 
-     private boolean getValidated() {
+    private boolean getValidated() {
         if (mFragmentVerifyMobileOtBinding.otpView.getText().toString().length() == 0) {
             mFragmentVerifyMobileOtBinding.otpView.setError("Please enter OTP!");
             return false;
