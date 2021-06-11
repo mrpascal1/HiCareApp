@@ -73,6 +73,11 @@
             android:title="KYC Verification" />
 
         <item
+            android:id="@+id/nav_tsScanner"
+            android:icon="@drawable/ic_qr_code_scanner_black"
+            android:title="TS Scanner" />
+
+        <item
             android:id="@+id/nav_summary"
             android:icon="@drawable/ic_data_table"
             android:title="@string/today_s_job_count" />
