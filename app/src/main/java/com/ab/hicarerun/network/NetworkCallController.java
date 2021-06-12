@@ -4714,7 +4714,7 @@ public class NetworkCallController {
     }
 
     public void getOrderNoDetails(String orderId, String userId){
-        BaseApplication.getUatApi()
+        BaseApplication.getRetrofitAPI(false)
                 .getOrderDetails(orderId, userId)
                 .enqueue(new Callback<OrderDetails>() {
                     @Override
