@@ -88,6 +88,8 @@ import com.ab.hicarerun.network.models.ServicePlanModel.RenewOrderResponse;
 import com.ab.hicarerun.network.models.ServicePlanModel.RenewalOTPResponse;
 import com.ab.hicarerun.network.models.ServicePlanModel.ServicePlanResponse;
 import com.ab.hicarerun.network.models.SlotModel.SlotResponse;
+import com.ab.hicarerun.network.models.TSScannerModel.BarcodeList;
+import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse;
 import com.ab.hicarerun.network.models.TSScannerModel.OrderDetails;
 import com.ab.hicarerun.network.models.TaskModel.TaskListResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTaskResponse;
@@ -100,6 +102,7 @@ import com.ab.hicarerun.network.models.TrainingModel.WelcomeVideoResponse;
 import com.ab.hicarerun.network.models.UpdateAppModel.UpdateResponse;
 import com.ab.hicarerun.network.models.voucher.VoucherResponseMain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -541,4 +544,6 @@ public interface IRetrofit {
     @GET("Barcode/GetOrderDetails")
     Call<OrderDetails> getOrderDetails(@Query("orderNo") String orderNo, @Query("userId") String userId);
 
+    @POST("Barcode/SaveBarcodeDetails")
+    Call<BaseResponse> saveBarcode(@Body ArrayList<BarcodeList> barcodeList);
 }
