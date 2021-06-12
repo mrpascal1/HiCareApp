@@ -29,7 +29,7 @@ class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeLis
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         holder.bindItems(context, barcodeList[position])
         holder.binding.deleteBtn.setOnClickListener {
-            removeAt(position)
+            removeAt(holder.adapterPosition)
         }
     }
 
@@ -37,7 +37,7 @@ class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeLis
         return barcodeList.size
     }
 
-    private fun removeAt(position: Int){
+    fun removeAt(position: Int){
         barcodeList.removeAt(position)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, barcodeList.size)
