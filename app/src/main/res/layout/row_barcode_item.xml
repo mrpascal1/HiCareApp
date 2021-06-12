@@ -38,14 +38,17 @@
                     android:layout_height="wrap_content"
                     android:text="Barcode Data"
                     android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/roboto_bold"
                     android:layout_marginTop="4dp"
                     android:layout_toEndOf="@id/barcodeIv"
                     android:layout_marginStart="4dp"/>
 
                 <ImageView
                     android:id="@+id/deleteBtn"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_marginEnd="12dp"
                     android:text="delete"
                     android:layout_centerVertical="true"
@@ -53,8 +56,8 @@
                     android:layout_toStartOf="@id/isBarcodeVerified"/>
                 <ImageView
                     android:id="@+id/isBarcodeVerified"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_centerVertical="true"
                     android:src="@drawable/ic_check_circle_green"
                     android:layout_alignParentEnd="true"/>
@@ -63,7 +66,7 @@
                     android:id="@+id/regionName_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp">
+                    android:layout_marginTop="16dp">
 
                     <TextView
                         android:id="@+id/verifiedOnLabel"

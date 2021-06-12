@@ -100,6 +100,8 @@ import com.ab.hicarerun.network.models.ServicePlanModel.RenewOrderResponse;
 import com.ab.hicarerun.network.models.ServicePlanModel.RenewalOTPResponse;
 import com.ab.hicarerun.network.models.ServicePlanModel.ServicePlanResponse;
 import com.ab.hicarerun.network.models.SlotModel.SlotResponse;
+import com.ab.hicarerun.network.models.TSScannerModel.BarcodeList;
+import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse;
 import com.ab.hicarerun.network.models.TSScannerModel.OrderDetails;
 import com.ab.hicarerun.network.models.TaskModel.TaskListResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
@@ -115,6 +117,7 @@ import com.ab.hicarerun.utils.AppUtils;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
@@ -4730,6 +4733,24 @@ public class NetworkCallController {
                     public void onFailure(Call<OrderDetails> call, Throwable t) {
                         Log.d("TAG-UAT-Error", t.getMessage());
                         mListner.onFailure(20211);
+                    }
+                });
+    }
+
+    public void saveBarcodeList(int requestCode, ArrayList<BarcodeList> barcodeList){
+        BaseApplication.getUatApi()
+                .saveBarcode(barcodeList)
+                .enqueue(new Callback<BaseResponse>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                        if (response.body() != null){
+                            mListner.onResponse(requestCode, response.body());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse> call, Throwable t) {
+                        mListner.onFailure(requestCode);
                     }
                 });
     }
