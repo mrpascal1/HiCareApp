@@ -1,7 +1,9 @@
 package com.ab.hicarerun.activities
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
+import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -14,19 +16,22 @@ import com.ab.hicarerun.adapter.BarcodeAdapter
 import com.ab.hicarerun.databinding.ActivityTsverificationBinding
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
-import com.ab.hicarerun.network.models.TSScannerModel.BarcodeList
-import com.ab.hicarerun.network.models.TSScannerModel.Data
-import com.ab.hicarerun.network.models.TSScannerModel.OrderDetails
+import com.ab.hicarerun.network.models.ProfileModel.Profile
+import com.ab.hicarerun.network.models.TSScannerModel.*
+import com.ab.hicarerun.service.listner.LocationManagerListner
 import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.LocaleHelper
+import com.ab.hicarerun.utils.SharedPreferencesUtility
 import com.google.zxing.integration.android.IntentIntegrator
 
-class TSVerificationActivity : AppCompatActivity() {
+class TSVerificationActivity : AppCompatActivity(), LocationManagerListner {
 
     lateinit var binding: ActivityTsverificationBinding
     lateinit var modelBarcodeList: ArrayList<BarcodeList>
     lateinit var barcodeAdapter: BarcodeAdapter
+    lateinit var progressDialog: ProgressDialog
 
+    var empCode: Int? = null
     var id: Int? = 0
     var account_No: String? = ""
     var order_No: String? = ""
@@ -40,12 +45,24 @@ class TSVerificationActivity : AppCompatActivity() {
     var created_By: String? = ""
     var isVerified: Boolean? = null
     var isFetched = 0
+    var lat = ""
+    var long = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTsverificationBinding.inflate(layoutInflater)
         val root = binding.root
         setContentView(root)
+
+        progressDialog = ProgressDialog(this)
+        progressDialog.setTitle("HiCare")
+        progressDialog.setMessage("Getting details")
+
+        getEmpCode()
+
+        if (empCode == null){
+            progressDialog.show()
+        }
 
         modelBarcodeList = ArrayList()
         barcodeAdapter = BarcodeAdapter(this, modelBarcodeList)
@@ -95,6 +112,24 @@ class TSVerificationActivity : AppCompatActivity() {
             binding.servicePlanTv.text = "N/A"
         }
         binding.progressBar.visibility = View.GONE
+    }
+
+    private fun getEmpCode(){
+        val userId = SharedPreferencesUtility.getPrefString(this, SharedPreferencesUtility.PREF_USERID)
+        val controller = NetworkCallController()
+        controller.setListner(object : NetworkResponseListner<Any>{
+            override fun onResponse(requestCode: Int, response: Any) {
+                progressDialog.dismiss()
+                val responseProfile: Profile = response as Profile
+                empCode = responseProfile.employeeCode.toInt()
+                Log.d("TAG-profile", empCode.toString())
+            }
+            override fun onFailure(requestCode: Int) {
+                progressDialog.dismiss()
+                Log.d("TAG", requestCode.toString())
+            }
+        })
+        controller.getTechnicianProfile(1000, userId)
     }
 
     private fun getOrderDetails(orderNoInput: String){
@@ -149,62 +184,71 @@ class TSVerificationActivity : AppCompatActivity() {
                 Log.d("TAG-UAT-Error", requestCode.toString())
             }
         })
-        controller.getOrderNoDetails(orderNoInput, "2056")
+        controller.getOrderNoDetails(orderNoInput, empCode.toString())
     }
 
+    private fun verifyBarcode(barcodeId: Int?, activityName: String?, account_No: String?, order_No: String?, barcode_Data: String?,
+                              lat: String?, long: String?, verifiedOn: String?, verifiedBy: Int?){
+        val verifyMap = HashMap<String, Any?>()
+        verifyMap["BarcodeId"] = barcodeId
+        verifyMap["ActivityName"] = activityName
+        verifyMap["Account_No"] = account_No
+        verifyMap["Order_No"] = order_No
+        verifyMap["Barcode_Data"] = barcode_Data
+        verifyMap["Lat"] = lat
+        verifyMap["Long"] = long
+        verifyMap["VerifiedOn"] = verifiedOn
+        verifyMap["VerifiedBy"] = verifiedBy
+
+        Log.d("TAG-Verifier", verifyMap.toString())
+
+        val controller = NetworkCallController()
+        controller.setListner(object : NetworkResponseListner<BaseResponse>{
+            override fun onResponse(requestCode: Int, response: BaseResponse?) {
+                if (response != null){
+                    if (response.isSuccess == true){
+                        if (response.data == "Verified"){
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(applicationContext, "Barcode Verified", Toast.LENGTH_SHORT).show()
+                            //Log.d("TAG-VERIFIER", "Verified")
+                        }
+                    }else{
+                        Log.d("TAG-VERIFIER", "Something wrong ${response.data}")
+                    }
+                }
+            }
+
+            override fun onFailure(requestCode: Int) {
+                binding.progressBar.visibility = View.GONE
+                Log.d("TAG-VERIFIER", requestCode.toString())
+            }
+        })
+        controller.verifyBarcodeDetails(20212, verifyMap)
+    }
     private fun modifyData(id: Int?, account_No: String?, order_No: String?, account_Name: String?,
                            barcode_Data: String?, last_Verified_On: String?, last_Verified_By: Int?,
                            created_On: String?, created_By_Id_User: Int?, verified_By: String?,
                            created_By: String?, isVerified: Boolean?){
 
+        binding.progressBar.visibility = View.VISIBLE
         var found = 0
         for (i in 0 until modelBarcodeList.size){
-            if(modelBarcodeList[i].barcode_Data == barcode_Data){
-                modelBarcodeList[i] = BarcodeList(id, account_No, order_No, account_Name, barcode_Data,
+            if(modelBarcodeList[i].barcode_Data == barcode_Data && modelBarcodeList[i].isVerified == false){
+                modelBarcodeList[i] = BarcodeList(modelBarcodeList[i].id, account_No, order_No, account_Name, barcode_Data,
                         last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified)
+                Log.d("TAG-Veri", id.toString())
+                verifyBarcode(modelBarcodeList[i].id, "TSVerification", account_No, order_No, barcode_Data, lat, long, last_Verified_On, last_Verified_By)
                 barcodeAdapter.notifyItemChanged(i)
                 binding.barcodeRecycler.post {
                     binding.barcodeRecycler.smoothScrollToPosition(i)
                 }
                 found = 1
-                Toast.makeText(this, "Barcode Updated", Toast.LENGTH_SHORT).show()
             }
         }
         if (found == 0){
+            binding.progressBar.visibility = View.GONE
             Toast.makeText(this, "No Barcode found", Toast.LENGTH_SHORT).show()
         }
-
-        /*
-        From VerifyBarcodeDetails
-         * {
-              "BarcodeId": 1,
-              "ActivityName": "sample string 2",
-              "Account_No": "sample string 3",
-              "Order_No": "sample string 4",
-              "Barcode_Data": "sample string 5",
-              "Lat": "sample string 6",
-              "Long": "sample string 7",
-              "VerifiedOn": "2021-06-14T15:57:42.3432+05:30",
-              "VerifiedBy": 9
-            }
-        */
-
-        /*
-        From GetOrderDetails
-        * {
-            "Id": 3,
-            "Account_No": "809708/06.03.2020",
-            "Order_No": "20031320692",
-            "Account_Name": "Hotel Grand INN",
-            "Barcode_Data": "1234567890",
-            "Last_Verified_On": "2021-06-09T11:51:15",
-            "Last_Verified_By": 9,
-            "Created_On": "2021-06-09T11:51:15.710707",
-            "Created_By_Id_User": 2,
-            "Verified_By": null,
-            "Created_By": "Optimizer",
-            "IsVerified": false
-          }*/
 
     }
 
@@ -234,7 +278,7 @@ class TSVerificationActivity : AppCompatActivity() {
         last_Verified_On = AppUtils.currentDateTimeWithTimeZone()
         if (result != null){
             if (result.contents != null){
-                modifyData(id, account_No, order_No, account_Name, result.contents, created_On, last_Verified_By,
+                modifyData(id, account_No, order_No, account_Name, result.contents, created_On, empCode,
                     last_Verified_On, created_By_Id_User, verified_By, created_By, true)
                 Log.d("TAG-QR", result.contents)
             }else{
@@ -242,5 +286,10 @@ class TSVerificationActivity : AppCompatActivity() {
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun locationFetched(mLocation: Location?, oldLocation: Location?, time: String?, locationProvider: String?) {
+        lat = mLocation?.latitude.toString()
+        long = mLocation?.longitude.toString()
     }
 }

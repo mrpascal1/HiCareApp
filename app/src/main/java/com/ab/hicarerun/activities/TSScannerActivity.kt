@@ -1,6 +1,6 @@
 package com.ab.hicarerun.activities
 
-import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -8,31 +8,34 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.BaseActivity
+import com.ab.hicarerun.BaseApplication
 import com.ab.hicarerun.adapter.BarcodeAdapter
 import com.ab.hicarerun.databinding.ActivityTsscannerBinding
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
+import com.ab.hicarerun.network.models.LoginResponse
+import com.ab.hicarerun.network.models.ProfileModel.Profile
 import com.ab.hicarerun.network.models.TSScannerModel.BarcodeList
 import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse
 import com.ab.hicarerun.network.models.TSScannerModel.Data
 import com.ab.hicarerun.network.models.TSScannerModel.OrderDetails
 import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.LocaleHelper
+import com.ab.hicarerun.utils.SharedPreferencesUtility
 import com.google.zxing.integration.android.IntentIntegrator
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
+import io.realm.RealmResults
 
 class TSScannerActivity : BaseActivity() {
 
     lateinit var binding: ActivityTsscannerBinding
     lateinit var modelBarcodeList: ArrayList<BarcodeList>
     lateinit var barcodeAdapter: BarcodeAdapter
+    lateinit var progressDialog: ProgressDialog
 
+    var empCode: Int? = null
     var account_No: String? = ""
     var order_No: String? = ""
     var account_Name: String? = ""
@@ -40,7 +43,6 @@ class TSScannerActivity : BaseActivity() {
     var last_Verified_On: String? = ""
     var last_Verified_By: Int? = null
     var created_On: String? = ""
-    var created_By_Id_User: Int? = null
     var verified_By: String? = ""
     var created_By: String? = ""
     var isVerified: Boolean? = null
@@ -51,6 +53,16 @@ class TSScannerActivity : BaseActivity() {
         binding = ActivityTsscannerBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        progressDialog = ProgressDialog(this)
+        progressDialog.setTitle("HiCare")
+        progressDialog.setMessage("Getting details")
+
+        getEmpCode()
+
+        if (empCode == null){
+            progressDialog.show()
+        }
 
         modelBarcodeList = ArrayList()
         barcodeAdapter = BarcodeAdapter(this, modelBarcodeList)
@@ -171,7 +183,7 @@ class TSScannerActivity : BaseActivity() {
                             last_Verified_On = response.data.barcodeList[i].last_Verified_On
                             last_Verified_By = response.data.barcodeList[i].last_Verified_By
                             created_On = response.data.barcodeList[i].created_On
-                            created_By_Id_User = response.data.barcodeList[i].created_By_Id_User
+                            val created_By_Id_User = response.data.barcodeList[i].created_By_Id_User
                             verified_By = response.data.barcodeList[i].verified_By
                             created_By = response.data.barcodeList[i].created_By
                             isVerified = response.data.barcodeList[i].isVerified
@@ -195,8 +207,27 @@ class TSScannerActivity : BaseActivity() {
                 Log.d("TAG-UAT-Error", requestCode.toString())
             }
         })
-        controller.getOrderNoDetails(orderNoInput, "2056")
+        controller.getOrderNoDetails(orderNoInput, empCode.toString())
     }
+
+    private fun getEmpCode(){
+        val userId = SharedPreferencesUtility.getPrefString(this, SharedPreferencesUtility.PREF_USERID)
+        val controller = NetworkCallController()
+        controller.setListner(object : NetworkResponseListner<Any>{
+            override fun onResponse(requestCode: Int, response: Any) {
+                progressDialog.dismiss()
+                val responseProfile: Profile = response as Profile
+                empCode = responseProfile.employeeCode.toInt()
+                Log.d("TAG-profile", empCode.toString())
+            }
+            override fun onFailure(requestCode: Int) {
+                progressDialog.dismiss()
+                Log.d("TAG", requestCode.toString())
+            }
+        })
+        controller.getTechnicianProfile(1000, userId)
+    }
+
     private fun getBack(){
         val fragment = supportFragmentManager.backStackEntryCount
         if (fragment < 1){
@@ -227,54 +258,19 @@ class TSScannerActivity : BaseActivity() {
         for (i in 0 until modelBarcodeList.size){
             if(modelBarcodeList[i].barcode_Data == barcode_Data){
                 found = 1
-                Toast.makeText(this, "Barcode Updated", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Barcode Already Inserted", Toast.LENGTH_SHORT).show()
             }
         }
         if (found == 0){
             modelBarcodeList.add(BarcodeList(0, account_No, order_No, account_Name, barcode_Data,
-                last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified))
+                last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By,
+                created_By, isVerified))
             barcodeAdapter.notifyItemInserted(modelBarcodeList.lastIndex)
             binding.barcodeRecycler.post {
                 binding.barcodeRecycler.smoothScrollToPosition(barcodeAdapter.itemCount - 1)
             }
             Toast.makeText(this, "Barcode Added", Toast.LENGTH_SHORT).show()
         }
-
-        /*
-        From Save Barcode details.
-         * {
-            "Id": 1,
-            "Account_No": "sample string 2",
-            "Order_No": "sample string 3",
-            "Account_Name": "sample string 4",
-            "Barcode_Data": "sample string 5",
-            "Last_Verified_On": "2021-06-10T15:08:51.6066+05:30",
-            "Last_Verified_By": 6,
-            "Created_On": "2021-06-10T15:08:51.6076+05:30",
-            "Created_By_Id_User": 8,
-            "Verified_By": "sample string 9",
-            "Created_By": "sample string 10",
-            "IsVerified": true
-           },
-        */
-
-        /*
-        From GetOrderDetails
-        * {
-            "Id": 3,
-            "Account_No": "809708/06.03.2020",
-            "Order_No": "20031320692",
-            "Account_Name": "Hotel Grand INN",
-            "Barcode_Data": "1234567890",
-            "Last_Verified_On": "2021-06-09T11:51:15",
-            "Last_Verified_By": 9,
-            "Created_On": "2021-06-09T11:51:15.710707",
-            "Created_By_Id_User": 2,
-            "Verified_By": null,
-            "Created_By": "Optimizer",
-            "IsVerified": false
-          }*/
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -282,8 +278,10 @@ class TSScannerActivity : BaseActivity() {
         val currentDateTime = AppUtils.currentDateTimeWithTimeZone()
         if (result != null){
             if (result.contents != null){
-                addNewData(account_No, order_No, account_Name, result.contents, currentDateTime, last_Verified_By,
-                    currentDateTime, created_By_Id_User, verified_By, created_By, false)
+                Toast.makeText(this, ""+SharedPreferencesUtility.getPrefString(this, SharedPreferencesUtility.PREF_USERID), Toast.LENGTH_SHORT).show()
+                addNewData(account_No, order_No, account_Name, result.contents, currentDateTime,
+                    last_Verified_By, currentDateTime, empCode,
+                    verified_By, "Optimizer", false)
                 Log.d("TAG-QR", result.contents)
             }else{
                 Log.d("TAG-QR", "Not found")

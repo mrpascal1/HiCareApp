@@ -103,6 +103,7 @@ import com.ab.hicarerun.network.models.UpdateAppModel.UpdateResponse;
 import com.ab.hicarerun.network.models.voucher.VoucherResponseMain;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -546,4 +547,7 @@ public interface IRetrofit {
 
     @POST("Barcode/SaveBarcodeDetails")
     Call<BaseResponse> saveBarcode(@Body ArrayList<BarcodeList> barcodeList);
+
+    @POST("Barcode/VerifyBarcodeDetails")
+    Call<BaseResponse> verifyBarcode(@Body HashMap<String, Object> verification);
 }
