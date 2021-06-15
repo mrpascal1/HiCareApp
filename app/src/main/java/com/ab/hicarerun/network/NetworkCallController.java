@@ -118,6 +118,7 @@ import com.ab.hicarerun.utils.AppUtils;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
@@ -4740,6 +4741,24 @@ public class NetworkCallController {
     public void saveBarcodeList(int requestCode, ArrayList<BarcodeList> barcodeList){
         BaseApplication.getUatApi()
                 .saveBarcode(barcodeList)
+                .enqueue(new Callback<BaseResponse>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                        if (response.body() != null){
+                            mListner.onResponse(requestCode, response.body());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void verifyBarcodeDetails(int requestCode, HashMap<String, Object> verifyDetails){
+        BaseApplication.getUatApi()
+                .verifyBarcode(verifyDetails)
                 .enqueue(new Callback<BaseResponse>() {
                     @Override
                     public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
