@@ -88,7 +88,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp">
-
+            <TextView
+                android:id="@+id/errorTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Please enter valid order number"
+                android:textColor="@color/red"
+                android:textSize="16sp"
+                android:visibility="gone" />
             <LinearLayout
                 android:id="@+id/dataCard"
                 android:layout_width="match_parent"
@@ -96,15 +103,6 @@
                 android:orientation="vertical"
                 android:padding="4dp"
                 android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/errorTv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Please enter valid order number"
-                    android:textColor="@color/red"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/accountNameTv"
@@ -116,7 +114,7 @@
                     android:maxLines="2"
                     android:text="Hotel Indore INN"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <LinearLayout
@@ -198,12 +196,13 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/boxesTitleTv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:text="Boxes Added: "
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
             </LinearLayout>
         </RelativeLayout>
