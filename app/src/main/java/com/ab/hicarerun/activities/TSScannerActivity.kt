@@ -3,11 +3,13 @@ package com.ab.hicarerun.activities
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.BaseActivity
@@ -41,11 +43,11 @@ class TSScannerActivity : BaseActivity() {
     var account_Name: String? = ""
     var barcode_Data: String? = ""
     var last_Verified_On: String? = ""
-    var last_Verified_By: Int? = null
+    var last_Verified_By: Int? = 0
     var created_On: String? = ""
     var verified_By: String? = ""
-    var created_By: String? = ""
-    var isVerified: Boolean? = null
+    var created_By: String? = "Optimizer"
+    var isVerified: Boolean? = false
     var isFetched = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,6 +55,11 @@ class TSScannerActivity : BaseActivity() {
         binding = ActivityTsscannerBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        binding.accountNameTv.setTypeface(null, Typeface.BOLD)
+        binding.regionNameTv.setTypeface(null, Typeface.NORMAL)
+        binding.servicePlanTv.setTypeface(null, Typeface.NORMAL)
+        binding.boxesTitleTv.setTypeface(null, Typeface.BOLD)
 
         progressDialog = ProgressDialog(this)
         progressDialog.setTitle("HiCare")
@@ -85,7 +92,12 @@ class TSScannerActivity : BaseActivity() {
             binding.progressBar.visibility = View.VISIBLE
             val orderNoInput = binding.searchEt.text.toString().trim()
             Log.d("TAG", orderNoInput)
-            getOrderDetails("20031320692")
+            if (orderNoInput != ""){
+                getOrderDetails(orderNoInput)
+            }else{
+                binding.progressBar.visibility = View.GONE
+                Toast.makeText(this, "Please Enter Order ID", Toast.LENGTH_SHORT).show()
+            }
         }
         binding.fab.setOnClickListener {
             val integrator = IntentIntegrator(this)
@@ -100,6 +112,7 @@ class TSScannerActivity : BaseActivity() {
             if (modelBarcodeList.isNotEmpty()){
                 if (modelBarcodeList.any { it.id == 0 }){
                     saveBarcodeDetails()
+                    Log.d("TAG-Save", modelBarcodeList.toString())
                 }else{
                     Toast.makeText(applicationContext, "Please add new barcodes", Toast.LENGTH_SHORT).show()
                 }
@@ -111,6 +124,7 @@ class TSScannerActivity : BaseActivity() {
 
     private fun saveBarcodeDetails(){
         binding.progressBar.visibility = View.VISIBLE
+        binding.searchBtn.isEnabled = false
         val controller = NetworkCallController()
         controller.setListner(object : NetworkResponseListner<BaseResponse>{
             override fun onResponse(requestCode: Int, response: BaseResponse?) {
@@ -121,24 +135,26 @@ class TSScannerActivity : BaseActivity() {
                         if (data == "Success"){
                             binding.progressBar.visibility = View.GONE
                             Toast.makeText(applicationContext, "Data Saved Successfully", Toast.LENGTH_SHORT).show()
-                            modelBarcodeList.clear()
                             getOrderDetails(order_No.toString())
+                        }else{
+                            binding.searchBtn.isEnabled = true
                         }
+                    }else{
+                        binding.searchBtn.isEnabled = true
                     }
                 }
                 barcodeAdapter.notifyDataSetChanged()
             }
             override fun onFailure(requestCode: Int) {
                 binding.progressBar.visibility = View.GONE
+                binding.searchBtn.isEnabled = true
             }
 
         })
         controller.saveBarcodeList(20211, modelBarcodeList)
     }
 
-    private fun populateViews(accountNo: String?, orderNo: Long?, accountName: String?,
-                              startDate: String?, endDate: String?, regionName: String?,
-                              serviceGroup: String?, servicePlan: String?){
+    private fun populateViews(accountName: String?, regionName: String?, servicePlan: String?){
         binding.dataCard.visibility = View.VISIBLE
         binding.errorTv.visibility = View.GONE
         binding.accountNameTv.text = accountName
@@ -155,18 +171,22 @@ class TSScannerActivity : BaseActivity() {
         }
         binding.progressBar.visibility = View.GONE
     }
+
     private fun getOrderDetails(orderNoInput: String){
+        binding.errorTv.visibility = View.GONE
         binding.progressBar.visibility = View.VISIBLE
         val controller = NetworkCallController()
         controller.setListner(object : NetworkResponseListner<OrderDetails>{
             override fun onResponse(requestCode: Int, response: OrderDetails?) {
+                modelBarcodeList.clear()
+                binding.searchBtn.isEnabled = true
                 val success = response?.isSuccess.toString()
                 if (success == "true"){
                     isFetched = 1
-                    modelBarcodeList.clear()
-                    val accountNo = response?.data?.accountNo
+                    account_No = response?.data?.accountNo
+                    order_No = response?.data?.orderNo.toString()
                     val orderNo = response?.data?.orderNo
-                    val accountName = response?.data?.accountName
+                    account_Name = response?.data?.accountName
                     val startDate = response?.data?.startDate
                     val endDate = response?.data?.endDate
                     val regionName = response?.data?.regionName
@@ -178,7 +198,7 @@ class TSScannerActivity : BaseActivity() {
                             val id = response.data.barcodeList[i].id
                             account_No = response.data.barcodeList[i].account_No
                             order_No = response.data.barcodeList[i].order_No
-                            account_Name = response.data.barcodeList[i].account_Name
+                            val account_Name = response.data.barcodeList[i].account_Name
                             barcode_Data = response.data.barcodeList[i].barcode_Data
                             last_Verified_On = response.data.barcodeList[i].last_Verified_On
                             last_Verified_By = response.data.barcodeList[i].last_Verified_By
@@ -189,21 +209,25 @@ class TSScannerActivity : BaseActivity() {
                             isVerified = response.data.barcodeList[i].isVerified
                             modelBarcodeList.add(BarcodeList(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified))
                         }
-                        OrderDetails(response.isSuccess, Data(accountNo, orderNo, accountName, startDate, endDate, regionName, serviceGroup, servicePlan, modelBarcodeList), response.errorMessage, response.param1, response.responseMessage)
+                        OrderDetails(response.isSuccess, Data(account_No, orderNo, account_Name, startDate, endDate, regionName, serviceGroup, servicePlan, modelBarcodeList), response.errorMessage, response.param1, response.responseMessage)
                     }
-                    populateViews(accountNo, orderNo, accountName, startDate, endDate, regionName, serviceGroup, servicePlan)
+                    populateViews(account_Name, regionName, servicePlan)
                     barcodeAdapter.notifyDataSetChanged()
                     binding.progressBar.visibility = View.GONE
                 }else{
+                    binding.searchBtn.isEnabled = true
                     binding.progressBar.visibility = View.GONE
                     binding.errorTv.text = "Please Enter Valid Order Number."
                     binding.errorTv.visibility = View.VISIBLE
+                    binding.dataCard.visibility = View.GONE
                 }
             }
 
             override fun onFailure(requestCode: Int) {
                 binding.progressBar.visibility = View.GONE
+                binding.dataCard.visibility = View.GONE
                 binding.errorTv.text = "Error Occurred."
+                binding.errorTv.visibility = View.VISIBLE
                 Log.d("TAG-UAT-Error", requestCode.toString())
             }
         })
@@ -236,6 +260,7 @@ class TSScannerActivity : BaseActivity() {
             fragmentManager.popBackStack()
         }
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             android.R.id.home -> {
@@ -278,10 +303,19 @@ class TSScannerActivity : BaseActivity() {
         val currentDateTime = AppUtils.currentDateTimeWithTimeZone()
         if (result != null){
             if (result.contents != null){
-                Toast.makeText(this, ""+SharedPreferencesUtility.getPrefString(this, SharedPreferencesUtility.PREF_USERID), Toast.LENGTH_SHORT).show()
-                addNewData(account_No, order_No, account_Name, result.contents, currentDateTime,
-                    last_Verified_By, currentDateTime, empCode,
-                    verified_By, "Optimizer", false)
+                //Toast.makeText(this, ""+SharedPreferencesUtility.getPrefString(this, SharedPreferencesUtility.PREF_USERID), Toast.LENGTH_SHORT).show()
+                addNewData(
+                    account_No = account_No,
+                    order_No = order_No,
+                    account_Name = account_Name,
+                    barcode_Data = result.contents,
+                    last_Verified_On = currentDateTime,
+                    last_Verified_By = last_Verified_By,
+                    created_On = currentDateTime,
+                    created_By_Id_User = empCode,
+                    verified_By = empCode.toString(),
+                    created_By = created_By,
+                    isVerified = isVerified)
                 Log.d("TAG-QR", result.contents)
             }else{
                 Log.d("TAG-QR", "Not found")

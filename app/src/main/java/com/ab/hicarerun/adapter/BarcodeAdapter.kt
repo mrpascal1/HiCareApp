@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.R
 import com.ab.hicarerun.databinding.RowBarcodeItemBinding
 import com.ab.hicarerun.network.models.TSScannerModel.BarcodeList
+import com.ab.hicarerun.utils.AppUtils
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.WriterException
@@ -50,7 +51,7 @@ class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeLis
             val verifiedOn = barcodeList.last_Verified_On
             val id = barcodeList.id
             if (isVerified == true){
-                binding.verifiedOnTv.text = verifiedOn
+                binding.verifiedOnTv.text = verifiedOn?.substring(0, 10)
                 binding.isBarcodeVerified.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_circle_green))
             }else{
                 binding.verifiedOnTv.text = "N/A"
@@ -89,7 +90,7 @@ class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeLis
             bitmap.setPixels(pixels, 0, width, 0, 0, bitMatrixWidth, bitMatrixHeight)
             return bitmap
         }
-        private fun displayBitmap(context: Context, value: String) {
+        /*private fun displayBitmap(context: Context, value: String) {
             val widthPixels = 25
             val heightPixels = 25
 
@@ -142,6 +143,6 @@ class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeLis
                 bitMatrix.height
             )
             return bitmap
-        }
+        }*/
     }
 }
