@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.BaseActivity
 import com.ab.hicarerun.adapter.BarcodeAdapter
+import com.ab.hicarerun.databinding.ActivityTsscannerBinding
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
 import com.ab.hicarerun.network.models.TSScannerModel.BarcodeList
@@ -21,13 +22,13 @@ import com.ab.hicarerun.network.models.TSScannerModel.Data
 import com.ab.hicarerun.network.models.TSScannerModel.OrderDetails
 import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.LocaleHelper
+import com.google.zxing.integration.android.IntentIntegrator
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class TSScannerActivity : BaseActivity() {
 
-    lateinit var binding: ActivityT
+    lateinit var binding: ActivityTsscannerBinding
     lateinit var modelBarcodeList: ArrayList<BarcodeList>
     lateinit var barcodeAdapter: BarcodeAdapter
 
@@ -68,7 +69,7 @@ class TSScannerActivity : BaseActivity() {
         }
         binding.searchBtn.setOnClickListener {
             binding.progressBar.visibility = View.VISIBLE
-            val orderNoInput = binding.searchEt.text.toString().trim()
+            val orderNoInput = binding.searchEt.text.toString()
             Log.d("TAG", orderNoInput)
             getOrderDetails("20031320692")
         }
@@ -194,7 +195,7 @@ class TSScannerActivity : BaseActivity() {
         if (fragment < 1){
             finish()
         }else{
-            fragmentManager.popBackStack()
+            supportFragmentManager.popBackStack()
         }
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

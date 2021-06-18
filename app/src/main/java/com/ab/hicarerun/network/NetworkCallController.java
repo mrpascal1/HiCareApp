@@ -4738,7 +4738,7 @@ public class NetworkCallController {
     }
 
     public void saveBarcodeList(int requestCode, ArrayList<BarcodeList> barcodeList){
-        BaseApplication.getUatApi()
+        BaseApplication.getRetrofitAPI(false)
                 .saveBarcode(barcodeList)
                 .enqueue(new Callback<BaseResponse>() {
                     @Override
