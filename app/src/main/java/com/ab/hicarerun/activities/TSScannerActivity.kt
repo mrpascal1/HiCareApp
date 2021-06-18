@@ -25,6 +25,7 @@ import com.ab.hicarerun.utils.LocaleHelper
 import com.google.zxing.integration.android.IntentIntegrator
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class TSScannerActivity : BaseActivity() {
 
@@ -69,7 +70,7 @@ class TSScannerActivity : BaseActivity() {
         }
         binding.searchBtn.setOnClickListener {
             binding.progressBar.visibility = View.VISIBLE
-            val orderNoInput = binding.searchEt.text.toString()
+            val orderNoInput = binding.searchEt.text.toString().trim()
             Log.d("TAG", orderNoInput)
             getOrderDetails("20031320692")
         }
@@ -195,7 +196,7 @@ class TSScannerActivity : BaseActivity() {
         if (fragment < 1){
             finish()
         }else{
-            supportFragmentManager.popBackStack()
+            fragmentManager.popBackStack()
         }
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
