@@ -65,7 +65,13 @@ class TSScannerActivity : BaseActivity() {
         progressDialog.setTitle("HiCare")
         progressDialog.setMessage("Getting details")
 
-        getEmpCode()
+        val loginResponse: RealmResults<LoginResponse> = BaseApplication.getRealm().where(LoginResponse::class.java).findAll()
+        if (loginResponse != null && loginResponse.size > 0){
+            empCode = loginResponse[0]?.id?.toInt()
+            Log.d("TAG-Login", empCode.toString())
+        }
+
+        //getEmpCode()
 
         if (empCode == null){
             progressDialog.show()
@@ -234,7 +240,7 @@ class TSScannerActivity : BaseActivity() {
         controller.getOrderNoDetails(orderNoInput, empCode.toString())
     }
 
-    private fun getEmpCode(){
+    /*private fun getEmpCode(){
         val userId = SharedPreferencesUtility.getPrefString(this, SharedPreferencesUtility.PREF_USERID)
         val controller = NetworkCallController()
         controller.setListner(object : NetworkResponseListner<Any>{
@@ -250,7 +256,7 @@ class TSScannerActivity : BaseActivity() {
             }
         })
         controller.getTechnicianProfile(1000, userId)
-    }
+    }*/
 
     private fun getBack(){
         val fragment = supportFragmentManager.backStackEntryCount

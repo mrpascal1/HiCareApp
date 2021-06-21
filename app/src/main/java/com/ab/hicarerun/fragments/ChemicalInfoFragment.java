@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
+//import com.ab.hicarerun.activities.BarcodeVerificatonActivity;
 import com.ab.hicarerun.activities.BarcodeVerificatonActivity;
 import com.ab.hicarerun.activities.ServiceRenewalActivity;
 import com.ab.hicarerun.adapter.ChemicalRecycleAdapter;
