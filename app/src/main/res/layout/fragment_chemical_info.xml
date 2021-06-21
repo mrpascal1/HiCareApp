@@ -134,6 +134,21 @@
                         android:textSize="18dp" />
                 </RelativeLayout>
 
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnRodentScanner"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_below="@id/view"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="100dp"
+                    android:layout_marginRight="100dp"
+                    android:background="@drawable/button_background"
+                    android:clickable="true"
+                    android:text="Rodent Scanner"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white" />
+
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 

@@ -4757,7 +4757,7 @@ public class NetworkCallController {
     }
 
     public void verifyBarcodeDetails(int requestCode, HashMap<String, Object> verifyDetails){
-        BaseApplication.getUatApi()
+        BaseApplication.getRetrofitAPI(false)
                 .verifyBarcode(verifyDetails)
                 .enqueue(new Callback<BaseResponse>() {
                     @Override

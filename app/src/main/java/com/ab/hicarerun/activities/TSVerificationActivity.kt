@@ -64,7 +64,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
         progressDialog.setTitle("HiCare")
         progressDialog.setMessage("Getting details")
 
-        getEmpCode()
+//        getEmpCode()
 
         if (empCode == null){
             progressDialog.show()
@@ -129,23 +129,23 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
         binding.progressBar.visibility = View.GONE
     }
 
-    private fun getEmpCode(){
-        val userId = SharedPreferencesUtility.getPrefString(this, SharedPreferencesUtility.PREF_USERID)
-        val controller = NetworkCallController()
-        controller.setListner(object : NetworkResponseListner<Any>{
-            override fun onResponse(requestCode: Int, response: Any) {
-                progressDialog.dismiss()
-                val responseProfile: Profile = response as Profile
-                empCode = responseProfile.employeeCode.toInt()
-                Log.d("TAG-profile", empCode.toString())
-            }
-            override fun onFailure(requestCode: Int) {
-                progressDialog.dismiss()
-                Log.d("TAG", requestCode.toString())
-            }
-        })
-        controller.getTechnicianProfile(1000, userId)
-    }
+//    private fun getEmpCode(){
+//        val userId = SharedPreferencesUtility.getPrefString(this, SharedPreferencesUtility.PREF_USERID)
+//        val controller = NetworkCallController()
+//        controller.setListner(object : NetworkResponseListner<Any>{
+//            override fun onResponse(requestCode: Int, response: Any) {
+//                progressDialog.dismiss()
+//                val responseProfile: Profile = response as Profile
+//                empCode = responseProfile.employeeCode.toString().toInt()
+//                Log.d("TAG-profile", empCode.toString())
+//            }
+//            override fun onFailure(requestCode: Int) {
+//                progressDialog.dismiss()
+//                Log.d("TAG", requestCode.toString())
+//            }
+//        })
+//        controller.getTechnicianProfile(1000, userId)
+//    }
 
     private fun getOrderDetails(orderNoInput: String){
         binding.errorTv.visibility = View.GONE

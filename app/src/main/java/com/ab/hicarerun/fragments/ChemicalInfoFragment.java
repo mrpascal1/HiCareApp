@@ -3,6 +3,7 @@ package com.ab.hicarerun.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,8 @@ import android.widget.Toast;
 
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
+import com.ab.hicarerun.activities.BarcodeVerificatonActivity;
+import com.ab.hicarerun.activities.ServiceRenewalActivity;
 import com.ab.hicarerun.adapter.ChemicalRecycleAdapter;
 import com.ab.hicarerun.databinding.FragmentChemicalInfoBinding;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
@@ -198,6 +201,16 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
         });
 
         mFragmentChemicalInfoBinding.recycleView.setAdapter(mAdapter);
+
+        mFragmentChemicalInfoBinding.btnRodentScanner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), BarcodeVerificatonActivity.class);
+//                intent.putExtra(ServiceRenewalActivity.ARGS_TASKS, taskId);
+                startActivity(intent);
+            }
+        });
+
         setChemicals();
     }
 
