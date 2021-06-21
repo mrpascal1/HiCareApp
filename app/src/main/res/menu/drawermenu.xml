@@ -11,7 +11,7 @@
         <item
             android:id="@+id/nav_quiz"
             android:icon="@drawable/ic_home"
-            android:visible="false"
+            android:visible="true"
             android:title="Quiz" />
 
         <item

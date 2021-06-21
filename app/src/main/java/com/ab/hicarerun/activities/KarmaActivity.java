@@ -30,6 +30,7 @@ public class KarmaActivity extends BaseActivity {
         setSupportActionBar(mActivityKarmaBinding.toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }
+
     @Override
     public void onBackPressed() {
         try {
@@ -46,8 +47,8 @@ public class KarmaActivity extends BaseActivity {
         Log.e("fragments", String.valueOf(fragment));
         if (fragment < 1) {
             finish();
-        } else if(fragment == 1){
-            if(KarmaVideoFragment.isBack){
+        } else if (fragment == 1) {
+            if (KarmaVideoFragment.isBack) {
                 super.onBackPressed();
                 KarmaVideoFragment.isBack = false;
             }

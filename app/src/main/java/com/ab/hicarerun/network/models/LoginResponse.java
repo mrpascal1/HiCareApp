@@ -24,6 +24,9 @@ public class LoginResponse extends RealmObject {
     @SerializedName("refresh_token")
     @Expose
     private String refreshToken;
+    @SerializedName("id")
+    @Expose
+    private String id;
     @SerializedName("userId")
     @Expose
     private String userID;
@@ -147,5 +150,13 @@ public class LoginResponse extends RealmObject {
 
     public void setIsTechnician(String isTechnician) {
         this.isTechnician = isTechnician;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -2088,9 +2088,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    ;
+    };
 
     private void getSlots(String date, TextView txtNoSlots, TextView txtSelectDate, RecyclerView recyclerView) {
         NetworkCallController controller = new NetworkCallController(this);

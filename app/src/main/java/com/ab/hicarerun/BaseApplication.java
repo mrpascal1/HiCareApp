@@ -300,7 +300,7 @@ public class BaseApplication extends Application {
         return retrofit;
     }
 
-    public static IRetrofit getUatApi() {
+ /*   public static IRetrofit getUatApi() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setExclusionStrategies(new ExclusionStrategy() {
             @Override
@@ -335,7 +335,7 @@ public class BaseApplication extends Application {
                 .create(IRetrofit.class);
 
         return retrofit;
-    }
+    }*/
 
     @Override
     public void onCreate() {

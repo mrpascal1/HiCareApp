@@ -4718,7 +4718,7 @@ public class NetworkCallController {
     }
 
     public void getOrderNoDetails(String orderId, String userId){
-        BaseApplication.getUatApi()
+        BaseApplication.getRetrofitAPI(false)
                 .getOrderDetails(orderId, userId)
                 .enqueue(new Callback<OrderDetails>() {
                     @Override
@@ -4739,7 +4739,7 @@ public class NetworkCallController {
     }
 
     public void saveBarcodeList(int requestCode, ArrayList<BarcodeList> barcodeList){
-        BaseApplication.getUatApi()
+        BaseApplication.getRetrofitAPI(false)
                 .saveBarcode(barcodeList)
                 .enqueue(new Callback<BaseResponse>() {
                     @Override
@@ -4757,7 +4757,7 @@ public class NetworkCallController {
     }
 
     public void verifyBarcodeDetails(int requestCode, HashMap<String, Object> verifyDetails){
-        BaseApplication.getUatApi()
+        BaseApplication.getRetrofitAPI(false)
                 .verifyBarcode(verifyDetails)
                 .enqueue(new Callback<BaseResponse>() {
                     @Override
