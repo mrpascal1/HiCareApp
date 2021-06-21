@@ -1,9 +1,7 @@
 package com.ab.hicarerun.activities
 
-import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Typeface
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
@@ -15,27 +13,30 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.BaseActivity
 import com.ab.hicarerun.BaseApplication
 import com.ab.hicarerun.adapter.BarcodeAdapter
-import com.ab.hicarerun.databinding.ActivityTsverificationBinding
+import com.ab.hicarerun.databinding.ActivityBarcodeVerificatonBinding
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
+import com.ab.hicarerun.network.models.GeneralModel.GeneralData
 import com.ab.hicarerun.network.models.LoginResponse
-import com.ab.hicarerun.network.models.ProfileModel.Profile
-import com.ab.hicarerun.network.models.TSScannerModel.*
+import com.ab.hicarerun.network.models.TSScannerModel.BarcodeList
+import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse
+import com.ab.hicarerun.network.models.TSScannerModel.Data
+import com.ab.hicarerun.network.models.TSScannerModel.OrderDetails
 import com.ab.hicarerun.service.listner.LocationManagerListner
 import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.LocaleHelper
-import com.ab.hicarerun.utils.SharedPreferencesUtility
 import com.google.zxing.integration.android.IntentIntegrator
 import io.realm.RealmResults
 
-class TSVerificationActivity : BaseActivity(), LocationManagerListner {
+class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
 
-    lateinit var binding: ActivityTsverificationBinding
+    lateinit var binding : ActivityBarcodeVerificatonBinding
+
     lateinit var modelBarcodeList: ArrayList<BarcodeList>
     lateinit var barcodeAdapter: BarcodeAdapter
-    lateinit var progressDialog: ProgressDialog
-
+    private val ARG_TASK = "ARG_TASK"
     var empCode: Int? = null
+    var orNo = ""
     var id: Int? = 0
     var account_No: String? = ""
     var order_No: String? = ""
@@ -54,28 +55,25 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityTsverificationBinding.inflate(layoutInflater)
-        val root = binding.root
-        setContentView(root)
+        binding = ActivityBarcodeVerificatonBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+        //addFragment(BarcodeVerificationFragment.newInstance(/*order_No*/),"BarcodeVerificatonActivity-BarcodeVerificationFragment")
+        binding.toolbar.setTitle("Rodent Box Scanner")
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.progressBar.visibility = View.VISIBLE
 
-        binding.accountNameTv.setTypeface(null, Typeface.BOLD)
-        binding.regionNameTv.setTypeface(null, Typeface.NORMAL)
-        binding.servicePlanTv.setTypeface(null, Typeface.NORMAL)
-        binding.boxesTitleTv.setTypeface(null, Typeface.BOLD)
-
-        progressDialog = ProgressDialog(this)
-        progressDialog.setTitle("HiCare")
-        progressDialog.setMessage("Getting details")
-
-        val loginResponse: RealmResults<LoginResponse> = BaseApplication.getRealm().where(LoginResponse::class.java).findAll()
+        val loginResponse: RealmResults<LoginResponse> = BaseApplication.getRealm().where(
+            LoginResponse::class.java).findAll()
         if (loginResponse != null && loginResponse.size > 0){
             empCode = loginResponse[0]?.id?.toInt()
             Log.d("TAG-Login", empCode.toString())
         }
-//        getEmpCode()
 
-        if (empCode == null){
-            progressDialog.show()
+        val generalResponse: RealmResults<GeneralData> = BaseApplication.getRealm().where(GeneralData::class.java).findAll()
+        if (generalResponse != null && generalResponse.size > 0){
+            orNo = generalResponse[0]?.orderNumber.toString()
         }
 
         modelBarcodeList = ArrayList()
@@ -88,81 +86,30 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
         binding.barcodeRecycler.isNestedScrollingEnabled = false
         binding.barcodeRecycler.adapter = barcodeAdapter
 
-        binding.backIv.setOnClickListener {
-            getBack()
-        }
-
-        binding.scanBtn.setOnClickListener {
+        binding.scanBtn.setOnClickListener{
             val integrator = IntentIntegrator(this)
             integrator.setBeepEnabled(false)
-            if (isFetched == 1){
-                if (modelBarcodeList.isNotEmpty()){
+            if (isFetched == 1) {
+                if (modelBarcodeList.isNotEmpty()) {
                     integrator.initiateScan()
-                }else{
+                } else {
                     Toast.makeText(this, "No barcode found", Toast.LENGTH_SHORT).show()
                 }
-            }else{
+            } else {
                 Toast.makeText(this, "Please Enter Order ID", Toast.LENGTH_SHORT).show()
             }
         }
 
-        binding.searchBtn.setOnClickListener {
-            binding.progressBar.visibility = View.VISIBLE
-            val orderNoInput = binding.searchEt.text.toString().trim()
-            Log.d("TAG", orderNoInput)
-            if (orderNoInput != ""){
-                getOrderDetails(orderNoInput)
-            }else{
-                binding.progressBar.visibility = View.GONE
-                Toast.makeText(this, "Please Enter Order ID", Toast.LENGTH_SHORT).show()
-            }
-        }
+        getOrderDetails(orNo, empCode.toString())
     }
 
-    private fun populateViews(accountName: String?, regionName: String?, servicePlan: String?){
-        binding.dataCard.visibility = View.VISIBLE
-        binding.errorTv.visibility = View.GONE
-        binding.accountNameTv.text = accountName
-        binding.regionNameTv.text = regionName
-        binding.servicePlanTv.text = servicePlan
-        if (accountName == ""){
-            binding.accountNameTv.text = "N/A"
-        }
-        if (regionName == ""){
-            binding.regionNameTv.text = "N/A"
-        }
-        if (servicePlan == ""){
-            binding.servicePlanTv.text = "N/A"
-        }
-        binding.progressBar.visibility = View.GONE
-    }
-
-/*    private fun getEmpCode(){
-        val userId = SharedPreferencesUtility.getPrefString(this, SharedPreferencesUtility.PREF_USERID)
-        val controller = NetworkCallController()
-        controller.setListner(object : NetworkResponseListner<Any>{
-            override fun onResponse(requestCode: Int, response: Any) {
-                progressDialog.dismiss()
-                val responseProfile: Profile = response as Profile
-                empCode = responseProfile.employeeCode.toString().toInt()
-                Log.d("TAG-profile", empCode.toString())
-            }
-            override fun onFailure(requestCode: Int) {
-                progressDialog.dismiss()
-                Log.d("TAG", requestCode.toString())
-            }
-        })
-        controller.getTechnicianProfile(1000, userId)
-    }*/
-
-    private fun getOrderDetails(orderNoInput: String){
-        binding.errorTv.visibility = View.GONE
-        binding.progressBar.visibility = View.VISIBLE
+    private fun getOrderDetails(orNo: String, uId: String) {
         val controller = NetworkCallController()
         controller.setListner(object : NetworkResponseListner<OrderDetails> {
             override fun onResponse(requestCode: Int, response: OrderDetails?) {
+                binding.progressBar.visibility = View.GONE
                 val success = response?.isSuccess.toString()
-                if (success == "true"){
+                if (success == "true") {
                     isFetched = 1
                     modelBarcodeList.clear()
                     val accountNo = response?.data?.accountNo
@@ -174,8 +121,10 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                     val serviceGroup = response?.data?.serviceGroup
                     val servicePlan = response?.data?.servicePlan
                     val barcodeList = response?.data?.barcodeList
-                    if (response?.data?.barcodeList != null){
+                    if (response?.data?.barcodeList != null) {
+                        var itemsCount = 0
                         for (i in 0 until response.data.barcodeList.size) {
+                            itemsCount++
                             id = response.data.barcodeList[i].id
                             account_No = response.data.barcodeList[i].account_No
                             order_No = response.data.barcodeList[i].order_No
@@ -191,31 +140,54 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                             modelBarcodeList.add(BarcodeList(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified))
                         }
                         OrderDetails(response.isSuccess, Data(accountNo, orderNo, accountName, startDate, endDate, regionName, serviceGroup, servicePlan, modelBarcodeList), response.errorMessage, response.param1, response.responseMessage)
+                        if (itemsCount > 0){
+                            binding.errorTv.visibility = View.GONE
+                        }else{
+                            binding.errorTv.visibility = View.VISIBLE
+                        }
                     }
-                    populateViews(accountName, regionName, servicePlan)
                     barcodeAdapter.notifyDataSetChanged()
-                    binding.progressBar.visibility = View.GONE
-                }else{
-                    binding.progressBar.visibility = View.GONE
-                    binding.errorTv.text = "Please Enter Valid Order Number."
-                    binding.errorTv.visibility = View.VISIBLE
-                    binding.dataCard.visibility = View.GONE
                 }
             }
 
             override fun onFailure(requestCode: Int) {
                 binding.progressBar.visibility = View.GONE
-                binding.dataCard.visibility = View.GONE
-                binding.errorTv.text = "Error Occurred."
-                binding.errorTv.visibility = View.VISIBLE
                 Log.d("TAG-UAT-Error", requestCode.toString())
             }
         })
-        controller.getOrderNoDetails(orderNoInput, empCode.toString())
+        controller.getOrderNoDetails(orNo, uId)
+    }
+
+    private fun modifyData(id: Int?, account_No: String?, order_No: String?, account_Name: String?,
+                           barcode_Data: String?, last_Verified_On: String?, last_Verified_By: Int?,
+                           created_On: String?, created_By_Id_User: Int?, verified_By: String?,
+                           created_By: String?, isVerified: Boolean?) {
+
+        var found = 0
+        for (i in 0 until modelBarcodeList.size) {
+            if (modelBarcodeList[i].barcode_Data == barcode_Data) {
+                if (modelBarcodeList[i].isVerified == false) {
+                    modelBarcodeList[i] = BarcodeList(modelBarcodeList[i].id, account_No, order_No, account_Name, barcode_Data,
+                        last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified)
+                    Log.d("TAG-Veri", id.toString())
+                    verifyBarcode(modelBarcodeList[i].id, "Technician Scanner", account_No, order_No, barcode_Data, lat, long, last_Verified_On, last_Verified_By)
+                    barcodeAdapter.notifyItemChanged(i)
+                    binding.barcodeRecycler.post {
+                        binding.barcodeRecycler.smoothScrollToPosition(i)
+                    }
+                } else {
+                    Toast.makeText(this, "Barcode already verified", Toast.LENGTH_SHORT).show()
+                }
+                found = 1
+            }
+        }
+        if (found == 0) {
+            Toast.makeText(this, "No barcode found", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun verifyBarcode(barcodeId: Int?, activityName: String?, account_No: String?, order_No: String?, barcode_Data: String?,
-                              lat: String?, long: String?, verifiedOn: String?, verifiedBy: Int?){
+                              lat: String?, long: String?, verifiedOn: String?, verifiedBy: Int?) {
         val verifyMap = HashMap<String, Any?>()
         verifyMap["BarcodeId"] = barcodeId
         verifyMap["ActivityName"] = activityName
@@ -230,57 +202,29 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
         Log.d("TAG-Verifier", verifyMap.toString())
 
         val controller = NetworkCallController()
-        controller.setListner(object : NetworkResponseListner<BaseResponse>{
+        controller.setListner(object : NetworkResponseListner<BaseResponse> {
             override fun onResponse(requestCode: Int, response: BaseResponse?) {
-                if (response != null){
-                    if (response.isSuccess == true){
-                        if (response.data == "Verified"){
-                            binding.progressBar.visibility = View.GONE
+                if (response != null) {
+                    if (response.isSuccess == true) {
+                        if (response.data == "Verified") {
                             Toast.makeText(applicationContext, "Barcode Verified", Toast.LENGTH_SHORT).show()
                         }
-                    }else{
+                    } else {
                         Log.d("TAG-VERIFIER", "Something wrong ${response.data}")
                     }
                 }
             }
 
             override fun onFailure(requestCode: Int) {
-                binding.progressBar.visibility = View.GONE
                 Log.d("TAG-VERIFIER", requestCode.toString())
             }
         })
         controller.verifyBarcodeDetails(20212, verifyMap)
     }
 
-    private fun modifyData(id: Int?, account_No: String?, order_No: String?, account_Name: String?,
-                           barcode_Data: String?, last_Verified_On: String?, last_Verified_By: Int?,
-                           created_On: String?, created_By_Id_User: Int?, verified_By: String?,
-                           created_By: String?, isVerified: Boolean?){
-
-        binding.progressBar.visibility = View.VISIBLE
-        var found = 0
-        for (i in 0 until modelBarcodeList.size){
-            if(modelBarcodeList[i].barcode_Data == barcode_Data){
-                if (modelBarcodeList[i].isVerified == false){
-                    modelBarcodeList[i] = BarcodeList(modelBarcodeList[i].id, account_No, order_No, account_Name, barcode_Data,
-                        last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified)
-                    Log.d("TAG-Veri", id.toString())
-                    verifyBarcode(modelBarcodeList[i].id, "TSVerification", account_No, order_No, barcode_Data, lat, long, last_Verified_On, last_Verified_By)
-                    barcodeAdapter.notifyItemChanged(i)
-                    binding.barcodeRecycler.post {
-                        binding.barcodeRecycler.smoothScrollToPosition(i)
-                    }
-                }else{
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this, "Barcode already verified", Toast.LENGTH_SHORT).show()
-                }
-                found = 1
-            }
-        }
-        if (found == 0){
-            binding.progressBar.visibility = View.GONE
-            Toast.makeText(this, "No barcode found", Toast.LENGTH_SHORT).show()
-        }
+    override fun onBackPressed() {
+        getBack()
+        super.onBackPressed()
     }
 
     private fun getBack(){
@@ -291,6 +235,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
             fragmentManager.popBackStack()
         }
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             android.R.id.home -> {
@@ -307,19 +252,24 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         last_Verified_On = AppUtils.currentDateTimeWithTimeZone()
-        if (result != null){
-            if (result.contents != null){
+        if (result != null) {
+            if (result.contents != null) {
                 modifyData(id, account_No, order_No, account_Name, result.contents, created_On, empCode,
                     last_Verified_On, created_By_Id_User, verified_By, created_By, true)
                 Log.d("TAG-QR", result.contents)
-            }else{
+            } else {
                 Log.d("TAG-QR", "Not found")
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun locationFetched(mLocation: Location?, oldLocation: Location?, time: String?, locationProvider: String?) {
+    override fun locationFetched(
+        mLocation: Location?,
+        oldLocation: Location?,
+        time: String?,
+        locationProvider: String?
+    ) {
         lat = mLocation?.latitude.toString()
         long = mLocation?.longitude.toString()
     }
