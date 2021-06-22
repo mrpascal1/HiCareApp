@@ -78,7 +78,7 @@ class TSScannerActivity : BaseActivity() {
         }
 
         modelBarcodeList = ArrayList()
-        barcodeAdapter = BarcodeAdapter(this, modelBarcodeList)
+        barcodeAdapter = BarcodeAdapter(this, modelBarcodeList, "TSScanner")
         val llManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         llManager.stackFromEnd = true
         llManager.reverseLayout = true

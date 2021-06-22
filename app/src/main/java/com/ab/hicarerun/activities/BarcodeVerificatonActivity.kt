@@ -77,7 +77,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         }
 
         modelBarcodeList = ArrayList()
-        barcodeAdapter = BarcodeAdapter(this, modelBarcodeList)
+        barcodeAdapter = BarcodeAdapter(this, modelBarcodeList, "TSVerification")
         val llManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         llManager.stackFromEnd = true
         llManager.reverseLayout = true

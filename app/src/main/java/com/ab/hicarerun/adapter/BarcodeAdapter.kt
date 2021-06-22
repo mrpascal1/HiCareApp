@@ -20,11 +20,11 @@ import com.google.zxing.common.BitMatrix
 import com.google.zxing.oned.Code128Writer
 
 
-class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeList>) : RecyclerView.Adapter<BarcodeAdapter.MyHolder>(){
+class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeList>, private val comingFrom: String) : RecyclerView.Adapter<BarcodeAdapter.MyHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
         val view = RowBarcodeItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return MyHolder(view)
+        return MyHolder(view, comingFrom)
     }
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
@@ -44,12 +44,16 @@ class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeLis
         notifyItemRangeChanged(position, barcodeList.size)
     }
 
-    class MyHolder(val binding: RowBarcodeItemBinding): RecyclerView.ViewHolder(binding.root){
+    class MyHolder(val binding: RowBarcodeItemBinding, private val comingFrom: String): RecyclerView.ViewHolder(binding.root){
         fun bindItems(context: Context, barcodeList: BarcodeList){
             val barcode_data = barcodeList.barcode_Data.toString()
             val isVerified = barcodeList.isVerified
             val verifiedOn = barcodeList.last_Verified_On
             val id = barcodeList.id
+            if (comingFrom == "TSScanner"){
+                binding.isBarcodeVerified.visibility = View.GONE
+                binding.verifiedOnLayout.visibility = View.GONE
+            }
             if (isVerified == true){
                 binding.verifiedOnTv.text = verifiedOn?.substring(0, 10)
                 binding.isBarcodeVerified.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_circle_green))
