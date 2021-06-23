@@ -88,7 +88,9 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
 
         binding.scanBtn.setOnClickListener{
             val integrator = IntentIntegrator(this)
+            integrator.setCaptureActivity(CaptureActivityPortrait::class.java)
             integrator.setBeepEnabled(false)
+            integrator.setPrompt("Scan a barcode")
             if (isFetched == 1) {
                 if (modelBarcodeList.isNotEmpty()) {
                     integrator.initiateScan()
@@ -96,7 +98,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                     Toast.makeText(this, "No barcode found", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                Toast.makeText(this, "Please Enter Order ID", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please Enter Order No", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -147,10 +149,13 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                         }
                     }
                     barcodeAdapter.notifyDataSetChanged()
+                }else{
+                    modelBarcodeList.clear()
                 }
             }
 
             override fun onFailure(requestCode: Int) {
+                modelBarcodeList.clear()
                 binding.progressBar.visibility = View.GONE
                 Log.d("TAG-UAT-Error", requestCode.toString())
             }

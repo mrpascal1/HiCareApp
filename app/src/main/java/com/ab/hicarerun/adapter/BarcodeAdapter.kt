@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.R
 import com.ab.hicarerun.databinding.RowBarcodeItemBinding
+import com.ab.hicarerun.handler.OnBarcodeCountListener
 import com.ab.hicarerun.network.models.TSScannerModel.BarcodeList
 import com.ab.hicarerun.utils.AppUtils
 import com.google.zxing.BarcodeFormat
@@ -21,7 +22,10 @@ import com.google.zxing.oned.Code128Writer
 
 
 class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeList>, private val comingFrom: String) : RecyclerView.Adapter<BarcodeAdapter.MyHolder>(){
-
+    private var onBarcodeCountListener: OnBarcodeCountListener? = null
+    fun setOnBarcodeCountListener(l: OnBarcodeCountListener){
+        onBarcodeCountListener = l
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
         val view = RowBarcodeItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyHolder(view, comingFrom)
@@ -42,6 +46,7 @@ class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeLis
         barcodeList.removeAt(position)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, barcodeList.size)
+        onBarcodeCountListener?.onBarcodeCountListener(barcodeList.size)
     }
 
     class MyHolder(val binding: RowBarcodeItemBinding, private val comingFrom: String): RecyclerView.ViewHolder(binding.root){
@@ -55,7 +60,11 @@ class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeLis
                 binding.verifiedOnLayout.visibility = View.GONE
             }
             if (isVerified == true){
-                binding.verifiedOnTv.text = verifiedOn?.substring(0, 10)
+                val time = AppUtils.reFormatDateTime(verifiedOn, "HH:mm")
+                val date = AppUtils.reFormatDateTime(verifiedOn, "MMM dd, yyyy")
+
+                binding.verifiedOnTv.text = "At $time on $date"
+                //binding.verifiedOnTv.text = verifiedOn?.substring(0, 10)
                 binding.isBarcodeVerified.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_circle_green))
             }else{
                 binding.verifiedOnTv.text = "N/A"

@@ -16,6 +16,7 @@ import com.ab.hicarerun.BaseActivity
 import com.ab.hicarerun.BaseApplication
 import com.ab.hicarerun.adapter.BarcodeAdapter
 import com.ab.hicarerun.databinding.ActivityTsscannerBinding
+import com.ab.hicarerun.handler.OnBarcodeCountListener
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
 import com.ab.hicarerun.network.models.LoginResponse
@@ -102,16 +103,18 @@ class TSScannerActivity : BaseActivity() {
                 getOrderDetails(orderNoInput)
             }else{
                 binding.progressBar.visibility = View.GONE
-                Toast.makeText(this, "Please Enter Order ID", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please Enter Order No", Toast.LENGTH_SHORT).show()
             }
         }
         binding.fab.setOnClickListener {
             val integrator = IntentIntegrator(this)
+            integrator.setCaptureActivity(CaptureActivityPortrait::class.java)
             integrator.setBeepEnabled(false)
+            integrator.setPrompt("Scan a barcode")
             if (isFetched == 1){
                 integrator.initiateScan()
             }else{
-                Toast.makeText(this, "Please Enter Order ID", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please Enter Order No", Toast.LENGTH_SHORT).show()
             }
         }
         binding.saveBtn.setOnClickListener {
@@ -126,6 +129,16 @@ class TSScannerActivity : BaseActivity() {
                 Toast.makeText(applicationContext, "No barcode found", Toast.LENGTH_SHORT).show()
             }
         }
+
+        barcodeAdapter.setOnBarcodeCountListener(object : OnBarcodeCountListener{
+            override fun onBarcodeCountListener(count: Int) {
+                if (count == 0){
+                    binding.barcodeErrorTv.visibility = View.VISIBLE
+                }else{
+                    binding.barcodeErrorTv.visibility = View.GONE
+                }
+            }
+        })
     }
 
     private fun saveBarcodeDetails(){
@@ -140,7 +153,7 @@ class TSScannerActivity : BaseActivity() {
                     if (isSuccess == true){
                         if (data == "Success"){
                             binding.progressBar.visibility = View.GONE
-                            Toast.makeText(applicationContext, "Data Saved Successfully", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(applicationContext, "Barcode is already saved", Toast.LENGTH_SHORT).show()
                             getOrderDetails(order_No.toString())
                         }else{
                             binding.searchBtn.isEnabled = true
@@ -200,7 +213,9 @@ class TSScannerActivity : BaseActivity() {
                     val servicePlan = response?.data?.servicePlan
                     val barcodeList = response?.data?.barcodeList
                     if (response?.data?.barcodeList != null){
+                        var itemsCount = 0
                         for (i in 0 until response.data.barcodeList.size) {
+                            itemsCount++
                             val id = response.data.barcodeList[i].id
                             account_No = response.data.barcodeList[i].account_No
                             order_No = response.data.barcodeList[i].order_No
@@ -216,11 +231,17 @@ class TSScannerActivity : BaseActivity() {
                             modelBarcodeList.add(BarcodeList(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified))
                         }
                         OrderDetails(response.isSuccess, Data(account_No, orderNo, account_Name, startDate, endDate, regionName, serviceGroup, servicePlan, modelBarcodeList), response.errorMessage, response.param1, response.responseMessage)
+                        if (itemsCount > 0){
+                            binding.barcodeErrorTv.visibility = View.GONE
+                        }else{
+                            binding.barcodeErrorTv.visibility = View.VISIBLE
+                        }
                     }
                     populateViews(account_Name, regionName, servicePlan)
                     barcodeAdapter.notifyDataSetChanged()
                     binding.progressBar.visibility = View.GONE
                 }else{
+                    modelBarcodeList.clear()
                     binding.searchBtn.isEnabled = true
                     binding.progressBar.visibility = View.GONE
                     binding.errorTv.text = "Please Enter Valid Order Number."
@@ -230,6 +251,7 @@ class TSScannerActivity : BaseActivity() {
             }
 
             override fun onFailure(requestCode: Int) {
+                modelBarcodeList.clear()
                 binding.progressBar.visibility = View.GONE
                 binding.dataCard.visibility = View.GONE
                 binding.errorTv.text = "Error Occurred."
@@ -289,7 +311,7 @@ class TSScannerActivity : BaseActivity() {
         for (i in 0 until modelBarcodeList.size){
             if(modelBarcodeList[i].barcode_Data == barcode_Data){
                 found = 1
-                Toast.makeText(this, "Barcode Already Inserted", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Barcode is already added", Toast.LENGTH_SHORT).show()
             }
         }
         if (found == 0){
@@ -300,7 +322,12 @@ class TSScannerActivity : BaseActivity() {
             binding.barcodeRecycler.post {
                 binding.barcodeRecycler.smoothScrollToPosition(barcodeAdapter.itemCount - 1)
             }
-            Toast.makeText(this, "Barcode Added", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Barcode is added", Toast.LENGTH_SHORT).show()
+        }
+        if (modelBarcodeList.isEmpty()){
+            binding.barcodeErrorTv.visibility = View.VISIBLE
+        }else{
+            binding.barcodeErrorTv.visibility = View.GONE
         }
     }
 

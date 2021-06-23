@@ -94,7 +94,9 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
 
         binding.scanBtn.setOnClickListener {
             val integrator = IntentIntegrator(this)
+            integrator.setCaptureActivity(CaptureActivityPortrait::class.java)
             integrator.setBeepEnabled(false)
+            integrator.setPrompt("Scan a barcode")
             if (isFetched == 1){
                 if (modelBarcodeList.isNotEmpty()){
                     integrator.initiateScan()
@@ -102,7 +104,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                     Toast.makeText(this, "No barcode found", Toast.LENGTH_SHORT).show()
                 }
             }else{
-                Toast.makeText(this, "Please Enter Order ID", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please Enter Order No", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -114,7 +116,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                 getOrderDetails(orderNoInput)
             }else{
                 binding.progressBar.visibility = View.GONE
-                Toast.makeText(this, "Please Enter Order ID", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please Enter Order No", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -175,7 +177,9 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                     val servicePlan = response?.data?.servicePlan
                     val barcodeList = response?.data?.barcodeList
                     if (response?.data?.barcodeList != null){
+                        var itemsCount = 0
                         for (i in 0 until response.data.barcodeList.size) {
+                            itemsCount++
                             id = response.data.barcodeList[i].id
                             account_No = response.data.barcodeList[i].account_No
                             order_No = response.data.barcodeList[i].order_No
@@ -191,11 +195,17 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                             modelBarcodeList.add(BarcodeList(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified))
                         }
                         OrderDetails(response.isSuccess, Data(accountNo, orderNo, accountName, startDate, endDate, regionName, serviceGroup, servicePlan, modelBarcodeList), response.errorMessage, response.param1, response.responseMessage)
+                        if (itemsCount > 0){
+                            binding.barcodeErrorTv.visibility = View.GONE
+                        }else{
+                            binding.barcodeErrorTv.visibility = View.VISIBLE
+                        }
                     }
                     populateViews(accountName, regionName, servicePlan)
                     barcodeAdapter.notifyDataSetChanged()
                     binding.progressBar.visibility = View.GONE
                 }else{
+                    modelBarcodeList.clear()
                     binding.progressBar.visibility = View.GONE
                     binding.errorTv.text = "Please Enter Valid Order Number."
                     binding.errorTv.visibility = View.VISIBLE
@@ -204,6 +214,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
             }
 
             override fun onFailure(requestCode: Int) {
+                modelBarcodeList.clear()
                 binding.progressBar.visibility = View.GONE
                 binding.dataCard.visibility = View.GONE
                 binding.errorTv.text = "Error Occurred."

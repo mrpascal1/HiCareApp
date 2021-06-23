@@ -208,6 +208,18 @@
         </RelativeLayout>
     </ScrollView>
 
+    <TextView
+        android:id="@+id/barcodeErrorTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="No Data found"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2"
+        android:visibility="gone"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/barcodeRecycler"
         android:layout_width="match_parent"
