@@ -247,7 +247,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                     if (response.isSuccess == true){
                         if (response.data == "Verified"){
                             binding.progressBar.visibility = View.GONE
-                            Toast.makeText(applicationContext, "Barcode Verified", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(applicationContext, "Barcode is verified", Toast.LENGTH_SHORT).show()
                         }
                     }else{
                         Log.d("TAG-VERIFIER", "Something wrong ${response.data}")
@@ -283,7 +283,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                     }
                 }else{
                     binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this, "Barcode already verified", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Barcode is already verified", Toast.LENGTH_SHORT).show()
                 }
                 found = 1
             }

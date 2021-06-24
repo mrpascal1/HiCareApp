@@ -153,7 +153,7 @@ class TSScannerActivity : BaseActivity() {
                     if (isSuccess == true){
                         if (data == "Success"){
                             binding.progressBar.visibility = View.GONE
-                            Toast.makeText(applicationContext, "Barcode is already saved", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(applicationContext, "Barcode is saved", Toast.LENGTH_SHORT).show()
                             getOrderDetails(order_No.toString())
                         }else{
                             binding.searchBtn.isEnabled = true
