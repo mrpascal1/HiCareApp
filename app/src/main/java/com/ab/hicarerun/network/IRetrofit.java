@@ -550,4 +550,7 @@ public interface IRetrofit {
 
     @POST("Barcode/VerifyBarcodeDetails")
     Call<BaseResponse> verifyBarcode(@Body HashMap<String, Object> verification);
+
+    @POST("Barcode/DeleteBarcodeDetails")
+    Call<BaseResponse> deleteBarcode(@Body HashMap<String, Object> details);
 }

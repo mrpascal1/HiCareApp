@@ -192,7 +192,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                             verified_By = response.data.barcodeList[i].verified_By
                             created_By = response.data.barcodeList[i].created_By
                             isVerified = response.data.barcodeList[i].isVerified
-                            modelBarcodeList.add(BarcodeList(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified))
+                            modelBarcodeList.add(BarcodeList(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, "no"))
                         }
                         OrderDetails(response.isSuccess, Data(accountNo, orderNo, accountName, startDate, endDate, regionName, serviceGroup, servicePlan, modelBarcodeList), response.errorMessage, response.param1, response.responseMessage)
                         if (itemsCount > 0){
@@ -200,6 +200,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                         }else{
                             binding.barcodeErrorTv.visibility = View.VISIBLE
                         }
+                        binding.boxesTitleTv.text = "Bait Station: (${modelBarcodeList.size})"
                     }
                     populateViews(accountName, regionName, servicePlan)
                     barcodeAdapter.notifyDataSetChanged()
@@ -274,7 +275,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
             if(modelBarcodeList[i].barcode_Data == barcode_Data){
                 if (modelBarcodeList[i].isVerified == false){
                     modelBarcodeList[i] = BarcodeList(modelBarcodeList[i].id, account_No, order_No, account_Name, barcode_Data,
-                        last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified)
+                        last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, "no")
                     Log.d("TAG-Veri", id.toString())
                     verifyBarcode(modelBarcodeList[i].id, "TSVerification", account_No, order_No, barcode_Data, lat, long, last_Verified_On, last_Verified_By)
                     barcodeAdapter.notifyItemChanged(i)

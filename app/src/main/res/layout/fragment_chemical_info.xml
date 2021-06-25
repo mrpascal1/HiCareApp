@@ -145,7 +145,7 @@
                     android:layout_marginRight="100dp"
                     android:background="@drawable/button_background"
                     android:clickable="true"
-                    android:text="Rodent Scanner"
+                    android:text="Check Bait Station"
                     android:textAllCaps="false"
                     android:textColor="@color/white" />
 

@@ -15,5 +15,6 @@ data class BarcodeList (
 	@SerializedName("Created_By_Id_User") val created_By_Id_User : Int?,
 	@SerializedName("Verified_By") val verified_By : String?,
 	@SerializedName("Created_By") val created_By : String?,
-	@SerializedName("IsVerified") val isVerified : Boolean?
+	@SerializedName("IsVerified") val isVerified : Boolean?,
+	var callForDelete : String?
 )
