@@ -251,11 +251,7 @@ class TSScannerActivity : BaseActivity() {
                         }else{
                             binding.barcodeErrorTv.visibility = View.VISIBLE
                         }
-                        if (modelBarcodeList.size > 1) {
-                            binding.boxesTitleTv.text = "Bait Stations: (${modelBarcodeList.size})"
-                        } else {
-                            binding.boxesTitleTv.text = "Bait Station: (${modelBarcodeList.size})"
-                        }
+                        binding.boxesTitleTv.text = "Bait Stations: (${modelBarcodeList.size})"
                     }
                     populateViews(account_Name, regionName, servicePlan)
                     barcodeAdapter.notifyDataSetChanged()
@@ -369,11 +365,7 @@ class TSScannerActivity : BaseActivity() {
         }else{
             binding.barcodeErrorTv.visibility = View.GONE
         }
-        if (modelBarcodeList.size > 1) {
-            binding.boxesTitleTv.text = "Bait Stations: (${modelBarcodeList.size})"
-        } else {
-            binding.boxesTitleTv.text = "Bait Station: (${modelBarcodeList.size})"
-        }
+        binding.boxesTitleTv.text = "Bait Stations: (${modelBarcodeList.size})"
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
