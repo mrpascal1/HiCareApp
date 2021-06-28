@@ -153,6 +153,40 @@ public class BaseApplication extends Application {
         return retrofit;
     }
 
+    public static IRetrofit getB2BWoWApi() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setExclusionStrategies(new ExclusionStrategy() {
+            @Override
+            public boolean shouldSkipField(FieldAttributes f) {
+                return f.getDeclaringClass().equals(RealmObject.class);
+            }
+
+            @Override
+            public boolean shouldSkipClass(Class<?> clazz) {
+                return false;
+            }
+        });
+        gsonBuilder.registerTypeAdapter(new TypeToken<RealmList<RealmString>>() {
+        }.getType(), RealmStringListTypeAdapter.INSTANCE);
+
+        Gson gson = gsonBuilder.create();
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
+
+        if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            httpClientBuilder.addInterceptor(loggingInterceptor);
+        }
+
+        IRetrofit retrofit = new Retrofit.Builder().baseUrl(IRetrofit.B2B_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .callFactory(httpClientBuilder.build())
+                .build()
+                .create(IRetrofit.class);
+
+        return retrofit;
+    }
+
     public static IRetrofit getQRCodeApi(){
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setExclusionStrategies(new ExclusionStrategy() {

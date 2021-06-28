@@ -26,6 +26,7 @@ import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.BarcodeVerificatonActivity;
 import com.ab.hicarerun.activities.ServiceRenewalActivity;
 import com.ab.hicarerun.adapter.ChemicalRecycleAdapter;
+import com.ab.hicarerun.adapter.TaskViewPagerAdapter;
 import com.ab.hicarerun.databinding.FragmentChemicalInfoBinding;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
 import com.ab.hicarerun.network.NetworkCallController;
@@ -49,37 +50,27 @@ import io.realm.RealmResults;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ChemicalInfoFragment extends BaseFragment implements NetworkResponseListner<List<Chemicals>> {
+public class ChemicalInfoFragment extends BaseFragment {
     FragmentChemicalInfoBinding mFragmentChemicalInfoBinding;
     public static final String ARGS_TASKS = "ARGS_TASKS";
     public static final String ARGS_COMBINED_TASKS = "ARGS_COMBINED_TASKS";
     public static final String ARGS_COMBINED_ID = "ARGS_COMBINED_ID";
     private static final int CHEMICAL_REQ = 1000;
     private Boolean isVerified = false;
-    RecyclerView.LayoutManager layoutManager;
-    private Integer pageNumber = 1;
-    ProgressDialog mProgressBar;
-    ChemicalRecycleAdapter mAdapter;
+
+    TaskViewPagerAdapter mAdapter;
     private OnSaveEventHandler mCallback;
-    private HashMap<Integer, String> map = new HashMap<>();
-    private List<TaskChemicalList> ChemList = new ArrayList<>();
-    RealmResults<GeneralData> mGeneralRealmData = null;
-    private String status = "";
-    private String ActualStatus = "";
-    private boolean isChemicalChecked = false;
     //    private Tasks model;
     private String taskId = "";
     private String combinedTaskId = "";
     private boolean isCombinedTask = false;
-    private boolean showStandardChemicals = false;
 
     public ChemicalInfoFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public void onSaveInstanceState(Bundle oldInstanceState)
-    {
+    public void onSaveInstanceState(Bundle oldInstanceState) {
         super.onSaveInstanceState(oldInstanceState);
         oldInstanceState.clear();
     }
@@ -127,192 +118,22 @@ public class ChemicalInfoFragment extends BaseFragment implements NetworkRespons
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mGeneralRealmData =
-                getRealm().where(GeneralData.class).findAll();
-        mFragmentChemicalInfoBinding.recycleView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(getActivity());
-        mFragmentChemicalInfoBinding.recycleView.setLayoutManager(layoutManager);
-        ViewCompat.setNestedScrollingEnabled(mFragmentChemicalInfoBinding.recycleView, false);
-        if (isCombinedTask) {
-            mFragmentChemicalInfoBinding.txtType.setVisibility(View.VISIBLE);
-        } else {
-            mFragmentChemicalInfoBinding.txtType.setVisibility(View.GONE);
-        }
-        if (map != null) {
-            map.clear();
-        }
-        if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
-            showStandardChemicals = mGeneralRealmData.get(0).getShow_Standard_Chemicals();
-        }
-        if (showStandardChemicals) {
-            mFragmentChemicalInfoBinding.txtStandard.setVisibility(View.VISIBLE);
-        } else {
-            mFragmentChemicalInfoBinding.txtStandard.setVisibility(View.GONE);
-        }
-        mAdapter = new ChemicalRecycleAdapter(getActivity(), isCombinedTask, showStandardChemicals, (position, charSeq) -> {
-            try {
-                if (charSeq != null && map != null) {
-                    map.put(position, charSeq);
-                    Log.i("MAP_VALUE", Objects.requireNonNull(map.get(position)));
-                    if (map.containsValue("")) {
-                        map.remove(position);
-                    } else {
-                        ChemList.clear();
-                        for (int i = 0; i < map.size(); i++) {
-                            TaskChemicalList ChemModel = new TaskChemicalList();
-                            ChemModel.setId(mAdapter.getItem(i).getId());
-                            ChemModel.setCWFProductName(mAdapter.getItem(i).getName());
-                            ChemModel.setConsumption(mAdapter.getItem(i).getConsumption());
-                            ChemModel.setStandard(mAdapter.getItem(i).getStandard());
-                            ChemModel.setOrignal(mAdapter.getItem(i).getOrignal());
-                            if (mAdapter.getItem(i).getOrignal() != null) {
-                                if (mAdapter.getItem(i).getOrignal().equals(map.get(i))) {
-                                    ChemModel.setChemicalChanged(false);
-                                } else {
-                                    ChemModel.setChemicalChanged(true);
-                                }
-                            } else {
-                                ChemModel.setChemicalChanged(true);
-                            }
-
-                            ChemModel.setActual(map.get(i));
-                            ChemList.add(ChemModel);
-                        }
-                        mCallback.chemReqList(ChemList);
-                    }
-                    mCallback.isActualChemicalChanged(isChemicalChanged(ChemList));
-                    for (int i = 0; i < mAdapter.getItemCount(); i++)
-                        getValidation(i);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        });
-
-
-        mFragmentChemicalInfoBinding.checkChemVerified.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            try {
-                isChemicalChecked = isChecked;
-                for (int i = 0; i < mAdapter.getItemCount(); i++)
-                    getValidation(i);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-
-        mFragmentChemicalInfoBinding.recycleView.setAdapter(mAdapter);
-
-        mFragmentChemicalInfoBinding.btnRodentScanner.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), BarcodeVerificatonActivity.class);
-//                intent.putExtra(ServiceRenewalActivity.ARGS_TASKS, taskId);
-                startActivity(intent);
-            }
-        });
-
-        setChemicals();
+        setViewPager();
     }
 
-    private static boolean isChemicalChanged(List<TaskChemicalList> arraylist) {
-        for (TaskChemicalList list : arraylist) {
-            if (list.getChemicalChanged()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void setChemicals() {
+    public void setViewPager() {
         try {
-            if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
-                assert mGeneralRealmData.get(0) != null;
-                isVerified = mGeneralRealmData.get(0).getAutoSubmitChemicals();
-                assert mGeneralRealmData.get(0) != null;
-                ActualStatus = mGeneralRealmData.get(0).getSchedulingStatus();
-                NetworkCallController controller = new NetworkCallController(this);
-                controller.setListner(this);
-                if (isCombinedTask) {
-                    controller.getMSTChemicals(CHEMICAL_REQ, combinedTaskId);
-                } else {
-                    controller.getChemicals(CHEMICAL_REQ, taskId);
-                }
-
-                callAfterResponse();
-            }
+            mFragmentChemicalInfoBinding.viewPager.setOffscreenPageLimit(2);
+            mAdapter = new TaskViewPagerAdapter(getChildFragmentManager(), getActivity());
+            mAdapter.addFragment(ChemicalActualFragment.newInstance(taskId, combinedTaskId, isCombinedTask), "ACTUAL");
+            mAdapter.addFragment(ChemicalStandardFragment.newInstance(), "STANDARD");
+            mFragmentChemicalInfoBinding.viewpagertab.setDistributeEvenly(true);
+            mFragmentChemicalInfoBinding.viewPager.setAdapter(mAdapter);
+            mFragmentChemicalInfoBinding.viewpagertab.setViewPager(mFragmentChemicalInfoBinding.viewPager);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-
-    @Override
-    public void onResponse(int requestCode, List<Chemicals> items) {
-        try {
-            if (items != null) {
-                if (pageNumber == 1 && items.size() > 0) {
-                    mAdapter.setData(items);
-                    mAdapter.notifyDataSetChanged();
-                } else if (items.size() > 0) {
-                    mAdapter.addData(items);
-                    mAdapter.notifyDataSetChanged();
-                } else {
-                    pageNumber--;
-                }
-                callAfterResponse();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onFailure(int requestCode) {
-    }
-
-    private void getValidation(int position) {
-        try {
-            if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
-                assert mGeneralRealmData.get(0) != null;
-                isVerified = mGeneralRealmData.get(0).getAutoSubmitChemicals();
-                Log.i("chemicalcount", String.valueOf(mAdapter.getItemCount()));
-                Log.i("mapcount", String.valueOf(map.size()));
-                Log.i("mapcount", String.valueOf(map.keySet() + " , " + map.values()));
-                if (!isVerified) {
-                    if (map.size() == mAdapter.getItemCount()) {
-                        mCallback.isChemicalChanged(false);
-                    } else {
-                        mCallback.isChemicalChanged(true);
-                    }
-                    if (isChemicalChecked) {
-                        mCallback.isChemicalVerified(false);
-                    } else {
-                        mCallback.isChemicalVerified(true);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void callAfterResponse() {
-        try {
-            if (isVerified || ActualStatus.equals("Completed") || ActualStatus.equals("Incomplete")) {
-                mFragmentChemicalInfoBinding.checkChemVerified.setEnabled(false);
-                mFragmentChemicalInfoBinding.checkChemVerified.setChecked(true);
-            } else {
-                mFragmentChemicalInfoBinding.relChemicals.setVisibility(View.VISIBLE);
-                mFragmentChemicalInfoBinding.checkChemVerified.setEnabled(true);
-                mFragmentChemicalInfoBinding.checkChemVerified.setChecked(false);
-            }
-            for (int i = 0; i < mAdapter.getItemCount(); i++) {
-                getValidation(i);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 }

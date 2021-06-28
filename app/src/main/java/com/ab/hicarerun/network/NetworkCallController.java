@@ -26,6 +26,8 @@ import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListRequest;
 import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListResponse;
 import com.ab.hicarerun.network.models.ChemicalCountModel.ChemicalCountResponse;
 import com.ab.hicarerun.network.models.ChemicalModel.ChemicalResponse;
+import com.ab.hicarerun.network.models.ChemicalModel.ServiceAreaChemicalResponse;
+import com.ab.hicarerun.network.models.ChemicalModel.ServiceChemicalData;
 import com.ab.hicarerun.network.models.ConsulationModel.ConsulationResponse;
 import com.ab.hicarerun.network.models.ConsulationModel.Data;
 import com.ab.hicarerun.network.models.ConsulationModel.RecommendationResponse;
@@ -4717,7 +4719,7 @@ public class NetworkCallController {
 
     }
 
-    public void getOrderNoDetails(String orderId, String userId){
+    public void getOrderNoDetails(String orderId, String userId) {
         BaseApplication.getRetrofitAPI(false)
                 .getOrderDetails(orderId, userId)
                 .enqueue(new Callback<OrderDetails>() {
@@ -4738,13 +4740,13 @@ public class NetworkCallController {
                 });
     }
 
-    public void saveBarcodeList(int requestCode, ArrayList<BarcodeList> barcodeList){
+    public void saveBarcodeList(int requestCode, ArrayList<BarcodeList> barcodeList) {
         BaseApplication.getRetrofitAPI(false)
                 .saveBarcode(barcodeList)
                 .enqueue(new Callback<BaseResponse>() {
                     @Override
                     public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
-                        if (response.body() != null){
+                        if (response.body() != null) {
                             mListner.onResponse(requestCode, response.body());
                         }
                     }
@@ -4756,13 +4758,13 @@ public class NetworkCallController {
                 });
     }
 
-    public void verifyBarcodeDetails(int requestCode, HashMap<String, Object> verifyDetails){
+    public void verifyBarcodeDetails(int requestCode, HashMap<String, Object> verifyDetails) {
         BaseApplication.getRetrofitAPI(false)
                 .verifyBarcode(verifyDetails)
                 .enqueue(new Callback<BaseResponse>() {
                     @Override
                     public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
-                        if (response.body() != null){
+                        if (response.body() != null) {
                             mListner.onResponse(requestCode, response.body());
                         }
                     }
@@ -4773,6 +4775,7 @@ public class NetworkCallController {
                     }
                 });
     }
+
 
     public void deleteBarcodeDetails(int requestCode, HashMap<String, Object> details){
         BaseApplication.getRetrofitAPI(false)
@@ -4784,13 +4787,36 @@ public class NetworkCallController {
                             mListner.onResponse(requestCode, response.body());
                         }
                     }
-
                     @Override
                     public void onFailure(Call<BaseResponse> call, Throwable t) {
                         mListner.onFailure(requestCode);
                     }
                 });
     }
+                          
+
+    public void getServiceAreaChemical(int activityId, int serviceNo, String serviceType, boolean showAllServices) {
+        BaseApplication.getB2BWoWApi()
+                .getServiceAreaChemical(activityId, serviceNo, serviceType, showAllServices)
+                .enqueue(new Callback<ServiceAreaChemicalResponse>() {
+                    @Override
+                    public void onResponse(Call<ServiceAreaChemicalResponse> call, Response<ServiceAreaChemicalResponse> response) {
+                        if (response.body() != null) {
+                            String responseBody = response.body().toString();
+                            mListner.onResponse(20211, response.body().getData());
+                            //Log.d("TAG-UAT", responseBody);
+                        }
+                    }
+
+                  @Override
+                    public void onFailure(Call<ServiceAreaChemicalResponse> call, Throwable t) {
+                        Log.d("TAG-UAT-Error", t.getMessage());
+                        mListner.onFailure(20211);
+                    }
+                });
+    }                    
+
+
     public String getRefreshToken() {
         String refreshToken = null;
         try {

@@ -424,8 +424,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             } else {
                                 isUpiPaymentNotDone = false;
                             }
-
-
+                            AppUtils.getServiceChemicalArea(149, 1, "CMS", true);
                             isPostJobCompletionDone = response.getData().getPostJob_Checklist_Done();
 
                             sta = response.getData().getSchedulingStatus();

@@ -3,6 +3,7 @@ package com.ab.hicarerun.utils;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -42,6 +43,8 @@ import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.AttendanceModel.AttendanceRequest;
+import com.ab.hicarerun.network.models.ChemicalModel.ServiceChemicalData;
+import com.ab.hicarerun.network.models.ChemicalModel.TowerData;
 import com.ab.hicarerun.network.models.ConsulationModel.Data;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralPaymentMode;
@@ -76,13 +79,16 @@ public class AppUtils {
     private static final int ERROR_REQUEST = 3000;
     private static final int RESOURCE_REQ = 4000;
     private static final int CONSINS_REQ = 5000;
+    private static final int ACTIVITY_REQ = 6000;
     public static int Ins_Size = 0;
-
 
     public static List<Data> dataList = new ArrayList<>();
     public static List<Data> consulationList = null;
     public static List<Data> inspectionList = null;
     public static List<Data> ConsInsList = null;
+    public static List<TowerData> towerData = null;
+    public static List<TowerData> mCommonTowerList = null;
+    public static List<TowerData> mRegularTowerList = null;
     public static boolean isInspectionDone = false;
     public static String appointmentDate = "";
     public static String infestationLevel = "";
@@ -789,6 +795,33 @@ public class AppUtils {
                 }
             });
             controller.getConsolution(CONSINS_REQ, resourceId, taskId, lang);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void getServiceChemicalArea(int activityId, int serviceNo, String serviceType, boolean showAllService) {
+        try {
+            NetworkCallController controller = new NetworkCallController();
+            controller.setListner(new NetworkResponseListner<List<ServiceChemicalData>>() {
+                @Override
+                public void onResponse(int requestCode, List<ServiceChemicalData> items) {
+                    towerData = new ArrayList<>();
+                    for (ServiceChemicalData data : items) {
+                        if(data.getAreaType().equals("Common Area")){
+                            towerData.addAll(data.getTower());
+                        }else {
+                            towerData.addAll(data.getTower());
+                        }
+
+                    }
+                }
+
+                @Override
+                public void onFailure(int requestCode) {
+                }
+            });
+            controller.getServiceAreaChemical(activityId, serviceNo, serviceType, showAllService);
         } catch (Exception e) {
             e.printStackTrace();
         }
