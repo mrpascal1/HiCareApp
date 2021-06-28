@@ -232,11 +232,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                         } else {
                             binding.barcodeErrorTv.visibility = View.VISIBLE
                         }
-                        if (modelBarcodeList.size > 1) {
-                            binding.boxesTitleTv.text = "Bait Stations: (${modelBarcodeList.size})"
-                        } else {
-                            binding.boxesTitleTv.text = "Bait Station: (${modelBarcodeList.size})"
-                        }
+                        binding.boxesTitleTv.text = "Bait Stations: (${modelBarcodeList.size})"
                     }
                     populateViews(accountName, regionName, servicePlan)
                     barcodeAdapter.notifyDataSetChanged()
