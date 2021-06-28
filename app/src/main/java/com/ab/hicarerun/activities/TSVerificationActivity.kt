@@ -176,7 +176,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                     val serviceGroup = response?.data?.serviceGroup
                     val servicePlan = response?.data?.servicePlan
                     val barcodeList = response?.data?.barcodeList
-                    if (response?.data?.barcodeList != null){
+                    if (response?.data?.barcodeList != null) {
                         var itemsCount = 0
                         for (i in 0 until response.data.barcodeList.size) {
                             itemsCount++
@@ -192,15 +192,51 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                             verified_By = response.data.barcodeList[i].verified_By
                             created_By = response.data.barcodeList[i].created_By
                             isVerified = response.data.barcodeList[i].isVerified
-                            modelBarcodeList.add(BarcodeList(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, "no"))
+                            modelBarcodeList.add(
+                                BarcodeList(
+                                    id,
+                                    account_No,
+                                    order_No,
+                                    account_Name,
+                                    barcode_Data,
+                                    last_Verified_On,
+                                    last_Verified_By,
+                                    created_On,
+                                    created_By_Id_User,
+                                    verified_By,
+                                    created_By,
+                                    isVerified,
+                                    "no"
+                                )
+                            )
                         }
-                        OrderDetails(response.isSuccess, Data(accountNo, orderNo, accountName, startDate, endDate, regionName, serviceGroup, servicePlan, modelBarcodeList), response.errorMessage, response.param1, response.responseMessage)
-                        if (itemsCount > 0){
+                        OrderDetails(
+                            response.isSuccess,
+                            Data(
+                                accountNo,
+                                orderNo,
+                                accountName,
+                                startDate,
+                                endDate,
+                                regionName,
+                                serviceGroup,
+                                servicePlan,
+                                modelBarcodeList
+                            ),
+                            response.errorMessage,
+                            response.param1,
+                            response.responseMessage
+                        )
+                        if (itemsCount > 0) {
                             binding.barcodeErrorTv.visibility = View.GONE
-                        }else{
+                        } else {
                             binding.barcodeErrorTv.visibility = View.VISIBLE
                         }
-                        binding.boxesTitleTv.text = "Bait Station: (${modelBarcodeList.size})"
+                        if (modelBarcodeList.size > 1) {
+                            binding.boxesTitleTv.text = "Bait Stations: (${modelBarcodeList.size})"
+                        } else {
+                            binding.boxesTitleTv.text = "Bait Station: (${modelBarcodeList.size})"
+                        }
                     }
                     populateViews(accountName, regionName, servicePlan)
                     barcodeAdapter.notifyDataSetChanged()

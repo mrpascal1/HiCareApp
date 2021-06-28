@@ -59,7 +59,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         val view = binding.root
         setContentView(view)
         //addFragment(BarcodeVerificationFragment.newInstance(/*order_No*/),"BarcodeVerificatonActivity-BarcodeVerificationFragment")
-        binding.toolbar.setTitle("Rodent Box Scanner")
+        binding.toolbar.setTitle("Check Bait Stations")
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.progressBar.visibility = View.VISIBLE

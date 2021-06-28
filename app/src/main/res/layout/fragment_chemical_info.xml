@@ -110,7 +110,8 @@
                     android:divider="@null" />
 
 
-                <RelativeLayout
+                <LinearLayout
+                    android:orientation="horizontal"
                     android:id="@+id/rel_chemicals"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
@@ -120,23 +121,39 @@
                     android:paddingTop="10dp">
 
 
+
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnRodentScanner"
+                        android:layout_width="match_parent"
+                        android:layout_height="38dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="35dp"
+                        android:background="@drawable/button_background"
+                        android:clickable="true"
+                        android:text="Check Bait Stations"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white" />
                     <androidx.appcompat.widget.AppCompatCheckBox
                         android:id="@+id/check_chem_verified"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_marginLeft="-3dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
                         android:buttonTint="@color/colorAccentDrawerPrimaryLight"
                         android:paddingLeft="5dp"
                         android:text="@string/chemical_verified"
                         android:textColor="@color/black"
                         app:tabTextAppearance="@style/calligraphy_font"
                         android:textSize="18dp" />
-                </RelativeLayout>
+                </LinearLayout>
 
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnRodentScanner"
+                    android:id="@+id/btnRodentScannerOld"
                     android:layout_width="match_parent"
                     android:layout_height="38dp"
                     android:layout_below="@id/view"
@@ -147,7 +164,8 @@
                     android:clickable="true"
                     android:text="Check Bait Station"
                     android:textAllCaps="false"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:visibility="gone"/>
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
