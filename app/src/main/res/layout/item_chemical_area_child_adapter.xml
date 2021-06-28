@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardUseCompatPadding="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        app:cardElevation="4dp"
+        android:layout_marginTop="5dp">
+        <LinearLayout
+            android:id="@+id/cardArea"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="5dp"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/lnrTop"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+
+                        <LinearLayout
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center_horizontal"
+                            android:visibility="gone">
+
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/imgType"
+                                android:layout_width="26dp"
+                                android:layout_height="26dp"
+                                android:layout_gravity="center" />
+
+                        </LinearLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/txtHeader"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="10dp"
+                                android:ellipsize="end"
+                                android:gravity="center_vertical"
+                                android:lineSpacingMultiplier="1.2"
+                                android:singleLine="true"
+                                android:text="Cockroach Service(CMS)"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:id="@+id/lnrAddActivity"
+                                android:layout_width="wrap_content"
+                                android:layout_height="27dp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="10dp"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginTop="3dp"
+                                android:layout_centerVertical="true"
+                                android:layout_marginRight="7dp"
+                                android:background="@drawable/button_border"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="0.6"
+                                    android:layout_marginLeft="7dp"
+                                    android:gravity="center">
+
+
+                                    <ImageView
+                                        android:layout_width="10dp"
+                                        android:layout_height="10dp"
+                                        android:layout_gravity="center"
+                                        app:srcCompat="@drawable/ic_add_activity" />
+
+                                </LinearLayout>
+
+
+                                <TextView
+                                    android:id="@+id/txtAdd"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:background="?android:attr/selectableItemBackground"
+                                    android:gravity="center"
+                                    android:layout_marginLeft="7dp"
+                                    android:layout_marginRight="7dp"
+                                    android:text="Activity"
+                                    android:textSize="11sp"
+                                    android:textColor="@color/white" />
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+</layout>

@@ -1,0 +1,140 @@
+Index: app/src/main/res/layout/fragment_chemical_info.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<layout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    >\r\n\r\n\r\n    <LinearLayout\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"match_parent\"\r\n        android:orientation=\"vertical\">\r\n\r\n\r\n        <androidx.core.widget.NestedScrollView\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"match_parent\"\r\n            android:background=\"@color/white\"\r\n            android:fillViewport=\"true\"\r\n            app:layout_behavior=\"@string/appbar_scrolling_view_behavior\">\r\n\r\n            <LinearLayout\r\n                android:layout_width=\"match_parent\"\r\n                android:layout_height=\"match_parent\"\r\n                android:layout_marginTop=\"10dp\"\r\n                android:orientation=\"vertical\">\r\n\r\n                <View\r\n                    android:layout_width=\"match_parent\"\r\n                    android:layout_height=\"0.3dp\"\r\n                    android:background=\"@color/black\" />\r\n\r\n                <LinearLayout\r\n                    android:id=\"@+id/relativeLayout1\"\r\n                    android:layout_width=\"fill_parent\"\r\n                    android:layout_height=\"40dp\"\r\n                    android:gravity=\"center\"\r\n                    android:background=\"@color/tab_textColor\">\r\n\r\n                    <TextView\r\n                        android:id=\"@+id/txtType\"\r\n                        android:layout_width=\"0dp\"\r\n                        android:layout_height=\"wrap_content\"\r\n                        android:layout_weight=\"1\"\r\n\r\n                        android:ellipsize=\"end\"\r\n                        android:gravity=\"center\"\r\n                        android:padding=\"5dp\"\r\n                        android:singleLine=\"true\"\r\n                        android:text=\"@string/type_chemicals\"\r\n                        android:textColor=\"@color/black\" />\r\n\r\n                    <TextView\r\n                        android:layout_width=\"0dp\"\r\n                        android:layout_height=\"wrap_content\"\r\n                        android:layout_weight=\"1.7\"\r\n                        android:ellipsize=\"end\"\r\n                        android:gravity=\"center\"\r\n                        android:padding=\"5dp\"\r\n                        android:singleLine=\"true\"\r\n                        android:text=\"@string/name\"\r\n                        android:textColor=\"@color/black\"\r\n                        app:tabTextAppearance=\"@style/calligraphy_font\"/>\r\n\r\n                    <TextView\r\n                        android:layout_width=\"0dp\"\r\n                        android:layout_height=\"wrap_content\"\r\n                        android:layout_weight=\"0.6\"\r\n                        android:ellipsize=\"end\"\r\n                        android:gravity=\"center\"\r\n                        android:padding=\"5dp\"\r\n                        android:singleLine=\"true\"\r\n                        android:text=\"@string/unit_chemicals\"\r\n                        android:textColor=\"@color/black\"\r\n                        app:tabTextAppearance=\"@style/calligraphy_font\"/>\r\n\r\n                    <TextView\r\n                        android:id=\"@+id/txtStandard\"\r\n                        android:layout_width=\"0dp\"\r\n                        android:layout_height=\"wrap_content\"\r\n                        android:layout_weight=\"0.9\"\r\n                        android:ellipsize=\"end\"\r\n                        android:gravity=\"center\"\r\n                        android:padding=\"5dp\"\r\n                        android:singleLine=\"true\"\r\n                        android:text=\"@string/standard\"\r\n                        android:textColor=\"@color/black\"\r\n                        />\r\n\r\n                    <TextView\r\n                        android:layout_width=\"0dp\"\r\n                        android:layout_height=\"wrap_content\"\r\n                        android:layout_weight=\"0.9\"\r\n                        android:ellipsize=\"end\"\r\n                        android:gravity=\"center\"\r\n                        android:padding=\"5dp\"\r\n                        android:singleLine=\"true\"\r\n                        android:text=\"@string/actual\"\r\n                        android:textColor=\"@color/black\" />\r\n                </LinearLayout>\r\n\r\n                <View\r\n                    android:layout_width=\"match_parent\"\r\n                    android:layout_height=\"0.3dp\"\r\n                    android:background=\"@color/black\" />\r\n\r\n                <androidx.recyclerview.widget.RecyclerView\r\n                    android:id=\"@+id/recycleView\"\r\n                    android:layout_width=\"match_parent\"\r\n                    android:layout_height=\"wrap_content\"\r\n                    android:nestedScrollingEnabled=\"false\"\r\n                    android:divider=\"@null\" />\r\n\r\n\r\n                <RelativeLayout\r\n                    android:id=\"@+id/rel_chemicals\"\r\n                    android:layout_width=\"match_parent\"\r\n                    android:layout_height=\"50dp\"\r\n                    android:layout_marginLeft=\"10dp\"\r\n                    android:layout_marginTop=\"8dp\"\r\n                    android:layout_marginRight=\"10dp\"\r\n                    android:paddingTop=\"10dp\">\r\n\r\n\r\n                    <androidx.appcompat.widget.AppCompatCheckBox\r\n                        android:id=\"@+id/check_chem_verified\"\r\n                        android:layout_width=\"match_parent\"\r\n                        android:layout_height=\"wrap_content\"\r\n                        android:layout_alignParentLeft=\"true\"\r\n                        android:layout_marginLeft=\"-3dp\"\r\n                        android:buttonTint=\"@color/colorAccentDrawerPrimaryLight\"\r\n                        android:paddingLeft=\"5dp\"\r\n                        android:text=\"@string/chemical_verified\"\r\n                        android:textColor=\"@color/black\"\r\n                        app:tabTextAppearance=\"@style/calligraphy_font\"\r\n                        android:textSize=\"18dp\" />\r\n                </RelativeLayout>\r\n\r\n            </LinearLayout>\r\n        </androidx.core.widget.NestedScrollView>\r\n\r\n\r\n    </LinearLayout>\r\n</layout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/fragment_chemical_info.xml	(revision d9bfb27815a2c9249acdb47a60f72ada6af8b808)
++++ app/src/main/res/layout/fragment_chemical_info.xml	(date 1624607691016)
+@@ -1,7 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <layout xmlns:android="http://schemas.android.com/apk/res/android"
+-    xmlns:app="http://schemas.android.com/apk/res-auto"
+-    >
++    xmlns:app="http://schemas.android.com/apk/res-auto">
+ 
+ 
+     <LinearLayout
+@@ -32,8 +31,8 @@
+                     android:id="@+id/relativeLayout1"
+                     android:layout_width="fill_parent"
+                     android:layout_height="40dp"
+-                    android:gravity="center"
+-                    android:background="@color/tab_textColor">
++                    android:background="@color/tab_textColor"
++                    android:gravity="center">
+ 
+                     <TextView
+                         android:id="@+id/txtType"
+@@ -58,7 +57,7 @@
+                         android:singleLine="true"
+                         android:text="@string/name"
+                         android:textColor="@color/black"
+-                        app:tabTextAppearance="@style/calligraphy_font"/>
++                        app:tabTextAppearance="@style/calligraphy_font" />
+ 
+                     <TextView
+                         android:layout_width="0dp"
+@@ -70,7 +69,7 @@
+                         android:singleLine="true"
+                         android:text="@string/unit_chemicals"
+                         android:textColor="@color/black"
+-                        app:tabTextAppearance="@style/calligraphy_font"/>
++                        app:tabTextAppearance="@style/calligraphy_font" />
+ 
+                     <TextView
+                         android:id="@+id/txtStandard"
+@@ -82,8 +81,7 @@
+                         android:padding="5dp"
+                         android:singleLine="true"
+                         android:text="@string/standard"
+-                        android:textColor="@color/black"
+-                        />
++                        android:textColor="@color/black" />
+ 
+                     <TextView
+                         android:layout_width="0dp"
+@@ -106,8 +104,8 @@
+                     android:id="@+id/recycleView"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+-                    android:nestedScrollingEnabled="false"
+-                    android:divider="@null" />
++                    android:divider="@null"
++                    android:nestedScrollingEnabled="false" />
+ 
+ 
+                 <RelativeLayout
+@@ -130,10 +128,25 @@
+                         android:paddingLeft="5dp"
+                         android:text="@string/chemical_verified"
+                         android:textColor="@color/black"
+-                        app:tabTextAppearance="@style/calligraphy_font"
+-                        android:textSize="18dp" />
++                        android:textSize="18dp"
++                        app:tabTextAppearance="@style/calligraphy_font" />
+                 </RelativeLayout>
+ 
++
++                <androidx.appcompat.widget.AppCompatButton
++                    android:id="@+id/btnRodentScanner"
++                    android:layout_width="match_parent"
++                    android:layout_height="38dp"
++                    android:layout_below="@id/view"
++                    android:layout_marginLeft="100dp"
++                    android:layout_marginTop="20dp"
++                    android:layout_marginRight="100dp"
++                    android:background="@drawable/button_background"
++                    android:clickable="true"
++                    android:text="Rodent Scanner"
++                    android:textAllCaps="false"
++                    android:textColor="@color/white" />
++
+             </LinearLayout>
+         </androidx.core.widget.NestedScrollView>
+ 
+Index: app/src/main/java/com/ab/hicarerun/fragments/ChemicalInfoFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.ab.hicarerun.fragments;\r\n\r\n\r\nimport android.app.ProgressDialog;\r\nimport android.content.Context;\r\nimport android.os.Bundle;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.annotation.Nullable;\r\nimport androidx.core.view.ViewCompat;\r\nimport androidx.databinding.DataBindingUtil;\r\nimport androidx.fragment.app.Fragment;\r\nimport androidx.recyclerview.widget.LinearLayoutManager;\r\nimport androidx.recyclerview.widget.RecyclerView;\r\n\r\nimport android.util.Log;\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\nimport android.widget.Toast;\r\n\r\nimport com.ab.hicarerun.BaseFragment;\r\nimport com.ab.hicarerun.R;\r\nimport com.ab.hicarerun.adapter.ChemicalRecycleAdapter;\r\nimport com.ab.hicarerun.databinding.FragmentChemicalInfoBinding;\r\nimport com.ab.hicarerun.handler.OnSaveEventHandler;\r\nimport com.ab.hicarerun.network.NetworkCallController;\r\nimport com.ab.hicarerun.network.NetworkResponseListner;\r\nimport com.ab.hicarerun.network.models.ChemicalModel.Chemicals;\r\nimport com.ab.hicarerun.network.models.GeneralModel.GeneralData;\r\nimport com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;\r\nimport com.ab.hicarerun.network.models.TaskModel.Tasks;\r\nimport com.ab.hicarerun.utils.AppUtils;\r\nimport com.ab.hicarerun.utils.GPSUtils;\r\n\r\nimport org.jetbrains.annotations.NotNull;\r\n\r\nimport java.util.ArrayList;\r\nimport java.util.HashMap;\r\nimport java.util.List;\r\nimport java.util.Objects;\r\n\r\nimport io.realm.RealmResults;\r\n\r\n/**\r\n * A simple {@link Fragment} subclass.\r\n */\r\npublic class ChemicalInfoFragment extends BaseFragment implements NetworkResponseListner<List<Chemicals>> {\r\n    FragmentChemicalInfoBinding mFragmentChemicalInfoBinding;\r\n    public static final String ARGS_TASKS = \"ARGS_TASKS\";\r\n    public static final String ARGS_COMBINED_TASKS = \"ARGS_COMBINED_TASKS\";\r\n    public static final String ARGS_COMBINED_ID = \"ARGS_COMBINED_ID\";\r\n    private static final int CHEMICAL_REQ = 1000;\r\n    private Boolean isVerified = false;\r\n    RecyclerView.LayoutManager layoutManager;\r\n    private Integer pageNumber = 1;\r\n    ProgressDialog mProgressBar;\r\n    ChemicalRecycleAdapter mAdapter;\r\n    private OnSaveEventHandler mCallback;\r\n    private HashMap<Integer, String> map = new HashMap<>();\r\n    private List<TaskChemicalList> ChemList = new ArrayList<>();\r\n    RealmResults<GeneralData> mGeneralRealmData = null;\r\n    private String status = \"\";\r\n    private String ActualStatus = \"\";\r\n    private boolean isChemicalChecked = false;\r\n    //    private Tasks model;\r\n    private String taskId = \"\";\r\n    private String combinedTaskId = \"\";\r\n    private boolean isCombinedTask = false;\r\n    private boolean showStandardChemicals = false;\r\n\r\n    public ChemicalInfoFragment() {\r\n        // Required empty public constructor\r\n    }\r\n\r\n    @Override\r\n    public void onSaveInstanceState(Bundle oldInstanceState)\r\n    {\r\n        super.onSaveInstanceState(oldInstanceState);\r\n        oldInstanceState.clear();\r\n    }\r\n\r\n    public static ChemicalInfoFragment newInstance(String taskId, String combinedTaskId, boolean isCombinedTasks) {\r\n        Bundle args = new Bundle();\r\n        args.putString(ARGS_TASKS, taskId);\r\n        args.putString(ARGS_COMBINED_ID, combinedTaskId);\r\n        args.putBoolean(ARGS_COMBINED_TASKS, isCombinedTasks);\r\n        ChemicalInfoFragment fragment = new ChemicalInfoFragment();\r\n        fragment.setArguments(args);\r\n        return fragment;\r\n    }\r\n\r\n    @Override\r\n    public void onCreate(@Nullable Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        if (getArguments() != null) {\r\n            taskId = getArguments().getString(ARGS_TASKS);\r\n            combinedTaskId = getArguments().getString(ARGS_COMBINED_ID);\r\n            isCombinedTask = getArguments().getBoolean(ARGS_COMBINED_TASKS);\r\n        }\r\n    }\r\n\r\n\r\n    @Override\r\n    public void onAttach(@NotNull Context context) {\r\n        super.onAttach(context);\r\n        try {\r\n            mCallback = (OnSaveEventHandler) context;\r\n        } catch (ClassCastException e) {\r\n            throw new ClassCastException(context.toString()\r\n                    + \" must implement FragmentToActivity\");\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,\r\n                             Bundle savedInstanceState) {\r\n        // Inflate the layout for this fragment\r\n        mFragmentChemicalInfoBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_chemical_info, container, false);\r\n        return mFragmentChemicalInfoBinding.getRoot();\r\n    }\r\n\r\n    @Override\r\n    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {\r\n        super.onViewCreated(view, savedInstanceState);\r\n        mGeneralRealmData =\r\n                getRealm().where(GeneralData.class).findAll();\r\n        mFragmentChemicalInfoBinding.recycleView.setHasFixedSize(true);\r\n        layoutManager = new LinearLayoutManager(getActivity());\r\n        mFragmentChemicalInfoBinding.recycleView.setLayoutManager(layoutManager);\r\n        ViewCompat.setNestedScrollingEnabled(mFragmentChemicalInfoBinding.recycleView, false);\r\n        if (isCombinedTask) {\r\n            mFragmentChemicalInfoBinding.txtType.setVisibility(View.VISIBLE);\r\n        } else {\r\n            mFragmentChemicalInfoBinding.txtType.setVisibility(View.GONE);\r\n        }\r\n        if (map != null) {\r\n            map.clear();\r\n        }\r\n        if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {\r\n            showStandardChemicals = mGeneralRealmData.get(0).getShow_Standard_Chemicals();\r\n        }\r\n        if (showStandardChemicals) {\r\n            mFragmentChemicalInfoBinding.txtStandard.setVisibility(View.VISIBLE);\r\n        } else {\r\n            mFragmentChemicalInfoBinding.txtStandard.setVisibility(View.GONE);\r\n        }\r\n        mAdapter = new ChemicalRecycleAdapter(getActivity(), isCombinedTask, showStandardChemicals, (position, charSeq) -> {\r\n            try {\r\n                if (charSeq != null && map != null) {\r\n                    map.put(position, charSeq);\r\n                    Log.i(\"MAP_VALUE\", Objects.requireNonNull(map.get(position)));\r\n                    if (map.containsValue(\"\")) {\r\n                        map.remove(position);\r\n                    } else {\r\n                        ChemList.clear();\r\n                        for (int i = 0; i < map.size(); i++) {\r\n                            TaskChemicalList ChemModel = new TaskChemicalList();\r\n                            ChemModel.setId(mAdapter.getItem(i).getId());\r\n                            ChemModel.setCWFProductName(mAdapter.getItem(i).getName());\r\n                            ChemModel.setConsumption(mAdapter.getItem(i).getConsumption());\r\n                            ChemModel.setStandard(mAdapter.getItem(i).getStandard());\r\n                            ChemModel.setOrignal(mAdapter.getItem(i).getOrignal());\r\n                            if (mAdapter.getItem(i).getOrignal() != null) {\r\n                                if (mAdapter.getItem(i).getOrignal().equals(map.get(i))) {\r\n                                    ChemModel.setChemicalChanged(false);\r\n                                } else {\r\n                                    ChemModel.setChemicalChanged(true);\r\n                                }\r\n                            } else {\r\n                                ChemModel.setChemicalChanged(true);\r\n                            }\r\n\r\n                            ChemModel.setActual(map.get(i));\r\n                            ChemList.add(ChemModel);\r\n                        }\r\n                        mCallback.chemReqList(ChemList);\r\n                    }\r\n                    mCallback.isActualChemicalChanged(isChemicalChanged(ChemList));\r\n                    for (int i = 0; i < mAdapter.getItemCount(); i++)\r\n                        getValidation(i);\r\n                }\r\n            } catch (Exception e) {\r\n                e.printStackTrace();\r\n            }\r\n\r\n        });\r\n\r\n\r\n        mFragmentChemicalInfoBinding.checkChemVerified.setOnCheckedChangeListener((buttonView, isChecked) -> {\r\n            try {\r\n                isChemicalChecked = isChecked;\r\n                for (int i = 0; i < mAdapter.getItemCount(); i++)\r\n                    getValidation(i);\r\n            } catch (Exception e) {\r\n                e.printStackTrace();\r\n            }\r\n        });\r\n\r\n        mFragmentChemicalInfoBinding.recycleView.setAdapter(mAdapter);\r\n        setChemicals();\r\n    }\r\n\r\n    private static boolean isChemicalChanged(List<TaskChemicalList> arraylist) {\r\n        for (TaskChemicalList list : arraylist) {\r\n            if (list.getChemicalChanged()) {\r\n                return true;\r\n            }\r\n        }\r\n        return false;\r\n    }\r\n\r\n    private void setChemicals() {\r\n        try {\r\n            if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {\r\n                assert mGeneralRealmData.get(0) != null;\r\n                isVerified = mGeneralRealmData.get(0).getAutoSubmitChemicals();\r\n                assert mGeneralRealmData.get(0) != null;\r\n                ActualStatus = mGeneralRealmData.get(0).getSchedulingStatus();\r\n                NetworkCallController controller = new NetworkCallController(this);\r\n                controller.setListner(this);\r\n                if (isCombinedTask) {\r\n                    controller.getMSTChemicals(CHEMICAL_REQ, combinedTaskId);\r\n                } else {\r\n                    controller.getChemicals(CHEMICAL_REQ, taskId);\r\n                }\r\n\r\n                callAfterResponse();\r\n            }\r\n        } catch (Exception e) {\r\n            e.printStackTrace();\r\n        }\r\n    }\r\n\r\n\r\n    @Override\r\n    public void onResponse(int requestCode, List<Chemicals> items) {\r\n        try {\r\n            if (items != null) {\r\n                if (pageNumber == 1 && items.size() > 0) {\r\n                    mAdapter.setData(items);\r\n                    mAdapter.notifyDataSetChanged();\r\n                } else if (items.size() > 0) {\r\n                    mAdapter.addData(items);\r\n                    mAdapter.notifyDataSetChanged();\r\n                } else {\r\n                    pageNumber--;\r\n                }\r\n                callAfterResponse();\r\n            }\r\n        } catch (Exception e) {\r\n            e.printStackTrace();\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public void onFailure(int requestCode) {\r\n    }\r\n\r\n    private void getValidation(int position) {\r\n        try {\r\n            if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {\r\n                assert mGeneralRealmData.get(0) != null;\r\n                isVerified = mGeneralRealmData.get(0).getAutoSubmitChemicals();\r\n                Log.i(\"chemicalcount\", String.valueOf(mAdapter.getItemCount()));\r\n                Log.i(\"mapcount\", String.valueOf(map.size()));\r\n                Log.i(\"mapcount\", String.valueOf(map.keySet() + \" , \" + map.values()));\r\n                if (!isVerified) {\r\n                    if (map.size() == mAdapter.getItemCount()) {\r\n                        mCallback.isChemicalChanged(false);\r\n                    } else {\r\n                        mCallback.isChemicalChanged(true);\r\n                    }\r\n                    if (isChemicalChecked) {\r\n                        mCallback.isChemicalVerified(false);\r\n                    } else {\r\n                        mCallback.isChemicalVerified(true);\r\n                    }\r\n                }\r\n            }\r\n        } catch (Exception e) {\r\n            e.printStackTrace();\r\n        }\r\n    }\r\n\r\n    private void callAfterResponse() {\r\n        try {\r\n            if (isVerified || ActualStatus.equals(\"Completed\") || ActualStatus.equals(\"Incomplete\")) {\r\n                mFragmentChemicalInfoBinding.checkChemVerified.setEnabled(false);\r\n                mFragmentChemicalInfoBinding.checkChemVerified.setChecked(true);\r\n            } else {\r\n                mFragmentChemicalInfoBinding.relChemicals.setVisibility(View.VISIBLE);\r\n                mFragmentChemicalInfoBinding.checkChemVerified.setEnabled(true);\r\n                mFragmentChemicalInfoBinding.checkChemVerified.setChecked(false);\r\n            }\r\n            for (int i = 0; i < mAdapter.getItemCount(); i++) {\r\n                getValidation(i);\r\n            }\r\n        } catch (Exception e) {\r\n            e.printStackTrace();\r\n        }\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/ab/hicarerun/fragments/ChemicalInfoFragment.java	(revision d9bfb27815a2c9249acdb47a60f72ada6af8b808)
++++ app/src/main/java/com/ab/hicarerun/fragments/ChemicalInfoFragment.java	(date 1624606606518)
+@@ -3,6 +3,7 @@
+ 
+ import android.app.ProgressDialog;
+ import android.content.Context;
++import android.content.Intent;
+ import android.os.Bundle;
+ 
+ import androidx.annotation.NonNull;
+@@ -21,6 +22,9 @@
+ 
+ import com.ab.hicarerun.BaseFragment;
+ import com.ab.hicarerun.R;
++//import com.ab.hicarerun.activities.BarcodeVerificatonActivity;
++import com.ab.hicarerun.activities.BarcodeVerificatonActivity;
++import com.ab.hicarerun.activities.ServiceRenewalActivity;
+ import com.ab.hicarerun.adapter.ChemicalRecycleAdapter;
+ import com.ab.hicarerun.databinding.FragmentChemicalInfoBinding;
+ import com.ab.hicarerun.handler.OnSaveEventHandler;
+@@ -198,6 +202,16 @@
+         });
+ 
+         mFragmentChemicalInfoBinding.recycleView.setAdapter(mAdapter);
++
++        mFragmentChemicalInfoBinding.btnRodentScanner.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View view) {
++                Intent intent = new Intent(getActivity(), BarcodeVerificatonActivity.class);
++//                intent.putExtra(ServiceRenewalActivity.ARGS_TASKS, taskId);
++                startActivity(intent);
++            }
++        });
++
+         setChemicals();
+     }
+ 

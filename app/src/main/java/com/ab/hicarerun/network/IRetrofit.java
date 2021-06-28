@@ -14,6 +14,8 @@ import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListRequest;
 import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListResponse;
 import com.ab.hicarerun.network.models.ChemicalCountModel.ChemicalCountResponse;
 import com.ab.hicarerun.network.models.ChemicalModel.ChemicalResponse;
+import com.ab.hicarerun.network.models.ChemicalModel.ServiceAreaChemicalResponse;
+import com.ab.hicarerun.network.models.ChemicalModel.ServiceChemicalData;
 import com.ab.hicarerun.network.models.ConsulationModel.ConsulationResponse;
 import com.ab.hicarerun.network.models.ConsulationModel.Data;
 import com.ab.hicarerun.network.models.ConsulationModel.RecommendationResponse;
@@ -126,6 +128,7 @@ public interface IRetrofit {
     String JEOPARDY_URL = "http://apps.hicare.in/cwf/";
     String SLOT_URL = "http://api.hicare.in/slot/api/";
     String UAT = "http://api.hicare.in/Mobile/api/";
+    String B2B_URL = "http://connect.hicare.in/b2bwow/api/";
 
     /*[Verify User]*/
 
@@ -550,4 +553,7 @@ public interface IRetrofit {
 
     @POST("Barcode/VerifyBarcodeDetails")
     Call<BaseResponse> verifyBarcode(@Body HashMap<String, Object> verification);
+
+    @GET("Integration/GetServiceAreaChemical")
+    Call<ServiceAreaChemicalResponse> getServiceAreaChemical(@Query("activityId") int activityId, @Query("serviceNo") int serviceNo, @Query("serviceType") String seviceType, @Query("showAllService") boolean showAllService);
 }
