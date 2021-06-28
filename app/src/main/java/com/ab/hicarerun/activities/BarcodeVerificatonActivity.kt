@@ -142,7 +142,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                             modelBarcodeList.add(BarcodeList(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, "no"))
                         }
                         OrderDetails(response.isSuccess, Data(accountNo, orderNo, accountName, startDate, endDate, regionName, serviceGroup, servicePlan, modelBarcodeList), response.errorMessage, response.param1, response.responseMessage)
-                        if (itemsCount > 0){
+                        if (modelBarcodeList.size > 0){
                             binding.errorTv.visibility = View.GONE
                         }else{
                             binding.errorTv.visibility = View.VISIBLE
