@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:fontFamily="@font/roboto_bold"
-            android:text="TS Scanner"
+            android:text="Assign QR Code"
             android:textColor="@color/white"
             android:textSize="18sp" />
 
@@ -42,6 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_weight="1"
+                android:maxLines="1"
                 android:background="@drawable/bg_edittext"
                 android:drawableStart="@drawable/ic_search_black"
                 android:drawablePadding="4dp"
@@ -200,7 +201,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="Boxes Added: "
+                    android:text="Bait Station: (29)"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -233,12 +234,25 @@
         android:paddingBottom="8dp"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/deleteFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
+        android:src="@drawable/ic_trash_white"
+        app:fabSize="mini"
+        android:backgroundTint="@color/md_red_500"
+        app:layout_constraintBottom_toTopOf="@+id/fab"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="12dp"
         android:layout_marginBottom="12dp"
         android:src="@drawable/ic_add_activity"
+        app:fabSize="mini"
         app:layout_constraintBottom_toTopOf="@+id/saveBtn"
         app:layout_constraintEnd_toEndOf="parent" />
 

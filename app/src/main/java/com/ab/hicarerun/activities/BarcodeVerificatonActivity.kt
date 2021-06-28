@@ -59,7 +59,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         val view = binding.root
         setContentView(view)
         //addFragment(BarcodeVerificationFragment.newInstance(/*order_No*/),"BarcodeVerificatonActivity-BarcodeVerificationFragment")
-        binding.toolbar.setTitle("Rodent Box Scanner")
+        binding.toolbar.setTitle("Check Bait Stations")
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.progressBar.visibility = View.VISIBLE
@@ -139,7 +139,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                             verified_By = response.data.barcodeList[i].verified_By
                             created_By = response.data.barcodeList[i].created_By
                             isVerified = response.data.barcodeList[i].isVerified
-                            modelBarcodeList.add(BarcodeList(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified))
+                            modelBarcodeList.add(BarcodeList(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, "no"))
                         }
                         OrderDetails(response.isSuccess, Data(accountNo, orderNo, accountName, startDate, endDate, regionName, serviceGroup, servicePlan, modelBarcodeList), response.errorMessage, response.param1, response.responseMessage)
                         if (itemsCount > 0){
@@ -173,7 +173,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
             if (modelBarcodeList[i].barcode_Data == barcode_Data) {
                 if (modelBarcodeList[i].isVerified == false) {
                     modelBarcodeList[i] = BarcodeList(modelBarcodeList[i].id, account_No, order_No, account_Name, barcode_Data,
-                        last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified)
+                        last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, "no")
                     Log.d("TAG-Veri", id.toString())
                     verifyBarcode(modelBarcodeList[i].id, "Technician Scanner", account_No, order_No, barcode_Data, lat, long, last_Verified_On, last_Verified_By)
                     barcodeAdapter.notifyItemChanged(i)
@@ -181,7 +181,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                         binding.barcodeRecycler.smoothScrollToPosition(i)
                     }
                 } else {
-                    Toast.makeText(this, "Barcode already verified", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Barcode is already verified", Toast.LENGTH_SHORT).show()
                 }
                 found = 1
             }
@@ -212,7 +212,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                 if (response != null) {
                     if (response.isSuccess == true) {
                         if (response.data == "Verified") {
-                            Toast.makeText(applicationContext, "Barcode Verified", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(applicationContext, "Barcode is verified", Toast.LENGTH_SHORT).show()
                         }
                     } else {
                         Log.d("TAG-VERIFIER", "Something wrong ${response.data}")

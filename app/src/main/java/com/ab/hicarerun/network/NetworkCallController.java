@@ -4776,6 +4776,25 @@ public class NetworkCallController {
                 });
     }
 
+
+    public void deleteBarcodeDetails(int requestCode, HashMap<String, Object> details){
+        BaseApplication.getRetrofitAPI(false)
+                .deleteBarcode(details)
+                .enqueue(new Callback<BaseResponse>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                        if (response.body() != null){
+                            mListner.onResponse(requestCode, response.body());
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<BaseResponse> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+                          
+
     public void getServiceAreaChemical(int activityId, int serviceNo, String serviceType, boolean showAllServices) {
         BaseApplication.getB2BWoWApi()
                 .getServiceAreaChemical(activityId, serviceNo, serviceType, showAllServices)
@@ -4789,13 +4808,13 @@ public class NetworkCallController {
                         }
                     }
 
-                    @Override
+                  @Override
                     public void onFailure(Call<ServiceAreaChemicalResponse> call, Throwable t) {
                         Log.d("TAG-UAT-Error", t.getMessage());
                         mListner.onFailure(20211);
                     }
                 });
-    }
+    }                    
 
 
     public String getRefreshToken() {

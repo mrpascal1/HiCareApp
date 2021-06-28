@@ -1,27 +1,35 @@
 package com.ab.hicarerun.adapter
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Bitmap
+import android.location.Location
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.ColorInt
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.R
 import com.ab.hicarerun.databinding.RowBarcodeItemBinding
 import com.ab.hicarerun.handler.OnBarcodeCountListener
+import com.ab.hicarerun.network.NetworkCallController
+import com.ab.hicarerun.network.NetworkResponseListner
 import com.ab.hicarerun.network.models.TSScannerModel.BarcodeList
+import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse
+import com.ab.hicarerun.service.listner.LocationManagerListner
 import com.ab.hicarerun.utils.AppUtils
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.WriterException
 import com.google.zxing.common.BitMatrix
-import com.google.zxing.oned.Code128Writer
 
 
-class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeList>, private val comingFrom: String) : RecyclerView.Adapter<BarcodeAdapter.MyHolder>(){
+class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeList>, private val comingFrom: String) : RecyclerView.Adapter<BarcodeAdapter.MyHolder>(), LocationManagerListner{
+    var lat = "0.0"
+    var long = "0.0"
     private var onBarcodeCountListener: OnBarcodeCountListener? = null
     fun setOnBarcodeCountListener(l: OnBarcodeCountListener){
         onBarcodeCountListener = l
@@ -34,7 +42,20 @@ class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeLis
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         holder.bindItems(context, barcodeList[position])
         holder.binding.deleteBtn.setOnClickListener {
-            removeAt(holder.adapterPosition)
+            val dialog = AlertDialog.Builder(context)
+            dialog.setTitle("Delete")
+            dialog.setMessage("Are you sure?")
+            dialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
+                if (barcodeList[position].id != 0){
+                    removeFromServer(position)
+                }else{
+                    removeAt(position)
+                }
+            }
+            dialog.setNegativeButton("No"){ dialogInterface: DialogInterface, _: Int ->
+                dialogInterface.dismiss()
+            }
+            dialog.show()
         }
     }
 
@@ -42,11 +63,42 @@ class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeLis
         return barcodeList.size
     }
 
+    fun removeFromServer(position: Int){
+        val verifyMap = HashMap<String, Any?>()
+        verifyMap["BarcodeId"] = barcodeList[position].id
+        verifyMap["ActivityName"] = "Deleted"
+        verifyMap["Account_No"] = barcodeList[position].account_No
+        verifyMap["Order_No"] = barcodeList[position].order_No
+        verifyMap["Barcode_Data"] = barcodeList[position].barcode_Data
+        verifyMap["Lat"] = lat
+        verifyMap["Long"] = long
+        verifyMap["VerifiedOn"] = ""
+        verifyMap["VerifiedBy"] = ""
+
+        val controller = NetworkCallController()
+        controller.setListner(object : NetworkResponseListner<BaseResponse>{
+            override fun onResponse(requestCode: Int, response: BaseResponse?) {
+                if (response != null) {
+                    if (response.isSuccess == true) {
+                        if (response.data == "Deleted") {
+                            removeAt(position)
+                        }
+                    }
+                }
+            }
+
+            override fun onFailure(requestCode: Int) {
+            }
+        })
+        controller.deleteBarcodeDetails(20213, verifyMap)
+    }
+
     fun removeAt(position: Int){
         barcodeList.removeAt(position)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, barcodeList.size)
         onBarcodeCountListener?.onBarcodeCountListener(barcodeList.size)
+        Toast.makeText(context, "Barcode is deleted", Toast.LENGTH_SHORT).show()
     }
 
     class MyHolder(val binding: RowBarcodeItemBinding, private val comingFrom: String): RecyclerView.ViewHolder(binding.root){
@@ -58,6 +110,16 @@ class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeLis
             if (comingFrom == "TSScanner"){
                 binding.isBarcodeVerified.visibility = View.GONE
                 binding.verifiedOnLayout.visibility = View.GONE
+                binding.deleteBtn.visibility = View.VISIBLE
+            }else{
+                binding.deleteBtn.visibility = View.GONE
+                binding.isBarcodeVerified.visibility = View.VISIBLE
+                binding.verifiedOnLayout.visibility = View.VISIBLE
+            }
+            if (barcodeList.callForDelete == "yes"){
+                binding.dataCard.setCardBackgroundColor(ContextCompat.getColor(context, R.color.md_red_100))
+            }else{
+                binding.dataCard.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white))
             }
             if (isVerified == true){
                 val time = AppUtils.reFormatDateTime(verifiedOn, "HH:mm")
@@ -70,11 +132,11 @@ class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeLis
                 binding.verifiedOnTv.text = "N/A"
                 binding.isBarcodeVerified.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_circle_black))
             }
-            if (id == 0){
+            /*if (id == 0){
                 binding.deleteBtn.visibility = View.VISIBLE
             }else{
                 binding.deleteBtn.visibility = View.GONE
-            }
+            }*/
             binding.barcodeIv.setImageBitmap(textToImage(barcode_data, 300, 300))
             //displayBitmap(context, barcode_data)
             binding.barcodeTv.text = barcode_data
@@ -157,5 +219,10 @@ class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeLis
             )
             return bitmap
         }*/
+    }
+
+    override fun locationFetched(mLocation: Location?, oldLocation: Location?, time: String?, locationProvider: String?) {
+        lat = mLocation?.latitude.toString()
+        long = mLocation?.longitude.toString()
     }
 }

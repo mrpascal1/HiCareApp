@@ -190,5 +190,161 @@
             android:layout_height="match_parent"
             android:layout_below="@id/viewpagertab" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical"
+                android:background="@color/white"
+                android:fillViewport="true"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.3dp"
+                    android:background="@color/black" />
+
+                <LinearLayout
+                    android:id="@+id/relativeLayout1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:background="@color/tab_textColor">
+
+                    <TextView
+                        android:id="@+id/txtType"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:text="@string/type_chemicals"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.7"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:text="@string/name"
+                        android:textColor="@color/black"
+                        app:tabTextAppearance="@style/calligraphy_font"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.6"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:text="@string/unit_chemicals"
+                        android:textColor="@color/black"
+                        app:tabTextAppearance="@style/calligraphy_font"/>
+
+                    <TextView
+                        android:id="@+id/txtStandard"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.9"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:text="@string/standard"
+                        android:textColor="@color/black"
+                        />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.9"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:text="@string/actual"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.3dp"
+                    android:background="@color/black" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycleView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:divider="@null" />
+
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:id="@+id/rel_chemicals"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="10dp"
+                    android:paddingTop="10dp">
+
+
+
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnRodentScanner"
+                        android:layout_width="match_parent"
+                        android:layout_height="38dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="35dp"
+                        android:background="@drawable/button_background"
+                        android:clickable="true"
+                        android:text="Check Bait Stations"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white" />
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/check_chem_verified"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="-3dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:buttonTint="@color/colorAccentDrawerPrimaryLight"
+                        android:paddingLeft="5dp"
+                        android:text="@string/chemical_verified"
+                        android:textColor="@color/black"
+                        app:tabTextAppearance="@style/calligraphy_font"
+                        android:textSize="18dp" />
+                </LinearLayout>
+
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnRodentScannerOld"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_below="@id/view"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="100dp"
+                    android:layout_marginRight="100dp"
+                    android:background="@drawable/button_background"
+                    android:clickable="true"
+                    android:text="Check Bait Station"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
     </LinearLayout>
 </layout>

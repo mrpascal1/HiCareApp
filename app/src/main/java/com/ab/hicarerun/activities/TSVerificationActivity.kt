@@ -176,7 +176,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                     val serviceGroup = response?.data?.serviceGroup
                     val servicePlan = response?.data?.servicePlan
                     val barcodeList = response?.data?.barcodeList
-                    if (response?.data?.barcodeList != null){
+                    if (response?.data?.barcodeList != null) {
                         var itemsCount = 0
                         for (i in 0 until response.data.barcodeList.size) {
                             itemsCount++
@@ -192,13 +192,50 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                             verified_By = response.data.barcodeList[i].verified_By
                             created_By = response.data.barcodeList[i].created_By
                             isVerified = response.data.barcodeList[i].isVerified
-                            modelBarcodeList.add(BarcodeList(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified))
+                            modelBarcodeList.add(
+                                BarcodeList(
+                                    id,
+                                    account_No,
+                                    order_No,
+                                    account_Name,
+                                    barcode_Data,
+                                    last_Verified_On,
+                                    last_Verified_By,
+                                    created_On,
+                                    created_By_Id_User,
+                                    verified_By,
+                                    created_By,
+                                    isVerified,
+                                    "no"
+                                )
+                            )
                         }
-                        OrderDetails(response.isSuccess, Data(accountNo, orderNo, accountName, startDate, endDate, regionName, serviceGroup, servicePlan, modelBarcodeList), response.errorMessage, response.param1, response.responseMessage)
-                        if (itemsCount > 0){
+                        OrderDetails(
+                            response.isSuccess,
+                            Data(
+                                accountNo,
+                                orderNo,
+                                accountName,
+                                startDate,
+                                endDate,
+                                regionName,
+                                serviceGroup,
+                                servicePlan,
+                                modelBarcodeList
+                            ),
+                            response.errorMessage,
+                            response.param1,
+                            response.responseMessage
+                        )
+                        if (itemsCount > 0) {
                             binding.barcodeErrorTv.visibility = View.GONE
-                        }else{
+                        } else {
                             binding.barcodeErrorTv.visibility = View.VISIBLE
+                        }
+                        if (modelBarcodeList.size > 1) {
+                            binding.boxesTitleTv.text = "Bait Stations: (${modelBarcodeList.size})"
+                        } else {
+                            binding.boxesTitleTv.text = "Bait Station: (${modelBarcodeList.size})"
                         }
                     }
                     populateViews(accountName, regionName, servicePlan)
@@ -247,7 +284,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                     if (response.isSuccess == true){
                         if (response.data == "Verified"){
                             binding.progressBar.visibility = View.GONE
-                            Toast.makeText(applicationContext, "Barcode Verified", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(applicationContext, "Barcode is verified", Toast.LENGTH_SHORT).show()
                         }
                     }else{
                         Log.d("TAG-VERIFIER", "Something wrong ${response.data}")
@@ -274,7 +311,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
             if(modelBarcodeList[i].barcode_Data == barcode_Data){
                 if (modelBarcodeList[i].isVerified == false){
                     modelBarcodeList[i] = BarcodeList(modelBarcodeList[i].id, account_No, order_No, account_Name, barcode_Data,
-                        last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified)
+                        last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, "no")
                     Log.d("TAG-Veri", id.toString())
                     verifyBarcode(modelBarcodeList[i].id, "TSVerification", account_No, order_No, barcode_Data, lat, long, last_Verified_On, last_Verified_By)
                     barcodeAdapter.notifyItemChanged(i)
@@ -283,7 +320,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                     }
                 }else{
                     binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this, "Barcode already verified", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Barcode is already verified", Toast.LENGTH_SHORT).show()
                 }
                 found = 1
             }

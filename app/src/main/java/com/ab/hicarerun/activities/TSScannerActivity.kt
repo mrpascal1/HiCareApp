@@ -50,6 +50,7 @@ class TSScannerActivity : BaseActivity() {
     var created_By: String? = "Optimizer"
     var isVerified: Boolean? = false
     var isFetched = 0
+    var requestFrom = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,6 +114,7 @@ class TSScannerActivity : BaseActivity() {
             integrator.setPrompt("Scan a barcode")
             if (isFetched == 1){
                 integrator.initiateScan()
+                requestFrom = 1
             }else{
                 Toast.makeText(this, "Please Enter Order No", Toast.LENGTH_SHORT).show()
             }
@@ -130,8 +132,21 @@ class TSScannerActivity : BaseActivity() {
             }
         }
 
+        binding.deleteFab.setOnClickListener {
+            val integrator = IntentIntegrator(this)
+            integrator.setCaptureActivity(CaptureActivityPortrait::class.java)
+            integrator.setBeepEnabled(false)
+            integrator.setPrompt("Scan a barcode")
+            if (isFetched == 1){
+                integrator.initiateScan()
+                requestFrom = 2
+            }else{
+                Toast.makeText(this, "Please Enter Order No", Toast.LENGTH_SHORT).show()
+            }
+        }
         barcodeAdapter.setOnBarcodeCountListener(object : OnBarcodeCountListener{
             override fun onBarcodeCountListener(count: Int) {
+                binding.boxesTitleTv.text = "Bait Station: (${modelBarcodeList.size})"
                 if (count == 0){
                     binding.barcodeErrorTv.visibility = View.VISIBLE
                 }else{
@@ -153,7 +168,7 @@ class TSScannerActivity : BaseActivity() {
                     if (isSuccess == true){
                         if (data == "Success"){
                             binding.progressBar.visibility = View.GONE
-                            Toast.makeText(applicationContext, "Barcode is already saved", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(applicationContext, "Barcode is saved", Toast.LENGTH_SHORT).show()
                             getOrderDetails(order_No.toString())
                         }else{
                             binding.searchBtn.isEnabled = true
@@ -228,13 +243,18 @@ class TSScannerActivity : BaseActivity() {
                             verified_By = response.data.barcodeList[i].verified_By
                             created_By = response.data.barcodeList[i].created_By
                             isVerified = response.data.barcodeList[i].isVerified
-                            modelBarcodeList.add(BarcodeList(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified))
+                            modelBarcodeList.add(BarcodeList(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, "no"))
                         }
                         OrderDetails(response.isSuccess, Data(account_No, orderNo, account_Name, startDate, endDate, regionName, serviceGroup, servicePlan, modelBarcodeList), response.errorMessage, response.param1, response.responseMessage)
                         if (itemsCount > 0){
                             binding.barcodeErrorTv.visibility = View.GONE
                         }else{
                             binding.barcodeErrorTv.visibility = View.VISIBLE
+                        }
+                        if (modelBarcodeList.size > 1) {
+                            binding.boxesTitleTv.text = "Bait Stations: (${modelBarcodeList.size})"
+                        } else {
+                            binding.boxesTitleTv.text = "Bait Station: (${modelBarcodeList.size})"
                         }
                     }
                     populateViews(account_Name, regionName, servicePlan)
@@ -260,6 +280,26 @@ class TSScannerActivity : BaseActivity() {
             }
         })
         controller.getOrderNoDetails(orderNoInput, empCode.toString())
+    }
+
+    private fun getScannedQR(barcode_Data: String){
+        var found = 0
+        for (i in 0 until modelBarcodeList.size){
+            if (modelBarcodeList[i].barcode_Data == barcode_Data){
+                found = 1
+                binding.barcodeRecycler.post {
+                    binding.barcodeRecycler.smoothScrollToPosition(i)
+                }
+                Log.d("TAG", i.toString())
+                modelBarcodeList[i].callForDelete = "yes"
+            }else{
+                modelBarcodeList[i].callForDelete = "no"
+            }
+        }
+        if (found == 0){
+            Toast.makeText(this, "Barcode not found", Toast.LENGTH_SHORT).show()
+        }
+        barcodeAdapter.notifyDataSetChanged()
     }
 
     /*private fun getEmpCode(){
@@ -317,7 +357,7 @@ class TSScannerActivity : BaseActivity() {
         if (found == 0){
             modelBarcodeList.add(BarcodeList(0, account_No, order_No, account_Name, barcode_Data,
                 last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By,
-                created_By, isVerified))
+                created_By, isVerified, "no"))
             barcodeAdapter.notifyItemInserted(modelBarcodeList.lastIndex)
             binding.barcodeRecycler.post {
                 binding.barcodeRecycler.smoothScrollToPosition(barcodeAdapter.itemCount - 1)
@@ -329,6 +369,11 @@ class TSScannerActivity : BaseActivity() {
         }else{
             binding.barcodeErrorTv.visibility = View.GONE
         }
+        if (modelBarcodeList.size > 1) {
+            binding.boxesTitleTv.text = "Bait Stations: (${modelBarcodeList.size})"
+        } else {
+            binding.boxesTitleTv.text = "Bait Station: (${modelBarcodeList.size})"
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -337,7 +382,8 @@ class TSScannerActivity : BaseActivity() {
         if (result != null){
             if (result.contents != null){
                 //Toast.makeText(this, ""+SharedPreferencesUtility.getPrefString(this, SharedPreferencesUtility.PREF_USERID), Toast.LENGTH_SHORT).show()
-                addNewData(
+                if (requestFrom == 1){
+                    addNewData(
                     account_No = account_No,
                     order_No = order_No,
                     account_Name = account_Name,
@@ -350,10 +396,15 @@ class TSScannerActivity : BaseActivity() {
                     created_By = created_By,
                     isVerified = isVerified)
                 Log.d("TAG-QR", result.contents)
+                }
+                if (requestFrom == 2){
+                    getScannedQR(result.contents)
+                }
             }else{
                 Log.d("TAG-QR", "Not found")
             }
         }
+        requestFrom = 0
         super.onActivityResult(requestCode, resultCode, data)
     }
 }
