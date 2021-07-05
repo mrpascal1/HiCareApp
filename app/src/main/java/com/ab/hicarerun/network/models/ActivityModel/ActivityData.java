@@ -17,7 +17,7 @@ public class ActivityData {
     private Integer tower;
     @SerializedName("Tower_Name")
     @Expose
-    private Object towerName;
+    private String towerName;
     @SerializedName("AreaType")
     @Expose
     private String areaType;
@@ -44,11 +44,11 @@ public class ActivityData {
         this.tower = tower;
     }
 
-    public Object getTowerName() {
+    public String getTowerName() {
         return towerName;
     }
 
-    public void setTowerName(Object towerName) {
+    public void setTowerName(String towerName) {
         this.towerName = towerName;
     }
 
