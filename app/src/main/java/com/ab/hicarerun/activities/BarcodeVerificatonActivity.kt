@@ -95,7 +95,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                 if (modelBarcodeList.isNotEmpty()) {
                     integrator.initiateScan()
                 } else {
-                    Toast.makeText(this, "No barcode found", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Rodent station not found", Toast.LENGTH_SHORT).show()
                 }
             } else {
                 Toast.makeText(this, "Please Enter Order No", Toast.LENGTH_SHORT).show()
@@ -181,13 +181,13 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                         binding.barcodeRecycler.smoothScrollToPosition(i)
                     }
                 } else {
-                    Toast.makeText(this, "Barcode is already verified", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Already verified", Toast.LENGTH_SHORT).show()
                 }
                 found = 1
             }
         }
         if (found == 0) {
-            Toast.makeText(this, "No barcode found", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Rodent station not found", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -212,7 +212,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                 if (response != null) {
                     if (response.isSuccess == true) {
                         if (response.data == "Verified") {
-                            Toast.makeText(applicationContext, "Barcode is verified", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(applicationContext, "Verified successfully", Toast.LENGTH_SHORT).show()
                         }
                     } else {
                         Log.d("TAG-VERIFIER", "Something wrong ${response.data}")
