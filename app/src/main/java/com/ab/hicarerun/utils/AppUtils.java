@@ -97,6 +97,7 @@ public class AppUtils {
     public static String CAMERA_ORIENTATION = "CAMERA_ORIENTATION";
     public static String CAMERA_SCREEN = "";
     public static boolean NOT_RENEWAL_DONE = false;
+    public static boolean IS_ACTIVITY_THERE = false;
 
 
     public static Bitmap createCustomMarker(Context context, Bitmap resource, String accountName, String _name) {
@@ -736,6 +737,8 @@ public class AppUtils {
         return s;
     }
 
+
+
     public static void getResourceImage(String id, CircleImageView img) {
         try {
             NetworkCallController controller = new NetworkCallController();
@@ -800,32 +803,6 @@ public class AppUtils {
         }
     }
 
-    public static void getServiceChemicalArea(int activityId, int serviceNo, String serviceType, boolean showAllService) {
-        try {
-            NetworkCallController controller = new NetworkCallController();
-            controller.setListner(new NetworkResponseListner<List<ServiceChemicalData>>() {
-                @Override
-                public void onResponse(int requestCode, List<ServiceChemicalData> items) {
-                    towerData = new ArrayList<>();
-                    for (ServiceChemicalData data : items) {
-                        if(data.getAreaType().equals("Common Area")){
-                            towerData.addAll(data.getTower());
-                        }else {
-                            towerData.addAll(data.getTower());
-                        }
-
-                    }
-                }
-
-                @Override
-                public void onFailure(int requestCode) {
-                }
-            });
-            controller.getServiceAreaChemical(activityId, serviceNo, serviceType, showAllService);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 
 }

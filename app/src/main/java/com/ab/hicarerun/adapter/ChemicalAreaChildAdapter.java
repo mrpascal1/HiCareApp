@@ -53,14 +53,7 @@ public class ChemicalAreaChildAdapter extends RecyclerView.Adapter<ChemicalAreaC
 
     @Override
     public void onBindViewHolder(@NotNull ChemicalAreaChildAdapter.ViewHolder holder, final int position) {
-            holder.itemChemicalAreaChildAdapterBinding.txtHeader.setText(items.get(position).getServiceArea());
-            holder.itemChemicalAreaChildAdapterBinding.txtHeader.setTypeface(holder.itemChemicalAreaChildAdapterBinding.txtHeader.getTypeface(), Typeface.BOLD);
-            holder.itemChemicalAreaChildAdapterBinding.lnrAddActivity.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mOnAddChemicalActivity.onAddActivityClicked(parentPos, position, items.get(position).getActivity());
-                }
-            });
+
     }
 
     public void setmOnAddChemicalActivity(OnAddChemicalActivity mOnAreaClickedHandler) {

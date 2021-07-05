@@ -216,8 +216,8 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     @Override
     public void onResume() {
         super.onResume();
-//        timerHandler.postDelayed(timerRunnable, 500);
         try {
+            AppUtils.IS_ACTIVITY_THERE = false;
             isBack = SharedPreferencesUtility.getPrefBoolean(getActivity(), SharedPreferencesUtility.PREF_REFRESH);
             if (isBack) {
                 getAllTasks();

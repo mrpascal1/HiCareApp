@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class AddChemicalActivityAdapter extends RecyclerView.Adapter<AddChemicalActivityAdapter.ViewHolder> {
     private OnAddActivityClickHandler onItemClickHandler;
-    private OnSelectChemicalClickHandler serviceClickHandler;
+    private OnSelectServiceClickHandler serviceClickHandler;
     private final Context mContext;
     private List<ActivityData> items = null;
     private onRadioClickChanged mRadioClickChanged;
@@ -59,45 +59,41 @@ public class AddChemicalActivityAdapter extends RecyclerView.Adapter<AddChemical
                 }
             }
 
+            if (items.get(position).getStatus() != null && items.get(position).getStatus().equals("Yes")) {
+                holder.mAddActivityAdapterBinding.radioYes.setChecked(true);
+                holder.mAddActivityAdapterBinding.radioYes.setEnabled(false);
+            } else if(items.get(position).getStatus() != null && items.get(position).getStatus().equals("No")){
+                holder.mAddActivityAdapterBinding.radioNo.setChecked(true);
+                holder.mAddActivityAdapterBinding.radioYes.setEnabled(false);
+            }
+
             holder.mAddActivityAdapterBinding.radioYes.setOnClickListener(view -> {
                 isCheckedList.set(position, "true");
                 holder.mAddActivityAdapterBinding.radioNo.setChecked(false);
                 holder.mAddActivityAdapterBinding.radioYes.setChecked(true);
-                holder.mAddActivityAdapterBinding.radioNA.setChecked(false);
                 serviceClickHandler.onRadioYesClicked(position);
                 mRadioClickChanged.onClickChanged(position, isCheckedList);
             });
             holder.mAddActivityAdapterBinding.radioNo.setOnClickListener(view -> {
-                isCheckedList.set(position, "true");
+                isCheckedList.set(position, "false");
                 holder.mAddActivityAdapterBinding.radioNo.setChecked(true);
                 holder.mAddActivityAdapterBinding.radioYes.setChecked(false);
-                holder.mAddActivityAdapterBinding.radioNA.setChecked(false);
                 serviceClickHandler.onRadioNoClicked(position);
                 mRadioClickChanged.onClickChanged(position, isCheckedList);
             });
 
-            holder.mAddActivityAdapterBinding.radioNA.setOnClickListener(view -> {
-                isCheckedList.set(position, "true");
-                holder.mAddActivityAdapterBinding.radioNo.setChecked(false);
-                holder.mAddActivityAdapterBinding.radioYes.setChecked(false);
-                holder.mAddActivityAdapterBinding.radioNA.setChecked(true);
-                serviceClickHandler.onRadioNotDoneClicked(position);
-                mRadioClickChanged.onClickChanged(position, isCheckedList);
-            });
 
             if (holder.mAddActivityAdapterBinding.radioYes.isChecked()) {
                 isCheckedList.set(position, "true");
                 mRadioClickChanged.onClickChanged(position, isCheckedList);
-            } else if (holder.mAddActivityAdapterBinding.radioNo.isChecked()) {
-                isCheckedList.set(position, "true");
-                mRadioClickChanged.onClickChanged(position, isCheckedList);
             } else {
-                isCheckedList.set(position, "true");
+                isCheckedList.set(position, "false");
                 mRadioClickChanged.onClickChanged(position, isCheckedList);
             }
 
-            holder.mAddActivityAdapterBinding.txtServiceType.setText(items.get(position).getServiceActivity());
-            holder.mAddActivityAdapterBinding.txtChemicalUsed.setText("(" + items.get(position).getChemicalName().get(0).getChemicalName() + " " + String.valueOf(items.get(position).getChemicalName().get(0).getQuantity()) + ")");
+            holder.mAddActivityAdapterBinding.txtServiceType.setText(items.get(position).getServiceCode());
+            holder.mAddActivityAdapterBinding.txtActivity.setText(items.get(position).getServiceActivity());
+            holder.mAddActivityAdapterBinding.txtChemicalUsed.setText("(" + items.get(position).getChemicalName() + ")");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -108,7 +104,7 @@ public class AddChemicalActivityAdapter extends RecyclerView.Adapter<AddChemical
         this.onItemClickHandler = onItemClickHandler;
     }
 
-    public void setOnSelectServiceClickHandler(OnSelectChemicalClickHandler serviceClickHandler) {
+    public void setOnSelectServiceClickHandler(OnSelectServiceClickHandler serviceClickHandler) {
         this.serviceClickHandler = serviceClickHandler;
     }
 

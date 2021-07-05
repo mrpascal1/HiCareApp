@@ -12,12 +12,21 @@ public class ActivityData {
     @SerializedName("Activity_Id")
     @Expose
     private Integer activityId;
+    @SerializedName("Area_Id")
+    @Expose
+    private Integer areaId;
+    @SerializedName("Service_Code")
+    @Expose
+    private String serviceCode;
     @SerializedName("ServiceActivity")
     @Expose
     private String serviceActivity;
     @SerializedName("Chemical_Name")
     @Expose
-    private List<ActivityChemicalData> chemicalName = null;
+    private String chemicalName;
+    @SerializedName("Status")
+    @Expose
+    private String Status;
 
     public Integer getActivityId() {
         return activityId;
@@ -25,6 +34,22 @@ public class ActivityData {
 
     public void setActivityId(Integer activityId) {
         this.activityId = activityId;
+    }
+
+    public Integer getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(Integer areaId) {
+        this.areaId = areaId;
+    }
+
+    public String getServiceCode() {
+        return serviceCode;
+    }
+
+    public void setServiceCode(String serviceCode) {
+        this.serviceCode = serviceCode;
     }
 
     public String getServiceActivity() {
@@ -35,11 +60,19 @@ public class ActivityData {
         this.serviceActivity = serviceActivity;
     }
 
-    public List<ActivityChemicalData> getChemicalName() {
+    public String getChemicalName() {
         return chemicalName;
     }
 
-    public void setChemicalName(List<ActivityChemicalData> chemicalName) {
+    public void setChemicalName(String chemicalName) {
         this.chemicalName = chemicalName;
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public void setStatus(String status) {
+        Status = status;
     }
 }

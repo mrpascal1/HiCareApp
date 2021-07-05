@@ -40,9 +40,10 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
     private int standardChem = 0;
     private Boolean isCombined = false;
     private Boolean showStadardChemicals = false;
+    private String type = "";
 
 
-    public ChemicalRecycleAdapter(Context context, Boolean isCombined, Boolean showStandardChemicals, OnEditTextChanged onEditTextChanged) {
+    public ChemicalRecycleAdapter(Context context, Boolean isCombined, Boolean showStandardChemicals, String type, OnEditTextChanged onEditTextChanged) {
         if (items == null) {
             items = new ArrayList<>();
         }
@@ -50,6 +51,7 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
         this.onEditTextChanged = onEditTextChanged;
         this.isCombined = isCombined;
         this.showStadardChemicals = showStandardChemicals;
+        this.type = type;
     }
 
 
@@ -67,20 +69,33 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
         try {
             final ChemicalViewModel model = items.get(position);
             holder.mChemicalRecycleRowBinding.chemName.setText(model.getName());
-            holder.mChemicalRecycleRowBinding.chemConsumption.setText(model.getConsumption());
-            holder.mChemicalRecycleRowBinding.chemStandard.setText(model.getStandard());
+            holder.mChemicalRecycleRowBinding.chemConsumption.setText(model.getConsumption().toLowerCase());
+            String unit = model.getConsumption().toLowerCase();
+            holder.mChemicalRecycleRowBinding.chemStandard.setText(model.getStandard() + " " + unit);
+            holder.mChemicalRecycleRowBinding.chemConsumption.setVisibility(View.GONE);
+//            if (showStadardChemicals) {
+//                holder.mChemicalRecycleRowBinding.chemStandard.setVisibility(View.VISIBLE);
+//            } else {
+//                holder.mChemicalRecycleRowBinding.chemStandard.setVisibility(View.GONE);
+//            }
 
-            if (showStadardChemicals) {
+
+            if (type.equals("Standard")) {
+                holder.mChemicalRecycleRowBinding.lnrActual.setVisibility(View.GONE);
                 holder.mChemicalRecycleRowBinding.chemStandard.setVisibility(View.VISIBLE);
-            } else {
-                holder.mChemicalRecycleRowBinding.chemStandard.setVisibility(View.GONE);
-            }
-            if (isCombined) {
-                holder.mChemicalRecycleRowBinding.lnrType.setVisibility(View.VISIBLE);
+                holder.mChemicalRecycleRowBinding.lnrType.setVisibility(View.GONE);
                 holder.mChemicalRecycleRowBinding.chemType.setText(model.getChemType());
                 holder.mChemicalRecycleRowBinding.serviceArea.setText("(" + model.getServiceArea() + ")");
+                holder.mChemicalRecycleRowBinding.serviceArea.setVisibility(View.GONE);
             } else {
-                holder.mChemicalRecycleRowBinding.lnrType.setVisibility(View.GONE);
+                holder.mChemicalRecycleRowBinding.lnrActual.setVisibility(View.VISIBLE);
+                holder.mChemicalRecycleRowBinding.chemStandard.setVisibility(View.VISIBLE);
+                holder.mChemicalRecycleRowBinding.chemType.setText(model.getChemType());
+                holder.mChemicalRecycleRowBinding.lnrType.setVisibility(View.VISIBLE);
+                if (isCombined) {
+                    holder.mChemicalRecycleRowBinding.serviceArea.setVisibility(View.VISIBLE);
+                    holder.mChemicalRecycleRowBinding.serviceArea.setText("(" + model.getServiceArea() + ")");
+                }
             }
 
             RealmResults<GeneralData> mGeneralRealmData =
@@ -103,11 +118,11 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
                     holder.mChemicalRecycleRowBinding.edtActual.setEnabled(false);
                     holder.mChemicalRecycleRowBinding.edtActual.setBackgroundResource(R.drawable.disable_edit_borders);
                 } else {
-                    if (model.getActual() != null) {
-                        holder.mChemicalRecycleRowBinding.edtActual.setText(model.getEdtActual());
-                    } else {
-                        holder.mChemicalRecycleRowBinding.edtActual.setText("");
-                    }
+//                    if (model.getActual() != null) {
+//                        holder.mChemicalRecycleRowBinding.edtActual.setText(model.getEdtActual());
+//                    } else {
+//                        holder.mChemicalRecycleRowBinding.edtActual.setText("");
+//                    }
 
                     holder.mChemicalRecycleRowBinding.edtActual.requestFocus();
                     holder.mChemicalRecycleRowBinding.edtActual.setOnFocusChangeListener((view, b) -> {

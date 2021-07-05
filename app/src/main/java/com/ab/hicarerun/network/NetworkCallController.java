@@ -12,6 +12,7 @@ import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.HomeActivity;
+import com.ab.hicarerun.network.models.ActivityModel.ActivityResponse;
 import com.ab.hicarerun.network.models.AttachmentModel.AttachmentDeleteRequest;
 import com.ab.hicarerun.network.models.AttachmentModel.AttachmentMSTResponse;
 import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentResponse;
@@ -26,6 +27,7 @@ import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListRequest;
 import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListResponse;
 import com.ab.hicarerun.network.models.ChemicalCountModel.ChemicalCountResponse;
 import com.ab.hicarerun.network.models.ChemicalModel.ChemicalResponse;
+import com.ab.hicarerun.network.models.ChemicalModel.SaveActivityRequest;
 import com.ab.hicarerun.network.models.ChemicalModel.ServiceAreaChemicalResponse;
 import com.ab.hicarerun.network.models.ChemicalModel.ServiceChemicalData;
 import com.ab.hicarerun.network.models.ConsulationModel.ConsulationResponse;
@@ -4777,27 +4779,28 @@ public class NetworkCallController {
     }
 
 
-    public void deleteBarcodeDetails(int requestCode, HashMap<String, Object> details){
+    public void deleteBarcodeDetails(int requestCode, HashMap<String, Object> details) {
         BaseApplication.getRetrofitAPI(false)
                 .deleteBarcode(details)
                 .enqueue(new Callback<BaseResponse>() {
                     @Override
                     public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
-                        if (response.body() != null){
+                        if (response.body() != null) {
                             mListner.onResponse(requestCode, response.body());
                         }
                     }
+
                     @Override
                     public void onFailure(Call<BaseResponse> call, Throwable t) {
                         mListner.onFailure(requestCode);
                     }
                 });
     }
-                          
 
-    public void getServiceAreaChemical(int activityId, int serviceNo, String serviceType, boolean showAllServices) {
+
+    public void getServiceAreaChemical(String orderId, int sequenceNo, String serviceType, boolean showAllServices) {
         BaseApplication.getB2BWoWApi()
-                .getServiceAreaChemical(activityId, serviceNo, serviceType, showAllServices)
+                .getServiceAreaChemical(orderId, sequenceNo, serviceType, showAllServices)
                 .enqueue(new Callback<ServiceAreaChemicalResponse>() {
                     @Override
                     public void onResponse(Call<ServiceAreaChemicalResponse> call, Response<ServiceAreaChemicalResponse> response) {
@@ -4808,14 +4811,74 @@ public class NetworkCallController {
                         }
                     }
 
-                  @Override
+                    @Override
                     public void onFailure(Call<ServiceAreaChemicalResponse> call, Throwable t) {
                         Log.d("TAG-UAT-Error", t.getMessage());
                         mListner.onFailure(20211);
                     }
                 });
-    }                    
+    }
 
+    public void updateActivityServiceStatus(final int requestCode, List<SaveActivityRequest> request) {
+        try {
+            BaseApplication.getB2BWoWApi()
+                    .updateActivityStatus(request)
+                    .enqueue(new Callback<BaseResponse>() {
+                        @Override
+                        public void onResponse(Call<BaseResponse> call,
+                                               Response<BaseResponse> response) {
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+//                                        mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getGroomingTechnicians", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<BaseResponse> call, Throwable t) {
+//                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void getServiceActivityChemical(String orderId, int sequenceNo, String serviceType, boolean showAllServices) {
+        BaseApplication.getB2BWoWApi()
+                .getServiceActivityChemical(orderId, sequenceNo, serviceType, showAllServices)
+                .enqueue(new Callback<ActivityResponse>() {
+                    @Override
+                    public void onResponse(Call<ActivityResponse> call, Response<ActivityResponse> response) {
+                        if (response.body() != null) {
+                            String responseBody = response.body().toString();
+                            mListner.onResponse(20211, response.body().getData());
+                            //Log.d("TAG-UAT", responseBody);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ActivityResponse> call, Throwable t) {
+                        Log.d("TAG-UAT-Error", t.getMessage());
+                        mListner.onFailure(20211);
+                    }
+                });
+    }
 
     public String getRefreshToken() {
         String refreshToken = null;

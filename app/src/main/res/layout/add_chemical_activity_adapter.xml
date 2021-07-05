@@ -10,13 +10,14 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:weightSum="5">
+            android:weightSum="4">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_weight="1.7"
+                android:layout_weight="1.3"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <TextView
@@ -25,7 +26,36 @@
                     android:layout_height="wrap_content"
                     android:singleLine="true"
                     android:text="CMS"
+                    android:textSize="12sp"
                     android:layout_marginLeft="4dp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="@color/tab_textColor" />
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1.3"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtActivity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="Temprid"
+                    android:layout_marginLeft="4dp"
+                    android:textSize="12sp"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
 
@@ -33,19 +63,15 @@
                     android:id="@+id/txtChemicalUsed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="2dp"
-                    android:ellipsize="end"
-                    android:gravity="center"
                     android:singleLine="true"
+                    android:text="Temprid"
+                    android:layout_marginLeft="4dp"
+                    android:textSize="8sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
 
-                    android:text="(Temprid - 1.0ML)"
-                    android:textColor="@color/grey"
-                    android:textSize="9sp" />
 
             </LinearLayout>
-
-
             <View
                 android:layout_width="0.5dp"
                 android:layout_height="match_parent"
@@ -56,16 +82,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_weight="3.3"
+                android:layout_weight="1.4"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:weightSum="3">
+                android:weightSum="1">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="1.1"
+                    android:layout_weight="0.5"
                     android:gravity="center">
 
                     <RadioButton
@@ -85,7 +111,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:layout_weight="1.1"
+                    android:layout_weight="0.5"
                     android:gravity="center">
 
                     <RadioButton
@@ -95,24 +121,7 @@
 
                 </LinearLayout>
 
-                <View
-                    android:layout_width="0.5dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/tab_textColor" />
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_weight="1.1"
-                    android:gravity="center">
-
-                    <RadioButton
-                        android:id="@+id/radioNA"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                </LinearLayout>
 
 
             </RadioGroup>

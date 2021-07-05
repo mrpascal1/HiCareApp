@@ -78,6 +78,7 @@
             android:singleLine = "true" />
 
         <LinearLayout
+            android:id="@+id/lnrActual"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:background = "@drawable/chemical_cells"

@@ -1,220 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/smoke_g"
-        tools:context=".fragments.ChemicalStandardFragment">
+        android:orientation="vertical">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycleTower"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:fillViewport="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <LinearLayout
-                android:id="@+id/lnrArea"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="3">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardSheet"
-                    app:cardBackgroundColor="@color/white"
-                    app:cardMaxElevation="8dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    app:cardElevation="4dp"
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="25dp"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:weightSum="2">
-
-                            <LinearLayout
-                                android:id="@+id/cToolbar"
-                                style="@style/ToolBarStyle.Event"
-                                android:layout_width="0dp"
-                                android:layout_height="50dp"
-                                android:layout_weight="1.8"
-                                android:orientation="vertical">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center"
-                                    android:orientation="horizontal">
-
-                                    <androidx.appcompat.widget.AppCompatImageView
-                                        app:srcCompat="@drawable/ic_placeholder"
-                                        android:layout_width="13dp"
-                                        android:layout_height="13dp"
-                                        android:layout_marginLeft="15dp"
-                                        android:layout_marginTop="3dp" />
-
-                                    <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginLeft="5dp"
-                                        android:layout_marginTop="3dp"
-                                        android:text="Floor"
-                                        android:textColor="@color/colorPrimary"
-                                        android:textSize="12sp" />
-
-                                </LinearLayout>
-
-                                <TextView
-                                    android:id="@+id/txtArea"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="20dp"
-                                    android:layout_marginTop="5dp"
-                                    android:layout_marginRight="25dp"
-                                    android:ellipsize="end"
-                                    android:maxLines="1"
-                                    android:text="Floor 1"
-                                    android:textColor="@color/black"
-                                    android:textSize="16sp" />
-
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="0.2">
-
-                                <ImageView
-                                    app:srcCompat="@drawable/ic_down_arrow"
-                                    android:layout_width="10dp"
-                                    android:layout_height="10dp"
-                                    android:layout_gravity="center" />
-
-                            </LinearLayout>
-
-
-                        </LinearLayout>
-
-                        <!--<View-->
-                        <!--android:id="@+id/view"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="0.5dp"-->
-                        <!--android:layout_marginLeft="10dp"-->
-                        <!--android:layout_marginRight="10dp"-->
-                        <!--android:background="@drawable/gist_bg"-->
-                        <!--android:layerType="software" />-->
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2.7"
-                    android:gravity="center_vertical"
-                    android:text="Floor 1"
-                    android:textSize="16dp" />
-
-
-                <!--<androidx.appcompat.widget.AppCompatSpinner-->
-                <!--android:id="@+id/spnArea"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:layout_marginLeft="10sp"-->
-                <!--android:layout_weight="2.7"-->
-                <!--android:clickable="true"-->
-                <!--android:ems="10"-->
-                <!--android:background="@null"-->
-                <!--android:popupBackground="@color/white"-->
-                <!--android:spinnerMode="dialog"-->
-                <!--android:textSize="20sp"-->
-                <!--app:layout_constraintBottom_toBottomOf="parent"-->
-                <!--app:layout_constraintRight_toRightOf="parent"-->
-                <!--app:layout_constraintTop_toTopOf="parent" />-->
-
-                <ImageView
-                    app:srcCompat="@drawable/ic_download"
-                    android:layout_width="0dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="5dp"
-                    android:layout_weight="0.2" />
+                    android:layout_height="0.3dp"
+                    android:background="@color/black" />
 
                 <LinearLayout
-                    android:id="@+id/lnrFilter"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_marginRight="10sp"
-                    android:layout_weight="0.5"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:visibility="gone"
-                    android:weightSum="1">
+                    android:id="@+id/relativeLayout1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp"
+                    android:background="@color/tab_textColor"
+                    android:gravity="center">
 
-                    <!--<TextView-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center"-->
-                    <!--android:layout_weight="0"-->
-                    <!--android:visibility="gone"-->
-                    <!--android:textSize="16sp"-->
-                    <!--android:textColor="@android:color/tab_indicator_text"-->
-                    <!--android:text="Area" />-->
-
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/txtType"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:gravity="center">
 
-                        <ImageView
-                            app:srcCompat="@drawable/ic_down"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_gravity="center" />
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:text="@string/type_chemicals"
+                        android:textColor="@color/black" />
 
-                    </LinearLayout>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.7"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:text="@string/name"
+                        android:textColor="@color/black"
+                        app:tabTextAppearance="@style/calligraphy_font" />
 
+                    <TextView
+                        android:id="@+id/txtUnit"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.6"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:text="@string/unit_chemicals"
+                        android:textColor="@color/black"
+                        app:tabTextAppearance="@style/calligraphy_font" />
 
+                    <TextView
+                        android:id="@+id/txtStandard"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.9"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:text="@string/standard"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/txtActual"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.9"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:text="@string/actual"
+                        android:textColor="@color/black" />
                 </LinearLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.3dp"
+                    android:background="@color/black" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycleView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@null"
+                    android:nestedScrollingEnabled="false" />
+
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:id="@+id/rel_chemicals"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="10dp"
+                    android:paddingTop="10dp"
+                    android:visibility="gone">
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnRodentScanner"
+                        android:layout_width="match_parent"
+                        android:layout_height="38dp"
+                        android:background="@drawable/button_background"
+                        android:clickable="true"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="35dp"
+                        android:text="Check Bait Stations"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white" />
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/check_chem_verified"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="-3dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:buttonTint="@color/colorAccentDrawerPrimaryLight"
+                        android:paddingLeft="5dp"
+                        android:text="@string/chemical_verified"
+                        android:textColor="@color/black"
+                        android:textSize="18dp"
+                        app:tabTextAppearance="@style/calligraphy_font" />
+                </LinearLayout>
+
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnRodentScannerOld"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_below="@id/view"
+                    android:layout_marginLeft="100dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="100dp"
+                    android:background="@drawable/button_background"
+                    android:clickable="true"
+                    android:text="Rodent Scanner"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:visibility="gone"/>
+
+
             </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
 
-        </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycleArea"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/recycleTower"
-            android:layout_marginTop="5dp"
-            tools:listitem="@layout/item_chemical_area_parent_adapter"/>
 
     </LinearLayout>
 </layout>

@@ -128,18 +128,21 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
         } else {
             mFragmentChemicalInfoBinding.txtType.setVisibility(View.GONE);
         }
+        mFragmentChemicalInfoBinding.txtUnit.setVisibility(View.GONE);
         if (map != null) {
             map.clear();
         }
         if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
             showStandardChemicals = mGeneralRealmData.get(0).getShow_Standard_Chemicals();
         }
-        if (showStandardChemicals) {
-            mFragmentChemicalInfoBinding.txtStandard.setVisibility(View.VISIBLE);
-        } else {
-            mFragmentChemicalInfoBinding.txtStandard.setVisibility(View.GONE);
-        }
-        mAdapter = new ChemicalRecycleAdapter(getActivity(), isCombinedTask, showStandardChemicals, (position, charSeq) -> {
+//        if (showStandardChemicals) {
+//            mFragmentChemicalInfoBinding.txtStandard.setVisibility(View.VISIBLE);
+//        } else {
+//            mFragmentChemicalInfoBinding.txtStandard.setVisibility(View.GONE);
+//        }
+        mFragmentChemicalInfoBinding.txtStandard.setVisibility(View.VISIBLE);
+        mFragmentChemicalInfoBinding.txtType.setVisibility(View.VISIBLE);
+        mAdapter = new ChemicalRecycleAdapter(getActivity(), isCombinedTask, showStandardChemicals, "Actual", (position, charSeq) -> {
             try {
                 if (charSeq != null && map != null) {
                     map.put(position, charSeq);

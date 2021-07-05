@@ -1,5 +1,6 @@
 package com.ab.hicarerun.network;
 
+import com.ab.hicarerun.network.models.ActivityModel.ActivityResponse;
 import com.ab.hicarerun.network.models.AttachmentModel.AttachmentDeleteRequest;
 import com.ab.hicarerun.network.models.AttachmentModel.AttachmentMSTResponse;
 import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentResponse;
@@ -14,6 +15,7 @@ import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListRequest;
 import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListResponse;
 import com.ab.hicarerun.network.models.ChemicalCountModel.ChemicalCountResponse;
 import com.ab.hicarerun.network.models.ChemicalModel.ChemicalResponse;
+import com.ab.hicarerun.network.models.ChemicalModel.SaveActivityRequest;
 import com.ab.hicarerun.network.models.ChemicalModel.ServiceAreaChemicalResponse;
 import com.ab.hicarerun.network.models.ChemicalModel.ServiceChemicalData;
 import com.ab.hicarerun.network.models.ConsulationModel.ConsulationResponse;
@@ -557,6 +559,12 @@ public interface IRetrofit {
     @POST("Barcode/DeleteBarcodeDetails")
     Call<BaseResponse> deleteBarcode(@Body HashMap<String, Object> details);
 
-    @GET("Integration/GetServiceAreaChemical")
-    Call<ServiceAreaChemicalResponse> getServiceAreaChemical(@Query("activityId") int activityId, @Query("serviceNo") int serviceNo, @Query("serviceType") String seviceType, @Query("showAllService") boolean showAllService);
+    @GET("Integration/GetOrderServiceAreaChemical")
+    Call<ServiceAreaChemicalResponse> getServiceAreaChemical(@Query("orderNo") String activityId, @Query("serviceNo") int serviceNo, @Query("serviceType") String seviceType, @Query("showAllService") boolean showAllService);
+
+    @POST("Integration/UpdateActivityServiceStatus")
+    Call<BaseResponse> updateActivityStatus(@Body List<SaveActivityRequest> requests);
+
+    @GET("Integration/GetOrderActivityChemical")
+    Call<ActivityResponse> getServiceActivityChemical(@Query("orderNo") String activityId, @Query("serviceNo") int serviceNo, @Query("serviceType") String seviceType, @Query("showAllService") boolean showAllService);
 }

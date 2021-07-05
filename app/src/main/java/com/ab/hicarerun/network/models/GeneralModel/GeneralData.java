@@ -36,6 +36,14 @@ public class GeneralData implements RealmModel {
     @Expose
     private String IncompleteReason;
 
+    @SerializedName("Service_Sequence_Number")
+    @Expose
+    private String Service_Sequence_Number;
+
+    @SerializedName("ServiceActivityRequired")
+    @Expose
+    private boolean ServiceActivityRequired;
+
     @SerializedName("AmountCollected")
     @Expose
     private String AmountCollected;
@@ -1116,5 +1124,21 @@ public class GeneralData implements RealmModel {
 
     public void setNo_Renewal_Reason(String no_Renewal_Reason) {
         No_Renewal_Reason = no_Renewal_Reason;
+    }
+
+    public String getService_Sequence_Number() {
+        return Service_Sequence_Number;
+    }
+
+    public void setService_Sequence_Number(String service_Sequence_Number) {
+        Service_Sequence_Number = service_Sequence_Number;
+    }
+
+    public boolean getServiceActivityRequired() {
+        return ServiceActivityRequired;
+    }
+
+    public void setServiceActivityRequired(boolean serviceActivityRequired) {
+        ServiceActivityRequired = serviceActivityRequired;
     }
 }

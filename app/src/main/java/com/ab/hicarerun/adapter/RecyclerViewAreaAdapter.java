@@ -55,7 +55,7 @@ public class RecyclerViewAreaAdapter extends RecyclerView.Adapter<RecyclerViewAr
             TypedArray typedArray = mContext.obtainStyledAttributes(attrs);
             int backgroundResource = typedArray.getResourceId(0, 0);
             holder.mLayoutAreaAdapterBinding.lnrloc.setBackgroundResource(backgroundResource);
-            holder.mLayoutAreaAdapterBinding.txtBranch.setText(areaList.get(position));
+            holder.mLayoutAreaAdapterBinding.txtBranch.setText("Floor  "+areaList.get(position));
             holder.itemView.setOnClickListener(v -> onItemClickHandler.onItemClick(position));
         }catch (Exception e){
             e.printStackTrace();

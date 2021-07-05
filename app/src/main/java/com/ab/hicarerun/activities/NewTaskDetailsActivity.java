@@ -64,9 +64,11 @@ import com.ab.hicarerun.adapter.CheckListParentAdapter;
 import com.ab.hicarerun.adapter.SurveyAdapter;
 import com.ab.hicarerun.adapter.TaskViewPagerAdapter;
 import com.ab.hicarerun.databinding.ActivityNewTaskDetailsBinding;
+import com.ab.hicarerun.fragments.ChemicalActivityFragment;
 import com.ab.hicarerun.fragments.ChemicalInfoFragment;
 import com.ab.hicarerun.fragments.ConsultationFragment;
 import com.ab.hicarerun.fragments.ReferralFragment;
+import com.ab.hicarerun.fragments.ServiceActivityFragment;
 import com.ab.hicarerun.fragments.ServiceInfoFragment;
 import com.ab.hicarerun.fragments.SignatureInfoFragment;
 import com.ab.hicarerun.fragments.SignatureMSTInfoFragment;
@@ -167,10 +169,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private boolean isFinalSave = false;
     private static final int REQUEST_CODE = 1234;
     private boolean mPermissions;
-    //    public static final String ARG_USER = "ARG_USER";
-//    public static final String ARGS_MOBILE = "ARGS_MOBILE";
-//    public static final String ARGS_TAG = "ARGS_TAG";
-//    public static final String ARGS_SEQUENCE = "ARGS_SEQUENCE";
+
 
     ServiceInfoFragment.ServiceInfoListener mCallback = () -> {
         isFinalSave = false;
@@ -258,6 +257,9 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private String combinedTaskId = "";
     private Boolean isCombinedTasks = false;
     private String combinedOrderId = "";
+    private String orderId = "";
+    private int sequenceNo = 0;
+    private boolean isActivityThere = false;
     private String combinedTaskTypes = "";
     private String nextTaskId = "";
     private Double customerLatitude = 0.0;
@@ -321,7 +323,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         setSupportActionBar(mActivityNewTaskDetailsBinding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        mActivityNewTaskDetailsBinding.pager.setOffscreenPageLimit(4);
+        mActivityNewTaskDetailsBinding.pager.setOffscreenPageLimit(5);
         setTitle("");
 
         mActivityNewTaskDetailsBinding.toolbar.getNavigationIcon().setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
@@ -380,7 +382,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 }
             }
         });
-
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -396,7 +397,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
     public void getTaskDetailsById() {
         try {
-
             try {
                 AppUtils.getDataClean();
             } catch (Exception e) {
@@ -410,7 +410,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 userId = LoginRealmModels.get(0).getUserID();
                 NetworkCallController controller = new NetworkCallController();
                 controller.setListner(new NetworkResponseListner<GeneralResponse>() {
-
                     @Override
                     public void onResponse(int requestCode, GeneralResponse response) {
                         try {
@@ -424,9 +423,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             } else {
                                 isUpiPaymentNotDone = false;
                             }
-                            AppUtils.getServiceChemicalArea(149, 1, "CMS", true);
+//                            AppUtils.getServiceChemicalArea(149, 1, "CMS", true);
                             isPostJobCompletionDone = response.getData().getPostJob_Checklist_Done();
-
                             sta = response.getData().getSchedulingStatus();
                             AppUtils.isInspectionDone = response.getData().getConsultationInspectionDone();
                             if (response.getData().getInspectionInfestationLevel() != null) {
@@ -447,6 +445,9 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             isOnsiteImageRequired = response.getData().getOnsite_Image_Required();
                             mOnsiteImagePath = response.getData().getOnsite_Image_Path();
                             Renewal_Type = response.getData().getRenewal_Type();
+                            sequenceNo = Integer.parseInt(response.getData().getService_Sequence_Number());
+                            orderId = response.getData().getOrderNumber();
+//                            isActivityThere = response.getData().getServiceActivityRequired();
                             Renewal_Order_No = response.getData().getRenewal_Order_No();
                             if (Renewal_Type != null && Renewal_Type.equals("Renewal")) {
                                 if (Renewal_Order_No != null && !Renewal_Order_No.equals("")) {
@@ -556,7 +557,11 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             } else {
                 mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId, mCallback), getResources().getString(R.string.service_info));
                 mAdapter.addFragment(ChemicalInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks), getResources().getString(R.string.chemical_info));
+                if (isActivityThere) {
+                    mAdapter.addFragment(ChemicalActivityFragment.newInstance(isCombinedTasks, combinedOrderId, sequenceNo, orderId), "Activity");
+                }
                 mAdapter.addFragment(ReferralFragment.newInstance(taskId, technicianMobileNo), getResources().getString(R.string.referral_info));
+
                 if (isCombinedTasks) {
                     mAdapter.addFragment(SignatureMSTInfoFragment.newInstance(taskId, combinedTaskId, combinedTaskTypes), getResources().getString(R.string.signature_info));
                 } else {
@@ -609,6 +614,9 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         lnrOffer.setVisibility(View.INVISIBLE);
                         break;
                     case 2:
+                        lnrOffer.setVisibility(View.INVISIBLE);
+                        break;
+                    case 3:
                         lnrOffer.setVisibility(View.VISIBLE);
                         if (referralDiscount > 0) {
                             txtDiscount.setText(String.valueOf(referralDiscount));
@@ -616,7 +624,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             lnrOffer.setVisibility(View.INVISIBLE);
                         }
                         break;
-                    case 3:
+
+                    case 4:
                         lnrOffer.setVisibility(View.INVISIBLE);
                         break;
                     default:

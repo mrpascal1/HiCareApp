@@ -20,7 +20,7 @@
             android:background="@drawable/white_round_border">
 
             <TextView
-                android:id="@+id/txtUnits"
+                android:id="@+id/txtTower"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tower 1"

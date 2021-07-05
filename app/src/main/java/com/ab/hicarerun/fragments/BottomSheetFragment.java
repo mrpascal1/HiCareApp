@@ -40,7 +40,6 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
     ArrayList<String> areaList = null;
     private RealmResults<OnSiteArea> AreaRealmListResults;
     List<OnSiteArea> subItems = null;
-    private String Area = "";
     onAreaSelectListener mListener;
 
     public BottomSheetFragment() {
