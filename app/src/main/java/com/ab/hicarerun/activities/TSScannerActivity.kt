@@ -125,10 +125,10 @@ class TSScannerActivity : BaseActivity() {
                     saveBarcodeDetails()
                     Log.d("TAG-Save", modelBarcodeList.toString())
                 }else{
-                    Toast.makeText(applicationContext, "Please add new barcodes", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "Please add new rodent station", Toast.LENGTH_SHORT).show()
                 }
             }else{
-                Toast.makeText(applicationContext, "No barcode found", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Rodent station not found", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -168,7 +168,7 @@ class TSScannerActivity : BaseActivity() {
                     if (isSuccess == true){
                         if (data == "Success"){
                             binding.progressBar.visibility = View.GONE
-                            Toast.makeText(applicationContext, "Barcode is saved", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(applicationContext, "Saved successfully", Toast.LENGTH_SHORT).show()
                             getOrderDetails(order_No.toString())
                         }else{
                             binding.searchBtn.isEnabled = true
@@ -293,7 +293,7 @@ class TSScannerActivity : BaseActivity() {
             }
         }
         if (found == 0){
-            Toast.makeText(this, "Barcode not found", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Rodent station not found", Toast.LENGTH_SHORT).show()
         }
         barcodeAdapter.notifyDataSetChanged()
     }
@@ -347,7 +347,7 @@ class TSScannerActivity : BaseActivity() {
         for (i in 0 until modelBarcodeList.size){
             if(modelBarcodeList[i].barcode_Data == barcode_Data){
                 found = 1
-                Toast.makeText(this, "Barcode is already added", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Already exists", Toast.LENGTH_SHORT).show()
             }
         }
         if (found == 0){
@@ -358,7 +358,7 @@ class TSScannerActivity : BaseActivity() {
             binding.barcodeRecycler.post {
                 binding.barcodeRecycler.smoothScrollToPosition(barcodeAdapter.itemCount - 1)
             }
-            Toast.makeText(this, "Barcode is added", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Scanned successfully", Toast.LENGTH_SHORT).show()
         }
         if (modelBarcodeList.isEmpty()){
             binding.barcodeErrorTv.visibility = View.VISIBLE
