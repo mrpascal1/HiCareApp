@@ -15,7 +15,7 @@ public class OnSiteAreaResponse extends RealmObject{
     @SerializedName("IsSuccess")
     @Expose
     private String IsSuccess;
-    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
+    @SerializedName("Data")
     @Expose
     private RealmList<OnSiteArea> data = null;
     @SerializedName("ErrorMessage")

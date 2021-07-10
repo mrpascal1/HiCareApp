@@ -18,7 +18,7 @@ public class OnSiteHead {
     @SerializedName("Head")
     @Expose
     private String Head;
-    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
+    @SerializedName("Data")
     @Expose
     private List<OnSiteRecent> data = null;
 

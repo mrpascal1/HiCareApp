@@ -11,7 +11,7 @@ public class NPSDataResponse {
     @SerializedName("IsSuccess")
     @Expose
     private Boolean isSuccess;
-    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
+    @SerializedName("Data")
     @Expose
     private NPSData data;
     @SerializedName("ErrorMessage")

@@ -13,7 +13,7 @@ public class SendOtpResponse extends RealmObject {
     @SerializedName("IsSuccess")
     @Expose
     private Boolean isSuccess;
-    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
+    @SerializedName("Data")
     @Expose
     private OtpData data = null;
     @SerializedName("ErrorMessage")

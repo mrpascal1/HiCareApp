@@ -12,7 +12,7 @@ public class GeneralResponse extends RealmObject {
     @SerializedName("IsSuccess")
     @Expose
     private Boolean isSuccess;
-    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
+    @SerializedName("Data")
     @Expose
     private GeneralData data;
     @SerializedName("ErrorMessage")

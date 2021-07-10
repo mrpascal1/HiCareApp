@@ -7,7 +7,7 @@ public class ExotelResponse {
     @SerializedName("IsSuccess") @Expose
     private Boolean IsSuccess;
 
-    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data") @Expose
+    @SerializedName("Data") @Expose
     private String Data;
 
     @SerializedName("ResponseMessage") @Expose

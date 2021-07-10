@@ -12,7 +12,7 @@ public class KycTypeResponse {
     @SerializedName("IsSuccess")
     @Expose
     private Boolean isSuccess;
-    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
+    @SerializedName("Data")
     @Expose
     private List<KycTypesData> data = null;
     @SerializedName("ErrorMessage")

@@ -10,7 +10,7 @@ public class UpdateResponse {
     @SerializedName("IsSuccess")
     @Expose
     private Boolean isSuccess;
-    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
+    @SerializedName("Data")
     @Expose
     private UpdateData Data;
     @SerializedName("ResponseMessage")

@@ -10,7 +10,7 @@ public class ServicePlanResponse {
     @SerializedName("IsSuccess")
     @Expose
     private Boolean isSuccess;
-    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
+    @SerializedName("Data")
     @Expose
     private PlanData data;
     @SerializedName("ErrorMessage")

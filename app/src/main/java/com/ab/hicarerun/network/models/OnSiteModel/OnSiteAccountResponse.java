@@ -13,7 +13,7 @@ public class OnSiteAccountResponse {
     @SerializedName("IsSuccess")
     @Expose
     private String IsSuccess;
-    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
+    @SerializedName("Data")
     @Expose
     private List<OnSiteAccounts> data = null;
     @SerializedName("ErrorMessage")

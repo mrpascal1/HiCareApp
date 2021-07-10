@@ -10,7 +10,7 @@ public class TechnicianProfileDetails {
     @SerializedName("IsSuccess") @Expose
     private Boolean IsSuccess;
 
-    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data") @Expose
+    @SerializedName("Data") @Expose
     private Profile Data;
 
     @SerializedName("ErrorMessage") @Expose
