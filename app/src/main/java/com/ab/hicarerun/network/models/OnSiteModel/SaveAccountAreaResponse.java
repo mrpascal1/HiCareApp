@@ -10,7 +10,7 @@ public class SaveAccountAreaResponse {
     @SerializedName("IsSuccess") @Expose
     private Boolean IsSuccess;
 
-    @SerializedName("Data") @Expose
+    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data") @Expose
     private Object Data;
 
     @SerializedName("ErrorMessage") @Expose

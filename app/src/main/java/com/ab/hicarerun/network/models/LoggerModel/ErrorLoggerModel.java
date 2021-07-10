@@ -16,7 +16,7 @@ public class ErrorLoggerModel {
     @SerializedName("Source")
     @Expose
     private String source;
-    @SerializedName("Data")
+    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
     @Expose
     private String data;
 

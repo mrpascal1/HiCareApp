@@ -11,7 +11,7 @@ public class NewRewardsResponse {
     @SerializedName("IsSuccess")
     @Expose
     private Boolean isSuccess;
-    @SerializedName("Data")
+    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
     @Expose
     private NewRewardsData data;
     @SerializedName("ErrorMessage")

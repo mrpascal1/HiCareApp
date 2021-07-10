@@ -12,6 +12,9 @@ public class AreaActivity {
     @SerializedName("Activity_Id")
     @Expose
     private Integer activityId;
+    @SerializedName("Service_Activity_Id")
+    @Expose
+    private Integer Service_Activity_Id;
     @SerializedName("Area_Id")
     @Expose
     private Integer areaId;
@@ -96,5 +99,13 @@ public class AreaActivity {
 
     public void setActivity(List<SubActivity> activity) {
         this.activity = activity;
+    }
+
+    public Integer getService_Activity_Id() {
+        return Service_Activity_Id;
+    }
+
+    public void setService_Activity_Id(Integer service_Activity_Id) {
+        Service_Activity_Id = service_Activity_Id;
     }
 }

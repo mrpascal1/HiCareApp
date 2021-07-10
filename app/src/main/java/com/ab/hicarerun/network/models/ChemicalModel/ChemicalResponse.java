@@ -10,7 +10,7 @@ public class ChemicalResponse {
 
     @SerializedName("IsSuccess") @Expose
     private String IsSuccess;
-    @SerializedName("Data") @Expose
+    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data") @Expose
     private List<Chemicals> data = null;
     @SerializedName("ErrorMessage") @Expose
     private String ErrorMessage;

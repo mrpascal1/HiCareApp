@@ -12,7 +12,10 @@ public class SaveActivityRequest {
     private Integer activityId;
     @SerializedName("Area_Id")
     @Expose
-    private Integer areaId;
+    private Object areaId;
+    @SerializedName("Service_No")
+    @Expose
+    private Integer serviceNo;
     @SerializedName("Service_Type")
     @Expose
     private String serviceType;
@@ -31,12 +34,20 @@ public class SaveActivityRequest {
         this.activityId = activityId;
     }
 
-    public Integer getAreaId() {
+    public Object getAreaId() {
         return areaId;
     }
 
-    public void setAreaId(Integer areaId) {
+    public void setAreaId(Object areaId) {
         this.areaId = areaId;
+    }
+
+    public Integer getServiceNo() {
+        return serviceNo;
+    }
+
+    public void setServiceNo(Integer serviceNo) {
+        this.serviceNo = serviceNo;
     }
 
     public String getServiceType() {

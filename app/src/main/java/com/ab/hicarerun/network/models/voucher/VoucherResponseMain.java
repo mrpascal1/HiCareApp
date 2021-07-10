@@ -9,7 +9,7 @@ public class VoucherResponseMain {
     private Boolean IsSuccess;
     @SerializedName("Message") @Expose
     private String message = null;
-    @SerializedName("Data") @Expose
+    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data") @Expose
     private VoucherResponse data = null;
 
     public Boolean getSuccess() {

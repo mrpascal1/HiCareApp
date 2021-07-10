@@ -31,17 +31,12 @@
             android:orientation="horizontal"
             android:weightSum="5">
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.04"
-                android:background="@color/colorPrimary" />
 
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2.5"
+                android:layout_weight="3.8"
                 android:orientation="vertical">
 
 
@@ -55,12 +50,20 @@
                     android:layout_marginLeft="8dp"
                    >
 
+                    <ImageView
+                        android:id="@+id/isBarcodeVerified"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/ic_check_circle_black"
+                        />
+
                     <TextView
                         android:id="@+id/txtActivity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Spraying"
                         android:ellipsize="middle"
+                        android:layout_marginLeft="10dp"
                         android:singleLine="true"
                         android:textColor="@color/black"
                         android:gravity="center_vertical"
@@ -77,10 +80,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_weight="2.5"
+                android:layout_weight="1.2"
                 android:orientation="horizontal"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
                >
 
                 <LinearLayout
@@ -94,7 +97,6 @@
                         android:layout_width="82dp"
                         android:layout_height="28dp"
                         android:layout_gravity="center"
-                        android:layout_marginRight="5dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:gravity="center"
@@ -110,9 +112,9 @@
                             android:layout_gravity="center"
                             android:background="?android:attr/selectableItemBackground"
                             android:gravity="center"
-                            android:layout_marginLeft="7dp"
-                            android:layout_marginRight="7dp"
-                            android:text="Update"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:text="Finish"
                             android:textSize="11sp"
                             android:textColor="@color/white" />
 
@@ -126,6 +128,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                   android:visibility="gone"
                     >
 
                     <LinearLayout
@@ -134,8 +137,8 @@
                         android:layout_height="28dp"
                         android:layout_alignParentRight="true"
                         android:layout_gravity="center"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="7dp"
+                        android:layout_marginRight="7dp"
                         android:background="@drawable/red_round_border"
                         android:gravity="center"
                         android:orientation="horizontal">
@@ -146,8 +149,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
-                            android:layout_marginLeft="7dp"
-                            android:layout_marginRight="7dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
                             android:background="?android:attr/selectableItemBackground"
                             android:gravity="center"
                             android:text="Incomplete"

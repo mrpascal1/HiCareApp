@@ -12,7 +12,7 @@ public class OnSiteRecentResponse {
     @SerializedName("IsSuccess")
     @Expose
     private String IsSuccess;
-    @SerializedName("Data")
+    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
     @Expose
     private List<OnSiteHead> data = null;
     @SerializedName("ErrorMessage")

@@ -20,7 +20,19 @@ public class ServiceActivity {
     private String serviceActivityName;
     @SerializedName("Status")
     @Expose
-    private Object status;
+    private String status;
+
+    @SerializedName("Floor_No")
+    @Expose
+    private String floor;
+
+    @SerializedName("Service_Code")
+    @Expose
+    private String Service_Code;
+
+    @SerializedName("Chemical_Name")
+    @Expose
+    private String Chemical_Name;
     @SerializedName("Area_Ids")
     @Expose
     private String areaIds;
@@ -52,11 +64,11 @@ public class ServiceActivity {
         this.serviceActivityName = serviceActivityName;
     }
 
-    public Object getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Object status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -74,5 +86,29 @@ public class ServiceActivity {
 
     public void setArea(List<AreaActivity> area) {
         this.area = area;
+    }
+
+    public String getService_Code() {
+        return Service_Code;
+    }
+
+    public void setService_Code(String service_Code) {
+        Service_Code = service_Code;
+    }
+
+    public String getChemical_Name() {
+        return Chemical_Name;
+    }
+
+    public void setChemical_Name(String chemical_Name) {
+        Chemical_Name = chemical_Name;
+    }
+
+    public String getFloor() {
+        return floor;
+    }
+
+    public void setFloor(String floor) {
+        this.floor = floor;
     }
 }

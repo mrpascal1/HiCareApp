@@ -10,7 +10,7 @@ public class RoutineResponse {
     @SerializedName("IsSuccess")
     @Expose
     private Boolean isSuccess;
-    @SerializedName("Data")
+    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
     @Expose
     private TechRoutineData data;
     @SerializedName("ErrorMessage")

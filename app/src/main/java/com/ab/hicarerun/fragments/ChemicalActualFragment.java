@@ -45,6 +45,8 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
     public static final String ARGS_TASKS = "ARGS_TASKS";
     public static final String ARGS_COMBINED_TASKS = "ARGS_COMBINED_TASKS";
     public static final String ARGS_COMBINED_ID = "ARGS_COMBINED_ID";
+    public static final String ARGS_COMBINE_ORDER = "ARGS_COMBINE_ORDER";
+    public static final String ARGS_ORDER = "ARGS_ORDER";
     private static final int CHEMICAL_REQ = 1000;
     private Boolean isVerified = false;
     RecyclerView.LayoutManager layoutManager;
@@ -63,6 +65,8 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
     private String combinedTaskId = "";
     private boolean isCombinedTask = false;
     private boolean showStandardChemicals = false;
+    private String combineOrder = "";
+    private String orderId = "";
 
     public ChemicalActualFragment() {
         // Required empty public constructor
@@ -74,10 +78,12 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
         oldInstanceState.clear();
     }
 
-    public static ChemicalActualFragment newInstance(String taskId, String combinedTaskId, boolean isCombinedTasks) {
+    public static ChemicalActualFragment newInstance(String taskId, String combinedTaskId, boolean isCombinedTasks, String combineOrder, String orderId) {
         Bundle args = new Bundle();
         args.putString(ARGS_TASKS, taskId);
         args.putString(ARGS_COMBINED_ID, combinedTaskId);
+        args.putString(ARGS_COMBINE_ORDER, combineOrder);
+        args.putString(ARGS_ORDER, orderId);
         args.putBoolean(ARGS_COMBINED_TASKS, isCombinedTasks);
         ChemicalActualFragment fragment = new ChemicalActualFragment();
         fragment.setArguments(args);
@@ -90,6 +96,8 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
         if (getArguments() != null) {
             taskId = getArguments().getString(ARGS_TASKS);
             combinedTaskId = getArguments().getString(ARGS_COMBINED_ID);
+            combineOrder = getArguments().getString(ARGS_COMBINE_ORDER);
+            orderId = getArguments().getString(ARGS_ORDER);
             isCombinedTask = getArguments().getBoolean(ARGS_COMBINED_TASKS);
         }
     }
@@ -200,7 +208,9 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), BarcodeVerificatonActivity.class);
-//                intent.putExtra(ServiceRenewalActivity.ARGS_TASKS, taskId);
+                intent.putExtra(ARGS_COMBINE_ORDER, combineOrder);
+                intent.putExtra(ARGS_ORDER, orderId);
+                intent.putExtra(ARGS_COMBINED_TASKS, isCombinedTask);
                 startActivity(intent);
             }
         });

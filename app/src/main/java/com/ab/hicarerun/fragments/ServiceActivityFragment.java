@@ -96,11 +96,10 @@ public class ServiceActivityFragment extends BaseFragment implements OnAddActivi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            isCombineTask = getArguments().getBoolean(ARGS_COMBINE_ORDER, false);
+            isCombineTask = getArguments().getBoolean(ARGS_IS_COMBINE, false);
             orderId = getArguments().getString(ARGS_ORDER);
             combinedOrderId = getArguments().getString(ARGS_COMBINE_ORDER);
             sequenceNo = getArguments().getInt(ARGS_SEQUENCE, 0);
-            combinedOrderId = getArguments().getString(ARGS_ORDER);
         }
     }
 

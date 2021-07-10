@@ -12,7 +12,7 @@ public class IncentiveResponse {
     @Expose
     private Boolean IsSuccess;
 
-    @SerializedName("Data")
+    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
     @Expose
     private IncentiveData Data;
 

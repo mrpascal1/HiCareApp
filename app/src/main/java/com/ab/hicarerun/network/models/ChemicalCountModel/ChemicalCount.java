@@ -12,7 +12,7 @@ public class ChemicalCount {
     @SerializedName("Header")
     @Expose
     private List<String> header = null;
-    @SerializedName("Data")
+    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
     @Expose
     private List<Object> data = null;
 

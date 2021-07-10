@@ -269,8 +269,8 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 //            showNPSDialog();
         mFragmentHomeBinding.swipeRefreshLayout.setRefreshing(true);
         if (isResourceSaved) {
-//            showResourceCheckList();
-            showCovidCheckList();
+            showResourceCheckList();
+//            showCovidCheckList();
         }
 
         mFragmentHomeBinding.lnrAssess.setOnClickListener(v -> showAssessmentReport());
@@ -733,8 +733,8 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                             alertDialog.dismiss();
                                             getAllTasks();
                                             if (response.getParam1()) {
-//                                                showResourceCheckList();
-                                                showCovidCheckList();
+                                                showResourceCheckList();
+//                                                showCovidCheckList();
                                             } else {
                                                 showNPSDialog();
                                             }

@@ -447,7 +447,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             Renewal_Type = response.getData().getRenewal_Type();
                             sequenceNo = Integer.parseInt(response.getData().getService_Sequence_Number());
                             orderId = response.getData().getOrderNumber();
-//                            isActivityThere = response.getData().getServiceActivityRequired();
+                            isActivityThere = response.getData().getServiceActivityRequired();
                             Renewal_Order_No = response.getData().getRenewal_Order_No();
                             if (Renewal_Type != null && Renewal_Type.equals("Renewal")) {
                                 if (Renewal_Order_No != null && !Renewal_Order_No.equals("")) {
@@ -556,12 +556,11 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 mActivityNewTaskDetailsBinding.viewpagertab.setDistributeEvenly(false);
             } else {
                 mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId, mCallback), getResources().getString(R.string.service_info));
-                mAdapter.addFragment(ChemicalInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks), getResources().getString(R.string.chemical_info));
+                mAdapter.addFragment(ChemicalInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedOrderId, orderId), getResources().getString(R.string.chemical_info));
                 if (isActivityThere) {
                     mAdapter.addFragment(ChemicalActivityFragment.newInstance(isCombinedTasks, combinedOrderId, sequenceNo, orderId), "Activity");
                 }
                 mAdapter.addFragment(ReferralFragment.newInstance(taskId, technicianMobileNo), getResources().getString(R.string.referral_info));
-
                 if (isCombinedTasks) {
                     mAdapter.addFragment(SignatureMSTInfoFragment.newInstance(taskId, combinedTaskId, combinedTaskTypes), getResources().getString(R.string.signature_info));
                 } else {
@@ -616,6 +615,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                     case 2:
                         lnrOffer.setVisibility(View.INVISIBLE);
                         break;
+
                     case 3:
                         lnrOffer.setVisibility(View.VISIBLE);
                         if (referralDiscount > 0) {

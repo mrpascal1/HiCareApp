@@ -7,7 +7,7 @@ public class FeedbackResponse {
     @SerializedName("IsSuccess") @Expose
     private Boolean IsSuccess;
 
-    @SerializedName("Data") @Expose
+    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data") @Expose
     private String Data;
 
     @SerializedName("ErrorMessage") @Expose

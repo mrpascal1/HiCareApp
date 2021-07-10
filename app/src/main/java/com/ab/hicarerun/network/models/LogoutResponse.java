@@ -7,7 +7,7 @@ public class LogoutResponse {
     @SerializedName("IsSuccess") @Expose
     private Boolean IsSuccess;
 
-    @SerializedName("Data") @Expose
+    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data") @Expose
     private Boolean Data;
 
     @SerializedName("ErrorMessage") @Expose

@@ -30,11 +30,12 @@ import io.realm.RealmResults
 
 class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
 
-    lateinit var binding : ActivityBarcodeVerificatonBinding
-
+    lateinit var binding: ActivityBarcodeVerificatonBinding
     lateinit var modelBarcodeList: ArrayList<BarcodeList>
     lateinit var barcodeAdapter: BarcodeAdapter
-    private val ARG_TASK = "ARG_TASK"
+    private var ARGS_COMBINE_ORDER = "ARGS_COMBINE_ORDER"
+    private var ARGS_ORDER = "ARGS_ORDER"
+    private var ARGS_COMBINED_TASKS = "ARGS_COMBINED_TASKS"
     var empCode: Int? = null
     var orNo = ""
     var id: Int? = 0
@@ -49,32 +50,39 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
     var verified_By: String? = ""
     var created_By: String? = ""
     var isVerified: Boolean? = null
+    var isCombinedTask: Boolean? = null
     var isFetched = 0
     var lat = ""
     var long = ""
+    var combineOrder = ""
+    var order = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBarcodeVerificatonBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        //addFragment(BarcodeVerificationFragment.newInstance(/*order_No*/),"BarcodeVerificatonActivity-BarcodeVerificationFragment")
         binding.toolbar.setTitle("Check Bait Stations")
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.progressBar.visibility = View.VISIBLE
 
+        val intent = intent;
+        combineOrder = intent.getStringExtra(ARGS_COMBINE_ORDER).toString()
+        order = intent.getStringExtra(ARGS_ORDER).toString()
+        isCombinedTask = intent.getBooleanExtra(ARGS_COMBINED_TASKS, false)
+
         val loginResponse: RealmResults<LoginResponse> = BaseApplication.getRealm().where(
-            LoginResponse::class.java).findAll()
-        if (loginResponse != null && loginResponse.size > 0){
+                LoginResponse::class.java).findAll()
+        if (loginResponse != null && loginResponse.size > 0) {
             empCode = loginResponse[0]?.id?.toInt()
             Log.d("TAG-Login", empCode.toString())
         }
 
-        val generalResponse: RealmResults<GeneralData> = BaseApplication.getRealm().where(GeneralData::class.java).findAll()
-        if (generalResponse != null && generalResponse.size > 0){
-            orNo = generalResponse[0]?.orderNumber.toString()
-        }
+//        val generalResponse: RealmResults<GeneralData> = BaseApplication.getRealm().where(GeneralData::class.java).findAll()
+//        if (generalResponse != null && generalResponse.size > 0) {
+//            orNo = generalResponse[0]?.orderNumber.toString()
+//        }
 
         modelBarcodeList = ArrayList()
         barcodeAdapter = BarcodeAdapter(this, modelBarcodeList, "TSVerification")
@@ -86,7 +94,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         binding.barcodeRecycler.isNestedScrollingEnabled = false
         binding.barcodeRecycler.adapter = barcodeAdapter
 
-        binding.scanBtn.setOnClickListener{
+        binding.scanBtn.setOnClickListener {
             val integrator = IntentIntegrator(this)
             integrator.setCaptureActivity(CaptureActivityPortrait::class.java)
             integrator.setBeepEnabled(false)
@@ -102,10 +110,10 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
             }
         }
 
-        getOrderDetails(orNo, empCode.toString())
+        getOrderDetails(empCode.toString())
     }
 
-    private fun getOrderDetails(orNo: String, uId: String) {
+    private fun getOrderDetails( uId: String) {
         val controller = NetworkCallController()
         controller.setListner(object : NetworkResponseListner<OrderDetails> {
             override fun onResponse(requestCode: Int, response: OrderDetails?) {
@@ -142,14 +150,14 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                             modelBarcodeList.add(BarcodeList(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, "no"))
                         }
                         OrderDetails(response.isSuccess, Data(accountNo, orderNo, accountName, startDate, endDate, regionName, serviceGroup, servicePlan, modelBarcodeList), response.errorMessage, response.param1, response.responseMessage)
-                        if (modelBarcodeList.size > 0){
+                        if (modelBarcodeList.size > 0) {
                             binding.errorTv.visibility = View.GONE
-                        }else{
+                        } else {
                             binding.errorTv.visibility = View.VISIBLE
                         }
                     }
                     barcodeAdapter.notifyDataSetChanged()
-                }else{
+                } else {
                     modelBarcodeList.clear()
                 }
             }
@@ -160,7 +168,12 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                 Log.d("TAG-UAT-Error", requestCode.toString())
             }
         })
-        controller.getOrderNoDetails(orNo, uId)
+        if (isCombinedTask == true) {
+            controller.getBarcodeOrderDetails(combineOrder, uId)
+        } else {
+            controller.getBarcodeOrderDetails(order, uId)
+        }
+
     }
 
     private fun modifyData(id: Int?, account_No: String?, order_No: String?, account_Name: String?,
@@ -173,7 +186,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
             if (modelBarcodeList[i].barcode_Data == barcode_Data) {
                 if (modelBarcodeList[i].isVerified == false) {
                     modelBarcodeList[i] = BarcodeList(modelBarcodeList[i].id, account_No, order_No, account_Name, barcode_Data,
-                        last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, "no")
+                            last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, "no")
                     Log.d("TAG-Veri", id.toString())
                     verifyBarcode(modelBarcodeList[i].id, "Technician Scanner", account_No, order_No, barcode_Data, lat, long, last_Verified_On, last_Verified_By)
                     barcodeAdapter.notifyItemChanged(i)
@@ -232,17 +245,17 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         super.onBackPressed()
     }
 
-    private fun getBack(){
+    private fun getBack() {
         val fragment = supportFragmentManager.backStackEntryCount
-        if (fragment < 1){
+        if (fragment < 1) {
             finish()
-        }else{
+        } else {
             fragmentManager.popBackStack()
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             android.R.id.home -> {
                 getBack()
             }
@@ -260,7 +273,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         if (result != null) {
             if (result.contents != null) {
                 modifyData(id, account_No, order_No, account_Name, result.contents, created_On, empCode,
-                    last_Verified_On, created_By_Id_User, verified_By, created_By, true)
+                        last_Verified_On, created_By_Id_User, verified_By, created_By, true)
                 Log.d("TAG-QR", result.contents)
             } else {
                 Log.d("TAG-QR", "Not found")
@@ -270,10 +283,10 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
     }
 
     override fun locationFetched(
-        mLocation: Location?,
-        oldLocation: Location?,
-        time: String?,
-        locationProvider: String?
+            mLocation: Location?,
+            oldLocation: Location?,
+            time: String?,
+            locationProvider: String?
     ) {
         lat = mLocation?.latitude.toString()
         long = mLocation?.longitude.toString()

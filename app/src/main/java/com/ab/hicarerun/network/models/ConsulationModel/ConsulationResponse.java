@@ -17,7 +17,7 @@ public class ConsulationResponse {
     @SerializedName("ErrorMessage")
     private String Errormessage;
     @Expose
-    @SerializedName("Data")
+    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
     private List<Data> Data;
     @Expose
     @SerializedName("IsSuccess")

@@ -55,6 +55,9 @@ public class ChemicalInfoFragment extends BaseFragment {
     public static final String ARGS_TASKS = "ARGS_TASKS";
     public static final String ARGS_COMBINED_TASKS = "ARGS_COMBINED_TASKS";
     public static final String ARGS_COMBINED_ID = "ARGS_COMBINED_ID";
+    public static final String ARGS_COMBINE_ORDER = "ARGS_COMBINE_ORDER";
+    public static final String ARGS_ORDER = "ARGS_ORDER";
+
     private static final int CHEMICAL_REQ = 1000;
     private Boolean isVerified = false;
 
@@ -64,6 +67,8 @@ public class ChemicalInfoFragment extends BaseFragment {
     private String taskId = "";
     private String combinedTaskId = "";
     private boolean isCombinedTask = false;
+    private String combineOrder = "";
+    private String orderId = "";
 
     public ChemicalInfoFragment() {
         // Required empty public constructor
@@ -75,10 +80,12 @@ public class ChemicalInfoFragment extends BaseFragment {
         oldInstanceState.clear();
     }
 
-    public static ChemicalInfoFragment newInstance(String taskId, String combinedTaskId, boolean isCombinedTasks) {
+    public static ChemicalInfoFragment newInstance(String taskId, String combinedTaskId, boolean isCombinedTasks, String combinedOrderId, String orderId) {
         Bundle args = new Bundle();
         args.putString(ARGS_TASKS, taskId);
         args.putString(ARGS_COMBINED_ID, combinedTaskId);
+        args.putString(ARGS_COMBINE_ORDER, combinedOrderId);
+        args.putString(ARGS_ORDER, orderId);
         args.putBoolean(ARGS_COMBINED_TASKS, isCombinedTasks);
         ChemicalInfoFragment fragment = new ChemicalInfoFragment();
         fragment.setArguments(args);
@@ -92,9 +99,10 @@ public class ChemicalInfoFragment extends BaseFragment {
             taskId = getArguments().getString(ARGS_TASKS);
             combinedTaskId = getArguments().getString(ARGS_COMBINED_ID);
             isCombinedTask = getArguments().getBoolean(ARGS_COMBINED_TASKS);
+            combineOrder = getArguments().getString(ARGS_COMBINE_ORDER);
+            orderId = getArguments().getString(ARGS_ORDER);
         }
     }
-
 
     @Override
     public void onAttach(@NotNull Context context) {
@@ -126,7 +134,7 @@ public class ChemicalInfoFragment extends BaseFragment {
             mFragmentChemicalInfoBinding.viewPager.setOffscreenPageLimit(2);
             mAdapter = new TaskViewPagerAdapter(getChildFragmentManager(), getActivity());
             mAdapter.addFragment(ChemicalStandardFragment.newInstance(taskId, combinedTaskId, isCombinedTask), "STANDARD");
-            mAdapter.addFragment(ChemicalActualFragment.newInstance(taskId, combinedTaskId, isCombinedTask), "ACTUAL");
+            mAdapter.addFragment(ChemicalActualFragment.newInstance(taskId, combinedTaskId, isCombinedTask, combineOrder, orderId), "ACTUAL");
             mFragmentChemicalInfoBinding.viewpagertab.setDistributeEvenly(true);
             mFragmentChemicalInfoBinding.viewPager.setAdapter(mAdapter);
             mFragmentChemicalInfoBinding.viewpagertab.setViewPager(mFragmentChemicalInfoBinding.viewPager);
@@ -135,6 +143,4 @@ public class ChemicalInfoFragment extends BaseFragment {
             e.printStackTrace();
         }
     }
-
-
 }

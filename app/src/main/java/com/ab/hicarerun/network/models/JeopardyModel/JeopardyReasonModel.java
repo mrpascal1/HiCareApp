@@ -10,7 +10,7 @@ public class JeopardyReasonModel {
     @SerializedName("IsSuccess") @Expose
     private Boolean IsSuccess;
 
-    @SerializedName("Data") @Expose
+    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data") @Expose
     private List<JeopardyReasonsList> data = null;
 
     @SerializedName("ResponseMessage") @Expose

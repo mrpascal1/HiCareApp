@@ -10,7 +10,7 @@ public class CovidResponse {
     @SerializedName("IsSuccess")
     @Expose
     private Boolean isSuccess;
-    @SerializedName("Data")
+    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
     @Expose
     private String data;
     @SerializedName("ErrorMessage")

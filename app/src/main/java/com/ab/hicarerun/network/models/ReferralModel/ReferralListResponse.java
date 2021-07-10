@@ -10,7 +10,7 @@ public class ReferralListResponse {
     @SerializedName("IsSuccess")
     @Expose
     private Boolean isSuccess;
-    @SerializedName("Data") @Expose
+    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data") @Expose
     private List<ReferralList> data = null;
 
     public Boolean getSuccess() {

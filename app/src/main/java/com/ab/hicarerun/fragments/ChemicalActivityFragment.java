@@ -20,7 +20,7 @@ import com.ab.hicarerun.handler.OnSaveEventHandler;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ChemicalActivityFragment  extends BaseFragment {
+public class ChemicalActivityFragment extends BaseFragment {
     FragmentChemicalInfoBinding mFragmentChemicalInfoBinding;
     public static final String ARGS_COMBINE_ORDER = "ARGS_COMBINE_ORDER";
     public static final String ARGS_SEQUENCE = "ARGS_SEQUENCE";
@@ -59,11 +59,10 @@ public class ChemicalActivityFragment  extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            isCombinedTask = getArguments().getBoolean(ARGS_COMBINE_ORDER, false);
+            isCombinedTask = getArguments().getBoolean(ARGS_IS_COMBINE, false);
             orderId = getArguments().getString(ARGS_ORDER);
             combinedOrderId = getArguments().getString(ARGS_COMBINE_ORDER);
             sequenceNo = getArguments().getInt(ARGS_SEQUENCE, 0);
-            combinedOrderId = getArguments().getString(ARGS_ORDER);
         }
     }
 

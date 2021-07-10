@@ -79,7 +79,7 @@ public class InspectionFirstFragment extends Fragment implements UserFirstConsul
     private static final int CONSULATION_REQ = 1000;
     private static final int UPLOAD_REQ = 2000;
     private ConsulationParentAdapter mAdapter;
-    //    private List<Data> consulationList = null;
+    //    private List<com.ab.hicarerun.network.models.TSScannerModel.Data> consulationList = null;
     private List<Data> inspectionList = null;
     private String selectedImagePath = "";
     private int checkPosition = 0;

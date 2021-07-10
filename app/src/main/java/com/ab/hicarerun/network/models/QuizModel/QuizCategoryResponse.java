@@ -12,7 +12,7 @@ public class QuizCategoryResponse {
     @SerializedName("IsSuccess")
     @Expose
     private Boolean isSuccess;
-    @SerializedName("Data")
+    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
     @Expose
     private List<QuizCategoryData> data = null;
     @SerializedName("ErrorMessage")

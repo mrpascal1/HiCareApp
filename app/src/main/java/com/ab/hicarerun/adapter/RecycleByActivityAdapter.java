@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,8 +15,6 @@ import com.ab.hicarerun.databinding.ItemChemicalAreaChildAdapterBinding;
 import com.ab.hicarerun.databinding.ItemRecycleActivityUnitBinding;
 import com.ab.hicarerun.handler.OnAddActivityClickHandler;
 import com.ab.hicarerun.network.models.ActivityModel.ServiceActivity;
-import com.ab.hicarerun.network.models.ChemicalModel.ActivityData;
-import com.ab.hicarerun.network.models.ChemicalModel.AreaData;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -49,7 +48,15 @@ public class RecycleByActivityAdapter extends RecyclerView.Adapter<RecycleByActi
     @Override
     public void onBindViewHolder(@NotNull RecycleByActivityAdapter.ViewHolder holder, final int position) {
         try {
-            holder.mItemRecycleActivityUnitBinding.txtActivity.setText(items.get(position).getServiceActivityName());
+            holder.mItemRecycleActivityUnitBinding.txtActivity.setText(items.get(position).getChemical_Name()+" - "+ items.get(position).getServiceActivityName());
+
+            if(items.get(position).getStatus() != null && items.get(position).getStatus().equalsIgnoreCase("yes")){
+                holder.mItemRecycleActivityUnitBinding.isBarcodeVerified.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_check_circle_green));
+            }else {
+                holder.mItemRecycleActivityUnitBinding.isBarcodeVerified.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_check_circle_black));
+            }
+
+            holder.mItemRecycleActivityUnitBinding.txtActivity.setTypeface(holder.mItemRecycleActivityUnitBinding.txtActivity.getTypeface(), Typeface.BOLD);
             holder.mItemRecycleActivityUnitBinding.lnrUpdate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

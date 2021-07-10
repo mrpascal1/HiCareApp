@@ -15,7 +15,7 @@ public class SaveConsulationResponse {
     @SerializedName("ErrorMessage")
     private String errormessage;
     @Expose
-    @SerializedName("Data")
+    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
     private boolean data;
     @Expose
     @SerializedName("IsSuccess")

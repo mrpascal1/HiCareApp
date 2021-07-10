@@ -1,6 +1,7 @@
 package com.ab.hicarerun.network;
 
 import com.ab.hicarerun.network.models.ActivityModel.ActivityResponse;
+import com.ab.hicarerun.network.models.ActivityModel.SaveServiceActivity;
 import com.ab.hicarerun.network.models.AttachmentModel.AttachmentDeleteRequest;
 import com.ab.hicarerun.network.models.AttachmentModel.AttachmentMSTResponse;
 import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentResponse;
@@ -92,6 +93,7 @@ import com.ab.hicarerun.network.models.ServicePlanModel.RenewOrderResponse;
 import com.ab.hicarerun.network.models.ServicePlanModel.RenewalOTPResponse;
 import com.ab.hicarerun.network.models.ServicePlanModel.ServicePlanResponse;
 import com.ab.hicarerun.network.models.SlotModel.SlotResponse;
+import com.ab.hicarerun.network.models.TSScannerModel.BarcodeDetailsResponse;
 import com.ab.hicarerun.network.models.TSScannerModel.BarcodeList;
 import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse;
 import com.ab.hicarerun.network.models.TSScannerModel.OrderDetails;
@@ -122,23 +124,21 @@ import retrofit2.http.Query;
 public interface IRetrofit {
     //    String BASE_URL = "http://52.74.65.15/mobileapi/api/";
     //    String ERROR_LOG_URL = "http://52.74.65.15/logging/api/";
-    //    http://apps.hicare.in/cwf/datasync/InsertRenewalAppJeopardy
-    String BASE_URL = "http://api.hicare.in/mobile/api/";
-    String SCAN_URL = "http://api.hicare.in/taskservice/api/";
+    //    http://apps.hicare.in/cwf/datasync/InsertRenewalAppJeopardy;
+    String BASE_URL = "http://run.hicare.in/mobile/api/";
+    String SCAN_URL = "http://run.hicare.in/taskservice/api/";
     String EXOTEL_URL = "http://apps.hicare.in/api/api/";
     String ERROR_LOG_URL = "http://run.hicare.in/logging/api/";
     String JEOPARDY_URL = "http://apps.hicare.in/cwf/";
-    String SLOT_URL = "http://api.hicare.in/slot/api/";
-    String UAT = "http://api.hicare.in/Mobile/api/";
+    String SLOT_URL = "http://run.hicare.in/slot/api/";
+    String UAT = "http://run.hicare.in/Mobile/api/";
     String B2B_URL = "http://connect.hicare.in/b2bwow/api/";
 
     /*[Verify User]*/
-
     @GET("userverification/VerifyUser")
     Call<SendOtpResponse> sendOtp(@Query("mobileno") String mobile, @Query("resendOtp") String isResend);
 
     /*[Login]*/
-
     @FormUrlEncoded
     @POST("Login")
     Call<LoginResponse> login(@Field("grant_type") String grantType,
@@ -149,8 +149,8 @@ public interface IRetrofit {
                               @Header("AppVersion") String version,
                               @Header("DeviceInfo") String deviceinfo,
                               @Header("PlayerId") String mStrPlayerId);
-    /*[Refresh Token]*/
 
+    /*[Refresh Token]*/
     @FormUrlEncoded
     @POST("login")
     Call<LoginResponse> refreshToken(@Field("grant_type") String grantType,
@@ -162,93 +162,75 @@ public interface IRetrofit {
                                      @Header("PlayerId") String mStrPlayerId);
 
     /*[Task Details]*/
-
     @GET("Task/GetTaskList")
     Call<TaskListResponse> getTasksList(@Query("resourceId") String resourceId, @Query("deviceId") String IMEI);
 
     /*[Task Details By ID]*/
-
     @GET("Task/GetTaskDetailsById")
     Call<GeneralResponse> getTasksDetailById(@Query("resourceId") String resourceId, @Query("taskId") String taskId, @Query("IsCombinedTask") Boolean isCombinedTask, @Query("ln") String language);
 
     /*[GetReferralServiceAndRelation]*/
-
     @GET("CustomerReferral/GetReferralServiceAndRelation")
     Call<ReferralSRResponse> getReferralServiceAndRelation(@Query("taskId") String taskId, @Query("language") String lang);
 
     /*[Save Referral]*/
-
     @POST("CustomerReferral/SaveCustomerReferralDetails")
     Call<ReferralResponse> postReferrals(@Body ReferralRequest request);
 
     /*[Referral Details]*/
-
     @GET("CustomerReferral/GetReferralDetailsByTaskId")
     Call<ReferralListResponse> getReferrals(@Query("taskId") String taskId);
 
     /*[Delete Referral]*/
-
     @POST("CustomerReferral/DeleteCustomerReferralDetails")
     Call<ReferralResponse> getDeleteReferrals(@Body ReferralDeleteRequest request);
 
     /*[Send Feedback]*/
-
     @POST("Feedback/SendFeedbackLink")
     Call<FeedbackResponse> postFeedBackLink(@Body FeedbackRequest request);
 
     /*[Upload Attachment]*/
-
     @POST("Attachment/UploadAttachment")
     Call<PostAttachmentResponse> postAttachments(@Body PostAttachmentRequest request);
 
     /*[Delete Attachment]*/
-
     @POST("Attachment/DeleteAttachmentDetails")
     Call<PostAttachmentResponse> getDeleteAttachments(@Body List<AttachmentDeleteRequest> request);
 
     /*[Attachment Details]*/
-
     @GET("Attachment/GetAttachmentDetailsByTaskId")
     Call<GetAttachmentResponse> getAttachments(@Query("resourceId") String resourceId, @Query("taskId") String taskId);
 
     /*[Attachment MST Details*/
-
     @GET("Attachment/GetAttachmentDetailsByTaskIdForMST")
     Call<AttachmentMSTResponse> getMSTAttachments(@Query("resourceId") String resourceId, @Query("taskIds") String taskId,
                                                   @Query("serviceTypes") String serviceTypes);
 
     /*[Update Tasks]*/
-
     @POST("Task/UpdateTaskDetails")
     Call<UpdateTaskResponse> updateTasks(@Body UpdateTasksRequest request);
 
     /*[HandShake]*/
-
     @GET("ResourceActivity/InitializeActivityHandshake")
     Call<HandShakeResponse> getHandShake();
 
     /*[Continue HandShake]*/
-
     @POST("ResourceActivity/PostResourceActivity")
     Call<ContinueHandShakeResponse> getContinueHandShake(@Body ContinueHandShakeRequest request);
 
     /*[Chemicals Details]*/
-
     @GET("ChemicalConsumption/GetChemimcalDetails")
     Call<ChemicalResponse> getChemicals(@Query("taskId") String taskId);
 
     /*[Chemicals Details]*/
-
     @GET("ChemicalConsumption/GetChemimcalDetailsForMST")
     Call<ChemicalResponse> getMSTChemicals(@Query("taskId") String taskId);
 
     /*[Logout]*/
-
     @POST("ResourceActivity/LogOut")
     Call<LogoutResponse> getLogout(@Query("resourceId") String UserId);
 
     /*[Dial Customer]*/
-
     @GET("applicationlogic/DialExotelNumber")
     Call<ExotelResponse> getCallExotel(@Query("customerNo") String customerNo, @Query("techNo") String techNo);
 
@@ -257,22 +239,18 @@ public interface IRetrofit {
     Call<SelfAssessmentResponse> getTechAttendance(@Body AttendanceRequest request);
 
     /*[Register Profile]*/
-
     @POST("ResourceActivity/PostResourceProfilePic")
     Call<HandShakeResponse> getProfilePic(@Body ProfilePicRequest request);
 
     /*[Training Videos]*/
-
     @GET("VideoUploader/GettrainingVideoDetails")
     Call<TrainingResponse> getTrainingVideos();
 
     /*[Error Log]*/
-
     @POST("Log/Publish")
     Call<String> sendErrorLog(@Body ErrorLoggerModel request);
 
     /*[Update APP api]*/
-
     @GET("ResourceActivity/VersionCheck")
     Call<UpdateResponse> getUpdateApp();
 
@@ -550,6 +528,10 @@ public interface IRetrofit {
     @GET("Barcode/GetOrderDetails")
     Call<OrderDetails> getOrderDetails(@Query("orderNo") String orderNo, @Query("userId") String userId);
 
+    @GET("Barcode/GetBarcodeOrderDetails")
+    Call<BarcodeDetailsResponse> getBarcodeOrderDetails(@Query("orderNo") String orderNo, @Query("userId") String userId);
+
+
     @POST("Barcode/SaveBarcodeDetails")
     Call<BaseResponse> saveBarcode(@Body ArrayList<BarcodeList> barcodeList);
 
@@ -567,4 +549,8 @@ public interface IRetrofit {
 
     @GET("Integration/GetOrderActivityChemical")
     Call<ActivityResponse> getServiceActivityChemical(@Query("orderNo") String activityId, @Query("serviceNo") int serviceNo, @Query("serviceType") String seviceType, @Query("showAllService") boolean showAllService);
+
+    @POST("Integration/UpdateServiceActivityStatus")
+    Call<BaseResponse> updateActivityServiceStatus(@Body List<SaveServiceActivity> requests);
+
 }

@@ -218,7 +218,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/recycleTower"
                 android:layout_marginTop="5dp"
-                tools:listitem="@layout/item_chemical_area_parent_adapter"/>
+                tools:listitem="@layout/item_recycle_activity_unit"/>
 
         </LinearLayout>
 

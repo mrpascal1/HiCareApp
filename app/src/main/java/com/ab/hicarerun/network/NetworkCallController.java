@@ -13,6 +13,7 @@ import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.network.models.ActivityModel.ActivityResponse;
+import com.ab.hicarerun.network.models.ActivityModel.SaveServiceActivity;
 import com.ab.hicarerun.network.models.AttachmentModel.AttachmentDeleteRequest;
 import com.ab.hicarerun.network.models.AttachmentModel.AttachmentMSTResponse;
 import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentResponse;
@@ -104,6 +105,7 @@ import com.ab.hicarerun.network.models.ServicePlanModel.RenewOrderResponse;
 import com.ab.hicarerun.network.models.ServicePlanModel.RenewalOTPResponse;
 import com.ab.hicarerun.network.models.ServicePlanModel.ServicePlanResponse;
 import com.ab.hicarerun.network.models.SlotModel.SlotResponse;
+import com.ab.hicarerun.network.models.TSScannerModel.BarcodeDetailsResponse;
 import com.ab.hicarerun.network.models.TSScannerModel.BarcodeList;
 import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse;
 import com.ab.hicarerun.network.models.TSScannerModel.OrderDetails;
@@ -4742,6 +4744,27 @@ public class NetworkCallController {
                 });
     }
 
+    public void getBarcodeOrderDetails(String orderId, String userId) {
+        BaseApplication.getRetrofitAPI(false)
+                .getBarcodeOrderDetails(orderId, userId)
+                .enqueue(new Callback<BarcodeDetailsResponse>() {
+                    @Override
+                    public void onResponse(Call<BarcodeDetailsResponse> call, Response<BarcodeDetailsResponse> response) {
+                        if (response.body() != null) {
+                            String responseBody = response.body().toString();
+                            mListner.onResponse(20211, response.body());
+                            //Log.d("TAG-UAT", responseBody);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BarcodeDetailsResponse> call, Throwable t) {
+                        Log.d("TAG-UAT-Error", t.getMessage());
+                        mListner.onFailure(20211);
+                    }
+                });
+    }
+
     public void saveBarcodeList(int requestCode, ArrayList<BarcodeList> barcodeList) {
         BaseApplication.getRetrofitAPI(false)
                 .saveBarcode(barcodeList)
@@ -4858,6 +4881,47 @@ public class NetworkCallController {
         }
 
     }
+
+    public void updateActivityStatus(final int requestCode, List<SaveServiceActivity> request) {
+        try {
+            BaseApplication.getB2BWoWApi()
+                    .updateActivityServiceStatus(request)
+                    .enqueue(new Callback<BaseResponse>() {
+                        @Override
+                        public void onResponse(Call<BaseResponse> call,
+                                               Response<BaseResponse> response) {
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+//                                        mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getGroomingTechnicians", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<BaseResponse> call, Throwable t) {
+//                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     public void getServiceActivityChemical(String orderId, int sequenceNo, String serviceType, boolean showAllServices) {
         BaseApplication.getB2BWoWApi()
