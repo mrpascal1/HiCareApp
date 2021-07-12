@@ -58,7 +58,7 @@ public class TermsAndConditionsFragment extends BaseFragment {
         });
         try {
             mFragmentTermsAndConditionsBinding.webView.getSettings().setJavaScriptEnabled(true);
-            mFragmentTermsAndConditionsBinding.webView.loadUrl("https://hicare.in/terms-and-condition");
+            mFragmentTermsAndConditionsBinding.webView.loadUrl("https://hicare.in/terms-conditions");
         }catch (Exception e){
             e.printStackTrace();
         }

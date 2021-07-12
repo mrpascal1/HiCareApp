@@ -128,6 +128,7 @@ class TSScannerActivity : BaseActivity() {
                     Toast.makeText(applicationContext, "Please add new rodent station", Toast.LENGTH_SHORT).show()
                 }
             }else{
+                binding.saveBtn.visibility = View.GONE
                 Toast.makeText(applicationContext, "Rodent station not found", Toast.LENGTH_SHORT).show()
             }
         }
@@ -149,8 +150,10 @@ class TSScannerActivity : BaseActivity() {
                 binding.boxesTitleTv.text = "Bait Station: (${modelBarcodeList.size})"
                 if (count == 0){
                     binding.barcodeErrorTv.visibility = View.VISIBLE
+                    binding.saveBtn.visibility = View.GONE
                 }else{
                     binding.barcodeErrorTv.visibility = View.GONE
+                    binding.saveBtn.visibility = View.VISIBLE
                 }
             }
         })
@@ -248,8 +251,10 @@ class TSScannerActivity : BaseActivity() {
                         OrderDetails(response.isSuccess, Data(account_No, orderNo, account_Name, startDate, endDate, regionName, serviceGroup, servicePlan, modelBarcodeList), response.errorMessage, response.param1, response.responseMessage)
                         if (itemsCount > 0){
                             binding.barcodeErrorTv.visibility = View.GONE
+                            binding.saveBtn.visibility = View.VISIBLE
                         }else{
                             binding.barcodeErrorTv.visibility = View.VISIBLE
+                            binding.saveBtn.visibility = View.GONE
                         }
                         binding.boxesTitleTv.text = "Bait Stations: (${modelBarcodeList.size})"
                     }
@@ -262,6 +267,7 @@ class TSScannerActivity : BaseActivity() {
                     binding.progressBar.visibility = View.GONE
                     binding.errorTv.text = "Please Enter Valid Order Number."
                     binding.errorTv.visibility = View.VISIBLE
+                    binding.saveBtn.visibility = View.GONE
                     binding.dataCard.visibility = View.GONE
                 }
             }
@@ -270,6 +276,7 @@ class TSScannerActivity : BaseActivity() {
                 modelBarcodeList.clear()
                 binding.progressBar.visibility = View.GONE
                 binding.dataCard.visibility = View.GONE
+                binding.saveBtn.visibility = View.GONE
                 binding.errorTv.text = "Error Occurred."
                 binding.errorTv.visibility = View.VISIBLE
                 Log.d("TAG-UAT-Error", requestCode.toString())
@@ -362,8 +369,10 @@ class TSScannerActivity : BaseActivity() {
         }
         if (modelBarcodeList.isEmpty()){
             binding.barcodeErrorTv.visibility = View.VISIBLE
+            binding.saveBtn.visibility = View.GONE
         }else{
             binding.barcodeErrorTv.visibility = View.GONE
+            binding.saveBtn.visibility = View.VISIBLE
         }
         binding.boxesTitleTv.text = "Bait Stations: (${modelBarcodeList.size})"
     }

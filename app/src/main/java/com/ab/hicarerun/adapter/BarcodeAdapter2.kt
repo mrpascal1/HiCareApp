@@ -45,7 +45,6 @@ class BarcodeAdapter2(val context: Context, val barcodeList: ArrayList<BarcodeDe
         fun bindItems(context: Context, barcodeList: BarcodeDetailsData){
             val barcode_data = barcodeList.barcode_Data.toString()
             val isVerified = barcodeList.isVerified
-            val verifiedOn = barcodeList.last_Verified_On
             val id = barcodeList.id
             if (comingFrom == "TSScanner"){
                 binding.isBarcodeVerified.visibility = View.GONE
@@ -62,6 +61,8 @@ class BarcodeAdapter2(val context: Context, val barcodeList: ArrayList<BarcodeDe
                 binding.dataCard.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white))
             }*/
             if (isVerified == true){
+                val verifiedOn = barcodeList.last_Verified_On
+                Log.d("TAG-Adapt", verifiedOn.toString())
                 val time = AppUtils.reFormatDateTime(verifiedOn, "HH:mm")
                 val date = AppUtils.reFormatDateTime(verifiedOn, "MMM dd, yyyy")
 

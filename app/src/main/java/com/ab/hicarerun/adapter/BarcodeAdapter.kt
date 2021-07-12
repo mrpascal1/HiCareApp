@@ -111,7 +111,6 @@ class BarcodeAdapter(
         fun bindItems(context: Context, barcodeList: BarcodeList) {
             val barcode_data = barcodeList.barcode_Data.toString()
             val isVerified = barcodeList.isVerified
-            val verifiedOn = barcodeList.last_Verified_On
             val id = barcodeList.id
             if (comingFrom == "TSScanner") {
                 binding.isBarcodeVerified.visibility = View.GONE
@@ -138,6 +137,7 @@ class BarcodeAdapter(
                 )
             }
             if (isVerified == true) {
+                val verifiedOn = barcodeList.last_Verified_On
                 val time = AppUtils.reFormatDateTime(verifiedOn, "HH:mm")
                 val date = AppUtils.reFormatDateTime(verifiedOn, "MMM dd, yyyy")
 
