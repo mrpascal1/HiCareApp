@@ -111,7 +111,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         getOrderDetails(empCode.toString())
     }
 
-    private fun getOrderDetails( uId: String) {
+    private fun getOrderDetails(uId: String) {
         val controller = NetworkCallController()
         controller.setListner(object : NetworkResponseListner<BarcodeDetailsResponse> {
             override fun onResponse(requestCode: Int, response: BarcodeDetailsResponse?) {
@@ -177,6 +177,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                     modelBarcodeList[i] = BarcodeDetailsData(modelBarcodeList[i].id, account_No, order_No, account_Name, barcode_Data,
                             last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified)
                     Log.d("TAG-Veri", id.toString())
+                    Log.d("TAG-VerifiedOn-start", last_Verified_On.toString())
                     verifyBarcode(modelBarcodeList[i].id, "Technician Scanner", account_No, order_No, barcode_Data, lat, long, last_Verified_On, last_Verified_By)
                     barcodeAdapter.notifyItemChanged(i)
                     binding.barcodeRecycler.post {
@@ -195,6 +196,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
 
     private fun verifyBarcode(barcodeId: Int?, activityName: String?, account_No: String?, order_No: String?, barcode_Data: String?,
                               lat: String?, long: String?, verifiedOn: String?, verifiedBy: Int?) {
+        Log.d("TAG-VerifiedOn-top", verifiedOn.toString())
         val verifyMap = HashMap<String, Any?>()
         verifyMap["BarcodeId"] = barcodeId
         verifyMap["ActivityName"] = activityName
@@ -207,6 +209,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         verifyMap["VerifiedBy"] = verifiedBy
 
         Log.d("TAG-Verifier", verifyMap.toString())
+        Log.d("TAG-VerifiedOn", verifiedOn.toString())
 
         val controller = NetworkCallController()
         controller.setListner(object : NetworkResponseListner<BaseResponse> {
@@ -215,6 +218,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                     if (response.isSuccess == true) {
                         if (response.data == "Verified") {
                             Toast.makeText(applicationContext, "Verified successfully", Toast.LENGTH_SHORT).show()
+                            getOrderDetails(empCode.toString())
                         }
                     } else {
                         Log.d("TAG-VERIFIER", "Something wrong ${response.data}")
@@ -258,11 +262,13 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-        last_Verified_On = AppUtils.currentDateTimeWithTimeZone()
+        val last_Verified_On2 = AppUtils.currentDateTimeWithTimeZone()
+        Log.d("TAG-Act", last_Verified_On2)
         if (result != null) {
             if (result.contents != null) {
                 modifyData(id, account_No, order_No, account_Name, result.contents, created_On, empCode,
-                        last_Verified_On, created_By_Id_User, verified_By, created_By, true)
+                        last_Verified_On2, created_By_Id_User, verified_By, created_By, true)
+                Log.d("TAG-VerifiedOn-beyond", last_Verified_On2.toString())
                 Log.d("TAG-QR", result.contents)
             } else {
                 Log.d("TAG-QR", "Not found")

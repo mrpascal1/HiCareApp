@@ -267,5 +267,6 @@
         app:layout_constraintStart_toStartOf="parent"
         android:text="Save"
         android:textSize="18sp"
-        android:textColor="@color/white"/>
+        android:textColor="@color/white"
+        android:visibility="gone"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
