@@ -13,15 +13,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.BaseActivity
 import com.ab.hicarerun.BaseApplication
 import com.ab.hicarerun.adapter.BarcodeAdapter
+import com.ab.hicarerun.adapter.BarcodeAdapter2
 import com.ab.hicarerun.databinding.ActivityBarcodeVerificatonBinding
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData
 import com.ab.hicarerun.network.models.LoginResponse
-import com.ab.hicarerun.network.models.TSScannerModel.BarcodeList
-import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse
-import com.ab.hicarerun.network.models.TSScannerModel.Data
-import com.ab.hicarerun.network.models.TSScannerModel.OrderDetails
+import com.ab.hicarerun.network.models.TSScannerModel.*
 import com.ab.hicarerun.service.listner.LocationManagerListner
 import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.LocaleHelper
@@ -31,8 +29,8 @@ import io.realm.RealmResults
 class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
 
     lateinit var binding: ActivityBarcodeVerificatonBinding
-    lateinit var modelBarcodeList: ArrayList<BarcodeList>
-    lateinit var barcodeAdapter: BarcodeAdapter
+    lateinit var modelBarcodeList: ArrayList<BarcodeDetailsData>
+    lateinit var barcodeAdapter: BarcodeAdapter2
     private var ARGS_COMBINE_ORDER = "ARGS_COMBINE_ORDER"
     private var ARGS_ORDER = "ARGS_ORDER"
     private var ARGS_COMBINED_TASKS = "ARGS_COMBINED_TASKS"
@@ -67,7 +65,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.progressBar.visibility = View.VISIBLE
 
-        val intent = intent;
+        val intent = intent
         combineOrder = intent.getStringExtra(ARGS_COMBINE_ORDER).toString()
         order = intent.getStringExtra(ARGS_ORDER).toString()
         isCombinedTask = intent.getBooleanExtra(ARGS_COMBINED_TASKS, false)
@@ -85,7 +83,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
 //        }
 
         modelBarcodeList = ArrayList()
-        barcodeAdapter = BarcodeAdapter(this, modelBarcodeList, "TSVerification")
+        barcodeAdapter = BarcodeAdapter2(this, modelBarcodeList, "TSVerification")
         val llManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         llManager.stackFromEnd = true
         llManager.reverseLayout = true
@@ -115,41 +113,32 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
 
     private fun getOrderDetails( uId: String) {
         val controller = NetworkCallController()
-        controller.setListner(object : NetworkResponseListner<OrderDetails> {
-            override fun onResponse(requestCode: Int, response: OrderDetails?) {
+        controller.setListner(object : NetworkResponseListner<BarcodeDetailsResponse> {
+            override fun onResponse(requestCode: Int, response: BarcodeDetailsResponse?) {
                 binding.progressBar.visibility = View.GONE
                 val success = response?.isSuccess.toString()
                 if (success == "true") {
                     isFetched = 1
                     modelBarcodeList.clear()
-                    val accountNo = response?.data?.accountNo
-                    val orderNo = response?.data?.orderNo
-                    val accountName = response?.data?.accountName
-                    val startDate = response?.data?.startDate
-                    val endDate = response?.data?.endDate
-                    val regionName = response?.data?.regionName
-                    val serviceGroup = response?.data?.serviceGroup
-                    val servicePlan = response?.data?.servicePlan
-                    val barcodeList = response?.data?.barcodeList
-                    if (response?.data?.barcodeList != null) {
+                    if (response?.data != null) {
                         var itemsCount = 0
-                        for (i in 0 until response.data.barcodeList.size) {
+                        for (i in 0 until response.data.size) {
                             itemsCount++
-                            id = response.data.barcodeList[i].id
-                            account_No = response.data.barcodeList[i].account_No
-                            order_No = response.data.barcodeList[i].order_No
-                            account_Name = response.data.barcodeList[i].account_Name
-                            barcode_Data = response.data.barcodeList[i].barcode_Data
-                            last_Verified_On = response.data.barcodeList[i].last_Verified_On
-                            last_Verified_By = response.data.barcodeList[i].last_Verified_By
-                            created_On = response.data.barcodeList[i].created_On
-                            created_By_Id_User = response.data.barcodeList[i].created_By_Id_User
-                            verified_By = response.data.barcodeList[i].verified_By
-                            created_By = response.data.barcodeList[i].created_By
-                            isVerified = response.data.barcodeList[i].isVerified
-                            modelBarcodeList.add(BarcodeList(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, "no"))
+                            id = response.data[i].id
+                            account_No = response.data[i].account_No
+                            order_No = response.data[i].order_No
+                            account_Name = response.data[i].account_Name
+                            barcode_Data = response.data[i].barcode_Data
+                            last_Verified_On = response.data[i].last_Verified_On
+                            last_Verified_By = response.data[i].last_Verified_By
+                            created_On = response.data[i].created_On
+                            created_By_Id_User = response.data[i].created_By_Id_User
+                            verified_By = response.data[i].verified_By
+                            created_By = response.data[i].created_By
+                            isVerified = response.data[i].isVerified
+                            modelBarcodeList.add(BarcodeDetailsData(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified))
                         }
-                        OrderDetails(response.isSuccess, Data(accountNo, orderNo, accountName, startDate, endDate, regionName, serviceGroup, servicePlan, modelBarcodeList), response.errorMessage, response.param1, response.responseMessage)
+                        BarcodeDetailsResponse(response.isSuccess, modelBarcodeList, response.errorMessage, response.param1, response.responseMessage)
                         if (modelBarcodeList.size > 0) {
                             binding.errorTv.visibility = View.GONE
                         } else {
@@ -185,8 +174,8 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         for (i in 0 until modelBarcodeList.size) {
             if (modelBarcodeList[i].barcode_Data == barcode_Data) {
                 if (modelBarcodeList[i].isVerified == false) {
-                    modelBarcodeList[i] = BarcodeList(modelBarcodeList[i].id, account_No, order_No, account_Name, barcode_Data,
-                            last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, "no")
+                    modelBarcodeList[i] = BarcodeDetailsData(modelBarcodeList[i].id, account_No, order_No, account_Name, barcode_Data,
+                            last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified)
                     Log.d("TAG-Veri", id.toString())
                     verifyBarcode(modelBarcodeList[i].id, "Technician Scanner", account_No, order_No, barcode_Data, lat, long, last_Verified_On, last_Verified_By)
                     barcodeAdapter.notifyItemChanged(i)

@@ -14,7 +14,7 @@ public class BankResponse {
     @SerializedName("IsSuccess")
     @Expose
     private String IsSuccess;
-    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
+    @SerializedName("Data")
     @Expose
     private List<String> data = null;
     @SerializedName("ErrorMessage")

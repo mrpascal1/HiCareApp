@@ -12,7 +12,7 @@ public class TechnicianRoutineResponse {
     @SerializedName("IsSuccess")
     @Expose
     private Boolean isSuccess;
-    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
+    @SerializedName("Data")
     @Expose
     private List<TechnicianData> data = null;
     @SerializedName("ErrorMessage")

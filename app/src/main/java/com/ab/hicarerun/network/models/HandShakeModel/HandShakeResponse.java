@@ -10,7 +10,7 @@ public class HandShakeResponse {
     @SerializedName("IsSuccess")
     @Expose
     private Boolean isSuccess;
-    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data") @Expose
+    @SerializedName("Data") @Expose
     private List<HandShake> data = null;
     @SerializedName("ErrorMessage")
     @Expose

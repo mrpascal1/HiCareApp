@@ -8,7 +8,7 @@ public class CWFJeopardyResponse {
     @Expose
     private Boolean IsSuccess;
 
-    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
+    @SerializedName("Data")
     @Expose
     private String Data;
 

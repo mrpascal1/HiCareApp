@@ -13,7 +13,7 @@ public class RenewOrderResponse {
     @SerializedName("IsSuccess")
     @Expose
     private Boolean isSuccess;
-    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
+    @SerializedName("Data")
     @Expose
     private List<RenewOrder> data = null;
     @SerializedName("ErrorMessage")

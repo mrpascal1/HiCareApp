@@ -10,7 +10,7 @@ public class DialingResponse {
     @SerializedName("IsSuccess")
     @Expose
     private Boolean isSuccess;
-    @SerializedName("com.ab.hicarerun.network.models.TSScannerModel.Data")
+    @SerializedName("Data")
     @Expose
     private String data;
     @SerializedName("ResponseMessage")
