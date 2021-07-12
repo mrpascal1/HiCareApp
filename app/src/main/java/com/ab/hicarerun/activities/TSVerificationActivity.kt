@@ -281,6 +281,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                         if (response.data == "Verified"){
                             binding.progressBar.visibility = View.GONE
                             Toast.makeText(applicationContext, "Verified successfully", Toast.LENGTH_SHORT).show()
+                            getOrderDetails(order_No.toString())
                         }
                     }else{
                         Log.d("TAG-VERIFIER", "Something wrong ${response.data}")

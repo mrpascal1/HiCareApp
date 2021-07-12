@@ -176,9 +176,13 @@ public class VerifyMobileOTPFragment extends BaseFragment implements UserVerifyO
     @Override
     public void onVerifyOtpClicked(View view) {
         if (mFragmentVerifyMobileOtBinding.otpView.length() == 6) {
+            mFragmentVerifyMobileOtBinding.errorTv.setVisibility(View.GONE);
             attemptLogin();
         } else {
             mFragmentVerifyMobileOtBinding.otpView.setError("Invalid OTP!");
+            mFragmentVerifyMobileOtBinding.errorTv.setText("Invalid OTP!");
+            mFragmentVerifyMobileOtBinding.errorTv.setVisibility(View.VISIBLE);
+
         }
     }
 
@@ -342,10 +346,13 @@ public class VerifyMobileOTPFragment extends BaseFragment implements UserVerifyO
             try {
                 mAuthTask = null;
                 if (success) {
+                    mFragmentVerifyMobileOtBinding.errorTv.setVisibility(View.GONE);
                     getWelcomeVideo();
                     SharedPreferencesUtility.savePrefString(Objects.requireNonNull(getActivity()), SharedPreferencesUtility.PREF_LOGOUT, AppUtils.currentDate());
                 } else {
                     mFragmentVerifyMobileOtBinding.otpView.setError("Invalid OTP!");
+                    mFragmentVerifyMobileOtBinding.errorTv.setText("Invalid OTP!");
+                    mFragmentVerifyMobileOtBinding.errorTv.setVisibility(View.VISIBLE);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
