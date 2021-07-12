@@ -514,7 +514,6 @@ public interface IRetrofit {
     @GET("payment/GenerateRenewalUPICode")
     Call<QRCodeResponse> getRenewalUPICode(@Query("taskId") String taskId, @Query("accountNo") String accountNo, @Query("orderNo") String orderNo, @Query("amount") String amount,
                                            @Query("source") String source);
-
     /*[puzzle/getpuzzlelist]*/
 
     @GET("puzzle/getpuzzlelist")
@@ -530,7 +529,6 @@ public interface IRetrofit {
 
     @GET("Barcode/GetBarcodeOrderDetails")
     Call<BarcodeDetailsResponse> getBarcodeOrderDetails(@Query("orderNo") String orderNo, @Query("userId") String userId);
-
 
     @POST("Barcode/SaveBarcodeDetails")
     Call<BaseResponse> saveBarcode(@Body ArrayList<BarcodeList> barcodeList);

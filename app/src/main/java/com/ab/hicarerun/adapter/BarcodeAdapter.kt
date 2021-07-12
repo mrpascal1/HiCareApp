@@ -27,13 +27,18 @@ import com.google.zxing.WriterException
 import com.google.zxing.common.BitMatrix
 
 
-class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeList>, private val comingFrom: String) : RecyclerView.Adapter<BarcodeAdapter.MyHolder>(), LocationManagerListner{
+class BarcodeAdapter(
+    val context: Context,
+    val barcodeList: ArrayList<BarcodeList>,
+    private val comingFrom: String
+) : RecyclerView.Adapter<BarcodeAdapter.MyHolder>(), LocationManagerListner {
     var lat = "0.0"
     var long = "0.0"
     private var onBarcodeCountListener: OnBarcodeCountListener? = null
-    fun setOnBarcodeCountListener(l: OnBarcodeCountListener){
+    fun setOnBarcodeCountListener(l: OnBarcodeCountListener) {
         onBarcodeCountListener = l
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
         val view = RowBarcodeItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyHolder(view, comingFrom)
@@ -46,13 +51,13 @@ class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeLis
             dialog.setTitle("Delete")
             dialog.setMessage("Are you sure you want to delete the bait station entry?")
             dialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
-                if (barcodeList[position].id != 0){
+                if (barcodeList[position].id != 0) {
                     removeFromServer(position)
-                }else{
+                } else {
                     removeAt(position)
                 }
             }
-            dialog.setNegativeButton("No"){ dialogInterface: DialogInterface, _: Int ->
+            dialog.setNegativeButton("No") { dialogInterface: DialogInterface, _: Int ->
                 dialogInterface.dismiss()
             }
             dialog.show()
@@ -63,7 +68,7 @@ class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeLis
         return barcodeList.size
     }
 
-    fun removeFromServer(position: Int){
+    fun removeFromServer(position: Int) {
         val verifyMap = HashMap<String, Any?>()
         verifyMap["BarcodeId"] = barcodeList[position].id
         verifyMap["ActivityName"] = "Deleted"
@@ -76,7 +81,7 @@ class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeLis
         verifyMap["VerifiedBy"] = ""
 
         val controller = NetworkCallController()
-        controller.setListner(object : NetworkResponseListner<BaseResponse>{
+        controller.setListner(object : NetworkResponseListner<BaseResponse> {
             override fun onResponse(requestCode: Int, response: BaseResponse?) {
                 if (response != null) {
                     if (response.isSuccess == true) {
@@ -93,7 +98,7 @@ class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeLis
         controller.deleteBarcodeDetails(20213, verifyMap)
     }
 
-    fun removeAt(position: Int){
+    fun removeAt(position: Int) {
         barcodeList.removeAt(position)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, barcodeList.size)
@@ -101,36 +106,57 @@ class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeLis
         Toast.makeText(context, "Barcode is deleted", Toast.LENGTH_SHORT).show()
     }
 
-    class MyHolder(val binding: RowBarcodeItemBinding, private val comingFrom: String): RecyclerView.ViewHolder(binding.root){
-        fun bindItems(context: Context, barcodeList: BarcodeList){
+    class MyHolder(val binding: RowBarcodeItemBinding, private val comingFrom: String) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bindItems(context: Context, barcodeList: BarcodeList) {
             val barcode_data = barcodeList.barcode_Data.toString()
             val isVerified = barcodeList.isVerified
             val verifiedOn = barcodeList.last_Verified_On
             val id = barcodeList.id
-            if (comingFrom == "TSScanner"){
+            if (comingFrom == "TSScanner") {
                 binding.isBarcodeVerified.visibility = View.GONE
                 binding.verifiedOnLayout.visibility = View.GONE
                 binding.deleteBtn.visibility = View.VISIBLE
-            }else{
+            } else {
                 binding.deleteBtn.visibility = View.GONE
                 binding.isBarcodeVerified.visibility = View.VISIBLE
                 binding.verifiedOnLayout.visibility = View.VISIBLE
             }
-            if (barcodeList.callForDelete == "yes"){
-                binding.dataCard.setCardBackgroundColor(ContextCompat.getColor(context, R.color.md_red_100))
-            }else{
-                binding.dataCard.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white))
+            if (barcodeList.callForDelete == "yes") {
+                binding.dataCard.setCardBackgroundColor(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.md_red_100
+                    )
+                )
+            } else {
+                binding.dataCard.setCardBackgroundColor(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.white
+                    )
+                )
             }
-            if (isVerified == true){
+            if (isVerified == true) {
                 val time = AppUtils.reFormatDateTime(verifiedOn, "HH:mm")
                 val date = AppUtils.reFormatDateTime(verifiedOn, "MMM dd, yyyy")
 
                 binding.verifiedOnTv.text = "At $time on $date"
                 //binding.verifiedOnTv.text = verifiedOn?.substring(0, 10)
-                binding.isBarcodeVerified.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_circle_green))
-            }else{
+                binding.isBarcodeVerified.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_check_circle_green
+                    )
+                )
+            } else {
                 binding.verifiedOnTv.text = "N/A"
-                binding.isBarcodeVerified.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_circle_black))
+                binding.isBarcodeVerified.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_check_circle_black
+                    )
+                )
             }
             /*if (id == 0){
                 binding.deleteBtn.visibility = View.VISIBLE
@@ -146,7 +172,8 @@ class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeLis
         @Throws(WriterException::class, NullPointerException::class)
         private fun textToImage(text: String, width: Int, height: Int): Bitmap? {
             val bitMatrix: BitMatrix
-            bitMatrix = try { MultiFormatWriter().encode(text, BarcodeFormat.QR_CODE, width, height, null)
+            bitMatrix = try {
+                MultiFormatWriter().encode(text, BarcodeFormat.QR_CODE, width, height, null)
             } catch (Illegalargumentexception: IllegalArgumentException) {
                 return null
             }
@@ -161,7 +188,8 @@ class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeLis
                     pixels[offset + x] = if (bitMatrix[x, y]) colorBlack else colorWhite
                 }
             }
-            val bitmap = Bitmap.createBitmap(bitMatrixWidth, bitMatrixHeight, Bitmap.Config.ARGB_4444)
+            val bitmap =
+                Bitmap.createBitmap(bitMatrixWidth, bitMatrixHeight, Bitmap.Config.ARGB_4444)
             bitmap.setPixels(pixels, 0, width, 0, 0, bitMatrixWidth, bitMatrixHeight)
             return bitmap
         }
@@ -221,7 +249,12 @@ class BarcodeAdapter(val context: Context, val barcodeList: ArrayList<BarcodeLis
         }*/
     }
 
-    override fun locationFetched(mLocation: Location?, oldLocation: Location?, time: String?, locationProvider: String?) {
+    override fun locationFetched(
+        mLocation: Location?,
+        oldLocation: Location?,
+        time: String?,
+        locationProvider: String?
+    ) {
         lat = mLocation?.latitude.toString()
         long = mLocation?.longitude.toString()
     }
