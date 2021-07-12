@@ -1,6 +1,5 @@
 package com.ab.hicarerun.network.models.TechnicianGroomingModel;
 
-import com.ab.hicarerun.network.models.TaskModel.Tasks;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

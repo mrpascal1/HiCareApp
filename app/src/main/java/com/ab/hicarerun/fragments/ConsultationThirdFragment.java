@@ -10,9 +10,12 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.adapter.RecommendationsAdapter;
@@ -26,6 +29,7 @@ import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.LocaleHelper;
 
 import java.util.List;
+import java.util.Objects;
 
 import io.realm.RealmResults;
 
@@ -88,6 +92,8 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
         } else {
             mFragmentConsultationThirdBinding.chkAgree.setVisibility(View.VISIBLE);
         }
+
+
         getRecommendations();
     }
 
@@ -102,11 +108,21 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
                         progressD.dismiss();
                         if (items != null && items.size() > 0) {
                             AppUtils.isInspectionDone = true;
-//
+                            Vibrator v = null;
+
+
                             if (type.equals("CMS")) {
-                                if(items.get(0).getOverallInfestationLevel()!=null && !items.get(0).getOverallInfestationLevel().equals("")){
+                                if (items.get(0).getOverallInfestationLevel() != null && !items.get(0).getOverallInfestationLevel().equals("")) {
                                     mFragmentConsultationThirdBinding.txtPart.setText("RECOMMENDATIONS " + "(" + items.get(0).getOverallInfestationLevel() + ")");
-                                }else {
+                                    if (items.get(0).getOverallInfestationLevel().equalsIgnoreCase("High Infestation")) {
+                                        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.blink);
+                                        mFragmentConsultationThirdBinding.imgAlert.startAnimation(animation);
+                                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                                            v = (Vibrator) Objects.requireNonNull(getActivity()).getSystemService(getActivity().VIBRATOR_SERVICE);
+                                            v.vibrate(3000);
+                                        }
+                                    }
+                                } else {
                                     mFragmentConsultationThirdBinding.txtPart.setText("RECOMMENDATIONS");
                                 }
                                 AppUtils.infestationLevel = items.get(0).getOverallInfestationLevel();
