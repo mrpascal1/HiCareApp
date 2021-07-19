@@ -125,13 +125,13 @@ public interface IRetrofit {
     //    String BASE_URL = "http://52.74.65.15/mobileapi/api/";
     //    String ERROR_LOG_URL = "http://52.74.65.15/logging/api/";
     //    http://apps.hicare.in/cwf/datasync/InsertRenewalAppJeopardy;
-    String BASE_URL = "http://run.hicare.in/mobile/api/";
+    String BASE_URL = "http://api.hicare.in/mobile/api/";
     String SCAN_URL = "http://run.hicare.in/taskservice/api/";
     String EXOTEL_URL = "http://apps.hicare.in/api/api/";
     String ERROR_LOG_URL = "http://run.hicare.in/logging/api/";
     String JEOPARDY_URL = "http://apps.hicare.in/cwf/";
     String SLOT_URL = "http://run.hicare.in/slot/api/";
-    String UAT = "http://run.hicare.in/Mobile/api/";
+    String UAT = "http://api.hicare.in/Mobile/api/";
     String B2B_URL = "http://connect.hicare.in/b2bwow/api/";
 
     /*[Verify User]*/

@@ -41,7 +41,7 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
         if (checkItems == null) {
             checkItems = new HashMap<>();
         }
-        this.onOptionClicked = onOptionClicked;
+        this.onOptionClicked = null;
         this.mContext = context;
     }
 
@@ -64,19 +64,19 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
                 if (isChecked) {
                     String newAppendValue = (checkItems.get(position) != null) ? checkItems.get(position) + "," + optionValue : optionValue;
                     checkItems.put(position, newAppendValue);
-                    Log.i("Parent_Position", String.valueOf(position));
-                    Log.i("Parent_Position", newAppendValue);
+                    Log.d("Parent_Position", String.valueOf(position));
+                    Log.d("Parent_Position", newAppendValue);
                 } else {
                     String newAppendValue = checkItems.get(position);
                     newAppendValue = newAppendValue.replace("," + optionValue, "");
                     newAppendValue = newAppendValue.replace(optionValue, "");
                     checkItems.put(position, newAppendValue);
-                    Log.i("Parent_Position", String.valueOf(position));
-                    Log.i("Parent_Position", newAppendValue);
+                    Log.d("Parent_Position", String.valueOf(position));
+                    Log.d("Parent_Position", newAppendValue);
                 }
 
                 strAnswer = (checkItems.get(position) == null) ? "" : checkItems.get(position);
-                Log.i("Parent_Position", "Final Value : " + strAnswer);
+                Log.d("Parent_Position", "Final Value : " + strAnswer);
                 onOptionClicked.onClicked(position, strAnswer);
             });
 
@@ -86,6 +86,7 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
             holder.mLayoutQuizParentAdapterBinding.recycleView.setAdapter(childAdapter);
             if (items.get(position).getOptions() != null && items.get(position).getOptions().size() > 0) {
                 childAdapter.addData(items.get(position).getOptions(), items.get(position).getPuzzleQuestionSelectionType());
+                Log.d("Parent_Position-Radio", "Final Value : " + strAnswer);
                 childAdapter.setOnItemClickHandler(positionChild -> {
                     if (items.get(position).getPuzzleQuestionSelectionType().equals("Radio")) {
                         onOptionClicked.onClicked(position, childAdapter.getItem(positionChild).getOptionTitle());
@@ -104,6 +105,10 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
 
     public void setOnItemClickHandler(OnConsultationClickHandler onItemClickHandler) {
         this.onItemClickHandler = onItemClickHandler;
+    }
+
+    public void setOnOptionClicked(OnOptionClicked onOptionClicked) {
+        this.onOptionClicked = onOptionClicked;
     }
 
     @Override
