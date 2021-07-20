@@ -137,9 +137,8 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
         resetTimer();
         mFragmentQuizBinding.nextBtn.setOnClickListener(view1 -> {
 //            reset();
-            if (index < questions.size()) {
+            if (index < questions.size()-1) {
                 index++;
-                resetTimer();
                 setNextQuestion(true);
 
             } else {
@@ -221,6 +220,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
             question = questions.get(index);
 
             if (question.getIsDependentQuestionExist()) {
+                Log.d("TAG", "Called");
                 timer.cancel();
                 mFragmentQuizBinding.timer.setVisibility(View.INVISIBLE);
                 GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
@@ -236,7 +236,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                 });
                 mFragmentQuizBinding.recycleView.setLayoutManager(layoutManager);
                 mVideoAdapter = new QuizVideoParentAdapter(getActivity());
-                mVideoAdapter.setData(question.getDependentQuestionList());
+                mVideoAdapter.setData(question.getDependentQuestionList(), question.getDependentQuestionList().get(0).getCorrectAnswers());
                 mVideoAdapter.setOnOptionClicked((position, option) -> {
                     Log.d("ACT", option);
                 });
@@ -263,6 +263,8 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
             }
 
             if (question.getPuzzleQuestionType().equals("Video")) {
+                timer.cancel();
+                mFragmentQuizBinding.timer.setVisibility(View.GONE);
                 mFragmentQuizBinding.cardImage.setVisibility(View.GONE);
                 mFragmentQuizBinding.question.setVisibility(View.GONE);
                 mFragmentQuizBinding.videoQuestion.setVisibility(View.VISIBLE);
