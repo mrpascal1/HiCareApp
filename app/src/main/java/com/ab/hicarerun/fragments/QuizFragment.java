@@ -38,6 +38,7 @@ import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.QuizModel.QuizData;
+import com.ab.hicarerun.network.models.QuizModel.QuizSaveAnswers;
 import com.ab.hicarerun.utils.AppUtils;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
@@ -68,8 +69,10 @@ import com.google.android.exoplayer2.util.Util;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -94,6 +97,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
     private int TARGET_BUFF_BYTES = -1;
     SimpleExoPlayer player;
     private PlayerView videoSurfaceView;
+    private List<QuizSaveAnswers> saveAnswers;
 
     public QuizFragment() {
         // Required empty public constructor
@@ -129,6 +133,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         questions = new ArrayList<>();
+        saveAnswers = new ArrayList<>();
 //        mFragmentQuizBinding.recycleView.setHasFixedSize(true);
 //        mFragmentQuizBinding.recycleView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
 //        mAdapter = new QuizOptionAdapter(getActivity());
@@ -150,6 +155,9 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                 requireActivity().finish();
             }
         });
+        if (mAdapter != null) {
+
+        }
     }
 
     void resetTimer() {
@@ -259,6 +267,9 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                 mFragmentQuizBinding.recycleView.setLayoutManager(layoutManager);
                 mAdapter = new QuizOptionAdapter(getActivity(), question.getPuzzleQuestionType(), question.getPuzzleQuestionSelectionType(), question.getCorrectAnswers(), isNextPressed);
                 mAdapter.setData(question.getOptions(), question.getCorrectAnswers());
+                mAdapter.setOnOptionClickListener((position, quizOption) -> {
+                    saveAnswers.add(new QuizSaveAnswers(question.getPuzzleId(), question.getPuzzleQuestionId(), question.getCorrectAnswerIds(), quizOption.getOptionId().toString(), "a1r9D000000OUNqQAO", question.getPoints()));
+                });
                 mFragmentQuizBinding.recycleView.setAdapter(mAdapter);
             }
 

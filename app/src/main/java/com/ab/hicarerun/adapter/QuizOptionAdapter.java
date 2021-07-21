@@ -19,6 +19,7 @@ import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LayoutOptionAdapterBinding;
 import com.ab.hicarerun.databinding.QuizCategoryAdapterBinding;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
+import com.ab.hicarerun.handler.OnOptionClickListener;
 import com.ab.hicarerun.network.models.QuizModel.QuizAnswer;
 import com.ab.hicarerun.network.models.QuizModel.QuizCategoryData;
 import com.ab.hicarerun.network.models.QuizModel.QuizData;
@@ -37,6 +38,7 @@ import java.util.List;
  */
 public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.ViewHolder> {
     private OnListItemClickHandler onItemClickHandler;
+    private OnOptionClickListener onOptionClickListener;
     private final Context mContext;
     private List<QuizOption> items = null;
     private String questionType = "";
@@ -74,6 +76,7 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
         if (answerList == null) {
             answerList = new ArrayList<>();
         }
+        this.onOptionClickListener = null;
     }
 
     @NotNull
@@ -264,6 +267,7 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
 
             holder.itemView.setOnClickListener(view -> {
                 selectedPos = position;
+                onOptionClickListener.onItemClick(position, items.get(position));
                 if (optionType.equalsIgnoreCase("Radio")) {
                     isRadioOptionSelected = 1;
                     holder.mLayoutOptionAdapterBinding.radioOption.setChecked(true);
@@ -345,6 +349,10 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
 
     public void setOnItemClickHandler(OnListItemClickHandler onItemClickHandler) {
         this.onItemClickHandler = onItemClickHandler;
+    }
+
+    public void setOnOptionClickListener(OnOptionClickListener onOptionClickListener){
+        this.onOptionClickListener = onOptionClickListener;
     }
 
     @Override
