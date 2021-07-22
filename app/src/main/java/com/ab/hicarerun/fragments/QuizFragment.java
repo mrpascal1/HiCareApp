@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.CountDownTimer;
@@ -39,6 +40,7 @@ import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.QuizModel.QuizData;
 import com.ab.hicarerun.network.models.QuizModel.QuizSaveAnswers;
+import com.ab.hicarerun.network.models.QuizModel.VideoDependentQuest;
 import com.ab.hicarerun.utils.AppUtils;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
@@ -85,7 +87,9 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
     private QuizOptionAdapter mAdapter;
     private QuizVideoParentAdapter mVideoAdapter;
     List<QuizData> questions;
+    List<VideoDependentQuest> vidQuestions;
     int index = 0;
+    int vidIndex = 0;
     QuizData question;
     CountDownTimer timer;
     private int puzzleId = 0;
@@ -98,6 +102,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
     SimpleExoPlayer player;
     private PlayerView videoSurfaceView;
     private List<QuizSaveAnswers> saveAnswers;
+    RecyclerView.LayoutManager layoutManager;
 
     public QuizFragment() {
         // Required empty public constructor
@@ -133,6 +138,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         questions = new ArrayList<>();
+        vidQuestions = new ArrayList<>();
         saveAnswers = new ArrayList<>();
 //        mFragmentQuizBinding.recycleView.setHasFixedSize(true);
 //        mFragmentQuizBinding.recycleView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
@@ -142,7 +148,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
         resetTimer();
         mFragmentQuizBinding.nextBtn.setOnClickListener(view1 -> {
 //            reset();
-            if (index < questions.size()-1) {
+            if (index < questions.size() - 1) {
                 index++;
                 setNextQuestion(true);
 
@@ -199,7 +205,6 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                             if (index < item.size()) {
                                 questions = item;
                                 setNextQuestion(false);
-
                             }
                         }
                     }
@@ -223,7 +228,6 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
         }
         mFragmentQuizBinding.timer.setVisibility(View.VISIBLE);
         if (index < questions.size()) {
-
             mFragmentQuizBinding.questionCounter.setText(String.format("%d/%d", (index + 1), questions.size()));
             question = questions.get(index);
 
@@ -231,19 +235,26 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                 Log.d("TAG", "Called");
                 timer.cancel();
                 mFragmentQuizBinding.timer.setVisibility(View.INVISIBLE);
-                GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
-                layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                    @Override
-                    public int getSpanSize(int pos) {
-                        if (question.getDependentQuestionList().get(0).getPuzzleQuestionSelectionType().equalsIgnoreCase("Image")) {
-                            return 1;
-                        } else {
-                            return 2;
-                        }
+                //                GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
+//                layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+//                    @Override
+//                    public int getSpanSize(int pos) {
+//                        if (question.getDependentQuestionList().get(0).getPuzzleQuestionSelectionType().equalsIgnoreCase("Image")) {
+//                            return 1;
+//                        } else {
+//                            return 2;
+//                        }
+//                    }
+//                });
+                layoutManager = new LinearLayoutManager(getActivity());
+                mFragmentQuizBinding.recycleView.setLayoutManager(layoutManager);
+                mFragmentQuizBinding.recycleView.setNestedScrollingEnabled(false);
+                mVideoAdapter = new QuizVideoParentAdapter(getActivity(), (position, option) -> {
+                    if (index < question.getDependentQuestionList().size() - 1) {
+                        vidQuestions = question.getDependentQuestionList();
+                        vidIndex++;
                     }
                 });
-                mFragmentQuizBinding.recycleView.setLayoutManager(layoutManager);
-                mVideoAdapter = new QuizVideoParentAdapter(getActivity());
                 mVideoAdapter.setData(question.getDependentQuestionList(), question.getDependentQuestionList().get(0).getCorrectAnswers());
                 mFragmentQuizBinding.recycleView.setAdapter(mVideoAdapter);
                 mVideoAdapter.setOnOptionClicked((position, option) -> {

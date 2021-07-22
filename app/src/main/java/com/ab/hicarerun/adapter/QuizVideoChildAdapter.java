@@ -35,19 +35,19 @@ public class QuizVideoChildAdapter extends RecyclerView.Adapter<QuizVideoChildAd
     private List<QuizAnswer> answerList = null;
     private int selectedPos = -1;
     private String QuestionType = "";
-    private OnCheckChanged onCheckChanged;
+    private onOptionClicked onOptionClicked;
     private String type = "";
     boolean isWrongSelected = false;
     boolean isRadioSelected = false;
 
-    public QuizVideoChildAdapter(Context mContext, QuizVideoChildAdapter.OnCheckChanged onCheckChanged) {
+    public QuizVideoChildAdapter(Context mContext, onOptionClicked onOptionClicked) {
         if (items == null) {
             items = new ArrayList<>();
         }
         if (answerList == null){
             answerList = new ArrayList<>();
         }
-        this.onCheckChanged = onCheckChanged;
+        this.onOptionClicked = onOptionClicked;
         this.mContext = mContext;
     }
 
@@ -107,6 +107,7 @@ public class QuizVideoChildAdapter extends RecyclerView.Adapter<QuizVideoChildAd
             holder.mLayoutOptionAdapterBinding.radioOption.setOnClickListener(v -> {
                 isRadioSelected = true;
                 selectedPos = position;
+                onOptionClicked.onOptionClicked(position, items.get(position).getOptionValue());
                 holder.mLayoutOptionAdapterBinding.radioOption.setChecked(true);
                 for (QuizAnswer ans : answerList) {
                     if (items.get(position).getOptionValue().equalsIgnoreCase(ans.getOptionValue())) {
@@ -124,8 +125,11 @@ public class QuizVideoChildAdapter extends RecyclerView.Adapter<QuizVideoChildAd
             holder.itemView.setOnClickListener(v -> {
                 isRadioSelected = true;
                 selectedPos = position;
+
                 if (type.equalsIgnoreCase("Radio")) {
                     holder.mLayoutOptionAdapterBinding.radioOption.setChecked(true);
+                    onOptionClicked.onOptionClicked(position, items.get(position).getOptionValue());
+
                     for (QuizAnswer ans : answerList) {
                         Log.d("TAG", ans.getOptionValue());
                         if (items.get(position).getOptionValue().equalsIgnoreCase(ans.getOptionValue())) {
@@ -139,6 +143,7 @@ public class QuizVideoChildAdapter extends RecyclerView.Adapter<QuizVideoChildAd
                     onItemClickHandler.onItemClick(position);
                     notifyDataSetChanged();
                 }else {
+                    onOptionClicked.onOptionClicked(position, items.get(position).getOptionValue());
                     holder.mLayoutOptionAdapterBinding.checkOption.setChecked(true);
                     for (QuizAnswer ans : answerList) {
                         Log.d("TAG", ans.getOptionValue());
@@ -214,7 +219,7 @@ public class QuizVideoChildAdapter extends RecyclerView.Adapter<QuizVideoChildAd
         }
     }
 
-    public interface OnCheckChanged {
-        void onChecked(int position, boolean isChecked);
+    public interface onOptionClicked {
+        void onOptionClicked(int position, String option);
     }
 }
