@@ -72,6 +72,7 @@ import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
 import com.ab.hicarerun.network.models.ProductModel.ProductResponse;
 import com.ab.hicarerun.network.models.ProfileModel.TechnicianProfileDetails;
 import com.ab.hicarerun.network.models.QuizModel.QuizCategoryResponse;
+import com.ab.hicarerun.network.models.QuizModel.QuizPuzzleStats;
 import com.ab.hicarerun.network.models.QuizModel.QuizResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralDeleteRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralListResponse;
@@ -551,4 +552,6 @@ public interface IRetrofit {
     @POST("Integration/UpdateServiceActivityStatus")
     Call<BaseResponse> updateActivityServiceStatus(@Body List<SaveServiceActivity> requests);
 
+    @GET("Puzzle/GetPuzzleStatsForResource")
+    Call<QuizPuzzleStats> getPuzzleStatsForResources(@Query("resourceId") String resourceId);
 }

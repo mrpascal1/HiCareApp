@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +24,10 @@ import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.QuizModel.QuizCategoryData;
+import com.ab.hicarerun.network.models.QuizModel.QuizPuzzleStats;
 
 import java.util.List;
+import java.util.Objects;
 
 import io.realm.RealmResults;
 
@@ -34,6 +37,7 @@ public class FragmentQuizCategory extends BaseFragment {
     RecyclerView.LayoutManager layoutManager;
     private QuizCategoryAdapter mAdapter;
     RealmResults<GeneralData> mGeneralRealmModel;
+    String resourceId = "";
 
     public FragmentQuizCategory() {
         // Required empty public constructor
@@ -80,7 +84,7 @@ public class FragmentQuizCategory extends BaseFragment {
             RealmResults<LoginResponse> LoginRealmModels =
                     BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-                String resourceId = LoginRealmModels.get(0).getUserID();
+                resourceId = LoginRealmModels.get(0).getUserID();
                 NetworkCallController controller = new NetworkCallController(this);
                 controller.setListner(new NetworkResponseListner<List<QuizCategoryData>>() {
 
@@ -94,6 +98,7 @@ public class FragmentQuizCategory extends BaseFragment {
                                 Toast.makeText(getActivity(), "Clicked", Toast.LENGTH_SHORT).show();
                             });
                         }
+                        getPuzzleStatsForRes();
                     }
 
                     @Override
@@ -106,5 +111,33 @@ public class FragmentQuizCategory extends BaseFragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void getPuzzleStatsForRes(){
+        NetworkCallController controller = new NetworkCallController(this);
+        controller.setListner(new NetworkResponseListner<QuizPuzzleStats>(){
+            @Override
+            public void onResponse(int requestCode, QuizPuzzleStats response) {
+                Log.d("TAG", response+"");
+                if (response != null){
+                    int points = response.getData().getPoints();
+                    if (points < 2000){
+                        mFragmentQuizCategoryBinding.awardIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_award_silver));
+                    }else if (points > 2000 && points < 5000){
+                        mFragmentQuizCategoryBinding.awardIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_award_bronze));
+                    }else if (points > 5000){
+                        mFragmentQuizCategoryBinding.awardIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_award_gold));
+                    }
+                    mFragmentQuizCategoryBinding.levelTv.setText(Objects.requireNonNull(response.getData()).getLevelName());
+                    mFragmentQuizCategoryBinding.pointsTv.setText(Objects.requireNonNull(response.getData()).getPoints()+"");
+                }
+            }
+
+            @Override
+            public void onFailure(int requestCode) {
+
+            }
+        });
+        controller.getPuzzleStatsForRes(202122, resourceId);
     }
 }

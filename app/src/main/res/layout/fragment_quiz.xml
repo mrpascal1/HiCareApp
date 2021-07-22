@@ -54,8 +54,6 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
-            android:drawableRight="@drawable/ic_question"
-            android:drawablePadding="10dp"
             android:fontFamily="@font/roboto_bold"
             android:text="1/10"
             android:textColor="@color/white"
@@ -137,7 +135,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/view5"
             app:layout_constraintStart_toStartOf="@+id/view5"
             app:layout_constraintTop_toBottomOf="@+id/view5"
-            app:srcCompat="@drawable/fiftyfiftyline" />
+            app:srcCompat="@drawable/fiftyfiftyline"
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/imageView5"
@@ -148,7 +147,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/view5"
             app:layout_constraintEnd_toEndOf="@+id/view5"
             app:layout_constraintTop_toBottomOf="@+id/view5"
-            app:srcCompat="@drawable/audiencepoll" />
+            app:srcCompat="@drawable/audiencepoll"
+            android:visibility="gone"/>
 
         <LinearLayout
             android:id="@+id/lnrOptions"
@@ -167,6 +167,7 @@
                 android:id="@+id/recycleView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
                 tools:listitem="@layout/layout_option_adapter" />
 
             <LinearLayout
