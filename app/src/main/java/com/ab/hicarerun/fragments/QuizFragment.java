@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,10 +33,12 @@ import com.ab.hicarerun.adapter.QuizOptionAdapter;
 import com.ab.hicarerun.adapter.QuizVideoParentAdapter;
 import com.ab.hicarerun.adapter.RecycleBazaarAdapter;
 import com.ab.hicarerun.databinding.FragmentQuizBinding;
+import com.ab.hicarerun.handler.OnListItemClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.QuizModel.QuizData;
+import com.ab.hicarerun.network.models.QuizModel.QuizSaveAnswers;
 import com.ab.hicarerun.utils.AppUtils;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
@@ -63,9 +66,15 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import io.realm.RealmResults;
 
@@ -88,6 +97,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
     private int TARGET_BUFF_BYTES = -1;
     SimpleExoPlayer player;
     private PlayerView videoSurfaceView;
+    private List<QuizSaveAnswers> saveAnswers;
 
     public QuizFragment() {
         // Required empty public constructor
@@ -111,11 +121,11 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentQuizBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_quiz, container, false);
-        getActivity().setTitle("");
+        requireActivity().setTitle("");
         return mFragmentQuizBinding.getRoot();
     }
 
@@ -123,6 +133,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         questions = new ArrayList<>();
+        saveAnswers = new ArrayList<>();
 //        mFragmentQuizBinding.recycleView.setHasFixedSize(true);
 //        mFragmentQuizBinding.recycleView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
 //        mAdapter = new QuizOptionAdapter(getActivity());
@@ -131,17 +142,22 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
         resetTimer();
         mFragmentQuizBinding.nextBtn.setOnClickListener(view1 -> {
 //            reset();
-            if (index <= questions.size()) {
+            if (index < questions.size()-1) {
                 index++;
-                setNextQuestion();
+                setNextQuestion(true);
+
             } else {
 //                Intent intent = new Intent(this, ResultActivity.class);
 //                intent.putExtra("correct", correctAnswers);
 //                intent.putExtra("total", questions.size());
 //                startActivity(intent);
                 Toast.makeText(getActivity(), "Quiz Finished.", Toast.LENGTH_SHORT).show();
+                requireActivity().finish();
             }
         });
+        if (mAdapter != null) {
+
+        }
     }
 
     void resetTimer() {
@@ -153,16 +169,16 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
 
             @Override
             public void onFinish() {
-                if (index <= questions.size()) {
+                if (index < questions.size()) {
                     index++;
-                    setNextQuestion();
+                    setNextQuestion(true);
                 } else {
 //                Intent intent = new Intent(this, ResultActivity.class);
 //                intent.putExtra("correct", correctAnswers);
 //                intent.putExtra("total", questions.size());
 //                startActivity(intent);
 
-                    getActivity().finish();
+                    requireActivity().finish();
                     Toast.makeText(getActivity(), "Quiz Finished.", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -174,7 +190,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
             RealmResults<LoginResponse> LoginRealmModels =
                     BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-                String resourceId = LoginRealmModels.get(0).getUserID();
+                String resourceId = Objects.requireNonNull(LoginRealmModels.get(0)).getUserID();
                 NetworkCallController controller = new NetworkCallController(this);
                 controller.setListner(new NetworkResponseListner<List<QuizData>>() {
                     @Override
@@ -182,7 +198,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                         if (item != null && item.size() > 0) {
                             if (index < item.size()) {
                                 questions = item;
-                                setNextQuestion();
+                                setNextQuestion(false);
 
                             }
                         }
@@ -200,17 +216,21 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
         }
     }
 
-    private void setNextQuestion() {
-        if (timer != null)
-            timer.cancel();
+    private void setNextQuestion(boolean isNextPressed) {
 
-        timer.start();
+        if (timer != null) {
+            timer.start();
+        }
         mFragmentQuizBinding.timer.setVisibility(View.VISIBLE);
         if (index < questions.size()) {
+
             mFragmentQuizBinding.questionCounter.setText(String.format("%d/%d", (index + 1), questions.size()));
             question = questions.get(index);
 
             if (question.getIsDependentQuestionExist()) {
+                Log.d("TAG", "Called");
+                timer.cancel();
+                mFragmentQuizBinding.timer.setVisibility(View.INVISIBLE);
                 GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
                 layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                     @Override
@@ -222,13 +242,12 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                         }
                     }
                 });
-                if (timer != null) {
-                    timer.cancel();
-                    mFragmentQuizBinding.timer.setVisibility(View.INVISIBLE);
-                }
                 mFragmentQuizBinding.recycleView.setLayoutManager(layoutManager);
                 mVideoAdapter = new QuizVideoParentAdapter(getActivity());
-                mVideoAdapter.setData(question.getDependentQuestionList());
+                mVideoAdapter.setData(question.getDependentQuestionList(), question.getDependentQuestionList().get(0).getCorrectAnswers());
+                mVideoAdapter.setOnOptionClicked((position, option) -> {
+                    Log.d("ACT", option);
+                });
                 mFragmentQuizBinding.recycleView.setAdapter(mVideoAdapter);
                 initializePlayer();
                 buildMediaSource(Uri.parse(question.getPuzzleQuestionURL()));
@@ -246,12 +265,17 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                     }
                 });
                 mFragmentQuizBinding.recycleView.setLayoutManager(layoutManager);
-                mAdapter = new QuizOptionAdapter(getActivity(), question.getPuzzleQuestionType(), question.getPuzzleQuestionSelectionType(), question.getCorrectAnswers());
+                mAdapter = new QuizOptionAdapter(getActivity(), question.getPuzzleQuestionType(), question.getPuzzleQuestionSelectionType(), question.getCorrectAnswers(), isNextPressed);
                 mAdapter.setData(question.getOptions(), question.getCorrectAnswers());
+                mAdapter.setOnOptionClickListener((position, quizOption) -> {
+                    saveAnswers.add(new QuizSaveAnswers(question.getPuzzleId(), question.getPuzzleQuestionId(), question.getCorrectAnswerIds(), quizOption.getOptionId().toString(), "a1r9D000000OUNqQAO", question.getPoints()));
+                });
                 mFragmentQuizBinding.recycleView.setAdapter(mAdapter);
             }
 
             if (question.getPuzzleQuestionType().equals("Video")) {
+                timer.cancel();
+                mFragmentQuizBinding.timer.setVisibility(View.GONE);
                 mFragmentQuizBinding.cardImage.setVisibility(View.GONE);
                 mFragmentQuizBinding.question.setVisibility(View.GONE);
                 mFragmentQuizBinding.videoQuestion.setVisibility(View.VISIBLE);
@@ -266,10 +290,10 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                 mFragmentQuizBinding.videoQuestion.setVisibility(View.GONE);
                 mFragmentQuizBinding.question.setText(question.getPuzzleQuestionTitle());
             }
-            mAdapter.setOnItemClickHandler(position -> {
+            /*mAdapter.setOnItemClickHandler(position -> {
                 if (timer != null)
                     timer.cancel();
-            });
+            });*/
         }
     }
 
@@ -314,7 +338,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
             // Measures bandwidth during playback. Can be null if not required.
             DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
             // Produces DataSource instances through which media data is loaded.
-            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(Objects.requireNonNull(getActivity()),
+            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(requireActivity(),
                     Util.getUserAgent(getActivity(), getString(R.string.app_name)), bandwidthMeter);
             // This is the MediaSource representing the media to be played.
             MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
@@ -327,7 +351,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
                 assert mLoginRealmModels.get(0) != null;
-                String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                String userName = "TECHNICIAN NAME : " + Objects.requireNonNull(mLoginRealmModels.get(0)).getUserName();
                 String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
                 String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
                 AppUtils.sendErrorLogs(e.toString(), getClass().getSimpleName(), "buildMediaSource", lineNo, userName, DeviceName);

@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LayoutQuizParentAdapterBinding;
 import com.ab.hicarerun.handler.OnConsultationClickHandler;
+import com.ab.hicarerun.network.models.QuizModel.QuizAnswer;
+import com.ab.hicarerun.network.models.QuizModel.QuizData;
 import com.ab.hicarerun.network.models.QuizModel.VideoDependentQuest;
 
 import org.jetbrains.annotations.NotNull;
@@ -32,16 +34,20 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
     private String strAnswer = "";
     private OnOptionClicked onOptionClicked;
     private int selectedPos = -1;
+    private List<QuizAnswer> answerList = null;
 
     public QuizVideoParentAdapter(Context context) {
         if (items == null) {
             items = new ArrayList<>();
         }
+        if (answerList == null){
+            answerList = new ArrayList<>();
+        }
 
         if (checkItems == null) {
             checkItems = new HashMap<>();
         }
-        this.onOptionClicked = onOptionClicked;
+        this.onOptionClicked = null;
         this.mContext = context;
     }
 
@@ -64,19 +70,19 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
                 if (isChecked) {
                     String newAppendValue = (checkItems.get(position) != null) ? checkItems.get(position) + "," + optionValue : optionValue;
                     checkItems.put(position, newAppendValue);
-                    Log.i("Parent_Position", String.valueOf(position));
-                    Log.i("Parent_Position", newAppendValue);
+                    Log.d("Parent_Position", String.valueOf(position));
+                    Log.d("Parent_Position", newAppendValue);
                 } else {
                     String newAppendValue = checkItems.get(position);
                     newAppendValue = newAppendValue.replace("," + optionValue, "");
                     newAppendValue = newAppendValue.replace(optionValue, "");
                     checkItems.put(position, newAppendValue);
-                    Log.i("Parent_Position", String.valueOf(position));
-                    Log.i("Parent_Position", newAppendValue);
+                    Log.d("Parent_Position", String.valueOf(position));
+                    Log.d("Parent_Position", newAppendValue);
                 }
 
                 strAnswer = (checkItems.get(position) == null) ? "" : checkItems.get(position);
-                Log.i("Parent_Position", "Final Value : " + strAnswer);
+                Log.d("Parent_Position", "Final Value : " + strAnswer);
                 onOptionClicked.onClicked(position, strAnswer);
             });
 
@@ -85,7 +91,8 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
             holder.mLayoutQuizParentAdapterBinding.recycleView.setClipToPadding(false);
             holder.mLayoutQuizParentAdapterBinding.recycleView.setAdapter(childAdapter);
             if (items.get(position).getOptions() != null && items.get(position).getOptions().size() > 0) {
-                childAdapter.addData(items.get(position).getOptions(), items.get(position).getPuzzleQuestionSelectionType());
+                childAdapter.addData(items.get(position).getOptions(), items.get(position).getPuzzleQuestionSelectionType(), answerList);
+                Log.d("Parent_Position-Radio", "Final Value : " + strAnswer);
                 childAdapter.setOnItemClickHandler(positionChild -> {
                     if (items.get(position).getPuzzleQuestionSelectionType().equals("Radio")) {
                         onOptionClicked.onClicked(position, childAdapter.getItem(positionChild).getOptionTitle());
@@ -106,6 +113,10 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
         this.onItemClickHandler = onItemClickHandler;
     }
 
+    public void setOnOptionClicked(OnOptionClicked onOptionClicked) {
+        this.onOptionClicked = onOptionClicked;
+    }
+
     @Override
     public int getItemCount() {
         return items.size();
@@ -115,9 +126,10 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
         return items.get(position);
     }
 
-    public void setData(List<VideoDependentQuest> data) {
+    public void setData(List<VideoDependentQuest> data, List<QuizAnswer> correctAnswers) {
         items.clear();
         items.addAll(data);
+        answerList.addAll(correctAnswers);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -120,14 +120,17 @@ class TSScannerActivity : BaseActivity() {
             }
         }
         binding.saveBtn.setOnClickListener {
+            binding.saveBtn.isEnabled = false
             if (modelBarcodeList.isNotEmpty()){
                 if (modelBarcodeList.any { it.id == 0 }){
                     saveBarcodeDetails()
                     Log.d("TAG-Save", modelBarcodeList.toString())
                 }else{
+                    binding.saveBtn.isEnabled = true
                     Toast.makeText(applicationContext, "Please add new rodent station", Toast.LENGTH_SHORT).show()
                 }
             }else{
+                binding.saveBtn.isEnabled = true
                 binding.saveBtn.visibility = View.GONE
                 Toast.makeText(applicationContext, "Rodent station not found", Toast.LENGTH_SHORT).show()
             }
@@ -147,7 +150,7 @@ class TSScannerActivity : BaseActivity() {
         }
         barcodeAdapter.setOnBarcodeCountListener(object : OnBarcodeCountListener{
             override fun onBarcodeCountListener(count: Int) {
-                binding.boxesTitleTv.text = "Bait Station: (${modelBarcodeList.size})"
+                binding.boxesTitleTv.text = "Bait Stations: (${modelBarcodeList.size})"
                 if (count == 0){
                     binding.barcodeErrorTv.visibility = View.VISIBLE
                     binding.saveBtn.visibility = View.GONE
@@ -261,9 +264,11 @@ class TSScannerActivity : BaseActivity() {
                     populateViews(account_Name, regionName, servicePlan)
                     barcodeAdapter.notifyDataSetChanged()
                     binding.progressBar.visibility = View.GONE
+                    binding.saveBtn.isEnabled = true
                 }else{
                     modelBarcodeList.clear()
                     binding.searchBtn.isEnabled = true
+                    binding.saveBtn.isEnabled = true
                     binding.progressBar.visibility = View.GONE
                     binding.errorTv.text = "Please Enter Valid Order Number."
                     binding.errorTv.visibility = View.VISIBLE
@@ -274,6 +279,7 @@ class TSScannerActivity : BaseActivity() {
 
             override fun onFailure(requestCode: Int) {
                 modelBarcodeList.clear()
+                binding.saveBtn.isEnabled = true
                 binding.progressBar.visibility = View.GONE
                 binding.dataCard.visibility = View.GONE
                 binding.saveBtn.visibility = View.GONE
