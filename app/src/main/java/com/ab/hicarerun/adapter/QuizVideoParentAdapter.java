@@ -97,7 +97,8 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
                     if (items.get(position).getPuzzleQuestionSelectionType().equals("Radio")) {
                         onOptionClicked.onClicked(position, childAdapter.getItem(positionChild).getOptionTitle());
                         childAdapter.getItem(positionChild).setIsSelected(true);
-                        childAdapter.notifyItemChanged(positionChild);
+                        childAdapter.notifyItemChanged(position);
+                        Log.d("TAG-pos", position+"");
                     } else {
                         onOptionClicked.onClicked(position, strAnswer);
                         childAdapter.getItem(positionChild).setIsSelected(true);

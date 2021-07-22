@@ -245,10 +245,10 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                 mFragmentQuizBinding.recycleView.setLayoutManager(layoutManager);
                 mVideoAdapter = new QuizVideoParentAdapter(getActivity());
                 mVideoAdapter.setData(question.getDependentQuestionList(), question.getDependentQuestionList().get(0).getCorrectAnswers());
+                mFragmentQuizBinding.recycleView.setAdapter(mVideoAdapter);
                 mVideoAdapter.setOnOptionClicked((position, option) -> {
                     Log.d("ACT", option);
                 });
-                mFragmentQuizBinding.recycleView.setAdapter(mVideoAdapter);
                 initializePlayer();
                 buildMediaSource(Uri.parse(question.getPuzzleQuestionURL()));
 
