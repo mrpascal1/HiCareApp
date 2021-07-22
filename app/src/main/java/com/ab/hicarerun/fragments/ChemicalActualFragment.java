@@ -150,9 +150,9 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
 //        } else {
 //            mFragmentChemicalInfoBinding.txtStandard.setVisibility(View.GONE);
 //        }
-        if(showBarcode){
+        if (showBarcode) {
             mFragmentChemicalInfoBinding.btnRodentScanner.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             mFragmentChemicalInfoBinding.btnRodentScanner.setVisibility(View.GONE);
         }
         mFragmentChemicalInfoBinding.txtStandard.setVisibility(View.VISIBLE);

@@ -298,6 +298,10 @@ public class GeneralData implements RealmModel {
     @Expose
     private String Onsite_Image_Path;
 
+    @SerializedName("Customer_Instructions")
+    @Expose
+    private String Customer_Instructions;
+
     @SerializedName("CustomerLatitude")
     @Expose
     private Double CustomerLatitude;
@@ -1152,5 +1156,13 @@ public class GeneralData implements RealmModel {
 
     public void setShowBarcode(Boolean showBarcode) {
         ShowBarcode = showBarcode;
+    }
+
+    public String getCustomer_Instructions() {
+        return Customer_Instructions;
+    }
+
+    public void setCustomer_Instructions(String customer_Instructions) {
+        Customer_Instructions = customer_Instructions;
     }
 }

@@ -21,7 +21,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
 
                 <LinearLayout
@@ -33,17 +34,17 @@
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cardSheet"
-                        app:cardBackgroundColor="@color/white"
-                        app:cardMaxElevation="8dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        app:cardElevation="4dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="vertical"
+                        app:cardBackgroundColor="@color/white"
                         app:cardCornerRadius="25dp"
-                        android:orientation="vertical">
+                        app:cardElevation="4dp"
+                        app:cardMaxElevation="8dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -72,11 +73,11 @@
                                         android:orientation="horizontal">
 
                                         <androidx.appcompat.widget.AppCompatImageView
-                                            app:srcCompat="@drawable/ic_placeholder"
                                             android:layout_width="13dp"
                                             android:layout_height="13dp"
                                             android:layout_marginLeft="15dp"
-                                            android:layout_marginTop="3dp" />
+                                            android:layout_marginTop="3dp"
+                                            app:srcCompat="@drawable/ic_placeholder" />
 
                                         <TextView
                                             android:layout_width="match_parent"
@@ -111,10 +112,10 @@
                                     android:layout_weight="0.2">
 
                                     <ImageView
-                                        app:srcCompat="@drawable/ic_down_arrow"
                                         android:layout_width="10dp"
                                         android:layout_height="10dp"
-                                        android:layout_gravity="center" />
+                                        android:layout_gravity="center"
+                                        app:srcCompat="@drawable/ic_down_arrow" />
 
                                 </LinearLayout>
 
@@ -161,12 +162,12 @@
                     <!--app:layout_constraintTop_toTopOf="parent" />-->
 
                     <ImageView
-                        app:srcCompat="@drawable/ic_download"
                         android:layout_width="0dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center"
                         android:layout_marginLeft="5dp"
-                        android:layout_weight="0.2" />
+                        android:layout_weight="0.2"
+                        app:srcCompat="@drawable/ic_download" />
 
                     <LinearLayout
                         android:id="@+id/lnrFilter"
@@ -198,10 +199,10 @@
                             android:gravity="center">
 
                             <ImageView
-                                app:srcCompat="@drawable/ic_down"
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
-                                android:layout_gravity="center" />
+                                android:layout_gravity="center"
+                                app:srcCompat="@drawable/ic_down" />
 
                         </LinearLayout>
 
@@ -216,9 +217,23 @@
                 android:id="@+id/recycleArea"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/recycleTower"
                 android:layout_marginTop="5dp"
-                tools:listitem="@layout/item_recycle_activity_unit"/>
+                 />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnRodentScanner"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:layout_marginLeft="100dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="100dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/button_background"
+                android:clickable="true"
+                android:text="Check Bait Stations"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
 
         </LinearLayout>
 
@@ -226,9 +241,9 @@
             android:id="@+id/txtNoData"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:text="No Data Available!"
-            android:visibility="gone"
-            android:layout_centerInParent="true"/>
+            android:visibility="gone" />
 
 
     </RelativeLayout>

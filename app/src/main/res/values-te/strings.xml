@@ -18,6 +18,15 @@
     <string name="deprected">Deprecated</string>
     <string name="fragment_camera2">Camera2</string>
 
+    <string name="quiz">Quiz</string>
+    <string name="self_access">Self Assess</string>
+    <string name="hicare_products">HiCare Products</string>
+    <string name="rewards">Rewards</string>
+    <string name="daily_check_up">Daily Check-Up</string>
+    <string name="kyc_verification">KYC Verification</string>
+    <string name="assign_qr_code">Assign QR Code</string>
+    <string name="ts_verification">TS Verification</string>
+
     <string name="customer_name">వినియోగదారుని పేరు</string>
     <string name="payment_mode">చెల్లింపు మోడ్</string>
     <string name="bank_name">బ్యాంక్ పేరు</string>

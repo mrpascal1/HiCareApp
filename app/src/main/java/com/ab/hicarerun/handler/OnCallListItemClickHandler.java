@@ -9,4 +9,5 @@ public interface OnCallListItemClickHandler extends OnListItemClickHandler {
     void onTrackLocationIconClicked(int position);
     void onTechnicianHelplineClicked(int position);
     void onResourcePartnerPic(Profile profile);
+    void onInstructionsClicked(int position);
 }

@@ -597,14 +597,21 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
             MenuItem groom = menu.findItem(R.id.nav_groom);
             MenuItem jobCount = menu.findItem(R.id.nav_summary);
             MenuItem routineCheck = menu.findItem(R.id.nav_routine);
+            MenuItem assignCode = menu.findItem(R.id.nav_tsScanner);
+            MenuItem tsVerify = menu.findItem(R.id.nav_tsVerfication);
             if (isTsEnable.equals("0")) {
                 groom.setVisible(true);
                 jobCount.setVisible(true);
                 routineCheck.setVisible(true);
+                assignCode.setVisible(true);
+                tsVerify.setVisible(true);
+
             } else {
                 groom.setVisible(false);
                 jobCount.setVisible(false);
                 routineCheck.setVisible(false);
+                assignCode.setVisible(false);
+                tsVerify.setVisible(false);
             }
             PackageInfo pInfo = null;
             try {

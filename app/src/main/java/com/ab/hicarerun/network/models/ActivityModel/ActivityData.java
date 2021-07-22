@@ -28,6 +28,8 @@ public class ActivityData {
     @Expose
     private List<ServiceActivity> serviceActivity = null;
 
+    private int selectedPos;
+
     public Integer getActivityId() {
         return activityId;
     }
@@ -76,4 +78,11 @@ public class ActivityData {
         this.serviceActivity = serviceActivity;
     }
 
+    public int getSelectedPos() {
+        return selectedPos;
+    }
+
+    public void setSelectedPos(int selectedPos) {
+        this.selectedPos = selectedPos;
+    }
 }

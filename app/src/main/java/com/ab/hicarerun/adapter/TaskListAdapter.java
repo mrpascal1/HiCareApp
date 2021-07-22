@@ -285,12 +285,18 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                 holder.mTaskListAdapterBinding.lnrAmount.setVisibility(View.VISIBLE);
                 holder.mTaskListAdapterBinding.txtAmount.setText(items.get(position).getAmount());
             }
+            if(items.get(position).getCustomerInstructions()!=null && !items.get(position).getCustomerInstructions().equals("")){
+                holder.mTaskListAdapterBinding.outerView.setVisibility(View.VISIBLE);
+            }else {
+                holder.mTaskListAdapterBinding.outerView.setVisibility(View.GONE);
+            }
             holder.itemView.setOnClickListener(v -> onItemClickHandler.onItemClick(position));
             holder.mTaskListAdapterBinding.dispatchTaskMobileNo.setOnClickListener(v -> onCallListItemClickHandler.onPrimaryMobileClicked(position));
             holder.mTaskListAdapterBinding.dispatchTaskAltMobileNo.setOnClickListener(v -> onCallListItemClickHandler.onAlternateMobileClicked(position));
             holder.mTaskListAdapterBinding.dispatchTaskPhoneNo.setOnClickListener(v -> onCallListItemClickHandler.onTelePhoneClicked(position));
             holder.mTaskListAdapterBinding.lnrMap.setOnClickListener(v -> onCallListItemClickHandler.onTrackLocationIconClicked(position));
             holder.mTaskListAdapterBinding.btnHelpline.setOnClickListener(view -> onCallListItemClickHandler.onTechnicianHelplineClicked(position));
+            holder.mTaskListAdapterBinding.lnrInfo.setOnClickListener(view -> onCallListItemClickHandler.onInstructionsClicked(position));
             holder.mTaskListAdapterBinding.lnrPartnerPic.setOnClickListener(view -> onCallListItemClickHandler.onResourcePartnerPic(profile));
 
             final Handler ha = new Handler();

@@ -82,6 +82,10 @@ public class Tasks implements Parcelable {
     @Expose
     private String CombinedOrderNumber;
 
+    @SerializedName("Customer_Instructions")
+    @Expose
+    private String Customer_Instructions;
+
     @SerializedName("TaskAssignmentStartDate")
     @Expose
     private String TaskAssignmentStartDate;
@@ -222,6 +226,7 @@ public class Tasks implements Parcelable {
         CombinedOrderNumber = "NA";
         Helper_Resource_Id = "NA";
         Next_Task_Id = "NA";
+        Customer_Instructions = "NA";
     }
 
 
@@ -245,6 +250,7 @@ public class Tasks implements Parcelable {
         PostalCode = in.readString();
         OrderNumber = in.readString();
         CombinedOrderNumber = in.readString();
+        Customer_Instructions = in.readString();
         TaskAssignmentStartDate = in.readString();
         TaskAssignmentStartTime = in.readString();
         TaskAssignmentEndDate = in.readString();
@@ -629,6 +635,14 @@ public class Tasks implements Parcelable {
         Next_Task_Id = next_Task_Id;
     }
 
+    public String getCustomer_Instructions() {
+        return Customer_Instructions;
+    }
+
+    public void setCustomer_Instructions(String customer_Instructions) {
+        Customer_Instructions = customer_Instructions;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -636,7 +650,6 @@ public class Tasks implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-
         parcel.writeString(AccountName);
         parcel.writeString(ServicePlan);
         parcel.writeString(ServiceType);
@@ -656,6 +669,7 @@ public class Tasks implements Parcelable {
         parcel.writeString(PostalCode);
         parcel.writeString(OrderNumber);
         parcel.writeString(CombinedOrderNumber);
+        parcel.writeString(Customer_Instructions);
         parcel.writeString(TaskAssignmentStartDate);
         parcel.writeString(TaskAssignmentStartTime);
         parcel.writeString(TaskAssignmentEndDate);
@@ -681,6 +695,4 @@ public class Tasks implements Parcelable {
         parcel.writeString(Helper_Resource_Id);
         parcel.writeString(Next_Task_Id);
     }
-
-
 }

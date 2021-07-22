@@ -56,6 +56,7 @@ public class ActivityTowerAdapter extends RecyclerView.Adapter<ActivityTowerAdap
                 holder.mItemChemicalTowerAdapterBinding.lnrTower.setBackground(mContext.getResources().getDrawable(R.drawable.white_round_border));
                 holder.mItemChemicalTowerAdapterBinding.txtTower.setTextColor(mContext.getResources().getColor(R.color.greyclose));
             }
+            items.get(position).setSelectedPos(selectedPos);
             if (items.get(position).getAreaType().equals("Common Area")) {
                 if (items.get(position).getTowerName() != null) {
                     holder.mItemChemicalTowerAdapterBinding.txtTower.setText(items.get(position).getTowerName());
@@ -66,7 +67,8 @@ public class ActivityTowerAdapter extends RecyclerView.Adapter<ActivityTowerAdap
                 if (items.get(position).getTowerName() != null) {
                     holder.mItemChemicalTowerAdapterBinding.txtTower.setText(items.get(position).getTowerName());
                 } else {
-                    holder.mItemChemicalTowerAdapterBinding.txtTower.setText("Tower " + String.valueOf(items.get(position).getTower()));
+//                    holder.mItemChemicalTowerAdapterBinding.txtTower.setText("Tower " + String.valueOf(items.get(position).getTower()));
+                    holder.mItemChemicalTowerAdapterBinding.txtTower.setText(items.get(position).getAreaType());
                 }
             }
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -74,6 +76,7 @@ public class ActivityTowerAdapter extends RecyclerView.Adapter<ActivityTowerAdap
                 public void onClick(View v) {
                     onItemClickHandler.onItemClick(position);
                     selectedPos = position;
+                    items.get(position).setSelectedPos(selectedPos);
                     notifyDataSetChanged();
                 }
             });
