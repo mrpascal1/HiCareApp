@@ -133,7 +133,7 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
             }
 
             if (isCheckboxAndImage){
-                if (isWrongSelected && isCheckboxAndImage){
+                if (isWrongSelected){
                     for (int i = 0; i < items.size(); i++){
                         if (i != selectedPos) {
                             holder.mLayoutOptionAdapterBinding.imgOption.setEnabled(false);
