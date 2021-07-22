@@ -11,19 +11,19 @@
         <item
             android:id="@+id/nav_quiz"
             android:icon="@drawable/ic_home"
-            android:visible="true"
-            android:title="Quiz" />
+            android:visible="false"
+            android:title="@string/quiz" />
 
         <item
             android:id="@+id/nav_chat"
             android:icon="@drawable/ic_sethoscope"
-            android:title="Self Assess"
+            android:title="@string/self_access"
             android:visible="false" />
 
         <item
             android:id="@+id/nav_products"
             android:icon="@drawable/ic_bazaar"
-            android:title="HiCare Products"
+            android:title="@string/hicare_products"
             android:visible="false" />
 
         <item
@@ -65,22 +65,22 @@
         <item
             android:id="@+id/nav_routine"
             android:icon="@drawable/ic_routine_check"
-            android:title="Daily Check-Up" />
+            android:title="@string/daily_check_up" />
 
         <item
             android:id="@+id/nav_kyc"
             android:icon="@drawable/ic_kyc"
-            android:title="KYC Verification" />
+            android:title="@string/kyc_verification" />
 
         <item
             android:id="@+id/nav_tsScanner"
             android:icon="@drawable/ic_qr_code_scanner_black"
-            android:title="Assign QR Code" />
+            android:title="@string/assign_qr_code" />
 
         <item
             android:id="@+id/nav_tsVerfication"
             android:icon="@drawable/ic_qr_verfication"
-            android:title="TS Verification" />
+            android:title="@string/ts_verification" />
 
         <item
             android:id="@+id/nav_summary"

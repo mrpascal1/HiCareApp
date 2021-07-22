@@ -163,6 +163,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private boolean isUploadOnsiteImage = false;
     private String OnSiteOtp = "";
     private String PaymentOtp = "";
+    private String customerInstruction = "";
     private String ScOtp = "";
     private String[] arrayReason = null;
     private Boolean[] arraySlots = null;
@@ -312,6 +313,13 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             AmountToCollect = Integer.parseInt(Objects.requireNonNull(mTaskDetailsData.get(0)).getAmountToCollect());
         }
 
+        assert mTaskDetailsData != null;
+        if (mTaskDetailsData.get(0).getCustomer_Instructions() != null) {
+            customerInstruction = mTaskDetailsData.get(0).getCustomer_Instructions();
+            mFragmentServiceInfoBinding.outerView.setVisibility(View.VISIBLE);
+        } else {
+            mFragmentServiceInfoBinding.outerView.setVisibility(GONE);
+        }
         mFragmentServiceInfoBinding.edtOnsiteOtp.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -383,8 +391,44 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             }
         });
 
+
         mFragmentServiceInfoBinding.btnOnsiteOtp.setOnClickListener(view1 -> getCommercialDialog());
-        Context context;
+        mFragmentServiceInfoBinding.lnrInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showInstructionDialog(customerInstruction);
+            }
+        });
+    }
+
+    private void showInstructionDialog(String customerInstruction) {
+        try {
+
+            LayoutInflater li = LayoutInflater.from(getActivity());
+
+            View promptsView = li.inflate(R.layout.layout_instruction_info_dialog, null);
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+
+            alertDialogBuilder.setView(promptsView);
+            final AlertDialog alertDialog = alertDialogBuilder.create();
+
+            final TextView txtInfo =
+                    promptsView.findViewById(R.id.txtInfo);
+            final AppCompatButton btnOk =
+                    promptsView.findViewById(R.id.btnOk);
+
+            txtInfo.setText(customerInstruction);
+            txtInfo.setTypeface(txtInfo.getTypeface(), Typeface.BOLD);
+
+            btnOk.setOnClickListener(v -> alertDialog.dismiss());
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            alertDialog.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void getCommercialDialog() {
@@ -2088,7 +2132,9 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
         } catch (Exception e) {
             e.printStackTrace();
         }
-    };
+    }
+
+    ;
 
     private void getSlots(String date, TextView txtNoSlots, TextView txtSelectDate, RecyclerView recyclerView) {
         NetworkCallController controller = new NetworkCallController(this);

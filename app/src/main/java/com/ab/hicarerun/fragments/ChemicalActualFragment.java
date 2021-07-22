@@ -65,6 +65,7 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
     private String combinedTaskId = "";
     private boolean isCombinedTask = false;
     private boolean showStandardChemicals = false;
+    private boolean showBarcode = false;
     private String combineOrder = "";
     private String orderId = "";
 
@@ -142,12 +143,18 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
         }
         if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
             showStandardChemicals = mGeneralRealmData.get(0).getShow_Standard_Chemicals();
+            showBarcode = mGeneralRealmData.get(0).getShowBarcode();
         }
 //        if (showStandardChemicals) {
 //            mFragmentChemicalInfoBinding.txtStandard.setVisibility(View.VISIBLE);
 //        } else {
 //            mFragmentChemicalInfoBinding.txtStandard.setVisibility(View.GONE);
 //        }
+        if (showBarcode) {
+            mFragmentChemicalInfoBinding.btnRodentScanner.setVisibility(View.VISIBLE);
+        } else {
+            mFragmentChemicalInfoBinding.btnRodentScanner.setVisibility(View.GONE);
+        }
         mFragmentChemicalInfoBinding.txtStandard.setVisibility(View.VISIBLE);
         mFragmentChemicalInfoBinding.txtType.setVisibility(View.VISIBLE);
         mAdapter = new ChemicalRecycleAdapter(getActivity(), isCombinedTask, showStandardChemicals, "Actual", (position, charSeq) -> {

@@ -127,6 +127,10 @@ public class GeneralData implements RealmModel {
     @Expose
     private String ServicePlan;
 
+    @SerializedName("ShowBarcode")
+    @Expose
+    private Boolean ShowBarcode;
+
 
     @SerializedName("ServiceType")
     @Expose
@@ -293,6 +297,10 @@ public class GeneralData implements RealmModel {
     @SerializedName("Onsite_Image_Path")
     @Expose
     private String Onsite_Image_Path;
+
+    @SerializedName("Customer_Instructions")
+    @Expose
+    private String Customer_Instructions;
 
     @SerializedName("CustomerLatitude")
     @Expose
@@ -1140,5 +1148,21 @@ public class GeneralData implements RealmModel {
 
     public void setServiceActivityRequired(boolean serviceActivityRequired) {
         ServiceActivityRequired = serviceActivityRequired;
+    }
+
+    public Boolean getShowBarcode() {
+        return ShowBarcode;
+    }
+
+    public void setShowBarcode(Boolean showBarcode) {
+        ShowBarcode = showBarcode;
+    }
+
+    public String getCustomer_Instructions() {
+        return Customer_Instructions;
+    }
+
+    public void setCustomer_Instructions(String customer_Instructions) {
+        Customer_Instructions = customer_Instructions;
     }
 }

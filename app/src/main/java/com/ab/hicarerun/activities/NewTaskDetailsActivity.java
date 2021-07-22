@@ -65,11 +65,13 @@ import com.ab.hicarerun.adapter.SurveyAdapter;
 import com.ab.hicarerun.adapter.TaskViewPagerAdapter;
 import com.ab.hicarerun.databinding.ActivityNewTaskDetailsBinding;
 import com.ab.hicarerun.fragments.ChemicalActivityFragment;
+import com.ab.hicarerun.fragments.ChemicalActualFragment;
 import com.ab.hicarerun.fragments.ChemicalInfoFragment;
 import com.ab.hicarerun.fragments.ConsultationFragment;
 import com.ab.hicarerun.fragments.ReferralFragment;
 import com.ab.hicarerun.fragments.ServiceActivityFragment;
 import com.ab.hicarerun.fragments.ServiceInfoFragment;
+import com.ab.hicarerun.fragments.ServiceUnitFragment;
 import com.ab.hicarerun.fragments.SignatureInfoFragment;
 import com.ab.hicarerun.fragments.SignatureMSTInfoFragment;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
@@ -556,9 +558,9 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 mActivityNewTaskDetailsBinding.viewpagertab.setDistributeEvenly(false);
             } else {
                 mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId, mCallback), getResources().getString(R.string.service_info));
-                mAdapter.addFragment(ChemicalInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedOrderId, orderId), getResources().getString(R.string.chemical_info));
+                mAdapter.addFragment(ChemicalActualFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedOrderId, orderId), getResources().getString(R.string.chemical_info));
                 if (isActivityThere) {
-                    mAdapter.addFragment(ChemicalActivityFragment.newInstance(isCombinedTasks, combinedOrderId, sequenceNo, orderId), "Activity");
+                    mAdapter.addFragment(ServiceUnitFragment.newInstance(isCombinedTasks, combinedOrderId, sequenceNo, orderId), "Activity");
                 }
                 mAdapter.addFragment(ReferralFragment.newInstance(taskId, technicianMobileNo), getResources().getString(R.string.referral_info));
                 if (isCombinedTasks) {
@@ -604,7 +606,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 LinearLayout lnrOffer = (LinearLayout) itemView.findViewById(R.id.lnrOffer);
                 TextView txtDiscount = (TextView) itemView.findViewById(R.id.txtDiscount);
 
-
                 switch (position) {
                     case 0:
                         lnrOffer.setVisibility(View.INVISIBLE);
@@ -613,11 +614,20 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         lnrOffer.setVisibility(View.INVISIBLE);
                         break;
                     case 2:
-                        lnrOffer.setVisibility(View.INVISIBLE);
+                        if(isActivityThere){
+                            lnrOffer.setVisibility(View.INVISIBLE);
+                        }else {
+                            lnrOffer.setVisibility(View.VISIBLE);
+                        }
                         break;
 
                     case 3:
-                        lnrOffer.setVisibility(View.VISIBLE);
+                        if(isActivityThere){
+                            lnrOffer.setVisibility(View.VISIBLE);
+                        }else {
+                            lnrOffer.setVisibility(View.INVISIBLE);
+                        }
+
                         if (referralDiscount > 0) {
                             txtDiscount.setText(String.valueOf(referralDiscount));
                         } else {

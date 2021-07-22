@@ -48,11 +48,12 @@ public class RecycleByActivityAdapter extends RecyclerView.Adapter<RecycleByActi
     @Override
     public void onBindViewHolder(@NotNull RecycleByActivityAdapter.ViewHolder holder, final int position) {
         try {
-            holder.mItemRecycleActivityUnitBinding.txtActivity.setText(items.get(position).getChemical_Name()+" - "+ items.get(position).getServiceActivityName());
+            holder.mItemRecycleActivityUnitBinding.txtActivity.setText(items.get(position).getChemical_Name() + " - " + items.get(position).getServiceActivityName());
+            holder.mItemRecycleActivityUnitBinding.txtQty.setText(items.get(position).getChemical_Qty() + " " + items.get(position).getChemical_Unit().toLowerCase());
 
-            if(items.get(position).getStatus() != null && items.get(position).getStatus().equalsIgnoreCase("yes")){
+            if (items.get(position).getStatus() != null) {
                 holder.mItemRecycleActivityUnitBinding.isBarcodeVerified.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_check_circle_green));
-            }else {
+            } else {
                 holder.mItemRecycleActivityUnitBinding.isBarcodeVerified.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_check_circle_black));
             }
 

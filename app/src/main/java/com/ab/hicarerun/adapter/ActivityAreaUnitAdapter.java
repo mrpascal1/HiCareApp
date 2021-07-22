@@ -52,6 +52,20 @@ public class ActivityAreaUnitAdapter extends RecyclerView.Adapter<ActivityAreaUn
     @Override
     public void onBindViewHolder(@NotNull ActivityAreaUnitAdapter.ViewHolder holder, final int position) {
 
+        if (areaList.get(position).getStatus() != null) {
+            if (areaList.get(position).getStatus().equalsIgnoreCase("yes")) {
+                holder.itemChemicalAreaChildAdapterBinding.on.setChecked(true);
+                holder.itemChemicalAreaChildAdapterBinding.off.setChecked(false);
+            } else if (areaList.get(position).getStatus().equalsIgnoreCase("No")) {
+                holder.itemChemicalAreaChildAdapterBinding.on.setChecked(false);
+                holder.itemChemicalAreaChildAdapterBinding.off.setChecked(true);
+            }
+        } else {
+            holder.itemChemicalAreaChildAdapterBinding.on.setChecked(true);
+            holder.itemChemicalAreaChildAdapterBinding.off.setChecked(false);
+        }
+
+
         holder.itemChemicalAreaChildAdapterBinding.off.setOnClickListener(view -> {
             holder.itemChemicalAreaChildAdapterBinding.on.setChecked(false);
             holder.itemChemicalAreaChildAdapterBinding.off.setChecked(true);

@@ -143,7 +143,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     private NavigationView navigationView = null;
     private HashMap<Integer, Boolean> checkMap = new HashMap<>();
     private HashMap<Integer, String> tempMap = new HashMap<>();
-
     private String taskId = "";
     List<Tasks> items = null;
     RealmResults<LoginResponse> LoginRealmModels = null;
@@ -1045,6 +1044,40 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     @Override
     public void onResourcePartnerPic(Profile profile) {
         showPartnerId(profile);
+    }
+
+    @Override
+    public void onInstructionsClicked(int position) {
+        showInstructionDialog(position);
+    }
+
+    private void showInstructionDialog(int position) {
+        try {
+
+            LayoutInflater li = LayoutInflater.from(getActivity());
+
+            View promptsView = li.inflate(R.layout.layout_instruction_info_dialog, null);
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+
+            alertDialogBuilder.setView(promptsView);
+            final AlertDialog alertDialog = alertDialogBuilder.create();
+
+            final TextView txtInfo =
+                    promptsView.findViewById(R.id.txtInfo);
+            final AppCompatButton btnOk =
+                    promptsView.findViewById(R.id.btnOk);
+
+            txtInfo.setText(items.get(position).getCustomer_Instructions());
+            txtInfo.setTypeface(txtInfo.getTypeface(), Typeface.BOLD);
+            btnOk.setOnClickListener(v -> alertDialog.dismiss());
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            alertDialog.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void getTechDetails(int position) {

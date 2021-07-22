@@ -88,6 +88,15 @@
 
     <string name="no_items">कोई वस्तु नहीं</string>
 
+    <string name="quiz">Quiz</string>
+    <string name="self_access">Self Assess</string>
+    <string name="hicare_products">HiCare Products</string>
+    <string name="rewards">Rewards</string>
+    <string name="daily_check_up">Daily Check-Up</string>
+    <string name="kyc_verification">KYC Verification</string>
+    <string name="assign_qr_code">Assign QR Code</string>
+    <string name="ts_verification">TS Verification</string>
+
     <string name="please_upload_your_photo_to_complete_the_registration">पंजीकरण पूरा करने के लिए कृपया अपना फोटो अपलोड करें.</string>
 
     <string name="position_your_head_within_the_circle_to_take_a_photo_of_yourself_when_you_are_ready">जब आप तैयार हों तब अपना सिर अपनी तस्वीर लेने के लिए रूपरेखा के भीतर रखें.</string>

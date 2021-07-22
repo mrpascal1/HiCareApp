@@ -99,6 +99,13 @@
     <string name="payment">Payment</string>
     <string name="signature">Signature</string>
     <string name="home">Home</string>
+    <string name="quiz">Quiz</string>
+    <string name="self_access">Self Assess</string>
+    <string name="rewards">Rewards</string>
+    <string name="daily_check_up">Daily Check-Up</string>
+    <string name="kyc_verification">KYC Verification</string>
+    <string name="assign_qr_code">Assign QR Code</string>
+    <string name="ts_verification">TS Verification</string>
     <string name="grooming">Grooming</string>
     <string name="my_id_card">My ID Card</string>
     <string name="notifications">Notifications</string>
@@ -625,4 +632,5 @@
     <string name="hicare_technician_app_will_collect_location_data_even_when_the_app_is_closed_or_not_in_use">HiCare Technician App will collect location data even when the app is closed or not in use.</string>
     <string name="use_your_location">Use your location</string>
     <string name="property_size">Property Size</string>
+    <string name="check_bait_stations">Check Bait Stations</string>
 </resources>

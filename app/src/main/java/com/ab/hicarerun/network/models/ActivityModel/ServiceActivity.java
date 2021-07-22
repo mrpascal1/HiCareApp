@@ -32,7 +32,13 @@ public class ServiceActivity {
 
     @SerializedName("Chemical_Name")
     @Expose
-    private String Chemical_Name;
+    private String Chemical_Name = "2.0 ml";
+    @SerializedName("Chemical_Qty")
+    @Expose
+    private String Chemical_Qty;
+    @SerializedName("Chemical_Unit")
+    @Expose
+    private String Chemical_Unit;
     @SerializedName("Area_Ids")
     @Expose
     private String areaIds;
@@ -110,5 +116,21 @@ public class ServiceActivity {
 
     public void setFloor(String floor) {
         this.floor = floor;
+    }
+
+    public String getChemical_Qty() {
+        return Chemical_Qty;
+    }
+
+    public void setChemical_Qty(String chemical_Qty) {
+        Chemical_Qty = chemical_Qty;
+    }
+
+    public String getChemical_Unit() {
+        return Chemical_Unit;
+    }
+
+    public void setChemical_Unit(String chemical_Unit) {
+        Chemical_Unit = chemical_Unit;
     }
 }

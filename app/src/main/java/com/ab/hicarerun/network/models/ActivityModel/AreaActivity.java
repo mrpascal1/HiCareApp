@@ -32,7 +32,7 @@ public class AreaActivity {
     private String chemicalName;
     @SerializedName("Status")
     @Expose
-    private Object status;
+    private String status;
     @SerializedName("Activity")
     @Expose
     private List<SubActivity> activity = null;
@@ -85,11 +85,11 @@ public class AreaActivity {
         this.chemicalName = chemicalName;
     }
 
-    public Object getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Object status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

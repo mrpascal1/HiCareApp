@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.BaseActivity
 import com.ab.hicarerun.BaseApplication
+import com.ab.hicarerun.R
 import com.ab.hicarerun.adapter.BarcodeAdapter
 import com.ab.hicarerun.adapter.BarcodeAdapter2
 import com.ab.hicarerun.databinding.ActivityBarcodeVerificatonBinding
@@ -60,7 +61,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         binding = ActivityBarcodeVerificatonBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        binding.toolbar.setTitle("Check Bait Stations")
+        binding.toolbar.setTitle(getString(R.string.check_bait_stations))
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.progressBar.visibility = View.VISIBLE

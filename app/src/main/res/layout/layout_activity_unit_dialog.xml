@@ -37,6 +37,16 @@
                     android:textColor="@color/colorPrimary"
                     android:textSize="18dp"/>
 
+                <TextView
+                    android:id="@+id/txtQty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Spraying"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="11dp"/>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
