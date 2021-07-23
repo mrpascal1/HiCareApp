@@ -35,6 +35,7 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
     private OnOptionClicked onOptionClicked;
     private int selectedPos = -1;
     private List<QuizAnswer> answerList = null;
+    int index = 0;
 
     public QuizVideoParentAdapter(Context context, OnOptionClicked onOptionClicked) {
         if (items == null) {
@@ -89,22 +90,24 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
             holder.mLayoutQuizParentAdapterBinding.recycleView.setLayoutManager(new LinearLayoutManager(mContext));
             holder.mLayoutQuizParentAdapterBinding.recycleView.setHasFixedSize(true);
             holder.mLayoutQuizParentAdapterBinding.recycleView.setClipToPadding(false);
-            holder.mLayoutQuizParentAdapterBinding.recycleView.setAdapter(childAdapter);
             if (items.get(position).getOptions() != null && items.get(position).getOptions().size() > 0) {
                 childAdapter.addData(items.get(position).getOptions(), items.get(position).getPuzzleQuestionSelectionType(), answerList);
                 Log.d("Parent_Position-Radio", "Final Value : " + strAnswer);
-                childAdapter.setOnItemClickHandler(positionChild -> {
-                    if (items.get(position).getPuzzleQuestionSelectionType().equals("Radio")) {
-                        onOptionClicked.onClicked(position, childAdapter.getItem(positionChild).getOptionTitle());
-                        childAdapter.getItem(positionChild).setIsSelected(true);
-                        childAdapter.notifyItemChanged(position);
-                        Log.d("TAG-pos", position+"");
-                    } else {
-                        onOptionClicked.onClicked(position, strAnswer);
-                        childAdapter.getItem(positionChild).setIsSelected(true);
-                    }
-                });
             }
+            holder.mLayoutQuizParentAdapterBinding.recycleView.setAdapter(childAdapter);
+
+            childAdapter.setOnItemClickHandler(positionChild -> {
+                if (items.get(position).getPuzzleQuestionSelectionType().equals("Radio")) {
+                    onOptionClicked.onClicked(position, childAdapter.getItem(position).getOptionTitle());
+                    childAdapter.getItem(positionChild).setIsSelected(true);
+                    childAdapter.notifyItemChanged(position);
+
+                    Log.d("TAG-pos", position+"");
+                } else {
+                    onOptionClicked.onClicked(position, strAnswer);
+                    childAdapter.getItem(positionChild).setIsSelected(true);
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }

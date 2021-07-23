@@ -84,6 +84,7 @@ import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
 import com.ab.hicarerun.network.models.ProductModel.ProductResponse;
 import com.ab.hicarerun.network.models.ProfileModel.TechnicianProfileDetails;
 import com.ab.hicarerun.network.models.QuizModel.QuizCategoryResponse;
+import com.ab.hicarerun.network.models.QuizModel.QuizPuzzleStats;
 import com.ab.hicarerun.network.models.QuizModel.QuizResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralDeleteRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralListResponse;
@@ -4815,6 +4816,24 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<BaseResponse> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void getPuzzleStatsForRes(int requestCode, String resourceId) {
+        BaseApplication.getRetrofitAPI(true)
+                .getPuzzleStatsForResources(resourceId)
+                .enqueue(new Callback<QuizPuzzleStats>() {
+                    @Override
+                    public void onResponse(Call<QuizPuzzleStats> call, Response<QuizPuzzleStats> response) {
+                        if (response.body() != null) {
+                            mListner.onResponse(requestCode, response.body());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<QuizPuzzleStats> call, Throwable t) {
                         mListner.onFailure(requestCode);
                     }
                 });

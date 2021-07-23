@@ -103,6 +103,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
     private PlayerView videoSurfaceView;
     private List<QuizSaveAnswers> saveAnswers;
     RecyclerView.LayoutManager layoutManager;
+    int points = 0;
 
     public QuizFragment() {
         // Required empty public constructor
@@ -228,7 +229,8 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
         }
         mFragmentQuizBinding.timer.setVisibility(View.VISIBLE);
         if (index < questions.size()) {
-            mFragmentQuizBinding.questionCounter.setText(String.format("%d/%d", (index + 1), questions.size()));
+            mFragmentQuizBinding.questionCounter.setText(points+"");
+            //mFragmentQuizBinding.questionCounter.setText(String.format("%d/%d", (index + 1), questions.size()));
             question = questions.get(index);
 
             if (question.getIsDependentQuestionExist()) {
@@ -256,10 +258,11 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                     }
                 });
                 mVideoAdapter.setData(question.getDependentQuestionList(), question.getDependentQuestionList().get(0).getCorrectAnswers());
-                mFragmentQuizBinding.recycleView.setAdapter(mVideoAdapter);
                 mVideoAdapter.setOnOptionClicked((position, option) -> {
                     Log.d("ACT", option);
                 });
+                mFragmentQuizBinding.recycleView.setAdapter(mVideoAdapter);
+
                 initializePlayer();
                 buildMediaSource(Uri.parse(question.getPuzzleQuestionURL()));
 
@@ -279,6 +282,10 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                 mAdapter = new QuizOptionAdapter(getActivity(), question.getPuzzleQuestionType(), question.getPuzzleQuestionSelectionType(), question.getCorrectAnswers(), isNextPressed);
                 mAdapter.setData(question.getOptions(), question.getCorrectAnswers());
                 mAdapter.setOnOptionClickListener((position, quizOption) -> {
+                    if (question.getCorrectAnswerIds().contains(quizOption.getOptionId().toString())){
+                        points = points + question.getPoints();
+                    }
+                    mFragmentQuizBinding.questionCounter.setText(points+"");
                     saveAnswers.add(new QuizSaveAnswers(question.getPuzzleId(), question.getPuzzleQuestionId(), question.getCorrectAnswerIds(), quizOption.getOptionId().toString(), "a1r9D000000OUNqQAO", question.getPoints()));
                 });
                 mFragmentQuizBinding.recycleView.setAdapter(mAdapter);
