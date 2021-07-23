@@ -143,7 +143,8 @@
                 app:layout_constraintBottom_toBottomOf="@+id/view5"
                 app:layout_constraintStart_toStartOf="@+id/view5"
                 app:layout_constraintTop_toBottomOf="@+id/view5"
-                app:srcCompat="@drawable/fiftyfiftyline" />
+                app:srcCompat="@drawable/fiftyfiftyline"
+                android:visibility="invisible"/>
 
             <ImageView
                 android:id="@+id/imageView5"
@@ -154,7 +155,8 @@
                 app:layout_constraintBottom_toBottomOf="@+id/view5"
                 app:layout_constraintEnd_toEndOf="@+id/view5"
                 app:layout_constraintTop_toBottomOf="@+id/view5"
-                app:srcCompat="@drawable/audiencepoll" />
+                app:srcCompat="@drawable/audiencepoll"
+                android:visibility="invisible"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

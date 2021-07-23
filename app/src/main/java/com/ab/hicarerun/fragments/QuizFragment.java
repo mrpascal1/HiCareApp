@@ -293,7 +293,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
 
             if (question.getPuzzleQuestionType().equals("Video")) {
                 timer.cancel();
-                mFragmentQuizBinding.timer.setVisibility(View.GONE);
+                mFragmentQuizBinding.timer.setVisibility(View.INVISIBLE);
                 mFragmentQuizBinding.cardImage.setVisibility(View.GONE);
                 mFragmentQuizBinding.question.setVisibility(View.GONE);
                 mFragmentQuizBinding.videoQuestion.setVisibility(View.VISIBLE);

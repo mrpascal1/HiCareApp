@@ -120,16 +120,16 @@ public class FragmentQuizCategory extends BaseFragment {
             public void onResponse(int requestCode, QuizPuzzleStats response) {
                 Log.d("TAG", response+"");
                 if (response != null){
-                    int points = response.getData().getPoints();
-                    if (points < 2000){
+                    String levelName = response.getData().getLevelName();
+                    if (levelName.equalsIgnoreCase("Basic")){
                         mFragmentQuizCategoryBinding.awardIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_award_silver));
-                    }else if (points > 2000 && points < 5000){
+                    }else if (levelName.equalsIgnoreCase("Intermediate")){
                         mFragmentQuizCategoryBinding.awardIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_award_bronze));
-                    }else if (points > 5000){
+                    }else if (levelName.equalsIgnoreCase("Expert")){
                         mFragmentQuizCategoryBinding.awardIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_award_gold));
                     }
-                    mFragmentQuizCategoryBinding.levelTv.setText(Objects.requireNonNull(response.getData()).getLevelName());
-                    mFragmentQuizCategoryBinding.pointsTv.setText(Objects.requireNonNull(response.getData()).getPoints()+"");
+                    mFragmentQuizCategoryBinding.levelTv.setText(Objects.requireNonNull(response.getData()).getLevelName() +" Level");
+                    mFragmentQuizCategoryBinding.pointsTv.setText(Objects.requireNonNull(response.getData()).getPoints()+" Pts");
                 }
             }
 
