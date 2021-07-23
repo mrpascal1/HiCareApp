@@ -37,7 +37,7 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
     private List<QuizAnswer> answerList = null;
     int index = 0;
 
-    public QuizVideoParentAdapter(Context context) {
+    public QuizVideoParentAdapter(Context context, OnOptionClicked onOptionClicked) {
         if (items == null) {
             items = new ArrayList<>();
         }
@@ -65,10 +65,10 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
     public void onBindViewHolder(@NotNull QuizVideoParentAdapter.ViewHolder holder, final int position) {
         try {
             holder.mLayoutQuizParentAdapterBinding.txtQuestion.setText(items.get(position).getPuzzleQuestionTitle());
-            QuizVideoChildAdapter childAdapter = new QuizVideoChildAdapter(mContext, (position1, isChecked) -> {
+            QuizVideoChildAdapter childAdapter = new QuizVideoChildAdapter(mContext, (position1, option) -> {
                 String optionValue = items.get(position).getOptions().get(position1).getOptionValue();
 
-                /*if (isChecked) {
+                if (true) {
                     String newAppendValue = (checkItems.get(position) != null) ? checkItems.get(position) + "," + optionValue : optionValue;
                     checkItems.put(position, newAppendValue);
                     Log.d("Parent_Position", String.valueOf(position));
@@ -84,7 +84,7 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
 
                 strAnswer = (checkItems.get(position) == null) ? "" : checkItems.get(position);
                 Log.d("Parent_Position", "Final Value : " + strAnswer);
-                onOptionClicked.onClicked(position, strAnswer);*/
+                onOptionClicked.onClicked(position, optionValue);
             });
 
             holder.mLayoutQuizParentAdapterBinding.recycleView.setLayoutManager(new LinearLayoutManager(mContext));
