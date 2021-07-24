@@ -71,6 +71,7 @@ import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
 import com.ab.hicarerun.network.models.ProductModel.ProductResponse;
 import com.ab.hicarerun.network.models.ProfileModel.TechnicianProfileDetails;
+import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLeaderBoardBase;
 import com.ab.hicarerun.network.models.QuizModel.QuizCategoryResponse;
 import com.ab.hicarerun.network.models.QuizModel.QuizPuzzleStats;
 import com.ab.hicarerun.network.models.QuizModel.QuizResponse;
@@ -554,4 +555,7 @@ public interface IRetrofit {
 
     @GET("Puzzle/GetPuzzleStatsForResource")
     Call<QuizPuzzleStats> getPuzzleStatsForResources(@Query("resourceId") String resourceId);
+
+    @GET("Puzzle/GetPuzzleLeaderBoard")
+    Call<QuizLeaderBoardBase> getPuzzleLeaderBoard(@Query("resourceId") String resourceId);
 }

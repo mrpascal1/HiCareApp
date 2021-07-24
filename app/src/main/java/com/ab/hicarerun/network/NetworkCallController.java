@@ -83,6 +83,7 @@ import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
 import com.ab.hicarerun.network.models.ProductModel.ProductResponse;
 import com.ab.hicarerun.network.models.ProfileModel.TechnicianProfileDetails;
+import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLeaderBoardBase;
 import com.ab.hicarerun.network.models.QuizModel.QuizCategoryResponse;
 import com.ab.hicarerun.network.models.QuizModel.QuizPuzzleStats;
 import com.ab.hicarerun.network.models.QuizModel.QuizResponse;
@@ -4822,7 +4823,7 @@ public class NetworkCallController {
     }
 
     public void getPuzzleStatsForRes(int requestCode, String resourceId) {
-        BaseApplication.getRetrofitAPI(true)
+        BaseApplication.getRetrofitAPI(false)
                 .getPuzzleStatsForResources(resourceId)
                 .enqueue(new Callback<QuizPuzzleStats>() {
                     @Override
@@ -4834,6 +4835,22 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<QuizPuzzleStats> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void getPuzzleLeaderBoard(int requestCode, String resourceId) {
+        BaseApplication.getRetrofitAPI(false)
+                .getPuzzleLeaderBoard(resourceId)
+                .enqueue(new Callback<QuizLeaderBoardBase>() {
+                    @Override
+                    public void onResponse(Call<QuizLeaderBoardBase> call, Response<QuizLeaderBoardBase> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<QuizLeaderBoardBase> call, Throwable t) {
                         mListner.onFailure(requestCode);
                     }
                 });

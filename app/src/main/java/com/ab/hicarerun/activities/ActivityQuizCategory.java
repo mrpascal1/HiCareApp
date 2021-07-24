@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -43,6 +44,11 @@ public class ActivityQuizCategory extends BaseActivity {
             window.setStatusBarColor(ContextCompat.getColor(this,R.color.colorPurple));
         }
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
+        mActivityQuizCategoryBinding.leaderBoardIv.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), QuizLeaderBoard.class);
+            startActivity(intent);
+        });
     }
 
     @Override
