@@ -20,7 +20,7 @@ import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLBData
 import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLBResourceList
 import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLeaderBoardBase
 
-class QuizLeaderBoard : BaseActivity() {
+class QuizLeaderBoardActivity : BaseActivity() {
 
     lateinit var binding: ActivityQuizLeaderBoardBinding
     private var resourceId = ""
@@ -28,6 +28,7 @@ class QuizLeaderBoard : BaseActivity() {
     lateinit var quizLBData: ArrayList<QuizLBData>
     lateinit var quizLBResourceList: ArrayList<QuizLBResourceList>
     var highest = 0
+    var myPoints = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,13 +84,23 @@ class QuizLeaderBoard : BaseActivity() {
                             val points = resourceList.points
                             val lastPlayedOn = resourceList.lastPlayedOn
                             val lastPlayedOnDisplay = resourceList.lastPlayedOnDisplay
+                            if (uResourceId == resourceId){
+                                binding.nameTv.text = resourceName
+                                myPoints = points.toString().toInt()
+                            }
                             pointsArr.add(points.toString().toInt())
-                            quizLBResourceList.add(QuizLBResourceList(uLevelName, uResourceId, resourceName, isSelf, resourceRank, points, lastPlayedOn, lastPlayedOnDisplay))
+                            quizLBResourceList.add(QuizLBResourceList(uLevelName, uResourceId, resourceName, isSelf, resourceRank, points, lastPlayedOn, lastPlayedOnDisplay, highest))
                         }
                         quizLBData.add(QuizLBData(levelName, quizLBResourceList))
                     }
                     highest = pointsArr.maxOrNull().toString().toInt()
                     QuizLeaderBoardBase(response.isSuccess, quizLBData, response.errorMessage, response.param1, response.responseMessage)
+                }
+                binding.pointsTv.text = "$myPoints / $highest"
+                if (quizLBResourceList.isNotEmpty()){
+                    for (i in 0 until quizLBResourceList.size) {
+                        quizLBResourceList[i].highest = highest
+                    }
                 }
                 quizLeaderBoardAdapter.notifyDataSetChanged()
             }

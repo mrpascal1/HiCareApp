@@ -45,7 +45,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.QuizLeaderBoard"></activity>
+        <activity android:name=".activities.QuizResultActivity"></activity>
+        <activity android:name=".activities.QuizLeaderBoardActivity" />
         <activity
             android:name=".activities.CaptureActivityPortrait"
             android:screenOrientation="portrait"

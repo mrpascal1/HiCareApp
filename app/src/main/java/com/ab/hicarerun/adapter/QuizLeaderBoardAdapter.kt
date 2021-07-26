@@ -10,7 +10,7 @@ import com.ab.hicarerun.databinding.RowQuizLeaderboardBinding
 import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLBResourceList
 import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLeaderBoardBase
 
-class QuizLeaderBoardAdapter(val context: Context, val quizLBResourceList: List<QuizLBResourceList>, val highest: Int) : RecyclerView.Adapter<QuizLeaderBoardAdapter.MyHolder>(){
+class QuizLeaderBoardAdapter(val context: Context, val quizLBResourceList: List<QuizLBResourceList>, var highest: Int) : RecyclerView.Adapter<QuizLeaderBoardAdapter.MyHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
         val view = RowQuizLeaderboardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -29,7 +29,7 @@ class QuizLeaderBoardAdapter(val context: Context, val quizLBResourceList: List<
         fun bindItems(quizLBResourceList: QuizLBResourceList){
             val levelName = quizLBResourceList.levelName
             binding.userNameTv.text = quizLBResourceList.resourceName
-            binding.pointsTv.text = "${quizLBResourceList.points}" + " / $highest"
+            binding.pointsTv.text = "${quizLBResourceList.points}" + " / ${quizLBResourceList.highest}"
             binding.indexTv.text = (adapterPosition+1).toString()
             if (levelName.equals("Basic", ignoreCase = true)){
                 binding.awardIv.setImageDrawable(context.resources.getDrawable(R.drawable.ic_award_silver))

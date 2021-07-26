@@ -1,6 +1,5 @@
 package com.ab.hicarerun.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
@@ -16,8 +15,8 @@ import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ActivityQuizCategoryBinding;
 import com.ab.hicarerun.fragments.FragmentQuizCategory;
-import com.ab.hicarerun.fragments.KarmaFragment;
 import com.ab.hicarerun.fragments.KarmaVideoFragment;
+import com.ab.hicarerun.fragments.QuizFragment;
 
 import java.util.Objects;
 
@@ -46,7 +45,7 @@ public class ActivityQuizCategory extends BaseActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         mActivityQuizCategoryBinding.leaderBoardIv.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), QuizLeaderBoard.class);
+            Intent intent = new Intent(getApplicationContext(), QuizLeaderBoardActivity.class);
             startActivity(intent);
         });
     }

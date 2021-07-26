@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.QuizLeaderBoard">
+    tools:context=".activities.QuizLeaderBoardActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -44,7 +44,7 @@
                         android:layout_height="40dp"
                         android:src="@drawable/ic_award_silver"/>
                     <TextView
-                        android:id="@+id/name"
+                        android:id="@+id/nameTv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Shahid Raza"
@@ -52,6 +52,7 @@
                         android:layout_centerHorizontal="true"
                         android:textSize="30dp"/>
                     <TextView
+                        android:id="@+id/pointsTv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="1520/5000"
@@ -59,7 +60,7 @@
                         android:textSize="28dp"
                         android:layout_marginTop="10dp"/>
                     <RatingBar
-                        android:id="@+id/rating_bar"
+                        android:id="@+id/profileRating"
                         android:layout_below="@id/name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

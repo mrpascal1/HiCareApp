@@ -10,5 +10,6 @@ data class QuizLBResourceList(
     @SerializedName("ResourceRank") val resourceRank : Int?,
     @SerializedName("Points") val points : Int?,
     @SerializedName("LastPlayedOn") val lastPlayedOn : String?,
-    @SerializedName("LastPlayedOnDisplay") val lastPlayedOnDisplay : String?
+    @SerializedName("LastPlayedOnDisplay") val lastPlayedOnDisplay : String?,
+    var highest : Int?
 )

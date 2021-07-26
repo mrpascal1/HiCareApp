@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
+import com.ab.hicarerun.activities.QuizResultActivity;
 import com.ab.hicarerun.adapter.QuizOptionAdapter;
 import com.ab.hicarerun.adapter.QuizVideoParentAdapter;
 import com.ab.hicarerun.adapter.RecycleBazaarAdapter;
@@ -39,8 +40,10 @@ import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.QuizModel.QuizData;
+import com.ab.hicarerun.network.models.QuizModel.QuizPuzzleStats;
 import com.ab.hicarerun.network.models.QuizModel.QuizSaveAnswers;
 import com.ab.hicarerun.network.models.QuizModel.VideoDependentQuest;
+import com.ab.hicarerun.network.models.QuizSaveModel.QuizSaveResponseBase;
 import com.ab.hicarerun.utils.AppUtils;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
@@ -89,6 +92,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
     List<QuizData> questions;
     List<VideoDependentQuest> vidQuestions;
     int index = 0;
+    int oldScore = 0;
     int vidIndex = 0;
     QuizData question;
     CountDownTimer timer;
@@ -104,6 +108,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
     private List<QuizSaveAnswers> saveAnswers;
     RecyclerView.LayoutManager layoutManager;
     int points = 0;
+    String resourceId = "";
 
     public QuizFragment() {
         // Required empty public constructor
@@ -132,6 +137,11 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
         // Inflate the layout for this fragment
         mFragmentQuizBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_quiz, container, false);
         requireActivity().setTitle("");
+        RealmResults<LoginResponse> LoginRealmModels =
+                BaseApplication.getRealm().where(LoginResponse.class).findAll();
+        if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+            resourceId = LoginRealmModels.get(0).getUserID();
+        }
         return mFragmentQuizBinding.getRoot();
     }
 
@@ -147,6 +157,9 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
 //        mFragmentQuizBinding.recycleView.setAdapter(mAdapter);
         getQuestions();
         resetTimer();
+        if (index == questions.size()-1){
+            mFragmentQuizBinding.nextBtn.setText("Finish");
+        }
         mFragmentQuizBinding.nextBtn.setOnClickListener(view1 -> {
 //            reset();
             if (index < questions.size() - 1) {
@@ -158,13 +171,24 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
 //                intent.putExtra("correct", correctAnswers);
 //                intent.putExtra("total", questions.size());
 //                startActivity(intent);
+                savePuzzle();
                 Toast.makeText(getActivity(), "Quiz Finished.", Toast.LENGTH_SHORT).show();
-                requireActivity().finish();
+
             }
         });
+        mFragmentQuizBinding.quitBtn.setOnClickListener(v -> {
+            requireActivity().finish();
+        });
+
         if (mAdapter != null) {
 
         }
+    }
+
+    @Override
+    public void onStart() {
+        getPuzzleStatsForRes();
+        super.onStart();
     }
 
     void resetTimer() {
@@ -192,6 +216,29 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
         };
     }
 
+    private void savePuzzle(){
+        NetworkCallController controller = new NetworkCallController(this);
+        controller.setListner(new NetworkResponseListner<QuizSaveResponseBase>(){
+            @Override
+            public void onResponse(int requestCode, QuizSaveResponseBase response) {
+                if (response.isSuccess()){
+                    Log.d("TAG", response.getData().getTotalPoints().toString());
+                    Intent intent = new Intent(requireContext(), QuizResultActivity.class);
+                    intent.putExtra("points", response.getData().getTotalPoints().toString());
+                    intent.putExtra("earned", Integer.toString(response.getData().getTotalPoints()-oldScore));
+                    intent.putExtra("levelName", response.getData().getCurrentLevelName());
+                    startActivity(intent);
+                    requireActivity().finish();
+                }
+            }
+
+            @Override
+            public void onFailure(int requestCode) {
+
+            }
+        });
+        controller.savePuzzleAnswers(2021262, saveAnswers);
+    }
     private void getQuestions() {
         try {
             RealmResults<LoginResponse> LoginRealmModels =
@@ -223,7 +270,9 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
     }
 
     private void setNextQuestion(boolean isNextPressed) {
-
+        /*if (index == questions.size()-1){
+            mFragmentQuizBinding.nextBtn.setText("Finish");
+        }*/
         if (timer != null) {
             timer.start();
         }
@@ -281,12 +330,34 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                 mFragmentQuizBinding.recycleView.setLayoutManager(layoutManager);
                 mAdapter = new QuizOptionAdapter(getActivity(), question.getPuzzleQuestionType(), question.getPuzzleQuestionSelectionType(), question.getCorrectAnswers(), isNextPressed);
                 mAdapter.setData(question.getOptions(), question.getCorrectAnswers());
-                mAdapter.setOnOptionClickListener((position, quizOption) -> {
-                    if (question.getCorrectAnswerIds().contains(quizOption.getOptionId().toString())){
+                mAdapter.setOnOptionClickListener((position, quizOption, optionType) -> {
+                    int found = 0;
+                    if (optionType.equalsIgnoreCase("radio")) {
+                        saveAnswers.add(new QuizSaveAnswers(question.getPuzzleId(), question.getPuzzleQuestionId(), question.getCorrectAnswerIds(), quizOption.getOptionId().toString(), resourceId, question.getPoints()));
+                    }
+                    if (optionType.equalsIgnoreCase("checkbox")){
+                        if (!saveAnswers.isEmpty()){
+                            for (int i=0; i < saveAnswers.size(); i++){
+                                if (saveAnswers.get(i).getPuzzleQuestionId().equals(question.getPuzzleQuestionId())){
+                                    String prev = "";
+                                    prev = saveAnswers.get(i).getResourceGivenAnswerIds();
+                                    prev = prev + "," + quizOption.getOptionId().toString();
+                                    saveAnswers.get(i).setResourceGivenAnswerIds(prev);
+                                    Log.d("TAG", saveAnswers.get(i).getResourceGivenAnswerIds());
+                                    found = 1;
+                                    break;
+                                }
+                            }
+                            if (found == 0){
+                                saveAnswers.add(new QuizSaveAnswers(question.getPuzzleId(), question.getPuzzleQuestionId(), question.getCorrectAnswerIds(), quizOption.getOptionId().toString(), resourceId, question.getPoints()));
+                            }
+                        }
+                    }
+                    if (question.getCorrectAnswerIds().contains(quizOption.getOptionId().toString())) {
                         points = points + question.getPoints();
                     }
                     mFragmentQuizBinding.questionCounter.setText(points+"");
-                    saveAnswers.add(new QuizSaveAnswers(question.getPuzzleId(), question.getPuzzleQuestionId(), question.getCorrectAnswerIds(), quizOption.getOptionId().toString(), "a1r9D000000OUNqQAO", question.getPoints()));
+                    Log.d("TAG-Save", saveAnswers.toString());
                 });
                 mFragmentQuizBinding.recycleView.setAdapter(mAdapter);
             }
@@ -441,5 +512,26 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
     @Override
     public void onSeekProcessed() {
 
+    }
+
+    private void getPuzzleStatsForRes(){
+        NetworkCallController controller = new NetworkCallController(this);
+        controller.setListner(new NetworkResponseListner<QuizPuzzleStats>(){
+            @Override
+            public void onResponse(int requestCode, QuizPuzzleStats response) {
+                Log.d("TAG", response+"");
+                if (response != null) {
+                    if (response.isSuccess()) {
+                        oldScore = response.getData().getPoints();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int requestCode) {
+
+            }
+        });
+        controller.getPuzzleStatsForRes(202122, resourceId);
     }
 }
