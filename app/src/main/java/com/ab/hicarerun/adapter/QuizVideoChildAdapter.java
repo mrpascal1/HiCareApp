@@ -141,14 +141,17 @@ public class QuizVideoChildAdapter extends RecyclerView.Adapter<QuizVideoChildAd
 
             holder.mLayoutOptionAdapterBinding.checkOption.setOnClickListener(v -> {
                 whichType = "checkbox";
-                isRadioSelected = true;
+                isRadioSelected = false;
                 selectedPos = position;
                 onOptionClickListener.onItemClick(position, items.get(position), whichType);
                 holder.mLayoutOptionAdapterBinding.checkOption.setChecked(true);
+                holder.mLayoutOptionAdapterBinding.checkOption.setEnabled(false);
+                holder.itemView.setEnabled(false);
                 for (QuizAnswer ans : answerList) {
                     if (items.get(position).getOptionValue().equalsIgnoreCase(ans.getOptionValue()) && items.get(position).getOptionId().equals(ans.getOptionId())) {
                         holder.mLayoutOptionAdapterBinding.lnrCheck.setBackground(mContext.getResources().getDrawable(R.drawable.option_right_border));
                         isWrongSelected = false;
+                        return;
                     } else {
                         isWrongSelected = true;
                         holder.mLayoutOptionAdapterBinding.lnrCheck.setBackground(mContext.getResources().getDrawable(R.drawable.option_wrong_border));
@@ -162,18 +165,18 @@ public class QuizVideoChildAdapter extends RecyclerView.Adapter<QuizVideoChildAd
                 selectedPos = position;
                 if (type.equalsIgnoreCase("Radio")) {
                     holder.mLayoutOptionAdapterBinding.radioOption.setChecked(true);
-                    holder.mLayoutOptionAdapterBinding.radioOption.setEnabled(false);
                     whichType = "radio";
                     isRadioSelected = true;
                     onOptionClickListener.onItemClick(position, items.get(position), whichType);
-
                     for (QuizAnswer ans : answerList) {
                         Log.d("TAG", ans.getOptionValue());
                         if (items.get(position).getOptionValue().equalsIgnoreCase(ans.getOptionValue()) && items.get(position).getOptionId().equals(ans.getOptionId())) {
-                            holder.mLayoutOptionAdapterBinding.lnrRadio.setBackground(mContext.getResources().getDrawable(R.drawable.option_right_border));
                             isWrongSelected = false;
+                            holder.mLayoutOptionAdapterBinding.lnrRadio.setBackground(mContext.getResources().getDrawable(R.drawable.option_right_border));
+                            break;
                         } else {
                             isWrongSelected = true;
+                            Log.d("TAG", "Wrong");
                             holder.mLayoutOptionAdapterBinding.lnrRadio.setBackground(mContext.getResources().getDrawable(R.drawable.option_wrong_border));
                         }
                     }
