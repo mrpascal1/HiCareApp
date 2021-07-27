@@ -87,6 +87,7 @@ class QuizLeaderBoardActivity : BaseActivity() {
                             if (uResourceId == resourceId){
                                 binding.nameTv.text = resourceName
                                 myPoints = points.toString().toInt()
+                                binding.pointsTv.text = "$resourceRank - $myPoints"
                             }
                             pointsArr.add(points.toString().toInt())
                             quizLBResourceList.add(QuizLBResourceList(uLevelName, uResourceId, resourceName, isSelf, resourceRank, points, lastPlayedOn, lastPlayedOnDisplay, highest))
@@ -96,7 +97,6 @@ class QuizLeaderBoardActivity : BaseActivity() {
                     highest = pointsArr.maxOrNull().toString().toInt()
                     QuizLeaderBoardBase(response.isSuccess, quizLBData, response.errorMessage, response.param1, response.responseMessage)
                 }
-                binding.pointsTv.text = "$myPoints / $highest"
                 if (quizLBResourceList.isNotEmpty()){
                     for (i in 0 until quizLBResourceList.size) {
                         quizLBResourceList[i].highest = highest

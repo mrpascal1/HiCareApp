@@ -29,13 +29,14 @@ class QuizLeaderBoardAdapter(val context: Context, val quizLBResourceList: List<
         fun bindItems(quizLBResourceList: QuizLBResourceList){
             val levelName = quizLBResourceList.levelName
             binding.userNameTv.text = quizLBResourceList.resourceName
-            binding.pointsTv.text = "${quizLBResourceList.points}" + " / ${quizLBResourceList.highest}"
+            binding.pointsTv.text = "${quizLBResourceList.points} pts"
             binding.indexTv.text = (adapterPosition+1).toString()
+            binding.levelNameTv.text = "Level : ${quizLBResourceList.levelName}"
             if (levelName.equals("Basic", ignoreCase = true)){
-                binding.awardIv.setImageDrawable(context.resources.getDrawable(R.drawable.ic_award_silver))
+                binding.awardIv.setImageDrawable(context.resources.getDrawable(R.drawable.ic_award_bronze))
             }
             if (levelName.equals("Intermediate", ignoreCase = true)){
-                binding.awardIv.setImageDrawable(context.resources.getDrawable(R.drawable.ic_award_bronze))
+                binding.awardIv.setImageDrawable(context.resources.getDrawable(R.drawable.ic_award_silver))
             }
             if (levelName.equals("Expert", ignoreCase = true)){
                 binding.awardIv.setImageDrawable(context.resources.getDrawable(R.drawable.ic_award_gold))

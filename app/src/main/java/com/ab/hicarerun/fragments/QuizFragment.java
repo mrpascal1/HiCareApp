@@ -39,6 +39,7 @@ import com.ab.hicarerun.handler.OnListItemClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.LoginResponse;
+import com.ab.hicarerun.network.models.QuizModel.QuizAnswer;
 import com.ab.hicarerun.network.models.QuizModel.QuizData;
 import com.ab.hicarerun.network.models.QuizModel.QuizPuzzleStats;
 import com.ab.hicarerun.network.models.QuizModel.QuizSaveAnswers;
@@ -90,6 +91,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
     private QuizOptionAdapter mAdapter;
     private QuizVideoParentAdapter mVideoAdapter;
     List<QuizData> questions;
+    List<QuizAnswer> answerList;
     List<VideoDependentQuest> vidQuestions;
     int index = 0;
     int oldScore = 0;
@@ -151,6 +153,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
         questions = new ArrayList<>();
         vidQuestions = new ArrayList<>();
         saveAnswers = new ArrayList<>();
+        answerList = new ArrayList<>();
 //        mFragmentQuizBinding.recycleView.setHasFixedSize(true);
 //        mFragmentQuizBinding.recycleView.setLayoutManager(new GridLayoutManager(getActivity(), 1));
 //        mAdapter = new QuizOptionAdapter(getActivity());
@@ -171,8 +174,8 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
 //                intent.putExtra("correct", correctAnswers);
 //                intent.putExtra("total", questions.size());
 //                startActivity(intent);
-                savePuzzle();
                 Toast.makeText(getActivity(), "Quiz Finished.", Toast.LENGTH_SHORT).show();
+                savePuzzle();
 
             }
         });
@@ -200,7 +203,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
 
             @Override
             public void onFinish() {
-                if (index < questions.size()) {
+                if (index < questions.size() - 1) {
                     index++;
                     setNextQuestion(true);
                 } else {
@@ -208,9 +211,12 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
 //                intent.putExtra("correct", correctAnswers);
 //                intent.putExtra("total", questions.size());
 //                startActivity(intent);
-
-                    requireActivity().finish();
                     Toast.makeText(getActivity(), "Quiz Finished.", Toast.LENGTH_SHORT).show();
+                    if (!saveAnswers.isEmpty()){
+                        savePuzzle();
+                    }else {
+                        requireActivity().finish();
+                    }
                 }
             }
         };
@@ -227,6 +233,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                     intent.putExtra("points", response.getData().getTotalPoints().toString());
                     intent.putExtra("earned", Integer.toString(response.getData().getTotalPoints()-oldScore));
                     intent.putExtra("levelName", response.getData().getCurrentLevelName());
+                    intent.putExtra("resMessage", response.getData().getResourceMessage());
                     startActivity(intent);
                     requireActivity().finish();
                 }
@@ -283,6 +290,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
             question = questions.get(index);
 
             if (question.getIsDependentQuestionExist()) {
+                vidQuestions = question.getDependentQuestionList();
                 Log.d("TAG", "Called");
                 timer.cancel();
                 mFragmentQuizBinding.timer.setVisibility(View.INVISIBLE);
@@ -301,20 +309,60 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                 mFragmentQuizBinding.recycleView.setLayoutManager(layoutManager);
                 mFragmentQuizBinding.recycleView.setNestedScrollingEnabled(false);
                 mVideoAdapter = new QuizVideoParentAdapter(getActivity(), (position, option) -> {
-                    if (index < question.getDependentQuestionList().size() - 1) {
-                        vidQuestions = question.getDependentQuestionList();
-                        vidIndex++;
+                    if (vidIndex < question.getDependentQuestionList().size() - 1) {
+                        //vidIndex++;
                     }
                 });
-                mVideoAdapter.setData(question.getDependentQuestionList(), question.getDependentQuestionList().get(0).getCorrectAnswers());
-                mVideoAdapter.setOnOptionClicked((position, option) -> {
-                    Log.d("ACT", option);
+                for (int i = 0; i<question.getDependentQuestionList().size(); i++){
+                    answerList.addAll(question.getDependentQuestionList().get(i).getCorrectAnswers());
+                }
+                //mVideoAdapter.setData(question.getDependentQuestionList(), vidQuestions.get(vidIndex).getCorrectAnswers());
+                mVideoAdapter.setData(question.getDependentQuestionList(), answerList);
+                mVideoAdapter.setOnOptionClickListener((position, quizOption, optionType) -> {
+                    Log.d("TAG-Video", ""+question.getPuzzleId());
+                    Log.d("TAG-Video", ""+question.getDependentQuestionList().get(vidIndex).getPuzzleQuestionId());
+                    Log.d("TAG-Video", ""+question.getDependentQuestionList().get(vidIndex).getCorrectAnswerIds());
+                    Log.d("TAG-Video", ""+quizOption.getOptionId().toString());
+                    Log.d("TAG-Video", ""+question.getDependentQuestionList().get(vidIndex).getPoints());
+                    int found = 0;
+                    if (optionType.equalsIgnoreCase("radio")) {
+                        saveAnswers.add(new QuizSaveAnswers(question.getPuzzleId(), question.getPuzzleQuestionId(), question.getCorrectAnswerIds(), quizOption.getOptionId().toString(), resourceId, question.getPoints()));
+                    }
+                    if (optionType.equalsIgnoreCase("checkbox")){
+                        if (!saveAnswers.isEmpty()){
+                            for (int i=0; i < saveAnswers.size(); i++){
+                                if (saveAnswers.get(i).getPuzzleQuestionId().equals(question.getPuzzleQuestionId())){
+                                    String prev = "";
+                                    prev = saveAnswers.get(i).getResourceGivenAnswerIds();
+                                    prev = prev + "," + quizOption.getOptionId().toString();
+                                    saveAnswers.get(i).setResourceGivenAnswerIds(prev);
+                                    Log.d("TAG", saveAnswers.get(i).getResourceGivenAnswerIds());
+                                    found = 1;
+                                    break;
+                                }
+                            }
+                            if (found == 0){
+                                saveAnswers.add(new QuizSaveAnswers(question.getPuzzleId(), question.getPuzzleQuestionId(), question.getCorrectAnswerIds(), quizOption.getOptionId().toString(), resourceId, question.getPoints()));
+                            }
+                        }
+                    }
+                    if (question.getCorrectAnswerIds().contains(quizOption.getOptionId().toString())) {
+                        points = points + question.getPoints();
+                    }
+                    mFragmentQuizBinding.questionCounter.setText(points+"");
+                    if (vidIndex < question.getDependentQuestionList().size() - 1) {
+                        vidIndex++;
+                    }
                 });
                 mFragmentQuizBinding.recycleView.setAdapter(mVideoAdapter);
 
                 initializePlayer();
                 buildMediaSource(Uri.parse(question.getPuzzleQuestionURL()));
-
+                /*if (vidIndex < question.getDependentQuestionList().size() - 1) {
+                    vidIndex++;
+                    Log.d("TAG", vidIndex+"");
+                    mVideoAdapter.updateAnswers(question.getDependentQuestionList().get(vidIndex).getCorrectAnswers());
+                }*/
             } else {
                 GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
                 layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {

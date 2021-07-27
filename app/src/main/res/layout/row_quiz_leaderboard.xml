@@ -63,11 +63,11 @@
                     android:layout_marginStart="4dp"
                     android:layout_marginTop="4dp">
 
-                    <RatingBar
-                        android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/levelNameTv"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        style="@style/Widget.AppCompat.RatingBar.Small"
-                        android:rating="4"/>
+                        android:text="Level : Basic"/>
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
@@ -90,7 +90,7 @@
                     android:id="@+id/pointsTv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1500/5000"
+                    android:text="1500 pts"
                     android:maxEms="5"
                     android:layout_gravity="center"
                     android:layout_marginRight="10dp"

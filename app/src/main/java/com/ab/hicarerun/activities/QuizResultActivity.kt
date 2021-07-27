@@ -21,11 +21,12 @@ class QuizResultActivity : BaseActivity() {
         binding.scoreTv.text = intent.getStringExtra("points").toString()
         binding.earnedCoins.text = intent.getStringExtra("earned").toString()
         binding.currLevelTv.text = intent.getStringExtra("levelName").toString()
+        binding.messageTv.text = intent.getStringExtra("resMessage").toString()
 
         binding.restartBtn.setOnClickListener {
-            val quizIntent = Intent(this, ActivityQuizCategory::class.java)
+            /*val quizIntent = Intent(this, ActivityQuizCategory::class.java)
             quizIntent.putExtra("ARG_EVENT", false)
-            startActivity(intent)
+            startActivity(intent)*/
             finish()
         }
     }

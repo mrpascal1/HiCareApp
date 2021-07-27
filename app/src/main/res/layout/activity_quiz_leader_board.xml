@@ -21,7 +21,7 @@
                 android:id="@+id/header"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
+                android:layout_height="wrap_content"
                 android:background="@color/colorBlue">
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -38,7 +38,8 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:padding="24dp">
                     <ImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
@@ -55,7 +56,7 @@
                         android:id="@+id/pointsTv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1520/5000"
+                        android:text="1 - 1520"
                         android:textColor="@color/white"
                         android:textSize="28dp"
                         android:layout_marginTop="10dp"/>
@@ -68,7 +69,8 @@
                         android:rating="4"
                         android:progressTint="@color/yellow"
                         style="@style/Widget.AppCompat.RatingBar.Indicator"
-                        android:layout_marginTop="10dp"/>
+                        android:layout_marginTop="10dp"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
             </LinearLayout>
