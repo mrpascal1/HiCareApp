@@ -51,24 +51,33 @@
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:visibility="invisible"/>
 
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" >
             <TextView
                 android:id="@+id/questionCounter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                android:drawableRight="@drawable/ic_question"
-                android:drawablePadding="10dp"
+                android:layout_marginEnd="10dp"
                 android:fontFamily="@font/roboto_bold"
-                android:text="1/10"
+                android:text="0"
                 android:textColor="@color/white"
                 android:textSize="20sp"
-                app:drawableTint="@color/white"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:drawableTint="@color/white" />
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_coin_reward"
+                    android:layout_toEndOf="@id/questionCounter"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginEnd="16dp" />
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/question"
@@ -262,9 +271,10 @@
                 android:id="@+id/nextBtn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/btn_next"
+                android:background="@drawable/btn_next_selector"
                 android:onClick="onClick"
                 android:text="Next"
+                android:enabled="false"
                 android:layout_weight="1"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"

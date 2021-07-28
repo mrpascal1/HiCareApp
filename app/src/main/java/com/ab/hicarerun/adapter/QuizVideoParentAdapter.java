@@ -98,9 +98,9 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
             }
             holder.mLayoutQuizParentAdapterBinding.recycleView.setAdapter(childAdapter);
 
-            childAdapter.setOnOptionClickListener(((position1, quizOption, optionType) -> {
+            childAdapter.setOnOptionClickListener(((position1, quizOption, title, optionType) -> {
                 //Log.d("Listener", position1 + "" + quizOption + "" + optionType);
-                onOptionClickListener.onItemClick(position1, quizOption, optionType);
+                onOptionClickListener.onItemClick(position1, quizOption, holder.mLayoutQuizParentAdapterBinding.txtQuestion.getText().toString().trim(), optionType);
 //                childAdapter.updateAnswers(answerList);
             }));
             childAdapter.setOnItemClickHandler(positionChild -> {

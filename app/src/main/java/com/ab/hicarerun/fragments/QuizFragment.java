@@ -111,6 +111,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
     RecyclerView.LayoutManager layoutManager;
     int points = 0;
     String resourceId = "";
+    boolean optionSelected = false;
 
     public QuizFragment() {
         // Required empty public constructor
@@ -203,7 +204,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
 
             @Override
             public void onFinish() {
-                if (index < questions.size() - 1) {
+                /*if (index < questions.size() - 1) {
                     index++;
                     setNextQuestion(true);
                 } else {
@@ -217,7 +218,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                     }else {
                         requireActivity().finish();
                     }
-                }
+                }*/
             }
         };
     }
@@ -277,13 +278,15 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
     }
 
     private void setNextQuestion(boolean isNextPressed) {
-        /*if (index == questions.size()-1){
+        if (index == questions.size()-1){
             mFragmentQuizBinding.nextBtn.setText("Finish");
-        }*/
+        }
+        mFragmentQuizBinding.nextBtn.setEnabled(false);
         if (timer != null) {
             timer.start();
+            timer.cancel();
         }
-        mFragmentQuizBinding.timer.setVisibility(View.VISIBLE);
+        //mFragmentQuizBinding.timer.setVisibility(View.VISIBLE);
         if (index < questions.size()) {
             mFragmentQuizBinding.questionCounter.setText(points+"");
             //mFragmentQuizBinding.questionCounter.setText(String.format("%d/%d", (index + 1), questions.size()));
@@ -318,20 +321,32 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                 }
                 //mVideoAdapter.setData(question.getDependentQuestionList(), vidQuestions.get(vidIndex).getCorrectAnswers());
                 mVideoAdapter.setData(question.getDependentQuestionList(), answerList);
-                mVideoAdapter.setOnOptionClickListener((position, quizOption, optionType) -> {
-                    Log.d("TAG-Video", ""+question.getPuzzleId());
-                    Log.d("TAG-Video", ""+question.getDependentQuestionList().get(vidIndex).getPuzzleQuestionId());
-                    Log.d("TAG-Video", ""+question.getDependentQuestionList().get(vidIndex).getCorrectAnswerIds());
-                    Log.d("TAG-Video", ""+quizOption.getOptionId().toString());
-                    Log.d("TAG-Video", ""+question.getDependentQuestionList().get(vidIndex).getPoints());
+                mVideoAdapter.setOnOptionClickListener((position, quizOption, title, optionType) -> {
+                    optionSelected = true;
+                    mFragmentQuizBinding.nextBtn.setEnabled(true);
+                    Log.d("TAG-Title", title);
+                    int count = -1;
+                    for (int i = 0; i < vidQuestions.size(); i++){
+                        count++;
+                        if (vidQuestions.get(i).getPuzzleQuestionTitle().trim().equalsIgnoreCase(title)){
+                            break;
+                        }
+                    }
+                    /*Log.d("TAG-Video", count+" "+question.getPuzzleId());
+                    Log.d("TAG-Video", count+" "+question.getDependentQuestionList().get(count).getPuzzleQuestionId());
+                    Log.d("TAG-Video", count+" "+question.getDependentQuestionList().get(count).getCorrectAnswerIds());
+                    Log.d("TAG-Video", count+" "+quizOption.getOptionId().toString());
+                    Log.d("TAG-Video", count+" "+question.getDependentQuestionList().get(count).getPoints());*/
                     int found = 0;
                     if (optionType.equalsIgnoreCase("radio")) {
-                        saveAnswers.add(new QuizSaveAnswers(question.getPuzzleId(), question.getPuzzleQuestionId(), question.getCorrectAnswerIds(), quizOption.getOptionId().toString(), resourceId, question.getPoints()));
+                        saveAnswers.add(new QuizSaveAnswers(question.getPuzzleId(), question.getDependentQuestionList().get(count).getPuzzleQuestionId(),
+                                question.getDependentQuestionList().get(count).getCorrectAnswerIds(), quizOption.getOptionId().toString(),
+                                resourceId, question.getDependentQuestionList().get(count).getPoints()));
                     }
                     if (optionType.equalsIgnoreCase("checkbox")){
                         if (!saveAnswers.isEmpty()){
                             for (int i=0; i < saveAnswers.size(); i++){
-                                if (saveAnswers.get(i).getPuzzleQuestionId().equals(question.getPuzzleQuestionId())){
+                                if (saveAnswers.get(i).getPuzzleQuestionId().equals(question.getDependentQuestionList().get(count).getPuzzleQuestionId())){
                                     String prev = "";
                                     prev = saveAnswers.get(i).getResourceGivenAnswerIds();
                                     prev = prev + "," + quizOption.getOptionId().toString();
@@ -342,12 +357,14 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                                 }
                             }
                             if (found == 0){
-                                saveAnswers.add(new QuizSaveAnswers(question.getPuzzleId(), question.getPuzzleQuestionId(), question.getCorrectAnswerIds(), quizOption.getOptionId().toString(), resourceId, question.getPoints()));
-                            }
+                                saveAnswers.add(new QuizSaveAnswers(question.getPuzzleId(), question.getDependentQuestionList().get(count).getPuzzleQuestionId(),
+                                        question.getDependentQuestionList().get(count).getCorrectAnswerIds(), quizOption.getOptionId().toString(),
+                                        resourceId, question.getDependentQuestionList().get(count).getPoints()));}
                         }
                     }
-                    if (question.getCorrectAnswerIds().contains(quizOption.getOptionId().toString())) {
-                        points = points + question.getPoints();
+                    if (question.getDependentQuestionList().get(count).getCorrectAnswerIds().contains(quizOption.getOptionId().toString())) {
+                        points = points + question.getDependentQuestionList().get(count).getPoints();
+                        Log.d("TAG-pts", "called");
                     }
                     mFragmentQuizBinding.questionCounter.setText(points+"");
                     if (vidIndex < question.getDependentQuestionList().size() - 1) {
@@ -378,7 +395,9 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                 mFragmentQuizBinding.recycleView.setLayoutManager(layoutManager);
                 mAdapter = new QuizOptionAdapter(getActivity(), question.getPuzzleQuestionType(), question.getPuzzleQuestionSelectionType(), question.getCorrectAnswers(), isNextPressed);
                 mAdapter.setData(question.getOptions(), question.getCorrectAnswers());
-                mAdapter.setOnOptionClickListener((position, quizOption, optionType) -> {
+                mAdapter.setOnOptionClickListener((position, quizOption, title, optionType) -> {
+                    optionSelected = true;
+                    mFragmentQuizBinding.nextBtn.setEnabled(true);
                     int found = 0;
                     if (optionType.equalsIgnoreCase("radio")) {
                         saveAnswers.add(new QuizSaveAnswers(question.getPuzzleId(), question.getPuzzleQuestionId(), question.getCorrectAnswerIds(), quizOption.getOptionId().toString(), resourceId, question.getPoints()));
@@ -418,10 +437,12 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                 mFragmentQuizBinding.videoQuestion.setVisibility(View.VISIBLE);
 
             } else if (question.getPuzzleQuestionType().equals("Image")) {
+                timer.cancel();
                 mFragmentQuizBinding.question.setVisibility(View.GONE);
                 mFragmentQuizBinding.cardImage.setVisibility(View.VISIBLE);
                 mFragmentQuizBinding.videoQuestion.setVisibility(View.GONE);
             } else {
+                timer.cancel();
                 mFragmentQuizBinding.cardImage.setVisibility(View.GONE);
                 mFragmentQuizBinding.question.setVisibility(View.VISIBLE);
                 mFragmentQuizBinding.videoQuestion.setVisibility(View.GONE);
