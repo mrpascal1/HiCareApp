@@ -6,7 +6,490 @@
     android:layout_height="match_parent"
     tools:context=".activities.QuizLeaderBoardActivity">
 
-    <ScrollView
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@color/colorBlue" >
+
+            <ImageView
+                android:id="@+id/backIv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_back_white"
+                android:layout_centerVertical="true"
+                android:padding="12dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Leader Board"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/backIv"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="225dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="-5dp"
+            android:background="@drawable/bg_leaderboard_gradient"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp">
+
+                <RelativeLayout
+                    android:layout_width="120dp"
+                    android:layout_height="180dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginRight="-20dp"
+                    android:layout_toLeftOf="@+id/relFirst">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="40dp"
+                        android:background="@color/white"
+                        android:clipToPadding="false">
+
+
+                        <TextView
+                            android:id="@+id/txtSecondName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="40dp"
+                            android:layout_marginRight="5dp"
+                            android:ellipsize="end"
+                            android:lines="1"
+                            android:textColor="@color/black" />
+
+
+                        <TextView
+                            android:id="@+id/txtSecondCentre"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/txtSecondName"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="3dp"
+                            android:layout_marginRight="5dp"
+                            android:ellipsize="end"
+                            android:lines="1"
+                            android:textSize="12sp" />
+
+
+                        <LinearLayout
+                            android:id="@+id/lnrPoints"
+                            android:layout_width="wrap_content"
+                            android:layout_height="26dp"
+                            android:layout_below="@id/txtSecondCentre"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/leader_board_round"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginLeft="5dp"
+                                app:srcCompat="@drawable/ic_coin_reward" />
+
+
+                            <TextView
+                                android:id="@+id/txtSecondPoints"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="7dp"
+                                android:layout_marginRight="7dp"
+                                android:ellipsize="end"
+                                android:lines="1"
+                                android:textColor="@color/black"
+                                android:textSize="13sp" />
+
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/txtSecondMissed"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/lnrPoints"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="2dp"
+                            android:ellipsize="end"
+                            android:lines="1"
+                            android:textColor="@color/red"
+                            android:textSize="10sp"
+                            android:visibility="gone" />
+
+
+                    </RelativeLayout>
+
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/imgSecond"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:layout_centerHorizontal="true"
+                        app:civ_border_color="@color/white"
+                        app:civ_border_width="2dp"
+                        android:src="@drawable/ic_profile" />
+
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/imgSecond"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="-15dp"
+                        android:gravity="center">
+
+
+                        <ImageView
+                            android:id="@+id/imgSecondBadge"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="5dp"
+                            app:srcCompat="@drawable/ic_award_silver" />
+
+                        <TextView
+                            android:id="@+id/txtSecondRank"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:gravity="center"
+                            android:textColor="@color/black"
+                            android:text="2"/>
+
+                    </RelativeLayout>
+
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="210dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone">
+
+                    <View
+                        android:layout_width="100dp"
+                        android:layout_height="180dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerInParent="true" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="120dp"
+                    android:layout_height="180dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="-20dp"
+                    android:layout_toRightOf="@id/relFirst">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="40dp"
+                        android:background="@color/white"
+                        android:clipToPadding="false">
+
+
+                        <TextView
+                            android:id="@+id/txtThirdName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="40dp"
+                            android:layout_marginRight="5dp"
+                            android:ellipsize="end"
+                            android:lines="1"
+                            android:textColor="@color/black" />
+
+
+                        <TextView
+                            android:id="@+id/txtThirdCentre"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/txtThirdName"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="3dp"
+                            android:layout_marginRight="5dp"
+                            android:ellipsize="end"
+                            android:lines="1"
+                            android:textSize="12sp" />
+
+
+                        <LinearLayout
+                            android:id="@+id/lnrThirdPoints"
+                            android:layout_width="wrap_content"
+                            android:layout_height="26dp"
+                            android:layout_below="@id/txtThirdCentre"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/leader_board_round"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginLeft="5dp"
+                                app:srcCompat="@drawable/ic_coin_reward" />
+
+                            <TextView
+                                android:id="@+id/txtThirdPoints"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="7dp"
+                                android:layout_marginRight="7dp"
+                                android:ellipsize="end"
+                                android:lines="1"
+                                android:textColor="@color/black"
+                                android:textSize="13sp" />
+
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/txtThirdMissed"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/lnrThirdPoints"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="2dp"
+                            android:ellipsize="end"
+                            android:lines="1"
+                            android:textColor="@color/red"
+                            android:textSize="10sp"
+                            android:visibility="gone" />
+
+
+                    </RelativeLayout>
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/imgThird"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:layout_centerHorizontal="true"
+                        app:cardUseCompatPadding="false"
+                        app:civ_border_color="@color/white"
+                        app:civ_border_width="2dp"
+                        android:src="@drawable/ic_profile" />
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/imgThird"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="-15dp"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:id="@+id/imgThirdBadge"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="5dp"
+                            app:srcCompat="@drawable/ic_award_bronze" />
+
+                        <TextView
+                            android:id="@+id/txtThirdRank"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:gravity="center"
+                            android:text="3"
+                            android:textColor="@color/black" />
+
+                    </RelativeLayout>
+
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relFirst"
+                    android:layout_width="wrap_content"
+                    android:layout_height="160dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/layout_shadow">
+
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="160dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerInParent="true">
+
+
+                        <TextView
+                            android:id="@+id/txtFirstName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginLeft="7dp"
+                            android:layout_marginTop="55dp"
+                            android:layout_marginRight="7dp"
+                            android:ellipsize="end"
+                            android:lines="1"
+                            android:textColor="@color/black" />
+
+
+                        <TextView
+                            android:id="@+id/txtFirstCentre"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/txtFirstName"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="3dp"
+                            android:layout_marginRight="5dp"
+                            android:ellipsize="end"
+                            android:lines="1"
+                            android:textSize="12sp" />
+
+
+                        <LinearLayout
+                            android:id="@+id/lnrFirstPoints"
+                            android:layout_width="wrap_content"
+                            android:layout_height="26dp"
+                            android:layout_below="@id/txtFirstCentre"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/leader_board_round"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginLeft="5dp"
+                                app:srcCompat="@drawable/ic_coin_reward" />
+
+                            <TextView
+                                android:id="@+id/txtFirstPoints"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="7dp"
+                                android:layout_marginRight="7dp"
+                                android:ellipsize="end"
+                                android:lines="1"
+                                android:textColor="@color/black"
+                                android:textSize="13sp" />
+
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/txtFirstMissed"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/lnrFirstPoints"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="2dp"
+                            android:ellipsize="end"
+                            android:lines="1"
+                            android:textColor="@color/red"
+                            android:textSize="10sp"
+                            android:visibility="gone" />
+
+                    </RelativeLayout>
+
+
+                </RelativeLayout>
+
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imgFirst"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_below="@id/imgCrown"
+                    android:layout_centerHorizontal="true"
+                    app:civ_border_color="@color/white"
+                    app:civ_border_width="2dp"
+                    android:src="@drawable/ic_profile" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/imgFirst"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="-15dp"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/imgFirstBadge"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        app:srcCompat="@drawable/ic_award_gold" />
+
+                    <TextView
+                        android:id="@+id/txtFirstRank"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:textColor="@color/black"
+                        android:text="1"/>
+
+                </RelativeLayout>
+
+                <ImageView
+                    android:id="@+id/imgCrown"
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="-9dp"
+                    android:visibility="visible"
+                    app:srcCompat="@drawable/ic_crown" />
+
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/curve_bg">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/row_quiz_leaderboard" />
+
+        </LinearLayout>
+    </LinearLayout>
+    <!--<ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -194,6 +677,6 @@
                 android:layout_below="@id/header"
                 tools:listitem="@layout/row_quiz_leaderboard"/>
         </RelativeLayout>
-    </ScrollView>
+    </ScrollView>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

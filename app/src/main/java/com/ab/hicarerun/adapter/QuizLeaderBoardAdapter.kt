@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.R
+import com.ab.hicarerun.databinding.LeaderBoardAdapterBinding
 import com.ab.hicarerun.databinding.RowQuizLeaderboardBinding
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
@@ -48,8 +49,8 @@ class QuizLeaderBoardAdapter(val context: Context, val quizLBResourceList: List<
             binding.userNameTv.text = quizLBResourceList.resourceName
             binding.pointsTv.text = "${quizLBResourceList.points} pts"
             binding.indexTv.text = (adapterPosition+1).toString()
-            binding.levelNameTv.text = "Level : ${quizLBResourceList.levelName}"
-            if (levelName.equals("Basic", ignoreCase = true)){
+            binding.levelNameTv.text = "${quizLBResourceList.levelName}"
+            /*if (levelName.equals("Basic", ignoreCase = true)){
                 binding.awardIv.setImageDrawable(context.resources.getDrawable(R.drawable.ic_award_bronze))
             }
             if (levelName.equals("Intermediate", ignoreCase = true)){
@@ -57,7 +58,7 @@ class QuizLeaderBoardAdapter(val context: Context, val quizLBResourceList: List<
             }
             if (levelName.equals("Expert", ignoreCase = true)){
                 binding.awardIv.setImageDrawable(context.resources.getDrawable(R.drawable.ic_award_gold))
-            }
+            }*/
         }
     }
 }

@@ -7,6 +7,7 @@ import android.util.Base64
 import android.util.Log
 import android.view.MenuItem
 import android.view.WindowManager
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +23,8 @@ import com.ab.hicarerun.network.models.LoginResponse
 import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLBData
 import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLBResourceList
 import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLeaderBoardBase
+import com.ab.hicarerun.utils.AppUtils
+import de.hdodenhof.circleimageview.CircleImageView
 
 class QuizLeaderBoardActivity : AppCompatActivity() {
 
@@ -66,7 +69,7 @@ class QuizLeaderBoardActivity : AppCompatActivity() {
         }
 
         getPuzzleLeaderBoard(resourceId)
-        getResourcePic(resourceId)
+        //getResourcePic(resourceId)
     }
 
     private fun getPuzzleLeaderBoard(resourceId: String){
@@ -88,11 +91,32 @@ class QuizLeaderBoardActivity : AppCompatActivity() {
                             val points = resourceList.points
                             val lastPlayedOn = resourceList.lastPlayedOn
                             val lastPlayedOnDisplay = resourceList.lastPlayedOnDisplay
+                            if (resourceRank == 1){
+                                binding.txtFirstName.text = resourceName
+                                binding.txtFirstCentre.text = uLevelName
+                                binding.txtFirstPoints.text = "$points"
+                                binding.txtFirstRank.text = "$resourceRank"
+                                getResourcePic(uResourceId.toString(), binding.imgFirst)
+                            }
+                            if (resourceRank == 2){
+                                binding.txtSecondName.text = resourceName
+                                binding.txtSecondCentre.text = uLevelName
+                                binding.txtSecondPoints.text = "$points"
+                                binding.txtSecondRank.text = "$resourceRank"
+                                getResourcePic(uResourceId.toString(), binding.imgSecond)
+                            }
+                            if (resourceRank == 3){
+                                binding.txtThirdName.text = resourceName
+                                binding.txtThirdCentre.text = uLevelName
+                                binding.txtThirdPoints.text = "$points"
+                                binding.txtThirdRank.text = "$resourceRank"
+                                getResourcePic(uResourceId.toString(), binding.imgThird)
+                            }
                             if (uResourceId == resourceId){
-                                binding.nameTv.text = resourceName
+                                //binding.nameTv.text = resourceName
                                 myPoints = points.toString().toInt()
-                                binding.pointsTv.text = "$myPoints"
-                                binding.rankTv.text = "$resourceRank"
+                                //binding.pointsTv.text = "$myPoints"
+                                //binding.rankTv.text = "$resourceRank"
                             }
                             pointsArr.add(points.toString().toInt())
                             quizLBResourceList.add(QuizLBResourceList(uLevelName, uResourceId, resourceName, isSelf, resourceRank, points, lastPlayedOn, lastPlayedOnDisplay, highest))
@@ -116,7 +140,7 @@ class QuizLeaderBoardActivity : AppCompatActivity() {
         controller.getPuzzleLeaderBoard(202124, resourceId)
     }
 
-    private fun getResourcePic(resourceId: String){
+    private fun getResourcePic(resourceId: String, iv: CircleImageView){
         val controller = NetworkCallController()
         controller.setListner(object : NetworkResponseListner<Any?> {
             override fun onResponse(requestCode: Int, response: Any?) {
@@ -124,7 +148,8 @@ class QuizLeaderBoardActivity : AppCompatActivity() {
                 val decodedString = Base64.decode(base64, Base64.DEFAULT)
                 val decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
                 if (base64.length > 0) {
-                    binding.profileIv.setImageBitmap(decodedByte)
+                    AppUtils.getResourceImage(resourceId, iv)
+                    //binding.profileIv.setImageBitmap(decodedByte)
                 }
             }
             override fun onFailure(requestCode: Int) {}
