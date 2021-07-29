@@ -1,5 +1,6 @@
 package com.ab.hicarerun.fragments;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
+import com.ab.hicarerun.activities.QuizActivity;
 import com.ab.hicarerun.adapter.QuizCategoryAdapter;
 import com.ab.hicarerun.adapter.QuizLevelMatrixAdapter;
 import com.ab.hicarerun.databinding.FragmentQuizCategoryBinding;
@@ -91,6 +93,9 @@ public class FragmentQuizCategory extends BaseFragment {
         mFragmentQuizCategoryBinding.infoIv.setOnClickListener(v -> {
             showDialog();
         });
+        mFragmentQuizCategoryBinding.levelTv.setOnClickListener(v -> {
+            showDialog();
+        });
         mFragmentQuizCategoryBinding.lnrWheel.setOnClickListener(view1 -> replaceFragment(SpinWheelFragment.newInstance(), "QuizFragmentCategory - SpinFragment"));
     }
 
@@ -109,8 +114,11 @@ public class FragmentQuizCategory extends BaseFragment {
                             mAdapter.setData(items);
                             mAdapter.notifyDataSetChanged();
                             mAdapter.setOnItemClickHandler(position -> {
-                                replaceFragment(QuizFragment.newInstance(mAdapter.getItem(position).getPuzzleId()), "QuizFragmentCategory - QuizFragment");
-                                Toast.makeText(getActivity(), "Clicked", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getContext(), QuizActivity.class);
+                                intent.putExtra("puzzleId", mAdapter.getItem(position).getPuzzleId());
+                                startActivity(intent);
+                                //replaceFragment(QuizFragment.newInstance(mAdapter.getItem(position).getPuzzleId()), "QuizFragmentCategory - QuizFragment");
+                                //Toast.makeText(getActivity(), "Clicked", Toast.LENGTH_SHORT).show();
                             });
                         }
                         getPuzzleStatsForRes();
@@ -161,9 +169,9 @@ public class FragmentQuizCategory extends BaseFragment {
                     if (response.isSuccess()) {
                         String levelName = response.getData().getLevelName();
                         if (levelName.equalsIgnoreCase("Basic")) {
-                            mFragmentQuizCategoryBinding.awardIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_award_silver));
-                        } else if (levelName.equalsIgnoreCase("Intermediate")) {
                             mFragmentQuizCategoryBinding.awardIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_award_bronze));
+                        } else if (levelName.equalsIgnoreCase("Intermediate")) {
+                            mFragmentQuizCategoryBinding.awardIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_award_silver));
                         } else if (levelName.equalsIgnoreCase("Expert")) {
                             mFragmentQuizCategoryBinding.awardIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_award_gold));
                         }

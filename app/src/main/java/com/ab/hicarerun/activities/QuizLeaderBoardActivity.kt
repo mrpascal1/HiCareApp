@@ -1,10 +1,13 @@
 package com.ab.hicarerun.activities
 
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.MenuItem
 import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,7 +23,7 @@ import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLBData
 import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLBResourceList
 import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLeaderBoardBase
 
-class QuizLeaderBoardActivity : BaseActivity() {
+class QuizLeaderBoardActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityQuizLeaderBoardBinding
     private var resourceId = ""
@@ -63,6 +66,7 @@ class QuizLeaderBoardActivity : BaseActivity() {
         }
 
         getPuzzleLeaderBoard(resourceId)
+        getResourcePic(resourceId)
     }
 
     private fun getPuzzleLeaderBoard(resourceId: String){
@@ -87,7 +91,8 @@ class QuizLeaderBoardActivity : BaseActivity() {
                             if (uResourceId == resourceId){
                                 binding.nameTv.text = resourceName
                                 myPoints = points.toString().toInt()
-                                binding.pointsTv.text = "$resourceRank - $myPoints"
+                                binding.pointsTv.text = "$myPoints"
+                                binding.rankTv.text = "$resourceRank"
                             }
                             pointsArr.add(points.toString().toInt())
                             quizLBResourceList.add(QuizLBResourceList(uLevelName, uResourceId, resourceName, isSelf, resourceRank, points, lastPlayedOn, lastPlayedOnDisplay, highest))
@@ -111,6 +116,21 @@ class QuizLeaderBoardActivity : BaseActivity() {
         controller.getPuzzleLeaderBoard(202124, resourceId)
     }
 
+    private fun getResourcePic(resourceId: String){
+        val controller = NetworkCallController()
+        controller.setListner(object : NetworkResponseListner<Any?> {
+            override fun onResponse(requestCode: Int, response: Any?) {
+                val base64 = response as String
+                val decodedString = Base64.decode(base64, Base64.DEFAULT)
+                val decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+                if (base64.length > 0) {
+                    binding.profileIv.setImageBitmap(decodedByte)
+                }
+            }
+            override fun onFailure(requestCode: Int) {}
+        })
+        controller.getResourceProfilePicture(202129, resourceId)
+    }
     private fun getBack(){
         val fragment = supportFragmentManager.backStackEntryCount
         if (fragment < 1){

@@ -12,6 +12,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -175,24 +176,35 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
 //                intent.putExtra("correct", correctAnswers);
 //                intent.putExtra("total", questions.size());
 //                startActivity(intent);
-                Toast.makeText(getActivity(), "Quiz Finished.", Toast.LENGTH_SHORT).show();
-                savePuzzle();
-
+                //Toast.makeText(getActivity(), "Quiz Finished.", Toast.LENGTH_SHORT).show();
+                if (saveAnswers.isEmpty()){
+                    requireActivity().finish();
+                }else {
+                    savePuzzle();
+                }
             }
         });
         mFragmentQuizBinding.quitBtn.setOnClickListener(v -> {
-            requireActivity().finish();
+            showQuitDialog();
         });
-
-        if (mAdapter != null) {
-
-        }
     }
 
     @Override
     public void onStart() {
         getPuzzleStatsForRes();
         super.onStart();
+    }
+
+    private void showQuitDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Quit Game");
+        builder.setMessage("Are you sure you want to quit the game?");
+        builder.setPositiveButton("Quit", (dialog, which) -> {
+            dialog.cancel();
+            requireActivity().finish();
+        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+        builder.show();
     }
 
     void resetTimer() {

@@ -21,31 +21,142 @@
                 android:id="@+id/header"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorBlue">
+                android:layout_height="wrap_content">
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:background="@color/colorBlue" >
+                    android:background="@color/md_grey_50">
                     <ImageView
                         android:id="@+id/backIv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_arrow_back_white"
+                        android:src="@drawable/ic_arrow_back_black"
                         android:padding="12dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Leader Board"
+                        android:gravity="center"
+                        android:textSize="18sp"
+                        android:layout_centerVertical="true"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/md_grey_300"
+                        android:layout_alignParentBottom="true"/>
                 </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp">
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:padding="24dp">
+                    android:layout_height="wrap_content"
+                    android:padding="20dp"
+                    android:background="@drawable/bg_self_leaderboard">
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="3">
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center">
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:layout_gravity="center">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="RANK"
+                                android:textSize="15sp"
+                                android:textColor="@color/white"/>
+                            <TextView
+                                android:id="@+id/rankTv"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="12"
+                                android:maxEms="2"
+                                android:gravity="center"
+                                android:textStyle="bold"
+                                android:textSize="20sp"
+                                android:textColor="@color/white"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center">
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/profileIv"
+                            android:layout_width="70dp"
+                            android:layout_height="70dp"
+                            android:layout_gravity="center"/>
+                            <TextView
+                                android:id="@+id/nameTv"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Arjun Bhatt"
+                                android:gravity="center"
+                                android:textSize="16sp"
+                                android:maxEms="6"
+                                android:layout_marginTop="8dp"
+                                android:textColor="@color/white"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center">
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:layout_gravity="center">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="POINTS"
+                                    android:textSize="15sp"
+                                    android:textColor="@color/white"/>
+                                <TextView
+                                    android:id="@+id/pointsTv"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="12000"
+                                    android:maxEms="2"
+                                    android:gravity="center"
+                                    android:textStyle="bold"
+                                    android:textSize="18sp"
+                                    android:textColor="@color/white"/>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:visibility="gone">
                     <ImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:src="@drawable/ic_award_silver"/>
                     <TextView
-                        android:id="@+id/nameTv"
+                        android:id="@+id/nameTvOld"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Shahid Raza"
@@ -53,7 +164,7 @@
                         android:layout_centerHorizontal="true"
                         android:textSize="30dp"/>
                     <TextView
-                        android:id="@+id/pointsTv"
+                        android:id="@+id/pointsTvOld"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="1 - 1520"
@@ -71,8 +182,10 @@
                         style="@style/Widget.AppCompat.RatingBar.Indicator"
                         android:layout_marginTop="10dp"
                         android:visibility="gone"/>
+                    </LinearLayout>
 
                 </LinearLayout>
+                </RelativeLayout>
             </LinearLayout>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"

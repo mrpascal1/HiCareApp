@@ -6,6 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".activities.QuizResultActivity">
 
+    <nl.dionsegijn.konfetti.KonfettiView
+        android:id="@+id/viewKonfetti"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
