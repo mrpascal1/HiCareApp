@@ -2,6 +2,7 @@ package com.ab.hicarerun.fragments;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
@@ -23,6 +24,7 @@ import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.QuizActivity;
+import com.ab.hicarerun.activities.QuizLeaderBoardActivity;
 import com.ab.hicarerun.adapter.QuizCategoryAdapter;
 import com.ab.hicarerun.adapter.QuizLevelMatrixAdapter;
 import com.ab.hicarerun.databinding.FragmentQuizCategoryBinding;
@@ -95,6 +97,13 @@ public class FragmentQuizCategory extends BaseFragment {
         });
         mFragmentQuizCategoryBinding.levelTv.setOnClickListener(v -> {
             showDialog();
+        });
+        mFragmentQuizCategoryBinding.leaderBoardIv.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), QuizLeaderBoardActivity.class);
+            startActivity(intent);
+        });
+        mFragmentQuizCategoryBinding.backIv.setOnClickListener(v -> {
+            requireActivity().onBackPressed();
         });
         mFragmentQuizCategoryBinding.lnrWheel.setOnClickListener(view1 -> replaceFragment(SpinWheelFragment.newInstance(), "QuizFragmentCategory - SpinFragment"));
     }
@@ -169,13 +178,15 @@ public class FragmentQuizCategory extends BaseFragment {
                     if (response.isSuccess()) {
                         String levelName = response.getData().getLevelName();
                         if (levelName.equalsIgnoreCase("Basic")) {
-                            mFragmentQuizCategoryBinding.awardIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_award_bronze));
+                            mFragmentQuizCategoryBinding.awardIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_level_common));
                         } else if (levelName.equalsIgnoreCase("Intermediate")) {
-                            mFragmentQuizCategoryBinding.awardIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_award_silver));
+                            mFragmentQuizCategoryBinding.awardIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_level_common));
                         } else if (levelName.equalsIgnoreCase("Expert")) {
-                            mFragmentQuizCategoryBinding.awardIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_award_gold));
+                            mFragmentQuizCategoryBinding.awardIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_level_common));
                         }
-                        mFragmentQuizCategoryBinding.levelTv.setText(Objects.requireNonNull(response.getData()).getLevelName() + " Level ");
+                        mFragmentQuizCategoryBinding.levelTv.setTypeface(mFragmentQuizCategoryBinding.levelTv.getTypeface(), Typeface.BOLD);
+                        mFragmentQuizCategoryBinding.pointsTv.setTypeface(mFragmentQuizCategoryBinding.pointsTv.getTypeface(), Typeface.BOLD);
+                        mFragmentQuizCategoryBinding.levelTv.setText(" " + Objects.requireNonNull(response.getData()).getLevelName() + " Lvl");
                         mFragmentQuizCategoryBinding.pointsTv.setText(Objects.requireNonNull(response.getData()).getPoints() + " Pts");
                     }
                 }
@@ -213,5 +224,11 @@ public class FragmentQuizCategory extends BaseFragment {
             }
         });
         controller.getPuzzleLevel(202126, resourceId);
+    }
+
+    @Override
+    public void onResume() {
+        getPuzzleStatsForRes();
+        super.onResume();
     }
 }

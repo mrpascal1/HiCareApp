@@ -1,6 +1,7 @@
 package com.ab.hicarerun.fragments;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -80,6 +81,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
     List<QuizData> questions;
     List<QuizAnswer> answerList;
     List<VideoDependentQuest> vidQuestions;
+    VideoDependentQuest vQ;
     int index = 0;
     int oldScore = 0;
     int vidIndex = 0;
@@ -102,6 +104,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
     List<String> givenAnswers;
     List<String> normalCorrectAns;
     String prevTitle = "";
+    String puzzleType = "";
 
     public QuizFragment() {
         // Required empty public constructor
@@ -135,6 +138,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
         if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
             resourceId = LoginRealmModels.get(0).getUserID();
         }
+        mFragmentQuizBinding.questionCounter.setTypeface(mFragmentQuizBinding.questionCounter.getTypeface(), Typeface.BOLD);
         return mFragmentQuizBinding.getRoot();
     }
 
@@ -158,20 +162,39 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
         }
         mFragmentQuizBinding.nextBtn.setOnClickListener(view1 -> {
 //            reset();
-            if (index < questions.size() - 1) {
-                index++;
-                setNextQuestion(true);
-
-            } else {
+            if (puzzleType.equalsIgnoreCase("video")){
+                if (vidIndex < vidQuestions.size() - 1) {
+                    vidIndex++;
+                    setNextQuestion(true);
+                }else {
+                    if (index < questions.size() - 1) {
+                        vidIndex = 0;
+                        index++;
+                        setNextQuestion(true);
+                    } else {
+                        if (saveAnswers.isEmpty()) {
+                            requireActivity().finish();
+                        } else {
+                            savePuzzle();
+                        }
+                    }
+                }
+            }else {
+                if (index < questions.size() - 1) {
+                    vidIndex = 0;
+                    index++;
+                    setNextQuestion(true);
+                } else {
 //                Intent intent = new Intent(this, ResultActivity.class);
 //                intent.putExtra("correct", correctAnswers);
 //                intent.putExtra("total", questions.size());
 //                startActivity(intent);
-                //Toast.makeText(getActivity(), "Quiz Finished.", Toast.LENGTH_SHORT).show();
-                if (saveAnswers.isEmpty()){
-                    requireActivity().finish();
-                }else {
-                    savePuzzle();
+                    //Toast.makeText(getActivity(), "Quiz Finished.", Toast.LENGTH_SHORT).show();
+                    if (saveAnswers.isEmpty()) {
+                        requireActivity().finish();
+                    } else {
+                        savePuzzle();
+                    }
                 }
             }
         });
@@ -303,21 +326,23 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
             }
 
             if (question.getIsDependentQuestionExist()) {
+                puzzleType = "video";
                 //TODO : This is to make the next button enable like normal questions.
                 /*int totalQuestions = question.getDependentQuestionList().size();
                 AtomicInteger givenAnsInts = new AtomicInteger();
                 AtomicInteger videoIndex = new AtomicInteger();*/
                 vidQuestions = question.getDependentQuestionList();
+                vQ = vidQuestions.get(vidIndex);
                 Log.d("TAG", "Called");
 
                 //TODO : This is to make the next button enable like normal questions.
-                /*normalCorrectAns.clear();
+                normalCorrectAns.clear();
                 givenAnswers.clear();
-                if (vidQuestions.get(videoIndex.intValue()).getCorrectAnswers() != null){
-                    for (QuizAnswer s : vidQuestions.get(videoIndex.intValue()).getCorrectAnswers()){
+                if (vQ.getCorrectAnswers() != null){
+                    for (QuizAnswer s : vQ.getCorrectAnswers()){
                         normalCorrectAns.add(s.getOptionId().toString());
                     }
-                }*/
+                }
                 timer.cancel();
                 mFragmentQuizBinding.timer.setVisibility(View.INVISIBLE);
                 //                GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
@@ -343,9 +368,12 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                     answerList.addAll(question.getDependentQuestionList().get(i).getCorrectAnswers());
                 }
                 //mVideoAdapter.setData(question.getDependentQuestionList(), vidQuestions.get(vidIndex).getCorrectAnswers());
-                mVideoAdapter.setData(question.getDependentQuestionList(), answerList);
+                mVideoAdapter.setData(vQ, vQ.getCorrectAnswers());
                 mVideoAdapter.setOnOptionClickListener((position, quizOption, title, optionType) -> {
-                    /*if (!prevTitle.equals("") && !prevTitle.equals(title)){
+                    /*if (prevTitle.equalsIgnoreCase("")){
+                        prevTitle = title;
+                    }
+                    if (!prevTitle.equals("") && !prevTitle.equals(title)){
                         prevTitle = title;
                     }*/
                     optionSelected = true;
@@ -369,30 +397,40 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                         saveAnswers.add(new QuizSaveAnswers(question.getPuzzleId(), question.getDependentQuestionList().get(count).getPuzzleQuestionId(),
                                 question.getDependentQuestionList().get(count).getCorrectAnswerIds(), quizOption.getOptionId().toString(),
                                 resourceId, question.getDependentQuestionList().get(count).getPoints()));
-                        /*givenAnsInts.getAndIncrement();
-                        if (givenAnsInts.get() == totalQuestions){
-                            mFragmentQuizBinding.nextBtn.setEnabled(true);
-                        }*/
+
+                        if (question.getDependentQuestionList().get(count).getCorrectAnswerIds().contains(quizOption.getOptionId().toString())) {
+                            points = points + question.getDependentQuestionList().get(count).getPoints();
+                            Log.d("TAG-pts", "called");
+                        }
                     }
                     if (optionType.equalsIgnoreCase("checkbox")){
-                        //TODO : This is to make the next button enable like normal questions.
-                        /*Log.d("Normal", normalCorrectAns.toString());
-                        Log.d("Given", givenAnswers.toString());
                         givenAnswers.add(quizOption.getOptionId().toString());
                         if (normalCorrectAns.size() < givenAnswers.size()){
-                            points = points - question.getPoints();
+                            points = points - question.getDependentQuestionList().get(count).getPoints();
                         }
                         if (normalCorrectAns.size() == givenAnswers.size()){
-                            Log.d("Called", "this");
-                            mFragmentQuizBinding.nextBtn.setEnabled(true);
-                            points = points + question.getPoints();
+                            int containsAll = 1;
+                            for (String s: givenAnswers){
+                                if (!normalCorrectAns.contains(s)){
+                                    containsAll = 0;
+                                    break;
+                                }
+                            }
+                            if (containsAll == 1){
+                                Log.d("Called", "this");
+                                mFragmentQuizBinding.nextBtn.setEnabled(true);
+                                points = points + question.getDependentQuestionList().get(count).getPoints();
+                            }else {
+                                mFragmentQuizBinding.nextBtn.setEnabled(true);
+                            }
+
                         }else {
                             for (String s: givenAnswers){
                                 if (!normalCorrectAns.contains(s)){
                                     mFragmentQuizBinding.nextBtn.setEnabled(true);
                                 }
                             }
-                        }*/
+                        }
 
                         if (!saveAnswers.isEmpty()){
                             for (int i=0; i < saveAnswers.size(); i++){
@@ -412,25 +450,29 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                                         resourceId, question.getDependentQuestionList().get(count).getPoints()));}
                         }
                     }
-                    if (question.getDependentQuestionList().get(count).getCorrectAnswerIds().contains(quizOption.getOptionId().toString())) {
+                    /*if (question.getDependentQuestionList().get(count).getCorrectAnswerIds().contains(quizOption.getOptionId().toString())) {
                         points = points + question.getDependentQuestionList().get(count).getPoints();
                         Log.d("TAG-pts", "called");
-                    }
+                    }*/
                     mFragmentQuizBinding.questionCounter.setText(points+"");
-                    if (vidIndex < question.getDependentQuestionList().size() - 1) {
+                    /*if (vidIndex < question.getDependentQuestionList().size() - 1) {
                         vidIndex++;
-                    }
+                    }*/
                 });
                 mFragmentQuizBinding.recycleView.setAdapter(mVideoAdapter);
+                if (!prevTitle.equalsIgnoreCase(question.getPuzzleQuestionURL())){
+                    initializePlayer();
+                    buildMediaSource(Uri.parse(question.getPuzzleQuestionURL()));
+                    prevTitle = question.getPuzzleQuestionURL();
+                }
 
-                initializePlayer();
-                buildMediaSource(Uri.parse(question.getPuzzleQuestionURL()));
-                /*if (vidIndex < question.getDependentQuestionList().size() - 1) {
-                    vidIndex++;
-                    Log.d("TAG", vidIndex+"");
-                    mVideoAdapter.updateAnswers(question.getDependentQuestionList().get(vidIndex).getCorrectAnswers());
-                }*/
+                if (vidIndex == question.getDependentQuestionList().size() - 1 && index == questions.size() - 1) {
+                    mFragmentQuizBinding.nextBtn.setText("Finish");
+                }else {
+                    mFragmentQuizBinding.nextBtn.setText("Next");
+                }
             } else {
+                puzzleType = "normal";
                 GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
                 layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                     @Override
@@ -463,9 +505,21 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                             points = points - question.getPoints();
                         }
                         if (normalCorrectAns.size() == givenAnswers.size()){
-                            Log.d("Called", "this");
-                            mFragmentQuizBinding.nextBtn.setEnabled(true);
-                            points = points + question.getPoints();
+                            int containsAll = 1;
+                            for (String s: givenAnswers){
+                                if (!normalCorrectAns.contains(s)){
+                                    containsAll = 0;
+                                    break;
+                                }
+                            }
+                            if (containsAll == 1){
+                                Log.d("Called", "this");
+                                mFragmentQuizBinding.nextBtn.setEnabled(true);
+                                points = points + question.getPoints();
+                            }else {
+                                mFragmentQuizBinding.nextBtn.setEnabled(true);
+                            }
+
                         }else {
                             for (String s: givenAnswers){
                                 if (!normalCorrectAns.contains(s)){

@@ -141,9 +141,9 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
         return items.get(position);
     }
 
-    public void setData(List<VideoDependentQuest> data, List<QuizAnswer> correctAnswers) {
+    public void setData(VideoDependentQuest data, List<QuizAnswer> correctAnswers) {
         items.clear();
-        items.addAll(data);
+        items.add(data);
         answerList.addAll(correctAnswers);
     }
 

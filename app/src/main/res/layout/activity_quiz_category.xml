@@ -13,18 +13,27 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPurple"
-            android:minHeight="?attr/actionBarSize" >
+            android:minHeight="?attr/actionBarSize"
+            android:visibility="gone">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-            <ImageView
-                android:id="@+id/leaderBoardIv"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/ic_podium_white"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="21dp"/>
+                <ImageView
+                    android:id="@+id/leaderBoardIv"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_podium_game"
+                    android:layout_toStartOf="@id/infoIv"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="14dp"/>
+                <ImageView
+                    android:id="@+id/infoIv"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_info"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="12dp"/>
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
 

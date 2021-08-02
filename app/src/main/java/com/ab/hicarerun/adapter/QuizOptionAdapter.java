@@ -321,6 +321,22 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
                         }
                     }
                     notifyDataSetChanged();
+                }else if (optionType.equalsIgnoreCase("Radio") && items.get(position).getOptionType().equalsIgnoreCase("Image")) {
+                    //isCheckOptionSelected = true;
+                    isRadioOptionSelected = 1;
+                    holder.mLayoutOptionAdapterBinding.radioOption.setChecked(true);
+                    holder.mLayoutOptionAdapterBinding.imgOption.setEnabled(false);
+                    holder.itemView.setEnabled(false);
+                    for (QuizAnswer ans : answerList) {
+                        if (items.get(position).getOptionValue().equalsIgnoreCase(ans.getOptionValue())) {
+                            holder.mLayoutOptionAdapterBinding.lnrImgOption.setBackground(mContext.getResources().getDrawable(R.drawable.option_right_border));
+                            isWrongSelected = false;
+                        } else {
+                            holder.mLayoutOptionAdapterBinding.lnrImgOption.setBackground(mContext.getResources().getDrawable(R.drawable.option_wrong_border));
+                            isWrongSelected = true;
+                        }
+                    }
+                    notifyDataSetChanged();
                 }
             });
         } catch (Exception e) {
