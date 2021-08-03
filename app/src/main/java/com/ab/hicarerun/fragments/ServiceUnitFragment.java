@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,7 @@ import com.ab.hicarerun.network.models.ActivityModel.ActivityData;
 import com.ab.hicarerun.network.models.ActivityModel.AreaActivity;
 import com.ab.hicarerun.network.models.ActivityModel.SaveServiceActivity;
 import com.ab.hicarerun.network.models.ActivityModel.ServiceActivity;
-import com.ab.hicarerun.network.models.ChemicalModel.SaveActivityRequest;
+import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse;
 import com.ab.hicarerun.utils.AppUtils;
 
@@ -49,6 +50,7 @@ import java.util.List;
 import java.util.Objects;
 
 import es.dmoral.toasty.Toasty;
+import io.realm.RealmResults;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,14 +75,18 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
     private boolean isCombineTask = false;
     private String orderId = "";
     private String floor = "";
+    private String status = "";
     List<ServiceActivity> subItems = null;
     List<AreaActivity> areaList = null;
     List<ServiceActivity> mActivityList = null;
     private List<String> mFloorList;
-    HashMap<Integer, SaveActivityRequest> hashActivity = null;
+    HashMap<Integer, SaveServiceActivity> hashActivity = null;
     private List<SaveServiceActivity> mSaveActivityList = new ArrayList<>();
     private static final int UPDATE_REQ = 1000;
     private int activityPosition = 0;
+    RealmResults<GeneralData> mGeneralRealmData = null;
+    private boolean showBarcode = false;
+
 
     public ServiceUnitFragment() {
         // Required empty public constructor
@@ -119,21 +125,33 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mGeneralRealmData =
+                getRealm().where(GeneralData.class).findAll();
+        if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
+            status = mGeneralRealmData.get(0).getSchedulingStatus();
+            showBarcode = mGeneralRealmData.get(0).getShowBarcode();
+        }
+        if (showBarcode && !(status.equals("Completed") || status.equals("Incomplete"))) {
+            mFragmentServiceUnitBinding.btnRodentScanner.setVisibility(View.VISIBLE);
+            AppUtils.IS_QRCODE_THERE = true;
+        } else {
+            mFragmentServiceUnitBinding.btnRodentScanner.setVisibility(View.GONE);
+            AppUtils.IS_QRCODE_THERE = false;
+        }
+
         mFragmentServiceUnitBinding.recycleTower.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         mFragmentServiceUnitBinding.recycleTower.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         mAdapter = new ActivityTowerAdapter(getActivity());
         mFragmentServiceUnitBinding.recycleTower.setAdapter(mAdapter);
-
         mFragmentServiceUnitBinding.recycleArea.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         mFragmentServiceUnitBinding.recycleArea.setLayoutManager(layoutManager);
-        mActivityAdapter = new RecycleByActivityAdapter(getActivity());
+        mActivityAdapter = new RecycleByActivityAdapter(getActivity(), status);
         mFragmentServiceUnitBinding.recycleArea.setAdapter(mActivityAdapter);
         mActivityAdapter.setOnItemClickHandler(this);
         getServiceByActivity(floor);
         mActivityAdapter.notifyDataSetChanged();
-
         mFragmentServiceUnitBinding.cardSheet.setOnClickListener(view1 -> {
             try {
                 FloorBottomSheetFragment bottomSheetFragment = new FloorBottomSheetFragment(mFloorList);
@@ -152,6 +170,9 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                 intent.putExtra(ARGS_ORDER, orderId);
                 intent.putExtra(ARGS_IS_COMBINE, isCombineTask);
                 startActivity(intent);
+
+                Log.d("isCombine", combinedOrderId);
+                Log.d("isCombine", String.valueOf(isCombineTask));
             }
         });
     }
@@ -175,10 +196,10 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                             floor = flr;
                             mFragmentServiceUnitBinding.txtArea.setText("Floor " + floor);
                         }
-                        mActivityAdapter.addData(items.get(0).getServiceActivity());
+                        mActivityAdapter.addData(items.get(mAdapter.getItemPosition()).getServiceActivity());
                         mActivityAdapter.notifyDataSetChanged();
-                        mActivityList = mAdapter.getItem(0).getServiceActivity();
-                        mFloorList = mAdapter.getItem(0).getFloorList();
+                        mActivityList = mAdapter.getItem(mAdapter.getItemPosition()).getServiceActivity();
+                        mFloorList = mAdapter.getItem(mAdapter.getItemPosition()).getFloorList();
                         mAdapter.setOnItemClickHandler(position -> {
                             mActivityList = new ArrayList<>();
                             mFloorList = new ArrayList<>();
@@ -250,10 +271,10 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
         areaList = new ArrayList<>();
         areaList = mActivityList.get(position).getArea();
         activityPosition = position;
-        showAddActivityDialog(areaList, mActivityList.get(position).getServiceActivityName(), mActivityList.get(position).getChemical_Name(), mActivityList.get(position).getServiceActivityId(), mActivityList, mActivityList.get(position).getChemical_Qty(), mActivityList.get(position).getChemical_Unit());
+        showAddActivityDialog(areaList, mActivityList.get(position).getServiceActivityName(), mActivityList.get(position).getChemical_Name(), mActivityList, mActivityList.get(position).getChemical_Qty(), mActivityList.get(position).getChemical_Unit());
     }
 
-    private void showAddActivityDialog(List<AreaActivity> mAreaList, String activityName, String chemical_name, Integer serviceActivityId, List<ServiceActivity> mActivityList, String chemical_qty, String chemical_unit) {
+    private void showAddActivityDialog(List<AreaActivity> mAreaList, String activityName, String chemical_name, List<ServiceActivity> mActivityList, String chemical_qty, String chemical_unit) {
         try {
             LayoutInflater li = LayoutInflater.from(getActivity());
             View promptsView = li.inflate(R.layout.layout_activity_unit_dialog, null);
@@ -283,18 +304,19 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
             mUnitAdapter = new ActivityAreaUnitAdapter(getActivity(), mAreaList, (position, value) -> {
                 SaveServiceActivity activityDetail = new SaveServiceActivity();
                 activityDetail.setActivityId(mUnitAdapter.getItem(position).getActivityId());
-                activityDetail.setServiceActivityId(serviceActivityId);
+                activityDetail.setServiceActivityId(mUnitAdapter.getItem(position).getService_Activity_Id());
                 activityDetail.setAreaId(mUnitAdapter.getItem(position).getAreaId());
                 activityDetail.setServiceNo(sequenceNo);
                 activityDetail.setCompletionDateTime(String.valueOf(AppUtils.currentDateTimeWithTimeZone()));
                 activityDetail.setServiceType(mUnitAdapter.getItem(position).getServices());
                 activityDetail.setStatus(value);
-                mSaveActivityList.add(activityDetail);
+                hashActivity.put(mUnitAdapter.getItem(position).getAreaId(), activityDetail);
+//                mSaveActivityList.add(activityDetail);
             });
             recyclerView.setAdapter(mUnitAdapter);
             btnDone.setOnClickListener(v -> {
-                updateActivityStatus(mSaveActivityList, true, "", serviceActivityId, txtTitle.getText().toString(), txtQty.getText().toString());
-                if(mActivityList.size()-1 == activityPosition){
+                updateActivityStatus(hashActivity, true, "", txtTitle.getText().toString(), txtQty.getText().toString());
+                if (mActivityList.size() - 1 == activityPosition) {
                     alertDialog.dismiss();
                 }
             });
@@ -303,28 +325,42 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
             } else {
                 btnSkip.setVisibility(View.GONE);
             }
+//            if (mActivityList.size() - 1 == activityPosition) {
+////                btnSkip.setVisibility(View.GONE);
+//                activityPosition = 0;
+//            } else {
+//                activityPosition++;
+////                btnSkip.setVisibility(View.VISIBLE);
+//            }
+
+            if (mActivityList.size() - 1 == activityPosition) {
+                btnSkip.setVisibility(View.GONE);
+            } else {
+                btnSkip.setVisibility(View.VISIBLE);
+            }
 
             btnSkip.setOnClickListener(view -> {
-
                 if (mActivityList.size() - 1 == activityPosition) {
                     activityPosition = 0;
+                    alertDialog.dismiss();
                 } else {
                     activityPosition++;
                 }
                 txtTitle.setText(mActivityList.get(activityPosition).getChemical_Name() + " - " + mActivityList.get(activityPosition).getServiceActivityName());
                 txtQty.setText("Qty" + " - " + mActivityList.get(activityPosition).getChemical_Qty() + " " + mActivityList.get(activityPosition).getChemical_Unit().toLowerCase());
-                if (mSaveActivityList != null) {
-                    mSaveActivityList.clear();
+                if (hashActivity != null) {
+                    hashActivity.clear();
                 }
                 mUnitAdapter = new ActivityAreaUnitAdapter(getActivity(), mActivityList.get(activityPosition).getArea(), (position, value) -> {
                     SaveServiceActivity activityDetail = new SaveServiceActivity();
                     activityDetail.setActivityId(mUnitAdapter.getItem(position).getActivityId());
-                    activityDetail.setServiceActivityId(serviceActivityId);
+                    activityDetail.setServiceActivityId(mUnitAdapter.getItem(position).getService_Activity_Id());
                     activityDetail.setAreaId(mUnitAdapter.getItem(position).getAreaId());
+                    activityDetail.setServiceNo(sequenceNo);
                     activityDetail.setCompletionDateTime(String.valueOf(AppUtils.currentDateTimeWithTimeZone()));
                     activityDetail.setServiceType(mUnitAdapter.getItem(position).getServices());
                     activityDetail.setStatus(value);
-                    mSaveActivityList.add(activityDetail);
+                    hashActivity.put(mUnitAdapter.getItem(position).getAreaId(), activityDetail);
                 });
                 recyclerView.setAdapter(mUnitAdapter);
             });
@@ -338,29 +374,30 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                 public void onRadioYesClicked(int position) {
                     SaveServiceActivity activityDetail = new SaveServiceActivity();
                     activityDetail.setActivityId(mUnitAdapter.getItem(position).getActivityId());
-                    activityDetail.setServiceActivityId(serviceActivityId);
+                    activityDetail.setServiceActivityId(mUnitAdapter.getItem(position).getService_Activity_Id());
                     activityDetail.setAreaId(mUnitAdapter.getItem(position).getAreaId());
                     activityDetail.setCompletionDateTime(String.valueOf(AppUtils.currentDateTimeWithTimeZone()));
                     activityDetail.setServiceType(mUnitAdapter.getItem(position).getServices());
                     activityDetail.setStatus("Yes");
-                    mSaveActivityList.add(activityDetail);
+                    hashActivity.put(mUnitAdapter.getItem(position).getAreaId(), activityDetail);
                 }
 
                 @Override
                 public void onRadioNoClicked(int position) {
                     SaveServiceActivity activityDetail = new SaveServiceActivity();
                     activityDetail.setActivityId(mUnitAdapter.getItem(position).getActivityId());
-                    activityDetail.setServiceActivityId(serviceActivityId);
+                    activityDetail.setServiceActivityId(mUnitAdapter.getItem(position).getService_Activity_Id());
                     activityDetail.setAreaId(mUnitAdapter.getItem(position).getAreaId());
                     activityDetail.setCompletionDateTime(String.valueOf(AppUtils.currentDateTimeWithTimeZone()));
                     activityDetail.setServiceType(mUnitAdapter.getItem(position).getServices());
                     activityDetail.setStatus("No");
-                    mSaveActivityList.add(activityDetail);
+                    hashActivity.put(mUnitAdapter.getItem(position).getAreaId(), activityDetail);
                 }
             });
 
             btnCancel.setOnClickListener(view -> {
-                if (mSaveActivityList != null) {
+                if (hashActivity != null) {
+                    hashActivity.clear();
                     mSaveActivityList.clear();
                 }
                 alertDialog.dismiss();
@@ -424,7 +461,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                                 data.setStatus(radioButton.getText().toString());
                                 data.setServiceType("");
                                 mSaveActivityList.add(data);
-                                updateActivityStatus(mSaveActivityList, false, radioButton.getText().toString(), mActivityList.get(position).getServiceActivityId(), "", "");
+                                updateActivityStatus(hashActivity, false, radioButton.getText().toString(), "", "");
                                 dialogInterface.dismiss();
                             }
                         });
@@ -464,8 +501,9 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
         return true;
     }
 
-    public void updateActivityStatus(List<SaveServiceActivity> activity, boolean isServiceDone, String option, Integer serviceActivityId, String s, String toString) {
+    public void updateActivityStatus(HashMap<Integer, SaveServiceActivity> activity, boolean isServiceDone, String option, String s, String toString) {
         try {
+            mSaveActivityList = new ArrayList<>(hashActivity.values());
             NetworkCallController controller = new NetworkCallController(this);
             controller.setListner(new NetworkResponseListner<BaseResponse>() {
                 @Override
@@ -473,6 +511,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                     if (response.isSuccess()) {
                         if (mSaveActivityList != null) {
                             mSaveActivityList.clear();
+                            hashActivity.clear();
                         }
                         if (mActivityList.size() - 1 == activityPosition) {
                             activityPosition = 0;
@@ -483,16 +522,19 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                         txtQty.setText("Qty" + " - " + mActivityList.get(activityPosition).getChemical_Qty() + " " + mActivityList.get(activityPosition).getChemical_Unit().toLowerCase());
                         if (mSaveActivityList != null) {
                             mSaveActivityList.clear();
+                            hashActivity.clear();
                         }
                         mUnitAdapter = new ActivityAreaUnitAdapter(getActivity(), mActivityList.get(activityPosition).getArea(), (position, value) -> {
                             SaveServiceActivity activityDetail = new SaveServiceActivity();
                             activityDetail.setActivityId(mUnitAdapter.getItem(position).getActivityId());
-                            activityDetail.setServiceActivityId(serviceActivityId);
+                            activityDetail.setServiceActivityId(mUnitAdapter.getItem(position).getService_Activity_Id());
                             activityDetail.setAreaId(mUnitAdapter.getItem(position).getAreaId());
+                            activityDetail.setServiceNo(sequenceNo);
                             activityDetail.setCompletionDateTime(String.valueOf(AppUtils.currentDateTimeWithTimeZone()));
                             activityDetail.setServiceType(mUnitAdapter.getItem(position).getServices());
                             activityDetail.setStatus(value);
-                            mSaveActivityList.add(activityDetail);
+                            hashActivity.put(mUnitAdapter.getItem(position).getAreaId(), activityDetail);
+//                            mSaveActivityList.add(activityDetail);
                         });
                         recyclerView.setAdapter(mUnitAdapter);
                         if (isServiceDone) {
@@ -509,7 +551,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
 
                 }
             });
-            controller.updateActivityStatus(UPDATE_REQ, activity);
+            controller.updateActivityStatus(UPDATE_REQ, mSaveActivityList);
         } catch (Exception e) {
             e.printStackTrace();
         }

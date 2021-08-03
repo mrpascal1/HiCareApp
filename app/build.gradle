@@ -21,8 +21,8 @@ android {
         applicationId "com.ab.hicarerun"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 57
-        versionName "7.0"
+        versionCode 58
+        versionName "7.1"
         multiDexEnabled true
         dynamicFeatures = [":ondemand"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -113,7 +113,7 @@ dependencies {
     api 'com.onesignal:OneSignal:3.15.7'
     api 'com.orhanobut:logger:2.2.0'
     api 'com.github.jrvansuita:PickImage:+'
-//    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    //    implementation 'com.github.bumptech.glide:glide:4.9.0'
     api 'com.github.deano2390:MaterialShowcaseView:1.3.4@aar'
     implementation 'com.github.GrenderG:Toasty:1.5.0'
     api 'hyogeun.github.com.colorratingbar:ColorRatingBar:1.0.1'

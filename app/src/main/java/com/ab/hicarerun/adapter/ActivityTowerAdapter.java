@@ -94,6 +94,11 @@ public class ActivityTowerAdapter extends RecyclerView.Adapter<ActivityTowerAdap
         return items.size();
     }
 
+    public int getItemPosition() {
+        return selectedPos;
+    }
+
+
     public void setData(List<ActivityData> data) {
         items.clear();
         items.addAll(data);
@@ -102,6 +107,8 @@ public class ActivityTowerAdapter extends RecyclerView.Adapter<ActivityTowerAdap
     public ActivityData getItem(int position) {
         return items.get(position);
     }
+
+
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {

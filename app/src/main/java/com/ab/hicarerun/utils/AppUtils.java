@@ -98,7 +98,7 @@ public class AppUtils {
     public static String CAMERA_SCREEN = "";
     public static boolean NOT_RENEWAL_DONE = false;
     public static boolean IS_ACTIVITY_THERE = false;
-
+    public static boolean IS_QRCODE_THERE = true;
 
     public static Bitmap createCustomMarker(Context context, Bitmap resource, String accountName, String _name) {
 
@@ -738,7 +738,6 @@ public class AppUtils {
     }
 
 
-
     public static void getResourceImage(String id, CircleImageView img) {
         try {
             NetworkCallController controller = new NetworkCallController();
@@ -802,7 +801,6 @@ public class AppUtils {
             e.printStackTrace();
         }
     }
-
 
 
 }

@@ -117,7 +117,6 @@ public class IncentiveFragment extends BaseFragment {
     private void showMatrixDialog() {
 
         try {
-
             LayoutInflater li = LayoutInflater.from(getActivity());
             View promptsView = li.inflate(R.layout.layout_matrix_dialog, null);
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());

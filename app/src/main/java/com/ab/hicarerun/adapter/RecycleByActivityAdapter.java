@@ -28,12 +28,14 @@ public class RecycleByActivityAdapter extends RecyclerView.Adapter<RecycleByActi
     private OnAddActivityClickHandler onItemClickHandler;
     private final Context mContext;
     private List<ServiceActivity> items = null;
+    private String status;
 
-    public RecycleByActivityAdapter(Context mContext) {
+    public RecycleByActivityAdapter(Context mContext, String status) {
         this.mContext = mContext;
         if (items == null) {
             items = new ArrayList<>();
         }
+        this.status = status;
     }
 
     @NotNull
@@ -48,6 +50,13 @@ public class RecycleByActivityAdapter extends RecyclerView.Adapter<RecycleByActi
     @Override
     public void onBindViewHolder(@NotNull RecycleByActivityAdapter.ViewHolder holder, final int position) {
         try {
+            if (status.equals("Completed") || status.equals("Incomplete")) {
+                holder.mItemRecycleActivityUnitBinding.lnrUpdate.setEnabled(false);
+                holder.mItemRecycleActivityUnitBinding.btnFinish.setAlpha(0.7f);
+            } else {
+                holder.mItemRecycleActivityUnitBinding.lnrUpdate.setEnabled(true);
+                holder.mItemRecycleActivityUnitBinding.btnFinish.setAlpha(1f);
+            }
             holder.mItemRecycleActivityUnitBinding.txtActivity.setText(items.get(position).getChemical_Name() + " - " + items.get(position).getServiceActivityName());
             holder.mItemRecycleActivityUnitBinding.txtQty.setText(items.get(position).getChemical_Qty() + " " + items.get(position).getChemical_Unit().toLowerCase());
 

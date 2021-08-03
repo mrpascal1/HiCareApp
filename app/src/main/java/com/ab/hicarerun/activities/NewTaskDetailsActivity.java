@@ -233,6 +233,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private boolean isPaymentModeNotChanged = false;
     private boolean isOnsiteImageRequired = false;
     private boolean isPostJobCompletionDone = false;
+    private boolean isQRThere = false;
     private String bankName = "";
     private String NotRenewalReason = "";
     private String chequeNumber = "";
@@ -450,6 +451,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             sequenceNo = Integer.parseInt(response.getData().getService_Sequence_Number());
                             orderId = response.getData().getOrderNumber();
                             isActivityThere = response.getData().getServiceActivityRequired();
+                            isQRThere = response.getData().getShowBarcode();
                             Renewal_Order_No = response.getData().getRenewal_Order_No();
                             if (Renewal_Type != null && Renewal_Type.equals("Renewal")) {
                                 if (Renewal_Order_No != null && !Renewal_Order_No.equals("")) {
@@ -614,17 +616,17 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         lnrOffer.setVisibility(View.INVISIBLE);
                         break;
                     case 2:
-                        if(isActivityThere){
+                        if (isActivityThere) {
                             lnrOffer.setVisibility(View.INVISIBLE);
-                        }else {
+                        } else {
                             lnrOffer.setVisibility(View.VISIBLE);
                         }
                         break;
 
                     case 3:
-                        if(isActivityThere){
+                        if (isActivityThere) {
                             lnrOffer.setVisibility(View.VISIBLE);
-                        }else {
+                        } else {
                             lnrOffer.setVisibility(View.INVISIBLE);
                         }
 
@@ -1083,32 +1085,69 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(1);
                 Toasty.error(this, getResources().getString(R.string.chamical_should_be_verified), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
+            } else if (AppUtils.IS_QRCODE_THERE && Status.equals("Completed")) {
+                if (isActivityThere) {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(2);
+                } else {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(1);
+                }
+                Toasty.error(this, "Please scan bait station", Toast.LENGTH_SHORT, true).show();
+                progress.dismiss();
             } else if (Status.equals("Completed") && AppUtils.NOT_RENEWAL_DONE) {
-                mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                if (isActivityThere) {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(4);
+                } else {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                }
+
                 progress.dismiss();
                 Toasty.error(this, "This is the last service, kindly ask the customer for Service Renewal", Toast.LENGTH_SHORT, true).show();
             } else if (isSignatureChanged && Status.equals("Completed")) {
-                mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                if (isActivityThere) {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(4);
+                } else {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                }
                 progress.dismiss();
                 Toasty.error(this, getResources().getString(R.string.signatory_field_is_required), Toast.LENGTH_SHORT, true).show();
             } else if (isOTPRequired && Status.equals("Completed")) {
-                mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                if (isActivityThere) {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(4);
+                } else {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                }
                 progress.dismiss();
                 Toasty.error(this, getResources().getString(R.string.otp_field_is_required), Toast.LENGTH_SHORT, true).show();
             } else if (isOTPValidated && Status.equals("Completed")) {
-                mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                if (isActivityThere) {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(4);
+                } else {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                }
                 progress.dismiss();
                 Toasty.error(this, getResources().getString(R.string.invalid_otp_ss), Toast.LENGTH_SHORT, true).show();
             } else if (isWorkTypeNotChecked && Status.equals("Completed")) {
-                mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                if (isActivityThere) {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(4);
+                } else {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                }
                 progress.dismiss();
                 Toasty.error(this, getResources().getString(R.string.please_select_correct_type_of_service_done), Toast.LENGTH_SHORT, true).show();
             } else if (isSignatureValidated && Status.equals("Completed")) {
-                mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                if (isActivityThere) {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(4);
+                } else {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                }
                 progress.dismiss();
                 Toasty.error(this, getResources().getString(R.string.customer_signature_is_required), Toast.LENGTH_SHORT, true).show();
             } else if (isCardRequired && Status.equals("Completed")) {
-                mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                if (isActivityThere) {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(4);
+                } else {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                }
                 progress.dismiss();
                 Toasty.error(this, getResources().getString(R.string.please_upload_your_job_card_service), Toast.LENGTH_SHORT, true).show();
             } else if (isConsultationRequired && !AppUtils.isInspectionDone && Status.equals("Completed")) {
@@ -1122,11 +1161,19 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 progress.dismiss();
                 Toasty.error(this, "Please complete Post Job Check-List required for the service", Toast.LENGTH_SHORT, true).show();
             } else if (Status.equals("Completed") && SRAppointmentType.equalsIgnoreCase("complaint") && assignmentStartDate.equals("") && (AppUtils.infestationLevel != null && AppUtils.infestationLevel.equalsIgnoreCase("high infestation"))) {
-                mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                if (isActivityThere) {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(4);
+                } else {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                }
                 progress.dismiss();
                 Toasty.error(this, "Please select flush-out appointment", Toast.LENGTH_SHORT, true).show();
             } else if (Status.equals("Completed") && (SRAppointmentType.equalsIgnoreCase("flushout") || SRAppointmentType.equalsIgnoreCase("incomplete flushout")) && assignmentStartDate.equals("") && (AppUtils.infestationLevel != null && AppUtils.infestationLevel.equalsIgnoreCase("high infestation"))) {
-                mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                if (isActivityThere) {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(4);
+                } else {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                }
                 progress.dismiss();
                 Toasty.error(this, "Please select gel appointment", Toast.LENGTH_SHORT, true).show();
             } else if (Status.equals("Completed") && isTechnicianFeedbackEnable && Rate == 0) {

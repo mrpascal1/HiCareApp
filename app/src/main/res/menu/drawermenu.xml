@@ -11,8 +11,8 @@
         <item
             android:id="@+id/nav_quiz"
             android:icon="@drawable/ic_home"
-            android:visible="true"
-            android:title="@string/quiz" />
+            android:title="@string/quiz"
+            android:visible="false" />
 
         <item
             android:id="@+id/nav_chat"

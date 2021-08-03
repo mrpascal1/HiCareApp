@@ -10,17 +10,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,6 +43,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
@@ -87,6 +93,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -106,6 +115,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     private static final int REQ_PROFILE = 3000;
     private static final int REQ_INCENTIVE = 4000;
     private static final int REQ_KARMA = 5000;
+    private static int VIDEO_REQUEST = 100;
     private Location mLocation;
     private LocationManagerListner mListner;
     public static final String ARG_HANDSHAKE = "ARG_HANDSHAKE";
@@ -124,6 +134,9 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     private Bitmap bitUser = null;
     //    private byte[] userByte = null;
     private ProgressDialog progress;
+    private CameraManager mCameraManager;
+    private String mCameraId;
+    private boolean isFlashOn = true;
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
@@ -144,6 +157,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,6 +166,12 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 //        setSupportActionBar(mActivityHomeBinding.toolbar);
         progress = new ProgressDialog(this, R.style.TransparentProgressDialog);
         progress.setCancelable(false);
+        mCameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+        try {
+            mCameraId = mCameraManager.getCameraIdList()[0];
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
         mActivityHomeBinding.toolbar.lnrDrawer.setOnClickListener(view -> mActivityHomeBinding.drawer.openDrawer(GravityCompat.START));
         try {
             new GPSUtils(this).turnGPSOn(isGPSEnable -> {
@@ -185,6 +205,28 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         mActivityHomeBinding.toolbar.lnrUser.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, TechIdActivity.class).putExtra(HomeActivity.ARG_EVENT, false)));
         mActivityHomeBinding.toolbar.lnrWallet.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, IncentivesActivity.class).putExtra(HomeActivity.ARG_EVENT, false)));
         mActivityHomeBinding.toolbar.lnrKarma.setOnClickListener(view -> startActivity(new Intent(HomeActivity.this, KarmaActivity.class).putExtra(HomeActivity.ARG_EVENT, false)));
+        mActivityHomeBinding.toolbar.lnrVideo.setOnClickListener(v -> {
+            Intent videoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+            if (videoIntent.resolveActivity(getPackageManager()) != null) {
+                startActivityForResult(videoIntent, VIDEO_REQUEST);
+            }
+        });
+        mActivityHomeBinding.toolbar.lnrFlash.setOnClickListener(v -> {
+            try {
+                if (isFlashOn) {
+                    mCameraManager.setTorchMode(mCameraId, true);
+                    isFlashOn = false;
+                    mActivityHomeBinding.toolbar.imgFlash.setImageResource(R.drawable.flash_on);
+                } else {
+                    mCameraManager.setTorchMode(mCameraId, false);
+                    isFlashOn = true;
+                    mActivityHomeBinding.toolbar.imgFlash.setImageResource(R.drawable.flash_off);
+                }
+
+            } catch (CameraAccessException e) {
+                e.printStackTrace();
+            }
+        });
 
         try {
             isClicked = Objects.requireNonNull(getIntent().getExtras()).getBoolean(ARG_EVENT, false);
@@ -249,9 +291,9 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 });
                 controller.getKarmaResources(REQ_KARMA, userId);
             }
-            } catch(Exception e){
-                e.printStackTrace();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -411,20 +453,39 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         try {
             super.onActivityResult(requestCode, resultCode, data);
-            if (resultCode == Activity.RESULT_OK) {
-                if (requestCode == GPSUtils.GPS_REQUEST) {
-                    try {
-                        isGPS = true; // flag maintain before get location
-                        progress.show();
-                        getServiceCalled();
-                        getTechDeails();
-                        getResourcesKarma();
+            if (resultCode == Activity.RESULT_OK && requestCode == GPSUtils.GPS_REQUEST) {
+                try {
+                    isGPS = true; // flag maintain before get location
+                    progress.show();
+                    getServiceCalled();
+                    getTechDeails();
+                    getResourcesKarma();
 //                getIncentiveDetails();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+
+            } else if (requestCode == VIDEO_REQUEST && resultCode == RESULT_OK) {
+                AssetFileDescriptor videoAsset = getContentResolver().openAssetFileDescriptor(data.getData(), "r");
+                FileInputStream fis = videoAsset.createInputStream();
+                File root = new File(Environment.getExternalStorageDirectory(), "/InspectionVideo/");  //you can replace RecordVideo by the specific folder where you want to save the video
+                if (!root.exists()) {
+                    System.out.println("No directory");
+                    root.mkdirs();
+                }
+
+                File file;
+                file = new File(root, "android_" + System.currentTimeMillis() + ".mp4");
+
+                FileOutputStream fos = new FileOutputStream(file);
+
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = fis.read(buf)) > 0) {
+                    fos.write(buf, 0, len);
+                }
+                fis.close();
+                fos.close();
             }
         } catch (Exception e) {
             e.printStackTrace();

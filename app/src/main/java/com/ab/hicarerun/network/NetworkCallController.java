@@ -63,6 +63,7 @@ import com.ab.hicarerun.network.models.LeaderBoardModel.RewardLeadersResponse;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
+import com.ab.hicarerun.network.models.MenuModel.MenuResponse;
 import com.ab.hicarerun.network.models.ModelQRCode.CheckCodeResponse;
 import com.ab.hicarerun.network.models.ModelQRCode.CheckPhonePeResponse;
 import com.ab.hicarerun.network.models.ModelQRCode.PhonePeQRCodeResponse;
@@ -4943,6 +4944,28 @@ public class NetworkCallController {
                     }
                 });
     }
+
+    public void getResourceMenu(String resourceId) {
+        BaseApplication.getRetrofitAPI(false)
+                .getResourceMenu(resourceId)
+                .enqueue(new Callback<MenuResponse>() {
+                    @Override
+                    public void onResponse(Call<MenuResponse> call, Response<MenuResponse> response) {
+                        if (response.body() != null) {
+                            String responseBody = response.body().toString();
+                            mListner.onResponse(20211, response.body().getData());
+                            //Log.d("TAG-UAT", responseBody);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<MenuResponse> call, Throwable t) {
+                        Log.d("TAG-UAT-Error", t.getMessage());
+                        mListner.onFailure(20211);
+                    }
+                });
+    }
+
 
     public String getRefreshToken() {
         String refreshToken = null;

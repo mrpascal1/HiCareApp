@@ -40,69 +40,100 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="36dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toLeftOf="@id/lnrIcon"
                     android:ellipsize="end"
                     android:singleLine="true"
-                    android:layout_toLeftOf="@id/lnrIcon"
                     android:text="Order #09876545657"
                     android:textColor="@color/black"
                     android:textSize="15sp"
-                    android:layout_marginRight="10dp"
                     android:textStyle="bold" />
 
                 <LinearLayout
                     android:id="@+id/lnrIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:gravity="center">
-
-                       <LinearLayout
-                    android:id="@+id/outerView"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/circle_view_outer"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
                     <LinearLayout
-                        android:id="@+id/lnrInfo"
-                        android:layout_width="31dp"
-                        android:layout_height="31dp"
+                        android:id="@+id/lnrVideo"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/circle_view"
+                        android:layout_marginRight="12dp"
                         android:gravity="center">
 
                         <ImageView
-                            android:id="@+id/imgView"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_gravity="center"
-                            app:srcCompat="@drawable/ic_info_instructions" />
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/video_player" />
 
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:id="@+id/lnrFlash"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="12dp"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:id="@+id/imgFlash"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/flash_off" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/outerView"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="12dp"
+                        android:background="@drawable/circle_view_outer"
+                        android:gravity="center">
+
+                        <LinearLayout
+                            android:id="@+id/lnrInfo"
+                            android:layout_width="29dp"
+                            android:layout_height="29dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/circle_view"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:id="@+id/imgView"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:layout_gravity="center"
+                                app:srcCompat="@drawable/ic_info_instructions" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/imgUser"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"
+                        android:layout_toLeftOf="@id/outerView"
+                        android:elevation="5dp"
+                        android:visibility="gone"
+                        app:civ_border_color="@color/black"
+                        app:civ_border_width="0.5dp"
+                        app:srcCompat="@drawable/ic_profile" />
+
+
                 </LinearLayout>
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/imgUser"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_toLeftOf="@id/outerView"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="15dp"
-                    android:elevation="5dp"
-                    android:visibility="gone"
-                    app:civ_border_color="@color/black"
-                    app:civ_border_width="0.5dp"
-                    app:srcCompat="@drawable/ic_profile" />
-
-
-                </LinearLayout>
-
 
 
             </RelativeLayout>
@@ -1592,10 +1623,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_marginTop="5dp"
                         android:gravity="center"
                         android:text="*T&amp;C apply"
                         android:textColor="@color/black"
-                        android:layout_marginTop="5dp"
                         android:textSize="10sp"
                         android:visibility="gone" />
 

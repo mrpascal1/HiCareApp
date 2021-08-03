@@ -1,9 +1,11 @@
 package com.ab.hicarerun.fragments;
 
 
-import android.app.Activity;
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -12,17 +14,18 @@ import android.graphics.Path;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -30,6 +33,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.CountDownTimer;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
@@ -41,13 +47,15 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.CalendarView;
 import android.widget.DatePicker;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
+import com.ab.hicarerun.BuildConfig;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.NewTaskDetailsActivity;
 import com.ab.hicarerun.activities.ServiceRenewalActivity;
@@ -70,9 +78,13 @@ import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.SlotModel.TimeSlot;
 import com.ab.hicarerun.utils.AppUtils;
-import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.ab.hicarerun.utils.SwipeToDeleteCallBack;
 import com.bumptech.glide.Glide;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
 
@@ -80,6 +92,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -92,6 +105,7 @@ import java.util.concurrent.TimeUnit;
 import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
 
+import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
 
 /**
@@ -110,7 +124,6 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
     private static final String ARG_VAR = "ARG_VAR";
     private static final String RENEWAL_TYPE = "RENEWAL_TYPE";
     private static final String RENEWAL_ORDER = "RENEWAL_ORDER";
-    private static final String ARG_SEQUENCE = "ARG_SEQUENCE";
     private String status = "";
     static String mFeedback = "";
     //    private boolean isAttachment = false;
@@ -144,6 +157,11 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
     private NewTaskDetailsActivity mActivity = null;
     CountDownTimer timer;
     private static final String FORMAT = "%02d:%02d";
+    static final int REQUEST_TAKE_PHOTO = 1;
+    static final int REQUEST_GALLERY_PHOTO = 2;
+    File mPhotoFile;
+    private Bitmap selectedBmp = null;
+
 //    private Tasks model;
 
     public SignatureInfoFragment() {
@@ -753,74 +771,73 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
 
     @Override
     public void onUploadAttachmentClicked(View view) {
-        try {
-            RealmResults<GeneralData> mGeneralRealmData =
-                    getRealm().where(GeneralData.class).findAll();
-            if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
-                isJobcardEnable = mGeneralRealmData.get(0).getJobCardRequired();
-                if (isJobcardEnable) {
-                    PickImageDialog.build(new PickSetup()).setOnPickResult(pickResult -> {
-                        if (pickResult.getError() == null) {
-                            images.add(pickResult.getPath());
-                            imgFile = new File(pickResult.getPath());
-                            selectedImagePath = pickResult.getPath();
-                            if (selectedImagePath != null) {
-                                Bitmap bit = new BitmapDrawable(getActivity().getResources(),
-                                        selectedImagePath).getBitmap();
-                                int i = (int) (bit.getHeight() * (1024.0 / bit.getWidth()));
-                                bitmap = Bitmap.createScaledBitmap(bit, 1024, i, true);
-                            }
-
-                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                            byte[] b = baos.toByteArray();
-                            String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-
-                            RealmResults<LoginResponse> LoginRealmModels =
-                                    BaseApplication.getRealm().where(LoginResponse.class).findAll();
-                            if (pickResult.getPath() != null) {
-                                if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-                                    UserId = LoginRealmModels.get(0).getUserID();
-                                    NetworkCallController controller = new NetworkCallController(SignatureInfoFragment.this);
-                                    PostAttachmentRequest request = new PostAttachmentRequest();
-                                    request.setFile(encodedImage);
-                                    request.setResourceId(UserId);
-                                    request.setTaskId(taskId);
-                                    controller.setListner(new NetworkResponseListner() {
-                                        @Override
-                                        public void onResponse(int requestCode, Object response) {
-                                            PostAttachmentResponse postResponse = (PostAttachmentResponse) response;
-                                            if (postResponse.getSuccess()) {
-                                                Toasty.success(getActivity(), getString(R.string.jobcard_uploaded_successfully), Toast.LENGTH_LONG).show();
-                                                getAttachmentList();
-                                            } else {
-                                                Toasty.error(getActivity(), getString(R.string.uploading_failed), Toast.LENGTH_LONG).show();
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onFailure(int requestCode) {
-                                        }
-                                    });
-
-                                    controller.postAttachments(POST_ATTACHMENT_REQ, request);
-                                }
-                            }
-                        }
-                    }).show(getActivity());
-
-                }
-            }
-        } catch (Exception e) {
-            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
-            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
-                String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
-                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
-                String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
-                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "onAddImageClicked", lineNo, userName, DeviceName);
-            }
-        }
-
+//        try {
+//            RealmResults<GeneralData> mGeneralRealmData =
+//                    getRealm().where(GeneralData.class).findAll();
+//            if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
+//                isJobcardEnable = mGeneralRealmData.get(0).getJobCardRequired();
+//                if (isJobcardEnable) {
+//                    PickImageDialog.build(new PickSetup()).setOnPickResult(pickResult -> {
+//                        if (pickResult.getError() == null) {
+//                            images.add(pickResult.getPath());
+////                            imgFile = new File(pickResult.getPath());
+////                            selectedImagePath = pickResult.getPath();
+////                            if (selectedImagePath != null) {
+////                                Bitmap bit = new BitmapDrawable(getActivity().getResources(),
+////                                        selectedImagePath).getBitmap();
+////                                int i = (int) (bit.getHeight() * (1024.0 / bit.getWidth()));
+////                                bitmap = Bitmap.createScaledBitmap(bit, 1024, i, true);
+////                            }
+//
+//                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                            pickResult.getBitmap().compress(Bitmap.CompressFormat.JPEG, 100, baos);
+//                            byte[] b = baos.toByteArray();
+//                            String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+//
+//                            RealmResults<LoginResponse> LoginRealmModels =
+//                                    BaseApplication.getRealm().where(LoginResponse.class).findAll();
+//                            if (pickResult.getPath() != null) {
+//                                if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+//                                    UserId = LoginRealmModels.get(0).getUserID();
+//                                    NetworkCallController controller = new NetworkCallController(SignatureInfoFragment.this);
+//                                    PostAttachmentRequest request = new PostAttachmentRequest();
+//                                    request.setFile(encodedImage);
+//                                    request.setResourceId(UserId);
+//                                    request.setTaskId(taskId);
+//                                    controller.setListner(new NetworkResponseListner() {
+//                                        @Override
+//                                        public void onResponse(int requestCode, Object response) {
+//                                            PostAttachmentResponse postResponse = (PostAttachmentResponse) response;
+//                                            if (postResponse.getSuccess()) {
+//                                                Toasty.success(getActivity(), getString(R.string.jobcard_uploaded_successfully), Toast.LENGTH_LONG).show();
+//                                                getAttachmentList();
+//                                            } else {
+//                                                Toasty.error(getActivity(), getString(R.string.uploading_failed), Toast.LENGTH_LONG).show();
+//                                            }
+//                                        }
+//
+//                                        @Override
+//                                        public void onFailure(int requestCode) {
+//                                        }
+//                                    });
+//
+//                                    controller.postAttachments(POST_ATTACHMENT_REQ, request);
+//                                }
+//                            }
+//                        }
+//                    }).show(getActivity());
+//                }
+//            }
+//        } catch (Exception e) {
+//            RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+//            if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+//                String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+//                String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+//                String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+//                AppUtils.sendErrorLogs(e.getMessage(), getClass().getSimpleName(), "onAddImageClicked", lineNo, userName, DeviceName);
+//            }
+//        }
+        getAddJobCard();
     }
 
     @Override
@@ -1031,14 +1048,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     @Override
                     public void onResponse(int requestCode, List<GetAttachmentList> items) {
                         if (items != null) {
-                            if (pageNumber == 1 && items.size() > 0) {
-                                mFragmentSignatureInfoBinding.txtData.setVisibility(View.GONE);
-                                mAdapter.setData(items);
-                                mAdapter.notifyDataSetChanged();
-                                if (isJobcardEnable)
-                                    mCallback.isJobCardEnable(false);
-                                enableSwipeToDeleteAndUndo();
-                            } else if (items.size() > 0) {
+                            if (items.size() > 0) {
                                 mFragmentSignatureInfoBinding.txtData.setVisibility(View.GONE);
                                 mAdapter.addData(items);
                                 mAdapter.notifyDataSetChanged();
@@ -1299,6 +1309,297 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     break;
             }
             return true;
+        }
+
+    }
+
+    private void getAddJobCard() {
+        try {
+            RealmResults<GeneralData> mGeneralRealmData =
+                    getRealm().where(GeneralData.class).findAll();
+            if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
+
+                LayoutInflater li = LayoutInflater.from(getActivity());
+
+                View promptsView = li.inflate(R.layout.layout_choose_gallery_dialog, null);
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+
+                alertDialogBuilder.setView(promptsView);
+                final AlertDialog alertDialog = alertDialogBuilder.create();
+
+                final ImageView selectedImg =
+                        promptsView.findViewById(R.id.selectedImg);
+                final LinearLayout lnrCamera =
+                        promptsView.findViewById(R.id.lnrCamera);
+                final LinearLayout lnrGallery =
+                        promptsView.findViewById(R.id.lnrGallery);
+                final TextView btn_cancel =
+                        promptsView.findViewById(R.id.btnCancel);
+                final LinearLayout cardSelected = promptsView.findViewById(R.id.cardSelected);
+
+                int[] attrs = new int[]{R.attr.selectableItemBackground};
+                TypedArray typedArray = getActivity().obtainStyledAttributes(attrs);
+                int backgroundResource = typedArray.getResourceId(0, 0);
+                lnrCamera.setBackgroundResource(backgroundResource);
+                lnrGallery.setBackgroundResource(backgroundResource);
+
+                if (selectedBmp != null) {
+                    cardSelected.setVisibility(View.VISIBLE);
+                    Glide.with(getActivity())
+                            .load(selectedBmp)
+                            .error(android.R.drawable.stat_notify_error)
+                            .into(selectedImg);
+                } else {
+                    cardSelected.setVisibility(GONE);
+                }
+
+                cardSelected.setOnClickListener(view -> {
+                    if (selectedBmp != null) {
+                        alertDialog.dismiss();
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        selectedBmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        byte[] b = baos.toByteArray();
+                        String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+                        getUploadJobCard(encodedImage);
+                    }
+                });
+                lnrCamera.setOnClickListener(view -> {
+                    requestStoragePermission(true);
+                    alertDialog.dismiss();
+                });
+
+                lnrGallery.setOnClickListener(view -> {
+                    requestStoragePermission(false);
+                    alertDialog.dismiss();
+                });
+
+                btn_cancel.setOnClickListener(v -> alertDialog.dismiss());
+                alertDialog.setCanceledOnTouchOutside(false);
+                alertDialog.show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void dispatchGalleryIntent() {
+        try {
+            Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            pickPhoto.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivityForResult(pickPhoto, REQUEST_GALLERY_PHOTO);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void requestStoragePermission(boolean isCamera) {
+        try {
+            Dexter.withActivity(getActivity())
+                    .withPermissions(Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+                    .withListener(new MultiplePermissionsListener() {
+                        @Override
+                        public void onPermissionsChecked(MultiplePermissionsReport report) {
+                            // check if all permissions are granted
+                            if (report.areAllPermissionsGranted()) {
+                                if (isCamera) {
+                                    dispatchTakePictureIntent();
+                                } else {
+                                    dispatchGalleryIntent();
+                                }
+                            }
+                            // check for permanent denial of any permission
+                            if (report.isAnyPermissionPermanentlyDenied()) {
+                                // show alert dialog navigating to Settings
+                                showSettingsDialog();
+                            }
+                        }
+
+                        @Override
+                        public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions,
+                                                                       PermissionToken token) {
+                            token.continuePermissionRequest();
+                        }
+                    })
+                    .withErrorListener(
+                            error -> Toast.makeText(getActivity(), "Error occurred! ", Toast.LENGTH_SHORT)
+                                    .show())
+                    .onSameThread()
+                    .check();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void dispatchTakePictureIntent() {
+        try {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                // Create the File where the photo should go
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    // Error occurred while creating the File
+                }
+                if (photoFile != null) {
+                    Uri photoURI = FileProvider.getUriForFile(getActivity(),
+                            BuildConfig.APPLICATION_ID + ".provider",
+                            photoFile);
+                    mPhotoFile = photoFile;
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    private void showSettingsDialog() {
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Need Permissions");
+            builder.setMessage(
+                    "This app needs permission to use this feature. You can grant them in app settings.");
+            builder.setPositiveButton("GOTO SETTINGS", (dialog, which) -> {
+                dialog.cancel();
+                openSettings();
+            });
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+            builder.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    // navigating user to app settings
+    private void openSettings() {
+        try {
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+            intent.setData(uri);
+            startActivityForResult(intent, 101);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        String mFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File mFile = File.createTempFile(mFileName, ".jpg", storageDir);
+        return mFile;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        try {
+            if (resultCode == RESULT_OK) {
+                if (requestCode == REQUEST_TAKE_PHOTO) {
+                    images.add(mPhotoFile.getPath());
+                    imgFile = new File(mPhotoFile.getPath());
+                    selectedImagePath = mPhotoFile.getPath();
+                    if (selectedImagePath != null) {
+                        Bitmap bit = new BitmapDrawable(getActivity().getResources(),
+                                selectedImagePath).getBitmap();
+                        int i = (int) (bit.getHeight() * (1024.0 / bit.getWidth()));
+                        bitmap = Bitmap.createScaledBitmap(bit, 1024, i, true);
+                        selectedBmp = bitmap;
+                    }
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    byte[] b = baos.toByteArray();
+                    String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+                    getUploadJobCard(encodedImage);
+
+                } else if (requestCode == REQUEST_GALLERY_PHOTO) {
+                    Uri selectedImage = data.getData();
+                    mPhotoFile = new File(getRealPathFromUri(selectedImage));
+                    selectedImagePath = mPhotoFile.getPath();
+                    if (selectedImagePath != null) {
+                        Bitmap bit = new BitmapDrawable(getActivity().getResources(),
+                                selectedImagePath).getBitmap();
+                        int i = (int) (bit.getHeight() * (1024.0 / bit.getWidth()));
+                        bitmap = Bitmap.createScaledBitmap(bit, 1024, i, true);
+                        selectedBmp = bitmap;
+                    }
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    byte[] b = baos.toByteArray();
+                    String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+                    getUploadJobCard(encodedImage);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Get real file path from URI
+     */
+    private String getRealPathFromUri(Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = {MediaStore.Images.Media.DATA};
+            cursor = getActivity().getContentResolver().query(contentUri, proj, null, null, null);
+            assert cursor != null;
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+    private void getUploadJobCard(String encodedImage) {
+        try {
+            RealmResults<LoginResponse> LoginRealmModels =
+                    BaseApplication.getRealm().where(LoginResponse.class).findAll();
+            if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                UserId = LoginRealmModels.get(0).getUserID();
+                NetworkCallController controller = new NetworkCallController(this);
+                PostAttachmentRequest request = new PostAttachmentRequest();
+                request.setFile(encodedImage);
+                request.setResourceId(UserId);
+                request.setTaskId(taskId);
+                controller.setListner(new NetworkResponseListner() {
+                    @Override
+                    public void onResponse(int requestCode, Object response) {
+                        PostAttachmentResponse postResponse = (PostAttachmentResponse) response;
+                        if (postResponse.getSuccess()) {
+                            Toasty.success(getActivity(), getString(R.string.jobcard_uploaded_successfully), Toast.LENGTH_LONG).show();
+                            getAttachmentList();
+                        } else {
+                            Toast.makeText(getActivity(), getString(R.string.uploading_failed), Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int requestCode) {
+                    }
+                });
+
+                controller.postAttachments(POST_ATTACHMENT_REQ, request);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }

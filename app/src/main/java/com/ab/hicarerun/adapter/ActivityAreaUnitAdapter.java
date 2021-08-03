@@ -30,7 +30,7 @@ public class ActivityAreaUnitAdapter extends RecyclerView.Adapter<ActivityAreaUn
     private OnAddActivityClickHandler onItemClickHandler;
     private final Context mContext;
     List<String> isCheckedList = new ArrayList<>();
-    List<AreaActivity> areaList = null;
+    List<AreaActivity> areaList;
     private onRadioClickChanged mRadioClickChanged;
     private OnSelectServiceClickHandler serviceClickHandler;
 
@@ -52,6 +52,7 @@ public class ActivityAreaUnitAdapter extends RecyclerView.Adapter<ActivityAreaUn
     @Override
     public void onBindViewHolder(@NotNull ActivityAreaUnitAdapter.ViewHolder holder, final int position) {
 
+
         if (areaList.get(position).getStatus() != null) {
             if (areaList.get(position).getStatus().equalsIgnoreCase("yes")) {
                 holder.itemChemicalAreaChildAdapterBinding.on.setChecked(true);
@@ -64,18 +65,16 @@ public class ActivityAreaUnitAdapter extends RecyclerView.Adapter<ActivityAreaUn
             holder.itemChemicalAreaChildAdapterBinding.on.setChecked(true);
             holder.itemChemicalAreaChildAdapterBinding.off.setChecked(false);
         }
-
-
         holder.itemChemicalAreaChildAdapterBinding.off.setOnClickListener(view -> {
             holder.itemChemicalAreaChildAdapterBinding.on.setChecked(false);
             holder.itemChemicalAreaChildAdapterBinding.off.setChecked(true);
-            serviceClickHandler.onRadioNoClicked(position);
+//            serviceClickHandler.onRadioNoClicked(position);
             mRadioClickChanged.onClickChanged(position, "No");
         });
         holder.itemChemicalAreaChildAdapterBinding.on.setOnClickListener(view -> {
             holder.itemChemicalAreaChildAdapterBinding.on.setChecked(true);
             holder.itemChemicalAreaChildAdapterBinding.off.setChecked(false);
-            serviceClickHandler.onRadioYesClicked(position);
+//            serviceClickHandler.onRadioYesClicked(position);
             mRadioClickChanged.onClickChanged(position, "Yes");
         });
 

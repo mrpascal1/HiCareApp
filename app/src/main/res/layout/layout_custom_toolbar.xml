@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
+        android:id="@+id/innerTool"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
@@ -22,7 +23,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_weight="0.5"
+                android:layout_weight="0.4"
                 android:gravity="center">
 
                 <ImageView
@@ -37,7 +38,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2.2">
+                android:layout_weight="1.5">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -49,6 +50,54 @@
                     android:textSize="22sp" />
 
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.4"
+                android:layout_gravity="center"
+                android:gravity="center">
+
+               <LinearLayout
+                   android:id="@+id/lnrVideo"
+                   android:layout_width="30dp"
+                   android:layout_height="30dp"
+                   android:layout_gravity="center"
+                   android:gravity="center">
+
+                   <ImageView
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:src="@drawable/video_player"/>
+
+               </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.4"
+                android:layout_gravity="center"
+                android:gravity="center">
+
+                <LinearLayout
+                    android:id="@+id/lnrFlash"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="center"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/imgFlash"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/flash_off"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
 
 
             <LinearLayout

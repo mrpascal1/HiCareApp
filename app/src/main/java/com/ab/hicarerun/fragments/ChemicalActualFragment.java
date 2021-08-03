@@ -30,6 +30,7 @@ import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.ChemicalModel.Chemicals;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;
+import com.ab.hicarerun.utils.AppUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -66,6 +67,7 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
     private boolean isCombinedTask = false;
     private boolean showStandardChemicals = false;
     private boolean showBarcode = false;
+    private boolean isActivityThere = false;
     private String combineOrder = "";
     private String orderId = "";
 
@@ -144,16 +146,19 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
         if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
             showStandardChemicals = mGeneralRealmData.get(0).getShow_Standard_Chemicals();
             showBarcode = mGeneralRealmData.get(0).getShowBarcode();
+            isActivityThere = mGeneralRealmData.get(0).getServiceActivityRequired();
         }
 //        if (showStandardChemicals) {
 //            mFragmentChemicalInfoBinding.txtStandard.setVisibility(View.VISIBLE);
 //        } else {
 //            mFragmentChemicalInfoBinding.txtStandard.setVisibility(View.GONE);
 //        }
-        if (showBarcode) {
+        if (showBarcode && !isActivityThere && !(status.equals("Completed") || status.equals("Incomplete"))) {
             mFragmentChemicalInfoBinding.btnRodentScanner.setVisibility(View.VISIBLE);
+            AppUtils.IS_QRCODE_THERE = true;
         } else {
             mFragmentChemicalInfoBinding.btnRodentScanner.setVisibility(View.GONE);
+            AppUtils.IS_QRCODE_THERE = false;
         }
         mFragmentChemicalInfoBinding.txtStandard.setVisibility(View.VISIBLE);
         mFragmentChemicalInfoBinding.txtType.setVisibility(View.VISIBLE);

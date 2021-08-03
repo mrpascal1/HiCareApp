@@ -13,14 +13,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.BaseActivity
 import com.ab.hicarerun.BaseApplication
 import com.ab.hicarerun.R
-import com.ab.hicarerun.adapter.BarcodeAdapter
 import com.ab.hicarerun.adapter.BarcodeAdapter2
 import com.ab.hicarerun.databinding.ActivityBarcodeVerificatonBinding
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
-import com.ab.hicarerun.network.models.GeneralModel.GeneralData
+import com.ab.hicarerun.network.models.ConsulationModel.Data
 import com.ab.hicarerun.network.models.LoginResponse
-import com.ab.hicarerun.network.models.TSScannerModel.*
+import com.ab.hicarerun.network.models.TSScannerModel.BarcodeDetailsData
+import com.ab.hicarerun.network.models.TSScannerModel.BarcodeDetailsResponse
+import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse
 import com.ab.hicarerun.service.listner.LocationManagerListner
 import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.LocaleHelper
@@ -34,7 +35,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
     lateinit var barcodeAdapter: BarcodeAdapter2
     private var ARGS_COMBINE_ORDER = "ARGS_COMBINE_ORDER"
     private var ARGS_ORDER = "ARGS_ORDER"
-    private var ARGS_COMBINED_TASKS = "ARGS_COMBINED_TASKS"
+    private var ARGS_COMBINED_TASKS = "ARGS_IS_COMBINE"
     var empCode: Int? = null
     var orNo = ""
     var id: Int? = 0
@@ -70,6 +71,9 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         combineOrder = intent.getStringExtra(ARGS_COMBINE_ORDER).toString()
         order = intent.getStringExtra(ARGS_ORDER).toString()
         isCombinedTask = intent.getBooleanExtra(ARGS_COMBINED_TASKS, false)
+
+        Log.d("isCombine", combineOrder)
+        Log.d("isCombine", isCombinedTask.toString())
 
         val loginResponse: RealmResults<LoginResponse> = BaseApplication.getRealm().where(
                 LoginResponse::class.java).findAll()
@@ -142,8 +146,11 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                         BarcodeDetailsResponse(response.isSuccess, modelBarcodeList, response.errorMessage, response.param1, response.responseMessage)
                         if (modelBarcodeList.size > 0) {
                             binding.errorTv.visibility = View.GONE
+                            AppUtils.IS_QRCODE_THERE = isVerified(modelBarcodeList)
+
                         } else {
                             binding.errorTv.visibility = View.VISIBLE
+                            AppUtils.IS_QRCODE_THERE = false
                         }
                     }
                     barcodeAdapter.notifyDataSetChanged()
@@ -151,6 +158,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                     modelBarcodeList.clear()
                 }
             }
+
 
             override fun onFailure(requestCode: Int) {
                 modelBarcodeList.clear()
@@ -164,6 +172,16 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
             controller.getBarcodeOrderDetails(order, uId)
         }
 
+    }
+
+
+    private fun isVerified(listData: List<BarcodeDetailsData>): Boolean {
+        for (data in listData) {
+            if (data.isVerified == true) {
+                return false
+            }
+        }
+        return true
     }
 
     private fun modifyData(id: Int?, account_No: String?, order_No: String?, account_Name: String?,

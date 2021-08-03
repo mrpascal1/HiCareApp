@@ -72,9 +72,9 @@ public class NewAttachmentListAdapter extends RecyclerView.Adapter<NewAttachment
                     .error(android.R.drawable.stat_notify_error)
                     .into(holder.mAttachmentListAdapterBinding.imgJob);
 
-            if(status.equalsIgnoreCase("Completed")){
+            if (status.equalsIgnoreCase("Completed")) {
                 holder.mAttachmentListAdapterBinding.imgDelete.setVisibility(View.GONE);
-            }else {
+            } else {
                 holder.mAttachmentListAdapterBinding.imgDelete.setVisibility(View.VISIBLE);
             }
 
@@ -86,7 +86,7 @@ public class NewAttachmentListAdapter extends RecyclerView.Adapter<NewAttachment
             }
             holder.mAttachmentListAdapterBinding.txtTitle.setText(model.getFileName());
             holder.mAttachmentListAdapterBinding.imgDelete.setOnClickListener(v -> onItemClickHandler.onDeleteItemClicked(position));
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

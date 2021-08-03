@@ -738,7 +738,6 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                                 showNPSDialog();
                                             }
 
-
                                         } else {
                                             Toast.makeText(getActivity(), getResources().getString(R.string.attendance_failed_please_try_again), Toast.LENGTH_SHORT).show();
                                             getAllTasks();

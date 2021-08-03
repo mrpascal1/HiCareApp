@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -15,12 +16,15 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
@@ -109,6 +113,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -224,6 +230,10 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private String assignmentEndTime = "";
     private SlotsAdapter mSlotsAdapter;
     private boolean isBooked = false;
+    private CameraManager mCameraManager;
+    private String mCameraId;
+    private boolean isFlashOn = true;
+    private static int VIDEO_REQUEST = 100;
 
 
     public static ServiceInfoFragment newInstance(String taskId, String combinedTaskId, boolean isCombinedTasks, String combinedTypes, String combinedOrders, ServiceInfoListener mPostCallback) {
@@ -300,6 +310,12 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mCameraManager = (CameraManager) getActivity().getSystemService(Context.CAMERA_SERVICE);
+        try {
+            mCameraId = mCameraManager.getCameraIdList()[0];
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
         assert imm != null;
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
@@ -397,6 +413,37 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             @Override
             public void onClick(View view) {
                 showInstructionDialog(customerInstruction);
+            }
+        });
+
+        mFragmentServiceInfoBinding.lnrVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent videoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                if (videoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivityForResult(videoIntent, VIDEO_REQUEST);
+                }
+            }
+        });
+
+        mFragmentServiceInfoBinding.lnrFlash.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View v) {
+                try {
+                    if (isFlashOn) {
+                        mCameraManager.setTorchMode(mCameraId, true);
+                        isFlashOn = false;
+                        mFragmentServiceInfoBinding.imgFlash.setImageResource(R.drawable.flash_on);
+                    } else {
+                        mCameraManager.setTorchMode(mCameraId, false);
+                        isFlashOn = true;
+                        mFragmentServiceInfoBinding.imgFlash.setImageResource(R.drawable.flash_off);
+                    }
+
+                } catch (CameraAccessException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -561,7 +608,6 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     mFragmentServiceInfoBinding.btnPaymentJeopardy.setVisibility(GONE);
                     mFragmentServiceInfoBinding.lnrPaymentOTP.setVisibility(GONE);
                 }
-
 
                 if (isPaymentJeopardyRaised && sta.equals("On-Site")) {
                     getValidated(AmountToCollect);
@@ -1099,7 +1145,9 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     mFragmentServiceInfoBinding.imgUser.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            captureTechImage();
+                            if (status.equals("On-Site")) {
+                                captureTechImage();
+                            }
                         }
                     });
 
@@ -1525,24 +1573,43 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         try {
-            if (resultCode == RESULT_OK) {
-                if (requestCode == REQUEST_TAKE_PHOTO) {
-                    selectedImagePath = mPhotoFile.getPath();
-                    if (selectedImagePath != null || !selectedImagePath.equals("")) {
-                        Bitmap bit = new BitmapDrawable(getResources(),
-                                selectedImagePath).getBitmap();
-                        int i = (int) (bit.getHeight() * (1024.0 / bit.getWidth()));
-                        bitmap = Bitmap.createScaledBitmap(bit, 1024, i, true);
-                    }
-
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                    byte[] b = baos.toByteArray();
-                    String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-//                    uploadOnsiteImage(encodedImage, info.mFragmentServiceInfoBinding.imgUser);
-                    alertDialog.dismiss();
-
+            if (resultCode == RESULT_OK && requestCode == REQUEST_TAKE_PHOTO) {
+                selectedImagePath = mPhotoFile.getPath();
+                if (selectedImagePath != null || !selectedImagePath.equals("")) {
+                    Bitmap bit = new BitmapDrawable(getResources(),
+                            selectedImagePath).getBitmap();
+                    int i = (int) (bit.getHeight() * (1024.0 / bit.getWidth()));
+                    bitmap = Bitmap.createScaledBitmap(bit, 1024, i, true);
                 }
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                byte[] b = baos.toByteArray();
+                String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+//                    uploadOnsiteImage(encodedImage, info.mFragmentServiceInfoBinding.imgUser);
+                alertDialog.dismiss();
+
+            } else if (requestCode == VIDEO_REQUEST && resultCode == RESULT_OK) {
+                AssetFileDescriptor videoAsset = getActivity().getContentResolver().openAssetFileDescriptor(data.getData(), "r");
+                FileInputStream fis = videoAsset.createInputStream();
+                File root = new File(Environment.getExternalStorageDirectory(), "/InspectionVideo/");  //you can replace RecordVideo by the specific folder where you want to save the video
+                if (!root.exists()) {
+                    System.out.println("No directory");
+                    root.mkdirs();
+                }
+
+                File file;
+                file = new File(root, "android_" + System.currentTimeMillis() + ".mp4");
+
+                FileOutputStream fos = new FileOutputStream(file);
+
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = fis.read(buf)) > 0) {
+                    fos.write(buf, 0, len);
+                }
+                fis.close();
+                fos.close();
             }
 
         } catch (Exception e) {
