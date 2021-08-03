@@ -95,4 +95,18 @@ public class QuizAnswer {
     public void setIsSelected(Boolean isSelected) {
         this.isSelected = isSelected;
     }
+
+    @Override
+    public String toString() {
+        return "QuizAnswer{" +
+                "optionId=" + optionId +
+                ", optionType='" + optionType + '\'' +
+                ", optionTypeId=" + optionTypeId +
+                ", optionTitle='" + optionTitle + '\'' +
+                ", optionDescription='" + optionDescription + '\'' +
+                ", optionValue='" + optionValue + '\'' +
+                ", optionUrl='" + optionUrl + '\'' +
+                ", isSelected=" + isSelected +
+                '}';
+    }
 }

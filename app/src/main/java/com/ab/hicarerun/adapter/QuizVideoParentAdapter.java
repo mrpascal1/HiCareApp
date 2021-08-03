@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LayoutQuizParentAdapterBinding;
 import com.ab.hicarerun.handler.OnConsultationClickHandler;
+import com.ab.hicarerun.handler.OnOptionClickListener;
 import com.ab.hicarerun.network.models.QuizModel.QuizAnswer;
 import com.ab.hicarerun.network.models.QuizModel.QuizData;
 import com.ab.hicarerun.network.models.QuizModel.VideoDependentQuest;
@@ -28,6 +29,7 @@ import java.util.List;
 
 public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParentAdapter.ViewHolder> {
     private OnConsultationClickHandler onItemClickHandler;
+    private OnOptionClickListener onOptionClickListener = null;
     private final Context mContext;
     private List<VideoDependentQuest> items = null;
     private HashMap<Integer, String> checkItems = null;
@@ -35,6 +37,7 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
     private OnOptionClicked onOptionClicked;
     private int selectedPos = -1;
     private List<QuizAnswer> answerList = null;
+    int index = 0;
 
     public QuizVideoParentAdapter(Context context, OnOptionClicked onOptionClicked) {
         if (items == null) {
@@ -47,7 +50,7 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
         if (checkItems == null) {
             checkItems = new HashMap<>();
         }
-        this.onOptionClicked = null;
+        this.onOptionClicked = onOptionClicked;
         this.mContext = context;
     }
 
@@ -67,7 +70,7 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
             QuizVideoChildAdapter childAdapter = new QuizVideoChildAdapter(mContext, (position1, option) -> {
                 String optionValue = items.get(position).getOptions().get(position1).getOptionValue();
 
-                if (true) {
+                /*if (true) {
                     String newAppendValue = (checkItems.get(position) != null) ? checkItems.get(position) + "," + optionValue : optionValue;
                     checkItems.put(position, newAppendValue);
                     Log.d("Parent_Position", String.valueOf(position));
@@ -83,28 +86,35 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
 
                 strAnswer = (checkItems.get(position) == null) ? "" : checkItems.get(position);
                 Log.d("Parent_Position", "Final Value : " + strAnswer);
-                onOptionClicked.onClicked(position, optionValue);
+                onOptionClicked.onClicked(position, optionValue);*/
             });
 
             holder.mLayoutQuizParentAdapterBinding.recycleView.setLayoutManager(new LinearLayoutManager(mContext));
             holder.mLayoutQuizParentAdapterBinding.recycleView.setHasFixedSize(true);
             holder.mLayoutQuizParentAdapterBinding.recycleView.setClipToPadding(false);
-            holder.mLayoutQuizParentAdapterBinding.recycleView.setAdapter(childAdapter);
             if (items.get(position).getOptions() != null && items.get(position).getOptions().size() > 0) {
                 childAdapter.addData(items.get(position).getOptions(), items.get(position).getPuzzleQuestionSelectionType(), answerList);
                 Log.d("Parent_Position-Radio", "Final Value : " + strAnswer);
-                childAdapter.setOnItemClickHandler(positionChild -> {
-                    if (items.get(position).getPuzzleQuestionSelectionType().equals("Radio")) {
-                        onOptionClicked.onClicked(position, childAdapter.getItem(positionChild).getOptionTitle());
-                        childAdapter.getItem(positionChild).setIsSelected(true);
-                        childAdapter.notifyItemChanged(position);
-                        Log.d("TAG-pos", position+"");
-                    } else {
-                        onOptionClicked.onClicked(position, strAnswer);
-                        childAdapter.getItem(positionChild).setIsSelected(true);
-                    }
-                });
             }
+            holder.mLayoutQuizParentAdapterBinding.recycleView.setAdapter(childAdapter);
+
+            childAdapter.setOnOptionClickListener(((position1, quizOption, title, optionType) -> {
+                //Log.d("Listener", position1 + "" + quizOption + "" + optionType);
+                onOptionClickListener.onItemClick(position1, quizOption, holder.mLayoutQuizParentAdapterBinding.txtQuestion.getText().toString().trim(), optionType);
+//                childAdapter.updateAnswers(answerList);
+            }));
+            childAdapter.setOnItemClickHandler(positionChild -> {
+                if (items.get(position).getPuzzleQuestionSelectionType().equals("Radio")) {
+                    //onOptionClicked.onClicked(position, childAdapter.getItem(position).getOptionTitle());
+                    childAdapter.getItem(positionChild).setIsSelected(true);
+                    //childAdapter.notifyItemChanged(position);
+
+                } else {
+                    //childAdapter.notifyItemChanged(position);
+                    //onOptionClicked.onClicked(position, strAnswer);
+                    childAdapter.getItem(positionChild).setIsSelected(true);
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -118,6 +128,10 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
         this.onOptionClicked = onOptionClicked;
     }
 
+    public void setOnOptionClickListener(OnOptionClickListener onOptionClickListener){
+        this.onOptionClickListener = onOptionClickListener;
+    }
+
     @Override
     public int getItemCount() {
         return items.size();
@@ -127,9 +141,14 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
         return items.get(position);
     }
 
-    public void setData(List<VideoDependentQuest> data, List<QuizAnswer> correctAnswers) {
+    public void setData(VideoDependentQuest data, List<QuizAnswer> correctAnswers) {
         items.clear();
-        items.addAll(data);
+        items.add(data);
+        answerList.addAll(correctAnswers);
+    }
+
+    public void updateAnswers(List<QuizAnswer> correctAnswers){
+        answerList.clear();
         answerList.addAll(correctAnswers);
     }
 

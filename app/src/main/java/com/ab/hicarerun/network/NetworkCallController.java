@@ -84,8 +84,13 @@ import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
 import com.ab.hicarerun.network.models.ProductModel.ProductResponse;
 import com.ab.hicarerun.network.models.ProfileModel.TechnicianProfileDetails;
+import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLeaderBoardBase;
+import com.ab.hicarerun.network.models.QuizLevelModel.QuizLevelModelBase;
 import com.ab.hicarerun.network.models.QuizModel.QuizCategoryResponse;
+import com.ab.hicarerun.network.models.QuizModel.QuizPuzzleStats;
 import com.ab.hicarerun.network.models.QuizModel.QuizResponse;
+import com.ab.hicarerun.network.models.QuizModel.QuizSaveAnswers;
+import com.ab.hicarerun.network.models.QuizSaveModel.QuizSaveResponseBase;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralDeleteRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralListResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralRequest;
@@ -4816,6 +4821,72 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<BaseResponse> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void getPuzzleStatsForRes(int requestCode, String resourceId) {
+        BaseApplication.getRetrofitAPI(false)
+                .getPuzzleStatsForResources(resourceId)
+                .enqueue(new Callback<QuizPuzzleStats>() {
+                    @Override
+                    public void onResponse(Call<QuizPuzzleStats> call, Response<QuizPuzzleStats> response) {
+                        if (response.body() != null) {
+                            mListner.onResponse(requestCode, response.body());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<QuizPuzzleStats> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void getPuzzleLeaderBoard(int requestCode, String resourceId) {
+        BaseApplication.getRetrofitAPI(false)
+                .getPuzzleLeaderBoard(resourceId)
+                .enqueue(new Callback<QuizLeaderBoardBase>() {
+                    @Override
+                    public void onResponse(Call<QuizLeaderBoardBase> call, Response<QuizLeaderBoardBase> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<QuizLeaderBoardBase> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void getPuzzleLevel(int requestCode, String resourceId) {
+        BaseApplication.getRetrofitAPI(false)
+                .getPuzzleLevelModel(resourceId)
+                .enqueue(new Callback<QuizLevelModelBase>(){
+                    @Override
+                    public void onResponse(Call<QuizLevelModelBase> call, Response<QuizLevelModelBase> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<QuizLevelModelBase> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void savePuzzleAnswers(int requestCode, List<QuizSaveAnswers> quizSaveAnswers) {
+        BaseApplication.getRetrofitAPI(false)
+                .savePuzzleAnswers(quizSaveAnswers)
+                .enqueue(new Callback<QuizSaveResponseBase>(){
+                    @Override
+                    public void onResponse(Call<QuizSaveResponseBase> call, Response<QuizSaveResponseBase> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<QuizSaveResponseBase> call, Throwable t) {
                         mListner.onFailure(requestCode);
                     }
                 });

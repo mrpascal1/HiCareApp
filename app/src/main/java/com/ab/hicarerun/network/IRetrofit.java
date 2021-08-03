@@ -51,7 +51,6 @@ import com.ab.hicarerun.network.models.LeaderBoardModel.RewardLeadersResponse;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
-import com.ab.hicarerun.network.models.MenuModel.MenuResponse;
 import com.ab.hicarerun.network.models.ModelQRCode.CheckCodeResponse;
 import com.ab.hicarerun.network.models.ModelQRCode.CheckPhonePeResponse;
 import com.ab.hicarerun.network.models.ModelQRCode.PhonePeQRCodeResponse;
@@ -72,8 +71,13 @@ import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
 import com.ab.hicarerun.network.models.ProductModel.ProductResponse;
 import com.ab.hicarerun.network.models.ProfileModel.TechnicianProfileDetails;
+import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLeaderBoardBase;
+import com.ab.hicarerun.network.models.QuizLevelModel.QuizLevelModelBase;
 import com.ab.hicarerun.network.models.QuizModel.QuizCategoryResponse;
+import com.ab.hicarerun.network.models.QuizModel.QuizPuzzleStats;
 import com.ab.hicarerun.network.models.QuizModel.QuizResponse;
+import com.ab.hicarerun.network.models.QuizModel.QuizSaveAnswers;
+import com.ab.hicarerun.network.models.QuizSaveModel.QuizSaveResponseBase;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralDeleteRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralListResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralRequest;
@@ -127,11 +131,11 @@ public interface IRetrofit {
     //    String ERROR_LOG_URL = "http://52.74.65.15/logging/api/";
     //    http://apps.hicare.in/cwf/datasync/InsertRenewalAppJeopardy;
     String BASE_URL = "http://api.hicare.in/mobile/api/";
-    String SCAN_URL = "http://api.hicare.in/taskservice/api/";
+    String SCAN_URL = "http://run.hicare.in/taskservice/api/";
     String EXOTEL_URL = "http://apps.hicare.in/api/api/";
     String ERROR_LOG_URL = "http://api.hicare.in/logging/api/";
     String JEOPARDY_URL = "http://apps.hicare.in/cwf/";
-    String SLOT_URL = "http://api.hicare.in/slot/api/";
+    String SLOT_URL = "http://run.hicare.in/slot/api/";
     String UAT = "http://api.hicare.in/Mobile/api/";
     String B2B_URL = "http://connect.hicare.in/b2bwow/api/";
 
@@ -552,7 +556,15 @@ public interface IRetrofit {
     @POST("Integration/UpdateServiceActivityStatus")
     Call<BaseResponse> updateActivityServiceStatus(@Body List<SaveServiceActivity> requests);
 
-    @GET("resourceactivity/GetResourceMenu")
-    Call<MenuResponse> getResourceMenu(@Query("resourceId") String resourceId);
+    @GET("Puzzle/GetPuzzleStatsForResource")
+    Call<QuizPuzzleStats> getPuzzleStatsForResources(@Query("resourceId") String resourceId);
 
+    @GET("Puzzle/GetPuzzleLeaderBoard")
+    Call<QuizLeaderBoardBase> getPuzzleLeaderBoard(@Query("resourceId") String resourceId);
+
+    @GET("Puzzle/GetPuzzleLevelModel")
+    Call<QuizLevelModelBase> getPuzzleLevelModel(@Query("resourceId") String resourceId);
+
+    @POST("Puzzle/SavePuzzleAnswers")
+    Call<QuizSaveResponseBase> savePuzzleAnswers(@Body List<QuizSaveAnswers> quizSaveAnswers);
 }

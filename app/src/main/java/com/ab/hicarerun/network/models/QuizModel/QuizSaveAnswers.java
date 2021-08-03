@@ -84,4 +84,16 @@ public class QuizSaveAnswers {
     public void setPoints(Integer points) {
         this.points = points;
     }
+
+    @Override
+    public String toString() {
+        return "QuizSaveAnswers{" +
+                "puzzleId=" + puzzleId +
+                ", puzzleQuestionId=" + puzzleQuestionId +
+                ", correctAnswerIds='" + correctAnswerIds + '\'' +
+                ", resourceGivenAnswerIds='" + resourceGivenAnswerIds + '\'' +
+                ", resourceId='" + resourceId + '\'' +
+                ", points=" + points +
+                '}';
+    }
 }

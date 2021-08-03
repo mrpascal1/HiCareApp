@@ -3,28 +3,21 @@ package com.ab.hicarerun.adapter;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LayoutOptionAdapterBinding;
-import com.ab.hicarerun.databinding.QuizCategoryAdapterBinding;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
 import com.ab.hicarerun.handler.OnOptionClickListener;
 import com.ab.hicarerun.network.models.QuizModel.QuizAnswer;
-import com.ab.hicarerun.network.models.QuizModel.QuizCategoryData;
-import com.ab.hicarerun.network.models.QuizModel.QuizData;
 import com.ab.hicarerun.network.models.QuizModel.QuizOption;
-import com.ab.hicarerun.viewmodel.QuizCategoryViewModel;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
@@ -45,6 +38,8 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
     private String optionType = "";
     int correctAnswers = 0;
     int correctAnsPos = -1;
+    String whichType = "";
+    String dataType = "";
     boolean isWrongSelected = false;
 
     boolean isRadioAndText = false;
@@ -153,6 +148,8 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
 //            Picasso.get().load(items.get(position).getPuzzleUrl()).into(holder.mQuizCategoryAdapterBinding.imgCategory);
             if (optionType.equalsIgnoreCase("Radio") && items.get(position).getOptionType().equalsIgnoreCase("Text")) {
                 Log.d("TAG-Which", "1");
+                whichType = "radio";
+                dataType = "text";
                 holder.mLayoutOptionAdapterBinding.lnrRadio.setVisibility(View.VISIBLE);
                 holder.mLayoutOptionAdapterBinding.lnrCheck.setVisibility(View.GONE);
                 holder.mLayoutOptionAdapterBinding.lnrImgOption.setVisibility(View.GONE);
@@ -163,6 +160,8 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
                 isCheckboxAndImage = false;
             } else if (optionType.equalsIgnoreCase("Radio") && items.get(position).getOptionType().equalsIgnoreCase("Image")) {
                 Log.d("TAG-Which", "2");
+                whichType = "radio";
+                dataType = "image";
                 holder.mLayoutOptionAdapterBinding.lnrRadio.setVisibility(View.GONE);
                 holder.mLayoutOptionAdapterBinding.lnrCheck.setVisibility(View.GONE);
                 holder.mLayoutOptionAdapterBinding.lnrImgOption.setVisibility(View.VISIBLE);
@@ -173,6 +172,8 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
                 isCheckboxAndImage = false;
             } else if (optionType.equalsIgnoreCase("Checkbox") && items.get(position).getOptionType().equalsIgnoreCase("Image")) {
                 Log.d("TAG-Which", "3");
+                whichType = "checkbox";
+                dataType = "image";
                 isCheckboxAndImage = true;
                 isRadioAndText = false;
                 isRadioAndImage = false;
@@ -183,6 +184,8 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
                 Picasso.get().load(items.get(position).getOptionUrl()).into(holder.mLayoutOptionAdapterBinding.imgOption);
             } else if (optionType.equalsIgnoreCase("Checkbox") && items.get(position).getOptionType().equalsIgnoreCase("Text")) {
                 Log.d("TAG-Which", "4");
+                whichType = "checkbox";
+                dataType = "text";
                 holder.mLayoutOptionAdapterBinding.lnrRadio.setVisibility(View.GONE);
                 holder.mLayoutOptionAdapterBinding.lnrCheck.setVisibility(View.VISIBLE);
                 holder.mLayoutOptionAdapterBinding.lnrImgOption.setVisibility(View.GONE);
@@ -195,6 +198,7 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
 //            holder.itemView.setOnClickListener(view -> onItemClickHandler.onItemClick(position));
 
             holder.mLayoutOptionAdapterBinding.cardImage.setOnClickListener(view -> {
+                onOptionClickListener.onItemClick(position, items.get(position), "", whichType);
                 for (QuizAnswer ans : answerList) {
                     if (items.get(position).getOptionTitle().equalsIgnoreCase(ans.getOptionTitle())) {
                         holder.mLayoutOptionAdapterBinding.lnrImgOption.setBackground(mContext.getResources().getDrawable(R.drawable.option_right_border));
@@ -216,6 +220,7 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
                 holder.mLayoutOptionAdapterBinding.checkOption.setChecked(true);
                 holder.mLayoutOptionAdapterBinding.checkOption.setEnabled(false);
                 holder.itemView.setEnabled(false);
+                onOptionClickListener.onItemClick(position, items.get(position), "", whichType);
                 for (QuizAnswer ans : answerList) {
                     if (items.get(position).getOptionValue().equalsIgnoreCase(ans.getOptionValue())) {
                         holder.mLayoutOptionAdapterBinding.lnrCheck.setBackground(mContext.getResources().getDrawable(R.drawable.option_right_border));
@@ -234,6 +239,7 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
                 isRadioOptionSelected = 1;
                 selectedPos = position;
                 holder.mLayoutOptionAdapterBinding.radioOption.setChecked(true);
+                onOptionClickListener.onItemClick(position, items.get(position), "", whichType);
                 for (QuizAnswer ans : answerList) {
                     if (items.get(position).getOptionValue().equalsIgnoreCase(ans.getOptionValue())) {
                         correctAnswers++;
@@ -252,6 +258,7 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
                 isCheckOptionSelected = true;
                 holder.mLayoutOptionAdapterBinding.imgOption.setEnabled(false);
                 holder.itemView.setEnabled(false);
+                onOptionClickListener.onItemClick(position, items.get(position), "", whichType);
                 for (QuizAnswer ans : answerList) {
                     if (items.get(position).getOptionValue().equalsIgnoreCase(ans.getOptionValue())) {
                         holder.mLayoutOptionAdapterBinding.lnrImgOption.setBackground(mContext.getResources().getDrawable(R.drawable.option_right_border));
@@ -267,7 +274,7 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
 
             holder.itemView.setOnClickListener(view -> {
                 selectedPos = position;
-                onOptionClickListener.onItemClick(position, items.get(position));
+                onOptionClickListener.onItemClick(position, items.get(position), "", whichType);
                 if (optionType.equalsIgnoreCase("Radio")) {
                     isRadioOptionSelected = 1;
                     holder.mLayoutOptionAdapterBinding.radioOption.setChecked(true);
@@ -314,10 +321,34 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
                         }
                     }
                     notifyDataSetChanged();
+                }else if (optionType.equalsIgnoreCase("Radio") && items.get(position).getOptionType().equalsIgnoreCase("Image")) {
+                    //isCheckOptionSelected = true;
+                    isRadioOptionSelected = 1;
+                    holder.mLayoutOptionAdapterBinding.radioOption.setChecked(true);
+                    holder.mLayoutOptionAdapterBinding.imgOption.setEnabled(false);
+                    holder.itemView.setEnabled(false);
+                    for (QuizAnswer ans : answerList) {
+                        if (items.get(position).getOptionValue().equalsIgnoreCase(ans.getOptionValue())) {
+                            holder.mLayoutOptionAdapterBinding.lnrImgOption.setBackground(mContext.getResources().getDrawable(R.drawable.option_right_border));
+                            isWrongSelected = false;
+                        } else {
+                            holder.mLayoutOptionAdapterBinding.lnrImgOption.setBackground(mContext.getResources().getDrawable(R.drawable.option_wrong_border));
+                            isWrongSelected = true;
+                        }
+                    }
+                    notifyDataSetChanged();
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void showCorrect(){
+        if (whichType.equalsIgnoreCase("radio")){
+            isRadioOptionSelected = 1;
+            isWrongSelected = true;
+            notifyDataSetChanged();
         }
     }
 
