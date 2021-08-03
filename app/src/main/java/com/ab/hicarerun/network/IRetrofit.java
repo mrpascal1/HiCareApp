@@ -71,9 +71,13 @@ import com.ab.hicarerun.network.models.PayementModel.PaymentLinkRequest;
 import com.ab.hicarerun.network.models.PayementModel.PaymentLinkResponse;
 import com.ab.hicarerun.network.models.ProductModel.ProductResponse;
 import com.ab.hicarerun.network.models.ProfileModel.TechnicianProfileDetails;
+import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLeaderBoardBase;
+import com.ab.hicarerun.network.models.QuizLevelModel.QuizLevelModelBase;
 import com.ab.hicarerun.network.models.QuizModel.QuizCategoryResponse;
 import com.ab.hicarerun.network.models.QuizModel.QuizPuzzleStats;
 import com.ab.hicarerun.network.models.QuizModel.QuizResponse;
+import com.ab.hicarerun.network.models.QuizModel.QuizSaveAnswers;
+import com.ab.hicarerun.network.models.QuizSaveModel.QuizSaveResponseBase;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralDeleteRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralListResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralRequest;
@@ -554,4 +558,13 @@ public interface IRetrofit {
 
     @GET("Puzzle/GetPuzzleStatsForResource")
     Call<QuizPuzzleStats> getPuzzleStatsForResources(@Query("resourceId") String resourceId);
+
+    @GET("Puzzle/GetPuzzleLeaderBoard")
+    Call<QuizLeaderBoardBase> getPuzzleLeaderBoard(@Query("resourceId") String resourceId);
+
+    @GET("Puzzle/GetPuzzleLevelModel")
+    Call<QuizLevelModelBase> getPuzzleLevelModel(@Query("resourceId") String resourceId);
+
+    @POST("Puzzle/SavePuzzleAnswers")
+    Call<QuizSaveResponseBase> savePuzzleAnswers(@Body List<QuizSaveAnswers> quizSaveAnswers);
 }

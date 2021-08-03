@@ -1,9 +1,9 @@
 package com.ab.hicarerun.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,8 +15,8 @@ import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ActivityQuizCategoryBinding;
 import com.ab.hicarerun.fragments.FragmentQuizCategory;
-import com.ab.hicarerun.fragments.KarmaFragment;
 import com.ab.hicarerun.fragments.KarmaVideoFragment;
+import com.ab.hicarerun.fragments.QuizFragment;
 
 import java.util.Objects;
 
@@ -43,6 +43,11 @@ public class ActivityQuizCategory extends BaseActivity {
             window.setStatusBarColor(ContextCompat.getColor(this,R.color.colorPurple));
         }
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
+        mActivityQuizCategoryBinding.leaderBoardIv.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), QuizLeaderBoardActivity.class);
+            startActivity(intent);
+        });
     }
 
     @Override

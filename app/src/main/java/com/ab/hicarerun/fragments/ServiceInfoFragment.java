@@ -275,6 +275,14 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 new IntentFilter("Onsite-Image"));
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (status.equalsIgnoreCase("Dispatched")){
+            showInstructionDialog(customerInstruction);
+        }
+    }
+
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
