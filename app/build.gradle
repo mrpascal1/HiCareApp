@@ -16,13 +16,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     defaultConfig {
         applicationId "com.ab.hicarerun"
         minSdkVersion 21
-        targetSdkVersion 30
-        versionCode 58
-        versionName "7.1"
+        targetSdkVersion 31
+        versionCode 61
+        versionName "7.4"
         multiDexEnabled true
         dynamicFeatures = [":ondemand"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

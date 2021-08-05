@@ -232,7 +232,6 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private boolean isBooked = false;
     private CameraManager mCameraManager;
     private String mCameraId;
-    private boolean isFlashOn = true;
     private static int VIDEO_REQUEST = 100;
 
 
@@ -288,7 +287,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     @Override
     public void onResume() {
         super.onResume();
-        if (status.equalsIgnoreCase("Dispatched")){
+        if (status.equalsIgnoreCase("Dispatched") && mTaskDetailsData.get(0).getCustomer_Instructions() != null){
             showInstructionDialog(customerInstruction);
         }
     }
@@ -315,6 +314,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
         return mFragmentServiceInfoBinding.getRoot();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -324,6 +324,13 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+        try {
+            mCameraManager.setTorchMode(mCameraId, false);
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+        AppUtils.IS_FLASH_ON = true;
+        mFragmentServiceInfoBinding.imgFlash.setImageResource(R.drawable.flash_off);
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
         assert imm != null;
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
@@ -439,13 +446,13 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             @Override
             public void onClick(View v) {
                 try {
-                    if (isFlashOn) {
+                    if (AppUtils.IS_FLASH_ON) {
                         mCameraManager.setTorchMode(mCameraId, true);
-                        isFlashOn = false;
+                        AppUtils.IS_FLASH_ON = false;
                         mFragmentServiceInfoBinding.imgFlash.setImageResource(R.drawable.flash_on);
                     } else {
                         mCameraManager.setTorchMode(mCameraId, false);
-                        isFlashOn = true;
+                        AppUtils.IS_FLASH_ON = true;
                         mFragmentServiceInfoBinding.imgFlash.setImageResource(R.drawable.flash_off);
                     }
 
@@ -2836,6 +2843,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -2843,6 +2851,13 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
         if (hasStarted) {
             timer.cancel();
         }
+        try {
+            mCameraManager.setTorchMode(mCameraId, false);
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+        AppUtils.IS_FLASH_ON = true;
+        mFragmentServiceInfoBinding.imgFlash.setImageResource(R.drawable.flash_off);
     }
 
     public interface ServiceInfoListener {
