@@ -9,5 +9,7 @@ data class QuizSaveResponseData(
     @SerializedName("CurrentLevelId") val currentLevelId : Int?,
     @SerializedName("UpgradedLevelId") val upgradedLevelId : Int?,
     @SerializedName("CurrentLevelName") val currentLevelName : String?,
-    @SerializedName("UpgradedLevelName") val upgradedLevelName : String?
+    @SerializedName("CurrentIconUrl") val currentIconUrl : String?,
+    @SerializedName("UpgradedLevelName") val upgradedLevelName : String?,
+    @SerializedName("UpgradedIconUrl") val upgradedIconUrl : String?
 )

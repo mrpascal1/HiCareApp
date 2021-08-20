@@ -47,6 +47,23 @@
 
                 </RelativeLayout>
 
+            <TextView
+                android:id="@+id/levelUpgrdTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:layout_below="@id/imageView6"
+                android:fontFamily="@font/roboto_bold"
+                android:text="LEVEL UPGRADE!"
+                android:textColor="@color/red"
+                android:textSize="28sp"
+                app:layout_constraintEnd_toEndOf="@+id/imageView6"
+                app:layout_constraintStart_toStartOf="@+id/imageView6"
+                app:layout_constraintTop_toBottomOf="@+id/imageView6"
+                android:visibility="gone"/>
+
                 <TextView
                     android:id="@+id/messageTv"
                     android:layout_width="wrap_content"
@@ -54,14 +71,14 @@
                     android:layout_marginTop="16dp"
                     android:layout_centerHorizontal="true"
                     android:gravity="center"
-                    android:layout_below="@id/imageView6"
+                    android:layout_below="@id/levelUpgrdTv"
                     android:fontFamily="@font/roboto_bold"
                     android:text="Congratulations!"
                     android:textColor="@android:color/black"
                     android:textSize="28sp"
-                    app:layout_constraintEnd_toEndOf="@+id/imageView6"
-                    app:layout_constraintStart_toStartOf="@+id/imageView6"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView6" />
+                    app:layout_constraintEnd_toEndOf="@+id/levelUpgrdTv"
+                    app:layout_constraintStart_toStartOf="@+id/levelUpgrdTv"
+                    app:layout_constraintTop_toBottomOf="@+id/levelUpgrdTv" />
 
                 <TextView
                     android:id="@+id/textView8"

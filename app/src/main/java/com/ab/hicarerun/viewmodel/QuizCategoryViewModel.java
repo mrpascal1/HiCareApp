@@ -15,6 +15,8 @@ public class QuizCategoryViewModel implements Parcelable {
     private String puzzleTitle;
     private String puzzleDescription;
     private String puzzleUrl;
+    private Integer completionPecentage;
+    private boolean isCompleted;
     private boolean isPuzzleSubmitted;
     private String completionDateTime;
 
@@ -26,6 +28,8 @@ public class QuizCategoryViewModel implements Parcelable {
         this.puzzleUrl = "NA";
         this.isPuzzleSubmitted = false;
         this.completionDateTime = "NA";
+        this.completionPecentage = 0;
+        this.isCompleted = false;
     }
 
     protected QuizCategoryViewModel(Parcel in) {
@@ -36,6 +40,8 @@ public class QuizCategoryViewModel implements Parcelable {
         puzzleUrl = in.readString();
         isPuzzleSubmitted = in.readByte() != 0;
         completionDateTime = in.readString();
+        completionPecentage = in.readInt();
+        isCompleted = in.readByte() != 0;
     }
 
     public static final Creator<QuizCategoryViewModel> CREATOR = new Creator<QuizCategoryViewModel>() {
@@ -49,6 +55,22 @@ public class QuizCategoryViewModel implements Parcelable {
             return new QuizCategoryViewModel[size];
         }
     };
+
+    public Integer getCompletionPecentage() {
+        return completionPecentage;
+    }
+
+    public void setCompletionPecentage(Integer completionPecentage) {
+        this.completionPecentage = completionPecentage;
+    }
+
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
+    public void setCompleted(boolean completed) {
+        isCompleted = completed;
+    }
 
     public int getPuzzleId() {
         return puzzleId;
@@ -120,6 +142,8 @@ public class QuizCategoryViewModel implements Parcelable {
         parcel.writeString(puzzleUrl);
         parcel.writeByte((byte) (isPuzzleSubmitted ? 1 : 0));
         parcel.writeString(completionDateTime);
+        parcel.writeInt(completionPecentage);
+        parcel.writeByte((byte) (isCompleted ? 1 : 0));
     }
 
     public void clone(QuizCategoryData data) {
@@ -130,5 +154,7 @@ public class QuizCategoryViewModel implements Parcelable {
         this.puzzleUrl = data.getPuzzleImageUrl();
         this.isPuzzleSubmitted = data.getIsPuzzleSubmitted();
         this.completionDateTime = data.getPuzzleDescription();
+        this.completionPecentage = data.getCompletionPecentage();
+        this.isCompleted = data.getCompleted();
     }
 }

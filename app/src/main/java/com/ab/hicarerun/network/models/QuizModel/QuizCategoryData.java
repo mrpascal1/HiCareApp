@@ -31,9 +31,39 @@ public class QuizCategoryData {
     @SerializedName("IsPuzzleSubmitted")
     @Expose
     private Boolean isPuzzleSubmitted;
+    @SerializedName("CompletionPecentage")
+    @Expose
+    private Integer completionPecentage;
+    @SerializedName("IsCompleted")
+    @Expose
+    private Boolean isCompleted;
     @SerializedName("CompletionDateTime")
     @Expose
     private Object completionDateTime;
+
+    public Boolean getPuzzleSubmitted() {
+        return isPuzzleSubmitted;
+    }
+
+    public void setPuzzleSubmitted(Boolean puzzleSubmitted) {
+        isPuzzleSubmitted = puzzleSubmitted;
+    }
+
+    public Integer getCompletionPecentage() {
+        return completionPecentage;
+    }
+
+    public void setCompletionPecentage(Integer completionPecentage) {
+        this.completionPecentage = completionPecentage;
+    }
+
+    public Boolean getCompleted() {
+        return isCompleted;
+    }
+
+    public void setCompleted(Boolean completed) {
+        isCompleted = completed;
+    }
 
     public Integer getPuzzleId() {
         return puzzleId;

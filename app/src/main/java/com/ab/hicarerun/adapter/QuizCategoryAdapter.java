@@ -53,6 +53,14 @@ public class QuizCategoryAdapter extends RecyclerView.Adapter<QuizCategoryAdapte
     @Override
     public void onBindViewHolder(@NotNull ViewHolder holder, final int position) {
         try {
+            holder.mQuizCategoryAdapterBinding.pTitleTv.setText(items.get(position).getPuzzleTitle());
+            holder.mQuizCategoryAdapterBinding.isCompletedCheck.setVisibility(View.VISIBLE);
+
+/*            if (items.get(position).isCompleted()){
+            }else {
+                holder.mQuizCategoryAdapterBinding.isCompletedCheck.setVisibility(View.GONE);
+            }*/
+            holder.mQuizCategoryAdapterBinding.pProgress.setProgress(items.get(position).getCompletionPecentage());
             Picasso.get().load(items.get(position).getPuzzleUrl()).into(holder.mQuizCategoryAdapterBinding.imgCategory);
             holder.mQuizCategoryAdapterBinding.txtTitle.setText(items.get(position).getPuzzleTitle());
             holder.itemView.setOnClickListener(view -> onItemClickHandler.onItemClick(position));

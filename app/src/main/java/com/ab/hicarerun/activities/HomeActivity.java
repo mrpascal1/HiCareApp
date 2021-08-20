@@ -171,11 +171,13 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
-        try {
-            mCameraManager.setTorchMode(mCameraId, false);
+        /*try {
+            if (!Build.MODEL.contains("Emulator")){
+                mCameraManager.setTorchMode(mCameraId, false);
+            }
         } catch (CameraAccessException e) {
             e.printStackTrace();
-        }
+        }*/
         AppUtils.IS_FLASH_ON = true;
         mActivityHomeBinding.toolbar.imgFlash.setImageResource(R.drawable.flash_off);
         mActivityHomeBinding.toolbar.lnrDrawer.setOnClickListener(view -> mActivityHomeBinding.drawer.openDrawer(GravityCompat.START));
@@ -966,11 +968,11 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        try {
+        /*try {
             mCameraManager.setTorchMode(mCameraId, false);
         } catch (CameraAccessException e) {
             e.printStackTrace();
-        }
+        }*/
         AppUtils.IS_FLASH_ON = true;
         mActivityHomeBinding.toolbar.imgFlash.setImageResource(R.drawable.flash_off);
     }

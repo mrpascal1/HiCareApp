@@ -1,8 +1,10 @@
 package com.ab.hicarerun.activities;
 
+import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle;
 import android.view.WindowManager
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.R;
@@ -29,6 +31,21 @@ class QuizActivity : BaseActivity() {
         val intent = intent
         val puzzleId = intent.getIntExtra("puzzleId", -1)
         replaceFragment(QuizFragment.newInstance(puzzleId), "QuizActivity - QuizFragment")
+    }
+
+    private fun showQuitDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Quiz Alert")
+        builder.setMessage("Are you sure you want to quit the game?")
+        builder.setPositiveButton("Quit") { dialog: DialogInterface, which: Int ->
+            dialog.cancel()
+            finish()
+        }
+        builder.setNegativeButton("Cancel") { dialog: DialogInterface, which: Int -> dialog.cancel() }
+        builder.show()
+    }
+    override fun onBackPressed() {
+        showQuitDialog()
     }
 }
 

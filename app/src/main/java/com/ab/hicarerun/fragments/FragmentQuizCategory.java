@@ -36,6 +36,7 @@ import com.ab.hicarerun.network.models.QuizLevelModel.QuizLevelData;
 import com.ab.hicarerun.network.models.QuizLevelModel.QuizLevelModelBase;
 import com.ab.hicarerun.network.models.QuizModel.QuizCategoryData;
 import com.ab.hicarerun.network.models.QuizModel.QuizPuzzleStats;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -177,16 +178,17 @@ public class FragmentQuizCategory extends BaseFragment {
                 if (response != null) {
                     if (response.isSuccess()) {
                         String levelName = response.getData().getLevelName();
-                        if (levelName.equalsIgnoreCase("Basic")) {
+                        Picasso.get().load(response.getData().getLevelIcon()).placeholder(R.drawable.ic_level_common).into(mFragmentQuizCategoryBinding.awardIv);
+                        /*if (levelName.equalsIgnoreCase("Basic")) {
                             mFragmentQuizCategoryBinding.awardIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_level_common));
                         } else if (levelName.equalsIgnoreCase("Intermediate")) {
                             mFragmentQuizCategoryBinding.awardIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_level_common));
                         } else if (levelName.equalsIgnoreCase("Expert")) {
                             mFragmentQuizCategoryBinding.awardIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_level_common));
-                        }
+                        }*/
                         mFragmentQuizCategoryBinding.levelTv.setTypeface(mFragmentQuizCategoryBinding.levelTv.getTypeface(), Typeface.BOLD);
                         mFragmentQuizCategoryBinding.pointsTv.setTypeface(mFragmentQuizCategoryBinding.pointsTv.getTypeface(), Typeface.BOLD);
-                        mFragmentQuizCategoryBinding.levelTv.setText(" " + Objects.requireNonNull(response.getData()).getLevelName() + " Lvl");
+                        mFragmentQuizCategoryBinding.levelTv.setText(" " + Objects.requireNonNull(response.getData()).getLevelName());
                         mFragmentQuizCategoryBinding.pointsTv.setText(Objects.requireNonNull(response.getData()).getPoints() + " Pts");
                     }
                 }
