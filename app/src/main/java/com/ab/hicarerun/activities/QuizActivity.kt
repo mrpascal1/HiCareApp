@@ -30,6 +30,8 @@ class QuizActivity : BaseActivity() {
 
         val intent = intent
         val puzzleId = intent.getIntExtra("puzzleId", -1)
+        val puzzleTitle = intent.getStringExtra("puzzleTitle").toString()
+        binding.titleTv.text = "KBE - $puzzleTitle"
         replaceFragment(QuizFragment.newInstance(puzzleId), "QuizActivity - QuizFragment")
     }
 

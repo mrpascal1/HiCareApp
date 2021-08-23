@@ -392,7 +392,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                 }
                 //mVideoAdapter.setData(question.getDependentQuestionList(), vidQuestions.get(vidIndex).getCorrectAnswers());
                 mVideoAdapter.setData(vQ, vQ.getCorrectAnswers());
-                mVideoAdapter.setOnOptionClickListener((position, quizOption, title, optionType) -> {
+                mVideoAdapter.setOnVideoOptionClickListener((position, quizOption, title, optionType, childHolder) -> {
                     /*if (prevTitle.equalsIgnoreCase("")){
                         prevTitle = title;
                     }
@@ -514,19 +514,37 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                 mFragmentQuizBinding.recycleView.setLayoutManager(layoutManager);
                 mAdapter = new QuizOptionAdapter(getActivity(), question.getPuzzleQuestionType(), question.getPuzzleQuestionSelectionType(), question.getCorrectAnswers(), isNextPressed);
                 mAdapter.setData(question.getOptions(), question.getCorrectAnswers());
-                mAdapter.setOnOptionClickListener((position, quizOption, title, optionType) -> {
+                mAdapter.setOnOptionClickListener((position, quizOption, title, optionType, holder) -> {
+                    //Log.d("TAG", quizOption.getOptionId().toString());
                     List<String> collected = new ArrayList<>();
                     collected.add(quizOption.getOptionId().toString());
                     optionSelected = true;
                     Log.d("Called", "this "+optionType);
                     int found = 0;
                     if (optionType.equalsIgnoreCase("radio")) {
-                        if (question.getCorrectAnswerIds().contains(quizOption.getOptionId().toString())) {
+                        /*if (question.getCorrectAnswerIds().contains(quizOption.getOptionId().toString())) {
                             points = points + question.getPoints();
+                        }*/
+                        if (!saveAnswers.isEmpty()){
+                            boolean alreadyPresent = false;
+                            int presentAt = 0;
+                            for (int i = 0; i < saveAnswers.size(); i++){
+                                if (saveAnswers.get(i).getPuzzleQuestionId().equals(question.getPuzzleQuestionId())){
+                                    saveAnswers.remove(i);
+                                    saveAnswers.add(new QuizSaveAnswers(quizOption.getOptionId(), question.getPuzzleId(), question.getPuzzleQuestionId(), question.getCorrectAnswerIds(), quizOption.getOptionId().toString(), resourceId, question.getPoints()));
+                                    alreadyPresent = true;
+                                    presentAt = i;
+                                    break;
+                                }
+                            }
+                            if (!alreadyPresent){
+                                saveAnswers.add(new QuizSaveAnswers(quizOption.getOptionId(), question.getPuzzleId(), question.getPuzzleQuestionId(), question.getCorrectAnswerIds(), quizOption.getOptionId().toString(), resourceId, question.getPoints()));
+                            }
+                        }else {
+                            saveAnswers.add(new QuizSaveAnswers(quizOption.getOptionId(), question.getPuzzleId(), question.getPuzzleQuestionId(), question.getCorrectAnswerIds(), quizOption.getOptionId().toString(), resourceId, question.getPoints()));
                         }
                         Log.d("Called", "or this");
                         //mFragmentQuizBinding.nextBtn.setEnabled(true);
-                        saveAnswers.add(new QuizSaveAnswers(quizOption.getOptionId(), question.getPuzzleId(), question.getPuzzleQuestionId(), question.getCorrectAnswerIds(), quizOption.getOptionId().toString(), resourceId, question.getPoints()));
                     }
                     if (optionType.equalsIgnoreCase("checkbox")){
                         givenAnswers.add(quizOption.getOptionId().toString());
@@ -593,11 +611,24 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                         mFragmentQuizBinding.confirmBtn.setEnabled(false);
                     }
                     mFragmentQuizBinding.confirmBtn.setOnClickListener(v -> {
-                        mAdapter.showCorrect();
+                        mAdapter.showCorrect(holder);
                         mFragmentQuizBinding.confirmBtn.setVisibility(View.GONE);
                         mFragmentQuizBinding.nextBtn.setEnabled(true);
                         collected.clear();
                         mFragmentQuizBinding.confirmBtn.setEnabled(false);
+                        if (optionType.equalsIgnoreCase("radio")) {
+                            if (!saveAnswers.isEmpty()) {
+                                for (int i = 0; i < saveAnswers.size(); i++) {
+                                    if (saveAnswers.get(i).getPuzzleQuestionId().equals(question.getPuzzleQuestionId())) {
+                                        if (question.getCorrectAnswerIds().equalsIgnoreCase(saveAnswers.get(i).getResourceGivenAnswerIds())) {
+                                            Log.d("TAG", "Answer: " + question.getCorrectAnswerIds() + " Resource Given: "+ saveAnswers.get(i).getResourceGivenAnswerIds());
+                                            points = points + question.getPoints();
+                                            mFragmentQuizBinding.questionCounter.setText(points+"");
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
                     });
                     mFragmentQuizBinding.questionCounter.setText(points+"");

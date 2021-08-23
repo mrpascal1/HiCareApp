@@ -13,6 +13,7 @@ import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LayoutQuizParentAdapterBinding;
 import com.ab.hicarerun.handler.OnConsultationClickHandler;
 import com.ab.hicarerun.handler.OnOptionClickListener;
+import com.ab.hicarerun.handler.OnVideoOptionClickListener;
 import com.ab.hicarerun.network.models.QuizModel.QuizAnswer;
 import com.ab.hicarerun.network.models.QuizModel.QuizData;
 import com.ab.hicarerun.network.models.QuizModel.VideoDependentQuest;
@@ -30,6 +31,7 @@ import java.util.List;
 public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParentAdapter.ViewHolder> {
     private OnConsultationClickHandler onItemClickHandler;
     private OnOptionClickListener onOptionClickListener = null;
+    private OnVideoOptionClickListener onVideoOptionClickListener = null;
     private final Context mContext;
     private List<VideoDependentQuest> items = null;
     private HashMap<Integer, String> checkItems = null;
@@ -98,11 +100,16 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
             }
             holder.mLayoutQuizParentAdapterBinding.recycleView.setAdapter(childAdapter);
 
-            childAdapter.setOnOptionClickListener(((position1, quizOption, title, optionType) -> {
+            childAdapter.setOnVideoOptionClickListener(((position1, quizOption, title, optionType, childHolder) -> {
                 //Log.d("Listener", position1 + "" + quizOption + "" + optionType);
-                onOptionClickListener.onItemClick(position1, quizOption, holder.mLayoutQuizParentAdapterBinding.txtQuestion.getText().toString().trim(), optionType);
+                onVideoOptionClickListener.onItemClick(position1, quizOption, holder.mLayoutQuizParentAdapterBinding.txtQuestion.getText().toString().trim(), optionType, childHolder);
 //                childAdapter.updateAnswers(answerList);
             }));
+            /*childAdapter.setOnOptionClickListener(((position1, quizOption, title, optionType) -> {
+                //Log.d("Listener", position1 + "" + quizOption + "" + optionType);
+                onOptionClickListener.onItemClick(position1, quizOption, holder.mLayoutQuizParentAdapterBinding.txtQuestion.getText().toString().trim());
+//                childAdapter.updateAnswers(answerList);
+            }));*/
             childAdapter.setOnItemClickHandler(positionChild -> {
                 if (items.get(position).getPuzzleQuestionSelectionType().equals("Radio")) {
                     //onOptionClicked.onClicked(position, childAdapter.getItem(position).getOptionTitle());
@@ -130,6 +137,10 @@ public class QuizVideoParentAdapter extends RecyclerView.Adapter<QuizVideoParent
 
     public void setOnOptionClickListener(OnOptionClickListener onOptionClickListener){
         this.onOptionClickListener = onOptionClickListener;
+    }
+
+    public void setOnVideoOptionClickListener(OnVideoOptionClickListener onVideoOptionClickListener){
+        this.onVideoOptionClickListener = onVideoOptionClickListener;
     }
 
     @Override

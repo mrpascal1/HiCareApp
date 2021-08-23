@@ -126,6 +126,7 @@ public class FragmentQuizCategory extends BaseFragment {
                             mAdapter.setOnItemClickHandler(position -> {
                                 Intent intent = new Intent(getContext(), QuizActivity.class);
                                 intent.putExtra("puzzleId", mAdapter.getItem(position).getPuzzleId());
+                                intent.putExtra("puzzleTitle", mAdapter.getItem(position).getPuzzleTitle());
                                 startActivity(intent);
                                 //replaceFragment(QuizFragment.newInstance(mAdapter.getItem(position).getPuzzleId()), "QuizFragmentCategory - QuizFragment");
                                 //Toast.makeText(getActivity(), "Clicked", Toast.LENGTH_SHORT).show();
