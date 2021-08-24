@@ -23,6 +23,28 @@ public class AvailableOffer {
     @SerializedName("PointsRequired")
     @Expose
     private Integer pointsRequired;
+    @SerializedName("IsLocked")
+    @Expose
+    private boolean isLocked;
+    @SerializedName("UnlocksAtLevel")
+    @Expose
+    private String unlocksAtLevel;
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
+    }
+
+    public String getUnlocksAtLevel() {
+        return unlocksAtLevel;
+    }
+
+    public void setUnlocksAtLevel(String unlocksAtLevel) {
+        this.unlocksAtLevel = unlocksAtLevel;
+    }
 
     public Integer getOfferId() {
         return offerId;

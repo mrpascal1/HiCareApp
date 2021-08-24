@@ -132,8 +132,6 @@ public class FragmentQuizCategory extends BaseFragment {
                                 //Toast.makeText(getActivity(), "Clicked", Toast.LENGTH_SHORT).show();
                             });
                         }
-                        getPuzzleStatsForRes();
-                        getPuzzleLevel();
                     }
 
                     @Override
@@ -204,6 +202,7 @@ public class FragmentQuizCategory extends BaseFragment {
     }
 
     private void getPuzzleLevel(){
+        quizLevelDataList.clear();
         NetworkCallController controller = new NetworkCallController(this);
         controller.setListner(new NetworkResponseListner<QuizLevelModelBase>() {
             @Override
@@ -231,7 +230,9 @@ public class FragmentQuizCategory extends BaseFragment {
 
     @Override
     public void onResume() {
+        getQuizCategory();
         getPuzzleStatsForRes();
+        getPuzzleLevel();
         super.onResume();
     }
 }

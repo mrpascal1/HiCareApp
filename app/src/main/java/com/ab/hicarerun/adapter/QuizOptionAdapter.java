@@ -352,6 +352,7 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
                 public void onClick(View view) {
                     radioPos = position;
                     radioOptions = true;
+                    onOptionClickListener.onItemClick(position, items.get(position), "", "", whichType, holder);
                     arrayOperations(items.get(position).getOptionValue(), "radio");
                     notifyDataSetChanged();
                 }

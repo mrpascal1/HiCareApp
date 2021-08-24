@@ -133,7 +133,7 @@
                 android:id="@+id/textView10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:text="4. You can only play 3 times in a day."
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="@+id/lThreeTv"
                 app:layout_constraintTop_toBottomOf="@+id/lThreeTv" />

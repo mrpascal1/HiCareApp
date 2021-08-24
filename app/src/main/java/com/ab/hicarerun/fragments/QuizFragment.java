@@ -214,7 +214,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
 
     private void showQuitDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Quiz Alert");
+        builder.setTitle("KBE Alert");
         builder.setMessage("Are you sure you want to quit the game?");
         builder.setPositiveButton("Quit", (dialog, which) -> {
             dialog.cancel();
@@ -237,8 +237,8 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
 
     private void showNoQuizDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Quiz Alert");
-        builder.setMessage("Quiz not found at the moment! Please check again later.");
+        builder.setTitle("KBE Alert");
+        builder.setMessage("Game not available! Please check again later.");
         builder.setPositiveButton("Quit", (dialog, which) -> {
             dialog.cancel();
             requireActivity().finish();
@@ -285,6 +285,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                     intent.putExtra("points", response.getData().getTotalPoints().toString());
                     intent.putExtra("earned", Integer.toString(response.getData().getTotalPoints()-oldScore));
                     intent.putExtra("levelName", response.getData().getCurrentLevelName());
+                    intent.putExtra("upGrdLevelName", response.getData().getUpgradedLevelName());
                     intent.putExtra("resMessage", response.getData().getResourceMessage());
                     intent.putExtra("currLID", response.getData().getCurrentLevelId());
                     intent.putExtra("upgrdLID", response.getData().getUpgradedLevelId());

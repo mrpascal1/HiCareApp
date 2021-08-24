@@ -27,9 +27,11 @@ class QuizResultActivity : BaseActivity() {
         val upgrdLID = intent.getStringExtra("upgrdLID").toString()
         val currLIC = intent.getStringExtra("currLIC").toString()
         val upgrdLIC = intent.getStringExtra("upgrdLIC").toString()
+        val upgrdLN = intent.getStringExtra("upGrdLevelName").toString()
         binding.scoreTv.text = intent.getStringExtra("points").toString()
         binding.earnedCoins.text = intent.getStringExtra("earned").toString()
-        binding.currLevelTv.text = intent.getStringExtra("levelName").toString()
+        //binding.currLevelTv.text = intent.getStringExtra("levelName").toString()
+        binding.currLevelTv.text = upgrdLN
         binding.messageTv.text = intent.getStringExtra("resMessage").toString()
 
         if (currLID != upgrdLID){
