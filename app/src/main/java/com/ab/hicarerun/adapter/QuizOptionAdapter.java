@@ -264,7 +264,7 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
 //            holder.itemView.setOnClickListener(view -> onItemClickHandler.onItemClick(position));
 
             holder.mLayoutOptionAdapterBinding.cardImage.setOnClickListener(view -> {
-                onOptionClickListener.onItemClick(position, items.get(position), "", whichType, holder);
+                onOptionClickListener.onItemClick(position, items.get(position), "", "", whichType, holder);
                 /*for (QuizAnswer ans : answerList) {
                     if (items.get(position).getOptionTitle().equalsIgnoreCase(ans.getOptionTitle())) {
                         holder.mLayoutOptionAdapterBinding.lnrImgOption.setBackground(mContext.getResources().getDrawable(R.drawable.option_right_border));
@@ -287,7 +287,7 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     Log.d("TAG", position+" checkbox pos");
                     isCheckOptionSelected = true;
-                    onOptionClickListener.onItemClick(position, items.get(position), "", whichType, holder);
+                    onOptionClickListener.onItemClick(position, items.get(position), "", "", whichType, holder);
                     arrayOperations(items.get(position).getOptionValue(), "checkbox");
                     if (b){
                         holder.mLayoutOptionAdapterBinding.lnrCheck.setBackground(mContext.getResources().getDrawable(R.drawable.option_selected_border));
@@ -378,7 +378,7 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
 
             holder.mLayoutOptionAdapterBinding.imgOption.setOnClickListener(v -> {
                 selectedPos = position;
-                onOptionClickListener.onItemClick(position, items.get(position), "", whichType, holder);
+                onOptionClickListener.onItemClick(position, items.get(position), "", "", whichType, holder);
                 if (optionType.equalsIgnoreCase("Radio") && items.get(position).getOptionType().equalsIgnoreCase("Image")){
                     Log.d("TAG", "Full Image");
                     //isRadioOptionSelected = 1;
@@ -428,7 +428,7 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
             holder.itemView.setOnClickListener(view -> {
                 selectedPos = position;
                 if (optionType.equalsIgnoreCase("Radio") && items.get(position).getOptionType().equalsIgnoreCase("Text")) {
-                    onOptionClickListener.onItemClick(position, items.get(position), "", whichType, holder);
+                    onOptionClickListener.onItemClick(position, items.get(position), "", "", whichType, holder);
                     arrayOperations(items.get(position).getOptionValue(), "radio");
                     radioPos = position;
                     radioOptions = true;
@@ -446,7 +446,7 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
                     }
                     notifyDataSetChanged();*/
                 } else if (optionType.equalsIgnoreCase("Radio") && items.get(position).getOptionType().equalsIgnoreCase("Image")) {
-                    onOptionClickListener.onItemClick(position, items.get(position), "", whichType, holder);
+                    onOptionClickListener.onItemClick(position, items.get(position), "", "", whichType, holder);
                     isRadioOptionSelected = 1;
                     arrayOperations(items.get(position).getOptionValue(), "radio");
                     notifyDataSetChanged();
@@ -494,7 +494,7 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
                     //isCheckOptionSelected = true;
                     /*holder.mLayoutOptionAdapterBinding.imgOption.setEnabled(false);
                     holder.itemView.setEnabled(false);*/
-                    onOptionClickListener.onItemClick(position, items.get(position), "", whichType, holder);
+                    onOptionClickListener.onItemClick(position, items.get(position), "", "", whichType, holder);
                     arrayOperations(items.get(position).getOptionValue(), "checkbox");
                     if (holder.mLayoutOptionAdapterBinding.imgOption.isSelected()){
                         holder.mLayoutOptionAdapterBinding.lnrCheck.setBackground(mContext.getResources().getDrawable(R.drawable.option_unselected_border));
@@ -540,7 +540,9 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
         }
         Collections.sort(givenAnswers);
     }
-    public void showCorrect(ViewHolder holder){
+    public void showCorrect(int position, QuizOption quizOption, String title, String optionType, ViewHolder holder){
+        String checkArray = "";
+        ArrayList<Integer> optionId = new ArrayList<>();
         fragmentCall = true;
         if (whichType.equalsIgnoreCase("checkbox")){
             isCheckOptionSelected = true;
@@ -548,6 +550,26 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
             isRadioOptionSelected = 0;
             radioPos = -1;
             radioOptions = false;
+            for (String g: givenAnswers){
+                for (int i = 0; i < items.size(); i++){
+                    if (g.equalsIgnoreCase(items.get(i).getOptionValue())){
+                        optionId.add(items.get(i).getOptionId());
+                    }
+                }
+            }
+            if (!givenAnswers.isEmpty()){
+                Collections.sort(givenAnswers);
+                Collections.sort(optionId);
+                StringBuilder sbf = new StringBuilder();
+                for (int opt: optionId){
+                    if (sbf.length() > 0){
+                        sbf.append(",");
+                    }
+                    sbf.append(opt);
+                }
+                onOptionClickListener.onItemClick(position, quizOption, sbf.toString(), title, "checkboxConfirmed", holder);
+                Log.d("TAG", "Check: "+sbf);
+            }
         }
         if (whichType.equalsIgnoreCase("radio")){
             isRadioOptionSelected = 1;

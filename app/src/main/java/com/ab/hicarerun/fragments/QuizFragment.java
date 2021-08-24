@@ -102,6 +102,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
     int points = 0;
     String resourceId = "";
     boolean optionSelected = false;
+    boolean isConfirmPressedOnce = false;
     List<String> givenAnswers;
     List<String> normalCorrectAns;
     String prevTitle = "";
@@ -218,9 +219,16 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
         builder.setPositiveButton("Quit", (dialog, which) -> {
             dialog.cancel();
             if (saveAnswers.isEmpty()) {
+                Log.d("TAG", "Finish called");
                 requireActivity().finish();
             }else {
-                savePuzzle();
+                if (isConfirmPressedOnce) {
+                    Log.d("TAG", "Save called");
+                    savePuzzle();
+                }else {
+                    Log.d("TAG", "Finish called");
+                    requireActivity().finish();
+                }
             }
         });
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
@@ -230,10 +238,10 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
     private void showNoQuizDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Quiz Alert");
-        builder.setMessage("No quiz found! Please check again later.");
+        builder.setMessage("Quiz not found at the moment! Please check again later.");
         builder.setPositiveButton("Quit", (dialog, which) -> {
-            requireActivity().finish();
             dialog.cancel();
+            requireActivity().finish();
         });
         builder.show();
     }
@@ -292,6 +300,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
 
             }
         });
+        Log.d("TAG", "Saveing answers: "+ saveAnswers.toString());
         controller.savePuzzleAnswers(2021262, saveAnswers);
     }
     private void getQuestions() {
@@ -514,7 +523,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                 mFragmentQuizBinding.recycleView.setLayoutManager(layoutManager);
                 mAdapter = new QuizOptionAdapter(getActivity(), question.getPuzzleQuestionType(), question.getPuzzleQuestionSelectionType(), question.getCorrectAnswers(), isNextPressed);
                 mAdapter.setData(question.getOptions(), question.getCorrectAnswers());
-                mAdapter.setOnOptionClickListener((position, quizOption, title, optionType, holder) -> {
+                mAdapter.setOnOptionClickListener((position, quizOption, givenAnswersIds, title, optionType, holder) -> {
                     //Log.d("TAG", quizOption.getOptionId().toString());
                     List<String> collected = new ArrayList<>();
                     collected.add(quizOption.getOptionId().toString());
@@ -547,7 +556,25 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                         //mFragmentQuizBinding.nextBtn.setEnabled(true);
                     }
                     if (optionType.equalsIgnoreCase("checkbox")){
-                        givenAnswers.add(quizOption.getOptionId().toString());
+                        if (!saveAnswers.isEmpty()){
+                            boolean alreadyPresent = false;
+                            int presentAt = 0;
+                            for (int i = 0; i < saveAnswers.size(); i++){
+                                if (saveAnswers.get(i).getPuzzleQuestionId().equals(question.getPuzzleQuestionId())){
+                                    saveAnswers.remove(i);
+                                    saveAnswers.add(new QuizSaveAnswers(quizOption.getOptionId(), question.getPuzzleId(), question.getPuzzleQuestionId(), question.getCorrectAnswerIds(), quizOption.getOptionId().toString(), resourceId, question.getPoints()));
+                                    alreadyPresent = true;
+                                    presentAt = i;
+                                    break;
+                                }
+                            }
+                            if (!alreadyPresent){
+                                saveAnswers.add(new QuizSaveAnswers(quizOption.getOptionId(), question.getPuzzleId(), question.getPuzzleQuestionId(), question.getCorrectAnswerIds(), quizOption.getOptionId().toString(), resourceId, question.getPoints()));
+                            }
+                        }else {
+                            saveAnswers.add(new QuizSaveAnswers(quizOption.getOptionId(), question.getPuzzleId(), question.getPuzzleQuestionId(), question.getCorrectAnswerIds(), quizOption.getOptionId().toString(), resourceId, question.getPoints()));
+                        }
+                        /*givenAnswers.add(quizOption.getOptionId().toString());
                         if (normalCorrectAns.size() < givenAnswers.size()){
                             points = points - question.getPoints();
                         }
@@ -573,8 +600,8 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                                     //mFragmentQuizBinding.nextBtn.setEnabled(true);
                                 }
                             }
-                        }
-                        if (!saveAnswers.isEmpty()){
+                        }*/
+                        /*if (!saveAnswers.isEmpty()){
                             for (int i=0; i < saveAnswers.size(); i++){
                                 if (saveAnswers.get(i).getPuzzleQuestionId().equals(question.getPuzzleQuestionId())){
                                     String prev = "";
@@ -585,7 +612,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                                     found = 1;
                                     break;
                                 }
-                                /*if (saveAnswers.get(i).getPuzzleQuestionId().equals(question.getPuzzleQuestionId()) && saveAnswers.get(i).getOptionId().equals(quizOption.getOptionId())){
+                                *//*if (saveAnswers.get(i).getPuzzleQuestionId().equals(question.getPuzzleQuestionId()) && saveAnswers.get(i).getOptionId().equals(quizOption.getOptionId())){
                                     String prev = "";
                                     prev = saveAnswers.get(i).getResourceGivenAnswerIds();
                                     prev = prev + "," + quizOption.getOptionId().toString();
@@ -593,13 +620,40 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                                     Log.d("TAG", saveAnswers.get(i).getResourceGivenAnswerIds());
                                     found = 1;
                                     break;
-                                }*/
+                                }*//*
                             }
                             if (found == 0){
                                 saveAnswers.add(new QuizSaveAnswers(quizOption.getOptionId(), question.getPuzzleId(), question.getPuzzleQuestionId(), question.getCorrectAnswerIds(), quizOption.getOptionId().toString(), resourceId, question.getPoints()));
                             }
                         }else {
                             saveAnswers.add(new QuizSaveAnswers(quizOption.getOptionId(), question.getPuzzleId(), question.getPuzzleQuestionId(), question.getCorrectAnswerIds(), quizOption.getOptionId().toString(), resourceId, question.getPoints()));
+                        }*/
+                    }
+                    if (optionType.equalsIgnoreCase("checkboxConfirmed")){
+                        String correctAnsIds = question.getCorrectAnswerIds().replaceAll("\\s+"," ");
+                        correctAnsIds = correctAnsIds.replaceAll("\\s","");
+                        Log.d("TAG", "Given IDS: "+ givenAnswersIds + " CorrectAnswers: "+correctAnsIds);
+                        if (!saveAnswers.isEmpty()){
+                            boolean alreadyPresent = false;
+                            int presentAt = 0;
+                            for (int i = 0; i < saveAnswers.size(); i++){
+                                if (saveAnswers.get(i).getPuzzleQuestionId().equals(question.getPuzzleQuestionId())){
+                                    saveAnswers.remove(i);
+                                    saveAnswers.add(new QuizSaveAnswers(quizOption.getOptionId(), question.getPuzzleId(), question.getPuzzleQuestionId(), correctAnsIds, givenAnswersIds, resourceId, question.getPoints()));
+                                    alreadyPresent = true;
+                                    presentAt = i;
+                                    break;
+                                }
+                            }
+                            if (!alreadyPresent){
+                                saveAnswers.add(new QuizSaveAnswers(quizOption.getOptionId(), question.getPuzzleId(), question.getPuzzleQuestionId(), correctAnsIds, givenAnswersIds, resourceId, question.getPoints()));
+                            }
+                        }else {
+                            saveAnswers.add(new QuizSaveAnswers(quizOption.getOptionId(), question.getPuzzleId(), question.getPuzzleQuestionId(), correctAnsIds, givenAnswersIds, resourceId, question.getPoints()));
+                        }
+                        if (givenAnswersIds.equalsIgnoreCase(correctAnsIds)){
+                            points = points + question.getPoints();
+                            mFragmentQuizBinding.questionCounter.setText(points+"");
                         }
                     }
                     if (question.getCorrectAnswerIds().contains(quizOption.getOptionId().toString())) {
@@ -611,7 +665,8 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                         mFragmentQuizBinding.confirmBtn.setEnabled(false);
                     }
                     mFragmentQuizBinding.confirmBtn.setOnClickListener(v -> {
-                        mAdapter.showCorrect(holder);
+                        isConfirmPressedOnce = true;
+                        mAdapter.showCorrect(position, quizOption, "", optionType, holder);
                         mFragmentQuizBinding.confirmBtn.setVisibility(View.GONE);
                         mFragmentQuizBinding.nextBtn.setEnabled(true);
                         collected.clear();

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -54,16 +55,50 @@ public class QuizCategoryAdapter extends RecyclerView.Adapter<QuizCategoryAdapte
     public void onBindViewHolder(@NotNull ViewHolder holder, final int position) {
         try {
             holder.mQuizCategoryAdapterBinding.pTitleTv.setText(items.get(position).getPuzzleTitle());
-            holder.mQuizCategoryAdapterBinding.isCompletedCheck.setVisibility(View.VISIBLE);
 
-/*            if (items.get(position).isCompleted()){
+            if (items.get(position).isCompleted()){
+                holder.mQuizCategoryAdapterBinding.isCompletedCheck.setVisibility(View.VISIBLE);
+                holder.mQuizCategoryAdapterBinding.playCard.setCardBackgroundColor(mContext.getResources().getColor(R.color.md_green_100));
+                holder.mQuizCategoryAdapterBinding.playTv.setText("Completed");
             }else {
                 holder.mQuizCategoryAdapterBinding.isCompletedCheck.setVisibility(View.GONE);
-            }*/
-            holder.mQuizCategoryAdapterBinding.pProgress.setProgress(items.get(position).getCompletionPecentage());
+                holder.mQuizCategoryAdapterBinding.playCard.setCardBackgroundColor(mContext.getResources().getColor(R.color.md_red_50));
+                holder.mQuizCategoryAdapterBinding.playTv.setText("Play Now");
+            }
+            holder.mQuizCategoryAdapterBinding.pProgress.setMax(100);
+            int percentage = items.get(position).getCompletionPecentage();
+            holder.mQuizCategoryAdapterBinding.pProgress.setProgress(percentage);
+            if (percentage <= 30){
+                holder.mQuizCategoryAdapterBinding.pProgress.setProgressDrawable(mContext.getDrawable(R.drawable.custom_progress_red));
+            }else if (percentage <= 60){
+                holder.mQuizCategoryAdapterBinding.pProgress.setProgressDrawable(mContext.getDrawable(R.drawable.custom_progress_yellow));
+            }else{
+                holder.mQuizCategoryAdapterBinding.pProgress.setProgressDrawable(mContext.getDrawable(R.drawable.custom_progress_green));
+            }
             Picasso.get().load(items.get(position).getPuzzleUrl()).into(holder.mQuizCategoryAdapterBinding.imgCategory);
             holder.mQuizCategoryAdapterBinding.txtTitle.setText(items.get(position).getPuzzleTitle());
-            holder.itemView.setOnClickListener(view -> onItemClickHandler.onItemClick(position));
+            holder.mQuizCategoryAdapterBinding.completedPercentTv.setText(percentage+"%");
+            holder.itemView.setOnClickListener(view -> {
+                if (!items.get(position).isCompleted()){
+                    /*holder.itemView.setEnabled(false);
+                    holder.mQuizCategoryAdapterBinding.playBtn.setEnabled(false);*/
+                    onItemClickHandler.onItemClick(position);
+                }else {
+                    Toast.makeText(mContext, "Already played", Toast.LENGTH_SHORT).show();
+                }
+            });
+            holder.mQuizCategoryAdapterBinding.playBtn.setOnClickListener(view -> {
+                if (!items.get(position).isCompleted()){
+                    /*holder.itemView.setEnabled(false);
+                    holder.mQuizCategoryAdapterBinding.playBtn.setEnabled(false);*/
+                    onItemClickHandler.onItemClick(position);
+                }else {
+                    Toast.makeText(mContext, "Already played", Toast.LENGTH_SHORT).show();
+                }
+            });
+            //holder.mQuizCategoryAdapterBinding.playIv.setOnClickListener(view -> onItemClickHandler.onItemClick(position));
+            //holder.mQuizCategoryAdapterBinding.playTv.setOnClickListener(view -> onItemClickHandler.onItemClick(position));
+            //holder.mQuizCategoryAdapterBinding.playCard.setOnClickListener(view -> onItemClickHandler.onItemClick(position));
         } catch (Exception e) {
             e.printStackTrace();
         }

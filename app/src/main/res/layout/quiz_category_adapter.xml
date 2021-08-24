@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<RelativeLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="10dp"
         android:layout_marginTop="15dp"
@@ -18,8 +18,9 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
             <RelativeLayout
+                android:id="@+id/titleLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp">
@@ -27,13 +28,11 @@
                     android:id="@+id/pTitleTv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="General Knowledge"
-                    android:gravity="center_horizontal"
-                    android:layout_centerVertical="true"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
+                    android:text="General Knowledge"
                     android:layout_toStartOf="@id/isCompletedCheck"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp" />
                 <ImageView
                     android:id="@+id/isCompletedCheck"
                     android:layout_width="wrap_content"
@@ -41,22 +40,70 @@
                     android:src="@drawable/ic_check_circle_green"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="12dp"
-                    android:visibility="visible"/>
+                    android:layout_marginEnd="4dp"
+                    android:visibility="gone" />
             </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/playBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/titleLayout">
+            <ImageView
+                android:id="@+id/playIv"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_play_2"
+                android:layout_marginTop="12dp"
+                android:layout_centerHorizontal="true"/>
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/playCard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/playIv"
+                    app:cardBackgroundColor="@color/md_red_50"
+                    app:cardCornerRadius="4dp"
+                    app:cardUseCompatPadding="true"
+                    android:layout_centerHorizontal="true">
+                <TextView
+                    android:id="@+id/playTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" Play Now "
+                    android:textSize="16sp"
+                    android:textColor="@color/black"
+                    android:padding="4dp"/>
+                </androidx.cardview.widget.CardView>
+            </RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/playBtn"
+                android:layout_marginTop="8dp"
+
+                android:orientation="vertical">
             <ProgressBar
                 android:id="@+id/pProgress"
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
+                android:layout_height="10dp"
+                android:layout_gravity="center"
                 android:progress="80"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:progressDrawable="@drawable/custom_progressbar"
-                android:layout_alignParentBottom="true"/>
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal" />
+                <TextView
+                    android:id="@+id/completedPercentTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:text="80%"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginEnd="4dp"/>
+            </LinearLayout>
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:visibility="gone">
 
             <ImageView

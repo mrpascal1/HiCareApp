@@ -47,7 +47,7 @@ class QuizActivity : BaseActivity() {
         builder.show()
     }
     override fun onBackPressed() {
-        showQuitDialog()
+        //showQuitDialog()
     }
 }
 
