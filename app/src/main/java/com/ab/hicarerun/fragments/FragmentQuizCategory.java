@@ -142,7 +142,7 @@ public class FragmentQuizCategory extends BaseFragment {
 
                     }
                 });
-                controller.getQuizCategory(QUIZ_CATEGORY, resourceId);
+                controller.getQuizCategory(QUIZ_CATEGORY, resourceId, "en");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -201,7 +201,7 @@ public class FragmentQuizCategory extends BaseFragment {
 
             }
         });
-        controller.getPuzzleStatsForRes(202122, resourceId);
+        controller.getPuzzleStatsForRes(202122, resourceId, "en");
     }
 
     private void getPuzzleLevel(){
@@ -228,7 +228,7 @@ public class FragmentQuizCategory extends BaseFragment {
 
             }
         });
-        controller.getPuzzleLevel(202126, resourceId);
+        controller.getPuzzleLevel(202126, resourceId, "en");
     }
 
     @Override

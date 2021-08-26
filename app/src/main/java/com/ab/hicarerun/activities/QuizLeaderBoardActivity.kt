@@ -69,11 +69,11 @@ class QuizLeaderBoardActivity : AppCompatActivity() {
             getBack()
         }
 
-        getPuzzleLeaderBoard(resourceId)
+        getPuzzleLeaderBoard(resourceId, "en")
         //getResourcePic(resourceId)
     }
 
-    private fun getPuzzleLeaderBoard(resourceId: String){
+    private fun getPuzzleLeaderBoard(resourceId: String, lan: String){
         val controller = NetworkCallController()
         controller.setListner(object : NetworkResponseListner<QuizLeaderBoardBase>{
             override fun onResponse(requestCode: Int, response: QuizLeaderBoardBase?) {
@@ -143,7 +143,7 @@ class QuizLeaderBoardActivity : AppCompatActivity() {
             override fun onFailure(requestCode: Int) {
             }
         })
-        controller.getPuzzleLeaderBoard(202124, resourceId)
+        controller.getPuzzleLeaderBoard(202124, resourceId, lan)
     }
 
     private fun getResourcePic(resourceId: String, iv: CircleImageView){

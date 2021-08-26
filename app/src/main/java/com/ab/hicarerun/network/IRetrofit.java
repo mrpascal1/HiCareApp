@@ -523,12 +523,12 @@ public interface IRetrofit {
     /*[puzzle/getpuzzlelist]*/
 
     @GET("puzzle/getpuzzlelist")
-    Call<QuizCategoryResponse> getQuizCategory(@Query("resourceId") String resourceId);
+    Call<QuizCategoryResponse> getQuizCategory(@Query("resourceId") String resourceId, @Query("lan") String lan);
 
     /*[puzzle/GetPuzzleQuestionListById]*/
 
     @GET("puzzle/GetPuzzleQuestionListById")
-    Call<QuizResponse> getQuizQuestions(@Query("resourceId") String resourceId, @Query("puzzleId") int puzzleId);
+    Call<QuizResponse> getQuizQuestions(@Query("resourceId") String resourceId, @Query("puzzleId") int puzzleId, @Query("lan") String lan);
 
     @GET("Barcode/GetOrderDetails")
     Call<OrderDetails> getOrderDetails(@Query("orderNo") String orderNo, @Query("userId") String userId);
@@ -561,13 +561,13 @@ public interface IRetrofit {
     Call<MenuResponse> getResourceMenu(@Query("resourceId") String resourceId);
 
     @GET("Puzzle/GetPuzzleStatsForResource")
-    Call<QuizPuzzleStats> getPuzzleStatsForResources(@Query("resourceId") String resourceId);
+    Call<QuizPuzzleStats> getPuzzleStatsForResources(@Query("resourceId") String resourceId, @Query("lan") String lan);
 
     @GET("Puzzle/GetPuzzleLeaderBoard")
-    Call<QuizLeaderBoardBase> getPuzzleLeaderBoard(@Query("resourceId") String resourceId);
+    Call<QuizLeaderBoardBase> getPuzzleLeaderBoard(@Query("resourceId") String resourceId, @Query("lan") String lan);
 
     @GET("Puzzle/GetPuzzleLevelModel")
-    Call<QuizLevelModelBase> getPuzzleLevelModel(@Query("resourceId") String resourceId);
+    Call<QuizLevelModelBase> getPuzzleLevelModel(@Query("resourceId") String resourceId, @Query("lan") String lan);
 
     @POST("Puzzle/SavePuzzleAnswers")
     Call<QuizSaveResponseBase> savePuzzleAnswers(@Body List<QuizSaveAnswers> quizSaveAnswers);

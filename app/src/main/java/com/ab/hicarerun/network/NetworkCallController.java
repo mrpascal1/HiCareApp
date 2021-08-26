@@ -4609,10 +4609,10 @@ public class NetworkCallController {
 
     }
 
-    public void getQuizCategory(final int requestCode, final String resourceId) {
+    public void getQuizCategory(final int requestCode, final String resourceId, String lan) {
         try {
             BaseApplication.getRetrofitAPI(true)
-                    .getQuizCategory(resourceId)
+                    .getQuizCategory(resourceId, lan)
                     .enqueue(new Callback<QuizCategoryResponse>() {
                         @Override
                         public void onResponse(Call<QuizCategoryResponse> call, Response<QuizCategoryResponse> response) {
@@ -4647,10 +4647,10 @@ public class NetworkCallController {
     }
 
 
-    public void getQuizQuestions(final int requestCode, final String resourceId, final int puzzleId) {
+    public void getQuizQuestions(final int requestCode, final String resourceId, final int puzzleId, String lan) {
         try {
             BaseApplication.getRetrofitAPI(true)
-                    .getQuizQuestions(resourceId, puzzleId)
+                    .getQuizQuestions(resourceId, puzzleId, lan)
                     .enqueue(new Callback<QuizResponse>() {
                         @Override
                         public void onResponse(Call<QuizResponse> call, Response<QuizResponse> response) {
@@ -4826,9 +4826,9 @@ public class NetworkCallController {
                 });
     }
 
-    public void getPuzzleStatsForRes(int requestCode, String resourceId) {
+    public void getPuzzleStatsForRes(int requestCode, String resourceId, String lan) {
         BaseApplication.getRetrofitAPI(false)
-                .getPuzzleStatsForResources(resourceId)
+                .getPuzzleStatsForResources(resourceId, lan)
                 .enqueue(new Callback<QuizPuzzleStats>() {
                     @Override
                     public void onResponse(Call<QuizPuzzleStats> call, Response<QuizPuzzleStats> response) {
@@ -4844,9 +4844,9 @@ public class NetworkCallController {
                 });
     }
 
-    public void getPuzzleLeaderBoard(int requestCode, String resourceId) {
+    public void getPuzzleLeaderBoard(int requestCode, String resourceId, String lan) {
         BaseApplication.getRetrofitAPI(false)
-                .getPuzzleLeaderBoard(resourceId)
+                .getPuzzleLeaderBoard(resourceId, lan)
                 .enqueue(new Callback<QuizLeaderBoardBase>() {
                     @Override
                     public void onResponse(Call<QuizLeaderBoardBase> call, Response<QuizLeaderBoardBase> response) {
@@ -4860,9 +4860,9 @@ public class NetworkCallController {
                 });
     }
 
-    public void getPuzzleLevel(int requestCode, String resourceId) {
+    public void getPuzzleLevel(int requestCode, String resourceId, String lan) {
         BaseApplication.getRetrofitAPI(false)
-                .getPuzzleLevelModel(resourceId)
+                .getPuzzleLevelModel(resourceId, lan)
                 .enqueue(new Callback<QuizLevelModelBase>(){
                     @Override
                     public void onResponse(Call<QuizLevelModelBase> call, Response<QuizLevelModelBase> response) {

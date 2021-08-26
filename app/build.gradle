@@ -146,6 +146,7 @@ dependencies {
     //QR code
     implementation 'com.google.zxing:core:3.4.0'
     implementation 'com.journeyapps:zxing-android-embedded:3.4.0'
+    implementation 'com.github.hsmnzaydn:imagezoom:1.4.0'
 
     implementation 'nl.dionsegijn:konfetti:1.3.2'
 

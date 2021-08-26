@@ -178,6 +178,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                         if (saveAnswers.isEmpty()) {
                             requireActivity().finish();
                         } else {
+                            mFragmentQuizBinding.nextBtn.setEnabled(false);
                             savePuzzle();
                         }
                     }
@@ -196,6 +197,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                     if (saveAnswers.isEmpty()) {
                         requireActivity().finish();
                     } else {
+                        mFragmentQuizBinding.nextBtn.setEnabled(false);
                         savePuzzle();
                     }
                 }
@@ -329,7 +331,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
 
                     }
                 });
-                controller.getQuizQuestions(REQ_QUESTIONS, resourceId, puzzleId);
+                controller.getQuizQuestions(REQ_QUESTIONS, resourceId, puzzleId, "en");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -874,6 +876,6 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
 
             }
         });
-        controller.getPuzzleStatsForRes(202122, resourceId);
+        controller.getPuzzleStatsForRes(202122, resourceId, "en");
     }
 }
