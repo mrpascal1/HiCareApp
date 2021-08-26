@@ -65,10 +65,18 @@
             android:windowSoftInputMode="stateHidden|adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity android:name=".activities.Camera2Activity" />
-        <activity android:name=".activities.ActivityQuizCategory" />
-        <activity android:name=".activities.QuizActivity" />
-        <activity android:name=".activities.QuizResultActivity" />
-        <activity android:name=".activities.QuizLeaderBoardActivity" />
+        <activity android:name=".activities.ActivityQuizCategory"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity android:name=".activities.QuizActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity android:name=".activities.QuizResultActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity android:name=".activities.QuizLeaderBoardActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity android:name=".activities.KarmaActivity" />
         <activity
             android:name=".activities.KycActivity"
