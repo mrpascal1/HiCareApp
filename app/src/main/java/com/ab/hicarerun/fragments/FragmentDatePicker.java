@@ -54,7 +54,7 @@ public class FragmentDatePicker extends DialogFragment
         mCMin .add(Calendar.DATE,-90);
 
 
-        DatePickerDialog dialogFrag = new DatePickerDialog(Objects.requireNonNull(getActivity()), this, year, month, day);
+        DatePickerDialog dialogFrag = new DatePickerDialog(requireActivity(), this, year, month, day);
         dialogFrag.getDatePicker().setMinDate(mCMin.getTime().getTime());
         dialogFrag.getDatePicker().setMaxDate(mCMax.getTime().getTime());
         // Create a new instance of DatePickerDialog and return it
