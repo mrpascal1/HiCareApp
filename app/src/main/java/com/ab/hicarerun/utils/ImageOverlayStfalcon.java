@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ab.hicarerun.R;
+import com.squareup.picasso.Picasso;
 import com.stfalcon.imageviewer.StfalconImageViewer;
 import com.stfalcon.imageviewer.loader.ImageLoader;
 
@@ -17,13 +18,14 @@ public class ImageOverlayStfalcon extends RelativeLayout {
 
     private StfalconImageViewer<String> imageViewer;
 
-    ArrayList<String> imageUrlList;
+    String[] arrayList;
     String imageLoader;
 
     private String sharingText;
 
-    public ImageOverlayStfalcon(Context context) {
+    public ImageOverlayStfalcon(Context context, String[] arrayList) {
         super(context);
+        this.arrayList = arrayList;
         init();
     }
 
@@ -44,17 +46,16 @@ public class ImageOverlayStfalcon extends RelativeLayout {
     }
 
     private void init() {
-        ImageLoader imageLoader = new ImageLoader() {
-            @Override
-            public void loadImage(ImageView imageView, Object image) {
+        View view = inflate(getContext(), R.layout.view_image_overlay_stfalcon, this);
+        imageViewer =  new StfalconImageViewer.Builder<String>(getContext(), arrayList, (imageView, image) -> {
+            try {
+                Picasso.get().load(image).into(imageView);
+            }catch (Exception e){
 
             }
-        };
-        View view = inflate(getContext(), R.layout.view_image_overlay_stfalcon, this);
-        /*imageViewer =  new StfalconImageViewer.Builder<>(context, imageUrlList, imageLoader)
-                .withStartPosition(0)
+        }).withStartPosition(0)
                 .withOverlayView(view)
-                .build();*/
+                .show();
         view.findViewById(R.id.closeIv).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

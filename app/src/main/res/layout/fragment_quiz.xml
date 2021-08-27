@@ -14,6 +14,51 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <RelativeLayout
+                android:id="@+id/headerLayout"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:background="@color/colorPurple">
+                <TextView
+                    android:id="@+id/questionTitleTv"
+                    android:layout_toStartOf="@id/pointsLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:textSize="16sp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="4dp"
+                    android:text="KBE - General Knowledge"
+                    android:textColor="@color/white"/>
+
+                <RelativeLayout
+                    android:id="@+id/pointsLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true">
+                    <TextView
+                        android:id="@+id/questionCounter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:fontFamily="@font/roboto_bold"
+                        android:text="0"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        app:drawableTint="@color/white" />
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_coin_reward"
+                        android:layout_toEndOf="@id/questionCounter"
+                        android:layout_marginEnd="16dp"/>
+                </RelativeLayout>
+
+            </RelativeLayout>
             <View
                 android:id="@+id/view4"
                 android:layout_width="wrap_content"
@@ -21,7 +66,7 @@
                 android:background="@drawable/background_quiz"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/headerLayout" />
 
             <View
                 android:id="@+id/view5"
@@ -35,7 +80,7 @@
                 android:background="@drawable/rounded_box"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/timer" />
+                app:layout_constraintTop_toBottomOf="@+id/headerLayout" />
 
             <TextView
                 android:id="@+id/imageQuestionTitle"
@@ -45,6 +90,7 @@
                 android:gravity="center"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
+                android:layout_marginTop="4dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/view5"
@@ -68,32 +114,9 @@
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:visibility="invisible"/>
+                android:visibility="gone"/>
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" >
-            <TextView
-                android:id="@+id/questionCounter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="10dp"
-                android:fontFamily="@font/roboto_bold"
-                android:text="0"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                app:drawableTint="@color/white" />
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_coin_reward"
-                    android:layout_toEndOf="@id/questionCounter"
-                    android:layout_marginTop="18dp"
-                    android:layout_marginEnd="16dp" />
-            </RelativeLayout>
+
 
             <TextView
                 android:id="@+id/question"
@@ -133,35 +156,51 @@
                 app:layout_constraintTop_toTopOf="@+id/view5" />
 
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardImage"
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginBottom="20dp"
-                android:visibility="gone"
-                app:cardCornerRadius="20dp"
                 app:layout_constraintBottom_toBottomOf="@+id/view5"
                 app:layout_constraintEnd_toEndOf="@+id/view5"
                 app:layout_constraintStart_toStartOf="@+id/view5"
                 app:layout_constraintTop_toTopOf="@+id/view5">
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="25dp"
+                    android:visibility="gone"
+                    app:cardCornerRadius="20dp">
 
-                <ozaydin.serkan.com.image_zoom_view.ImageViewZoom
-                    android:id="@+id/imgQuestion"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:srcCompat="@drawable/sample"
-                    android:scaleType="fitXY"/>
-                <ImageView
-                    android:id="@+id/imgQuestionOld"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    app:srcCompat="@drawable/sample"
+                    <ozaydin.serkan.com.image_zoom_view.ImageViewZoom
+                        android:id="@+id/imgQuestion"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:srcCompat="@drawable/sample"
+                        android:scaleType="fitXY"/>
+                    <ImageView
+                        android:id="@+id/imgQuestionOld"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/sample"
+                        android:visibility="gone"/>
+                </androidx.cardview.widget.CardView>
+                <TextView
+                    android:id="@+id/imgInfoTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Click image to zoom"
+                    android:gravity="bottom"
+                    android:textColor="@color/white"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="8dp"
                     android:visibility="gone"/>
-            </androidx.cardview.widget.CardView>
+            </RelativeLayout>
+
 
 
             <ImageView
@@ -272,53 +311,53 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true">
-        <Button
-            android:id="@+id/confirmBtn"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="Confirm"
-            android:background="@drawable/btn_next_selector"
-            android:textColor="@color/white"
-            android:layout_marginStart="18dp"
-            android:layout_marginEnd="18dp"
-            android:layout_marginBottom="12dp"
-            android:enabled="false"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp"
-            android:weightSum="2"
-            >
-
-
-
             <Button
-                android:id="@+id/quitBtn"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_marginRight="20dp"
-                android:layout_marginLeft="20dp"
+                android:id="@+id/confirmBtn"
+                android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:background="@drawable/btn_quit"
-                android:elevation="5dp"
-                android:text="Quit"
-                android:textColor="@color/white" />
-
-            <Button
-                android:id="@+id/nextBtn"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:text="Confirm"
                 android:background="@drawable/btn_next_selector"
-                android:onClick="onClick"
-                android:text="Next"
-                android:enabled="false"
-                android:layout_weight="1"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:layout_marginStart="18dp"
+                android:layout_marginEnd="18dp"
+                android:layout_marginBottom="12dp"
+                android:enabled="false"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="20dp"
+                android:weightSum="2"
+                >
 
-        </LinearLayout>
+
+
+                <Button
+                    android:id="@+id/quitBtn"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/btn_quit"
+                    android:elevation="5dp"
+                    android:text="Quit"
+                    android:textColor="@color/white" />
+
+                <Button
+                    android:id="@+id/nextBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/btn_next_selector"
+                    android:onClick="onClick"
+                    android:text="Next"
+                    android:enabled="false"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
         </LinearLayout>
 
     </RelativeLayout>

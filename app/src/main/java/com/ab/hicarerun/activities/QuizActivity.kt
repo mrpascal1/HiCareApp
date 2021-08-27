@@ -32,7 +32,7 @@ class QuizActivity : BaseActivity() {
         val puzzleId = intent.getIntExtra("puzzleId", -1)
         val puzzleTitle = intent.getStringExtra("puzzleTitle").toString()
         binding.titleTv.text = "KBE - $puzzleTitle"
-        replaceFragment(QuizFragment.newInstance(puzzleId), "QuizActivity - QuizFragment")
+        replaceFragment(QuizFragment.newInstance(puzzleId, puzzleTitle), "QuizActivity - QuizFragment")
     }
 
     private fun showQuitDialog() {

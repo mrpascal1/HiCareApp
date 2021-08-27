@@ -269,15 +269,8 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
 //            holder.itemView.setOnClickListener(view -> onItemClickHandler.onItemClick(position));
 
             final String[] arrayList = {items.get(position).getOptionUrl()};
-            ImageOverlayStfalcon overlayStfalcon = new ImageOverlayStfalcon(mContext);
             holder.mLayoutOptionAdapterBinding.zoomIv.setOnClickListener(v -> {
-                new StfalconImageViewer.Builder<>(mContext, arrayList, (imageView, image) -> {
-                    try {
-                        Picasso.get().load(image).into(imageView);
-                    }catch (Exception e){
-
-                    }
-                }).withOverlayView(overlayStfalcon).show();
+                new ImageOverlayStfalcon(mContext, arrayList);
             });
             holder.mLayoutOptionAdapterBinding.cardImage.setOnClickListener(view -> {
                 onOptionClickListener.onItemClick(position, items.get(position), "", "", whichType, holder);
