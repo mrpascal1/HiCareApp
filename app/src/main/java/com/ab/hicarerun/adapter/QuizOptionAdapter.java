@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 
 import androidx.databinding.DataBindingUtil;
@@ -21,7 +22,10 @@ import com.ab.hicarerun.handler.OnListItemClickHandler;
 import com.ab.hicarerun.handler.OnOptionClickListener;
 import com.ab.hicarerun.network.models.QuizModel.QuizAnswer;
 import com.ab.hicarerun.network.models.QuizModel.QuizOption;
+import com.ab.hicarerun.utils.ImageOverlayStfalcon;
 import com.squareup.picasso.Picasso;
+import com.stfalcon.imageviewer.StfalconImageViewer;
+import com.stfalcon.imageviewer.loader.ImageLoader;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -209,6 +213,7 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
                 }
             }
 
+            holder.mLayoutOptionAdapterBinding.zoomIv.setVisibility(View.VISIBLE);
 //            Picasso.get().load(items.get(position).getPuzzleUrl()).into(holder.mQuizCategoryAdapterBinding.imgCategory);
             if (optionType.equalsIgnoreCase("Radio") && items.get(position).getOptionType().equalsIgnoreCase("Text")) {
                 Log.d("TAG-Which", "1");
@@ -263,6 +268,17 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
             }
 //            holder.itemView.setOnClickListener(view -> onItemClickHandler.onItemClick(position));
 
+            final String[] arrayList = {items.get(position).getOptionUrl()};
+            ImageOverlayStfalcon overlayStfalcon = new ImageOverlayStfalcon(mContext);
+            holder.mLayoutOptionAdapterBinding.zoomIv.setOnClickListener(v -> {
+                new StfalconImageViewer.Builder<>(mContext, arrayList, (imageView, image) -> {
+                    try {
+                        Picasso.get().load(image).into(imageView);
+                    }catch (Exception e){
+
+                    }
+                }).withOverlayView(overlayStfalcon).show();
+            });
             holder.mLayoutOptionAdapterBinding.cardImage.setOnClickListener(view -> {
                 onOptionClickListener.onItemClick(position, items.get(position), "", "", whichType, holder);
                 /*for (QuizAnswer ans : answerList) {

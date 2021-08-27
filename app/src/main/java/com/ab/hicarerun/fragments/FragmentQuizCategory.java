@@ -121,9 +121,9 @@ public class FragmentQuizCategory extends BaseFragment {
                     @Override
                     public void onResponse(int requestCode, List<QuizCategoryData> items) {
                         if (items != null && items.size() > 0) {
+                            mFragmentQuizCategoryBinding.recycleView.setVisibility(View.VISIBLE);
                             mFragmentQuizCategoryBinding.gamesNotAvlTv.setVisibility(View.GONE);
                             mAdapter.setData(items);
-                            mAdapter.notifyDataSetChanged();
                             mAdapter.setOnItemClickHandler(position -> {
                                 Intent intent = new Intent(getContext(), QuizActivity.class);
                                 intent.putExtra("puzzleId", mAdapter.getItem(position).getPuzzleId());
@@ -133,8 +133,11 @@ public class FragmentQuizCategory extends BaseFragment {
                                 //Toast.makeText(getActivity(), "Clicked", Toast.LENGTH_SHORT).show();
                             });
                         }else {
+                            //mAdapter.setData(null);
+                            mFragmentQuizCategoryBinding.recycleView.setVisibility(View.GONE);
                             mFragmentQuizCategoryBinding.gamesNotAvlTv.setVisibility(View.VISIBLE);
                         }
+                        mAdapter.notifyDataSetChanged();
                     }
 
                     @Override
