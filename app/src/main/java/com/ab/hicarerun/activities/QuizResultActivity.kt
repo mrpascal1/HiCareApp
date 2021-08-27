@@ -4,9 +4,11 @@ import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import com.ab.hicarerun.BaseActivity
 import com.ab.hicarerun.R
 import com.ab.hicarerun.databinding.ActivityQuizResultBinding
+import com.squareup.picasso.Picasso
 import nl.dionsegijn.konfetti.models.Shape
 import nl.dionsegijn.konfetti.models.Size
 
@@ -21,10 +23,24 @@ class QuizResultActivity : BaseActivity() {
         setContentView(view)
 
         val intent = intent
+        val currLID = intent.getStringExtra("currLID").toString()
+        val upgrdLID = intent.getStringExtra("upgrdLID").toString()
+        val currLIC = intent.getStringExtra("currLIC").toString()
+        val upgrdLIC = intent.getStringExtra("upgrdLIC").toString()
+        val upgrdLN = intent.getStringExtra("upGrdLevelName").toString()
         binding.scoreTv.text = intent.getStringExtra("points").toString()
         binding.earnedCoins.text = intent.getStringExtra("earned").toString()
-        binding.currLevelTv.text = intent.getStringExtra("levelName").toString()
+        //binding.currLevelTv.text = intent.getStringExtra("levelName").toString()
+        binding.currLevelTv.text = upgrdLN
         binding.messageTv.text = intent.getStringExtra("resMessage").toString()
+
+        if (currLID != upgrdLID){
+            binding.levelUpgrdTv.visibility = View.VISIBLE
+            Picasso.get().load(upgrdLIC).placeholder(R.drawable.ic_level_common).into(binding.imgBadge)
+        }else{
+            binding.levelUpgrdTv.visibility = View.GONE
+            Picasso.get().load(currLIC).placeholder(R.drawable.ic_level_common).into(binding.imgBadge)
+        }
 
         if (intent.getStringExtra("earned").toString() != "0") {
             binding.viewKonfetti.build()

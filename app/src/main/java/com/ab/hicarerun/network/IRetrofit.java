@@ -51,6 +51,7 @@ import com.ab.hicarerun.network.models.LeaderBoardModel.RewardLeadersResponse;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
+import com.ab.hicarerun.network.models.MenuModel.MenuResponse;
 import com.ab.hicarerun.network.models.ModelQRCode.CheckCodeResponse;
 import com.ab.hicarerun.network.models.ModelQRCode.CheckPhonePeResponse;
 import com.ab.hicarerun.network.models.ModelQRCode.PhonePeQRCodeResponse;
@@ -133,7 +134,7 @@ public interface IRetrofit {
     String BASE_URL = "http://api.hicare.in/mobile/api/";
     String SCAN_URL = "http://run.hicare.in/taskservice/api/";
     String EXOTEL_URL = "http://apps.hicare.in/api/api/";
-    String ERROR_LOG_URL = "http://api.hicare.in/logging/api/";
+    String ERROR_LOG_URL = "http://run.hicare.in/logging/api/";
     String JEOPARDY_URL = "http://apps.hicare.in/cwf/";
     String SLOT_URL = "http://run.hicare.in/slot/api/";
     String UAT = "http://api.hicare.in/Mobile/api/";
@@ -522,12 +523,12 @@ public interface IRetrofit {
     /*[puzzle/getpuzzlelist]*/
 
     @GET("puzzle/getpuzzlelist")
-    Call<QuizCategoryResponse> getQuizCategory(@Query("resourceId") String resourceId);
+    Call<QuizCategoryResponse> getQuizCategory(@Query("resourceId") String resourceId, @Query("lan") String lan);
 
     /*[puzzle/GetPuzzleQuestionListById]*/
 
     @GET("puzzle/GetPuzzleQuestionListById")
-    Call<QuizResponse> getQuizQuestions(@Query("resourceId") String resourceId, @Query("puzzleId") int puzzleId);
+    Call<QuizResponse> getQuizQuestions(@Query("resourceId") String resourceId, @Query("puzzleId") int puzzleId, @Query("lan") String lan);
 
     @GET("Barcode/GetOrderDetails")
     Call<OrderDetails> getOrderDetails(@Query("orderNo") String orderNo, @Query("userId") String userId);
@@ -556,14 +557,17 @@ public interface IRetrofit {
     @POST("Integration/UpdateServiceActivityStatus")
     Call<BaseResponse> updateActivityServiceStatus(@Body List<SaveServiceActivity> requests);
 
+    @GET("resourceactivity/GetResourceMenu")
+    Call<MenuResponse> getResourceMenu(@Query("resourceId") String resourceId);
+
     @GET("Puzzle/GetPuzzleStatsForResource")
-    Call<QuizPuzzleStats> getPuzzleStatsForResources(@Query("resourceId") String resourceId);
+    Call<QuizPuzzleStats> getPuzzleStatsForResources(@Query("resourceId") String resourceId, @Query("lan") String lan);
 
     @GET("Puzzle/GetPuzzleLeaderBoard")
-    Call<QuizLeaderBoardBase> getPuzzleLeaderBoard(@Query("resourceId") String resourceId);
+    Call<QuizLeaderBoardBase> getPuzzleLeaderBoard(@Query("resourceId") String resourceId, @Query("lan") String lan);
 
     @GET("Puzzle/GetPuzzleLevelModel")
-    Call<QuizLevelModelBase> getPuzzleLevelModel(@Query("resourceId") String resourceId);
+    Call<QuizLevelModelBase> getPuzzleLevelModel(@Query("resourceId") String resourceId, @Query("lan") String lan);
 
     @POST("Puzzle/SavePuzzleAnswers")
     Call<QuizSaveResponseBase> savePuzzleAnswers(@Body List<QuizSaveAnswers> quizSaveAnswers);

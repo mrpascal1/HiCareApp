@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class QuizSaveAnswers {
+    private Integer optionId;
     @SerializedName("PuzzleId")
     @Expose
     private Integer puzzleId;
@@ -28,13 +29,22 @@ public class QuizSaveAnswers {
     public QuizSaveAnswers() {
     }
 
-    public QuizSaveAnswers(Integer puzzleId, Integer puzzleQuestionId, String correctAnswerIds, String resourceGivenAnswerIds, String resourceId, Integer points) {
+    public QuizSaveAnswers(Integer optionId, Integer puzzleId, Integer puzzleQuestionId, String correctAnswerIds, String resourceGivenAnswerIds, String resourceId, Integer points) {
+        this.optionId = optionId;
         this.puzzleId = puzzleId;
         this.puzzleQuestionId = puzzleQuestionId;
         this.correctAnswerIds = correctAnswerIds;
         this.resourceGivenAnswerIds = resourceGivenAnswerIds;
         this.resourceId = resourceId;
         this.points = points;
+    }
+
+    public Integer getOptionId() {
+        return optionId;
+    }
+
+    public void setOptionId(Integer optionId) {
+        this.optionId = optionId;
     }
 
     public Integer getPuzzleId() {

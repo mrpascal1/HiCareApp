@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class QuizLBResourceList(
     @SerializedName("LevelName") val levelName : String?,
+    @SerializedName("LevelIcon") val levelIcon : String?,
     @SerializedName("ResourceId") val resourceId : String?,
     @SerializedName("ResourceName") val resourceName : String?,
     @SerializedName("IsSelf") val isSelf : Boolean?,

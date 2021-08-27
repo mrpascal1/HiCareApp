@@ -74,6 +74,7 @@
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
             android:layout_toLeftOf="@id/lnrPoints"
             android:layout_toRightOf="@id/lnrImage"
             android:orientation="vertical">

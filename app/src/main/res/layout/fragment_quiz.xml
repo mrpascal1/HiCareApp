@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
@@ -36,6 +36,22 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/timer" />
+
+            <TextView
+                android:id="@+id/imageQuestionTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="What is this whole image about?"
+                android:gravity="center"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view5"
+                android:textStyle="bold"
+                android:textSize="17sp"
+                android:textColor="@color/black"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/timer"
@@ -121,12 +137,10 @@
                 android:id="@+id/cardImage"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="15dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="24dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="20dp"
                 android:visibility="gone"
                 app:cardCornerRadius="20dp"
                 app:layout_constraintBottom_toBottomOf="@+id/view5"
@@ -134,12 +148,19 @@
                 app:layout_constraintStart_toStartOf="@+id/view5"
                 app:layout_constraintTop_toTopOf="@+id/view5">
 
-                <ImageView
+                <ozaydin.serkan.com.image_zoom_view.ImageViewZoom
                     android:id="@+id/imgQuestion"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    app:srcCompat="@drawable/sample"
+                    android:scaleType="fitXY"/>
+                <ImageView
+                    android:id="@+id/imgQuestionOld"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:scaleType="fitXY"
-                    app:srcCompat="@drawable/sample" />
+                    app:srcCompat="@drawable/sample"
+                    android:visibility="gone"/>
             </androidx.cardview.widget.CardView>
 
 
@@ -174,9 +195,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/header"
-            android:layout_marginLeft="28dp"
+            android:layout_marginLeft="25dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="28dp"
+            android:layout_marginRight="25dp"
             android:layout_marginBottom="15dp"
             android:layout_above="@id/lnrButton"
             android:orientation="vertical">
@@ -186,7 +207,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:nestedScrollingEnabled="false"
-                tools:listitem="@layout/layout_option_adapter" />
+                android:scrollbars="vertical"/>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -246,6 +268,22 @@
 
         <LinearLayout
             android:id="@+id/lnrButton"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+        <Button
+            android:id="@+id/confirmBtn"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="Confirm"
+            android:background="@drawable/btn_next_selector"
+            android:textColor="@color/white"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="18dp"
+            android:layout_marginBottom="12dp"
+            android:enabled="false"/>
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -261,7 +299,7 @@
                 android:layout_weight="1"
                 android:layout_marginRight="20dp"
                 android:layout_marginLeft="20dp"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:background="@drawable/btn_quit"
                 android:elevation="5dp"
                 android:text="Quit"
@@ -270,7 +308,7 @@
             <Button
                 android:id="@+id/nextBtn"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:background="@drawable/btn_next_selector"
                 android:onClick="onClick"
                 android:text="Next"
@@ -280,6 +318,7 @@
                 android:layout_marginRight="20dp"
                 android:textColor="@color/white" />
 
+        </LinearLayout>
         </LinearLayout>
 
     </RelativeLayout>

@@ -99,6 +99,7 @@ public class AppUtils {
     public static boolean NOT_RENEWAL_DONE = false;
     public static boolean IS_ACTIVITY_THERE = false;
     public static boolean IS_QRCODE_THERE = true;
+    public static boolean IS_FLASH_ON= true;
 
     public static Bitmap createCustomMarker(Context context, Bitmap resource, String accountName, String _name) {
 

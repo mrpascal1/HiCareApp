@@ -24,6 +24,7 @@ import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLBData
 import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLBResourceList
 import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLeaderBoardBase
 import com.ab.hicarerun.utils.AppUtils
+import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
 class QuizLeaderBoardActivity : AppCompatActivity() {
@@ -68,11 +69,11 @@ class QuizLeaderBoardActivity : AppCompatActivity() {
             getBack()
         }
 
-        getPuzzleLeaderBoard(resourceId)
+        getPuzzleLeaderBoard(resourceId, "en")
         //getResourcePic(resourceId)
     }
 
-    private fun getPuzzleLeaderBoard(resourceId: String){
+    private fun getPuzzleLeaderBoard(resourceId: String, lan: String){
         val controller = NetworkCallController()
         controller.setListner(object : NetworkResponseListner<QuizLeaderBoardBase>{
             override fun onResponse(requestCode: Int, response: QuizLeaderBoardBase?) {
@@ -81,9 +82,11 @@ class QuizLeaderBoardActivity : AppCompatActivity() {
                     for (i in 0 until response.data!!.size){
                         val data = response.data[i]
                         val levelName = data.levelName
+                        val levelIcon = data.levelIcon
                         for (j in 0 until data.resourceList!!.size){
                             val resourceList = data.resourceList[j]
                             val uLevelName = resourceList.levelName
+                            val uLevelIcon = resourceList.levelIcon
                             val uResourceId = resourceList.resourceId
                             val resourceName = resourceList.resourceName
                             val isSelf = resourceList.isSelf
@@ -96,6 +99,7 @@ class QuizLeaderBoardActivity : AppCompatActivity() {
                                 binding.txtFirstCentre.text = uLevelName
                                 binding.txtFirstPoints.text = "$points"
                                 binding.txtFirstRank.text = "$resourceRank"
+                                Picasso.get().load(levelIcon).placeholder(R.drawable.ic_award_gold).into(binding.imgFirstBadge)
                                 getResourcePic(uResourceId.toString(), binding.imgFirst)
                             }
                             if (resourceRank == 2){
@@ -103,6 +107,7 @@ class QuizLeaderBoardActivity : AppCompatActivity() {
                                 binding.txtSecondCentre.text = uLevelName
                                 binding.txtSecondPoints.text = "$points"
                                 binding.txtSecondRank.text = "$resourceRank"
+                                Picasso.get().load(levelIcon).placeholder(R.drawable.ic_award_silver).into(binding.imgSecondBadge)
                                 getResourcePic(uResourceId.toString(), binding.imgSecond)
                             }
                             if (resourceRank == 3){
@@ -110,6 +115,7 @@ class QuizLeaderBoardActivity : AppCompatActivity() {
                                 binding.txtThirdCentre.text = uLevelName
                                 binding.txtThirdPoints.text = "$points"
                                 binding.txtThirdRank.text = "$resourceRank"
+                                Picasso.get().load(levelIcon).placeholder(R.drawable.ic_award_bronze).into(binding.imgThirdBadge)
                                 getResourcePic(uResourceId.toString(), binding.imgThird)
                             }
                             if (uResourceId == resourceId){
@@ -119,9 +125,9 @@ class QuizLeaderBoardActivity : AppCompatActivity() {
                                 //binding.rankTv.text = "$resourceRank"
                             }
                             pointsArr.add(points.toString().toInt())
-                            quizLBResourceList.add(QuizLBResourceList(uLevelName, uResourceId, resourceName, isSelf, resourceRank, points, lastPlayedOn, lastPlayedOnDisplay, highest))
+                            quizLBResourceList.add(QuizLBResourceList(uLevelName, uLevelIcon, uResourceId, resourceName, isSelf, resourceRank, points, lastPlayedOn, lastPlayedOnDisplay, highest))
                         }
-                        quizLBData.add(QuizLBData(levelName, quizLBResourceList))
+                        quizLBData.add(QuizLBData(levelName, levelIcon, quizLBResourceList))
                     }
                     highest = pointsArr.maxOrNull().toString().toInt()
                     QuizLeaderBoardBase(response.isSuccess, quizLBData, response.errorMessage, response.param1, response.responseMessage)
@@ -137,7 +143,7 @@ class QuizLeaderBoardActivity : AppCompatActivity() {
             override fun onFailure(requestCode: Int) {
             }
         })
-        controller.getPuzzleLeaderBoard(202124, resourceId)
+        controller.getPuzzleLeaderBoard(202124, resourceId, lan)
     }
 
     private fun getResourcePic(resourceId: String, iv: CircleImageView){

@@ -23,6 +23,15 @@
                 android:src="@drawable/ic_arrow_back_white"
                 android:layout_centerVertical="true"
                 android:padding="12dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:text="Kaun Banega Expert"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:textSize="18sp"/>
             <ImageView
                 android:id="@+id/leaderBoardIv"
                 android:layout_width="26dp"
@@ -49,84 +58,102 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
-        <View
+        <RelativeLayout
             android:id="@+id/view3"
             android:layout_width="0dp"
-            android:layout_height="150dp"
+            android:layout_height="160dp"
             android:layout_marginStart="32dp"
             android:layout_marginTop="36dp"
             android:layout_marginEnd="32dp"
             android:background="@drawable/rounded_box"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/view2" />
+            app:layout_constraintTop_toTopOf="@+id/view2" >
 
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginLeft="32dp"
-            app:layout_constraintBottom_toBottomOf="@+id/view3"
-            app:layout_constraintStart_toStartOf="@+id/view3"
-            app:layout_constraintTop_toTopOf="@+id/view3"
-            app:srcCompat="@drawable/quiz_icon" />
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginLeft="32dp"
+                android:layout_centerVertical="true"
+                app:srcCompat="@drawable/quiz_icon" />
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/imageView3"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="10dp"
+                android:padding="8dp">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:text="Instructions"
+                        android:textColor="@color/white"
+                        android:textSize="24sp"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/lOneTv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxEms="12"
+                        android:text="1. Choose the correct answer to earn points."
+                        android:textColor="@color/white"
+                        app:layout_constraintStart_toStartOf="@+id/textView4"
+                        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+                    <TextView
+                        android:id="@+id/lTwoTv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2. Complete all the given categories."
+                        android:textColor="@color/white"
+                        app:layout_constraintStart_toStartOf="@+id/lOneTv"
+                        app:layout_constraintTop_toBottomOf="@+id/lOneTv" />
+
+                    <TextView
+                        android:id="@+id/lThreeTv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxEms="12"
+                        android:text="3. Proceed to the next level and buy yourself new items from bazaar."
+                        android:textColor="@color/white"
+                        app:layout_constraintStart_toStartOf="@+id/lTwoTv"
+                        app:layout_constraintTop_toBottomOf="@+id/lTwoTv" />
+
+                    <TextView
+                        android:id="@+id/textView10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="4. You can only play 3 times in a day."
+                        android:textColor="@color/white"
+                        app:layout_constraintStart_toStartOf="@+id/lThreeTv"
+                        app:layout_constraintTop_toBottomOf="@+id/lThreeTv" />
+                </LinearLayout>
+            </ScrollView>
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/gamesNotAvlTv"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@+id/view3"
-            app:layout_constraintStart_toEndOf="@+id/imageView3"
-            app:layout_constraintTop_toTopOf="@+id/view3"
-            android:layout_marginEnd="10dp">
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@font/roboto_medium"
-                android:text="Instructions"
-                android:textColor="@color/white"
-                android:textSize="24sp" />
-
-            <TextView
-                android:id="@+id/lOneTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="- Choose Category"
-                android:textColor="@color/white"
-                app:layout_constraintStart_toStartOf="@+id/textView4"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" />
-
-            <TextView
-                android:id="@+id/lTwoTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="- Play Quiz"
-                android:textColor="@color/white"
-                app:layout_constraintStart_toStartOf="@+id/lOneTv"
-                app:layout_constraintTop_toBottomOf="@+id/lOneTv" />
-
-            <TextView
-                android:id="@+id/lThreeTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="- Collect Points"
-                android:textColor="@color/white"
-                app:layout_constraintStart_toStartOf="@+id/lTwoTv"
-                app:layout_constraintTop_toBottomOf="@+id/lTwoTv" />
-
-            <TextView
-                android:id="@+id/textView10"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="- Earn Incentives"
-                android:textColor="@color/white"
-                app:layout_constraintStart_toStartOf="@+id/lThreeTv"
-                app:layout_constraintTop_toBottomOf="@+id/lThreeTv" />
-        </LinearLayout>
-
+            android:text="Games not available!"
+            android:gravity="center"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lnrExtras"
+            android:visibility="gone"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycleView"
             android:layout_width="match_parent"

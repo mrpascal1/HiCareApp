@@ -10,8 +10,10 @@
         <LinearLayout
             android:id="@+id/lnrRadio"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
             android:background="@drawable/option_unselected_border"
             android:orientation="vertical">
 
@@ -19,25 +21,28 @@
                 android:id="@+id/relRadio"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:padding="10dp">
 
                 <RadioButton
                     android:id="@+id/radioOption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp" />
+                    android:text=""
+                    android:textSize="16sp"
+                    android:layout_marginLeft="15dp" />
 
                 <TextView
                     android:id="@+id/txtRadioOption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="30dp"
+                    android:layout_marginLeft="25dp"
                     android:layout_toRightOf="@id/radioOption"
                     android:text="Online "
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
             </RelativeLayout>
 
         </LinearLayout>
@@ -45,29 +50,32 @@
         <LinearLayout
             android:id="@+id/lnrCheck"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
             android:background="@drawable/option_unselected_border"
             android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:padding="10dp">
 
                 <CheckBox
                     android:id="@+id/checkOption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp" />
+                    android:layout_marginLeft="15dp" />
 
                 <TextView
                     android:id="@+id/txtCheckOption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="30dp"
+                    android:layout_marginLeft="25dp"
                     android:layout_toRightOf="@id/checkOption"
                     android:text="Online Payment"
                     android:textColor="@color/black"
@@ -106,6 +114,14 @@
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
                         android:src="@drawable/hand_sanitizer" />
+                    <ImageView
+                        android:id="@+id/zoomIv"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/ic_round_zoom_in"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:visibility="gone"/>
 
 
                 </RelativeLayout>

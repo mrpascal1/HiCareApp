@@ -136,7 +136,6 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     private ProgressDialog progress;
     private CameraManager mCameraManager;
     private String mCameraId;
-    private boolean isFlashOn = true;
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
@@ -172,6 +171,15 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+        /*try {
+            if (!Build.MODEL.contains("Emulator")){
+                mCameraManager.setTorchMode(mCameraId, false);
+            }
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }*/
+        AppUtils.IS_FLASH_ON = true;
+        mActivityHomeBinding.toolbar.imgFlash.setImageResource(R.drawable.flash_off);
         mActivityHomeBinding.toolbar.lnrDrawer.setOnClickListener(view -> mActivityHomeBinding.drawer.openDrawer(GravityCompat.START));
         try {
             new GPSUtils(this).turnGPSOn(isGPSEnable -> {
@@ -213,13 +221,13 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         });
         mActivityHomeBinding.toolbar.lnrFlash.setOnClickListener(v -> {
             try {
-                if (isFlashOn) {
+                if (AppUtils.IS_FLASH_ON) {
                     mCameraManager.setTorchMode(mCameraId, true);
-                    isFlashOn = false;
+                    AppUtils.IS_FLASH_ON = false;
                     mActivityHomeBinding.toolbar.imgFlash.setImageResource(R.drawable.flash_on);
                 } else {
                     mCameraManager.setTorchMode(mCameraId, false);
-                    isFlashOn = true;
+                    AppUtils.IS_FLASH_ON = true;
                     mActivityHomeBinding.toolbar.imgFlash.setImageResource(R.drawable.flash_off);
                 }
 
@@ -956,4 +964,16 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         return mLocation;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        /*try {
+            mCameraManager.setTorchMode(mCameraId, false);
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }*/
+        AppUtils.IS_FLASH_ON = true;
+        mActivityHomeBinding.toolbar.imgFlash.setImageResource(R.drawable.flash_off);
+    }
 }

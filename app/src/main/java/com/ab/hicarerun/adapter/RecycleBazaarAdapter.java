@@ -83,6 +83,13 @@ public class RecycleBazaarAdapter extends RecyclerView.Adapter<RecycleBazaarAdap
                 holder.mLayoutBazaarAdapterBinding.progressBar.getProgressDrawable().setColorFilter(mContext.getResources().getColor(R.color.red), PorterDuff.Mode.SRC_IN);
 
             }
+            if (items.get(position).isLocked()){
+                holder.mLayoutBazaarAdapterBinding.btnRedeem.setEnabled(false);
+                holder.mLayoutBazaarAdapterBinding.btnRedeem.setText("Unlocks at "+items.get(position).getUnlocksAtLevel());
+            }else {
+                holder.mLayoutBazaarAdapterBinding.btnRedeem.setEnabled(true);
+                holder.mLayoutBazaarAdapterBinding.btnRedeem.setText("Unlocked");
+            }
         }catch (Exception e){
             e.printStackTrace();
         }

@@ -17,6 +17,7 @@ import com.ab.hicarerun.databinding.LayoutConsulationChildAdapterBinding;
 import com.ab.hicarerun.databinding.LayoutOptionAdapterBinding;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
 import com.ab.hicarerun.handler.OnOptionClickListener;
+import com.ab.hicarerun.handler.OnVideoOptionClickListener;
 import com.ab.hicarerun.network.models.ConsulationModel.Optionlist;
 import com.ab.hicarerun.network.models.QuizModel.QuizAnswer;
 import com.ab.hicarerun.network.models.QuizModel.QuizOption;
@@ -32,6 +33,7 @@ import java.util.List;
 public class QuizVideoChildAdapter extends RecyclerView.Adapter<QuizVideoChildAdapter.ViewHolder> {
     private OnListItemClickHandler onItemClickHandler = null;
     private OnOptionClickListener onOptionClickListener = null;
+    private OnVideoOptionClickListener onVideoOptionClickListener = null;
     private final Context mContext;
     private List<QuizOption> items = null;
     private List<QuizAnswer> answerList = null;
@@ -103,6 +105,7 @@ public class QuizVideoChildAdapter extends RecyclerView.Adapter<QuizVideoChildAd
             if (type.equals("Radio")) {
                 whichType = "radio";
                 holder.mLayoutOptionAdapterBinding.txtRadioOption.setText(items.get(position).getOptionTitle());
+                //holder.mLayoutOptionAdapterBinding.radioOption.setText(items.get(position).getOptionValue());
                 holder.mLayoutOptionAdapterBinding.lnrRadio.setVisibility(View.VISIBLE);
                 holder.mLayoutOptionAdapterBinding.lnrCheck.setVisibility(View.GONE);
                 holder.mLayoutOptionAdapterBinding.lnrImgOption.setVisibility(View.GONE);
@@ -124,7 +127,8 @@ public class QuizVideoChildAdapter extends RecyclerView.Adapter<QuizVideoChildAd
                 whichType = "radio";
                 isRadioSelected = true;
                 selectedPos = position;
-                onOptionClickListener.onItemClick(position, items.get(position), "", whichType);
+                //onOptionClickListener.onItemClick(position, items.get(position), "", whichType, holder);
+                onVideoOptionClickListener.onItemClick(position, items.get(position), "", whichType, holder);
                 holder.mLayoutOptionAdapterBinding.radioOption.setChecked(true);
                 for (QuizAnswer ans : answerList) {
                     if (items.get(position).getOptionValue().equalsIgnoreCase(ans.getOptionValue()) && items.get(position).getOptionId().equals(ans.getOptionId())) {
@@ -143,7 +147,8 @@ public class QuizVideoChildAdapter extends RecyclerView.Adapter<QuizVideoChildAd
                 whichType = "checkbox";
                 isRadioSelected = false;
                 selectedPos = position;
-                onOptionClickListener.onItemClick(position, items.get(position), "", whichType);
+                //onOptionClickListener.onItemClick(position, items.get(position), "", whichType, holder);
+                onVideoOptionClickListener.onItemClick(position, items.get(position), "", whichType, holder);
                 holder.mLayoutOptionAdapterBinding.checkOption.setChecked(true);
                 holder.mLayoutOptionAdapterBinding.checkOption.setEnabled(false);
                 holder.itemView.setEnabled(false);
@@ -167,7 +172,8 @@ public class QuizVideoChildAdapter extends RecyclerView.Adapter<QuizVideoChildAd
                     holder.mLayoutOptionAdapterBinding.radioOption.setChecked(true);
                     whichType = "radio";
                     isRadioSelected = true;
-                    onOptionClickListener.onItemClick(position, items.get(position), "SomeTest", whichType);
+                    //onOptionClickListener.onItemClick(position, items.get(position), "SomeTest", whichType, holder);
+                    onVideoOptionClickListener.onItemClick(position, items.get(position), "SomeTest", whichType, holder);
                     for (QuizAnswer ans : answerList) {
                         Log.d("TAG", ans.getOptionValue());
                         if (items.get(position).getOptionValue().equalsIgnoreCase(ans.getOptionValue()) && items.get(position).getOptionId().equals(ans.getOptionId())) {
@@ -185,7 +191,8 @@ public class QuizVideoChildAdapter extends RecyclerView.Adapter<QuizVideoChildAd
                 }else {
                     whichType = "checkbox";
                     isRadioSelected = false;
-                    onOptionClickListener.onItemClick(position, items.get(position), "SomeTest", whichType);
+                    //onOptionClickListener.onItemClick(position, items.get(position), "SomeTest", whichType, holder);
+                    onVideoOptionClickListener.onItemClick(position, items.get(position), "SomeTest", whichType, holder);
                     holder.mLayoutOptionAdapterBinding.checkOption.setChecked(true);
                     holder.mLayoutOptionAdapterBinding.checkOption.setEnabled(false);
                     holder.itemView.setEnabled(false);
@@ -240,6 +247,10 @@ public class QuizVideoChildAdapter extends RecyclerView.Adapter<QuizVideoChildAd
 
     public void setOnOptionClickListener(OnOptionClickListener onOptionClickListener){
         this.onOptionClickListener = onOptionClickListener;
+    }
+
+    public void setOnVideoOptionClickListener(OnVideoOptionClickListener onVideoOptionClickListener){
+        this.onVideoOptionClickListener = onVideoOptionClickListener;
     }
 
     public QuizOption getItem(int position) {

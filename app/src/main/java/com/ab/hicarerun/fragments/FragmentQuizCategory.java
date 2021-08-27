@@ -36,6 +36,7 @@ import com.ab.hicarerun.network.models.QuizLevelModel.QuizLevelData;
 import com.ab.hicarerun.network.models.QuizLevelModel.QuizLevelModelBase;
 import com.ab.hicarerun.network.models.QuizModel.QuizCategoryData;
 import com.ab.hicarerun.network.models.QuizModel.QuizPuzzleStats;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,18 +121,23 @@ public class FragmentQuizCategory extends BaseFragment {
                     @Override
                     public void onResponse(int requestCode, List<QuizCategoryData> items) {
                         if (items != null && items.size() > 0) {
+                            mFragmentQuizCategoryBinding.recycleView.setVisibility(View.VISIBLE);
+                            mFragmentQuizCategoryBinding.gamesNotAvlTv.setVisibility(View.GONE);
                             mAdapter.setData(items);
-                            mAdapter.notifyDataSetChanged();
                             mAdapter.setOnItemClickHandler(position -> {
                                 Intent intent = new Intent(getContext(), QuizActivity.class);
                                 intent.putExtra("puzzleId", mAdapter.getItem(position).getPuzzleId());
+                                intent.putExtra("puzzleTitle", mAdapter.getItem(position).getPuzzleTitle());
                                 startActivity(intent);
                                 //replaceFragment(QuizFragment.newInstance(mAdapter.getItem(position).getPuzzleId()), "QuizFragmentCategory - QuizFragment");
                                 //Toast.makeText(getActivity(), "Clicked", Toast.LENGTH_SHORT).show();
                             });
+                        }else {
+                            //mAdapter.setData(null);
+                            mFragmentQuizCategoryBinding.recycleView.setVisibility(View.GONE);
+                            mFragmentQuizCategoryBinding.gamesNotAvlTv.setVisibility(View.VISIBLE);
                         }
-                        getPuzzleStatsForRes();
-                        getPuzzleLevel();
+                        mAdapter.notifyDataSetChanged();
                     }
 
                     @Override
@@ -139,7 +145,7 @@ public class FragmentQuizCategory extends BaseFragment {
 
                     }
                 });
-                controller.getQuizCategory(QUIZ_CATEGORY, resourceId);
+                controller.getQuizCategory(QUIZ_CATEGORY, resourceId, "en");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -177,16 +183,17 @@ public class FragmentQuizCategory extends BaseFragment {
                 if (response != null) {
                     if (response.isSuccess()) {
                         String levelName = response.getData().getLevelName();
-                        if (levelName.equalsIgnoreCase("Basic")) {
+                        Picasso.get().load(response.getData().getLevelIcon()).placeholder(R.drawable.ic_level_common).into(mFragmentQuizCategoryBinding.awardIv);
+                        /*if (levelName.equalsIgnoreCase("Basic")) {
                             mFragmentQuizCategoryBinding.awardIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_level_common));
                         } else if (levelName.equalsIgnoreCase("Intermediate")) {
                             mFragmentQuizCategoryBinding.awardIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_level_common));
                         } else if (levelName.equalsIgnoreCase("Expert")) {
                             mFragmentQuizCategoryBinding.awardIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_level_common));
-                        }
+                        }*/
                         mFragmentQuizCategoryBinding.levelTv.setTypeface(mFragmentQuizCategoryBinding.levelTv.getTypeface(), Typeface.BOLD);
                         mFragmentQuizCategoryBinding.pointsTv.setTypeface(mFragmentQuizCategoryBinding.pointsTv.getTypeface(), Typeface.BOLD);
-                        mFragmentQuizCategoryBinding.levelTv.setText(" " + Objects.requireNonNull(response.getData()).getLevelName() + " Lvl");
+                        mFragmentQuizCategoryBinding.levelTv.setText(" " + Objects.requireNonNull(response.getData()).getLevelName());
                         mFragmentQuizCategoryBinding.pointsTv.setText(Objects.requireNonNull(response.getData()).getPoints() + " Pts");
                     }
                 }
@@ -197,10 +204,11 @@ public class FragmentQuizCategory extends BaseFragment {
 
             }
         });
-        controller.getPuzzleStatsForRes(202122, resourceId);
+        controller.getPuzzleStatsForRes(202122, resourceId, "en");
     }
 
     private void getPuzzleLevel(){
+        quizLevelDataList.clear();
         NetworkCallController controller = new NetworkCallController(this);
         controller.setListner(new NetworkResponseListner<QuizLevelModelBase>() {
             @Override
@@ -223,12 +231,15 @@ public class FragmentQuizCategory extends BaseFragment {
 
             }
         });
-        controller.getPuzzleLevel(202126, resourceId);
+        controller.getPuzzleLevel(202126, resourceId, "en");
     }
 
     @Override
     public void onResume() {
+        Log.d("TAG", "onResume Called");
+        getQuizCategory();
         getPuzzleStatsForRes();
+        getPuzzleLevel();
         super.onResume();
     }
 }
