@@ -94,7 +94,8 @@ public class FragmentQuizCategory extends BaseFragment {
         mFragmentQuizCategoryBinding.recycleView.setAdapter(mAdapter);
         getQuizCategory();
         mFragmentQuizCategoryBinding.infoIv.setOnClickListener(v -> {
-            showDialog();
+            showInstructionsDialog();
+            //showDialog();
         });
         mFragmentQuizCategoryBinding.levelTv.setOnClickListener(v -> {
             showDialog();
@@ -150,6 +151,19 @@ public class FragmentQuizCategory extends BaseFragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void showInstructionsDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("KBE Instructions");
+        builder.setMessage("1. Choose the correct answer to earn points.\n" +
+                "2. Complete all the given categories.\n" +
+                "3. Proceed to the next level and buy yourself new items from bazaar.\n" +
+                "4. You can only play 3 times in a day.");
+        builder.setPositiveButton("Ok", (dialog, which) -> {
+            dialog.cancel();
+        });
+        builder.show();
     }
 
     private void showDialog(){

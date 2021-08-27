@@ -107,17 +107,19 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
     List<String> normalCorrectAns;
     String prevTitle = "";
     String puzzleType = "";
+    public static String puzzleT = "";
 
     public QuizFragment() {
         // Required empty public constructor
     }
 
     // TODO: Rename and change types and number of parameters
-    public static QuizFragment newInstance(int puzzleId) {
+    public static QuizFragment newInstance(int puzzleId, String puzzleTitle) {
         QuizFragment fragment = new QuizFragment();
         Bundle args = new Bundle();
         args.putInt(ARGS_ID, puzzleId);
         fragment.setArguments(args);
+        puzzleT = "KBE - "+puzzleTitle;
         return fragment;
     }
 
@@ -140,6 +142,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
         if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
             resourceId = LoginRealmModels.get(0).getUserID();
         }
+        mFragmentQuizBinding.questionTitleTv.setText(puzzleT);
         mFragmentQuizBinding.questionCounter.setTypeface(mFragmentQuizBinding.questionCounter.getTypeface(), Typeface.BOLD);
         return mFragmentQuizBinding.getRoot();
     }
@@ -700,6 +703,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                 mFragmentQuizBinding.confirmBtn.setVisibility(View.GONE);
                 mFragmentQuizBinding.timer.setVisibility(View.INVISIBLE);
                 mFragmentQuizBinding.cardImage.setVisibility(View.GONE);
+                mFragmentQuizBinding.imgInfoTv.setVisibility(View.GONE);
                 mFragmentQuizBinding.question.setVisibility(View.GONE);
                 mFragmentQuizBinding.videoQuestion.setVisibility(View.VISIBLE);
                 mFragmentQuizBinding.imageQuestionTitle.setVisibility(View.GONE);
@@ -712,11 +716,13 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                 mFragmentQuizBinding.timer.setVisibility(View.INVISIBLE);
                 mFragmentQuizBinding.question.setVisibility(View.GONE);
                 mFragmentQuizBinding.cardImage.setVisibility(View.VISIBLE);
+                mFragmentQuizBinding.imgInfoTv.setVisibility(View.VISIBLE);
                 mFragmentQuizBinding.videoQuestion.setVisibility(View.GONE);
                 mFragmentQuizBinding.imageQuestionTitle.setVisibility(View.VISIBLE);
             } else {
                 timer.cancel();
                 mFragmentQuizBinding.cardImage.setVisibility(View.GONE);
+                mFragmentQuizBinding.imgInfoTv.setVisibility(View.GONE);
                 mFragmentQuizBinding.question.setVisibility(View.VISIBLE);
                 mFragmentQuizBinding.confirmBtn.setVisibility(View.VISIBLE);
                 mFragmentQuizBinding.videoQuestion.setVisibility(View.GONE);
