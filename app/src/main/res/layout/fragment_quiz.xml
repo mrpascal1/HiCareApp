@@ -28,7 +28,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="4dp"
                     android:text="Shiksha"

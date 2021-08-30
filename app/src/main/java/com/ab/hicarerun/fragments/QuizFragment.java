@@ -37,6 +37,7 @@ import com.ab.hicarerun.network.models.QuizModel.QuizSaveAnswers;
 import com.ab.hicarerun.network.models.QuizModel.VideoDependentQuest;
 import com.ab.hicarerun.network.models.QuizSaveModel.QuizSaveResponseBase;
 import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.utils.LocaleHelper;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -334,7 +335,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
 
                     }
                 });
-                controller.getQuizQuestions(REQ_QUESTIONS, resourceId, puzzleId, "en");
+                controller.getQuizQuestions(REQ_QUESTIONS, resourceId, puzzleId, LocaleHelper.getLanguage(requireContext()));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -882,6 +883,6 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
 
             }
         });
-        controller.getPuzzleStatsForRes(202122, resourceId, "en");
+        controller.getPuzzleStatsForRes(202122, resourceId, LocaleHelper.getLanguage(requireContext()));
     }
 }

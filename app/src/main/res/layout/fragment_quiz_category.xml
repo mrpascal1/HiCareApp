@@ -24,11 +24,12 @@
                 android:layout_centerVertical="true"
                 android:padding="12dp" />
             <TextView
+                android:id="@+id/gameNameTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
-                android:text="Kaun Banega Expert"
+                android:text="Shiksha"
                 android:textStyle="bold"
                 android:textColor="@color/white"
                 android:textSize="18sp"/>

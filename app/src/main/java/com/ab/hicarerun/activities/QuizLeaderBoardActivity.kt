@@ -24,6 +24,7 @@ import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLBData
 import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLBResourceList
 import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLeaderBoardBase
 import com.ab.hicarerun.utils.AppUtils
+import com.ab.hicarerun.utils.LocaleHelper
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -69,7 +70,7 @@ class QuizLeaderBoardActivity : AppCompatActivity() {
             getBack()
         }
 
-        getPuzzleLeaderBoard(resourceId, "en")
+        getPuzzleLeaderBoard(resourceId, LocaleHelper.getLanguage(this))
         //getResourcePic(resourceId)
     }
 
@@ -78,63 +79,90 @@ class QuizLeaderBoardActivity : AppCompatActivity() {
         controller.setListner(object : NetworkResponseListner<QuizLeaderBoardBase>{
             override fun onResponse(requestCode: Int, response: QuizLeaderBoardBase?) {
                 val pointsArr = ArrayList<Int>()
-                if (response != null){
-                    for (i in 0 until response.data!!.size){
-                        val data = response.data[i]
-                        val levelName = data.levelName
-                        val levelIcon = data.levelIcon
-                        for (j in 0 until data.resourceList!!.size){
-                            val resourceList = data.resourceList[j]
-                            val uLevelName = resourceList.levelName
-                            val uLevelIcon = resourceList.levelIcon
-                            val uResourceId = resourceList.resourceId
-                            val resourceName = resourceList.resourceName
-                            val isSelf = resourceList.isSelf
-                            val resourceRank = resourceList.resourceRank
-                            val points = resourceList.points
-                            val lastPlayedOn = resourceList.lastPlayedOn
-                            val lastPlayedOnDisplay = resourceList.lastPlayedOnDisplay
-                            if (resourceRank == 1){
-                                binding.txtFirstName.text = resourceName
-                                binding.txtFirstCentre.text = uLevelName
-                                binding.txtFirstPoints.text = "$points"
-                                binding.txtFirstRank.text = "$resourceRank"
-                                Picasso.get().load(levelIcon).placeholder(R.drawable.ic_award_gold).into(binding.imgFirstBadge)
-                                getResourcePic(uResourceId.toString(), binding.imgFirst)
+                if (response != null) {
+                    if (!response.data.isNullOrEmpty()) {
+                        for (i in 0 until response.data!!.size) {
+                            val data = response.data[i]
+                            val levelName = data.levelName
+                            val levelIcon = data.levelIcon
+                            for (j in 0 until data.resourceList!!.size) {
+                                val resourceList = data.resourceList[j]
+                                val uLevelName = resourceList.levelName
+                                val uLevelIcon = resourceList.levelIcon
+                                val uResourceId = resourceList.resourceId
+                                val resourceName = resourceList.resourceName
+                                val isSelf = resourceList.isSelf
+                                val resourceRank = resourceList.resourceRank
+                                val points = resourceList.points
+                                val lastPlayedOn = resourceList.lastPlayedOn
+                                val lastPlayedOnDisplay = resourceList.lastPlayedOnDisplay
+                                if (resourceRank == 1) {
+                                    binding.txtFirstName.text = resourceName
+                                    binding.txtFirstCentre.text = uLevelName
+                                    binding.txtFirstPoints.text = "$points"
+                                    binding.txtFirstRank.text = "$resourceRank"
+                                    Picasso.get().load(levelIcon)
+                                        .placeholder(R.drawable.ic_award_gold)
+                                        .into(binding.imgFirstBadge)
+                                    getResourcePic(uResourceId.toString(), binding.imgFirst)
+                                }
+                                if (resourceRank == 2) {
+                                    binding.txtSecondName.text = resourceName
+                                    binding.txtSecondCentre.text = uLevelName
+                                    binding.txtSecondPoints.text = "$points"
+                                    binding.txtSecondRank.text = "$resourceRank"
+                                    Picasso.get().load(levelIcon)
+                                        .placeholder(R.drawable.ic_award_silver)
+                                        .into(binding.imgSecondBadge)
+                                    getResourcePic(uResourceId.toString(), binding.imgSecond)
+                                }
+                                if (resourceRank == 3) {
+                                    binding.txtThirdName.text = resourceName
+                                    binding.txtThirdCentre.text = uLevelName
+                                    binding.txtThirdPoints.text = "$points"
+                                    binding.txtThirdRank.text = "$resourceRank"
+                                    Picasso.get().load(levelIcon)
+                                        .placeholder(R.drawable.ic_award_bronze)
+                                        .into(binding.imgThirdBadge)
+                                    getResourcePic(uResourceId.toString(), binding.imgThird)
+                                }
+                                if (uResourceId == resourceId) {
+                                    //binding.nameTv.text = resourceName
+                                    myPoints = points.toString().toInt()
+                                    //binding.pointsTv.text = "$myPoints"
+                                    //binding.rankTv.text = "$resourceRank"
+                                }
+                                pointsArr.add(points.toString().toInt())
+                                quizLBResourceList.add(
+                                    QuizLBResourceList(
+                                        uLevelName,
+                                        uLevelIcon,
+                                        uResourceId,
+                                        resourceName,
+                                        isSelf,
+                                        resourceRank,
+                                        points,
+                                        lastPlayedOn,
+                                        lastPlayedOnDisplay,
+                                        highest
+                                    )
+                                )
                             }
-                            if (resourceRank == 2){
-                                binding.txtSecondName.text = resourceName
-                                binding.txtSecondCentre.text = uLevelName
-                                binding.txtSecondPoints.text = "$points"
-                                binding.txtSecondRank.text = "$resourceRank"
-                                Picasso.get().load(levelIcon).placeholder(R.drawable.ic_award_silver).into(binding.imgSecondBadge)
-                                getResourcePic(uResourceId.toString(), binding.imgSecond)
-                            }
-                            if (resourceRank == 3){
-                                binding.txtThirdName.text = resourceName
-                                binding.txtThirdCentre.text = uLevelName
-                                binding.txtThirdPoints.text = "$points"
-                                binding.txtThirdRank.text = "$resourceRank"
-                                Picasso.get().load(levelIcon).placeholder(R.drawable.ic_award_bronze).into(binding.imgThirdBadge)
-                                getResourcePic(uResourceId.toString(), binding.imgThird)
-                            }
-                            if (uResourceId == resourceId){
-                                //binding.nameTv.text = resourceName
-                                myPoints = points.toString().toInt()
-                                //binding.pointsTv.text = "$myPoints"
-                                //binding.rankTv.text = "$resourceRank"
-                            }
-                            pointsArr.add(points.toString().toInt())
-                            quizLBResourceList.add(QuizLBResourceList(uLevelName, uLevelIcon, uResourceId, resourceName, isSelf, resourceRank, points, lastPlayedOn, lastPlayedOnDisplay, highest))
+                            quizLBData.add(QuizLBData(levelName, levelIcon, quizLBResourceList))
                         }
-                        quizLBData.add(QuizLBData(levelName, levelIcon, quizLBResourceList))
+                        highest = pointsArr.maxOrNull().toString().toInt()
+                        QuizLeaderBoardBase(
+                            response.isSuccess,
+                            quizLBData,
+                            response.errorMessage,
+                            response.param1,
+                            response.responseMessage
+                        )
                     }
-                    highest = pointsArr.maxOrNull().toString().toInt()
-                    QuizLeaderBoardBase(response.isSuccess, quizLBData, response.errorMessage, response.param1, response.responseMessage)
-                }
-                if (quizLBResourceList.isNotEmpty()){
-                    for (i in 0 until quizLBResourceList.size) {
-                        quizLBResourceList[i].highest = highest
+                    if (quizLBResourceList.isNotEmpty()) {
+                        for (i in 0 until quizLBResourceList.size) {
+                            quizLBResourceList[i].highest = highest
+                        }
                     }
                 }
                 quizLeaderBoardAdapter.notifyDataSetChanged()
