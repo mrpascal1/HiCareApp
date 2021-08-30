@@ -21,7 +21,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="@color/colorPurple">
+                android:background="@color/colorPrimary">
                 <TextView
                     android:id="@+id/questionTitleTv"
                     android:layout_toStartOf="@id/pointsLayout"
@@ -31,7 +31,7 @@
                     android:textSize="16sp"
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="4dp"
-                    android:text="KBE - General Knowledge"
+                    android:text="Shiksha"
                     android:textColor="@color/white"/>
 
                 <RelativeLayout
@@ -63,7 +63,7 @@
                 android:id="@+id/view4"
                 android:layout_width="wrap_content"
                 android:layout_height="120dp"
-                android:background="@drawable/background_quiz"
+                android:background="@drawable/background_quiz_green"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/headerLayout" />
@@ -77,7 +77,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="32dp"
                 android:layout_marginRight="32dp"
-                android:background="@drawable/rounded_box"
+                android:background="@drawable/rounded_box_green"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/headerLayout" />
@@ -351,7 +351,7 @@
                     android:background="@drawable/btn_next_selector"
                     android:onClick="onClick"
                     android:text="Next"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:layout_weight="1"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"

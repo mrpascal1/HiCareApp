@@ -155,7 +155,7 @@ public class FragmentQuizCategory extends BaseFragment {
 
     private void showInstructionsDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("KBE Instructions");
+        builder.setTitle("Shiksha Instructions");
         builder.setMessage("1. Choose the correct answer to earn points.\n" +
                 "2. Complete all the given categories.\n" +
                 "3. Proceed to the next level and buy yourself new items from bazaar.\n" +

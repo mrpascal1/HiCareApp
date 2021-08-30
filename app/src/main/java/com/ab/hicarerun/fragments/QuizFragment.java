@@ -119,7 +119,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
         Bundle args = new Bundle();
         args.putInt(ARGS_ID, puzzleId);
         fragment.setArguments(args);
-        puzzleT = "KBE - "+puzzleTitle;
+        puzzleT = "Shiksha - "+puzzleTitle;
         return fragment;
     }
 
@@ -219,7 +219,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
 
     private void showQuitDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("KBE Alert");
+        builder.setTitle("Shiksha Alert");
         builder.setMessage("Are you sure you want to quit the game?");
         builder.setPositiveButton("Quit", (dialog, which) -> {
             dialog.cancel();
@@ -242,7 +242,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
 
     private void showNoQuizDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("KBE Alert");
+        builder.setTitle("Shiksha Alert");
         builder.setMessage("Game not available! Please check again later.");
         builder.setPositiveButton("Quit", (dialog, which) -> {
             dialog.cancel();
