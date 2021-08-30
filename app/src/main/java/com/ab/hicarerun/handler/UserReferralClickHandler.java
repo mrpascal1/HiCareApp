@@ -4,4 +4,5 @@ import android.view.View;
 
 public interface UserReferralClickHandler {
     void onAddReferralClicked(View view);
+    void onReferHiCareClicked(View view);
 }

@@ -5037,6 +5037,57 @@ public class NetworkCallController {
                 });
     }
 
+    public void sendReferralMessage(final int requestCode, final String resourceId, final String taskId) {
+        try {
+            if (mContext != null)
+                mContext.showProgressDialog();
+            BaseApplication.getRetrofitAPI(false)
+                    .sendReferralMessage(resourceId, taskId)
+                    .enqueue(new Callback<BaseResponse>() {
+                        @Override
+                        public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                            if (mContext != null)
+                                mContext.dismissProgressDialog();
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        if (mContext != null)
+                                            mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getChemicals", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            } else {
+                                if (mContext != null)
+                                    mContext.showServerError();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<BaseResponse> call, Throwable t) {
+                            if (mContext != null) {
+                                mContext.dismissProgressDialog();
+                                mContext.showServerError(mContext.getString(R.string.something_went_wrong));
+                            }
+
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     public String getRefreshToken() {
         String refreshToken = null;

@@ -45,6 +45,7 @@ import com.ab.hicarerun.network.models.ReferralModel.ReferralRequest;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralResponse;
 import com.ab.hicarerun.network.models.ReferralModel.ReferralSRData;
 import com.ab.hicarerun.network.models.SelfAssessModel.SelfAssessmentRequest;
+import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.LocaleHelper;
 import com.ab.hicarerun.utils.SwipeToDeleteCallBack;
@@ -66,6 +67,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
     private static final int GET_REFERRAL_REQUEST = 2000;
     private static final int DELETE_REFERRAL_REQUEST = 3000;
     private static final int REFERRAL_SR_REQUEST = 4000;
+    private static final int SEND_REFERRAL = 5000;
     private static final String ARG_TASK = "ARG_TASK";
     private static final String ARGS_MOBILE = "ARGS_MOBILE";
     private String taskId = "";
@@ -394,6 +396,36 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
             }
         }
 
+    }
+
+    @Override
+    public void onReferHiCareClicked(View view) {
+        try {
+            if ((NewTaskDetailsActivity) getActivity() != null) {
+                mGeneralRealmModel = getRealm().where(GeneralData.class).findAll();
+                if (mGeneralRealmModel != null && mGeneralRealmModel.size() > 0) {
+                    NetworkCallController controller = new NetworkCallController(this);
+                    controller.setListner(new NetworkResponseListner<BaseResponse>() {
+                        @Override
+                        public void onResponse(int requestCode, BaseResponse response) {
+                            if(response.isSuccess()){
+                                Toasty.success(getActivity(), "Sent successfully.", Toasty.LENGTH_SHORT).show();
+                            }else {
+                                Toasty.error(getActivity(), "Please try again!", Toasty.LENGTH_SHORT);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int requestCode) {
+
+                        }
+                    });
+                    controller.sendReferralMessage(SEND_REFERRAL, mGeneralRealmModel.get(0).getResourceId(), mGeneralRealmModel.get(0).getTaskId() );
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override

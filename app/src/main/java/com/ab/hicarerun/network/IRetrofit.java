@@ -132,11 +132,11 @@ public interface IRetrofit {
     //    String ERROR_LOG_URL = "http://52.74.65.15/logging/api/";
     //    http://apps.hicare.in/cwf/datasync/InsertRenewalAppJeopardy;
     String BASE_URL = "http://api.hicare.in/mobile/api/";
-    String SCAN_URL = "http://run.hicare.in/taskservice/api/";
+    String SCAN_URL = "http://api.hicare.in/taskservice/api/";
     String EXOTEL_URL = "http://apps.hicare.in/api/api/";
     String ERROR_LOG_URL = "http://run.hicare.in/logging/api/";
     String JEOPARDY_URL = "http://apps.hicare.in/cwf/";
-    String SLOT_URL = "http://run.hicare.in/slot/api/";
+    String SLOT_URL = "http://api.hicare.in/slot/api/";
     String UAT = "http://api.hicare.in/Mobile/api/";
     String B2B_URL = "http://connect.hicare.in/b2bwow/api/";
 
@@ -571,4 +571,7 @@ public interface IRetrofit {
 
     @POST("Puzzle/SavePuzzleAnswers")
     Call<QuizSaveResponseBase> savePuzzleAnswers(@Body List<QuizSaveAnswers> quizSaveAnswers);
+
+    @GET("CustomerReferral/SendReferralMessage")
+    Call<BaseResponse> sendReferralMessage(@Query("resourceId") String resourceId, @Query("taskId") String taskId);
 }
