@@ -248,7 +248,7 @@ public class FragmentQuizCategory extends BaseFragment {
                         mFragmentQuizCategoryBinding.levelTv.setTypeface(mFragmentQuizCategoryBinding.levelTv.getTypeface(), Typeface.BOLD);
                         mFragmentQuizCategoryBinding.pointsTv.setTypeface(mFragmentQuizCategoryBinding.pointsTv.getTypeface(), Typeface.BOLD);
                         mFragmentQuizCategoryBinding.levelTv.setText(" " + Objects.requireNonNull(response.getData()).getLevelName());
-                        mFragmentQuizCategoryBinding.pointsTv.setText(Objects.requireNonNull(response.getData()).getPoints() + " Pts");
+                        mFragmentQuizCategoryBinding.pointsTv.setText(Objects.requireNonNull(response.getData()).getPoints()+"");
                     }
                 }
             }
