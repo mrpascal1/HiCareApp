@@ -7,24 +7,27 @@ import android.graphics.Typeface
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.BaseActivity
 import com.ab.hicarerun.BaseApplication
+import com.ab.hicarerun.R
 import com.ab.hicarerun.adapter.BarcodeAdapter
+import com.ab.hicarerun.adapter.PestTypeAdapter
 import com.ab.hicarerun.databinding.ActivityTsverificationBinding
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
 import com.ab.hicarerun.network.models.LoginResponse
-import com.ab.hicarerun.network.models.ProfileModel.Profile
 import com.ab.hicarerun.network.models.TSScannerModel.*
 import com.ab.hicarerun.service.listner.LocationManagerListner
 import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.LocaleHelper
-import com.ab.hicarerun.utils.SharedPreferencesUtility
 import com.google.zxing.integration.android.IntentIntegrator
 import io.realm.RealmResults
 
@@ -32,7 +35,9 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
 
     lateinit var binding: ActivityTsverificationBinding
     lateinit var modelBarcodeList: ArrayList<BarcodeList>
+    lateinit var pestList: ArrayList<Pest_Type>
     lateinit var barcodeAdapter: BarcodeAdapter
+    lateinit var pestTypeAdapter: PestTypeAdapter
     lateinit var progressDialog: ProgressDialog
 
     var empCode: Int? = null
@@ -79,7 +84,9 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
         }
 
         modelBarcodeList = ArrayList()
+        pestList = ArrayList()
         barcodeAdapter = BarcodeAdapter(this, modelBarcodeList, "TSVerification")
+        pestTypeAdapter = PestTypeAdapter(this, pestList)
         val llManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         llManager.stackFromEnd = true
         llManager.reverseLayout = true
@@ -192,6 +199,12 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                             verified_By = response.data.barcodeList[i].verified_By
                             created_By = response.data.barcodeList[i].created_By
                             isVerified = response.data.barcodeList[i].isVerified
+                            val pestResp = response.data.barcodeList[i].pest_Type
+                            if (!pestResp.isNullOrEmpty()){
+                                for (j in 0 until pestResp.size){
+                                    pestList.add(Pest_Type(pestResp[j].text, pestResp[j].value))
+                                }
+                            }
                             modelBarcodeList.add(
                                 BarcodeList(
                                     id,
@@ -206,6 +219,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                                     verified_By,
                                     created_By,
                                     isVerified,
+                                    pestList,
                                     "no"
                                 )
                             )
@@ -300,7 +314,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
     private fun modifyData(id: Int?, account_No: String?, order_No: String?, account_Name: String?,
                            barcode_Data: String?, last_Verified_On: String?, last_Verified_By: Int?,
                            created_On: String?, created_By_Id_User: Int?, verified_By: String?,
-                           created_By: String?, isVerified: Boolean?){
+                           created_By: String?, pestList: ArrayList<Pest_Type>?, isVerified: Boolean?){
 
         binding.progressBar.visibility = View.VISIBLE
         var found = 0
@@ -308,7 +322,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
             if(modelBarcodeList[i].barcode_Data == barcode_Data){
                 if (modelBarcodeList[i].isVerified == false){
                     modelBarcodeList[i] = BarcodeList(modelBarcodeList[i].id, account_No, order_No, account_Name, barcode_Data,
-                        last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, "no")
+                        last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, pestList, "no")
                     Log.d("TAG-Veri", id.toString())
                     verifyBarcode(modelBarcodeList[i].id, "TSVerification", account_No, order_No, barcode_Data, lat, long, last_Verified_On, last_Verified_By)
                     barcodeAdapter.notifyItemChanged(i)
@@ -326,6 +340,18 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
             binding.progressBar.visibility = View.GONE
             Toast.makeText(this, "Rodent station not found", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun showPestDialog(){
+        val li = LayoutInflater.from(this)
+        val promptsView: View = li.inflate(R.layout.add_pest_info_dialog, null)
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        alertDialogBuilder.setView(promptsView)
+        val pestRecyclerView = promptsView.findViewById(R.id.pestRecyclerView) as RecyclerView
+        pestRecyclerView.setHasFixedSize(true)
+        val layoutManager = GridLayoutManager(this, 2)
+        pestRecyclerView.layoutManager = layoutManager
+        pestRecyclerView.adapter = pestTypeAdapter
     }
 
     private fun getBack(){
@@ -354,8 +380,9 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
         last_Verified_On = AppUtils.currentDateTimeWithTimeZone()
         if (result != null){
             if (result.contents != null){
+
                 modifyData(id, account_No, order_No, account_Name, result.contents, created_On, empCode,
-                    last_Verified_On, created_By_Id_User, verified_By, created_By, true)
+                    last_Verified_On, created_By_Id_User, verified_By, created_By, pestList, true)
                 Log.d("TAG-QR", result.contents)
             }else{
                 Log.d("TAG-QR", "Not found")

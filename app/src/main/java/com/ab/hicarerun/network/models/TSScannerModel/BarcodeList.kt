@@ -16,5 +16,6 @@ data class BarcodeList (
 	@SerializedName("Verified_By") val verified_By : String?,
 	@SerializedName("Created_By") val created_By : String?,
 	@SerializedName("IsVerified") val isVerified : Boolean?,
+	@SerializedName("Pest_Type") val pest_Type : List<Pest_Type>?,
 	var callForDelete : String?
 )
