@@ -24,7 +24,7 @@ android {
         versionCode 61
         versionName "7.4"
         multiDexEnabled true
-        dynamicFeatures = [":ondemand"]
+//        dynamicFeatures = [":ondemand"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [
                 onesignal_app_id               : '388766c1-4dc5-4e4d-a206-9b4f583d5d9d',
@@ -68,7 +68,7 @@ android {
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
     }
-    dynamicFeatures = [":LanguageModule", ":MarathiLanguage"]
+//    dynamicFeatures = [":LanguageModule", ":MarathiLanguage"]
 
     bundle {
         language {
