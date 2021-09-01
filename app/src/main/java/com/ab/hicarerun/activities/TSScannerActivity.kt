@@ -21,10 +21,7 @@ import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
 import com.ab.hicarerun.network.models.LoginResponse
 import com.ab.hicarerun.network.models.ProfileModel.Profile
-import com.ab.hicarerun.network.models.TSScannerModel.BarcodeList
-import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse
-import com.ab.hicarerun.network.models.TSScannerModel.Data
-import com.ab.hicarerun.network.models.TSScannerModel.OrderDetails
+import com.ab.hicarerun.network.models.TSScannerModel.*
 import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.LocaleHelper
 import com.ab.hicarerun.utils.SharedPreferencesUtility
@@ -35,6 +32,7 @@ class TSScannerActivity : BaseActivity() {
 
     lateinit var binding: ActivityTsscannerBinding
     lateinit var modelBarcodeList: ArrayList<BarcodeList>
+    lateinit var pestList: ArrayList<Pest_Type>
     lateinit var barcodeAdapter: BarcodeAdapter
     lateinit var progressDialog: ProgressDialog
 
@@ -80,6 +78,7 @@ class TSScannerActivity : BaseActivity() {
         }
 
         modelBarcodeList = ArrayList()
+        pestList = ArrayList()
         barcodeAdapter = BarcodeAdapter(this, modelBarcodeList, "TSScanner")
         val llManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         llManager.stackFromEnd = true
@@ -219,6 +218,7 @@ class TSScannerActivity : BaseActivity() {
         controller.setListner(object : NetworkResponseListner<OrderDetails>{
             override fun onResponse(requestCode: Int, response: OrderDetails?) {
                 modelBarcodeList.clear()
+                pestList.clear()
                 binding.searchBtn.isEnabled = true
                 val success = response?.isSuccess.toString()
                 if (success == "true"){
@@ -232,6 +232,7 @@ class TSScannerActivity : BaseActivity() {
                     val regionName = response?.data?.regionName
                     val serviceGroup = response?.data?.serviceGroup
                     val servicePlan = response?.data?.servicePlan
+                    val barcodeType = response?.data?.barcodeType
                     val barcodeList = response?.data?.barcodeList
                     if (response?.data?.barcodeList != null){
                         var itemsCount = 0
@@ -249,9 +250,15 @@ class TSScannerActivity : BaseActivity() {
                             verified_By = response.data.barcodeList[i].verified_By
                             created_By = response.data.barcodeList[i].created_By
                             isVerified = response.data.barcodeList[i].isVerified
-                            modelBarcodeList.add(BarcodeList(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, "no"))
+                            val pestList = response.data.barcodeList[i].pest_Type
+                            /*if (!pestResp.isNullOrEmpty()){
+                                for (j in 0 until pestResp.size){
+                                    pestList.add(Pest_Type(pestResp[j].text, pestResp[j].value))
+                                }
+                            }*/
+                            modelBarcodeList.add(BarcodeList(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, pestList, "no"))
                         }
-                        OrderDetails(response.isSuccess, Data(account_No, orderNo, account_Name, startDate, endDate, regionName, serviceGroup, servicePlan, modelBarcodeList), response.errorMessage, response.param1, response.responseMessage)
+                        OrderDetails(response.isSuccess, Data(account_No, orderNo, account_Name, startDate, endDate, regionName, serviceGroup, servicePlan, barcodeType, modelBarcodeList), response.errorMessage, response.param1, response.responseMessage)
                         if (itemsCount > 0){
                             binding.barcodeErrorTv.visibility = View.GONE
                             binding.saveBtn.visibility = View.VISIBLE
@@ -354,7 +361,7 @@ class TSScannerActivity : BaseActivity() {
     private fun addNewData(account_No: String?, order_No: String?, account_Name: String?,
                            barcode_Data: String?, last_Verified_On: String?, last_Verified_By: Int?,
                            created_On: String?, created_By_Id_User: Int?, verified_By: String?,
-                           created_By: String?, isVerified: Boolean?){
+                           created_By: String?, pestList: ArrayList<Pest_Type>?, isVerified: Boolean?){
 
         var found = 0
         for (i in 0 until modelBarcodeList.size){
@@ -366,7 +373,7 @@ class TSScannerActivity : BaseActivity() {
         if (found == 0){
             modelBarcodeList.add(BarcodeList(0, account_No, order_No, account_Name, barcode_Data,
                 last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By,
-                created_By, isVerified, "no"))
+                created_By, isVerified, pestList, "no"))
             barcodeAdapter.notifyItemInserted(modelBarcodeList.lastIndex)
             binding.barcodeRecycler.post {
                 binding.barcodeRecycler.smoothScrollToPosition(barcodeAdapter.itemCount - 1)
@@ -401,7 +408,8 @@ class TSScannerActivity : BaseActivity() {
                     created_By_Id_User = empCode,
                     verified_By = empCode.toString(),
                     created_By = created_By,
-                    isVerified = isVerified)
+                    isVerified = isVerified,
+                    pestList = pestList)
                 Log.d("TAG-QR", result.contents)
                 }
                 if (requestFrom == 2){

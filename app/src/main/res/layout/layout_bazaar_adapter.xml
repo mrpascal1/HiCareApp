@@ -127,6 +127,26 @@
                     android:textColor="@color/white"
                     android:textSize="14sp" />
 
+                <RelativeLayout
+                    android:id="@+id/lockedBtnLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/gradient_bg_red">
+                    <TextView
+                        android:id="@+id/btnLevelName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Maha vir chakra"
+                        android:textAllCaps="false"
+                        android:gravity="center"
+                        android:drawablePadding="4dp"
+                        android:drawableStart="@drawable/ic_round_lock_white"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true"
+                        android:textColor="@color/white"
+                        android:textSize="14sp" />
+                </RelativeLayout>
 
             </LinearLayout>
 

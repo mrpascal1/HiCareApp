@@ -72,13 +72,52 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginEnd="15dp"
+                            android:layout_marginTop="15dp">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Did you found any pest?"
+                                android:textColor="@color/colorPrimary" />
+
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:background="@drawable/round_border">
+                                <RadioGroup
+                                    android:id="@+id/radioGrp"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+                                    <RadioButton
+                                        android:id="@+id/yesBtn"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Yes"/>
+                                    <RadioButton
+                                        android:id="@+id/noBtn"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="No"/>
+
+                                </RadioGroup>
+                            </LinearLayout>
+                        </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/lnrCheque"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:visibility="gone">
 
 
                             <LinearLayout
