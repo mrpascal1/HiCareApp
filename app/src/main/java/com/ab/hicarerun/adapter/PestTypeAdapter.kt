@@ -24,7 +24,7 @@ class PestTypeAdapter(val context: Context, val pestList: ArrayList<Pest_Type>) 
 
     class MyHolder(val binding: LayoutReferralInterestAdapterBinding): RecyclerView.ViewHolder(binding.root) {
         fun bindItems(pestList: Pest_Type){
-            binding.txtName.text = pestList.text
+            binding.txtName.text = pestList.sub_Type
         }
     }
 }

@@ -3,28 +3,36 @@ package com.ab.hicarerun.activities
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatSpinner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.BaseActivity
 import com.ab.hicarerun.BaseApplication
+import com.ab.hicarerun.R
 import com.ab.hicarerun.adapter.BarcodeAdapter
 import com.ab.hicarerun.databinding.ActivityTsscannerBinding
 import com.ab.hicarerun.handler.OnBarcodeCountListener
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
 import com.ab.hicarerun.network.models.LoginResponse
-import com.ab.hicarerun.network.models.ProfileModel.Profile
 import com.ab.hicarerun.network.models.TSScannerModel.*
 import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.LocaleHelper
-import com.ab.hicarerun.utils.SharedPreferencesUtility
 import com.google.zxing.integration.android.IntentIntegrator
 import io.realm.RealmResults
 
@@ -33,6 +41,7 @@ class TSScannerActivity : BaseActivity() {
     lateinit var binding: ActivityTsscannerBinding
     lateinit var modelBarcodeList: ArrayList<BarcodeList>
     lateinit var pestList: ArrayList<Pest_Type>
+    lateinit var barcodeType: List<BarcodeType>
     lateinit var barcodeAdapter: BarcodeAdapter
     lateinit var progressDialog: ProgressDialog
 
@@ -46,9 +55,12 @@ class TSScannerActivity : BaseActivity() {
     var created_On: String? = ""
     var verified_By: String? = ""
     var created_By: String? = "Optimizer"
+    var barcode_Type: String? = ""
     var isVerified: Boolean? = false
+    var selectedType = ""
     var isFetched = 0
     var requestFrom = 0
+    lateinit var promptsView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,6 +91,7 @@ class TSScannerActivity : BaseActivity() {
 
         modelBarcodeList = ArrayList()
         pestList = ArrayList()
+        barcodeType = ArrayList()
         barcodeAdapter = BarcodeAdapter(this, modelBarcodeList, "TSScanner")
         val llManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         llManager.stackFromEnd = true
@@ -232,7 +245,9 @@ class TSScannerActivity : BaseActivity() {
                     val regionName = response?.data?.regionName
                     val serviceGroup = response?.data?.serviceGroup
                     val servicePlan = response?.data?.servicePlan
-                    val barcodeType = response?.data?.barcodeType
+                    if (!response?.data?.barcodeType.isNullOrEmpty()) {
+                        barcodeType = response?.data?.barcodeType!!
+                    }
                     val barcodeList = response?.data?.barcodeList
                     if (response?.data?.barcodeList != null){
                         var itemsCount = 0
@@ -250,13 +265,14 @@ class TSScannerActivity : BaseActivity() {
                             verified_By = response.data.barcodeList[i].verified_By
                             created_By = response.data.barcodeList[i].created_By
                             isVerified = response.data.barcodeList[i].isVerified
+                            barcode_Type = response.data.barcodeList[i].barcode_Type
                             val pestList = response.data.barcodeList[i].pest_Type
                             /*if (!pestResp.isNullOrEmpty()){
                                 for (j in 0 until pestResp.size){
                                     pestList.add(Pest_Type(pestResp[j].text, pestResp[j].value))
                                 }
                             }*/
-                            modelBarcodeList.add(BarcodeList(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, pestList, "no"))
+                            modelBarcodeList.add(BarcodeList(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, barcode_Type, pestList, "no"))
                         }
                         OrderDetails(response.isSuccess, Data(account_No, orderNo, account_Name, startDate, endDate, regionName, serviceGroup, servicePlan, barcodeType, modelBarcodeList), response.errorMessage, response.param1, response.responseMessage)
                         if (itemsCount > 0){
@@ -361,7 +377,7 @@ class TSScannerActivity : BaseActivity() {
     private fun addNewData(account_No: String?, order_No: String?, account_Name: String?,
                            barcode_Data: String?, last_Verified_On: String?, last_Verified_By: Int?,
                            created_On: String?, created_By_Id_User: Int?, verified_By: String?,
-                           created_By: String?, pestList: ArrayList<Pest_Type>?, isVerified: Boolean?){
+                           created_By: String?, pestList: ArrayList<Pest_Type>?, isVerified: Boolean?, barcode_Type: String?){
 
         var found = 0
         for (i in 0 until modelBarcodeList.size){
@@ -373,7 +389,7 @@ class TSScannerActivity : BaseActivity() {
         if (found == 0){
             modelBarcodeList.add(BarcodeList(0, account_No, order_No, account_Name, barcode_Data,
                 last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By,
-                created_By, isVerified, pestList, "no"))
+                created_By, isVerified, barcode_Type, pestList, "no"))
             barcodeAdapter.notifyItemInserted(modelBarcodeList.lastIndex)
             binding.barcodeRecycler.post {
                 binding.barcodeRecycler.smoothScrollToPosition(barcodeAdapter.itemCount - 1)
@@ -390,18 +406,62 @@ class TSScannerActivity : BaseActivity() {
         binding.boxesTitleTv.text = "Bait Stations: (${modelBarcodeList.size})"
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-        val currentDateTime = AppUtils.currentDateTimeWithTimeZone()
-        if (result != null){
-            if (result.contents != null){
-                //Toast.makeText(this, ""+SharedPreferencesUtility.getPrefString(this, SharedPreferencesUtility.PREF_USERID), Toast.LENGTH_SHORT).show()
-                if (requestFrom == 1){
-                    addNewData(
+    private fun showPestTypeDialog(contents: String, currentDateTime: String){
+        val li = LayoutInflater.from(this)
+        promptsView = li.inflate(R.layout.add_barcode_type_dialog, null)
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        alertDialogBuilder.setView(promptsView)
+        val alertDialog = alertDialogBuilder.create()
+        val spnType = promptsView.findViewById(R.id.spnType) as AppCompatSpinner
+        val cancelBtn = promptsView.findViewById(R.id.btnCancel) as AppCompatButton
+        val okBtn = promptsView.findViewById(R.id.okBtn) as AppCompatButton
+
+        val bType: ArrayList<String> = ArrayList()
+        bType.clear()
+        bType.add("Select Type")
+        barcodeType.forEach {
+            bType.add(it.value.toString())
+        }
+        val arrayAdapter = object : ArrayAdapter<String>(this, R.layout.spinner_layout_new, bType){
+            override fun isEnabled(position: Int): Boolean {
+                return position != 0
+            }
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getDropDownView(position, convertView, parent)
+                val tv = view as TextView
+                if (position == 0){
+                    tv.setTextColor(Color.GRAY)
+                }else{
+                    tv.setTextColor(Color.BLACK)
+                }
+                return view
+            }
+        }
+        arrayAdapter.setDropDownViewResource(R.layout.spinner_popup)
+        spnType.adapter = arrayAdapter
+
+        spnType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                selectedType = spnType.selectedItem.toString()
+                if (selectedType != "Select Type"){
+                    okBtn.isEnabled = true
+                }
+                //Log.d("TAG", selectedType)
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+            }
+        }
+
+        okBtn.setOnClickListener {
+            Log.d("TAG", selectedType)
+            if (selectedType != "Select Type"){
+                addNewData(
                     account_No = account_No,
                     order_No = order_No,
                     account_Name = account_Name,
-                    barcode_Data = result.contents,
+                    barcode_Data = contents,
                     last_Verified_On = currentDateTime,
                     last_Verified_By = last_Verified_By,
                     created_On = currentDateTime,
@@ -409,7 +469,27 @@ class TSScannerActivity : BaseActivity() {
                     verified_By = empCode.toString(),
                     created_By = created_By,
                     isVerified = isVerified,
+                    barcode_Type = selectedType,
                     pestList = pestList)
+                alertDialog.cancel()
+            }
+        }
+        cancelBtn.setOnClickListener {
+            alertDialog.cancel()
+        }
+        alertDialog.setCanceledOnTouchOutside(false)
+        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alertDialog.show()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+        val currentDateTime = AppUtils.currentDateTimeWithTimeZone()
+        if (result != null){
+            if (result.contents != null){
+                //Toast.makeText(this, ""+SharedPreferencesUtility.getPrefString(this, SharedPreferencesUtility.PREF_USERID), Toast.LENGTH_SHORT).show()
+                if (requestFrom == 1){
+                    showPestTypeDialog(result.contents, currentDateTime)
                 Log.d("TAG-QR", result.contents)
                 }
                 if (requestFrom == 2){
