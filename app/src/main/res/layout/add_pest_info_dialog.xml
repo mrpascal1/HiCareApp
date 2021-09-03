@@ -78,7 +78,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="15dp"
                             android:layout_marginEnd="15dp"
-                            android:layout_marginTop="15dp">
+                            android:layout_marginTop="15dp"
+                            android:visibility="gone">
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -117,16 +118,16 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
                             android:orientation="vertical"
-                            android:visibility="gone">
+                            android:visibility="visible">
 
 
                             <LinearLayout
                                 android:id="@+id/lnrRelation"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
+                                android:layout_marginLeft="4dp"
                                 android:layout_marginTop="10dp"
-                                android:layout_marginRight="15dp"
+                                android:layout_marginRight="4dp"
                                 android:orientation="vertical">
 
                                 <TextView
@@ -134,13 +135,83 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginBottom="5dp"
                                     android:text="Pest Type :"
-                                    android:textColor="@color/colorPrimary" />
+                                    android:textColor="@color/colorPrimary"
+                                    android:visibility="gone"/>
+                                <LinearLayout
+                                    android:id="@+id/relativeLayout1"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="40dp"
+                                    android:background="@color/tab_textColor"
+                                    android:gravity="center">
+
+                                    <TextView
+                                        android:id="@+id/txtType"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:visibility="gone"
+                                        android:ellipsize="end"
+                                        android:gravity="center"
+                                        android:padding="5dp"
+                                        android:singleLine="true"
+                                        android:text="@string/type_chemicals"
+                                        android:textColor="@color/black" />
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1.7"
+                                        android:ellipsize="end"
+                                        android:gravity="center"
+                                        android:padding="5dp"
+                                        android:singleLine="true"
+                                        android:text="Sub Type"
+                                        android:textColor="@color/black"
+                                        app:tabTextAppearance="@style/calligraphy_font" />
+
+                                    <TextView
+                                        android:id="@+id/txtUnit"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="0.6"
+                                        android:ellipsize="end"
+                                        android:gravity="center"
+                                        android:padding="5dp"
+                                        android:visibility="gone"
+                                        android:singleLine="true"
+                                        android:text="@string/unit_chemicals"
+                                        android:textColor="@color/black"
+                                        app:tabTextAppearance="@style/calligraphy_font" />
+
+                                    <TextView
+                                        android:id="@+id/txtStandard"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="0.9"
+                                        android:ellipsize="end"
+                                        android:gravity="center"
+                                        android:padding="5dp"
+                                        android:singleLine="true"
+                                        android:text="Count"
+                                        android:textColor="@color/black" />
+
+                                    <TextView
+                                        android:id="@+id/txtActual"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="0.9"
+                                        android:ellipsize="end"
+                                        android:gravity="center"
+                                        android:padding="5dp"
+                                        android:singleLine="true"
+                                        android:text="Image"
+                                        android:textColor="@color/black" />
+                                </LinearLayout>
 
                                 <LinearLayout
                                     android:orientation="vertical"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/round_border">
+                                    android:layout_height="wrap_content">
 
                                     <androidx.recyclerview.widget.RecyclerView
                                         android:id="@+id/pestRecyclerView"
@@ -148,7 +219,8 @@
                                         android:layout_height="wrap_content"
                                         android:scrollbars="vertical"
                                         android:visibility="visible"
-                                        tools:listitem="@layout/layout_referral_interest_adapter" />
+                                        tools:itemCount="4"
+                                        tools:listitem="@layout/row_barcode_pest_type" />
 
 
                                 </LinearLayout>
@@ -164,7 +236,8 @@
                                 android:layout_marginLeft="15dp"
                                 android:layout_marginRight="15dp"
                                 android:layout_marginTop="10dp"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                android:visibility="gone">
 
                                 <TextView
                                     android:layout_width="match_parent"
@@ -207,7 +280,8 @@
                                 android:layout_marginLeft="15dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginRight="15dp"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                android:visibility="gone">
 
                                 <androidx.appcompat.widget.AppCompatButton
                                     android:id="@+id/addImgBtn"

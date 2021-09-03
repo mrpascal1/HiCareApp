@@ -122,7 +122,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
         modelBarcodeList = ArrayList()
         pestList = ArrayList()
         barcodeAdapter = BarcodeAdapter(this, modelBarcodeList, "TSVerification")
-        pestTypeAdapter = PestTypeAdapter(this, pestList)
+        //pestTypeAdapter = PestTypeAdapter(this, pestList)
         val llManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         llManager.stackFromEnd = true
         llManager.reverseLayout = true
@@ -381,61 +381,6 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
             binding.progressBar.visibility = View.GONE
             Toast.makeText(this, "Rodent station not found", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun showPestDialog(){
-        val li = LayoutInflater.from(this)
-        promptsView = li.inflate(R.layout.add_pest_info_dialog, null)
-        val alertDialogBuilder = AlertDialog.Builder(this)
-        alertDialogBuilder.setView(promptsView)
-        val alertDialog = alertDialogBuilder.create()
-        val lnrCheck = promptsView.findViewById(R.id.lnrCheque) as LinearLayout
-        val clickedImageLayout = promptsView.findViewById(R.id.clickedImageLayout) as RelativeLayout
-        val clickedIv = promptsView.findViewById(R.id.clickedIv) as ImageView
-        val pestRecyclerView = promptsView.findViewById(R.id.pestRecyclerView) as RecyclerView
-        val cancelBtn = promptsView.findViewById(R.id.btn_cancel) as AppCompatButton
-        val radioGrp = promptsView.findViewById(R.id.radioGrp) as RadioGroup
-        val yesBtn = promptsView.findViewById(R.id.yesBtn) as RadioButton
-        val noBtn = promptsView.findViewById(R.id.noBtn) as RadioButton
-        val addImgBtn = promptsView.findViewById(R.id.addImgBtn) as AppCompatButton
-        pestRecyclerView.setHasFixedSize(true)
-        val layoutManager = GridLayoutManager(this, 2)
-        pestRecyclerView.layoutManager = layoutManager
-        pestRecyclerView.adapter = pestTypeAdapter
-
-        radioGrp.setOnCheckedChangeListener { _, _ ->
-            if (yesBtn.isChecked){
-                lnrCheck.visibility = View.VISIBLE
-                Log.d("TAG", "yes")
-            }else{
-                lnrCheck.visibility = View.GONE
-                Log.d("TAG", "no")
-            }
-        }
-        addImgBtn.setOnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (intent.resolveActivity(this.packageManager) != null) {
-                // Create the File where the photo should go
-                val photoFile = createImageFile()
-                val photoURI: Uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", photoFile)
-                mPhotoFile = photoFile
-                intent.putExtra("android.intent.extras.CAMERA_FACING", Camera.CameraInfo.CAMERA_FACING_BACK)
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                startActivityForResult(intent, CAMERA_REQUEST)
-            }
-        }
-        if (bitmap != null){
-            clickedImageLayout.visibility = View.VISIBLE
-            clickedIv.setImageBitmap(bitmap)
-        }
-        cancelBtn.setOnClickListener {
-            alertDialog.cancel()
-        }
-
-        alertDialog.show()
-        alertDialog.setCancelable(false)
-        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        alertDialog.setCanceledOnTouchOutside(false)
     }
 
     @Throws(IOException::class)
