@@ -26,7 +26,7 @@ class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPes
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         holder.bindItems(pestList[position], position)
         holder.binding.countEt.setOnFocusChangeListener { view, b ->
-            onEditTextChanged.onTextChanged(position, holder.binding.countEt.text.toString())
+            onEditTextChanged.onTextChanged(position, holder.binding.countEt.text.toString(), pestList[position].barcodeId, pestList[position].id)
         }
         holder.binding.countEt.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -36,11 +36,15 @@ class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPes
             }
 
             override fun afterTextChanged(p0: Editable?) {
-                onEditTextChanged.onTextChanged(position, p0.toString())
+                onEditTextChanged.onTextChanged(position, p0.toString(), pestList[position].barcodeId, pestList[position].id)
             }
         })
         if (holder.binding.countEt.text.toString().length != 0){
-            onEditTextChanged.onTextChanged(position, holder.binding.countEt.text.toString())
+            onEditTextChanged.onTextChanged(position, holder.binding.countEt.text.toString(), pestList[position].barcodeId, pestList[position].id)
+        }
+
+        holder.binding.imgCapture.setOnClickListener {
+            onEditTextChanged.onPictureIconClicked(position, pestList[position].barcodeId, pestList[position].id)
         }
     }
 
@@ -64,6 +68,7 @@ class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPes
         }
     }
     interface OnEditTextChanged {
-        fun onTextChanged(position: Int, charSeq: String)
+        fun onTextChanged(position: Int, charSeq: String, barcodeId: Int?, pestTypeId: Int?)
+        fun onPictureIconClicked(position: Int, barcodeId: Int?, pestTypeId: Int?)
     }
 }

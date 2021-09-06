@@ -241,7 +241,15 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                             val pestResp = response.data.barcodeList[i].pest_Type
                             if (!pestResp.isNullOrEmpty()){
                                 for (j in 0 until pestResp.size){
-                                    pestList.add(Pest_Type(pestResp[j].id, pestResp[j].barcode_Type, pestResp[j].sub_Type, pestResp[j].show_Count, pestResp[j].capture_Image))
+                                    pestList.add(Pest_Type(
+                                        pestResp[j].id,
+                                        pestResp[j].barcode_Type,
+                                        pestResp[j].sub_Type,
+                                        pestResp[j].show_Count,
+                                        pestResp[j].capture_Image,
+                                        pestResp[j].pest_Count,
+                                        pestResp[j].image_Url,
+                                    ))
                                 }
                             }
                             modelBarcodeList.add(
@@ -459,7 +467,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
     }
 
     private fun uploadBoxImage(resourceId: String, taskId: String, file: String){
-        val hashMap = HashMap<String, Any>()
+        val hashMap = HashMap<String, String>()
         hashMap["ResourceId"] = resourceId
         hashMap["TaskId"] = taskId
         hashMap["File"] = file

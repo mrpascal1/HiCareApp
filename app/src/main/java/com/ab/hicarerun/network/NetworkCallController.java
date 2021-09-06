@@ -4826,7 +4826,7 @@ public class NetworkCallController {
                 });
     }
 
-    public void uploadBoxImage(int requestCode, HashMap<String, Object> imageDetails) {
+    public void uploadBoxImage(int requestCode, HashMap<String, String> imageDetails) {
         BaseApplication.getRetrofitAPI(false)
                 .uploadBoxImage(imageDetails)
                 .enqueue(new Callback<BaseResponse>() {

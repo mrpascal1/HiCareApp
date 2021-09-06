@@ -1,16 +1,21 @@
 package com.ab.hicarerun.activities
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.hardware.Camera
 import android.location.Location
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -19,7 +24,6 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.FileProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.BaseActivity
@@ -31,7 +35,7 @@ import com.ab.hicarerun.adapter.PestTypeAdapter
 import com.ab.hicarerun.databinding.ActivityBarcodeVerificatonBinding
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
-import com.ab.hicarerun.network.models.ConsulationModel.Data
+import com.ab.hicarerun.network.models.Item
 import com.ab.hicarerun.network.models.LoginResponse
 import com.ab.hicarerun.network.models.TSScannerModel.BarcodeDDPestType
 import com.ab.hicarerun.network.models.TSScannerModel.BarcodeDetailsData
@@ -42,12 +46,14 @@ import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.LocaleHelper
 import com.google.zxing.integration.android.IntentIntegrator
 import io.realm.RealmResults
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+
 
 class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
 
@@ -89,6 +95,16 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
     var selectedImagePath = ""
     var mPhotoFile: File? = null
     var bitmap: Bitmap? = null
+    var barcodeIdFromAdapter = -1
+    var pestTypeIdFromAdapter = -1
+    var IMAGE_FILE_PATH = ""
+    var tempImageName = ""
+    var pos = 0
+    var IMAGE_DIRECTORY = "/hicare";
+    var FILE_ENTENSION = ".jpg";
+    var imageCount = 0;
+    var TimeStamp = "";
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,7 +139,6 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
 
         modelBarcodeList = ArrayList()
         modelBarcodeDDPestType = ArrayList()
-        pestTypeAdapter = PestTypeAdapter(this, modelBarcodeDDPestType)
         barcodeAdapter = BarcodeAdapter2(this, modelBarcodeList, "TSVerification")
         val llManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         llManager.stackFromEnd = true
@@ -187,6 +202,9 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                                         pestType[j].sub_Type,
                                         pestType[j].show_Count,
                                         pestType[j].capture_Image,
+                                        pestType[j].pest_Count,
+                                        pestType[j].image_Url,
+                                        id
                                     ))
                                 }
                             }
@@ -301,7 +319,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         controller.verifyBarcodeDetails(20212, verifyMap)
     }
 
-    private fun showPestDialog(){
+    private fun showPestDialog(resultBarcode: String){
         val li = LayoutInflater.from(this)
         promptsView = li.inflate(R.layout.add_pest_info_dialog, null)
         val alertDialogBuilder = AlertDialog.Builder(this)
@@ -316,30 +334,88 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         val yesBtn = promptsView.findViewById(R.id.yesBtn) as RadioButton
         val noBtn = promptsView.findViewById(R.id.noBtn) as RadioButton
         val addImgBtn = promptsView.findViewById(R.id.addImgBtn) as AppCompatButton
+        val pestType = ArrayList<BarcodeDDPestType>()
+
+        modelBarcodeList.forEach {
+            if (it.barcode_Data == resultBarcode){
+                modelBarcodeDDPestType.forEach { pest ->
+                    if (pest.barcode_Type == it.barcode_Type && pest.barcodeId == it.id) {
+                        Log.d("TAG", "ID ${pest.id}")
+                        pestType.add(
+                            BarcodeDDPestType(
+                            pest.id,
+                            pest.barcode_Type,
+                            pest.sub_Type,
+                            pest.show_Count,
+                            pest.capture_Image,
+                            pest.pest_Count,
+                            pest.image_Url,
+                            pest.barcodeId,
+                        ))
+                    }
+                }
+            }
+        }
+        pestTypeAdapter = PestTypeAdapter(this, pestType)
         pestRecyclerView.setHasFixedSize(true)
         val layoutManager = LinearLayoutManager(this)
         pestRecyclerView.layoutManager = layoutManager
         pestRecyclerView.adapter = pestTypeAdapter
 
         pestTypeAdapter.setOnEditTextChangedListener(object : PestTypeAdapter.OnEditTextChanged{
-            override fun onTextChanged(position: Int, charSeq: String) {
+            override fun onTextChanged(position: Int, charSeq: String, barcodeId: Int?, pestTypeId: Int?) {
                 Log.d("TAG-Count", charSeq)
+                var count = charSeq
+                if (count == ""){
+                    count = "0"
+                }
+                modelBarcodeDDPestType.forEach {
+                    if (it.barcodeId == barcodeId && it.id == pestTypeId){
+                        it.pest_Count = count.toInt()
+                    }
+                }
+                modelBarcodeDDPestType.forEach {
+                    if (it.barcodeId == barcodeId){
+                        Log.d("TAG", "After Modifications ${it.id} ${it.pest_Count} ${it.barcodeId} ${it.image_Url}")
+
+                    }
+                }
             }
 
+            override fun onPictureIconClicked(position: Int, barcodeId: Int?, pestTypeId: Int?) {
+                Log.d("TAG", "Picture")
+                pos = position
+                /*val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                tempImageName = createFileName() + getFileExtension()
+                val photo = File(IMAGE_FILE_PATH, tempImageName)
+                Log.i("photo", photo.toString())
+
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    val photoURI = FileProvider.getUriForFile(applicationContext, applicationContext.getPackageName() + ".provider", photo)
+                    Log.i("provider", photoURI.toString())
+                    intent.putExtra("output", photoURI)
+                } else {
+                    intent.putExtra("output", Uri.fromFile(photo))
+                }
+
+                startActivityForResult(intent, CAMERA_REQUEST)*/
+                //Uri.fromFile(photo)
+                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                if (intent.resolveActivity(applicationContext.packageManager) != null) {
+                    barcodeIdFromAdapter = barcodeId.toString().toInt()
+                    pestTypeIdFromAdapter = pestTypeId.toString().toInt()
+                    // Create the File where the photo should go
+                    val photoFile = createImageFile()
+                    val photoURI: Uri = FileProvider.getUriForFile(applicationContext, BuildConfig.APPLICATION_ID + ".provider", photoFile)
+                    mPhotoFile = photoFile
+                    intent.putExtra("android.intent.extras.CAMERA_FACING", Camera.CameraInfo.CAMERA_FACING_BACK)
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    TimeStamp = AppUtils.getCurrentTimeStamp()
+                    startActivityForResult(intent, CAMERA_REQUEST)
+                }
+            }
         })
-
-        /*addImgBtn.setOnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (intent.resolveActivity(this.packageManager) != null) {
-                // Create the File where the photo should go
-                val photoFile = createImageFile()
-                val photoURI: Uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", photoFile)
-                mPhotoFile = photoFile
-                intent.putExtra("android.intent.extras.CAMERA_FACING", Camera.CameraInfo.CAMERA_FACING_BACK)
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                startActivityForResult(intent, CAMERA_REQUEST)
-            }
-        }*/
         /*if (bitmap != null){
             clickedImageLayout.visibility = View.VISIBLE
             clickedIv.setImageBitmap(bitmap)
@@ -355,7 +431,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
     }
 
     private fun uploadBoxImage(resourceId: String, taskId: String, file: String){
-        val hashMap = HashMap<String, Any>()
+        val hashMap = HashMap<String, String>()
         hashMap["ResourceId"] = resourceId
         hashMap["TaskId"] = taskId
         hashMap["File"] = file
@@ -364,6 +440,8 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         controller.setListner(object : NetworkResponseListner<BaseResponse>{
             override fun onResponse(requestCode: Int, response: BaseResponse?) {
                 Log.d("TAG", response.toString())
+                if (response?.isSuccess == true){
+                }
             }
 
             override fun onFailure(requestCode: Int) {
@@ -380,6 +458,14 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         val mFileName = "JPEG_" + timeStamp + "_"
         val storageDir: File? = this.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(mFileName, ".jpg", storageDir)
+    }
+
+    private fun createFileName(): String? {
+        return "" + System.currentTimeMillis()
+    }
+
+    private fun getFileExtension(): String? {
+        return FILE_ENTENSION
     }
 
     override fun onBackPressed() {
@@ -413,9 +499,55 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         val last_Verified_On2 = AppUtils.currentDateTimeWithTimeZone()
         Log.d("TAG-Act", last_Verified_On2)
+        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+
+            Log.d("TAG", "Cam Request")
+
+            /*var selectedImageBitmap: Bitmap?
+
+            val prescriptionImage = getCapturedImage(requestCode)
+            Log.i("presImage", prescriptionImage.toString())
+            if (prescriptionImage.path.isNotEmpty()) {
+                val mImageUri = Uri.fromFile(File(prescriptionImage.path))
+                Log.d("imagepath", mImageUri.toString())
+                selectedImageBitmap = MediaStore.Images.Media.getBitmap(applicationContext.contentResolver, mImageUri)
+                selectedImageBitmap = getResizedBitmap(selectedImageBitmap, 1000)
+                val byteArrayOutputStream = ByteArrayOutputStream()
+                if (selectedImageBitmap != null) {
+                    selectedImageBitmap.compress(
+                        Bitmap.CompressFormat.JPEG,
+                        100,
+                        byteArrayOutputStream
+                    )
+                    val b = byteArrayOutputStream.toByteArray()
+                    val encodedImage = Base64.encodeToString(b, Base64.DEFAULT)
+                    Log.d("TAG", "Uploading $encodedImage")
+                    uploadBoxImage(resourceId, taskId, encodedImage)
+                }
+            } else {
+                Toast.makeText(this, "No image captured", Toast.LENGTH_SHORT).show()
+            }*/
+
+
+            selectedImagePath = mPhotoFile?.path ?: ""
+            if (selectedImagePath != null || selectedImagePath != ""){
+                val bit = BitmapDrawable(resources, selectedImagePath).bitmap
+                Log.d("TAG", bit.toString())
+                val i = (bit.height * (1024.0 / bit.width)).toInt()
+                bitmap = Bitmap.createScaledBitmap(bit, 1024, i, true)
+            }
+            val baos = ByteArrayOutputStream()
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+            val b = baos.toByteArray()
+            val encodedImage = Base64.encodeToString(b, Base64.DEFAULT)
+            /*val imageAsBytes = Base64.decode(encodedImage, Base64.DEFAULT)
+            val decodedImage = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.size);*/
+            Log.d("TAG-Image", encodedImage)
+            uploadBoxImage(resourceId, taskId, encodedImage)
+        }
         if (result != null) {
             if (result.contents != null) {
-                showPestDialog()
+                showPestDialog(result.contents)
                 /*modifyData(id, account_No, order_No, account_Name, result.contents, created_On, empCode,
                         last_Verified_On2, created_By_Id_User, verified_By, created_By, true, barcode_Type, modelBarcodeDDPestType)*/
                 Log.d("TAG-VerifiedOn-beyond", last_Verified_On2.toString())
@@ -427,6 +559,33 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    private fun getResizedBitmap(image: Bitmap, maxSize: Int): Bitmap? {
+        var width = image.width
+        var height = image.height
+        val bitmapRatio = width.toFloat() / height.toFloat()
+        if (bitmapRatio > 1) {
+            width = maxSize
+            height = (width / bitmapRatio).toInt()
+        } else {
+            height = maxSize
+            width = (height * bitmapRatio).toInt()
+        }
+        return Bitmap.createScaledBitmap(image, width, height, true)
+    }
+    private fun getCapturedImage(requestCode: Int): Item {
+        var myClass: Item? = null
+        var picturePath: String
+        if (requestCode == CAMERA_REQUEST) {
+            myClass = Item()
+            val f: File = File("$IMAGE_FILE_PATH/$tempImageName")
+            picturePath = f.absolutePath
+            if (!f.exists()) {
+                picturePath = ""
+            }
+            myClass.setPath(picturePath)
+        }
+        return myClass!!
+    }
     override fun locationFetched(
             mLocation: Location?,
             oldLocation: Location?,
