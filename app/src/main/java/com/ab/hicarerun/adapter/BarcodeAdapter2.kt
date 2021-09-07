@@ -46,12 +46,15 @@ class BarcodeAdapter2(val context: Context, val barcodeList: ArrayList<BarcodeDe
             val barcode_data = barcodeList.barcode_Data.toString()
             val isVerified = barcodeList.isVerified
             val id = barcodeList.id
+            binding.equipmentTypeTv.text = barcodeList.barcode_Type
             binding.verifiedOnLayout.visibility = View.GONE
             if (comingFrom == "TSScanner"){
+                binding.equipmentTypeLayout.visibility = View.GONE
                 binding.isBarcodeVerified.visibility = View.GONE
                 //binding.verifiedOnLayout.visibility = View.GONE
                 binding.deleteBtn.visibility = View.VISIBLE
             }else{
+                binding.equipmentTypeLayout.visibility = View.VISIBLE
                 binding.deleteBtn.visibility = View.GONE
                 binding.isBarcodeVerified.visibility = View.VISIBLE
                 //binding.verifiedOnLayout.visibility = View.VISIBLE

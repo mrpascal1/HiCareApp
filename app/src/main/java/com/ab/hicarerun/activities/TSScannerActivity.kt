@@ -374,6 +374,20 @@ class TSScannerActivity : BaseActivity() {
         super.attachBaseContext(LocaleHelper.onAttach(context, LocaleHelper.getLanguage(context)))
     }
 
+
+    private fun checkBarcode(barcode_Data: String, currentDateTime: String){
+        var found = false
+        for (i in 0 until modelBarcodeList.size){
+            if(modelBarcodeList[i].barcode_Data == barcode_Data){
+                found = true
+                Toast.makeText(this, "Already exists", Toast.LENGTH_SHORT).show()
+                break
+            }
+        }
+        if (!found){
+            showPestTypeDialog(barcode_Data, currentDateTime)
+        }
+    }
     private fun addNewData(account_No: String?, order_No: String?, account_Name: String?,
                            barcode_Data: String?, last_Verified_On: String?, last_Verified_By: Int?,
                            created_On: String?, created_By_Id_User: Int?, verified_By: String?,
@@ -489,7 +503,7 @@ class TSScannerActivity : BaseActivity() {
             if (result.contents != null){
                 //Toast.makeText(this, ""+SharedPreferencesUtility.getPrefString(this, SharedPreferencesUtility.PREF_USERID), Toast.LENGTH_SHORT).show()
                 if (requestFrom == 1){
-                    showPestTypeDialog(result.contents, currentDateTime)
+                    checkBarcode(result.contents, currentDateTime)
                 Log.d("TAG-QR", result.contents)
                 }
                 if (requestFrom == 2){

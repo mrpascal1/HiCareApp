@@ -7,8 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.ab.hicarerun.R
 import com.ab.hicarerun.databinding.RowBarcodePestTypeBinding
 import com.ab.hicarerun.network.models.TSScannerModel.BarcodeDDPestType
+import com.squareup.picasso.Picasso
 
 class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPestType>) : RecyclerView.Adapter<PestTypeAdapter.MyHolder>() {
 
@@ -46,6 +48,10 @@ class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPes
         holder.binding.imgCapture.setOnClickListener {
             onEditTextChanged.onPictureIconClicked(position, pestList[position].barcodeId, pestList[position].id)
         }
+
+        holder.binding.cancelLayout.setOnClickListener {
+            onEditTextChanged.onCancelIconClicked(position, pestList[position].barcodeId, pestList[position].id)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -55,20 +61,27 @@ class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPes
     class MyHolder(val binding: RowBarcodePestTypeBinding): RecyclerView.ViewHolder(binding.root) {
         fun bindItems(pestList: BarcodeDDPestType, position: Int){
             binding.subTypeTv.text = pestList.sub_Type
+            binding.countEt.setText(pestList.pest_Count.toString())
             if (pestList.show_Count == true){
                 binding.countEt.visibility = View.VISIBLE
             }else{
                 binding.countEt.visibility = View.GONE
             }
-            if (pestList.capture_Image == true){
-                binding.lnrCapture.visibility = View.VISIBLE
+            if (pestList.image_Url != null){
+                Picasso.get().load(pestList.image_Url).placeholder(R.drawable.progress).fit().into(binding.imgCaptured)
+                binding.imgCapture.visibility = View.GONE
+                binding.imgCaptured.visibility = View.VISIBLE
+                binding.cancelLayout.visibility = View.VISIBLE
             }else{
-                binding.lnrCapture.visibility = View.GONE
+                binding.imgCapture.visibility = View.VISIBLE
+                binding.imgCaptured.visibility = View.GONE
+                binding.cancelLayout.visibility = View.GONE
             }
         }
     }
     interface OnEditTextChanged {
         fun onTextChanged(position: Int, charSeq: String, barcodeId: Int?, pestTypeId: Int?)
         fun onPictureIconClicked(position: Int, barcodeId: Int?, pestTypeId: Int?)
+        fun onCancelIconClicked(position: Int, barcodeId: Int?, pestTypeId: Int?)
     }
 }

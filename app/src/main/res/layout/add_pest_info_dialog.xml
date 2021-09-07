@@ -36,7 +36,7 @@
                     android:textSize="20sp" />
 
                 <TextView
-                    android:id="@+id/txtDesc"
+                    android:id="@+id/barcodeTypeTv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/txtTitle"
@@ -47,13 +47,13 @@
                     android:gravity="center"
                     android:text="Please add more pest info"
                     android:textColor="@color/colorAccentDrawerPrimaryLight"
-                    android:textSize="14sp" />
+                    android:textSize="16sp" />
 
                 <View
                     android:id="@+id/view"
                     android:layout_width="match_parent"
                     android:layout_height="1.5dp"
-                    android:layout_below="@id/txtDesc"
+                    android:layout_below="@id/barcodeTypeTv"
                     android:layout_marginLeft="15dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="15dp"
@@ -343,7 +343,7 @@
                         android:textSize="15sp" />
 
                     <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/btn_send"
+                        android:id="@+id/saveBtn"
                         android:layout_width="0dp"
                         android:layout_height="45dp"
                         android:layout_marginLeft="5dp"

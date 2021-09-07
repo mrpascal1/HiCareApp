@@ -9,6 +9,6 @@ data class BarcodeDDPestType(
     @SerializedName("Show_Count") val show_Count : Boolean?,
     @SerializedName("Capture_Image") val capture_Image : Boolean?,
     @SerializedName("Pest_Count") var pest_Count : Int?,
-    @SerializedName("Image_Url") val image_Url : String?,
+    @SerializedName("Image_Url") var image_Url : String?,
     val barcodeId : Int?,
 )

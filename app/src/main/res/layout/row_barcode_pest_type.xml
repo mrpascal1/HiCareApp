@@ -104,7 +104,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.7"
-            android:background="@drawable/chemical_cells"
+            android:background="@drawable/left_chemical_cells"
             android:ellipsize="end"
             android:padding="5dp"
             android:text="Refill changed?"
@@ -136,7 +136,7 @@
             <EditText
                 android:id="@+id/countEt"
                 android:layout_width="match_parent"
-                android:layout_height="32dp"
+                android:layout_height="25dp"
                 android:inputType="number"
                 android:textSize="15dp"
                 android:digits="0123456789"
@@ -159,15 +159,40 @@
             android:ellipsize="end"
             android:gravity="center"
             android:textColor="@color/black"
-            android:padding="5dp"
             android:singleLine="true">
-            <ImageView
-                android:id="@+id/img_capture"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:text="@string/service_plan"
+            <RelativeLayout
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_gravity="center"
+                android:gravity="center">
+            <ImageView
+                android:id="@+id/imgCapture"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/service_plan"
                 android:src="@drawable/ic_addimage" />
+                <ImageView
+                    android:id="@+id/imgCaptured"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"/>
+
+                <RelativeLayout
+                    android:id="@+id/cancelLayout"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/bg_cancel_red"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/cancelIv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_cancel_nps" />
+                </RelativeLayout>
+            </RelativeLayout>
+
         </LinearLayout>
 
 

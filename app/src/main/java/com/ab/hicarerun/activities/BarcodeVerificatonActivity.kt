@@ -60,6 +60,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
     lateinit var binding: ActivityBarcodeVerificatonBinding
     lateinit var modelBarcodeList: ArrayList<BarcodeDetailsData>
     lateinit var modelBarcodeDDPestType: ArrayList<BarcodeDDPestType>
+    lateinit var pestType: ArrayList<BarcodeDDPestType>
     lateinit var barcodeAdapter: BarcodeAdapter2
     lateinit var pestTypeAdapter: PestTypeAdapter
     private var ARGS_COMBINE_ORDER = "ARGS_COMBINE_ORDER"
@@ -111,7 +112,8 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         binding = ActivityBarcodeVerificatonBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        binding.toolbar.setTitle(getString(R.string.check_bait_stations))
+        //binding.toolbar.setTitle(getString(R.string.check_bait_stations))
+        binding.toolbar.setTitle("Verify Equipment")
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.progressBar.visibility = View.VISIBLE
@@ -176,6 +178,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                 if (success == "true") {
                     isFetched = 1
                     modelBarcodeList.clear()
+                    modelBarcodeDDPestType.clear()
                     if (response?.data != null) {
                         var itemsCount = 0
                         for (i in 0 until response.data.size) {
@@ -251,6 +254,18 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         return true
     }
 
+    private fun checkVerification(barcode_Data: String?, last_Verified_On2: String){
+        for (i in 0 until modelBarcodeList.size){
+            if (modelBarcodeList[i].barcode_Data == barcode_Data){
+                if (modelBarcodeList[i].isVerified == true){
+                    Toast.makeText(this, "Already Verified", Toast.LENGTH_SHORT).show()
+                }else{
+                    showPestDialog(barcode_Data.toString(), last_Verified_On2)
+                }
+            }
+        }
+    }
+
     private fun modifyData(id: Int?, account_No: String?, order_No: String?, account_Name: String?,
                            barcode_Data: String?, last_Verified_On: String?, last_Verified_By: Int?,
                            created_On: String?, created_By_Id_User: Int?, verified_By: String?,
@@ -264,7 +279,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                             last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, barcode_Type, modelBarcodeDDPestType)
                     Log.d("TAG-Veri", id.toString())
                     Log.d("TAG-VerifiedOn-start", last_Verified_On.toString())
-                    verifyBarcode(modelBarcodeList[i].id, "Technician Scanner", account_No, order_No, barcode_Data, lat, long, last_Verified_On, last_Verified_By)
+                    verifyBarcode(modelBarcodeList[i].id, "Technician Scanner", account_No, order_No, barcode_Data, lat, long, last_Verified_On, last_Verified_By, modelBarcodeDDPestType)
                     barcodeAdapter.notifyItemChanged(i)
                     binding.barcodeRecycler.post {
                         binding.barcodeRecycler.smoothScrollToPosition(i)
@@ -281,7 +296,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
     }
 
     private fun verifyBarcode(barcodeId: Int?, activityName: String?, account_No: String?, order_No: String?, barcode_Data: String?,
-                              lat: String?, long: String?, verifiedOn: String?, verifiedBy: Int?) {
+                              lat: String?, long: String?, verifiedOn: String?, verifiedBy: Int?, pest_Type: ArrayList<BarcodeDDPestType>?) {
         Log.d("TAG-VerifiedOn-top", verifiedOn.toString())
         val verifyMap = HashMap<String, Any?>()
         verifyMap["BarcodeId"] = barcodeId
@@ -293,6 +308,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         verifyMap["Long"] = long
         verifyMap["VerifiedOn"] = verifiedOn
         verifyMap["VerifiedBy"] = verifiedBy
+        verifyMap["Pest_Type"] = pest_Type
 
         Log.d("TAG-Verifier", verifyMap.toString())
         Log.d("TAG-VerifiedOn", verifiedOn.toString())
@@ -319,7 +335,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         controller.verifyBarcodeDetails(20212, verifyMap)
     }
 
-    private fun showPestDialog(resultBarcode: String){
+    private fun showPestDialog(resultBarcode: String, last_Verified_On2: String){
         val li = LayoutInflater.from(this)
         promptsView = li.inflate(R.layout.add_pest_info_dialog, null)
         val alertDialogBuilder = AlertDialog.Builder(this)
@@ -328,19 +344,22 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         val lnrCheck = promptsView.findViewById(R.id.lnrCheque) as LinearLayout
         val clickedImageLayout = promptsView.findViewById(R.id.clickedImageLayout) as RelativeLayout
         val clickedIv = promptsView.findViewById(R.id.clickedIv) as ImageView
+        val barcodeTypeTv = promptsView.findViewById(R.id.barcodeTypeTv) as TextView
         val pestRecyclerView = promptsView.findViewById(R.id.pestRecyclerView) as RecyclerView
         val cancelBtn = promptsView.findViewById(R.id.btn_cancel) as AppCompatButton
         val radioGrp = promptsView.findViewById(R.id.radioGrp) as RadioGroup
         val yesBtn = promptsView.findViewById(R.id.yesBtn) as RadioButton
         val noBtn = promptsView.findViewById(R.id.noBtn) as RadioButton
-        val addImgBtn = promptsView.findViewById(R.id.addImgBtn) as AppCompatButton
-        val pestType = ArrayList<BarcodeDDPestType>()
+        val saveBtn = promptsView.findViewById(R.id.saveBtn) as AppCompatButton
+        pestType = ArrayList()
 
+        pestType.clear()
         modelBarcodeList.forEach {
             if (it.barcode_Data == resultBarcode){
                 modelBarcodeDDPestType.forEach { pest ->
                     if (pest.barcode_Type == it.barcode_Type && pest.barcodeId == it.id) {
                         Log.d("TAG", "ID ${pest.id}")
+                        barcodeTypeTv.text = it.barcode_Type
                         pestType.add(
                             BarcodeDDPestType(
                             pest.id,
@@ -374,10 +393,14 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                         it.pest_Count = count.toInt()
                     }
                 }
-                modelBarcodeDDPestType.forEach {
-                    if (it.barcodeId == barcodeId){
-                        Log.d("TAG", "After Modifications ${it.id} ${it.pest_Count} ${it.barcodeId} ${it.image_Url}")
-
+                pestType.forEach {
+                    if (it.barcodeId == barcodeId && it.id == pestTypeId){
+                        it.pest_Count = count.toInt()
+                    }
+                }
+                pestType.forEach {
+                    if (it.barcodeId == barcodeId && it.id == pestTypeId){
+                        Log.d("TAG", "After Modifications ${it.pest_Count} ${it.image_Url}")
                     }
                 }
             }
@@ -415,13 +438,73 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                     startActivityForResult(intent, CAMERA_REQUEST)
                 }
             }
+
+            override fun onCancelIconClicked(position: Int, barcodeId: Int?, pestTypeId: Int?) {
+                modelBarcodeDDPestType.forEach {
+                    if (it.barcodeId == barcodeId && it.id == pestTypeId){
+                        it.image_Url = null
+                    }
+                }
+                pestType.forEach {
+                    if (it.barcodeId == barcodeId && it.id == pestTypeId){
+                        it.image_Url = null
+                    }
+                }
+                pestType.forEach {
+                    if (it.barcodeId == barcodeId && it.id == pestTypeId){
+                        Log.d("TAG", "After Image mod ${it.pest_Count} ${it.image_Url}")
+                    }
+                }
+                pestTypeAdapter.notifyItemChanged(position)
+                pestTypeAdapter.notifyDataSetChanged()
+            }
         })
-        /*if (bitmap != null){
-            clickedImageLayout.visibility = View.VISIBLE
-            clickedIv.setImageBitmap(bitmap)
-        }*/
         cancelBtn.setOnClickListener {
             alertDialog.cancel()
+        }
+        saveBtn.setOnClickListener {
+
+            var foundAllEmpty = true
+
+            pestType.forEach {
+                //Check for each empty
+                if (it.pest_Count != 0 && it.image_Url != null){
+                    foundAllEmpty = false
+                }
+            }
+            var partialEmpty = false
+            pestType.forEach {
+                //Check for partial Empty
+                if (it.pest_Count != 0 && it.image_Url == null){
+                    partialEmpty = true
+                }
+                if (it.pest_Count == 0 && it.image_Url != null){
+                    partialEmpty = true
+                }
+            }
+
+            if (!foundAllEmpty && !partialEmpty) {
+                modifyData(
+                    id,
+                    account_No,
+                    order_No,
+                    account_Name,
+                    resultBarcode,
+                    created_On,
+                    empCode,
+                    last_Verified_On2,
+                    created_By_Id_User,
+                    verified_By,
+                    created_By,
+                    true,
+                    barcode_Type,
+                    pestType
+                )
+                pestType.clear()
+                alertDialog.cancel()
+            }else{
+                Toast.makeText(this, "Please fill properly", Toast.LENGTH_SHORT).show()
+            }
         }
 
         alertDialog.show()
@@ -441,6 +524,17 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
             override fun onResponse(requestCode: Int, response: BaseResponse?) {
                 Log.d("TAG", response.toString())
                 if (response?.isSuccess == true){
+                    modelBarcodeDDPestType.forEach {
+                        if (it.barcodeId == barcodeIdFromAdapter && it.id == pestTypeIdFromAdapter){
+                            it.image_Url = response.data
+                        }
+                    }
+                    pestType.forEach {
+                        if (it.barcodeId == barcodeIdFromAdapter && it.id == pestTypeIdFromAdapter){
+                            it.image_Url = response.data
+                        }
+                    }
+                    pestTypeAdapter.notifyItemChanged(pos)
                 }
             }
 
@@ -458,14 +552,6 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         val mFileName = "JPEG_" + timeStamp + "_"
         val storageDir: File? = this.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(mFileName, ".jpg", storageDir)
-    }
-
-    private fun createFileName(): String? {
-        return "" + System.currentTimeMillis()
-    }
-
-    private fun getFileExtension(): String? {
-        return FILE_ENTENSION
     }
 
     override fun onBackPressed() {
@@ -500,34 +586,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         val last_Verified_On2 = AppUtils.currentDateTimeWithTimeZone()
         Log.d("TAG-Act", last_Verified_On2)
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
-
             Log.d("TAG", "Cam Request")
-
-            /*var selectedImageBitmap: Bitmap?
-
-            val prescriptionImage = getCapturedImage(requestCode)
-            Log.i("presImage", prescriptionImage.toString())
-            if (prescriptionImage.path.isNotEmpty()) {
-                val mImageUri = Uri.fromFile(File(prescriptionImage.path))
-                Log.d("imagepath", mImageUri.toString())
-                selectedImageBitmap = MediaStore.Images.Media.getBitmap(applicationContext.contentResolver, mImageUri)
-                selectedImageBitmap = getResizedBitmap(selectedImageBitmap, 1000)
-                val byteArrayOutputStream = ByteArrayOutputStream()
-                if (selectedImageBitmap != null) {
-                    selectedImageBitmap.compress(
-                        Bitmap.CompressFormat.JPEG,
-                        100,
-                        byteArrayOutputStream
-                    )
-                    val b = byteArrayOutputStream.toByteArray()
-                    val encodedImage = Base64.encodeToString(b, Base64.DEFAULT)
-                    Log.d("TAG", "Uploading $encodedImage")
-                    uploadBoxImage(resourceId, taskId, encodedImage)
-                }
-            } else {
-                Toast.makeText(this, "No image captured", Toast.LENGTH_SHORT).show()
-            }*/
-
 
             selectedImagePath = mPhotoFile?.path ?: ""
             if (selectedImagePath != null || selectedImagePath != ""){
@@ -547,9 +606,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         }
         if (result != null) {
             if (result.contents != null) {
-                showPestDialog(result.contents)
-                /*modifyData(id, account_No, order_No, account_Name, result.contents, created_On, empCode,
-                        last_Verified_On2, created_By_Id_User, verified_By, created_By, true, barcode_Type, modelBarcodeDDPestType)*/
+                checkVerification(result.contents, last_Verified_On2.toString())
                 Log.d("TAG-VerifiedOn-beyond", last_Verified_On2.toString())
                 Log.d("TAG-QR", result.contents)
             } else {
