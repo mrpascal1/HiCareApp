@@ -139,6 +139,7 @@
                 android:layout_height="25dp"
                 android:inputType="number"
                 android:textSize="15dp"
+                android:maxLength="3"
                 android:digits="0123456789"
                 android:focusableInTouchMode="true"
                 android:layout_gravity="center"

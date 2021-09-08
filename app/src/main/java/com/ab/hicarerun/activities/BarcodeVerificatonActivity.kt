@@ -503,7 +503,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                 pestType.clear()
                 alertDialog.cancel()
             }else{
-                Toast.makeText(this, "Please fill properly", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please enter proper data", Toast.LENGTH_SHORT).show()
             }
         }
 
