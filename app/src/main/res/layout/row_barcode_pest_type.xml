@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!--<RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/subTypeTv"
+            android:layout_toStartOf="@id/countEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Batteries Replaced?"
+            android:textColor="@color/black"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            android:layout_centerVertical="true"/>
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/countEt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Enter Count"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:padding="4dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/edit_box_border"
+            android:layout_toStartOf="@id/img_profile"/>
+
+        <ImageView
+            android:id="@+id/img_profile"
+            android:layout_alignParentEnd="true"
+            android:layout_width="60dp"
+            android:clickable="true"
+            android:layout_height="60dp"
+            android:text="@string/service_plan"
+            android:layout_gravity="center"
+            android:layout_marginLeft="7dp"
+            android:visibility="visible"
+            android:textColor="@color/colorPrimary"
+            android:src="@drawable/ic_groom"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:id="@+id/lnrCapture"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="7dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:gravity="center"
+            android:layout_alignParentEnd="true">
+            <ImageView
+                android:id="@+id/img_capture"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:text="@string/service_plan"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_addimage" />
+        </LinearLayout>
+    </RelativeLayout>-->
+
+    <LinearLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+
+        <LinearLayout
+            android:id="@+id/lnrType"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:background="@drawable/chemical_cells"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/chemType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/serviceArea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:textSize="10sp"
+                android:singleLine="true" />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/subTypeTv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.7"
+            android:background="@drawable/left_chemical_cells"
+            android:ellipsize="end"
+            android:padding="5dp"
+            android:text="Refill changed?"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:singleLine="true" />
+
+        <TextView
+            android:id="@+id/chem_consumption"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.6"
+            android:background="@drawable/chemical_cells"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:visibility="gone"
+            android:textColor="@color/black"
+            android:padding="5dp"
+            android:singleLine="true" />
+
+        <LinearLayout
+            android:id="@+id/lnrCount"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/chemical_cells"
+            android:ellipsize="end"
+            android:padding="5dp"
+            android:layout_weight="0.9">
+            <EditText
+                android:id="@+id/countEt"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:inputType="number"
+                android:textSize="15dp"
+                android:maxLength="3"
+                android:digits="0123456789"
+                android:focusableInTouchMode="true"
+                android:layout_gravity="center"
+                android:descendantFocusability="beforeDescendants"
+                android:textColor="@color/black"
+                android:background="@drawable/edit_border"
+                android:focusable="true"
+                android:gravity="center"
+                android:singleLine="true" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lnrCapture"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.9"
+            android:background="@drawable/chemical_cells"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:singleLine="true">
+            <RelativeLayout
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:gravity="center">
+            <ImageView
+                android:id="@+id/imgCapture"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/service_plan"
+                android:src="@drawable/ic_addimage" />
+                <ImageView
+                    android:id="@+id/imgCaptured"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"/>
+
+                <RelativeLayout
+                    android:id="@+id/cancelLayout"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/bg_cancel_red"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/cancelIv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_cancel_nps" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+</RelativeLayout>

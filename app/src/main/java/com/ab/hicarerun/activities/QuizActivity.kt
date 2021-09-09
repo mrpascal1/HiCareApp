@@ -25,13 +25,13 @@ class QuizActivity : BaseActivity() {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.statusBarColor = ContextCompat.getColor(this, R.color.colorPurple)
+            window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimary)
         }
 
         val intent = intent
         val puzzleId = intent.getIntExtra("puzzleId", -1)
         val puzzleTitle = intent.getStringExtra("puzzleTitle").toString()
-        binding.titleTv.text = "KBE - $puzzleTitle"
+        binding.titleTv.text = "Shiksha - $puzzleTitle"
         replaceFragment(QuizFragment.newInstance(puzzleId, puzzleTitle), "QuizActivity - QuizFragment")
     }
 

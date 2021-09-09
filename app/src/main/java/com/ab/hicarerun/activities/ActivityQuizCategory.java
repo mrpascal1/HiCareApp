@@ -40,7 +40,7 @@ public class ActivityQuizCategory extends BaseActivity {
 
 // finally change the color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.setStatusBarColor(ContextCompat.getColor(this,R.color.colorPurple));
+            window.setStatusBarColor(ContextCompat.getColor(this,R.color.colorPrimary));
         }
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 

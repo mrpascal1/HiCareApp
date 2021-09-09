@@ -3,6 +3,7 @@ package com.ab.hicarerun.adapter;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.databinding.DataBindingUtil;
@@ -59,37 +60,44 @@ public class RecycleBazaarAdapter extends RecyclerView.Adapter<RecycleBazaarAdap
             holder.mLayoutBazaarAdapterBinding.txtRequiredPoints.setText(items.get(position).getPointsRequired() + " Pts.");
             holder.mLayoutBazaarAdapterBinding.progressBar.setMax(items.get(position).getPointsRequired());
             holder.mLayoutBazaarAdapterBinding.progressBar.setProgress(progress);
-            if (progress >= items.get(position).getPointsRequired()) {
-                holder.mLayoutBazaarAdapterBinding.btnRedeem.setEnabled(true);
-                holder.mLayoutBazaarAdapterBinding.btnRedeem.setText("Collect this offer");
-                holder.mLayoutBazaarAdapterBinding.btnRedeem.setAlpha(1);
-//            holder.mLayoutBazaarAdapterBinding.txtInvalid.setVisibility(View.GONE);
-                holder.mLayoutBazaarAdapterBinding.progressBar.getProgressDrawable().setColorFilter(mContext.getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-            } else if (progress >= items.get(position).getPointsRequired() / 2) {
-                int points = items.get(position).getPointsRequired() - progress;
-                holder.mLayoutBazaarAdapterBinding.btnRedeem.setEnabled(false);
-                DecimalFormat formatter = new DecimalFormat("#,###,###");
-                String formattedPoints = formatter.format(points);
-                holder.mLayoutBazaarAdapterBinding.btnRedeem.setText("Insufficient Points" + " (" + String.valueOf(formattedPoints) + ")");
-                holder.mLayoutBazaarAdapterBinding.progressBar.getProgressDrawable().setColorFilter(mContext.getResources().getColor(R.color.yelold), PorterDuff.Mode.SRC_IN);
-                holder.mLayoutBazaarAdapterBinding.btnRedeem.setAlpha(0.7f);
-            } else {
-                int points = items.get(position).getPointsRequired() - progress;
-                holder.mLayoutBazaarAdapterBinding.btnRedeem.setEnabled(false);
-                holder.mLayoutBazaarAdapterBinding.btnRedeem.setAlpha(0.7f);
-                DecimalFormat formatter = new DecimalFormat("#,###,###");
-                String formattedPoints = formatter.format(points);
-                holder.mLayoutBazaarAdapterBinding.btnRedeem.setText("Insufficient Points" + " (" + String.valueOf(formattedPoints) + ")");
-                holder.mLayoutBazaarAdapterBinding.progressBar.getProgressDrawable().setColorFilter(mContext.getResources().getColor(R.color.red), PorterDuff.Mode.SRC_IN);
-
-            }
-            if (items.get(position).isLocked()){
-                holder.mLayoutBazaarAdapterBinding.btnRedeem.setEnabled(false);
-                holder.mLayoutBazaarAdapterBinding.btnRedeem.setText("Unlocks at "+items.get(position).getUnlocksAtLevel());
+            if (items.get(position).isLocked()) {
+                holder.mLayoutBazaarAdapterBinding.btnLevelName.setEnabled(false);
+                holder.mLayoutBazaarAdapterBinding.btnRedeem.setVisibility(View.GONE);
+                holder.mLayoutBazaarAdapterBinding.btnLevelName.setText("" + items.get(position).getUnlocksAtLevel());
             }else {
-                holder.mLayoutBazaarAdapterBinding.btnRedeem.setEnabled(true);
-                holder.mLayoutBazaarAdapterBinding.btnRedeem.setText("Unlocked");
+                holder.mLayoutBazaarAdapterBinding.lockedBtnLayout.setVisibility(View.GONE);
+                holder.mLayoutBazaarAdapterBinding.btnRedeem.setVisibility(View.VISIBLE);
+                if (progress >= items.get(position).getPointsRequired()) {
+                    holder.mLayoutBazaarAdapterBinding.btnRedeem.setEnabled(true);
+                    holder.mLayoutBazaarAdapterBinding.btnRedeem.setText("Collect this offer");
+                    holder.mLayoutBazaarAdapterBinding.btnRedeem.setAlpha(1);
+//            holder.mLayoutBazaarAdapterBinding.txtInvalid.setVisibility(View.GONE);
+                    holder.mLayoutBazaarAdapterBinding.progressBar.getProgressDrawable().setColorFilter(mContext.getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+                } else if (progress >= items.get(position).getPointsRequired() / 2) {
+                    int points = items.get(position).getPointsRequired() - progress;
+                    holder.mLayoutBazaarAdapterBinding.btnRedeem.setEnabled(false);
+                    DecimalFormat formatter = new DecimalFormat("#,###,###");
+                    String formattedPoints = formatter.format(points);
+                    holder.mLayoutBazaarAdapterBinding.btnRedeem.setText("Insufficient Points" + " (" + String.valueOf(formattedPoints) + ")");
+                    holder.mLayoutBazaarAdapterBinding.progressBar.getProgressDrawable().setColorFilter(mContext.getResources().getColor(R.color.yelold), PorterDuff.Mode.SRC_IN);
+                    holder.mLayoutBazaarAdapterBinding.btnRedeem.setAlpha(0.7f);
+                } else {
+                    int points = items.get(position).getPointsRequired() - progress;
+                    holder.mLayoutBazaarAdapterBinding.btnRedeem.setEnabled(false);
+                    holder.mLayoutBazaarAdapterBinding.btnRedeem.setAlpha(0.7f);
+                    DecimalFormat formatter = new DecimalFormat("#,###,###");
+                    String formattedPoints = formatter.format(points);
+                    holder.mLayoutBazaarAdapterBinding.btnRedeem.setText("Insufficient Points" + " (" + String.valueOf(formattedPoints) + ")");
+                    holder.mLayoutBazaarAdapterBinding.progressBar.getProgressDrawable().setColorFilter(mContext.getResources().getColor(R.color.red), PorterDuff.Mode.SRC_IN);
+
+                }
             }
+            /*if (items.get(position).isLocked()){
+                holder.mLayoutBazaarAdapterBinding.btnLevelName.setEnabled(false);
+                holder.mLayoutBazaarAdapterBinding.btnLevelName.setText(""+items.get(position).getUnlocksAtLevel());
+            }else {
+                holder.mLayoutBazaarAdapterBinding.btnLevelName.setVisibility(View.GONE);
+            }*/
         }catch (Exception e){
             e.printStackTrace();
         }

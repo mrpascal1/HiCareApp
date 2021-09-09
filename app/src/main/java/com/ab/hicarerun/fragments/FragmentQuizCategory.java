@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ab.hicarerun.BaseApplication;
@@ -36,6 +37,7 @@ import com.ab.hicarerun.network.models.QuizLevelModel.QuizLevelData;
 import com.ab.hicarerun.network.models.QuizLevelModel.QuizLevelModelBase;
 import com.ab.hicarerun.network.models.QuizModel.QuizCategoryData;
 import com.ab.hicarerun.network.models.QuizModel.QuizPuzzleStats;
+import com.ab.hicarerun.utils.LocaleHelper;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -93,12 +95,14 @@ public class FragmentQuizCategory extends BaseFragment {
         mAdapter = new QuizCategoryAdapter(getActivity());
         mFragmentQuizCategoryBinding.recycleView.setAdapter(mAdapter);
         getQuizCategory();
+        mFragmentQuizCategoryBinding.gameNameTv.setTypeface(null, Typeface.BOLD);
         mFragmentQuizCategoryBinding.infoIv.setOnClickListener(v -> {
-            showInstructionsDialog();
+            showInstructionDialog();
+            //showInstructionsDialog();
             //showDialog();
         });
         mFragmentQuizCategoryBinding.levelTv.setOnClickListener(v -> {
-            showDialog();
+            //showDialog();
         });
         mFragmentQuizCategoryBinding.leaderBoardIv.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), QuizLeaderBoardActivity.class);
@@ -108,6 +112,42 @@ public class FragmentQuizCategory extends BaseFragment {
             requireActivity().onBackPressed();
         });
         mFragmentQuizCategoryBinding.lnrWheel.setOnClickListener(view1 -> replaceFragment(SpinWheelFragment.newInstance(), "QuizFragmentCategory - SpinFragment"));
+    }
+
+    private void showInstructionDialog() {
+        try {
+
+            LayoutInflater li = LayoutInflater.from(getActivity());
+
+            View promptsView = li.inflate(R.layout.layout_instruction_info_dialog, null);
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(requireContext());
+
+            alertDialogBuilder.setView(promptsView);
+            final AlertDialog alertDialog = alertDialogBuilder.create();
+
+            final TextView popupTitleTv =
+                    promptsView.findViewById(R.id.popupTitleTv);
+            final TextView txtInfo =
+                    promptsView.findViewById(R.id.txtInfo);
+            final AppCompatButton btnOk =
+                    promptsView.findViewById(R.id.btnOk);
+
+            popupTitleTv.setText("Shiksha Instructions");
+            txtInfo.setText("1. Choose the correct answer to earn points.\n" +
+                    "2. Complete all the given categories.\n" +
+                    "3. Proceed to the next level and buy yourself new items from bazaar.\n" +
+                    "4. You can play only 3 times in a day.");
+            txtInfo.setTypeface(txtInfo.getTypeface(), Typeface.BOLD);
+
+            btnOk.setOnClickListener(v -> alertDialog.dismiss());
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            alertDialog.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void getQuizCategory() {
@@ -146,7 +186,7 @@ public class FragmentQuizCategory extends BaseFragment {
 
                     }
                 });
-                controller.getQuizCategory(QUIZ_CATEGORY, resourceId, "en");
+                controller.getQuizCategory(QUIZ_CATEGORY, resourceId, LocaleHelper.getLanguage(requireContext()));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -155,7 +195,7 @@ public class FragmentQuizCategory extends BaseFragment {
 
     private void showInstructionsDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("KBE Instructions");
+        builder.setTitle("Shiksha Instructions");
         builder.setMessage("1. Choose the correct answer to earn points.\n" +
                 "2. Complete all the given categories.\n" +
                 "3. Proceed to the next level and buy yourself new items from bazaar.\n" +
@@ -208,7 +248,7 @@ public class FragmentQuizCategory extends BaseFragment {
                         mFragmentQuizCategoryBinding.levelTv.setTypeface(mFragmentQuizCategoryBinding.levelTv.getTypeface(), Typeface.BOLD);
                         mFragmentQuizCategoryBinding.pointsTv.setTypeface(mFragmentQuizCategoryBinding.pointsTv.getTypeface(), Typeface.BOLD);
                         mFragmentQuizCategoryBinding.levelTv.setText(" " + Objects.requireNonNull(response.getData()).getLevelName());
-                        mFragmentQuizCategoryBinding.pointsTv.setText(Objects.requireNonNull(response.getData()).getPoints() + " Pts");
+                        mFragmentQuizCategoryBinding.pointsTv.setText(Objects.requireNonNull(response.getData()).getPoints()+"");
                     }
                 }
             }
@@ -218,7 +258,7 @@ public class FragmentQuizCategory extends BaseFragment {
 
             }
         });
-        controller.getPuzzleStatsForRes(202122, resourceId, "en");
+        controller.getPuzzleStatsForRes(202122, resourceId, LocaleHelper.getLanguage(requireContext()));
     }
 
     private void getPuzzleLevel(){
@@ -245,7 +285,7 @@ public class FragmentQuizCategory extends BaseFragment {
 
             }
         });
-        controller.getPuzzleLevel(202126, resourceId, "en");
+        controller.getPuzzleLevel(202126, resourceId, LocaleHelper.getLanguage(requireContext()));
     }
 
     @Override
