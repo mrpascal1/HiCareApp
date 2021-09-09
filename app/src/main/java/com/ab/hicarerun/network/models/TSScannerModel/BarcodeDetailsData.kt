@@ -14,5 +14,7 @@ data class BarcodeDetailsData (
 		@SerializedName("Created_By_Id_User") val created_By_Id_User : Int?,
 		@SerializedName("Verified_By") val verified_By : String?,
 		@SerializedName("Created_By") val created_By : String?,
-		@SerializedName("IsVerified") val isVerified : Boolean?
+		@SerializedName("IsVerified") val isVerified : Boolean?,
+		@SerializedName("Barcode_Type") val barcode_Type : String?,
+		@SerializedName("Pest_Type") val pest_Type : List<BarcodeDDPestType>?
 )

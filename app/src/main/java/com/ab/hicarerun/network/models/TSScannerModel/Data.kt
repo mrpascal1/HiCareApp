@@ -11,5 +11,6 @@ data class Data (
 	@SerializedName("RegionName") val regionName : String?,
 	@SerializedName("ServiceGroup") val serviceGroup : String?,
 	@SerializedName("ServicePlan") val servicePlan : String?,
+	@SerializedName("BarcodeType") val barcodeType : List<BarcodeType>?,
 	@SerializedName("BarcodeList") val barcodeList : List<BarcodeList>?
 )

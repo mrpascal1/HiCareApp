@@ -4826,6 +4826,24 @@ public class NetworkCallController {
                 });
     }
 
+    public void uploadBoxImage(int requestCode, HashMap<String, String> imageDetails) {
+        BaseApplication.getRetrofitAPI(false)
+                .uploadBoxImage(imageDetails)
+                .enqueue(new Callback<BaseResponse>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                        if (response.body() != null) {
+                            mListner.onResponse(requestCode, response.body());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
     public void getPuzzleStatsForRes(int requestCode, String resourceId, String lan) {
         BaseApplication.getRetrofitAPI(false)
                 .getPuzzleStatsForResources(resourceId, lan)

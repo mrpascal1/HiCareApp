@@ -194,17 +194,22 @@
                 android:layout_marginRight="8dp"
                 android:background="@drawable/button_1_green">
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
                 <ImageView
                     android:id="@+id/awardIv"
                     android:layout_width="26dp"
                     android:layout_height="26dp"
                     android:layout_marginLeft="10dp"
                     android:src="@drawable/ic_level_common"
-                    android:layout_gravity="center_vertical"/>
+                    android:layout_toStartOf="@id/levelTv"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical" />
 
                 <TextView
                     android:id="@+id/levelTv"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Loading"
                     android:layout_marginEnd="12dp"
@@ -212,6 +217,8 @@
                     android:textColor="@color/white"
                     android:layout_gravity="center"
                     android:gravity="center"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
                     android:textStyle="bold"
                     android:textSize="15sp"
                     android:fontFamily="@font/roboto_medium" />
@@ -223,6 +230,7 @@
                     android:layout_gravity="center"
                     android:src="@drawable/ic_info_outline_white_24dp"
                     android:visibility="gone"/>
+                </RelativeLayout>
 
             </LinearLayout>
 
@@ -239,24 +247,33 @@
                 android:layout_marginRight="24dp"
                 android:background="@drawable/button_1_green">
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_marginLeft="10dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@id/pointsTv"
                     app:srcCompat="@drawable/ic_coin_reward"
                     android:layout_gravity="center_vertical"/>
 
                 <TextView
                     android:id="@+id/pointsTv"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Loading"
                     android:layout_marginLeft="4dp"
                     android:textColor="@color/white"
                     android:textStyle="bold"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
                     android:layout_gravity="center"
+                    android:gravity="center"
                     android:textSize="14sp"
                     android:fontFamily="@font/roboto_medium" />
+                </RelativeLayout>
 
             </LinearLayout>
 

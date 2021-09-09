@@ -251,7 +251,7 @@
                 android:layout_marginBottom="30dp"
                 android:background="@drawable/button_background"
                 android:clickable="true"
-                android:text="Check Bait Stations"
+                android:text="Verify Equipment"
                 android:textAllCaps="false"
                 android:textColor="@color/white" />
 

@@ -125,7 +125,7 @@
                         android:clickable="true"
                         android:layout_weight="1"
                         android:layout_marginEnd="35dp"
-                        android:text="Check Bait Stations"
+                        android:text="Verify Equipment"
                         android:textAllCaps="false"
                         android:textColor="@color/white" />
 

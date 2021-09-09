@@ -137,7 +137,7 @@ public class FragmentQuizCategory extends BaseFragment {
             txtInfo.setText("1. Choose the correct answer to earn points.\n" +
                     "2. Complete all the given categories.\n" +
                     "3. Proceed to the next level and buy yourself new items from bazaar.\n" +
-                    "4. You can only play 3 times in a day.");
+                    "4. You can play only 3 times in a day.");
             txtInfo.setTypeface(txtInfo.getTypeface(), Typeface.BOLD);
 
             btnOk.setOnClickListener(v -> alertDialog.dismiss());
