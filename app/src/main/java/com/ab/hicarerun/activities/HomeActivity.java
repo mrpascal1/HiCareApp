@@ -684,9 +684,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                         @Override
                         public void onResourceReady(@NonNull @NotNull Bitmap resource, @Nullable @org.jetbrains.annotations.Nullable Transition<? super Bitmap> transition) {
                             mi.setIcon(new BitmapDrawable(getResources(), resource));
-
                         }
-
                     });
                 }
 
@@ -694,17 +692,192 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
             NavigationView.OnNavigationItemSelectedListener item_click_listener = item -> {
 
-                for(int i=0; i< menuData.size(); i++){
-
-                    if (item.toString().equalsIgnoreCase("Home")) {
-                        getSupportFragmentManager().beginTransaction().replace(mActivityHomeBinding.container.getId(), HomeFragment.newInstance()).addToBackStack(null).commit();
-                        mActivityHomeBinding.drawer.closeDrawers();
-                    }else if(item.toString().equalsIgnoreCase("Quiz & Puzzle")){
-                        mActivityHomeBinding.drawer.closeDrawers();
-                        startActivity(new Intent(HomeActivity.this, ActivityQuizCategory.class).putExtra(HomeActivity.ARG_EVENT, false));
-                    }
+                if (item.toString().equalsIgnoreCase("Home")) {
+                    getSupportFragmentManager().beginTransaction().replace(mActivityHomeBinding.container.getId(), HomeFragment.newInstance()).addToBackStack(null).commit();
+                    mActivityHomeBinding.drawer.closeDrawers();
+                }else if( item.toString().equalsIgnoreCase("Quiz & Puzzle")){
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, ActivityQuizCategory.class).putExtra(HomeActivity.ARG_EVENT, false));
 
                 }
+                else if( item.toString().equalsIgnoreCase("Self Access")){
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, AssessChatActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                }
+                else if( item.toString().equalsIgnoreCase("HiCare Products")){
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, HicareProductsActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                }
+                else if( item.toString().equalsIgnoreCase("Rewards")){
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    replaceFragment(IncentiveFragment.newInstance(), "INCENTIVE");
+                }
+                else if( item.toString().equalsIgnoreCase("Your Attendance")){
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    replaceFragment(AttendanceViewFragment.newInstance(), "ATTENDANCE");
+                }
+                else if( item.toString().equalsIgnoreCase("On-Site Tasks")){
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, OnSiteTaskActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                }
+                else if( item.toString().equalsIgnoreCase("Bazaar")){
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, BazaarActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                }
+                else if( item.toString().equalsIgnoreCase("Grooming")){
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, TechnicianSeniorActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                }
+                else if( item.toString().equalsIgnoreCase("Daily Check-Up")){
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, TechnicianRoutineActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                }
+                else if( item.toString().equalsIgnoreCase("KYC Verification")){
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, KycActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                }
+                else if( item.toString().equalsIgnoreCase("Assign QR Code")){
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, TSScannerActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                }
+                else if( item.toString().equalsIgnoreCase("TS Verification")){
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, TSVerificationActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                }
+                else if( item.toString().equalsIgnoreCase("Today's Job Count")){
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, TechChemicalCountActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                } else if( item.toString().equalsIgnoreCase("My ID Card")){
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, TechIdActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                }
+                else if( item.toString().equalsIgnoreCase("Notifications")){
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    getSupportFragmentManager().beginTransaction().replace(mActivityHomeBinding.container.getId(), NotificationFragment.newInstance()).addToBackStack(null).commit();
+                }
+                else if( item.toString().equalsIgnoreCase("Training")){
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, TrainingActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                }
+                else if( item.toString().equalsIgnoreCase("Referral Code")){
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, VoucherActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                }
+                else if( item.toString().equalsIgnoreCase("Change Language")){
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    showLanguageDialog();                    }
+                else if( item.toString().equalsIgnoreCase("Help")){
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, HelpActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                }
+                else if( item.toString().equalsIgnoreCase("Logout")){
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    final AlertDialog.Builder dialog = new AlertDialog.Builder(HomeActivity.this);
+                    dialog.setTitle(getString(R.string.logout_exit));
+                    dialog.setMessage(getString(R.string.logout_do_you_really_want_to_exit));
+                    dialog.setPositiveButton(getString(R.string.yes), (dialogInterface, j) -> {
+                        dialogInterface.dismiss();
+                        getLogout();
+                    });
+                    dialog.setNegativeButton(getString(R.string.no), (dialogInterface, j) -> dialogInterface.dismiss());
+                    dialog.show();
+                }
+
+
+//                for(int i=0; i< menuData.size(); i++){
+//                    if (menuData.get(i).getIntentName().equalsIgnoreCase("Home")) {
+//                        getSupportFragmentManager().beginTransaction().replace(mActivityHomeBinding.container.getId(), HomeFragment.newInstance()).addToBackStack(null).commit();
+//                        mActivityHomeBinding.drawer.closeDrawers();
+//                    }else if( menuData.get(i).getIntentName().equalsIgnoreCase("Quiz")){
+//                        mActivityHomeBinding.drawer.closeDrawers();
+//                        startActivity(new Intent(HomeActivity.this, ActivityQuizCategory.class).putExtra(HomeActivity.ARG_EVENT, false));
+//                    }
+//                    else if( menuData.get(i).getIntentName().equalsIgnoreCase("SelfAccess")){
+//                        mActivityHomeBinding.drawer.closeDrawers();
+//                        startActivity(new Intent(HomeActivity.this, AssessChatActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+//                    }
+//                    else if( menuData.get(i).getIntentName().equalsIgnoreCase("Products")){
+//                        mActivityHomeBinding.drawer.closeDrawers();
+//                        startActivity(new Intent(HomeActivity.this, HicareProductsActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+//                    }
+//                    else if( menuData.get(i).getIntentName().equalsIgnoreCase("Rewards")){
+//                        mActivityHomeBinding.drawer.closeDrawers();
+//                        startActivity(new Intent(HomeActivity.this, IncentivesActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+//                    }
+//                    else if( menuData.get(i).getIntentName().equalsIgnoreCase("Attendance")){
+//                        mActivityHomeBinding.drawer.closeDrawers();
+//                        startActivity(new Intent(HomeActivity.this, AttendanceActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+//                    }
+//                    else if( menuData.get(i).getIntentName().equalsIgnoreCase("OnSite")){
+//                        mActivityHomeBinding.drawer.closeDrawers();
+//                        startActivity(new Intent(HomeActivity.this, OnSiteTaskActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+//                    }
+//                    else if( menuData.get(i).getIntentName().equalsIgnoreCase("Bazaar")){
+//                        mActivityHomeBinding.drawer.closeDrawers();
+//                        startActivity(new Intent(HomeActivity.this, BazaarActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+//                    }
+//                    else if( menuData.get(i).getIntentName().equalsIgnoreCase("Grooming")){
+//                        mActivityHomeBinding.drawer.closeDrawers();
+//                        startActivity(new Intent(HomeActivity.this, TechnicianSeniorActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+//                    }
+//                    else if( menuData.get(i).getIntentName().equalsIgnoreCase("DailyCheck")){
+//                        mActivityHomeBinding.drawer.closeDrawers();
+//                        startActivity(new Intent(HomeActivity.this, TechnicianRoutineActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+//                    }
+//                    else if( menuData.get(i).getIntentName().equalsIgnoreCase("KYC")){
+//                        mActivityHomeBinding.drawer.closeDrawers();
+//                        startActivity(new Intent(HomeActivity.this, KycActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+//                    }
+//                    else if( menuData.get(i).getIntentName().equalsIgnoreCase("AssignQR")){
+//                        mActivityHomeBinding.drawer.closeDrawers();
+//                        startActivity(new Intent(HomeActivity.this, TSScannerActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+//                    }
+//                    else if( menuData.get(i).getIntentName().equalsIgnoreCase("TSVerification")){
+//                        mActivityHomeBinding.drawer.closeDrawers();
+//                        startActivity(new Intent(HomeActivity.this, TSVerificationActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+//                    }
+//                    else if( menuData.get(i).getIntentName().equalsIgnoreCase("JobCount")){
+//                        mActivityHomeBinding.drawer.closeDrawers();
+//                        startActivity(new Intent(HomeActivity.this, TechChemicalCountActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+//                    } else if( menuData.get(i).getIntentName().equalsIgnoreCase("IDCard")){
+//                        mActivityHomeBinding.drawer.closeDrawers();
+//                        startActivity(new Intent(HomeActivity.this, TechIdActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+//                    }
+//                    else if( menuData.get(i).getIntentName().equalsIgnoreCase("Notifications")){
+//                        mActivityHomeBinding.drawer.closeDrawers();
+//                        getSupportFragmentManager().beginTransaction().replace(mActivityHomeBinding.container.getId(), NotificationFragment.newInstance()).addToBackStack(null).commit();
+//                    }
+//                    else if( menuData.get(i).getIntentName().equalsIgnoreCase("Training")){
+//                        mActivityHomeBinding.drawer.closeDrawers();
+//                        startActivity(new Intent(HomeActivity.this, TrainingActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+//                    }
+//                    else if( menuData.get(i).getIntentName().equalsIgnoreCase("Referral")){
+//                        mActivityHomeBinding.drawer.closeDrawers();
+//                        startActivity(new Intent(HomeActivity.this, VoucherActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+//                    }
+//                    else if( menuData.get(i).getIntentName().equalsIgnoreCase("Language")){
+//                        mActivityHomeBinding.drawer.closeDrawers();
+//                        showLanguageDialog();                    }
+//                    else if( menuData.get(i).getIntentName().equalsIgnoreCase("Help")){
+//                        mActivityHomeBinding.drawer.closeDrawers();
+//                        startActivity(new Intent(HomeActivity.this, HelpActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+//                    }
+//                    else if( menuData.get(i).getIntentName().equalsIgnoreCase("Logout")){
+//                        mActivityHomeBinding.drawer.closeDrawers();
+//                        final AlertDialog.Builder dialog = new AlertDialog.Builder(HomeActivity.this);
+//                        dialog.setTitle(getString(R.string.logout_exit));
+//                        dialog.setMessage(getString(R.string.logout_do_you_really_want_to_exit));
+//                        dialog.setPositiveButton(getString(R.string.yes), (dialogInterface, j) -> {
+//                            dialogInterface.dismiss();
+//                            getLogout();
+//                        });
+//                        dialog.setNegativeButton(getString(R.string.no), (dialogInterface, j) -> dialogInterface.dismiss());
+//                        dialog.show();
+//                    }
+//
+//
+//
+//                }
 
 
                 mActivityHomeBinding.drawer.closeDrawers();
