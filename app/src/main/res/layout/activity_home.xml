@@ -190,7 +190,6 @@
             android:layout_gravity="start"
             android:background="@color/white"
             app:headerLayout="@layout/header_nav"
-            app:menu="@menu/drawermenu"
             />
     </androidx.drawerlayout.widget.DrawerLayout>
 

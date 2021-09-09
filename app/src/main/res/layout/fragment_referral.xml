@@ -66,14 +66,14 @@
                         android:layout_height="26dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="15dp"
+                        android:layout_marginRight="17dp"
                         android:layout_toLeftOf="@id/btnPaymentJeopardy"
                         android:background="@drawable/button_background"
                         android:text="Refer HiCare"
-                        android:onClick="@{(view) -> handler.onAddReferralClicked(view)}"
+                        android:onClick="@{(view) -> handler.onReferHiCareClicked(view)}"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
-                        android:textSize="9sp" />
+                        android:textSize="11sp" />
 
                     <ImageView
                         android:layout_width="22dp"

@@ -14,6 +14,7 @@ import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -25,6 +26,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
@@ -43,6 +45,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
@@ -72,6 +75,7 @@ import com.ab.hicarerun.network.models.IncentiveModel.IncentiveData;
 import com.ab.hicarerun.network.models.KarmaModel.Karma;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
+import com.ab.hicarerun.network.models.MenuModel.MenuData;
 import com.ab.hicarerun.network.models.ProductCartModel.ProductCart;
 import com.ab.hicarerun.network.models.ProfileModel.Profile;
 import com.ab.hicarerun.service.LocationManager;
@@ -83,6 +87,9 @@ import com.ab.hicarerun.utils.GPSUtils;
 import com.ab.hicarerun.utils.HandShakeReceiver;
 import com.ab.hicarerun.utils.LocaleHelper;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.navigation.NavigationView;
 import com.luseen.spacenavigation.SpaceItem;
 import com.luseen.spacenavigation.SpaceOnClickListener;
@@ -96,7 +103,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -136,6 +145,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     private ProgressDialog progress;
     private CameraManager mCameraManager;
     private String mCameraId;
+    private List<MenuData> menuData = null;
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
@@ -171,13 +181,12 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
-        /*try {
-            if (!Build.MODEL.contains("Emulator")){
-                mCameraManager.setTorchMode(mCameraId, false);
-            }
+        try {
+            mCameraManager.setTorchMode(mCameraId, false);
+
         } catch (CameraAccessException e) {
             e.printStackTrace();
-        }*/
+        }
         AppUtils.IS_FLASH_ON = true;
         mActivityHomeBinding.toolbar.imgFlash.setImageResource(R.drawable.flash_off);
         mActivityHomeBinding.toolbar.lnrDrawer.setOnClickListener(view -> mActivityHomeBinding.drawer.openDrawer(GravityCompat.START));
@@ -610,8 +619,10 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                             }
 
                         }
-                        setupNavigationView();
-                        initNavigationDrawer();
+//                        setupNavigationView();
+//                        initNavigationDrawer();
+                        getResourceMenu();
+
                     }
 
                     @Override
@@ -625,6 +636,111 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
             e.printStackTrace();
         }
 
+    }
+
+    private void setDrawer() {
+        try {
+            NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+            if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
+                PackageInfo pInfo = null;
+                try {
+                    pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+                assert pInfo != null;
+                String mobileVersion = pInfo.versionName;
+                assert LoginRealmModels.get(0) != null;
+                String Uname = LoginRealmModels.get(0).getUserName();
+
+                View header = navigationView.getHeaderView(0);
+                TextView name = (TextView) header.findViewById(R.id.drawer_name);
+                TextView version = (TextView) header.findViewById(R.id.txtVersion);
+                ImageView imgUser = header.findViewById(R.id.navUser);
+                name.setText("Hi, " + Uname);
+                version.setText("V " + mobileVersion);
+                if (bitUser != null) {
+                    imgUser.setImageBitmap(bitUser);
+                }
+                mActivityHomeBinding.navigationView.setCheckedItem(0);
+
+            }
+
+            if (navigationView != null) {
+                Menu menuBottom = mActivityHomeBinding.customNavigation.getMenu();
+                selectFragment(menuBottom.getItem(0));
+                mActivityHomeBinding.customNavigation.setOnNavigationItemSelectedListener(menuItem -> {
+                    selectFragment(menuItem);
+                    return false;
+                });
+                Menu menu = navigationView.getMenu();
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                StrictMode.setThreadPolicy(policy);
+                for (int i = 0; i < menuData.size(); i++) {
+                    menu.add(menuData.get(i).getTitle());
+                    MenuItem mi = menu.getItem(i);
+                    mi.setVisible(menuData.get(i).getIsVisible());
+                    Glide.with(this).asBitmap().load(menuData.get(i).getIcon()).into(new SimpleTarget<Bitmap>(100,100) {
+                        @Override
+                        public void onResourceReady(@NonNull @NotNull Bitmap resource, @Nullable @org.jetbrains.annotations.Nullable Transition<? super Bitmap> transition) {
+                            mi.setIcon(new BitmapDrawable(getResources(), resource));
+
+                        }
+
+                    });
+                }
+
+            }
+
+            NavigationView.OnNavigationItemSelectedListener item_click_listener = item -> {
+
+                for(int i=0; i< menuData.size(); i++){
+
+                    if (item.toString().equalsIgnoreCase("Home")) {
+                        getSupportFragmentManager().beginTransaction().replace(mActivityHomeBinding.container.getId(), HomeFragment.newInstance()).addToBackStack(null).commit();
+                        mActivityHomeBinding.drawer.closeDrawers();
+                    }else if(item.toString().equalsIgnoreCase("Quiz & Puzzle")){
+                        mActivityHomeBinding.drawer.closeDrawers();
+                        startActivity(new Intent(HomeActivity.this, ActivityQuizCategory.class).putExtra(HomeActivity.ARG_EVENT, false));
+                    }
+
+                }
+
+
+                mActivityHomeBinding.drawer.closeDrawers();
+                return true;
+            };
+
+            navigationView.setNavigationItemSelectedListener(item_click_listener);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getResourceMenu() {
+        try {
+
+
+            NetworkCallController controller = new NetworkCallController();
+            controller.setListner(new NetworkResponseListner<List<MenuData>>() {
+
+                @Override
+                public void onResponse(int requestCode, List<MenuData> response) {
+                    menuData = new ArrayList<>();
+                    menuData = response;
+                    setDrawer();
+                }
+
+                @Override
+                public void onFailure(int requestCode) {
+
+                }
+            });
+            controller.getResourceMenu(userId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 //    private void getIncentiveDetails() {
@@ -968,11 +1084,11 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        /*try {
+        try {
             mCameraManager.setTorchMode(mCameraId, false);
         } catch (CameraAccessException e) {
             e.printStackTrace();
-        }*/
+        }
         AppUtils.IS_FLASH_ON = true;
         mActivityHomeBinding.toolbar.imgFlash.setImageResource(R.drawable.flash_off);
     }
