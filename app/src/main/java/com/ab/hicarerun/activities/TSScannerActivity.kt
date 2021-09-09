@@ -139,12 +139,12 @@ class TSScannerActivity : BaseActivity() {
                     Log.d("TAG-Save", modelBarcodeList.toString())
                 }else{
                     binding.saveBtn.isEnabled = true
-                    Toast.makeText(applicationContext, "Please add new rodent station", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "Please add new equipment", Toast.LENGTH_SHORT).show()
                 }
             }else{
                 binding.saveBtn.isEnabled = true
                 binding.saveBtn.visibility = View.GONE
-                Toast.makeText(applicationContext, "Rodent station not found", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Equipment not found", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -329,7 +329,7 @@ class TSScannerActivity : BaseActivity() {
             }
         }
         if (found == 0){
-            Toast.makeText(this, "Rodent station not found", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Equipment not found", Toast.LENGTH_SHORT).show()
         }
         barcodeAdapter.notifyDataSetChanged()
     }

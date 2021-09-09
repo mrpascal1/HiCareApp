@@ -3,23 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/transparent"
             android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_margin="10dp"
                 android:background="@drawable/shape_rounded_corner_center_box_white">
 
 
@@ -31,7 +29,7 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginTop="15dp"
                     android:layout_marginRight="15dp"
-                    android:text="Pest Info"
+                    android:text="Pest Information"
                     android:textColor="@color/colorPrimary"
                     android:textSize="20sp" />
 
@@ -59,256 +57,170 @@
                     android:layout_marginRight="15dp"
                     android:background="@drawable/dotted_line" />
 
-                <androidx.core.widget.NestedScrollView
+
+                <LinearLayout
+                    android:id="@+id/lnrTop"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/view"
-                    android:scrollbars="vertical"
-                    android:layout_marginBottom="2dp"
-                    android:layout_above="@id/lnrBottom">
+                    android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
-                        <LinearLayout
-                            android:orientation="vertical"
+                        <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="15dp"
-                            android:layout_marginEnd="15dp"
-                            android:layout_marginTop="15dp"
-                            android:visibility="gone">
+                            android:text="Did you found any pest?"
+                            android:textColor="@color/colorPrimary" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:background="@drawable/round_border"
+                            android:orientation="vertical">
+
+                            <RadioGroup
+                                android:id="@+id/radioGrp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <RadioButton
+                                    android:id="@+id/yesBtn"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Yes" />
+
+                                <RadioButton
+                                    android:id="@+id/noBtn"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="No" />
+
+                            </RadioGroup>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/lnrCheque"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="vertical"
+                        android:visibility="visible">
+
+
+                        <LinearLayout
+                            android:id="@+id/lnrRelation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="4dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="4dp"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Did you found any pest?"
-                                android:textColor="@color/colorPrimary" />
+                                android:layout_marginBottom="5dp"
+                                android:text="Pest Type :"
+                                android:textColor="@color/colorPrimary"
+                                android:visibility="gone" />
 
                             <LinearLayout
-                                android:orientation="vertical"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:background="@drawable/round_border">
-                                <RadioGroup
-                                    android:id="@+id/radioGrp"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content">
-                                    <RadioButton
-                                        android:id="@+id/yesBtn"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="Yes"/>
-                                    <RadioButton
-                                        android:id="@+id/noBtn"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="No"/>
+                                android:id="@+id/relativeLayout1"
+                                android:layout_width="fill_parent"
+                                android:layout_height="40dp"
+                                android:background="@color/tab_textColor"
+                                android:gravity="center">
 
-                                </RadioGroup>
+                                <TextView
+                                    android:id="@+id/txtType"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:ellipsize="end"
+                                    android:gravity="center"
+                                    android:padding="5dp"
+                                    android:singleLine="true"
+                                    android:text="@string/type_chemicals"
+                                    android:textColor="@color/black"
+                                    android:visibility="gone" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1.7"
+                                    android:ellipsize="end"
+                                    android:gravity="center"
+                                    android:padding="5dp"
+                                    android:singleLine="true"
+                                    android:text="Sub Type"
+                                    android:textColor="@color/black"
+                                    app:tabTextAppearance="@style/calligraphy_font" />
+
+                                <TextView
+                                    android:id="@+id/txtUnit"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.6"
+                                    android:ellipsize="end"
+                                    android:gravity="center"
+                                    android:padding="5dp"
+                                    android:singleLine="true"
+                                    android:text="@string/unit_chemicals"
+                                    android:textColor="@color/black"
+                                    android:visibility="gone"
+                                    app:tabTextAppearance="@style/calligraphy_font" />
+
+                                <TextView
+                                    android:id="@+id/txtStandard"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.9"
+                                    android:ellipsize="end"
+                                    android:gravity="center"
+                                    android:padding="5dp"
+                                    android:singleLine="true"
+                                    android:text="Count"
+                                    android:textColor="@color/black" />
+
+                                <TextView
+                                    android:id="@+id/txtActual"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.9"
+                                    android:ellipsize="end"
+                                    android:gravity="center"
+                                    android:padding="5dp"
+                                    android:singleLine="true"
+                                    android:text="Image"
+                                    android:textColor="@color/black" />
                             </LinearLayout>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/lnrCheque"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:orientation="vertical"
-                            android:visibility="visible">
-
 
                             <LinearLayout
-                                android:id="@+id/lnrRelation"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="4dp"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginRight="4dp"
                                 android:orientation="vertical">
 
-                                <TextView
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/pestRecyclerView"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginBottom="5dp"
-                                    android:text="Pest Type :"
-                                    android:textColor="@color/colorPrimary"
-                                    android:visibility="gone"/>
-                                <LinearLayout
-                                    android:id="@+id/relativeLayout1"
-                                    android:layout_width="fill_parent"
-                                    android:layout_height="40dp"
-                                    android:background="@color/tab_textColor"
-                                    android:gravity="center">
-
-                                    <TextView
-                                        android:id="@+id/txtType"
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:visibility="gone"
-                                        android:ellipsize="end"
-                                        android:gravity="center"
-                                        android:padding="5dp"
-                                        android:singleLine="true"
-                                        android:text="@string/type_chemicals"
-                                        android:textColor="@color/black" />
-
-                                    <TextView
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1.7"
-                                        android:ellipsize="end"
-                                        android:gravity="center"
-                                        android:padding="5dp"
-                                        android:singleLine="true"
-                                        android:text="Sub Type"
-                                        android:textColor="@color/black"
-                                        app:tabTextAppearance="@style/calligraphy_font" />
-
-                                    <TextView
-                                        android:id="@+id/txtUnit"
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="0.6"
-                                        android:ellipsize="end"
-                                        android:gravity="center"
-                                        android:padding="5dp"
-                                        android:visibility="gone"
-                                        android:singleLine="true"
-                                        android:text="@string/unit_chemicals"
-                                        android:textColor="@color/black"
-                                        app:tabTextAppearance="@style/calligraphy_font" />
-
-                                    <TextView
-                                        android:id="@+id/txtStandard"
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="0.9"
-                                        android:ellipsize="end"
-                                        android:gravity="center"
-                                        android:padding="5dp"
-                                        android:singleLine="true"
-                                        android:text="Count"
-                                        android:textColor="@color/black" />
-
-                                    <TextView
-                                        android:id="@+id/txtActual"
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="0.9"
-                                        android:ellipsize="end"
-                                        android:gravity="center"
-                                        android:padding="5dp"
-                                        android:singleLine="true"
-                                        android:text="Image"
-                                        android:textColor="@color/black" />
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:orientation="vertical"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content">
-
-                                    <androidx.recyclerview.widget.RecyclerView
-                                        android:id="@+id/pestRecyclerView"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:scrollbars="vertical"
-                                        android:visibility="visible"
-                                        tools:itemCount="4"
-                                        tools:listitem="@layout/row_barcode_pest_type" />
-
-
-                                </LinearLayout>
+                                    android:scrollbars="vertical"
+                                    android:visibility="visible"
+                                    tools:listitem="@layout/row_barcode_pest_type" />
 
 
                             </LinearLayout>
 
-
-                            <LinearLayout
-                                android:id="@+id/lnrName"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
-                                android:layout_marginRight="15dp"
-                                android:layout_marginTop="10dp"
-                                android:orientation="vertical"
-                                android:visibility="gone">
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginBottom="5dp"
-                                    android:text="Pest Count :"
-                                    android:textColor="@color/colorPrimary" />
-
-                                <RelativeLayout
-                                    android:id="@+id/relName"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="45dp"
-                                    android:background="@drawable/round_border"
-                                    android:orientation="horizontal">
-
-
-                                    <androidx.appcompat.widget.AppCompatEditText
-                                        android:id="@+id/countEt"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:layout_marginLeft="5dp"
-                                        android:layout_marginRight="5dp"
-                                        android:background="@null"
-                                        android:ellipsize="end"
-                                        android:ems="10"
-                                        android:imeOptions="actionNext"
-                                        android:inputType="number"
-                                        android:lines="1"
-                                        android:textColor="@color/black"
-                                        android:textSize="14sp" />
-
-
-                                </RelativeLayout>
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/lnrImage"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginRight="15dp"
-                                android:orientation="vertical"
-                                android:visibility="gone">
-
-                                <androidx.appcompat.widget.AppCompatButton
-                                    android:id="@+id/addImgBtn"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="40dp"
-                                    android:layout_marginLeft="5dp"
-                                    android:layout_weight="1"
-                                    android:text="Upload Image"
-                                    android:background="@drawable/button_1_green"
-                                    android:textAllCaps="false"
-                                    android:textColor="@color/white"
-                                    android:textSize="15sp" />
-
-                                <RelativeLayout
-                                    android:id="@+id/clickedImageLayout"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="12dp"
-                                    android:visibility="gone"
-                                    android:background="@drawable/round_border">
-                                    <ImageView
-                                        android:id="@+id/clickedIv"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="160dp"/>
-                                </RelativeLayout>
-
-                            </LinearLayout>
 
                         </LinearLayout>
 
@@ -316,24 +228,25 @@
                     </LinearLayout>
 
 
-                </androidx.core.widget.NestedScrollView>
+                </LinearLayout>
 
 
                 <LinearLayout
                     android:id="@+id/lnrBottom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_alignParentBottom="true"
+                    android:layout_below="@id/lnrTop"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
+                    android:orientation="horizontal"
                     android:paddingBottom="10dp"
+                    android:layout_marginTop="4dp"
                     android:weightSum="2">
 
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/btn_cancel"
                         android:layout_width="0dp"
-                        android:layout_height="45dp"
+                        android:layout_height="42dp"
                         android:layout_marginRight="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/round_border"
@@ -345,7 +258,7 @@
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/saveBtn"
                         android:layout_width="0dp"
-                        android:layout_height="45dp"
+                        android:layout_height="42dp"
                         android:layout_marginLeft="5dp"
                         android:layout_weight="1"
                         android:background="@drawable/button_border"

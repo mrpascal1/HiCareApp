@@ -3,6 +3,7 @@ package com.ab.hicarerun.adapter
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +28,7 @@ class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPes
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         holder.bindItems(pestList[position], position)
+        //holder.binding.countEt.requestFocus()
         holder.binding.countEt.setOnFocusChangeListener { view, b ->
             onEditTextChanged.onTextChanged(position, holder.binding.countEt.text.toString(), pestList[position].barcodeId, pestList[position].id)
         }
@@ -41,16 +43,16 @@ class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPes
                 onEditTextChanged.onTextChanged(position, p0.toString(), pestList[position].barcodeId, pestList[position].id)
             }
         })
-        if (holder.binding.countEt.text.toString().length != 0){
+        if (holder.binding.countEt.text.toString().isNotEmpty()){
             onEditTextChanged.onTextChanged(position, holder.binding.countEt.text.toString(), pestList[position].barcodeId, pestList[position].id)
         }
 
         holder.binding.imgCapture.setOnClickListener {
-            onEditTextChanged.onPictureIconClicked(position, pestList[position].barcodeId, pestList[position].id)
+            onEditTextChanged.onPictureIconClicked(position, holder.binding.countEt.text.toString(), pestList[position].barcodeId, pestList[position].id)
         }
 
         holder.binding.cancelLayout.setOnClickListener {
-            onEditTextChanged.onCancelIconClicked(position, pestList[position].barcodeId, pestList[position].id)
+            onEditTextChanged.onCancelIconClicked(position, holder.binding.countEt.text.toString(), pestList[position].barcodeId, pestList[position].id)
         }
     }
 
@@ -58,10 +60,15 @@ class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPes
         return pestList.size
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
     class MyHolder(val binding: RowBarcodePestTypeBinding): RecyclerView.ViewHolder(binding.root) {
         fun bindItems(pestList: BarcodeDDPestType, position: Int){
             binding.subTypeTv.text = pestList.sub_Type
-            binding.countEt.setText(pestList.pest_Count.toString())
+            binding.countEt.setText(pestList.pest_Count)
+
             if (pestList.show_Count == true){
                 binding.countEt.visibility = View.VISIBLE
             }else{
@@ -80,8 +87,8 @@ class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPes
         }
     }
     interface OnEditTextChanged {
-        fun onTextChanged(position: Int, charSeq: String, barcodeId: Int?, pestTypeId: Int?)
-        fun onPictureIconClicked(position: Int, barcodeId: Int?, pestTypeId: Int?)
-        fun onCancelIconClicked(position: Int, barcodeId: Int?, pestTypeId: Int?)
+        fun onTextChanged(position: Int, charSeq: String?, barcodeId: Int?, pestTypeId: Int?)
+        fun onPictureIconClicked(position: Int, charSeq: String?, barcodeId: Int?, pestTypeId: Int?)
+        fun onCancelIconClicked(position: Int, charSeq: String?, barcodeId: Int?, pestTypeId: Int?)
     }
 }

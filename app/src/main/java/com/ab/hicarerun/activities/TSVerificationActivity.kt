@@ -387,7 +387,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
         }
         if (found == 0){
             binding.progressBar.visibility = View.GONE
-            Toast.makeText(this, "Rodent station not found", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Equipment not found", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -511,12 +511,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
             val encodedImage = Base64.encodeToString(b, Base64.DEFAULT)
             /*val imageAsBytes = Base64.decode(encodedImage, Base64.DEFAULT)
             val decodedImage = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.size);*/
-            val civ = promptsView.findViewById(R.id.clickedIv) as ImageView
-            val clickedLayout = promptsView.findViewById(R.id.clickedImageLayout) as RelativeLayout
-            if (bitmap != null) {
-                clickedLayout.visibility = View.VISIBLE
-                civ.setImageBitmap(bitmap)
-            }
+
             uploadBoxImage(resourceId, taskId, encodedImage)
             Log.d("TAG", "selectedImagePath")
         }
