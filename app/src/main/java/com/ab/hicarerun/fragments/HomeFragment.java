@@ -883,17 +883,15 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                     } else {
                         getExotelCalled(secondaryNumber, techNumber);
                     }
-
                 }
             } else {
-
                 AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.no_internet_connection), (dialogInterface, i) -> dialogInterface.dismiss());
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
+
 
     @Override
     public void onTelePhoneClicked(int position) {
