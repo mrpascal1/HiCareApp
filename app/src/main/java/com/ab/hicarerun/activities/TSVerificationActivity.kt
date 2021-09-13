@@ -144,7 +144,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                 if (modelBarcodeList.isNotEmpty()){
                     integrator.initiateScan()
                 }else{
-                    Toast.makeText(this, "Rodent station not found", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Equipment not found", Toast.LENGTH_SHORT).show()
                 }
             }else{
                 Toast.makeText(this, "Please Enter Order No", Toast.LENGTH_SHORT).show()
