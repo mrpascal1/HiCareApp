@@ -348,6 +348,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         alertDialogBuilder.setView(promptsView)
         val alertDialog = alertDialogBuilder.create()
         val barcodeTypeTv = promptsView.findViewById(R.id.barcodeTypeTv) as TextView
+        val subTypeTitleTv = promptsView.findViewById(R.id.subTypeTitleTv) as TextView
         val pestRecyclerView = promptsView.findViewById(R.id.pestRecyclerView) as RecyclerView
         val cancelBtn = promptsView.findViewById(R.id.btn_cancel) as AppCompatButton
         val saveBtn = promptsView.findViewById(R.id.saveBtn) as AppCompatButton
@@ -356,6 +357,12 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         pestType.clear()
         modelBarcodeList.forEach {
             if (it.barcode_Data == resultBarcode){
+                if ("mosquito dispenser".equals(it.barcode_Type, true)){
+                    subTypeTitleTv.text = "Feature"
+                }
+                if ("rodent station".equals(it.barcode_Type, true) || "fly catcher machine".equals(it.barcode_Type, true) ){
+                    subTypeTitleTv.text = "Types of Pest"
+                }
                 modelBarcodeDDPestType.forEach { pest ->
                     if (pest.barcode_Type == it.barcode_Type && pest.barcodeId == it.id) {
                         Log.d("TAG", "ID ${pest.id}")
