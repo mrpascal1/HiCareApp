@@ -247,6 +247,9 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                                         pestResp[j].sub_Type,
                                         pestResp[j].show_Count,
                                         pestResp[j].capture_Image,
+                                        pestResp[j].show_Option,
+                                        pestResp[j].option_Value,
+                                        pestResp[j].option_List,
                                         pestResp[j].pest_Count,
                                         pestResp[j].image_Url,
                                     ))

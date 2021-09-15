@@ -1,19 +1,25 @@
 package com.ab.hicarerun.adapter
 
 import android.content.Context
+import android.graphics.Color
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.R
 import com.ab.hicarerun.databinding.RowBarcodePestTypeBinding
 import com.ab.hicarerun.network.models.TSScannerModel.BarcodeDDPestType
+import com.ab.hicarerun.network.models.TSScannerModel.Option_List
 import com.squareup.picasso.Picasso
 
-class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPestType>) : RecyclerView.Adapter<PestTypeAdapter.MyHolder>() {
+class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPestType>, val arrayAdapter: ArrayAdapter<String>) : RecyclerView.Adapter<PestTypeAdapter.MyHolder>() {
 
     lateinit var onEditTextChanged: OnEditTextChanged
 
@@ -23,12 +29,27 @@ class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPes
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
         val view = RowBarcodePestTypeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return MyHolder(view)
+        return MyHolder(context, view)
     }
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
-        holder.bindItems(pestList[position], position)
+        holder.bindItems(pestList[position], position, arrayAdapter)
         //holder.binding.countEt.requestFocus()
+        /*if (holder.binding.spnType.selectedItem.toString() != "" || holder.binding.spnType.selectedItem.toString() != "Select Option"){
+            onEditTextChanged.onTextChanged(position, holder.binding.spnType.selectedItem.toString(), pestList[position].barcodeId, pestList[position].id)
+        }*/
+        holder.binding.spnType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                if (holder.binding.spnType.selectedItem.toString().equals("Select Option", true)){
+                    onEditTextChanged.onTextChanged(position, "", pestList[position].barcodeId, pestList[position].id)
+                }else{
+                    onEditTextChanged.onTextChanged(position, holder.binding.spnType.selectedItem.toString(), pestList[position].barcodeId, pestList[position].id)
+                }
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+            }
+        }
         holder.binding.countEt.setOnFocusChangeListener { view, b ->
             onEditTextChanged.onTextChanged(position, holder.binding.countEt.text.toString(), pestList[position].barcodeId, pestList[position].id)
         }
@@ -64,15 +85,29 @@ class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPes
         return position
     }
 
-    class MyHolder(val binding: RowBarcodePestTypeBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bindItems(pestList: BarcodeDDPestType, position: Int){
+    class MyHolder(val context: Context, val binding: RowBarcodePestTypeBinding): RecyclerView.ViewHolder(binding.root) {
+        fun bindItems(pestList: BarcodeDDPestType, position: Int, arrayAdapter: ArrayAdapter<String>){
             binding.subTypeTv.text = pestList.sub_Type
             binding.countEt.setText(pestList.pest_Count)
+            //binding.spnType.setSelection(binding.spnType.selectedItemPosition)
+            if (binding.spnType.adapter == null){
+                binding.spnType.adapter = arrayAdapter
+            }
 
             if (pestList.show_Count == true){
                 binding.countEt.visibility = View.VISIBLE
             }else{
                 binding.countEt.visibility = View.GONE
+            }
+            if (pestList.capture_Image == true){
+                binding.imageLayout.visibility = View.VISIBLE
+            }else{
+                binding.imageLayout.visibility = View.GONE
+            }
+            if (pestList.show_Option == true){
+                binding.optionsSpinner.visibility = View.VISIBLE
+            }else{
+                binding.optionsSpinner.visibility = View.GONE
             }
             if (pestList.image_Url != null){
                 Picasso.get().load(pestList.image_Url).placeholder(R.drawable.progress).fit().into(binding.imgCaptured)
@@ -88,6 +123,7 @@ class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPes
     }
     interface OnEditTextChanged {
         fun onTextChanged(position: Int, charSeq: String?, barcodeId: Int?, pestTypeId: Int?)
+        fun onOptionTypeChanged(position: Int, charSeq: String?, barcodeId: Int?, pestTypeId: Int?)
         fun onPictureIconClicked(position: Int, charSeq: String?, barcodeId: Int?, pestTypeId: Int?)
         fun onCancelIconClicked(position: Int, charSeq: String?, barcodeId: Int?, pestTypeId: Int?)
     }

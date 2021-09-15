@@ -8,6 +8,9 @@ data class Pest_Type (
     @SerializedName("Sub_Type") val sub_Type : String?,
     @SerializedName("Show_Count") val show_Count : Boolean?,
     @SerializedName("Capture_Image") val capture_Image : Boolean?,
+    @SerializedName("Show_Option") val show_Option : Boolean?,
+    @SerializedName("Option_Value") val option_Value : String?,
+    @SerializedName("Option_List") val option_List : List<Option_List>?,
     @SerializedName("Pest_Count") val pest_Count : String?,
     @SerializedName("Image_Url") val image_Url : String?
 )
