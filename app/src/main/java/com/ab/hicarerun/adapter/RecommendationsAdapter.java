@@ -7,6 +7,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -57,44 +58,56 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
     public void onBindViewHolder(@NotNull RecommendationsAdapter.ViewHolder holder, final int position) {
         try {
             holder.layoutRecommendationsAdapterBinding.txtTitle.setText(items.get(position).getRecommendationTitle());
-            if(items.get(position).getRecommendationDescription()!=null && !items.get(position).getRecommendationDescription().equals("")){
-               if(type.equals("TMS")){
-                   holder.layoutRecommendationsAdapterBinding.txtDefaultArea.setTypeface(holder.layoutRecommendationsAdapterBinding.txtDefaultArea.getTypeface(), Typeface.BOLD);
-                   holder.layoutRecommendationsAdapterBinding.txtDescLabel.setVisibility(View.GONE);
-                   holder.layoutRecommendationsAdapterBinding.txtColon.setVisibility(View.GONE);
-               }
+            if (items.get(position).getRecommendationDescription() != null && !items.get(position).getRecommendationDescription().equals("")) {
+                if (type.equals("TMS")) {
+                    holder.layoutRecommendationsAdapterBinding.txtDefaultArea.setTypeface(holder.layoutRecommendationsAdapterBinding.txtDefaultArea.getTypeface(), Typeface.BOLD);
+                    holder.layoutRecommendationsAdapterBinding.txtDescLabel.setVisibility(View.GONE);
+                    holder.layoutRecommendationsAdapterBinding.txtColon.setVisibility(View.GONE);
+                }
                 holder.layoutRecommendationsAdapterBinding.lnrDescription.setVisibility(View.VISIBLE);
                 holder.layoutRecommendationsAdapterBinding.txtDescription.setText(Html.fromHtml(items.get(position).getRecommendationDescription()));
-            }else {
+            } else {
                 holder.layoutRecommendationsAdapterBinding.lnrDescription.setVisibility(View.GONE);
             }
 
             if (items.get(position).getChemicalValue() != null && !items.get(position).getChemicalValue().equals("")) {
-                holder.layoutRecommendationsAdapterBinding.lnrChemicalValue.setVisibility(View.VISIBLE);
+                holder.layoutRecommendationsAdapterBinding.lnrChem.setVisibility(View.VISIBLE);
                 holder.layoutRecommendationsAdapterBinding.txtChemValue.setText(items.get(position).getChemicalValue());
                 holder.layoutRecommendationsAdapterBinding.txtChemValue.setTypeface(holder.layoutRecommendationsAdapterBinding.txtChemValue.getTypeface(), Typeface.BOLD);
+                LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                        0,
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        1.4f
+                );
+                holder.layoutRecommendationsAdapterBinding.lnrData.setLayoutParams(param);
             } else {
-                holder.layoutRecommendationsAdapterBinding.lnrChemicalValue.setVisibility(View.GONE);
+                holder.layoutRecommendationsAdapterBinding.lnrChem.setVisibility(View.GONE);
+                LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                      0,
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        2f
+                );
+                holder.layoutRecommendationsAdapterBinding.lnrData.setLayoutParams(param);
             }
 
-            if(items.get(position).getDefaultArea()!=null && !items.get(position).getDefaultArea().equals("")){
+            if (items.get(position).getDefaultArea() != null && !items.get(position).getDefaultArea().equals("")) {
                 holder.layoutRecommendationsAdapterBinding.lnrDefaultArea.setVisibility(View.VISIBLE);
                 holder.layoutRecommendationsAdapterBinding.txtDefaultArea.setText(items.get(position).getDefaultArea());
-            }else {
+            } else {
                 holder.layoutRecommendationsAdapterBinding.lnrDefaultArea.setVisibility(View.GONE);
             }
 
-            if(items.get(position).getExtraArea()!=null && !items.get(position).getExtraArea().equals("")){
+            if (items.get(position).getExtraArea() != null && !items.get(position).getExtraArea().equals("")) {
                 holder.layoutRecommendationsAdapterBinding.lnrExtra.setVisibility(View.VISIBLE);
                 holder.layoutRecommendationsAdapterBinding.txtExtra.setText(items.get(position).getExtraArea());
-            }else {
+            } else {
                 holder.layoutRecommendationsAdapterBinding.lnrExtra.setVisibility(View.GONE);
             }
 
-            if(items.get(position).getDuration()!=null && !items.get(position).getDuration().equals("")){
+            if (items.get(position).getDuration() != null && !items.get(position).getDuration().equals("")) {
                 holder.layoutRecommendationsAdapterBinding.lnrDuration.setVisibility(View.VISIBLE);
                 holder.layoutRecommendationsAdapterBinding.txtDuration.setText(items.get(position).getDuration());
-            }else {
+            } else {
                 holder.layoutRecommendationsAdapterBinding.lnrDuration.setVisibility(View.GONE);
             }
 

@@ -21,8 +21,12 @@
             android:id="@+id/cardTasks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardElevation="2dp"
-            app:cardMaxElevation="4dp"
+            android:elevation="5dp"
+            app:cardBackgroundColor="@color/colorPrimary"
+            app:cardCornerRadius="3dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
             app:cardUseCompatPadding="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -31,7 +35,9 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="1.8dp"
+                android:background="@drawable/white_round_border">
 
                 <LinearLayout
                     android:id="@+id/lnrHeader"
@@ -142,7 +148,6 @@
                 </LinearLayout>
 
 
-
                 <androidx.cardview.widget.CardView
                     android:id="@+id/lnrStatus"
                     android:layout_width="85dp"
@@ -173,19 +178,19 @@
                     android:id="@+id/outerView"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
+                    android:layout_marginTop="4dp"
                     android:layout_marginRight="7dp"
                     android:gravity="center"
-                    android:layout_marginTop="4dp"
                     app:layout_constraintRight_toLeftOf="@id/lnrStatus"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <LinearLayout
                         android:layout_width="28dp"
                         android:layout_height="28dp"
-                        app:layout_constraintRight_toLeftOf="@id/lnrStatus"
-                        app:layout_constraintTop_toTopOf="parent"
                         android:background="@drawable/circle_view_outer"
-                        android:gravity="center">
+                        android:gravity="center"
+                        app:layout_constraintRight_toLeftOf="@id/lnrStatus"
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <LinearLayout
                             android:id="@+id/lnrInfo"
@@ -260,7 +265,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_gravity="center"
-                            app:srcCompat="@drawable/ic_link" />
+                            app:srcCompat="@drawable/ic_link"/>
 
 
                     </LinearLayout>
@@ -306,13 +311,55 @@
                             android:orientation="vertical">
 
                             <LinearLayout
+                                android:id="@+id/lnrReason"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginTop="8dp">
+
+                                <TextView
+                                    android:id="@+id/labelReason"
+                                    android:layout_width="130dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="Job Info"
+                                    android:textSize="14sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=":"
+                                    android:textSize="14sp" />
+
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:layout_marginLeft="10dp"
+                                    android:layout_marginRight="15dp"
+                                    android:gravity="right">
+
+                                    <TextView
+                                        android:id="@+id/txtReason"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:ellipsize="end"
+                                        android:gravity="left"
+                                        android:maxLines="2"
+                                        android:textColor="@color/black"
+                                        android:textSize="14sp" />
+
+                                </RelativeLayout>
+
+
+                            </LinearLayout>
+
+
+                            <LinearLayout
                                 android:id="@+id/lnr_service"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="15dp"
-                                android:layout_marginTop="8dp"
-
-                                >
+                                android:layout_marginTop="2dp">
 
                                 <TextView
                                     android:id="@+id/labelPlan"
@@ -853,9 +900,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
-                            android:text="@string/mobile_no"
-                            android:lines="1"
                             android:ellipsize="end"
+                            android:lines="1"
+                            android:text="@string/mobile_no"
                             android:textColor="@color/colorPrimaryDark"
                             android:textSize="12sp" />
 
@@ -887,9 +934,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
-                            android:text="@string/alt_mobile_no"
-                            android:lines="1"
                             android:ellipsize="end"
+                            android:lines="1"
+                            android:text="@string/alt_mobile_no"
                             android:textColor="@color/colorPrimaryDark"
                             android:textSize="12sp" />
 
@@ -920,9 +967,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
-                            android:text="@string/phone_no"
-                            android:lines="1"
                             android:ellipsize="end"
+                            android:lines="1"
+                            android:text="@string/phone_no"
                             android:textColor="@color/colorPrimaryDark"
                             android:textSize="12sp" />
 

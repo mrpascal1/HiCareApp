@@ -182,6 +182,18 @@ public class Tasks implements Parcelable {
     @Expose
     private String Next_Task_Id;
 
+    @SerializedName("IsTaskToBeHighlighted")
+    @Expose
+    private Boolean IsTaskToBeHighlighted;
+
+    @SerializedName("ColorForTheTaskToBeHighlighted")
+    @Expose
+    private String ColorForTheTaskToBeHighlighted;
+
+    @SerializedName("ReasonForHighlightedTask")
+    @Expose
+    private String ReasonForHighlightedTask;
+
     public Tasks() {
         AccountName = "NA";
         ServicePlan = "NA";
@@ -227,6 +239,9 @@ public class Tasks implements Parcelable {
         Helper_Resource_Id = "NA";
         Next_Task_Id = "NA";
         Customer_Instructions = "NA";
+        IsTaskToBeHighlighted = false;
+        ColorForTheTaskToBeHighlighted = "NA";
+        ReasonForHighlightedTask = "NA";
     }
 
 
@@ -277,6 +292,10 @@ public class Tasks implements Parcelable {
         IsCombinedTask = tmpIsCombinedTask == 0 ? null : tmpIsCombinedTask == 1;
         Helper_Resource_Id = in.readString();
         Next_Task_Id = in.readString();
+        byte tmpIsTaskToBeHighlighted = in.readByte();
+        IsTaskToBeHighlighted = tmpIsTaskToBeHighlighted == 0 ? null : tmpIsTaskToBeHighlighted == 1;
+        ColorForTheTaskToBeHighlighted = in.readString();
+        ReasonForHighlightedTask = in.readString();
     }
 
     public static final Creator<Tasks> CREATOR = new Creator<Tasks>() {
@@ -643,56 +662,84 @@ public class Tasks implements Parcelable {
         Customer_Instructions = customer_Instructions;
     }
 
+    public Boolean getIsTaskToBeHighlighted() {
+        return IsTaskToBeHighlighted;
+    }
+
+    public void setIsTaskToBeHighlighted(Boolean isTaskToBeHighlighted) {
+        IsTaskToBeHighlighted = isTaskToBeHighlighted;
+    }
+
+    public String getColorForTheTaskToBeHighlighted() {
+        return ColorForTheTaskToBeHighlighted;
+    }
+
+    public void setColorForTheTaskToBeHighlighted(String colorForTheTaskToBeHighlighted) {
+        ColorForTheTaskToBeHighlighted = colorForTheTaskToBeHighlighted;
+    }
+
+    public String getReasonForHighlightedTask() {
+        return ReasonForHighlightedTask;
+    }
+
+    public void setReasonForHighlightedTask(String reasonForHighlightedTask) {
+        ReasonForHighlightedTask = reasonForHighlightedTask;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(AccountName);
-        parcel.writeString(ServicePlan);
-        parcel.writeString(ServiceType);
-        parcel.writeString(Tag);
-        parcel.writeInt(SequenceNumber);
-        parcel.writeString(Status);
-        parcel.writeString(TaskId);
-        parcel.writeString(WingFlatOrUnitNumber);
-        parcel.writeString(BuildingName);
-        parcel.writeString(StandardProperty);
-        parcel.writeString(Locality);
-        parcel.writeString(Landmark);
-        parcel.writeString(Street);
-        parcel.writeString(District);
-        parcel.writeString(Country);
-        parcel.writeString(Amount);
-        parcel.writeString(PostalCode);
-        parcel.writeString(OrderNumber);
-        parcel.writeString(CombinedOrderNumber);
-        parcel.writeString(Customer_Instructions);
-        parcel.writeString(TaskAssignmentStartDate);
-        parcel.writeString(TaskAssignmentStartTime);
-        parcel.writeString(TaskAssignmentEndDate);
-        parcel.writeString(TaskAssignmentEndTime);
-        parcel.writeString(AssignmentStartDate);
-        parcel.writeString(AssignmentEndDate);
-        parcel.writeString(MobileNo);
-        parcel.writeString(AlternateMobileNo);
-        parcel.writeString(TechnicianMobileNo);
-        parcel.writeString(AccountLat);
-        parcel.writeString(AccountLong);
-        parcel.writeString(OnsiteLat);
-        parcel.writeString(OnsiteLong);
-        parcel.writeString(CompletedLat);
-        parcel.writeString(CompletedLong);
-        parcel.writeString(CustomerLatitude);
-        parcel.writeString(CustomerLongitude);
-        parcel.writeString(AccountType);
-        parcel.writeString(CombinedServiceType);
-        parcel.writeString(CombinedTaskId);
-        parcel.writeByte((byte) (IsDetailVisible == null ? 0 : IsDetailVisible ? 1 : 2));
-        parcel.writeByte((byte) (IsCombinedTask == null ? 0 : IsCombinedTask ? 1 : 2));
-        parcel.writeString(Helper_Resource_Id);
-        parcel.writeString(Next_Task_Id);
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(AccountName);
+        dest.writeString(ServicePlan);
+        dest.writeString(ServiceType);
+        dest.writeString(Tag);
+        dest.writeInt(SequenceNumber);
+        dest.writeString(Status);
+        dest.writeString(TaskId);
+        dest.writeString(WingFlatOrUnitNumber);
+        dest.writeString(BuildingName);
+        dest.writeString(StandardProperty);
+        dest.writeString(Locality);
+        dest.writeString(Landmark);
+        dest.writeString(Street);
+        dest.writeString(District);
+        dest.writeString(Country);
+        dest.writeString(Amount);
+        dest.writeString(PostalCode);
+        dest.writeString(OrderNumber);
+        dest.writeString(CombinedOrderNumber);
+        dest.writeString(Customer_Instructions);
+        dest.writeString(TaskAssignmentStartDate);
+        dest.writeString(TaskAssignmentStartTime);
+        dest.writeString(TaskAssignmentEndDate);
+        dest.writeString(TaskAssignmentEndTime);
+        dest.writeString(AssignmentStartDate);
+        dest.writeString(AssignmentEndDate);
+        dest.writeString(MobileNo);
+        dest.writeString(AlternateMobileNo);
+        dest.writeString(TechnicianMobileNo);
+        dest.writeString(AccountLat);
+        dest.writeString(AccountLong);
+        dest.writeString(OnsiteLat);
+        dest.writeString(OnsiteLong);
+        dest.writeString(CompletedLat);
+        dest.writeString(CompletedLong);
+        dest.writeString(CustomerLatitude);
+        dest.writeString(CustomerLongitude);
+        dest.writeString(AccountType);
+        dest.writeString(CombinedServiceType);
+        dest.writeString(CombinedTaskId);
+        dest.writeByte((byte) (IsDetailVisible == null ? 0 : IsDetailVisible ? 1 : 2));
+        dest.writeByte((byte) (IsCombinedTask == null ? 0 : IsCombinedTask ? 1 : 2));
+        dest.writeString(Helper_Resource_Id);
+        dest.writeString(Next_Task_Id);
+        dest.writeByte((byte) (IsTaskToBeHighlighted == null ? 0 : IsTaskToBeHighlighted ? 1 : 2));
+        dest.writeString(ColorForTheTaskToBeHighlighted);
+        dest.writeString(ReasonForHighlightedTask);
     }
 }
