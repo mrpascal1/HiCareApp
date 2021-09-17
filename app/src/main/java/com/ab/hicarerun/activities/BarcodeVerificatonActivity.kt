@@ -500,14 +500,14 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                     }else{
                         partialEmpty = true
                         foundAllEmpty = true
-                        Toast.makeText(this, "Please enter proper data", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Please enter the data correctly", Toast.LENGTH_SHORT).show()
                         return@setOnClickListener
                     }
                 }
                 if ((it.pest_Count == "" || it.pest_Count.equals("Select Option", true)) && it.image_Url != null){
                     partialEmpty = true
                     foundAllEmpty = true
-                    Toast.makeText(this, "Please enter proper data", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Please enter the data correctly", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
                 if ((it.pest_Count.equals("no", true) ||
@@ -539,7 +539,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                 pestType.clear()
                 alertDialog.cancel()
             }else{
-                Toast.makeText(this, "Please enter proper data", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please enter the data correctly", Toast.LENGTH_SHORT).show()
             }
         }
 

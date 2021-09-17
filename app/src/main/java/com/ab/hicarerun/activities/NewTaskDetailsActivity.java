@@ -1091,7 +1091,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 } else {
                     mActivityNewTaskDetailsBinding.pager.setCurrentItem(1);
                 }
-                Toasty.error(this, "Please scan bait station", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, "Please scan equipment", Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
             } else if (Status.equals("Completed") && AppUtils.NOT_RENEWAL_DONE) {
                 if (isActivityThere) {
