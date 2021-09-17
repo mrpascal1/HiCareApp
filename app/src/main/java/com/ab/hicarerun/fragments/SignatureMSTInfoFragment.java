@@ -360,7 +360,9 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
 
                     if(mGeneralRealmData.get(0).getPaymentMode() != null && !mGeneralRealmData.get(0).getPaymentMode().equals("") && !mGeneralRealmData.get(0).getPaymentMode().equalsIgnoreCase("none")){
                         mFragmentSignatureInfoBinding.lnrType.setVisibility(View.VISIBLE);
-                        mFragmentSignatureInfoBinding.txtType.setText(mGeneralRealmData.get(0).getPaymentMode());
+                        if(mGeneralRealmData.get(0).getPaymentMode()!=null){
+                            mFragmentSignatureInfoBinding.txtType.setText(mGeneralRealmData.get(0).getPaymentMode());
+                        }
                     }else {
                         mFragmentSignatureInfoBinding.lnrType.setVisibility(View.GONE);
                     }

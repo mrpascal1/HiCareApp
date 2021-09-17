@@ -608,11 +608,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
                 isChequeRequired = mTaskDetailsData.get(0).getChequeRequired();
                 type.add(0, "None");
-//                type.add(1, "PhonePe");
-                Log.i("type", String.valueOf(type.size()));
                 arrayMode = new String[type.size()];
                 arrayMode = type.toArray(arrayMode);
-                Log.i("payment", Arrays.toString(arrayMode));
                 final String status = mTaskDetailsData.get(0).getSchedulingStatus();
                 sta = mTaskDetailsData.get(0).getSchedulingStatus();
 
@@ -688,7 +685,12 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                             }
                         }
                         type.clear();
-                        type.add(0, mTaskDetailsData.get(0).getPaymentMode());
+                        if(mTaskDetailsData.get(0).getPaymentMode()!=null){
+                            type.add(0, mTaskDetailsData.get(0).getPaymentMode());
+                        }else {
+                            type.add(0, "None");
+                        }
+
                         arrayMode = new String[type.size()];
                         arrayMode = type.toArray(arrayMode);
                     } catch (Exception e) {
