@@ -49,7 +49,7 @@ class BarcodeAdapter(
         holder.binding.deleteBtn.setOnClickListener {
             val dialog = AlertDialog.Builder(context)
             dialog.setTitle("Delete")
-            dialog.setMessage("Are you sure you want to delete the bait station entry?")
+            dialog.setMessage("Are you sure you want to delete the equipment?")
             dialog.setPositiveButton("Yes") { _: DialogInterface, _: Int ->
                 if (barcodeList[position].id != 0) {
                     removeFromServer(position)

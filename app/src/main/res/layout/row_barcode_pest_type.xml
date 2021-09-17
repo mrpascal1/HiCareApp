@@ -133,7 +133,7 @@
             android:background="@drawable/chemical_cells"
             android:ellipsize="end"
             android:padding="5dp"
-            android:layout_weight="0.9">
+            android:layout_weight="1.2">
             <LinearLayout
                 android:id="@+id/optionsSpinner"
                 android:layout_width="match_parent"
@@ -178,7 +178,7 @@
             android:id="@+id/lnrCapture"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.9"
+            android:layout_weight="0.6"
             android:background="@drawable/chemical_cells"
             android:ellipsize="end"
             android:gravity="center"
