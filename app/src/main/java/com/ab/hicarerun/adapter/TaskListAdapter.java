@@ -119,6 +119,16 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NotNull final ViewHolder holder, final int position) {
         try {
+            if (items.get(position).getTaskToBeHighlighted()) {
+                holder.mTaskListAdapterBinding.lnrReason.setVisibility(View.VISIBLE);
+                holder.mTaskListAdapterBinding.txtReason.setTypeface(holder.mTaskListAdapterBinding.txtReason.getTypeface(), Typeface.BOLD);
+                holder.mTaskListAdapterBinding.txtReason.setText(items.get(position).getReasonForHighlightedTask());
+                holder.mTaskListAdapterBinding.txtReason.setTextColor(Color.parseColor(items.get(position).getColorForTheTaskToBeHighlighted()));
+                holder.mTaskListAdapterBinding.cardTasks.setCardBackgroundColor(Color.parseColor(items.get(position).getColorForTheTaskToBeHighlighted()));
+            } else {
+                holder.mTaskListAdapterBinding.lnrReason.setVisibility(View.GONE);
+                holder.mTaskListAdapterBinding.cardTasks.setCardBackgroundColor(mContext.getResources().getColor(R.color.white));
+            }
             if (items.get(position).getHelperResourceId() != null && !items.get(position).getHelperResourceId().equals("")) {
                 try {
                     holder.mTaskListAdapterBinding.lnrPartnerPic.setVisibility(View.VISIBLE);
@@ -233,10 +243,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                 holder.mTaskListAdapterBinding.lnrTag.setVisibility(View.GONE);
             }
 
-            if(items.get(position).getStandardProperty()!=null && !items.get(position).getStandardProperty().equals("") && !items.get(position).getStandardProperty().equals("NA")){
+            if (items.get(position).getStandardProperty() != null && !items.get(position).getStandardProperty().equals("") && !items.get(position).getStandardProperty().equals("NA")) {
                 holder.mTaskListAdapterBinding.lnrBhk.setVisibility(View.VISIBLE);
                 holder.mTaskListAdapterBinding.txtBhk.setText(items.get(position).getStandardProperty());
-            }else {
+            } else {
                 holder.mTaskListAdapterBinding.lnrBhk.setVisibility(View.GONE);
             }
 
@@ -279,15 +289,15 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                 holder.mTaskListAdapterBinding.lnrLandmark.setVisibility(View.GONE);
             }
             holder.mTaskListAdapterBinding.txtPostcode.setText(items.get(position).getPostalCode());
-            if (items.get(position).getAmount()!=null && items.get(position).getAmount().equals("0") ) {
+            if (items.get(position).getAmount() != null && items.get(position).getAmount().equals("0")) {
                 holder.mTaskListAdapterBinding.lnrAmount.setVisibility(View.GONE);
             } else {
                 holder.mTaskListAdapterBinding.lnrAmount.setVisibility(View.VISIBLE);
                 holder.mTaskListAdapterBinding.txtAmount.setText(items.get(position).getAmount());
             }
-            if(items.get(position).getCustomerInstructions()!=null && !items.get(position).getCustomerInstructions().equals("")){
+            if (items.get(position).getCustomerInstructions() != null && !items.get(position).getCustomerInstructions().equals("")) {
                 holder.mTaskListAdapterBinding.outerView.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 holder.mTaskListAdapterBinding.outerView.setVisibility(View.GONE);
             }
             holder.itemView.setOnClickListener(v -> onItemClickHandler.onItemClick(position));
