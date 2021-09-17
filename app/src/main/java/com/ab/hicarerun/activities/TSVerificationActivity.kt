@@ -144,7 +144,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                 if (modelBarcodeList.isNotEmpty()){
                     integrator.initiateScan()
                 }else{
-                    Toast.makeText(this, "Rodent station not found", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Equipment not found", Toast.LENGTH_SHORT).show()
                 }
             }else{
                 Toast.makeText(this, "Please Enter Order No", Toast.LENGTH_SHORT).show()
@@ -247,6 +247,9 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                                         pestResp[j].sub_Type,
                                         pestResp[j].show_Count,
                                         pestResp[j].capture_Image,
+                                        pestResp[j].show_Option,
+                                        pestResp[j].option_Value,
+                                        pestResp[j].option_List,
                                         pestResp[j].pest_Count,
                                         pestResp[j].image_Url,
                                     ))

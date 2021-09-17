@@ -162,7 +162,7 @@ class TSScannerActivity : BaseActivity() {
         }
         barcodeAdapter.setOnBarcodeCountListener(object : OnBarcodeCountListener{
             override fun onBarcodeCountListener(count: Int) {
-                binding.boxesTitleTv.text = "Bait Stations: (${modelBarcodeList.size})"
+                binding.boxesTitleTv.text = "Equipments: (${modelBarcodeList.size})"
                 if (count == 0){
                     binding.barcodeErrorTv.visibility = View.VISIBLE
                     binding.saveBtn.visibility = View.GONE
@@ -282,7 +282,7 @@ class TSScannerActivity : BaseActivity() {
                             binding.barcodeErrorTv.visibility = View.VISIBLE
                             binding.saveBtn.visibility = View.GONE
                         }
-                        binding.boxesTitleTv.text = "Bait Stations: (${modelBarcodeList.size})"
+                        binding.boxesTitleTv.text = "Equipments: (${modelBarcodeList.size})"
                     }
                     populateViews(account_Name, regionName, servicePlan)
                     barcodeAdapter.notifyDataSetChanged()
@@ -417,7 +417,7 @@ class TSScannerActivity : BaseActivity() {
             binding.barcodeErrorTv.visibility = View.GONE
             binding.saveBtn.visibility = View.VISIBLE
         }
-        binding.boxesTitleTv.text = "Bait Stations: (${modelBarcodeList.size})"
+        binding.boxesTitleTv.text = "Equipments: (${modelBarcodeList.size})"
     }
 
     private fun showPestTypeDialog(contents: String, currentDateTime: String){

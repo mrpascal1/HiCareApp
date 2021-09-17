@@ -15,10 +15,8 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.WindowManager
+import android.view.*
+import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -206,9 +204,12 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                                         pestType[j].sub_Type,
                                         pestType[j].show_Count,
                                         pestType[j].capture_Image,
+                                        pestType[j].show_Option,
+                                        pestType[j].option_Value,
+                                        pestType[j].option_List,
                                         pestType[j].pest_Count,
                                         pestType[j].image_Url,
-                                        id
+                                        id,
                                     ))
                                 }
                             }
@@ -348,14 +349,24 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         alertDialogBuilder.setView(promptsView)
         val alertDialog = alertDialogBuilder.create()
         val barcodeTypeTv = promptsView.findViewById(R.id.barcodeTypeTv) as TextView
+        val subTypeTitleTv = promptsView.findViewById(R.id.subTypeTitleTv) as TextView
         val pestRecyclerView = promptsView.findViewById(R.id.pestRecyclerView) as RecyclerView
         val cancelBtn = promptsView.findViewById(R.id.btn_cancel) as AppCompatButton
         val saveBtn = promptsView.findViewById(R.id.saveBtn) as AppCompatButton
         pestType = ArrayList()
+        val optionType = ArrayList<String>()
 
         pestType.clear()
+        optionType.clear()
+        optionType.add("Select Option")
         modelBarcodeList.forEach {
             if (it.barcode_Data == resultBarcode){
+                if ("mosquito dispenser".equals(it.barcode_Type, true)){
+                    subTypeTitleTv.text = "Feature"
+                }
+                if ("rodent station".equals(it.barcode_Type, true) || "fly catcher machine".equals(it.barcode_Type, true) ){
+                    subTypeTitleTv.text = "Types of Pest"
+                }
                 modelBarcodeDDPestType.forEach { pest ->
                     if (pest.barcode_Type == it.barcode_Type && pest.barcodeId == it.id) {
                         Log.d("TAG", "ID ${pest.id}")
@@ -367,18 +378,42 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                             pest.sub_Type,
                             pest.show_Count,
                             pest.capture_Image,
+                            pest.show_Option,
+                            pest.option_Value,
+                            pest.option_List,
                             "",
                             pest.image_Url,
                             pest.barcodeId,
                         ))
+                        pest.option_List?.forEach {
+                            optionType.add(it.text.toString())
+                        }
                     }
                 }
             }
         }
-        pestTypeAdapter = PestTypeAdapter(this, pestType)
+        val arrayAdapter = object : ArrayAdapter<String>(this, R.layout.spinner_layout_new, optionType){
+            override fun isEnabled(position: Int): Boolean {
+                return position != 0
+            }
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getDropDownView(position, convertView, parent)
+                val tv = view as TextView
+                if (position == 0){
+                    tv.setTextColor(Color.GRAY)
+                }else{
+                    tv.setTextColor(Color.BLACK)
+                }
+                return view
+            }
+        }
+        arrayAdapter.setDropDownViewResource(R.layout.spinner_popup)
+        pestTypeAdapter = PestTypeAdapter(this, pestType, arrayAdapter)
         pestRecyclerView.setHasFixedSize(true)
         val layoutManager = LinearLayoutManager(this)
         pestRecyclerView.layoutManager = layoutManager
+
         pestRecyclerView.adapter = pestTypeAdapter
 
         pestTypeAdapter.setOnEditTextChangedListener(object : PestTypeAdapter.OnEditTextChanged{
@@ -392,6 +427,16 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                     }
                 }
                 Log.d("TAG", "onText item position $position")
+            }
+
+            override fun onOptionTypeChanged(position: Int, charSeq: String?, barcodeId: Int?, pestTypeId: Int?) {
+                var count = charSeq
+                currentItemCount = count.toString()
+                pestType.forEach {
+                    if (it.barcodeId == barcodeId && it.id == pestTypeId){
+                        it.pest_Count = count
+                    }
+                }
             }
 
             override fun onPictureIconClicked(position: Int, charSeq: String?, barcodeId: Int?, pestTypeId: Int?) {
@@ -449,13 +494,30 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
             pestType.forEach {
                 //Check for partial Empty
                 if (it.image_Url == null && it.pest_Count != ""){
-                    partialEmpty = true
+                    if (it.pest_Count.equals("no", true)){
+                        foundAllEmpty = false
+                        partialEmpty = false
+                    }else{
+                        partialEmpty = true
+                        foundAllEmpty = true
+                        Toast.makeText(this, "Please enter proper data", Toast.LENGTH_SHORT).show()
+                        return@setOnClickListener
+                    }
                 }
-                if (it.pest_Count == "" && it.image_Url != null){
+                if ((it.pest_Count == "" || it.pest_Count.equals("Select Option", true)) && it.image_Url != null){
                     partialEmpty = true
+                    foundAllEmpty = true
+                    Toast.makeText(this, "Please enter proper data", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                if ((it.pest_Count.equals("no", true) ||
+                            it.pest_Count.equals("yes", true)) && it.image_Url != null){
+                    foundAllEmpty = false
+                    partialEmpty = false
                 }
             }
 
+            Log.d("TAG", "Final $foundAllEmpty and $partialEmpty")
             if (!foundAllEmpty && !partialEmpty) {
                 modifyData(
                     id,
@@ -473,6 +535,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                     barcode_Type,
                     pestType
                 )
+                optionType.clear()
                 pestType.clear()
                 alertDialog.cancel()
             }else{

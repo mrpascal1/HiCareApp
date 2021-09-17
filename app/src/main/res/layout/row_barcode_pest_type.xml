@@ -126,6 +126,7 @@
             android:singleLine="true" />
 
         <LinearLayout
+            android:orientation="vertical"
             android:id="@+id/lnrCount"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -133,6 +134,27 @@
             android:ellipsize="end"
             android:padding="5dp"
             android:layout_weight="0.9">
+            <LinearLayout
+                android:id="@+id/optionsSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="26dp"
+                android:background="@drawable/edit_box_border"
+                android:gravity="right"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp">
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/spnType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@color/textColorSecondary"
+                    android:clickable="true"
+                    android:ems="10"
+                    android:popupBackground="@color/colorTextDrawerSecondary"
+                    android:spinnerMode="dialog"
+                    android:textSize="20sp"
+                    android:layout_marginStart="12dp" />
+            </LinearLayout>
+
             <EditText
                 android:id="@+id/countEt"
                 android:layout_width="match_parent"
@@ -148,7 +170,8 @@
                 android:background="@drawable/edit_border"
                 android:focusable="true"
                 android:gravity="center"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:visibility="gone"/>
         </LinearLayout>
 
         <LinearLayout
@@ -162,6 +185,7 @@
             android:textColor="@color/black"
             android:singleLine="true">
             <RelativeLayout
+                android:id="@+id/imageLayout"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
