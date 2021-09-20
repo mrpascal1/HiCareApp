@@ -35,10 +35,7 @@ import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
 import com.ab.hicarerun.network.models.Item
 import com.ab.hicarerun.network.models.LoginResponse
-import com.ab.hicarerun.network.models.TSScannerModel.BarcodeDDPestType
-import com.ab.hicarerun.network.models.TSScannerModel.BarcodeDetailsData
-import com.ab.hicarerun.network.models.TSScannerModel.BarcodeDetailsResponse
-import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse
+import com.ab.hicarerun.network.models.TSScannerModel.*
 import com.ab.hicarerun.service.listner.LocationManagerListner
 import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.LocaleHelper
@@ -361,12 +358,12 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         optionType.add("Select Option")
         modelBarcodeList.forEach {
             if (it.barcode_Data == resultBarcode){
-                if ("mosquito dispenser".equals(it.barcode_Type, true)){
+                /*if ("mosquito dispenser".equals(it.barcode_Type, true)){
                     subTypeTitleTv.text = "Feature"
                 }
                 if ("rodent station".equals(it.barcode_Type, true) || "fly catcher machine".equals(it.barcode_Type, true) ){
                     subTypeTitleTv.text = "Types of Pest"
-                }
+                }*/
                 modelBarcodeDDPestType.forEach { pest ->
                     if (pest.barcode_Type == it.barcode_Type && pest.barcodeId == it.id) {
                         Log.d("TAG", "ID ${pest.id}")
@@ -385,8 +382,8 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                             pest.image_Url,
                             pest.barcodeId,
                         ))
-                        pest.option_List?.forEach {
-                            optionType.add(it.text.toString())
+                        pest.option_List?.forEach { options ->
+                            optionType.add(options.text.toString())
                         }
                     }
                 }

@@ -106,24 +106,10 @@
             android:layout_weight="1.7"
             android:background="@drawable/left_chemical_cells"
             android:ellipsize="end"
-            android:padding="5dp"
-            android:text="Refill changed?"
+            android:padding="10dp"
+            android:text="Rodent Station?"
             android:textColor="@color/black"
-            android:gravity="center"
-            android:singleLine="true" />
-
-        <TextView
-            android:id="@+id/chem_consumption"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.6"
-            android:background="@drawable/chemical_cells"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:visibility="gone"
-            android:textColor="@color/black"
-            android:padding="5dp"
-            android:singleLine="true" />
+            android:gravity="center" />
 
         <LinearLayout
             android:orientation="vertical"
@@ -132,6 +118,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/chemical_cells"
             android:ellipsize="end"
+            android:gravity="center"
             android:padding="5dp"
             android:layout_weight="1.2">
             <LinearLayout
@@ -141,6 +128,7 @@
                 android:background="@drawable/edit_box_border"
                 android:gravity="right"
                 android:layout_marginTop="4dp"
+                android:visibility="visible"
                 android:layout_marginBottom="4dp">
                 <androidx.appcompat.widget.AppCompatSpinner
                     android:id="@+id/spnType"
@@ -162,6 +150,7 @@
                 android:inputType="number"
                 android:textSize="15dp"
                 android:maxLength="3"
+                android:layout_margin="2dp"
                 android:digits="0123456789"
                 android:focusableInTouchMode="true"
                 android:layout_gravity="center"

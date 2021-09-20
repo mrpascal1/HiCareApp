@@ -8,10 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.R
 import com.ab.hicarerun.databinding.RowBarcodePestTypeBinding
@@ -31,7 +28,6 @@ class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPes
         val view = RowBarcodePestTypeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyHolder(context, view)
     }
-
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         holder.bindItems(pestList[position], position, arrayAdapter)
         //holder.binding.countEt.requestFocus()
@@ -91,7 +87,30 @@ class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPes
             binding.countEt.setText(pestList.pest_Count)
             //binding.spnType.setSelection(binding.spnType.selectedItemPosition)
             if (binding.spnType.adapter == null){
-                binding.spnType.adapter = arrayAdapter
+                val optionType = ArrayList<String>()
+                optionType.add("Select Option")
+                pestList.option_List?.forEach {
+                    optionType.add(it.text.toString())
+                }
+                val arrayAdapter2 = object : ArrayAdapter<String>(context, R.layout.spinner_layout_new, optionType){
+                    override fun isEnabled(position: Int): Boolean {
+                        return position != 0
+                    }
+
+                    override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                        val view = super.getDropDownView(position, convertView, parent)
+                        val tv = view as TextView
+                        if (position == 0){
+                            tv.setTextColor(Color.GRAY)
+                        }else{
+                            tv.setTextColor(Color.BLACK)
+                        }
+                        return view
+                    }
+
+                }
+                arrayAdapter2.setDropDownViewResource(R.layout.spinner_popup)
+                binding.spnType.adapter = arrayAdapter2
             }
 
             if (pestList.show_Count == true){
