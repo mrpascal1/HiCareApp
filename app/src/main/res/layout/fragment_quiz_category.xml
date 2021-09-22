@@ -148,7 +148,7 @@
             android:id="@+id/gamesNotAvlTv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Games not available!"
+            android:text="@string/shiksha_not_available"
             android:gravity="center"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"

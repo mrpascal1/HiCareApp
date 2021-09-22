@@ -13,6 +13,7 @@ public class QuizCategoryViewModel implements Parcelable {
     private int puzzleId;
     private String puzzleName;
     private String puzzleTitle;
+    private String puzzleTitleDisplay;
     private String puzzleDescription;
     private String puzzleUrl;
     private Integer completionPecentage;
@@ -24,6 +25,7 @@ public class QuizCategoryViewModel implements Parcelable {
         this.puzzleId = 0;
         this.puzzleName = "NA";
         this.puzzleTitle = "NA";
+        this.puzzleTitleDisplay = "NA";
         this.puzzleDescription = "NA";
         this.puzzleUrl = "NA";
         this.isPuzzleSubmitted = false;
@@ -36,6 +38,7 @@ public class QuizCategoryViewModel implements Parcelable {
         puzzleId = in.readInt();
         puzzleName = in.readString();
         puzzleTitle = in.readString();
+        puzzleTitleDisplay = in.readString();
         puzzleDescription = in.readString();
         puzzleUrl = in.readString();
         isPuzzleSubmitted = in.readByte() != 0;
@@ -96,6 +99,14 @@ public class QuizCategoryViewModel implements Parcelable {
         this.puzzleTitle = puzzleTitle;
     }
 
+    public String getPuzzleTitleDisplay() {
+        return puzzleTitleDisplay;
+    }
+
+    public void setPuzzleTitleDisplay(String puzzleTitleDisplay) {
+        this.puzzleTitleDisplay = puzzleTitleDisplay;
+    }
+
     public String getPuzzleDescription() {
         return puzzleDescription;
     }
@@ -138,6 +149,7 @@ public class QuizCategoryViewModel implements Parcelable {
         parcel.writeInt(puzzleId);
         parcel.writeString(puzzleName);
         parcel.writeString(puzzleTitle);
+        parcel.writeString(puzzleTitleDisplay);
         parcel.writeString(puzzleDescription);
         parcel.writeString(puzzleUrl);
         parcel.writeByte((byte) (isPuzzleSubmitted ? 1 : 0));
@@ -150,6 +162,7 @@ public class QuizCategoryViewModel implements Parcelable {
         this.puzzleId = data.getPuzzleId();
         this.puzzleName = data.getPuzzleName();
         this.puzzleTitle = data.getPuzzleTitle();
+        this.puzzleTitleDisplay = data.getPuzzleTitleDisplay();
         this.puzzleDescription = data.getPuzzleDescription();
         this.puzzleUrl = data.getPuzzleImageUrl();
         this.isPuzzleSubmitted = data.getIsPuzzleSubmitted();

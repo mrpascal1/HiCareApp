@@ -49,7 +49,7 @@ class QuizLeaderBoardAdapter(val context: Context, val quizLBResourceList: List<
             binding.userNameTv.text = quizLBResourceList.resourceName
             binding.pointsTv.text = "${quizLBResourceList.points} pts"
             binding.indexTv.text = (adapterPosition+1).toString()
-            binding.levelNameTv.text = "${quizLBResourceList.levelName}"
+            binding.levelNameTv.text = "${quizLBResourceList.levelNameDisplay}"
             /*if (levelName.equals("Basic", ignoreCase = true)){
                 binding.awardIv.setImageDrawable(context.resources.getDrawable(R.drawable.ic_award_bronze))
             }

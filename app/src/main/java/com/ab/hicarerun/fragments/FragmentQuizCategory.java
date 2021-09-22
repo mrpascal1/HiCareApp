@@ -133,11 +133,12 @@ public class FragmentQuizCategory extends BaseFragment {
             final AppCompatButton btnOk =
                     promptsView.findViewById(R.id.btnOk);
 
-            popupTitleTv.setText("Shiksha Instructions");
-            txtInfo.setText("1. Choose the correct answer to earn points.\n" +
+            popupTitleTv.setText(R.string.shiksha_instructions);
+            txtInfo.setText(R.string.shiksha_instructions_data);
+            /*txtInfo.setText("1. Choose the correct answer to earn points.\n" +
                     "2. Complete all the given categories.\n" +
                     "3. Proceed to the next level and buy yourself new items from bazaar.\n" +
-                    "4. You can play only 3 times in a day.");
+                    "4. You can play only 3 times in a day.");*/
             txtInfo.setTypeface(txtInfo.getTypeface(), Typeface.BOLD);
 
             btnOk.setOnClickListener(v -> alertDialog.dismiss());
@@ -168,7 +169,7 @@ public class FragmentQuizCategory extends BaseFragment {
                             mAdapter.setOnItemClickHandler(position -> {
                                 Intent intent = new Intent(getContext(), QuizActivity.class);
                                 intent.putExtra("puzzleId", mAdapter.getItem(position).getPuzzleId());
-                                intent.putExtra("puzzleTitle", mAdapter.getItem(position).getPuzzleTitle());
+                                intent.putExtra("puzzleTitle", mAdapter.getItem(position).getPuzzleTitleDisplay());
                                 startActivity(intent);
                                 //replaceFragment(QuizFragment.newInstance(mAdapter.getItem(position).getPuzzleId()), "QuizFragmentCategory - QuizFragment");
                                 //Toast.makeText(getActivity(), "Clicked", Toast.LENGTH_SHORT).show();
@@ -247,7 +248,7 @@ public class FragmentQuizCategory extends BaseFragment {
                         }*/
                         mFragmentQuizCategoryBinding.levelTv.setTypeface(mFragmentQuizCategoryBinding.levelTv.getTypeface(), Typeface.BOLD);
                         mFragmentQuizCategoryBinding.pointsTv.setTypeface(mFragmentQuizCategoryBinding.pointsTv.getTypeface(), Typeface.BOLD);
-                        mFragmentQuizCategoryBinding.levelTv.setText(" " + Objects.requireNonNull(response.getData()).getLevelName());
+                        mFragmentQuizCategoryBinding.levelTv.setText(" " + Objects.requireNonNull(response.getData()).getLevelNameDisplay());
                         mFragmentQuizCategoryBinding.pointsTv.setText(Objects.requireNonNull(response.getData()).getPoints()+"");
                     }
                 }

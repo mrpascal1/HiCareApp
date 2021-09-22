@@ -19,12 +19,18 @@ public class QuizOption {
     @SerializedName("OptionTitle")
     @Expose
     private String optionTitle;
+    @SerializedName("OptionTitleDisplay")
+    @Expose
+    private String optionTitleDisplay;
     @SerializedName("OptionDescription")
     @Expose
     private String optionDescription;
     @SerializedName("OptionValue")
     @Expose
     private String optionValue;
+    @SerializedName("OptionValueDisplay")
+    @Expose
+    private String optionValueDisplay;
     @SerializedName("OptionUrl")
     @Expose
     private String optionUrl;
@@ -64,6 +70,14 @@ public class QuizOption {
         this.optionTitle = optionTitle;
     }
 
+    public String getOptionTitleDisplay() {
+        return optionTitleDisplay;
+    }
+
+    public void setOptionTitleDisplay(String optionTitleDisplay) {
+        this.optionTitleDisplay = optionTitleDisplay;
+    }
+
     public String getOptionDescription() {
         return optionDescription;
     }
@@ -78,6 +92,14 @@ public class QuizOption {
 
     public void setOptionValue(String optionValue) {
         this.optionValue = optionValue;
+    }
+
+    public String getOptionValueDisplay() {
+        return optionValueDisplay;
+    }
+
+    public void setOptionValueDisplay(String optionValueDisplay) {
+        this.optionValueDisplay = optionValueDisplay;
     }
 
     public String getOptionUrl() {

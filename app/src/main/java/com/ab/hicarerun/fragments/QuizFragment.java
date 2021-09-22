@@ -220,8 +220,8 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
 
     private void showQuitDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Shiksha Alert");
-        builder.setMessage("Are you sure you want to quit the game?");
+        builder.setTitle(R.string.shiksha_alert);
+        builder.setMessage(R.string.shiksha_quit_alert);
         builder.setPositiveButton("Quit", (dialog, which) -> {
             dialog.cancel();
             if (saveAnswers.isEmpty()) {
@@ -243,8 +243,8 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
 
     private void showNoQuizDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Shiksha Alert");
-        builder.setMessage("Game not available! Please check again later.");
+        builder.setTitle(R.string.shiksha_alert);
+        builder.setMessage(R.string.shiksha_noquiz_alert);
         builder.setPositiveButton("Quit", (dialog, which) -> {
             dialog.cancel();
             requireActivity().finish();
@@ -713,7 +713,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                 timer.cancel();
                 Picasso.get().load(question.getPuzzleQuestionURL()).placeholder(R.drawable.sample).into(mFragmentQuizBinding.imgQuestion);
                 mFragmentQuizBinding.confirmBtn.setVisibility(View.VISIBLE);
-                mFragmentQuizBinding.imageQuestionTitle.setText(question.getPuzzleQuestionTitle());
+                mFragmentQuizBinding.imageQuestionTitle.setText(question.getPuzzleQuestionTitleDisplay());
                 mFragmentQuizBinding.timer.setVisibility(View.INVISIBLE);
                 mFragmentQuizBinding.question.setVisibility(View.GONE);
                 mFragmentQuizBinding.cardImage.setVisibility(View.VISIBLE);
@@ -728,7 +728,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                 mFragmentQuizBinding.confirmBtn.setVisibility(View.VISIBLE);
                 mFragmentQuizBinding.videoQuestion.setVisibility(View.GONE);
                 mFragmentQuizBinding.imageQuestionTitle.setVisibility(View.GONE);
-                mFragmentQuizBinding.question.setText(question.getPuzzleQuestionTitle());
+                mFragmentQuizBinding.question.setText(question.getPuzzleQuestionTitleDisplay());
             }
             /*mAdapter.setOnItemClickHandler(position -> {
                 if (timer != null)

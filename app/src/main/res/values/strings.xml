@@ -633,4 +633,21 @@
     <string name="use_your_location">Use your location</string>
     <string name="property_size">Property Size</string>
     <string name="check_bait_stations">Check Bait Stations</string>
+    <string name="shiksha_instructions">Shiksha Instructions</string>
+    <string name="shiksha_instructions_data">1. Choose the correct answer to earn points.\n
+                    2. Complete all the given categories.\n
+                    3. Proceed to the next level and buy yourself new items from bazaar.\n
+                    4. You can play only 3 times in a day.</string>
+    <string name="shiksha_alert">Shiksha Alert</string>
+    <string name="shiksha_quit_alert">Are you sure you want to quit the game?</string>
+    <string name="shiksha_noquiz_alert">Game not available! Please check again later.</string>
+    <string name="shiksha_leaders">Shiksha Leaders</string>
+    <string name="shiksha_play_now">Play Now</string>
+    <string name="shiksha_play_completed">Completed</string>
+    <string name="shiksha_already_played">Already played</string>
+    <string name="shiksha_not_available">Games not available!</string>
+    <string name="shiksha_total_score">TOTAL SCORE</string>
+    <string name="shiksha_level">LEVEL</string>
+
+
 </resources>
