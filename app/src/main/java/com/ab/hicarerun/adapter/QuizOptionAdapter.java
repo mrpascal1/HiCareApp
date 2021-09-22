@@ -223,7 +223,7 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
                 holder.mLayoutOptionAdapterBinding.lnrRadio.setVisibility(View.VISIBLE);
                 holder.mLayoutOptionAdapterBinding.lnrCheck.setVisibility(View.GONE);
                 holder.mLayoutOptionAdapterBinding.lnrImgOption.setVisibility(View.GONE);
-                holder.mLayoutOptionAdapterBinding.txtRadioOption.setText(items.get(position).getOptionValue());
+                holder.mLayoutOptionAdapterBinding.txtRadioOption.setText(items.get(position).getOptionTitleDisplay());
                 //holder.mLayoutOptionAdapterBinding.radioOption.setText(items.get(position).getOptionValue());
                 isRadioAndText = true;
                 isRadioAndImage = false;
@@ -260,7 +260,7 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
                 holder.mLayoutOptionAdapterBinding.lnrRadio.setVisibility(View.GONE);
                 holder.mLayoutOptionAdapterBinding.lnrCheck.setVisibility(View.VISIBLE);
                 holder.mLayoutOptionAdapterBinding.lnrImgOption.setVisibility(View.GONE);
-                holder.mLayoutOptionAdapterBinding.txtCheckOption.setText(items.get(position).getOptionValue());
+                holder.mLayoutOptionAdapterBinding.txtCheckOption.setText(items.get(position).getOptionTitleDisplay());
                 isCheckboxAndText = true;
                 isRadioAndText = false;
                 isRadioAndImage = false;

@@ -84,10 +84,12 @@ class QuizLeaderBoardActivity : AppCompatActivity() {
                         for (i in 0 until response.data!!.size) {
                             val data = response.data[i]
                             val levelName = data.levelName
+                            val levelNameDisplay = data.levelNameDisplay
                             val levelIcon = data.levelIcon
                             for (j in 0 until data.resourceList!!.size) {
                                 val resourceList = data.resourceList[j]
                                 val uLevelName = resourceList.levelName
+                                val uLevelNameDisplay = resourceList.levelNameDisplay
                                 val uLevelIcon = resourceList.levelIcon
                                 val uResourceId = resourceList.resourceId
                                 val resourceName = resourceList.resourceName
@@ -98,7 +100,7 @@ class QuizLeaderBoardActivity : AppCompatActivity() {
                                 val lastPlayedOnDisplay = resourceList.lastPlayedOnDisplay
                                 if (resourceRank == 1) {
                                     binding.txtFirstName.text = resourceName
-                                    binding.txtFirstCentre.text = uLevelName
+                                    binding.txtFirstCentre.text = uLevelNameDisplay
                                     binding.txtFirstPoints.text = "$points"
                                     binding.txtFirstRank.text = "$resourceRank"
                                     Picasso.get().load(levelIcon)
@@ -108,7 +110,7 @@ class QuizLeaderBoardActivity : AppCompatActivity() {
                                 }
                                 if (resourceRank == 2) {
                                     binding.txtSecondName.text = resourceName
-                                    binding.txtSecondCentre.text = uLevelName
+                                    binding.txtSecondCentre.text = uLevelNameDisplay
                                     binding.txtSecondPoints.text = "$points"
                                     binding.txtSecondRank.text = "$resourceRank"
                                     Picasso.get().load(levelIcon)
@@ -118,7 +120,7 @@ class QuizLeaderBoardActivity : AppCompatActivity() {
                                 }
                                 if (resourceRank == 3) {
                                     binding.txtThirdName.text = resourceName
-                                    binding.txtThirdCentre.text = uLevelName
+                                    binding.txtThirdCentre.text = uLevelNameDisplay
                                     binding.txtThirdPoints.text = "$points"
                                     binding.txtThirdRank.text = "$resourceRank"
                                     Picasso.get().load(levelIcon)
@@ -136,6 +138,7 @@ class QuizLeaderBoardActivity : AppCompatActivity() {
                                 quizLBResourceList.add(
                                     QuizLBResourceList(
                                         uLevelName,
+                                        uLevelNameDisplay,
                                         uLevelIcon,
                                         uResourceId,
                                         resourceName,
@@ -148,7 +151,7 @@ class QuizLeaderBoardActivity : AppCompatActivity() {
                                     )
                                 )
                             }
-                            quizLBData.add(QuizLBData(levelName, levelIcon, quizLBResourceList))
+                            quizLBData.add(QuizLBData(levelName, levelNameDisplay, levelIcon, quizLBResourceList))
                         }
                         highest = pointsArr.maxOrNull().toString().toInt()
                         QuizLeaderBoardBase(

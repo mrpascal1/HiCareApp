@@ -1067,5 +1067,21 @@
     <string name="there_is_no_history_to_display">प्रदर्शित करने के लिए कोई इतिहास नहीं है!</string>
     <string name="leader_board">लीडर बोर्ड</string>
     <string name="bazaar_history">Bazaar History</string>
+    <string name="shiksha_instructions">शिक्षा निर्देश</string>
+    <string name="shiksha_instructions_data">1. अंक अर्जित करने के लिए सही उत्तर चुनें।\n
+                            2. सभी दी गई श्रेणियों को पूरा करें।\n
+                            3. अगले स्तर पर आगे बढ़ें और अपने आप को बाजार से नए आइटम खरीदें।\n
+                            4. आप एक दिन में केवल 3 बार खेल सकते हैं।</string>
+    <string name="shiksha_alert">शिक्षा अलर्ट</string>
+    <string name="shiksha_quit_alert">क्या आप वाकई खेल छोड़ना चाहते हैं?</string>
+    <string name="shiksha_noquiz_alert">गेम उपलब्ध नहीं है</string>
+    <string name="shiksha_leaders">शिक्षा नेता</string>
+    <string name="shiksha_play_now">अब खेलते हैं</string>
+    <string name="shiksha_play_completed">पूरा हुआ</string>
+    <string name="shiksha_already_played">पहले ही खेला जा चुका है</string>
+    <string name="shiksha_not_available">गेम उपलब्ध नहीं है</string>
+    <string name="shiksha_total_score">कुल स्कोर</string>
+    <string name="shiksha_level">स्तर</string>
+
 
 </resources>

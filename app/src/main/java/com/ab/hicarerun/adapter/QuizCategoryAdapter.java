@@ -55,16 +55,17 @@ public class QuizCategoryAdapter extends RecyclerView.Adapter<QuizCategoryAdapte
     @Override
     public void onBindViewHolder(@NotNull ViewHolder holder, final int position) {
         try {
-            holder.mQuizCategoryAdapterBinding.pTitleTv.setText(items.get(position).getPuzzleTitle());
+            //holder.mQuizCategoryAdapterBinding.pTitleTv.setText(items.get(position).getPuzzleTitle());
+            holder.mQuizCategoryAdapterBinding.pTitleTv.setText(items.get(position).getPuzzleTitleDisplay());
 
             if (items.get(position).isCompleted()){
                 holder.mQuizCategoryAdapterBinding.isCompletedCheck.setVisibility(View.VISIBLE);
                 holder.mQuizCategoryAdapterBinding.playCard.setCardBackgroundColor(mContext.getResources().getColor(R.color.md_green_100));
-                holder.mQuizCategoryAdapterBinding.playTv.setText("Completed");
+                holder.mQuizCategoryAdapterBinding.playTv.setText(R.string.shiksha_play_completed);
             }else {
                 holder.mQuizCategoryAdapterBinding.isCompletedCheck.setVisibility(View.GONE);
                 holder.mQuizCategoryAdapterBinding.playCard.setCardBackgroundColor(mContext.getResources().getColor(R.color.md_red_50));
-                holder.mQuizCategoryAdapterBinding.playTv.setText("Play Now");
+                holder.mQuizCategoryAdapterBinding.playTv.setText(R.string.shiksha_play_now);
             }
             holder.mQuizCategoryAdapterBinding.pProgress.setMax(100);
             int percentage = items.get(position).getCompletionPecentage();
@@ -85,7 +86,7 @@ public class QuizCategoryAdapter extends RecyclerView.Adapter<QuizCategoryAdapte
                     holder.mQuizCategoryAdapterBinding.playBtn.setEnabled(false);*/
                     onItemClickHandler.onItemClick(position);
                 }else {
-                    Toast.makeText(mContext, "Already played", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, R.string.shiksha_already_played, Toast.LENGTH_SHORT).show();
                 }
             });
             holder.mQuizCategoryAdapterBinding.playBtn.setOnClickListener(view -> {
@@ -94,7 +95,7 @@ public class QuizCategoryAdapter extends RecyclerView.Adapter<QuizCategoryAdapte
                     holder.mQuizCategoryAdapterBinding.playBtn.setEnabled(false);*/
                     onItemClickHandler.onItemClick(position);
                 }else {
-                    Toast.makeText(mContext, "Already played", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, R.string.shiksha_already_played, Toast.LENGTH_SHORT).show();
                 }
             });
             //holder.mQuizCategoryAdapterBinding.playIv.setOnClickListener(view -> onItemClickHandler.onItemClick(position));

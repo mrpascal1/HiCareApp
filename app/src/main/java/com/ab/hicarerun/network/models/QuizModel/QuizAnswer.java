@@ -19,12 +19,18 @@ public class QuizAnswer {
     @SerializedName("OptionTitle")
     @Expose
     private String optionTitle;
+    @SerializedName("OptionTitleDisplay")
+    @Expose
+    private String optionTitleDisplay;
     @SerializedName("OptionDescription")
     @Expose
     private String optionDescription;
     @SerializedName("OptionValue")
     @Expose
     private String optionValue;
+    @SerializedName("OptionValueDisplay")
+    @Expose
+    private String optionValueDisplay;
     @SerializedName("OptionUrl")
     @Expose
     private String optionUrl;
@@ -64,6 +70,14 @@ public class QuizAnswer {
         this.optionTitle = optionTitle;
     }
 
+    public String getOptionTitleDisplay() {
+        return optionTitleDisplay;
+    }
+
+    public void setOptionTitleDisplay(String optionTitleDisplay) {
+        this.optionTitleDisplay = optionTitleDisplay;
+    }
+
     public String getOptionDescription() {
         return optionDescription;
     }
@@ -78,6 +92,14 @@ public class QuizAnswer {
 
     public void setOptionValue(String optionValue) {
         this.optionValue = optionValue;
+    }
+
+    public String getOptionValueDisplay() {
+        return optionValueDisplay;
+    }
+
+    public void setOptionValueDisplay(String optionValueDisplay) {
+        this.optionValueDisplay = optionValueDisplay;
     }
 
     public String getOptionUrl() {
@@ -103,8 +125,10 @@ public class QuizAnswer {
                 ", optionType='" + optionType + '\'' +
                 ", optionTypeId=" + optionTypeId +
                 ", optionTitle='" + optionTitle + '\'' +
+                ", optionTitleDisplay='" + optionTitleDisplay + '\'' +
                 ", optionDescription='" + optionDescription + '\'' +
                 ", optionValue='" + optionValue + '\'' +
+                ", optionValueDisplay='" + optionValueDisplay + '\'' +
                 ", optionUrl='" + optionUrl + '\'' +
                 ", isSelected=" + isSelected +
                 '}';

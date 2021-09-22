@@ -24,6 +24,9 @@ public class QuizData {
     @SerializedName("PuzzleQuestionTitle")
     @Expose
     private String puzzleQuestionTitle;
+    @SerializedName("PuzzleQuestionTitleDisplay")
+    @Expose
+    private String puzzleQuestionTitleDisplay;
     @SerializedName("PuzzleQuestionDescription")
     @Expose
     private String puzzleQuestionDescription;
@@ -90,6 +93,14 @@ public class QuizData {
 
     public void setPuzzleQuestionTitle(String puzzleQuestionTitle) {
         this.puzzleQuestionTitle = puzzleQuestionTitle;
+    }
+
+    public String getPuzzleQuestionTitleDisplay() {
+        return puzzleQuestionTitleDisplay;
+    }
+
+    public void setPuzzleQuestionTitleDisplay(String puzzleQuestionTitleDisplay) {
+        this.puzzleQuestionTitleDisplay = puzzleQuestionTitleDisplay;
     }
 
     public String getPuzzleQuestionDescription() {
