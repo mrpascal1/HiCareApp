@@ -152,7 +152,6 @@ public class NetworkCallController {
         this.mContext = null;
     }
 
-
     public void setListner(NetworkResponseListner listner) {
         this.mListner = listner;
     }
