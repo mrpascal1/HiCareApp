@@ -9,8 +9,15 @@
         <entry key="..\:/Users/Arjun/StudioProjects/HiCareApp/app/src/main/res/layout/fragment_home.xml" value="0.1" />
         <entry key="..\:/Users/Arjun/StudioProjects/HiCareApp/app/src/main/res/layout/fragment_voucher.xml" value="0.15307971014492755" />
         <entry key="..\:/Users/Arjun/StudioProjects/HiCareApp/app/src/main/res/layout/layout_recommendations_adapter.xml" value="0.1" />
+        <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/activity_attendance.xml" value="0.1" />
+        <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/activity_gromming_gallery.xml" value="0.1" />
+        <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/activity_kyc.xml" value="0.1" />
+        <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/activity_zoom_transparent_popup.xml" value="0.1638888888888889" />
+        <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/fragment_karma.xml" value="0.1" />
+        <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/fragment_quiz_category.xml" value="0.16666666666666666" />
+        <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/layout_payment_modes.xml" value="0.22" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="false" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
 </project>

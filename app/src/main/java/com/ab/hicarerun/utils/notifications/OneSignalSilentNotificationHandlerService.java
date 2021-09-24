@@ -18,6 +18,7 @@ import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.activities.KarmaActivity;
 import com.ab.hicarerun.activities.OfferActivity;
+import com.ab.hicarerun.activities.ZoomTransparentPopupActivity;
 import com.onesignal.BuildConfig;
 import com.onesignal.NotificationExtenderService;
 import com.onesignal.OSNotification;
@@ -143,6 +144,90 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
 //                e.printStackTrace();
 //            }
         }
+
+        /**
+         *  Zoom Meeting notification
+        * */
+        if (mStrHeader != null && mStrHeader.equalsIgnoreCase("ZoomMeeting")) {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                try {
+//                    Intent fullScreenIntent = new Intent(this, ActivityTransparentPopup.class);
+//                    fullScreenIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK /*| Intent.FLAG_ACTIVITY_CLEAR_TASK*/ | Intent.FLAG_ACTIVITY_NO_HISTORY);
+//                    fullScreenIntent.putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_TYPE, mIntPopupType);
+//                    fullScreenIntent.putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_HEADER, mStrHeader);
+//                    fullScreenIntent.putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_DESCRIPTION, mStrDescription);
+////                    Intent rIntent = this.getPackageManager()
+////                            .getLaunchIntentForPackage(this.getPackageName() );
+//                    PendingIntent intent = PendingIntent.getActivity(
+//                            this, 0,
+//                            fullScreenIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+//                    AlarmManager manager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+//                    manager.set(AlarmManager.RTC, System.currentTimeMillis(), intent);
+//                    System.exit(2);
+
+                    NotificationManager notificationManager =
+                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                    String CHANNEL_ID = BuildConfig.APPLICATION_ID.concat("_notification_id");
+                    String CHANNEL_NAME = BuildConfig.APPLICATION_ID.concat("_notification_name");
+                    assert notificationManager != null;
+
+                    NotificationChannel mChannel = notificationManager.getNotificationChannel(CHANNEL_ID);
+                    if (mChannel == null) {
+                        mChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
+                        notificationManager.createNotificationChannel(mChannel);
+                    }
+
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
+
+                    builder.setSmallIcon(R.mipmap.logo)
+                            .setContentTitle(getString(R.string.app_name))
+                            .setContentText("Meeting")
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                            .setCategory(NotificationCompat.CATEGORY_CALL)
+                            .setFullScreenIntent(openNotificationPopup(mIntPopupType, mStrHeader, mStrDescription), true)
+                            .setAutoCancel(true)
+                            .setOngoing(true);
+
+                    Notification notify = builder.build();
+                    notificationManager.notify(2, notify);
+                } catch (Exception e) {
+                    Log.e("notify", e.getMessage());
+                    e.printStackTrace();
+                }
+
+            } else {
+                try {
+                    startActivity(new Intent(this, ZoomTransparentPopupActivity.class)
+//                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY)
+                            .putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_TYPE, mIntPopupType)
+                            .putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_HEADER, mStrHeader)
+                            .putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_DESCRIPTION, mStrDescription));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+//            openParkingViolationScreen(mIntPopupType, mStrHeader, mStrDescription);
+
+
+//            try {
+//                Intent notifyIntent = new Intent(this, ActivityTransparentPopup.class);
+//                notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+//                        | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                notifyIntent.putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_TYPE, mIntPopupType);
+//                notifyIntent.putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_HEADER, mStrHeader);
+//                notifyIntent.putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_DESCRIPTION, mStrDescription);
+//                PendingIntent notifyPendingIntent = PendingIntent.getActivity(
+//                        this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
+//                );
+//                notifyPendingIntent.send();
+//            } catch (PendingIntent.CanceledException e) {
+//                e.printStackTrace();
+//            }
+        }
 //        else if (mStrDescription != null && mStrDescription.equalsIgnoreCase("Congratulations! You have earned a reward.")) {
 //            try {
 //                Intent intent = new Intent(getApplicationContext(), OfferActivity.class);
@@ -173,6 +258,9 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
 
     PendingIntent openNotificationPopup(int mIntPopupType, String mStrHeader, String mStrDescription) {
         Intent fullScreenIntent = new Intent(this, ActivityTransparentPopup.class);
+        if (mStrHeader.equalsIgnoreCase("Zoom Meeting") || mStrHeader.equalsIgnoreCase("ZoomMeeting")){
+            fullScreenIntent = new Intent(this, ZoomTransparentPopupActivity.class);
+        }
 //        fullScreenIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK /*| Intent.FLAG_ACTIVITY_CLEAR_TASK*/ | Intent.FLAG_ACTIVITY_NO_HISTORY);
         fullScreenIntent.putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_TYPE, mIntPopupType);
         fullScreenIntent.putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_HEADER, mStrHeader);

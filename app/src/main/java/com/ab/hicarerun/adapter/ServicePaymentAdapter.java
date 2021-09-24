@@ -16,7 +16,7 @@ import com.ab.hicarerun.network.models.OnSiteModel.OnSiteArea;
 import com.ab.hicarerun.network.models.ServicePlanModel.PaymentMode;
 import com.ab.hicarerun.viewmodel.ServicePlanViewModel;
 
-import net.igenius.customcheckbox.CustomCheckBox;
+//import net.igenius.customcheckbox.CustomCheckBox;
 
 import org.jetbrains.annotations.NotNull;
 

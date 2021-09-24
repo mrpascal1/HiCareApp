@@ -24,16 +24,12 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical">
 
-                <net.igenius.customcheckbox.CustomCheckBox
+                <CheckBox
                     android:id="@+id/checkMode"
                     android:layout_width="22dp"
                     android:layout_height="22dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp"
-                    app:color_checked="@color/colorPrimary"
-                    app:color_tick="@color/white"
-                    app:color_unchecked_stroke="@color/colorAccent"
-                    app:small_tick="false" />
+                    android:layout_marginLeft="20dp" />
 
 
                 <TextView
