@@ -56,6 +56,11 @@
                 android:layout_marginTop="10dp"
                 android:orientation="vertical">
 
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:indeterminate="true"/>
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -118,7 +123,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10sp"
                             android:gravity="right"
-                            android:text="falana"
+                            android:text="loading..."
                             android:textColor="@color/colorAccentDrawerPrimaryDark" />
                     </LinearLayout>
 
@@ -141,7 +146,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10sp"
                             android:gravity="right"
-                            android:text="CMS-GENX"
+                            android:text="loading..."
                             android:textColor="@color/colorAccentDrawerPrimaryDark" />
                     </LinearLayout>
 
@@ -171,7 +176,7 @@
                         android:layout_marginLeft="10sp"
                         android:layout_marginRight="16dp"
                         android:gravity="right"
-                        android:text="Ongoing"
+                        android:text="loading..."
                         android:textColor="@color/popup" />
                 </LinearLayout>
 
@@ -193,7 +198,8 @@
                 android:background="@drawable/btn_quit"
                 android:text="Cancel"
                 android:textColor="@android:color/white"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:visibility="gone"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/joinBtn"
@@ -203,9 +209,10 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/shape_rounded_corner_btn_green"
-                android:text="Join"
+                android:text="Joining..."
                 android:textColor="@android:color/white"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:enabled="false"/>
             </LinearLayout>
 
         </LinearLayout>

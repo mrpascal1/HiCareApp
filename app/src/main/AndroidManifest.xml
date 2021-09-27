@@ -52,6 +52,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".activities.ZoomTransparentPopupActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".activities.CaptureActivityPortrait"
             android:screenOrientation="portrait"
             android:stateNotNeeded="true"

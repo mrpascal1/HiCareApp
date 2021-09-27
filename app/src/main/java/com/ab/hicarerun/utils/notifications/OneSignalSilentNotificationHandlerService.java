@@ -148,6 +148,7 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
         /**
          *  Zoom Meeting notification
         * */
+        Log.d("TAG", "HEADER: "+mStrHeader);
         if (mStrHeader != null && mStrHeader.equalsIgnoreCase("ZoomMeeting")) {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -201,9 +202,9 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
                 try {
                     startActivity(new Intent(this, ZoomTransparentPopupActivity.class)
 //                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY)
-                            .putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_TYPE, mIntPopupType)
-                            .putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_HEADER, mStrHeader)
-                            .putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_DESCRIPTION, mStrDescription));
+                            .putExtra("popup_type", mIntPopupType)
+                            .putExtra("popup_header", mStrHeader)
+                            .putExtra("popup_description", mStrDescription));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -257,26 +258,40 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
 
 
     PendingIntent openNotificationPopup(int mIntPopupType, String mStrHeader, String mStrDescription) {
-        Intent fullScreenIntent = new Intent(this, ActivityTransparentPopup.class);
-        if (mStrHeader.equalsIgnoreCase("Zoom Meeting") || mStrHeader.equalsIgnoreCase("ZoomMeeting")){
+        Intent fullScreenIntent;
+        if (mStrHeader.equalsIgnoreCase("ZoomMeeting")){
             fullScreenIntent = new Intent(this, ZoomTransparentPopupActivity.class);
+            fullScreenIntent.putExtra("popup_type", mIntPopupType);
+            fullScreenIntent.putExtra("popup_header", mStrHeader);
+            fullScreenIntent.putExtra("popup_description", mStrDescription);
+        }else {
+            fullScreenIntent = new Intent(this, ActivityTransparentPopup.class);
+            fullScreenIntent.putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_TYPE, mIntPopupType);
+            fullScreenIntent.putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_HEADER, mStrHeader);
+            fullScreenIntent.putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_DESCRIPTION, mStrDescription);
         }
 //        fullScreenIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK /*| Intent.FLAG_ACTIVITY_CLEAR_TASK*/ | Intent.FLAG_ACTIVITY_NO_HISTORY);
-        fullScreenIntent.putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_TYPE, mIntPopupType);
-        fullScreenIntent.putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_HEADER, mStrHeader);
-        fullScreenIntent.putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_DESCRIPTION, mStrDescription);
         return PendingIntent.getActivity(this, 0, fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     @Override
     public void notificationOpened(OSNotificationOpenResult result) {
+        Log.d("TAG", "Opened");
         try {
             OSNotificationAction.ActionType actionType = result.action.type;
             JSONObject data = result.notification.payload.additionalData;
+            String mStrHeader = result.notification.payload.title;
             String mStrDescription = result.notification.payload.body;
             Logger.d("Description ss :: mStrDescription " + mStrDescription);
 
             if (context != null) {
+                if (mStrHeader.equalsIgnoreCase("ZoomMeeting")){
+                    Intent fullScreenIntent = new Intent(context, ZoomTransparentPopupActivity.class);
+                    fullScreenIntent.putExtra("popup_type", 0);
+                    fullScreenIntent.putExtra("popup_header", mStrHeader);
+                    fullScreenIntent.putExtra("popup_description", mStrDescription);
+                    context.startActivity(fullScreenIntent);
+                }
                 if (mStrDescription != null && mStrDescription.equalsIgnoreCase("Congratulations! You have earned a reward.")) {
                     Intent intent = new Intent(context, OfferActivity.class);
                     intent.setAction(Intent.ACTION_MAIN);
