@@ -9,10 +9,13 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.HomeActivity;
@@ -151,6 +154,9 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
         Log.d("TAG", "HEADER: "+mStrHeader);
         if (mStrHeader != null && mStrHeader.equalsIgnoreCase("ZoomMeeting")) {
 
+            MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.mu_inspection_request);
+            mediaPlayer.start();
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 try {
 //                    Intent fullScreenIntent = new Intent(this, ActivityTransparentPopup.class);
@@ -184,7 +190,7 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
 
                     builder.setSmallIcon(R.mipmap.logo)
                             .setContentTitle(getString(R.string.app_name))
-                            .setContentText("Meeting")
+                            .setContentText("Click here to join meeting")
                             .setPriority(NotificationCompat.PRIORITY_HIGH)
                             .setCategory(NotificationCompat.CATEGORY_CALL)
                             .setFullScreenIntent(openNotificationPopup(mIntPopupType, mStrHeader, mStrDescription), true)
@@ -286,11 +292,15 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
 
             if (context != null) {
                 if (mStrHeader.equalsIgnoreCase("ZoomMeeting")){
-                    Intent fullScreenIntent = new Intent(context, ZoomTransparentPopupActivity.class);
-                    fullScreenIntent.putExtra("popup_type", 0);
-                    fullScreenIntent.putExtra("popup_header", mStrHeader);
-                    fullScreenIntent.putExtra("popup_description", mStrDescription);
-                    context.startActivity(fullScreenIntent);
+                    Log.d("TAG", "Opened M");
+                    Intent intent = new Intent(context, ZoomTransparentPopupActivity.class);
+                    intent.putExtra("popup_type", 0);
+                    intent.putExtra("popup_header", mStrHeader);
+                    intent.putExtra("popup_description", mStrDescription);
+                    intent.setAction(Intent.ACTION_MAIN);
+                    intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
                 }
                 if (mStrDescription != null && mStrDescription.equalsIgnoreCase("Congratulations! You have earned a reward.")) {
                     Intent intent = new Intent(context, OfferActivity.class);
