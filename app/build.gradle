@@ -152,6 +152,7 @@ dependencies {
     implementation 'com.github.stfalcon:stfalcon-imageviewer:1.0.1'
 
     implementation 'nl.dionsegijn:konfetti:1.3.2'
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
 
     //dynamic module injection
 //    api 'com.google.android.play:core:1.7.1'

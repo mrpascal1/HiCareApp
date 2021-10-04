@@ -3,6 +3,10 @@ package com.ab.hicarerun;
 import android.app.Application;
 import android.content.Context;
 
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.multidex.MultiDex;
 
 import com.ab.hicarerun.database.realm.RealmString;
@@ -36,7 +40,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class BaseApplication extends Application {
+public class BaseApplication extends Application implements LifecycleObserver {
 
     private static volatile IRetrofit IRETROFIT = null;
     private static volatile Realm REALM = null;
@@ -374,6 +378,7 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
 
         mOneSignalHelper = new OneSIgnalHelper(this);
         // initialise the realm database
@@ -406,5 +411,22 @@ public class BaseApplication extends Application {
             e.printStackTrace();
         }
 
+    }
+
+    private static boolean activityVisible = false;
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    public void onAppBackgrounded() {
+        //App in background
+        activityVisible = false;
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    public void onAppForegrounded() {
+        // App in foreground
+        activityVisible = true;
+    }
+
+    public static boolean isActivityVisible() {
+        return activityVisible;
     }
 }

@@ -1,6 +1,7 @@
 package com.ab.hicarerun.activities
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -28,11 +29,6 @@ class ZoomTransparentPopupActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityZoomTransparentPopupBinding.inflate(layoutInflater)
-        OneSignal.clearOneSignalNotifications()
-        OneSignal.cancelNotification(2)
-        val CHANNEL_ID = BuildConfig.APPLICATION_ID + "_notification_id"
-        NotificationManagerCompat.from(this).deleteNotificationChannel(CHANNEL_ID)
-        NotificationManagerCompat.from(this).cancelAll()
         val view = binding.root
         setContentView(view)
 
@@ -51,7 +47,7 @@ class ZoomTransparentPopupActivity : AppCompatActivity() {
         initZoomSdk(this)
 
         binding.joinBtn.setOnClickListener {
-            setZoomNotification(this, true)
+            setZoomNotification(this, null, true)
         }
 
         binding.cancelBtn.setOnClickListener {
@@ -69,25 +65,38 @@ class ZoomTransparentPopupActivity : AppCompatActivity() {
 
         val listener = object : ZoomSDKInitializeListener {
             override fun onZoomSDKInitializeResult(p0: Int, p1: Int) {
-                setZoomNotification(context, false)
+                setZoomNotification(context, sdk, false)
+                Log.d("TAG", "Init")
             }
 
             override fun onZoomAuthIdentityExpired() {
+                Log.d("TAG", "Exp")
             }
+        }
+        if (sdk.isInitialized){
+            setZoomNotification(context, sdk, false)
+        }else{
+            val listener2 = object : ZoomSDKInitializeListener {
+                override fun onZoomSDKInitializeResult(p0: Int, p1: Int) {
+                    setZoomNotification(context, sdk, false)
+                    Log.d("TAG", "Init")
+                }
+
+                override fun onZoomAuthIdentityExpired() {
+                    Log.d("TAG", "Exp")
+                }
+            }
+            sdk.initialize(context, listener2, params)
         }
         sdk.initialize(context, listener, params)
     }
-    private fun setZoomNotification(context: Context, buttonClick: Boolean){
-        val meetingService = ZoomSDK.getInstance().meetingService
+    private fun setZoomNotification(context: Context, sdk: ZoomSDK?, buttonClick: Boolean){
+        val meetingService = sdk?.meetingService
         val options = JoinMeetingOptions()
         val params = JoinMeetingParams()
-        ZoomSDK.getInstance()
-        meetingService.addListener { meetingStatus, i, i2 ->
+        meetingService?.addListener { meetingStatus, i, i2 ->
             if (i == 9 || meetingStatus == MeetingStatus.MEETING_STATUS_IDLE){
                 finish()
-                //val CHANNEL_ID = BuildConfig.APPLICATION_ID + "_notification_id"
-
-                //NotificationManagerCompat.from(this).deleteNotificationChannel(CHANNEL_ID)
             }
             Log.d("TAG", meetingStatus.name)
             Log.d("TAG-i", i.toString())
@@ -112,13 +121,13 @@ class ZoomTransparentPopupActivity : AppCompatActivity() {
         if (!buttonClick) {
             if (autoStart == "1" || autoStart.toInt() == 1) {
                 Log.d("TAG", "Notification Called")
-                meetingService.joinMeetingWithParams(context, params, options)
+                meetingService?.joinMeetingWithParams(context, params, options)
             }else{
                 binding.joinBtn.isEnabled = true
                 binding.joinBtn.text = "Join"
             }
         }else{
-            meetingService.joinMeetingWithParams(context, params, options)
+            meetingService?.joinMeetingWithParams(context, params, options)
         }
 
     }
@@ -127,7 +136,9 @@ class ZoomTransparentPopupActivity : AppCompatActivity() {
         super.onPause()
         OneSignal.clearOneSignalNotifications()
         OneSignal.cancelNotification(2)
+        val CHANNEL_ID = BuildConfig.APPLICATION_ID + "_notification_id"
         NotificationManagerCompat.from(this).cancelAll()
+        NotificationManagerCompat.from(this).deleteNotificationChannel(CHANNEL_ID)
 /*        val CHANNEL_ID = BuildConfig.APPLICATION_ID + "_notification_id"
         NotificationManagerCompat.from(this).deleteNotificationChannel(CHANNEL_ID)
         */

@@ -378,6 +378,7 @@
         <meta-data
             android:name="com.onesignal.NotificationOpened.DEFAULT"
             android:value="DISABLE" />
+        <receiver android:name=".utils.ZoomBroadcast" android:exported="true"/>
     </application>
     <queries>
         <intent>

@@ -13,15 +13,18 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.activities.KarmaActivity;
 import com.ab.hicarerun.activities.OfferActivity;
 import com.ab.hicarerun.activities.ZoomTransparentPopupActivity;
+import com.ab.hicarerun.utils.ZoomBroadcast;
 import com.onesignal.BuildConfig;
 import com.onesignal.NotificationExtenderService;
 import com.onesignal.OSNotification;
@@ -154,8 +157,10 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
         Log.d("TAG", "HEADER: "+mStrHeader);
         if (mStrHeader != null && mStrHeader.equalsIgnoreCase("ZoomMeeting")) {
 
+
             MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.mu_inspection_request);
             mediaPlayer.start();
+
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 try {
@@ -206,11 +211,17 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
 
             } else {
                 try {
-                    startActivity(new Intent(this, ZoomTransparentPopupActivity.class)
+                    Log.d("TAG", BaseApplication.isActivityVisible() + "");
+                    if (BaseApplication.isActivityVisible()){
+                        startActivity(new Intent(this, ZoomTransparentPopupActivity.class)
 //                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY)
                             .putExtra("popup_type", mIntPopupType)
                             .putExtra("popup_header", mStrHeader)
                             .putExtra("popup_description", mStrDescription));
+                    }else {
+                        startAlert(mIntPopupType, mStrHeader, mStrDescription);
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -262,6 +273,18 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
         return false;
     }
 
+
+    public void startAlert(int mPopupType, String mPopupHeader, String mPopupDescription){
+        Intent intent = new Intent(this, ZoomBroadcast.class);
+        intent.putExtra("popup_type", mPopupType);
+        intent.putExtra("popup_header", mPopupHeader);
+        intent.putExtra("popup_description", mPopupDescription);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this, 234324243, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
+                + (1), pendingIntent);
+    }
 
     PendingIntent openNotificationPopup(int mIntPopupType, String mStrHeader, String mStrDescription) {
         Intent fullScreenIntent;
