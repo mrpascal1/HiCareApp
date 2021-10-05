@@ -9,6 +9,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.ab.hicarerun.BaseApplication
 import com.ab.hicarerun.databinding.ActivityZoomTransparentPopupBinding
 import com.ab.hicarerun.network.models.LoginResponse
+import com.ab.hicarerun.utils.ZoomBroadcast
 import com.onesignal.BuildConfig
 import com.onesignal.OneSignal
 import io.realm.RealmResults
@@ -35,6 +36,7 @@ class ZoomTransparentPopupActivity : AppCompatActivity() {
         popupType = intent.getIntExtra(INTENT_CONSTANT_ARG_POPUP_TYPE, 0)
         popupHeader = intent.getStringExtra(INTENT_CONSTANT_ARG_POPUP_HEADER).toString()
         popupDescription = intent.getStringExtra(INTENT_CONSTANT_ARG_POPUP_DESCRIPTION).toString()
+        val broadcast = intent.getStringExtra("broadcast").toString()
 
         val loginResponse: RealmResults<LoginResponse> = BaseApplication.getRealm().where(
             LoginResponse::class.java).findAll()
@@ -44,10 +46,14 @@ class ZoomTransparentPopupActivity : AppCompatActivity() {
 
         Log.d("TAG", "Notification Called $popupHeader and $popupDescription")
 
-        initZoomSdk(this)
+        if (broadcast == "yes"){
+            setZoomNotification(this, false)
+        }else{
+            initZoomSdk(this)
+        }
 
         binding.joinBtn.setOnClickListener {
-            setZoomNotification(this, null, true)
+            setZoomNotification(this, true)
         }
 
         binding.cancelBtn.setOnClickListener {
@@ -65,20 +71,20 @@ class ZoomTransparentPopupActivity : AppCompatActivity() {
 
         val listener = object : ZoomSDKInitializeListener {
             override fun onZoomSDKInitializeResult(p0: Int, p1: Int) {
-                setZoomNotification(context, sdk, false)
                 Log.d("TAG", "Init")
+                setZoomNotification(context, false)
             }
 
             override fun onZoomAuthIdentityExpired() {
                 Log.d("TAG", "Exp")
             }
         }
-        if (sdk.isInitialized){
-            setZoomNotification(context, sdk, false)
+        /*if (sdk.isInitialized){
+            setZoomNotification(context, false)
         }else{
             val listener2 = object : ZoomSDKInitializeListener {
                 override fun onZoomSDKInitializeResult(p0: Int, p1: Int) {
-                    setZoomNotification(context, sdk, false)
+                    setZoomNotification(context, false)
                     Log.d("TAG", "Init")
                 }
 
@@ -87,11 +93,11 @@ class ZoomTransparentPopupActivity : AppCompatActivity() {
                 }
             }
             sdk.initialize(context, listener2, params)
-        }
+        }*/
         sdk.initialize(context, listener, params)
     }
-    private fun setZoomNotification(context: Context, sdk: ZoomSDK?, buttonClick: Boolean){
-        val meetingService = sdk?.meetingService
+    private fun setZoomNotification(context: Context, buttonClick: Boolean){
+        val meetingService = ZoomSDK.getInstance()?.meetingService
         val options = JoinMeetingOptions()
         val params = JoinMeetingParams()
         meetingService?.addListener { meetingStatus, i, i2 ->
