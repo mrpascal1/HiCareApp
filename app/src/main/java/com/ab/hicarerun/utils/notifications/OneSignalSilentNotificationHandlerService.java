@@ -211,7 +211,7 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
 
             } else {
                 try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         NotificationManager notificationManager =
                                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -254,9 +254,9 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
 
                         Notification notify = builder.build();
                         notificationManager.notify(2, notify);
-                    }
+                    }*/
                     Log.d("TAG", BaseApplication.isActivityVisible() + "");
-                    /*if (BaseApplication.isActivityVisible()){
+                    if (BaseApplication.isActivityVisible()){
                         startActivity(new Intent(this, ZoomTransparentPopupActivity.class)
 //                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY)
                             .putExtra("popup_type", mIntPopupType)
@@ -264,7 +264,7 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
                             .putExtra("popup_description", mStrDescription));
                     }else {
                         startAlert(mIntPopupType, mStrHeader, mStrDescription);
-                    }*/
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();

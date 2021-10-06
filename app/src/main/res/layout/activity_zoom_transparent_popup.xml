@@ -160,7 +160,8 @@
                     android:layout_gravity="center"
                     android:background="#e5fbe5"
                     android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="invisible">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"

@@ -149,4 +149,8 @@ class ZoomTransparentPopupActivity : AppCompatActivity() {
         NotificationManagerCompat.from(this).deleteNotificationChannel(CHANNEL_ID)
         */
     }
+
+    override fun onBackPressed() {
+
+    }
 }
