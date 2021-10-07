@@ -1,15 +1,14 @@
 package com.ab.hicarerun.activities
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
 import com.ab.hicarerun.BaseApplication
 import com.ab.hicarerun.databinding.ActivityZoomTransparentPopupBinding
 import com.ab.hicarerun.network.models.LoginResponse
-import com.ab.hicarerun.utils.ZoomBroadcast
 import com.onesignal.BuildConfig
 import com.onesignal.OneSignal
 import io.realm.RealmResults
@@ -26,6 +25,7 @@ class ZoomTransparentPopupActivity : AppCompatActivity() {
     val INTENT_CONSTANT_ARG_POPUP_HEADER = "popup_header"
     val INTENT_CONSTANT_ARG_POPUP_DESCRIPTION = "popup_description"
     var empName = ""
+    var broadcast = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +36,7 @@ class ZoomTransparentPopupActivity : AppCompatActivity() {
         popupType = intent.getIntExtra(INTENT_CONSTANT_ARG_POPUP_TYPE, 0)
         popupHeader = intent.getStringExtra(INTENT_CONSTANT_ARG_POPUP_HEADER).toString()
         popupDescription = intent.getStringExtra(INTENT_CONSTANT_ARG_POPUP_DESCRIPTION).toString()
-        val broadcast = intent.getStringExtra("broadcast").toString()
+        broadcast = intent.getStringExtra("broadcast").toString()
 
         val loginResponse: RealmResults<LoginResponse> = BaseApplication.getRealm().where(
             LoginResponse::class.java).findAll()
@@ -46,11 +46,6 @@ class ZoomTransparentPopupActivity : AppCompatActivity() {
 
         Log.d("TAG", "Notification Called $popupHeader and $popupDescription")
 
-        if (broadcast == "yes"){
-            setZoomNotification(this, false)
-        }else{
-            initZoomSdk(this)
-        }
 
         binding.joinBtn.setOnClickListener {
             setZoomNotification(this, true)
@@ -58,6 +53,15 @@ class ZoomTransparentPopupActivity : AppCompatActivity() {
 
         binding.cancelBtn.setOnClickListener {
             finish()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (broadcast == "yes"){
+            setZoomNotification(this, false)
+        }else{
+            initZoomSdk(this)
         }
     }
 

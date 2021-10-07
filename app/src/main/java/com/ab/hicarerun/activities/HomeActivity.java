@@ -171,6 +171,11 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /*Intent intent = new Intent("miui.intent.action.APP_PERM_EDITOR");
+        intent.setClassName("com.miui.securitycenter",
+                "com.miui.permcenter.permissions.PermissionsEditorActivity");
+        intent.putExtra("extra_pkgname", getPackageName());
+        startActivity(intent);*/
         mActivityHomeBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_home);
 //        setSupportActionBar(mActivityHomeBinding.toolbar);

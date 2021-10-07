@@ -8,11 +8,16 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
+import android.os.PowerManager;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
@@ -25,6 +30,7 @@ import com.ab.hicarerun.activities.KarmaActivity;
 import com.ab.hicarerun.activities.OfferActivity;
 import com.ab.hicarerun.activities.ZoomTransparentPopupActivity;
 import com.ab.hicarerun.utils.ZoomBroadcast;
+import com.ab.hicarerun.utils.ZoomNotificationClearer;
 import com.onesignal.BuildConfig;
 import com.onesignal.NotificationExtenderService;
 import com.onesignal.OSNotification;
@@ -39,6 +45,7 @@ import org.json.JSONObject;
 public class OneSignalSilentNotificationHandlerService extends NotificationExtenderService implements OneSignal.NotificationOpenedHandler {
 
     private Context context;
+    String notificationId;
 
     public OneSignalSilentNotificationHandlerService(Context context) {
         this.context = context.getApplicationContext();
@@ -54,6 +61,7 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
         Logger.d("...Here we go ...");
         Logger.d("...Magic begins ...");
 
+        notificationId = notification.payload.notificationID;
         String mStrHeader = notification.payload.title;
         String mStrDescription = notification.payload.body;
         int mIntPopupType = 0;
@@ -157,13 +165,14 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
         Log.d("TAG", "HEADER: "+mStrHeader);
         if (mStrHeader != null && mStrHeader.equalsIgnoreCase("Inspection Meeting")) {
 
-
-            MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.mu_inspection_request);
+            //Uri soundUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() + "/" + R.raw.mu_inspection_request2);
+            MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.mu_inspection_request2);
             mediaPlayer.start();
-
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 try {
+                    //Uri sound = Uri.parse("android.resource://" + context.getPackageName() + "/raw/mu_inspection_request2");
+
 //                    Intent fullScreenIntent = new Intent(this, ActivityTransparentPopup.class);
 //                    fullScreenIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK /*| Intent.FLAG_ACTIVITY_CLEAR_TASK*/ | Intent.FLAG_ACTIVITY_NO_HISTORY);
 //                    fullScreenIntent.putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_TYPE, mIntPopupType);
@@ -178,32 +187,43 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
 //                    manager.set(AlarmManager.RTC, System.currentTimeMillis(), intent);
 //                    System.exit(2);
 
-                    NotificationManager notificationManager =
-                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    if (BaseApplication.isActivityVisible()){
+                        mediaPlayer.start();
+                        startActivity(new Intent(this, ZoomTransparentPopupActivity.class)
+                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                .putExtra("popup_type", mIntPopupType)
+                                .putExtra("popup_header", mStrHeader)
+                                .putExtra("popup_description", mStrDescription));
+                        //startAlert(mIntPopupType, mStrHeader, mStrDescription);
+                        //openNotificationPopup(mIntPopupType, mStrHeader, mStrDescription);
+                    }else {
 
-                    String CHANNEL_ID = BuildConfig.APPLICATION_ID.concat("_notification_id");
-                    String CHANNEL_NAME = BuildConfig.APPLICATION_ID.concat("_notification_name");
-                    assert notificationManager != null;
+                        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-                    NotificationChannel mChannel = notificationManager.getNotificationChannel(CHANNEL_ID);
-                    if (mChannel == null) {
-                        mChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
-                        notificationManager.createNotificationChannel(mChannel);
+                        String CHANNEL_ID = BuildConfig.APPLICATION_ID.concat("_notification_id");
+                        String CHANNEL_NAME = BuildConfig.APPLICATION_ID.concat("_notification_name");
+                        assert notificationManager != null;
+
+                        NotificationChannel mChannel = notificationManager.getNotificationChannel(CHANNEL_ID);
+                        if (mChannel == null) {
+                            mChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
+                            notificationManager.createNotificationChannel(mChannel);
+                        }
+
+                        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
+
+                        builder.setSmallIcon(R.mipmap.logo)
+                                .setContentTitle(getString(R.string.app_name))
+                                .setContentText("Click here to join inspection meeting")
+                                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                                .setCategory(NotificationCompat.CATEGORY_CALL)
+                                .setFullScreenIntent(openNotificationPopup(mIntPopupType, mStrHeader, mStrDescription), true)
+                                .setAutoCancel(true)
+                                .setOngoing(true);
+
+                        Notification notify = builder.build();
+                        notificationManager.notify(2, notify);
                     }
-
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
-
-                    builder.setSmallIcon(R.mipmap.logo)
-                            .setContentTitle(getString(R.string.app_name))
-                            .setContentText("Click here to join inspection meeting")
-                            .setPriority(NotificationCompat.PRIORITY_HIGH)
-                            .setCategory(NotificationCompat.CATEGORY_CALL)
-                            .setFullScreenIntent(openNotificationPopup(mIntPopupType, mStrHeader, mStrDescription), true)
-                            .setAutoCancel(true)
-                            .setOngoing(true);
-
-                    Notification notify = builder.build();
-                    notificationManager.notify(2, notify);
                 } catch (Exception e) {
                     Log.e("notify", e.getMessage());
                     e.printStackTrace();
@@ -211,6 +231,7 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
 
             } else {
                 try {
+                    mediaPlayer.start();
                     /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         NotificationManager notificationManager =
                                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -309,8 +330,28 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
         //ActivityTransparentPopUp.startActivityIntent(getBaseContext(),mIntPopupType ,mStrHeader,mStrDescription);
         return false;
     }
+    private void registerBroadcastReceiver() {
+
+        final IntentFilter intentFilter = new IntentFilter();
+        /** System Defined Broadcast */
+        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
+        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+        intentFilter.addAction(Intent.ACTION_USER_PRESENT);
+
+        ZoomBroadcast zoomBroadcast = new ZoomBroadcast();
+
+        registerReceiver(zoomBroadcast, intentFilter);
+    }
 
 
+    public void clearNotification(){
+        Intent intent = new Intent(this, ZoomNotificationClearer.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this, 234324243, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
+                + (1), pendingIntent);
+    }
     public void startAlert(int mPopupType, String mPopupHeader, String mPopupDescription){
         Intent intent = new Intent(this, ZoomBroadcast.class);
         intent.putExtra("popup_type", mPopupType);

@@ -3,7 +3,8 @@ package com.ab.hicarerun.utils
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
+import android.os.Build
+import android.os.PowerManager
 import android.util.Log
 import android.widget.Toast
 import com.ab.hicarerun.activities.ZoomTransparentPopupActivity
@@ -16,6 +17,15 @@ class ZoomBroadcast : BroadcastReceiver() {
     val popupHeader = "popup_header"
     val popupDescription = "popup_description"
     override fun onReceive(context: Context, intent: Intent?) {
+        /*val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+        val isScreenOn = pm.isInteractive // check if screen is on
+        if (!isScreenOn) {
+            val wl = pm.newWakeLock(
+                PowerManager.PARTIAL_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP,
+                "myApp:notificationLock"
+            )
+            wl.acquire(3000) //set your time in milliseconds
+        }*/
         Toast.makeText(context, "Inspection call...", Toast.LENGTH_SHORT).show()
         val type = intent?.getIntExtra(popupType, -1).toString().toInt()
         val header = intent?.getStringExtra(popupHeader).toString()
