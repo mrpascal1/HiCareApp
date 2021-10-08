@@ -45,6 +45,7 @@ public class BaseApplication extends Application implements LifecycleObserver {
     private static volatile IRetrofit IRETROFIT = null;
     private static volatile Realm REALM = null;
     private OneSIgnalHelper mOneSignalHelper;
+    public static boolean inAMeeting = false;
 
     @Override
     protected void attachBaseContext(Context context) {

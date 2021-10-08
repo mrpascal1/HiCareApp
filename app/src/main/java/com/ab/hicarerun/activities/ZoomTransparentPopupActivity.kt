@@ -105,7 +105,11 @@ class ZoomTransparentPopupActivity : AppCompatActivity() {
         val options = JoinMeetingOptions()
         val params = JoinMeetingParams()
         meetingService?.addListener { meetingStatus, i, i2 ->
+            if (meetingStatus == MeetingStatus.MEETING_STATUS_INMEETING){
+                BaseApplication.inAMeeting = true
+            }
             if (i == 9 || meetingStatus == MeetingStatus.MEETING_STATUS_IDLE){
+                BaseApplication.inAMeeting = false
                 finish()
             }
             Log.d("TAG", meetingStatus.name)
