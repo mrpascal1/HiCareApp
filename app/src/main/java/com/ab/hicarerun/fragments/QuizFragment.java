@@ -1,6 +1,7 @@
 package com.ab.hicarerun.fragments;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -9,12 +10,14 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.CountDownTimer;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -120,7 +123,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
         Bundle args = new Bundle();
         args.putInt(ARGS_ID, puzzleId);
         fragment.setArguments(args);
-        puzzleT = R.string.shiksha+" - "+puzzleTitle;
+        puzzleT = puzzleTitle;
         return fragment;
     }
 
@@ -143,6 +146,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
         if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
             resourceId = LoginRealmModels.get(0).getUserID();
         }
+        puzzleT = getResources().getString(R.string.shiksha)+" - "+puzzleT;
         mFragmentQuizBinding.questionTitleTv.setText(puzzleT);
         mFragmentQuizBinding.questionCounter.setTypeface(mFragmentQuizBinding.questionCounter.getTypeface(), Typeface.BOLD);
         return mFragmentQuizBinding.getRoot();
@@ -729,6 +733,7 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                 mFragmentQuizBinding.videoQuestion.setVisibility(View.GONE);
                 mFragmentQuizBinding.imageQuestionTitle.setVisibility(View.GONE);
                 mFragmentQuizBinding.question.setText(question.getPuzzleQuestionTitleDisplay());
+                //mFragmentQuizBinding.question.setMovementMethod(new ScrollingMovementMethod());
             }
             /*mAdapter.setOnItemClickHandler(position -> {
                 if (timer != null)
