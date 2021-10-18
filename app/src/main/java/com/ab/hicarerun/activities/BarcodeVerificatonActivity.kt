@@ -495,10 +495,20 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                         foundAllEmpty = false
                         partialEmpty = false
                     }else{
-                        partialEmpty = true
-                        foundAllEmpty = true
-                        Toast.makeText(this, "Please enter the data correctly", Toast.LENGTH_SHORT).show()
-                        return@setOnClickListener
+                        if (it.pest_Count.equals("yes", true)) {
+                            partialEmpty = true
+                            foundAllEmpty = true
+                            Toast.makeText(this, "Please enter the data correctly", Toast.LENGTH_SHORT).show()
+                            return@setOnClickListener
+                        }else if (it.pest_Count.toString().toInt() == 0){
+                            foundAllEmpty = false
+                            partialEmpty = false
+                        }else if (it.pest_Count.toString().toInt() > 0){
+                            partialEmpty = true
+                            foundAllEmpty = true
+                            Toast.makeText(this, "Please enter the data correctly", Toast.LENGTH_SHORT).show()
+                            return@setOnClickListener
+                        }
                     }
                 }
                 if ((it.pest_Count == "" || it.pest_Count.equals("Select Option", true)) && it.image_Url != null){
