@@ -1,8 +1,12 @@
 package com.ab.hicarerun.activities
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
+import android.content.res.TypedArray
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
@@ -13,12 +17,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Base64
 import android.util.Log
 import android.view.*
-import android.widget.ArrayAdapter
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.FileProvider
@@ -26,6 +29,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.BaseActivity
 import com.ab.hicarerun.BaseApplication
+import com.ab.hicarerun.BaseApplication.getRealm
 import com.ab.hicarerun.BuildConfig
 import com.ab.hicarerun.R
 import com.ab.hicarerun.adapter.BarcodeAdapter2
@@ -33,13 +37,21 @@ import com.ab.hicarerun.adapter.PestTypeAdapter
 import com.ab.hicarerun.databinding.ActivityBarcodeVerificatonBinding
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
+import com.ab.hicarerun.network.models.GeneralModel.GeneralData
 import com.ab.hicarerun.network.models.Item
 import com.ab.hicarerun.network.models.LoginResponse
 import com.ab.hicarerun.network.models.TSScannerModel.*
 import com.ab.hicarerun.service.listner.LocationManagerListner
 import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.LocaleHelper
+import com.bumptech.glide.Glide
 import com.google.zxing.integration.android.IntentIntegrator
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.DexterError
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import io.realm.RealmResults
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -88,6 +100,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
     var mPermissions = false
     val REQUEST_CODE = 1234
     val CAMERA_REQUEST = 100
+    val REQUEST_GALLERY_PHOTO = 200
     var selectedImagePath = ""
     var mPhotoFile: File? = null
     var bitmap: Bitmap? = null
@@ -440,8 +453,11 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                 Log.d("TAG", "Picture")
                 pos = position
                 currentItemCount = charSeq.toString()
+                barcodeIdFromAdapter = barcodeId.toString().toInt()
+                pestTypeIdFromAdapter = pestTypeId.toString().toInt()
+                getImageDialog(barcodeId, pestTypeId)
                 Log.d("TAG", "onPicture item position $position")
-                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                /*val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                 if (intent.resolveActivity(applicationContext.packageManager) != null) {
                     barcodeIdFromAdapter = barcodeId.toString().toInt()
                     pestTypeIdFromAdapter = pestTypeId.toString().toInt()
@@ -453,7 +469,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                     TimeStamp = AppUtils.getCurrentTimeStamp()
                     startActivityForResult(intent, CAMERA_REQUEST)
-                }
+                }*/
             }
 
             override fun onCancelIconClicked(position: Int, charSeq: String?, barcodeId: Int?, pestTypeId: Int?) {
@@ -585,6 +601,168 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         controller.uploadBoxImage(20210109, hashMap)
     }
 
+    private fun getImageDialog(barcodeId: Int?, pestTypeId: Int?) {
+        try {
+            val mGeneralRealmData: RealmResults<GeneralData> = getRealm().where<GeneralData>(
+                GeneralData::class.java
+            ).findAll()
+            if (mGeneralRealmData != null && mGeneralRealmData.size > 0) {
+                val li = LayoutInflater.from(this)
+                val promptsView = li.inflate(R.layout.layout_choose_gallery_dialog, null)
+                val alertDialogBuilder = AlertDialog.Builder(this)
+                alertDialogBuilder.setView(promptsView)
+                val alertDialog = alertDialogBuilder.create()
+                val selectedImg = promptsView.findViewById<ImageView>(R.id.selectedImg)
+                val lnrCamera = promptsView.findViewById<LinearLayout>(R.id.lnrCamera)
+                val lnrGallery = promptsView.findViewById<LinearLayout>(R.id.lnrGallery)
+                val btn_cancel = promptsView.findViewById<TextView>(R.id.btnCancel)
+                val cardSelected = promptsView.findViewById<LinearLayout>(R.id.cardSelected)
+                val attrs = intArrayOf(R.attr.selectableItemBackground)
+                val typedArray: TypedArray = this.obtainStyledAttributes(attrs)
+                val backgroundResource = typedArray.getResourceId(0, 0)
+                lnrCamera.setBackgroundResource(backgroundResource)
+                lnrGallery.setBackgroundResource(backgroundResource)
+                if (bitmap != null) {
+                    cardSelected.visibility = View.VISIBLE
+                    Glide.with(this)
+                        .load(bitmap)
+                        .error(android.R.drawable.stat_notify_error)
+                        .into(selectedImg)
+                } else {
+                    cardSelected.visibility = View.GONE
+                }
+                cardSelected.setOnClickListener { view: View? ->
+                    if (bitmap != null) {
+                        alertDialog.dismiss()
+                        val baos = ByteArrayOutputStream()
+                        bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                        val b = baos.toByteArray()
+                        val encodedImage =
+                            Base64.encodeToString(b, Base64.DEFAULT)
+                        uploadBoxImage(resourceId, taskId, encodedImage)
+                    }
+                }
+                lnrCamera.setOnClickListener { view: View? ->
+                    requestStoragePermission(true, barcodeId, pestTypeId)
+                    alertDialog.dismiss()
+                }
+                lnrGallery.setOnClickListener { view: View? ->
+                    requestStoragePermission(false, barcodeId, pestTypeId)
+                    alertDialog.dismiss()
+                }
+                btn_cancel.setOnClickListener { v: View? -> alertDialog.dismiss() }
+                alertDialog.setCanceledOnTouchOutside(false)
+                alertDialog.show()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun dispatchGalleryIntent() {
+        try {
+            val pickPhoto = Intent(
+                Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            )
+            pickPhoto.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            startActivityForResult(pickPhoto, REQUEST_GALLERY_PHOTO)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun requestStoragePermission(isCamera: Boolean, barcodeId: Int?, pestTypeId: Int?) {
+        try {
+            Dexter.withActivity(this)
+                .withPermissions(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA
+                )
+                .withListener(object : MultiplePermissionsListener {
+                    override fun onPermissionsChecked(report: MultiplePermissionsReport) {
+                        // check if all permissions are granted
+                        if (report.areAllPermissionsGranted()) {
+                            if (isCamera) {
+                                dispatchTakePictureIntent(barcodeId, pestTypeId)
+                            } else {
+                                dispatchGalleryIntent()
+                            }
+                        }
+                        // check for permanent denial of any permission
+                        if (report.isAnyPermissionPermanentlyDenied) {
+                            // show alert dialog navigating to Settings
+                            showSettingsDialog()
+                        }
+                    }
+
+                    override fun onPermissionRationaleShouldBeShown(
+                        permissions: List<PermissionRequest>,
+                        token: PermissionToken
+                    ) {
+                        token.continuePermissionRequest()
+                    }
+                })
+                .withErrorListener { error: DexterError? ->
+                    Toast.makeText(this, "Error occurred! ", Toast.LENGTH_SHORT).show()
+                }
+                .onSameThread()
+                .check()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun dispatchTakePictureIntent(barcodeId: Int?, pestTypeId: Int?) {
+        try {
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            if (intent.resolveActivity(applicationContext.packageManager) != null) {
+                barcodeIdFromAdapter = barcodeId.toString().toInt()
+                pestTypeIdFromAdapter = pestTypeId.toString().toInt()
+                // Create the File where the photo should go
+                val photoFile = createImageFile()
+                val photoURI: Uri = FileProvider.getUriForFile(applicationContext, BuildConfig.APPLICATION_ID + ".provider", photoFile)
+                mPhotoFile = photoFile
+                intent.putExtra("android.intent.extras.CAMERA_FACING", Camera.CameraInfo.CAMERA_FACING_BACK)
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                TimeStamp = AppUtils.getCurrentTimeStamp()
+                startActivityForResult(intent, CAMERA_REQUEST)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun openSettings() {
+        try {
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            val uri = Uri.fromParts("package", this.packageName, null)
+            intent.data = uri
+            startActivityForResult(intent, 101)
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+    }
+    private fun showSettingsDialog() {
+        try {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Need Permissions")
+            builder.setMessage(
+                "This app needs permission to use this feature. You can grant them in app settings."
+            )
+            builder.setPositiveButton("GOTO SETTINGS") { dialog: DialogInterface, which: Int ->
+                dialog.cancel()
+                openSettings()
+            }
+            builder.setNegativeButton(
+                "Cancel"
+            ) { dialog: DialogInterface, which: Int -> dialog.cancel() }
+            builder.show()
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+    }
+
     @Throws(IOException::class)
     private fun createImageFile(): File {
         // Create an image file name
@@ -622,6 +800,20 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         super.attachBaseContext(LocaleHelper.onAttach(context, LocaleHelper.getLanguage(context)))
     }
 
+    private fun getRealPathFromUri(contentUri: Uri?): String? {
+        var cursor: Cursor? = null
+        return try {
+            val proj = arrayOf(MediaStore.Images.Media.DATA)
+            cursor = this.getContentResolver().query(contentUri!!, proj, null, null, null)
+            assert(cursor != null)
+            val column_index = cursor?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            cursor?.moveToFirst()
+            cursor?.getString(column_index!!)
+        } finally {
+            cursor?.close()
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         val last_Verified_On2 = AppUtils.currentDateTimeWithTimeZone()
@@ -643,6 +835,20 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
             /*val imageAsBytes = Base64.decode(encodedImage, Base64.DEFAULT)
             val decodedImage = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.size);*/
             Log.d("TAG-Image", encodedImage)
+            uploadBoxImage(resourceId, taskId, encodedImage)
+        }else if (requestCode == REQUEST_GALLERY_PHOTO && resultCode == Activity.RESULT_OK){
+            val selectedImage = data?.data
+            mPhotoFile = File(getRealPathFromUri(selectedImage).toString())
+            selectedImagePath = mPhotoFile!!.path
+            if (selectedImagePath != null) {
+                val bit = BitmapDrawable(this.resources, selectedImagePath).bitmap
+                val i = (bit.height * (1024.0 / bit.width)).toInt()
+                bitmap = Bitmap.createScaledBitmap(bit, 1024, i, true)
+            }
+            val baos = ByteArrayOutputStream()
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            val b = baos.toByteArray()
+            val encodedImage = Base64.encodeToString(b, Base64.DEFAULT)
             uploadBoxImage(resourceId, taskId, encodedImage)
         }
         if (result != null) {
