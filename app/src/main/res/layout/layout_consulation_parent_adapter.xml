@@ -22,6 +22,8 @@
                 android:textColor="@color/black"
                 android:layout_marginTop="12dp"
                 android:textStyle="bold"
+                android:drawableEnd="@drawable/ic_speaker"
+                android:layout_marginEnd="8dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
 
             <RelativeLayout

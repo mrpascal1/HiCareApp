@@ -21,6 +21,8 @@ public class ConsulationViewModel implements Parcelable {
     private String QuestionType;
     private String QuestionCategory;
     private Boolean isPictureRequired;
+    private String QuestionAudioUrl;
+    private Boolean isAudioEnabled;
     private Boolean isAnswerSelected;
     private Boolean ShowQuestion;
     private Boolean isNoSelected;
@@ -41,6 +43,8 @@ public class ConsulationViewModel implements Parcelable {
         this.QuestionType = "NA";
         this.QuestionCategory = "NA";
         this.isPictureRequired = false;
+        this.QuestionAudioUrl = "NA";
+        this.isAudioEnabled = false;
         this.isAnswerSelected = false;
         this.ShowQuestion = false;
         this.isNoSelected = false;
@@ -62,8 +66,11 @@ public class ConsulationViewModel implements Parcelable {
         QuestionDisplayTitle = in.readString();
         QuestionType = in.readString();
         QuestionCategory = in.readString();
+        QuestionAudioUrl = in.readString();
         byte tmpIsPictureRequired = in.readByte();
         isPictureRequired = tmpIsPictureRequired == 0 ? null : tmpIsPictureRequired == 1;
+        byte tmpIsAudioEnabled = in.readByte();
+        isAudioEnabled = tmpIsAudioEnabled == 0 ? null : tmpIsAudioEnabled == 1;
         byte tmpIsAnswerSelected = in.readByte();
         isAnswerSelected = tmpIsAnswerSelected == 0 ? null : tmpIsAnswerSelected == 1;
         byte tmpShowQuestion = in.readByte();
@@ -211,6 +218,22 @@ public class ConsulationViewModel implements Parcelable {
         this.optionlists = optionlists;
     }
 
+    public String getQuestionAudioUrl() {
+        return QuestionAudioUrl;
+    }
+
+    public void setQuestionAudioUrl(String questionAudioUrl) {
+        QuestionAudioUrl = questionAudioUrl;
+    }
+
+    public Boolean getAudioEnabled() {
+        return isAudioEnabled;
+    }
+
+    public void setAudioEnabled(Boolean audioEnabled) {
+        isAudioEnabled = audioEnabled;
+    }
+
     public Boolean getAnswerSelected() {
         return isAnswerSelected;
     }
@@ -242,7 +265,9 @@ public class ConsulationViewModel implements Parcelable {
         this.QuestionDisplayTitle = account.getQuestionTitleDisplayText();
         this.QuestionType = account.getQuestiontype();
         this.QuestionCategory = account.getQuestioncategory();
+        this.QuestionAudioUrl = account.getQuestionAudioUrl();
         this.isPictureRequired = account.getIspicturerequired();
+        this.isAudioEnabled = account.isAudioEnabled();
         this.isAnswerSelected = account.isAnswerSelected();
         this.PictureURL = account.getPictureUrl();
         this.Options = account.getOptions();
@@ -269,7 +294,9 @@ public class ConsulationViewModel implements Parcelable {
         dest.writeString(QuestionDisplayTitle);
         dest.writeString(QuestionType);
         dest.writeString(QuestionCategory);
+        dest.writeString(QuestionAudioUrl);
         dest.writeByte((byte) (isPictureRequired == null ? 0 : isPictureRequired ? 1 : 2));
+        dest.writeByte((byte) (isAudioEnabled == null ? 0 : isAudioEnabled ? 1 : 2));
         dest.writeByte((byte) (isAnswerSelected == null ? 0 : isAnswerSelected ? 1 : 2));
         dest.writeByte((byte) (ShowQuestion == null ? 0 : ShowQuestion ? 1 : 2));
         dest.writeByte((byte) (isNoSelected == null ? 0 : isNoSelected ? 1 : 2));

@@ -1,31 +1,19 @@
 package com.ab.hicarerun.fragments;
 
 
-import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.graphics.PixelFormat;
-import android.graphics.Point;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
-import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -34,17 +22,13 @@ import android.view.animation.AnimationUtils;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
+import com.ab.hicarerun.BuildConfig;
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.databinding.FragmentStartVideoBinding;
-import com.ab.hicarerun.network.NetworkCallController;
-import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.network.models.TrainingModel.Videos;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -73,8 +57,6 @@ import com.google.android.exoplayer2.util.Util;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.util.Objects;
 
 import io.realm.RealmResults;
 
@@ -139,7 +121,7 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Objects.requireNonNull(getActivity()).getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        requireActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mFragmentStartVideoBinding.progress.setVisibility(View.VISIBLE);
         mFragmentStartVideoBinding.lnrSkip.setVisibility(View.GONE);
         mFragmentStartVideoBinding.exoPlayerView.setOnClickListener(view1 -> animateVolumeControl());
@@ -151,6 +133,9 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
             AppUtils.getHandShakeCall(username, getActivity());
         });
         setUp(URL);
+        if (BuildConfig.DEBUG){
+            showSkip();
+        }
     }
 
 
@@ -252,9 +237,9 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
             if (orientationState != null) {
                 mFragmentStartVideoBinding.imgOrientation.bringToFront();
                 if (orientationState == OrientationState.LANDSCAPE) {
-                    Glide.with(Objects.requireNonNull(getActivity())).load(R.drawable.ic_landscape).into(mFragmentStartVideoBinding.imgOrientation);
+                    Glide.with(requireActivity()).load(R.drawable.ic_landscape).into(mFragmentStartVideoBinding.imgOrientation);
                 } else if (orientationState == OrientationState.PORTRAIT) {
-                    Glide.with(Objects.requireNonNull(getActivity())).load(R.drawable.ic_portrait).into(mFragmentStartVideoBinding.imgOrientation);
+                    Glide.with(requireActivity()).load(R.drawable.ic_portrait).into(mFragmentStartVideoBinding.imgOrientation);
                 }
                 mFragmentStartVideoBinding.lnrOrientation.animate().cancel();
 
@@ -276,7 +261,7 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
             // Measures bandwidth during playback. Can be null if not required.
             DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
             // Produces DataSource instances through which media data is loaded.
-            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(Objects.requireNonNull(getContext()),
+            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(requireContext(),
                     Util.getUserAgent(getContext(), getString(R.string.app_name)), bandwidthMeter);
             // This is the MediaSource representing the media to be played.
             MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)

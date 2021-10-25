@@ -31,6 +31,12 @@ public class Data  {
     @SerializedName("Options")
     private String Options;
     @Expose
+    @SerializedName("QuestionAudioUrl")
+    private String QuestionAudioUrl;
+    @Expose
+    @SerializedName("IsAudioEnabled")
+    private boolean IsAudioEnabled;
+    @Expose
     @SerializedName("IsAnswerSelected")
     private boolean IsAnswerSelected;
     @Expose
@@ -189,6 +195,22 @@ public class Data  {
 
     public void setChecked(boolean checked) {
         isChecked = checked;
+    }
+
+    public String getQuestionAudioUrl() {
+        return QuestionAudioUrl;
+    }
+
+    public void setQuestionAudioUrl(String questionAudioUrl) {
+        QuestionAudioUrl = questionAudioUrl;
+    }
+
+    public boolean isAudioEnabled() {
+        return IsAudioEnabled;
+    }
+
+    public void setAudioEnabled(boolean audioEnabled) {
+        IsAudioEnabled = audioEnabled;
     }
 
     public boolean isAnswerSelected() {

@@ -2,12 +2,16 @@ package com.ab.hicarerun.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +32,7 @@ import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +52,8 @@ public class ConsulationParentAdapter extends RecyclerView.Adapter<ConsulationPa
     private int selectedPos = -1;
     private boolean isInspectionDone;
     private String type = "";
+    private boolean isPLAYING = false;
+    MediaPlayer mp;
 
     public ConsulationParentAdapter(Context context, boolean isInspectionDone, String type, OnOptionClicked onOptionClicked) {
         if (items == null) {
@@ -127,6 +134,11 @@ public class ConsulationParentAdapter extends RecyclerView.Adapter<ConsulationPa
             holder.mLayoutConsulationParentAdapterBinding.txtQuest.setText(items.get(position).getQuestionDisplayTitle());
 //            }
             holder.mLayoutConsulationParentAdapterBinding.txtQuest.setTypeface(holder.mLayoutConsulationParentAdapterBinding.txtQuest.getTypeface(), Typeface.BOLD);
+            if (items.get(position).getAudioEnabled()){
+                holder.mLayoutConsulationParentAdapterBinding.txtQuest.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_speaker), null);
+            }else {
+                holder.mLayoutConsulationParentAdapterBinding.txtQuest.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
+            }
             ConsulationChildAdapter childAdapter = new ConsulationChildAdapter(mContext, isInspectionDone, (position1, isChecked, isSelectedAndDisabled) -> {
 
                 String optionValue = items.get(position).getOptionlists().get(position1).getOptionvalue();
@@ -171,10 +183,51 @@ public class ConsulationParentAdapter extends RecyclerView.Adapter<ConsulationPa
                     }
                 });
             }
+            holder.mLayoutConsulationParentAdapterBinding.txtQuest.setOnClickListener(view -> {
+                if (mp != null){
+                    if (mp.isLooping() || mp.isPlaying()) {
+                        isPLAYING = false;
+                        mp.release();
+                        mp = null;
+                        //holder.mLayoutConsulationParentAdapterBinding.txtQuest.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_speaker));
+                    }
+                }else {
+                    if (items.get(position).getQuestionAudioUrl() != null) {
+                        playAudio(items.get(position).getQuestionAudioUrl(), position);
+                    } else {
+                        playAudio("https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3", position);
+                    }
+                }
+            });
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void playAudio(String url, int position) {
+        mp = new MediaPlayer();
+        if (!isPLAYING) {
+            isPLAYING = true;
+            try {
+                //view.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_music_stop));
+                mp.setDataSource(mContext, Uri.parse(url));
+                mp.prepare();
+                mp.start();
+            } catch (IOException e) {
+                Log.d("TAG", "prepare() failed");
+            }
+        } else {
+            isPLAYING = false;
+            stopPlaying();
+            //view.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_speaker));
+        }
+    }
+
+    private void stopPlaying() {
+        mp.stop();
+        mp.release();
+        mp = null;
     }
 
     public void setOnItemClickHandler(OnConsultationClickHandler onItemClickHandler) {

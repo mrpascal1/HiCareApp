@@ -32,6 +32,18 @@ public class Recommendations {
     @Expose
     private String duration;
 
+    @SerializedName("RecommendationImageUrl")
+    @Expose
+    private String recommendationImageUrl;
+
+    @SerializedName("RecommendationAudioUrl")
+    @Expose
+    private String recommendationAudioUrl;
+
+    @SerializedName("IsAudioEnabled")
+    @Expose
+    private boolean isAudioEnabled;
+
     public Integer getId() {
         return id;
     }
@@ -94,5 +106,29 @@ public class Recommendations {
 
     public void setOverallInfestationLevel(String overallInfestationLevel) {
         OverallInfestationLevel = overallInfestationLevel;
+    }
+
+    public String getRecommendationImageUrl() {
+        return recommendationImageUrl;
+    }
+
+    public void setRecommendationImageUrl(String recommendationImageUrl) {
+        this.recommendationImageUrl = recommendationImageUrl;
+    }
+
+    public String getRecommendationAudioUrl() {
+        return recommendationAudioUrl;
+    }
+
+    public void setRecommendationAudioUrl(String recommendationAudioUrl) {
+        this.recommendationAudioUrl = recommendationAudioUrl;
+    }
+
+    public boolean isAudioEnabled() {
+        return isAudioEnabled;
+    }
+
+    public void setAudioEnabled(boolean audioEnabled) {
+        isAudioEnabled = audioEnabled;
     }
 }
