@@ -133,9 +133,9 @@ public class StartVideoFragment extends BaseFragment implements Player.EventList
             AppUtils.getHandShakeCall(username, getActivity());
         });
         setUp(URL);
-        if (BuildConfig.DEBUG){
+        /*if (BuildConfig.DEBUG){
             showSkip();
-        }
+        }*/
     }
 
 

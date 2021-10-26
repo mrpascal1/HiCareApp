@@ -114,6 +114,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
     var imageCount = 0;
     var TimeStamp = "";
     var currentItemCount = ""
+    var prevImageLink = "";
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -273,6 +274,8 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                 if (modelBarcodeList[i].isVerified == true){
                     Toast.makeText(this, "Already Verified", Toast.LENGTH_SHORT).show()
                 }else{
+                    bitmap = null
+                    prevImageLink = ""
                     showPestDialog(barcode_Data.toString(), last_Verified_On2)
                 }
                 found = true
@@ -573,6 +576,17 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         alertDialog.setCanceledOnTouchOutside(false)
     }
 
+    private fun selectOldImage(){
+        if (prevImageLink != ""){
+            pestType.forEach {
+                if (it.barcodeId == barcodeIdFromAdapter && it.id == pestTypeIdFromAdapter) {
+                    //it.pest_Count = currentItemCount
+                    it.image_Url = prevImageLink
+                }
+            }
+            pestTypeAdapter.notifyDataSetChanged()
+        }
+    }
     private fun uploadBoxImage(resourceId: String, taskId: String, file: String){
         val hashMap = HashMap<String, String>()
         hashMap["ResourceId"] = resourceId
@@ -588,6 +602,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                         if (it.barcodeId == barcodeIdFromAdapter && it.id == pestTypeIdFromAdapter){
                             //it.pest_Count = currentItemCount
                             it.image_Url = response.data
+                            prevImageLink = response.data.toString()
                         }
                     }
                     //pestTypeAdapter.notifyItemChanged(pos)
@@ -608,7 +623,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
             ).findAll()
             if (mGeneralRealmData != null && mGeneralRealmData.size > 0) {
                 val li = LayoutInflater.from(this)
-                val promptsView = li.inflate(R.layout.layout_choose_gallery_dialog, null)
+                val promptsView = li.inflate(R.layout.layout_image_pest_dialog, null)
                 val alertDialogBuilder = AlertDialog.Builder(this)
                 alertDialogBuilder.setView(promptsView)
                 val alertDialog = alertDialogBuilder.create()
@@ -639,7 +654,8 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                         val b = baos.toByteArray()
                         val encodedImage =
                             Base64.encodeToString(b, Base64.DEFAULT)
-                        uploadBoxImage(resourceId, taskId, encodedImage)
+                        selectOldImage()
+                        //uploadBoxImage(resourceId, taskId, encodedImage)
                     }
                 }
                 lnrCamera.setOnClickListener { view: View? ->
@@ -846,7 +862,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                 bitmap = Bitmap.createScaledBitmap(bit, 1024, i, true)
             }
             val baos = ByteArrayOutputStream()
-            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, 50, baos)
             val b = baos.toByteArray()
             val encodedImage = Base64.encodeToString(b, Base64.DEFAULT)
             uploadBoxImage(resourceId, taskId, encodedImage)

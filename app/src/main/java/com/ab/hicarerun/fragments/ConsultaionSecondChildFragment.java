@@ -454,6 +454,7 @@ public class ConsultaionSecondChildFragment extends Fragment implements UserSeco
     @Override
     public void onSaveButtonClicked(View view) {
         try {
+            mAdapter.stopPlaying();
             AppUtils.dataList.addAll(inspectionList);
             ChildFragment2Listener listener = (ChildFragment2Listener) getParentFragment();
             listener.onSaveClicked();
@@ -464,6 +465,7 @@ public class ConsultaionSecondChildFragment extends Fragment implements UserSeco
 
     @Override
     public void onBackButtonClicked(View view) {
+        mAdapter.stopPlaying();
         ChildFragment2Listener listener = (ChildFragment2Listener) getParentFragment();
         listener.onBackClicked();
     }

@@ -24,6 +24,7 @@ import com.ab.hicarerun.handler.OnCartItemClickHandler;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
 import com.ab.hicarerun.network.models.ConsulationModel.Recommendations;
 import com.ab.hicarerun.network.models.ProductCartModel.ProductCart;
+import com.ab.hicarerun.utils.ImageOverlayStfalcon;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -38,13 +39,14 @@ import static com.ab.hicarerun.BaseApplication.getRealm;
  */
 public class RecommendationsAdapter extends RecyclerView.Adapter<RecommendationsAdapter.ViewHolder> {
 
-    private OnListItemClickHandler onItemClickHandler;
+    private OnImageClicked onImageClicked;
     private final Context mContext;
     private List<Recommendations> items = null;
     private String type = "";
     private boolean isPLAYING = false;
     MediaPlayer mp;
     private int lastPlaying = -1;
+    int imgCount = 0;
 
     public RecommendationsAdapter(Context context, String type) {
         if (items == null) {
@@ -52,6 +54,7 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
         }
         this.mContext = context;
         this.type = type;
+        this.onImageClicked = null;
     }
 
     @NotNull
@@ -130,32 +133,47 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
             }else {
                 holder.layoutRecommendationsAdapterBinding.lnrRecommendationIv.setVisibility(View.GONE);
             }
+
+            holder.layoutRecommendationsAdapterBinding.recommendationIv.setOnClickListener(v -> {
+                onImageClicked.onClicked(items.get(position).getRecommendationImageUrl(), position);
+                new ImageOverlayStfalcon(mContext, new String[]{items.get(position).getRecommendationImageUrl()});
+            });
+            /*holder.layoutRecommendationsAdapterBinding.recommendationIv.setOnClickListener(view -> {
+                onImageClicked.onClicked(items.get(position).getRecommendationImageUrl(), position);
+            });*/
+
+            if (mp != null) {
+                mp.setOnCompletionListener(mediaPlayer -> {
+                    if (mp != null) {
+                        mp.release();
+                        isPLAYING = false;
+                        mp = null;
+                        notifyItemChanged(lastPlaying);
+                        lastPlaying = -1;
+                    }
+                });
+            }
             holder.layoutRecommendationsAdapterBinding.lnrSpeaker.setOnClickListener(view -> {
-                if (lastPlaying == position) {
-                    if (mp != null) {
-                        if (mp.isLooping() || mp.isPlaying()) {
-                            isPLAYING = false;
-                            mp.release();
-                            mp = null;
-                            holder.layoutRecommendationsAdapterBinding.speakerIv.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_speaker));
-                        }
-                    }
+                if (position == lastPlaying){
+                    stopPlaying();
+                    holder.layoutRecommendationsAdapterBinding.speakerIv.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_speaker));
+                    notifyItemChanged(lastPlaying);
+                    lastPlaying = -1;
                 }else {
-                    if (mp != null) {
-                        if (mp.isLooping() || mp.isPlaying()) {
-                            isPLAYING = false;
-                            mp.release();
-                            mp = null;
-                            holder.layoutRecommendationsAdapterBinding.speakerIv.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_speaker));
-                        }
-                    }
+                    stopPlaying();
                     if (items.get(position).getRecommendationAudioUrl() != null) {
                         playAudio(holder.layoutRecommendationsAdapterBinding.speakerIv, items.get(position).getRecommendationAudioUrl(), position);
                     } else {
-                        playAudio(holder.layoutRecommendationsAdapterBinding.speakerIv, "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3", position);
+                        playAudio(holder.layoutRecommendationsAdapterBinding.speakerIv, "https://www.kozco.com/tech/piano2-CoolEdit.mp3", position);
                     }
+                    notifyDataSetChanged();
                 }
             });
+            if (lastPlaying != -1 && (lastPlaying == position && isPLAYING)){
+                holder.layoutRecommendationsAdapterBinding.speakerIv.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_music_stop));
+            }else {
+                holder.layoutRecommendationsAdapterBinding.speakerIv.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_speaker));
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -182,10 +200,13 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
         }
     }
 
-    private void stopPlaying() {
-        mp.stop();
-        mp.release();
-        mp = null;
+    public void stopPlaying() {
+        if (mp != null) {
+            isPLAYING = false;
+            mp.stop();
+            mp.release();
+            mp = null;
+        }
     }
 
     @Override
@@ -210,6 +231,14 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
     public void remove(int position) {
         items.remove(items.get(position));
         notifyDataSetChanged();
+    }
+
+    public void setOnItemClickHandler(OnImageClicked onImageClicked){
+        this.onImageClicked = onImageClicked;
+    }
+
+    public interface OnImageClicked{
+        void onClicked(String image, int position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

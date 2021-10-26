@@ -28,6 +28,7 @@ import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.LocaleHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,6 +46,9 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
     private RealmResults<GeneralData> mTaskDetailsData = null;
     private ProgressDialog progressD;
     private String type = "";
+    int imgCount = 0;
+    List<String> initImages;
+    List<String> imagesClicked;
 
     public ConsultationThirdFragment(String type) {
         // Required empty public constructor
@@ -60,6 +64,8 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
         mFragmentConsultationThirdBinding.setHandler(this);
         progressD = new ProgressDialog(getActivity(), R.style.TransparentProgressDialog);
         progressD.setCancelable(false);
+        initImages = new ArrayList<>();
+        imagesClicked = new ArrayList<>();
         return mFragmentConsultationThirdBinding.getRoot();
     }
 
@@ -78,23 +84,74 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
         mFragmentConsultationThirdBinding.txtTitle.setTypeface(mFragmentConsultationThirdBinding.txtTitle.getTypeface(), Typeface.BOLD);
         mFragmentConsultationThirdBinding.chkAgree.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                mFragmentConsultationThirdBinding.btnHome.setEnabled(true);
-                mFragmentConsultationThirdBinding.btnHome.setAlpha(1f);
+                if (imgCount > 0) {
+                    if (imagesClicked.containsAll(initImages)) {
+                        mFragmentConsultationThirdBinding.btnHome.setEnabled(true);
+                        mFragmentConsultationThirdBinding.btnHome.setAlpha(1f);
+                    }else {
+                        mFragmentConsultationThirdBinding.btnHome.setEnabled(false);
+                        mFragmentConsultationThirdBinding.btnHome.setAlpha(0.6f);
+                    }
+                }else {
+                    mFragmentConsultationThirdBinding.btnHome.setEnabled(true);
+                    mFragmentConsultationThirdBinding.btnHome.setAlpha(1f);
+                }
             } else {
                 mFragmentConsultationThirdBinding.btnHome.setEnabled(false);
                 mFragmentConsultationThirdBinding.btnHome.setAlpha(0.6f);
             }
         });
         if (AppUtils.isInspectionDone) {
-            mFragmentConsultationThirdBinding.chkAgree.setVisibility(View.GONE);
-            mFragmentConsultationThirdBinding.btnHome.setEnabled(true);
-            mFragmentConsultationThirdBinding.btnHome.setAlpha(1f);
+            if (imgCount > 0) {
+                if (imagesClicked.containsAll(initImages)){
+                    mFragmentConsultationThirdBinding.chkAgree.setVisibility(View.GONE);
+                    mFragmentConsultationThirdBinding.btnHome.setEnabled(true);
+                    mFragmentConsultationThirdBinding.btnHome.setAlpha(1f);
+                }else{
+                    mFragmentConsultationThirdBinding.chkAgree.setVisibility(View.GONE);
+                    mFragmentConsultationThirdBinding.btnHome.setEnabled(false);
+                    mFragmentConsultationThirdBinding.btnHome.setAlpha(0.6f);
+                }
+            }else {
+                mFragmentConsultationThirdBinding.chkAgree.setVisibility(View.GONE);
+                mFragmentConsultationThirdBinding.btnHome.setEnabled(true);
+                mFragmentConsultationThirdBinding.btnHome.setAlpha(1f);
+            }
         } else {
             mFragmentConsultationThirdBinding.chkAgree.setVisibility(View.VISIBLE);
         }
 
 
         getRecommendations();
+    }
+
+    @Override
+    public void onResume() {
+        mAdapter.setOnItemClickHandler((image, position) -> {
+            if (!imagesClicked.contains(image)) {
+                imagesClicked.add(image);
+            }
+            if (AppUtils.isInspectionDone) {
+                if (imgCount > 0) {
+                    if (imagesClicked.containsAll(initImages)){
+                        mFragmentConsultationThirdBinding.chkAgree.setVisibility(View.GONE);
+                        mFragmentConsultationThirdBinding.btnHome.setEnabled(true);
+                        mFragmentConsultationThirdBinding.btnHome.setAlpha(1f);
+                    }else{
+                        mFragmentConsultationThirdBinding.chkAgree.setVisibility(View.GONE);
+                        mFragmentConsultationThirdBinding.btnHome.setEnabled(false);
+                        mFragmentConsultationThirdBinding.btnHome.setAlpha(0.6f);
+                    }
+                }else {
+                    mFragmentConsultationThirdBinding.chkAgree.setVisibility(View.GONE);
+                    mFragmentConsultationThirdBinding.btnHome.setEnabled(true);
+                    mFragmentConsultationThirdBinding.btnHome.setAlpha(1f);
+                }
+            } else {
+                mFragmentConsultationThirdBinding.chkAgree.setVisibility(View.VISIBLE);
+            }
+        });
+        super.onResume();
     }
 
     private void getRecommendations() {
@@ -105,6 +162,8 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
                 controller.setListner(new NetworkResponseListner<List<Recommendations>>() {
                     @Override
                     public void onResponse(int requestCode, List<Recommendations> items) {
+                        initImages.clear();
+                        imagesClicked.clear();
                         progressD.dismiss();
                         if (items != null && items.size() > 0) {
                             AppUtils.isInspectionDone = true;
@@ -129,6 +188,21 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
                             }
                             mFragmentConsultationThirdBinding.recycleView.setVisibility(View.VISIBLE);
                             mFragmentConsultationThirdBinding.txtEmpty.setVisibility(View.GONE);
+                            for (int i=0; i < items.size(); i++){
+                                if (items.get(i).getRecommendationImageUrl() != null && !items.get(i).getRecommendationImageUrl().equals("")){
+                                    imgCount++;
+                                    initImages.add(items.get(i).getRecommendationImageUrl());
+                                }
+                            }
+                            if (imgCount > 0){
+                                mFragmentConsultationThirdBinding.btnHome.setEnabled(false);
+                            }else{
+                                if (AppUtils.isInspectionDone){
+                                    mFragmentConsultationThirdBinding.chkAgree.setVisibility(View.GONE);
+                                    mFragmentConsultationThirdBinding.btnHome.setEnabled(true);
+                                    mFragmentConsultationThirdBinding.btnHome.setAlpha(1f);
+                                }
+                            }
                             mAdapter.setData(items);
                             mAdapter.notifyDataSetChanged();
                         } else {
@@ -154,6 +228,7 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
 
     @Override
     public void onHomeButtonClicked(View view) {
+        mAdapter.stopPlaying();
         ChildFragment3Listener listener = (ChildFragment3Listener) getParentFragment();
         listener.onHomeButtonClicked();
     }

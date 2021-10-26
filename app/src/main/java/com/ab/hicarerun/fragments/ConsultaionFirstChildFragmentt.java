@@ -469,6 +469,7 @@ public class ConsultaionFirstChildFragmentt extends Fragment implements UserFirs
 
     @Override
     public void onNextButtonClicked(View view) {
+        mAdapter.stopPlaying();
         AppUtils.dataList.addAll(consulationList);
         ChildFragment1Listener listener = (ChildFragment1Listener) getParentFragment();
         listener.onNextClicked();

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.ContextCompat;
@@ -54,6 +55,7 @@ public class ConsulationParentAdapter extends RecyclerView.Adapter<ConsulationPa
     private String type = "";
     private boolean isPLAYING = false;
     MediaPlayer mp;
+    private int lastPlaying = -1;
 
     public ConsulationParentAdapter(Context context, boolean isInspectionDone, String type, OnOptionClicked onOptionClicked) {
         if (items == null) {
@@ -183,34 +185,51 @@ public class ConsulationParentAdapter extends RecyclerView.Adapter<ConsulationPa
                     }
                 });
             }
-            holder.mLayoutConsulationParentAdapterBinding.txtQuest.setOnClickListener(view -> {
-                if (mp != null){
-                    if (mp.isLooping() || mp.isPlaying()) {
-                        isPLAYING = false;
+            if (mp != null) {
+                mp.setOnCompletionListener(mediaPlayer -> {
+                    if (mp != null) {
                         mp.release();
+                        isPLAYING = false;
                         mp = null;
-                        //holder.mLayoutConsulationParentAdapterBinding.txtQuest.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_speaker));
+                        notifyItemChanged(lastPlaying);
+                        lastPlaying = -1;
                     }
+                });
+            }
+            holder.mLayoutConsulationParentAdapterBinding.txtQuest.setOnClickListener(view -> {
+                if (position == lastPlaying){
+                    stopPlaying();
+                    holder.mLayoutConsulationParentAdapterBinding.txtQuest.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_speaker), null);
+                    notifyItemChanged(lastPlaying);
+                    lastPlaying = -1;
                 }else {
+                    stopPlaying();
                     if (items.get(position).getQuestionAudioUrl() != null) {
-                        playAudio(items.get(position).getQuestionAudioUrl(), position);
+                        playAudio(holder.mLayoutConsulationParentAdapterBinding.txtQuest, items.get(position).getQuestionAudioUrl(), position);
                     } else {
-                        playAudio("https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3", position);
+                        playAudio(holder.mLayoutConsulationParentAdapterBinding.txtQuest, "https://www.kozco.com/tech/piano2-CoolEdit.mp3", position);
                     }
+                    notifyDataSetChanged();
                 }
             });
+            if (lastPlaying != -1 && (lastPlaying == position && isPLAYING)){
+                holder.mLayoutConsulationParentAdapterBinding.txtQuest.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_music_stop), null);
+            }else {
+                holder.mLayoutConsulationParentAdapterBinding.txtQuest.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_speaker), null);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void playAudio(String url, int position) {
+    public void playAudio(TextView view, String url, int position) {
         mp = new MediaPlayer();
         if (!isPLAYING) {
             isPLAYING = true;
+            lastPlaying = position;
             try {
-                //view.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_music_stop));
+                view.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null , ContextCompat.getDrawable(mContext, R.drawable.ic_music_stop), null);
                 mp.setDataSource(mContext, Uri.parse(url));
                 mp.prepare();
                 mp.start();
@@ -220,14 +239,17 @@ public class ConsulationParentAdapter extends RecyclerView.Adapter<ConsulationPa
         } else {
             isPLAYING = false;
             stopPlaying();
-            //view.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_speaker));
+            view.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_speaker), null);
         }
     }
 
-    private void stopPlaying() {
-        mp.stop();
-        mp.release();
-        mp = null;
+    public void stopPlaying() {
+        if (mp != null) {
+            isPLAYING = false;
+            mp.stop();
+            mp.release();
+            mp = null;
+        }
     }
 
     public void setOnItemClickHandler(OnConsultationClickHandler onItemClickHandler) {

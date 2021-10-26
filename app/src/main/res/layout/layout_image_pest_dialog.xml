@@ -67,7 +67,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="Use previously clicked image"
+                    android:text="Use Previous Equipment Image"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 
