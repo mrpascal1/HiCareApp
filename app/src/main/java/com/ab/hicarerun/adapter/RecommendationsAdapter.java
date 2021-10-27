@@ -25,6 +25,7 @@ import com.ab.hicarerun.handler.OnListItemClickHandler;
 import com.ab.hicarerun.network.models.ConsulationModel.Recommendations;
 import com.ab.hicarerun.network.models.ProductCartModel.ProductCart;
 import com.ab.hicarerun.utils.ImageOverlayStfalcon;
+import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -32,6 +33,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.view.View.GONE;
 import static com.ab.hicarerun.BaseApplication.getRealm;
 
 /**
@@ -47,6 +49,7 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
     MediaPlayer mp;
     private int lastPlaying = -1;
     int imgCount = 0;
+    private boolean startedPlaying = false;
 
     public RecommendationsAdapter(Context context, String type) {
         if (items == null) {
@@ -69,6 +72,19 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
     @Override
     public void onBindViewHolder(@NotNull RecommendationsAdapter.ViewHolder holder, final int position) {
         try {
+            if (lastPlaying != -1 && (lastPlaying == position && isPLAYING)){
+                holder.layoutRecommendationsAdapterBinding.progressBar.setVisibility(GONE);
+                holder.layoutRecommendationsAdapterBinding.speakerIv.setVisibility(View.VISIBLE);
+                holder.layoutRecommendationsAdapterBinding.speakerIv.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_music_stop));
+            }else {
+                holder.layoutRecommendationsAdapterBinding.progressBar.setVisibility(GONE);
+                holder.layoutRecommendationsAdapterBinding.speakerIv.setVisibility(View.VISIBLE);
+                holder.layoutRecommendationsAdapterBinding.speakerIv.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_speaker));
+            }
+            if (position == lastPlaying && startedPlaying){
+                holder.layoutRecommendationsAdapterBinding.progressBar.setVisibility(GONE);
+                holder.layoutRecommendationsAdapterBinding.speakerIv.setVisibility(View.VISIBLE);
+            }
             holder.layoutRecommendationsAdapterBinding.txtTitle.setText(items.get(position).getRecommendationTitle());
             if (items.get(position).getRecommendationDescription() != null && !items.get(position).getRecommendationDescription().equals("")) {
                 if (type.equals("TMS")) {
@@ -123,12 +139,13 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
             } else {
                 holder.layoutRecommendationsAdapterBinding.lnrDuration.setVisibility(View.GONE);
             }
-            if (items.get(position).isAudioEnabled()){
+            if (items.get(position).isAudioEnabled() && items.get(position).getRecommendationAudioUrl() != null){
                 holder.layoutRecommendationsAdapterBinding.lnrSpeaker.setVisibility(View.VISIBLE);
             }else {
                 holder.layoutRecommendationsAdapterBinding.lnrSpeaker.setVisibility(View.GONE);
             }
             if (items.get(position).getRecommendationImageUrl() != null){
+                Picasso.get().load(items.get(position).getRecommendationImageUrl()).fit().into(holder.layoutRecommendationsAdapterBinding.recommendationIv);
                 holder.layoutRecommendationsAdapterBinding.lnrRecommendationIv.setVisibility(View.VISIBLE);
             }else {
                 holder.layoutRecommendationsAdapterBinding.lnrRecommendationIv.setVisibility(View.GONE);
@@ -152,8 +169,27 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
                         lastPlaying = -1;
                     }
                 });
+                mp.setOnPreparedListener(mediaPlayer -> {
+                    mediaPlayer.start();
+                    if (mp.isPlaying()) {
+                        startedPlaying = true;
+                        notifyDataSetChanged();
+                    }
+                });
+                if (position == lastPlaying) {
+                    if (!mp.isPlaying()) {
+                        Log.d("TAG", "Not Playing");
+                        holder.layoutRecommendationsAdapterBinding.progressBar.setVisibility(View.VISIBLE);
+                        holder.layoutRecommendationsAdapterBinding.speakerIv.setVisibility(GONE);
+                    } else {
+                        holder.layoutRecommendationsAdapterBinding.speakerIv.setVisibility(View.VISIBLE);
+                        holder.layoutRecommendationsAdapterBinding.progressBar.setVisibility(GONE);
+                    }
+                }
             }
             holder.layoutRecommendationsAdapterBinding.lnrSpeaker.setOnClickListener(view -> {
+                holder.layoutRecommendationsAdapterBinding.progressBar.setVisibility(View.VISIBLE);
+                holder.layoutRecommendationsAdapterBinding.speakerIv.setVisibility(GONE);
                 if (position == lastPlaying){
                     stopPlaying();
                     holder.layoutRecommendationsAdapterBinding.speakerIv.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_speaker));
@@ -169,11 +205,6 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
                     notifyDataSetChanged();
                 }
             });
-            if (lastPlaying != -1 && (lastPlaying == position && isPLAYING)){
-                holder.layoutRecommendationsAdapterBinding.speakerIv.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_music_stop));
-            }else {
-                holder.layoutRecommendationsAdapterBinding.speakerIv.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_speaker));
-            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -188,8 +219,9 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
             try {
                 view.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_music_stop));
                 mp.setDataSource(mContext, Uri.parse(url));
-                mp.prepare();
-                mp.start();
+                //mp.setOnPreparedListener(MediaPlayer::start);
+                mp.prepareAsync();
+                //mp.start();
             } catch (IOException e) {
                 Log.d("TAG", "prepare() failed");
             }

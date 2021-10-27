@@ -22,9 +22,31 @@
                 android:textColor="@color/black"
                 android:layout_marginTop="12dp"
                 android:textStyle="bold"
-                android:drawableEnd="@drawable/ic_speaker"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="30dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                app:indicatorSize="20dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="2dp"
+                android:layout_toStartOf="@id/relPhoto"
+                android:layout_alignWithParentIfMissing="true"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/speakerIv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="2dp"
+                android:src="@drawable/ic_speaker"
+                android:layout_toStartOf="@id/relPhoto"
+                android:layout_alignWithParentIfMissing="true"
+                android:visibility="visible"/>
 
             <RelativeLayout
                 android:id="@+id/relPhoto"
@@ -36,7 +58,8 @@
                 android:layout_marginLeft="5dp"
                 android:background="@drawable/dotted_box"
                 android:orientation="vertical"
-                android:layout_alignParentEnd="true">
+                android:layout_alignParentEnd="true"
+                android:visibility="visible">
 
 
                 <LinearLayout

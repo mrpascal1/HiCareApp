@@ -29,6 +29,7 @@ import com.ab.hicarerun.network.models.ConsulationModel.Optionlist;
 import com.ab.hicarerun.network.models.OffersModel.RewardList;
 import com.ab.hicarerun.viewmodel.ConsulationViewModel;
 import com.ab.hicarerun.viewmodel.RewardsViewModel;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
@@ -56,6 +57,7 @@ public class ConsulationParentAdapter extends RecyclerView.Adapter<ConsulationPa
     private boolean isPLAYING = false;
     MediaPlayer mp;
     private int lastPlaying = -1;
+    private boolean startedPlaying = false;
 
     public ConsulationParentAdapter(Context context, boolean isInspectionDone, String type, OnOptionClicked onOptionClicked) {
         if (items == null) {
@@ -83,6 +85,21 @@ public class ConsulationParentAdapter extends RecyclerView.Adapter<ConsulationPa
     @Override
     public void onBindViewHolder(@NotNull ConsulationParentAdapter.ViewHolder holder, final int position) {
         try {
+            if (lastPlaying != -1 && (lastPlaying == position && isPLAYING)){
+                holder.mLayoutConsulationParentAdapterBinding.progressBar.setVisibility(GONE);
+                holder.mLayoutConsulationParentAdapterBinding.speakerIv.setVisibility(View.VISIBLE);
+                //holder.mLayoutConsulationParentAdapterBinding.txtQuest.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_music_stop), null);
+                holder.mLayoutConsulationParentAdapterBinding.speakerIv.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_music_stop));
+            }else {
+                holder.mLayoutConsulationParentAdapterBinding.progressBar.setVisibility(GONE);
+                holder.mLayoutConsulationParentAdapterBinding.speakerIv.setVisibility(View.VISIBLE);
+                //holder.mLayoutConsulationParentAdapterBinding.txtQuest.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_speaker), null);
+                holder.mLayoutConsulationParentAdapterBinding.speakerIv.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_speaker));
+            }
+            if (position == lastPlaying && startedPlaying){
+                holder.mLayoutConsulationParentAdapterBinding.progressBar.setVisibility(GONE);
+                holder.mLayoutConsulationParentAdapterBinding.speakerIv.setVisibility(View.VISIBLE);
+            }
             if (items.get(position).getPictureRequired()) {
                 holder.mLayoutConsulationParentAdapterBinding.relPhoto.setVisibility(View.VISIBLE);
             } else {
@@ -136,10 +153,10 @@ public class ConsulationParentAdapter extends RecyclerView.Adapter<ConsulationPa
             holder.mLayoutConsulationParentAdapterBinding.txtQuest.setText(items.get(position).getQuestionDisplayTitle());
 //            }
             holder.mLayoutConsulationParentAdapterBinding.txtQuest.setTypeface(holder.mLayoutConsulationParentAdapterBinding.txtQuest.getTypeface(), Typeface.BOLD);
-            if (items.get(position).getAudioEnabled()){
-                holder.mLayoutConsulationParentAdapterBinding.txtQuest.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_speaker), null);
+            if (items.get(position).getAudioEnabled() && items.get(position).getQuestionAudioUrl() != null){
+                holder.mLayoutConsulationParentAdapterBinding.speakerIv.setVisibility(View.VISIBLE);
             }else {
-                holder.mLayoutConsulationParentAdapterBinding.txtQuest.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
+                holder.mLayoutConsulationParentAdapterBinding.speakerIv.setVisibility(GONE);
             }
             ConsulationChildAdapter childAdapter = new ConsulationChildAdapter(mContext, isInspectionDone, (position1, isChecked, isSelectedAndDisabled) -> {
 
@@ -196,50 +213,70 @@ public class ConsulationParentAdapter extends RecyclerView.Adapter<ConsulationPa
                     }
                 });
             }
-            holder.mLayoutConsulationParentAdapterBinding.txtQuest.setOnClickListener(view -> {
+            if (mp != null){
+                mp.setOnPreparedListener(mediaPlayer -> {
+                    mediaPlayer.start();
+                    if (mp.isPlaying()) {
+                        startedPlaying = true;
+                        notifyDataSetChanged();
+                    }
+                });
+                if (position == lastPlaying) {
+                    if (!mp.isPlaying()) {
+                        Log.d("TAG", "Not Playing");
+                        holder.mLayoutConsulationParentAdapterBinding.progressBar.setVisibility(View.VISIBLE);
+                        holder.mLayoutConsulationParentAdapterBinding.speakerIv.setVisibility(GONE);
+                    } else {
+                        holder.mLayoutConsulationParentAdapterBinding.speakerIv.setVisibility(View.VISIBLE);
+                        holder.mLayoutConsulationParentAdapterBinding.progressBar.setVisibility(GONE);
+                    }
+                }
+            }
+            holder.mLayoutConsulationParentAdapterBinding.speakerIv.setOnClickListener(view -> {
+                holder.mLayoutConsulationParentAdapterBinding.progressBar.setVisibility(View.VISIBLE);
+                holder.mLayoutConsulationParentAdapterBinding.speakerIv.setVisibility(GONE);
                 if (position == lastPlaying){
                     stopPlaying();
-                    holder.mLayoutConsulationParentAdapterBinding.txtQuest.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_speaker), null);
+                    //holder.mLayoutConsulationParentAdapterBinding.txtQuest.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_speaker), null);
+                    holder.mLayoutConsulationParentAdapterBinding.speakerIv.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_speaker));
                     notifyItemChanged(lastPlaying);
                     lastPlaying = -1;
                 }else {
                     stopPlaying();
                     if (items.get(position).getQuestionAudioUrl() != null) {
-                        playAudio(holder.mLayoutConsulationParentAdapterBinding.txtQuest, items.get(position).getQuestionAudioUrl(), position);
+                        playAudio(holder.mLayoutConsulationParentAdapterBinding.speakerIv, items.get(position).getQuestionAudioUrl(), position);
                     } else {
-                        playAudio(holder.mLayoutConsulationParentAdapterBinding.txtQuest, "https://www.kozco.com/tech/piano2-CoolEdit.mp3", position);
+                        playAudio(holder.mLayoutConsulationParentAdapterBinding.speakerIv, "https://www.kozco.com/tech/piano2-CoolEdit.mp3", position);
                     }
                     notifyDataSetChanged();
                 }
             });
-            if (lastPlaying != -1 && (lastPlaying == position && isPLAYING)){
-                holder.mLayoutConsulationParentAdapterBinding.txtQuest.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_music_stop), null);
-            }else {
-                holder.mLayoutConsulationParentAdapterBinding.txtQuest.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_speaker), null);
-            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void playAudio(TextView view, String url, int position) {
+    public void playAudio(ImageView view, String url, int position) {
         mp = new MediaPlayer();
         if (!isPLAYING) {
             isPLAYING = true;
             lastPlaying = position;
             try {
-                view.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null , ContextCompat.getDrawable(mContext, R.drawable.ic_music_stop), null);
+                view.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_music_stop));
+                //view.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null , ContextCompat.getDrawable(mContext, R.drawable.ic_music_stop), null);
                 mp.setDataSource(mContext, Uri.parse(url));
-                mp.prepare();
-                mp.start();
+                //mp.setOnPreparedListener(MediaPlayer::start);
+                mp.prepareAsync();
+                //mp.start();
             } catch (IOException e) {
                 Log.d("TAG", "prepare() failed");
             }
         } else {
             isPLAYING = false;
             stopPlaying();
-            view.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_speaker), null);
+            view.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_speaker));
+            //view.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_speaker), null);
         }
     }
 

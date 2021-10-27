@@ -209,7 +209,18 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:text="Click to listen"
-                            android:textSize="8.5sp"/>
+                            android:textSize="8.5sp"
+                            android:visibility="gone"/>
+
+                        <com.google.android.material.progressindicator.CircularProgressIndicator
+                            android:id="@+id/progressBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:indeterminate="true"
+                            app:indicatorSize="20dp"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="2dp"
+                            android:visibility="gone"/>
 
                         <ImageView
                             android:id="@+id/speakerIv"
@@ -225,7 +236,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:layout_marginTop="2dp">
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="6dp"
+                        android:visibility="visible">
 
                         <ImageView
                             android:id="@+id/recommendationIv"

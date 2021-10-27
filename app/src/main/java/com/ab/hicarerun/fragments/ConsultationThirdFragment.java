@@ -195,8 +195,10 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
                                 }
                             }
                             if (imgCount > 0){
+                                mFragmentConsultationThirdBinding.noteTv.setVisibility(View.VISIBLE);
                                 mFragmentConsultationThirdBinding.btnHome.setEnabled(false);
                             }else{
+                                mFragmentConsultationThirdBinding.noteTv.setVisibility(View.GONE);
                                 if (AppUtils.isInspectionDone){
                                     mFragmentConsultationThirdBinding.chkAgree.setVisibility(View.GONE);
                                     mFragmentConsultationThirdBinding.btnHome.setEnabled(true);
