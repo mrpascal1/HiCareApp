@@ -86,7 +86,9 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
         mFragmentConsultationThirdBinding.chkAgree.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 checked = true;
-                if (imgCount > 0) {
+                mFragmentConsultationThirdBinding.btnHome.setEnabled(true);
+                mFragmentConsultationThirdBinding.btnHome.setAlpha(1f);
+                /*if (imgCount > 0) {
                     if (imagesClicked.containsAll(initImages)) {
                         mFragmentConsultationThirdBinding.btnHome.setEnabled(true);
                         mFragmentConsultationThirdBinding.btnHome.setAlpha(1f);
@@ -97,7 +99,7 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
                 }else {
                     mFragmentConsultationThirdBinding.btnHome.setEnabled(true);
                     mFragmentConsultationThirdBinding.btnHome.setAlpha(1f);
-                }
+                }*/
             } else {
                 checked = false;
                 mFragmentConsultationThirdBinding.btnHome.setEnabled(false);
@@ -116,7 +118,7 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
         getRecommendations();
     }
 
-    @Override
+    /*@Override
     public void onResume() {
         mAdapter.setOnItemClickHandler((image, position) -> {
             if (!imagesClicked.contains(image)) {
@@ -147,8 +149,8 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
                 }
             }
         });
-        super.onResume();
-    }
+       super.onResume();
+    }*/
 
     private void getRecommendations() {
         try {
@@ -189,7 +191,7 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
                                     initImages.add(items.get(i).getRecommendationImageUrl());
                                 }
                             }
-                            if (imgCount > 0){
+                            /*if (imgCount > 0){
                                 if (AppUtils.isInspectionDone){
                                     mFragmentConsultationThirdBinding.chkAgree.setVisibility(View.GONE);
                                     mFragmentConsultationThirdBinding.btnHome.setEnabled(true);
@@ -211,7 +213,7 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
                                     mFragmentConsultationThirdBinding.btnHome.setEnabled(false);
                                     mFragmentConsultationThirdBinding.btnHome.setAlpha(0.6f);
                                 }
-                            }
+                            }*/
                             mAdapter.setData(items);
                             mAdapter.notifyDataSetChanged();
                         } else {

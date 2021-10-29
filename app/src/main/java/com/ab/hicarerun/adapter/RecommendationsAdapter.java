@@ -152,7 +152,7 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
             }
 
             holder.layoutRecommendationsAdapterBinding.recommendationIv.setOnClickListener(v -> {
-                onImageClicked.onClicked(items.get(position).getRecommendationImageUrl(), position);
+                //onImageClicked.onClicked(items.get(position).getRecommendationImageUrl(), position);
                 new ImageOverlayStfalcon(mContext, new String[]{items.get(position).getRecommendationImageUrl()});
             });
             /*holder.layoutRecommendationsAdapterBinding.recommendationIv.setOnClickListener(view -> {

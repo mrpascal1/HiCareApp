@@ -96,7 +96,8 @@
                     android:textSize="14sp"
                     android:gravity="center"
                     android:text="Note: Please view all images to enable the continue button"
-                    android:textColor="@color/red"/>
+                    android:textColor="@color/red"
+                    android:visibility="gone"/>
             </LinearLayout>
 
             <LinearLayout
