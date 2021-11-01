@@ -141,11 +141,13 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
             }
             if (items.get(position).isAudioEnabled() && items.get(position).getRecommendationAudioUrl() != null){
                 holder.layoutRecommendationsAdapterBinding.lnrSpeaker.setVisibility(View.VISIBLE);
+                holder.layoutRecommendationsAdapterBinding.speakerIv.setVisibility(View.VISIBLE);
             }else {
                 holder.layoutRecommendationsAdapterBinding.lnrSpeaker.setVisibility(View.GONE);
+                holder.layoutRecommendationsAdapterBinding.speakerIv.setVisibility(View.GONE);
             }
             if (items.get(position).getRecommendationImageUrl() != null){
-                Picasso.get().load(items.get(position).getRecommendationImageUrl()).fit().into(holder.layoutRecommendationsAdapterBinding.recommendationIv);
+                Picasso.get().load(items.get(position).getRecommendationImageUrl()).fit().centerCrop().into(holder.layoutRecommendationsAdapterBinding.recommendationIv);
                 holder.layoutRecommendationsAdapterBinding.lnrRecommendationIv.setVisibility(View.VISIBLE);
             }else {
                 holder.layoutRecommendationsAdapterBinding.lnrRecommendationIv.setVisibility(View.GONE);
@@ -187,7 +189,7 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
                     }
                 }
             }
-            holder.layoutRecommendationsAdapterBinding.lnrSpeaker.setOnClickListener(view -> {
+            holder.layoutRecommendationsAdapterBinding.speakerIv.setOnClickListener(view -> {
                 holder.layoutRecommendationsAdapterBinding.progressBar.setVisibility(View.VISIBLE);
                 holder.layoutRecommendationsAdapterBinding.speakerIv.setVisibility(GONE);
                 if (position == lastPlaying){
