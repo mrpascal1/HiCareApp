@@ -24,4 +24,8 @@ class TmsThirdChildFragment : Fragment() {
         fragment.arguments = args
         return fragment
     }
+
+    interface ThirdChildListener{
+        fun onConfirmClicked()
+    }
 }

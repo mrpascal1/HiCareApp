@@ -72,6 +72,7 @@ import com.ab.hicarerun.adapter.BankSearchAdapter;
 import com.ab.hicarerun.adapter.ChemicalDialogAdapter;
 import com.ab.hicarerun.adapter.SlotsAdapter;
 import com.ab.hicarerun.databinding.FragmentServiceInfoBinding;
+import com.ab.hicarerun.fragments.tms.TmsConsultationFragment;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
 import com.ab.hicarerun.handler.UserServiceInfoClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
@@ -2077,6 +2078,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 InspectionFragment alert = InspectionFragment.newInstance();
                 alert.show(getActivity().getSupportFragmentManager(), "Alert");
             } else {
+                //TmsConsultationFragment alert = TmsConsultationFragment.newInstance();
                 ConsultationFragment alert = ConsultationFragment.newInstance();
                 alert.show(getActivity().getSupportFragmentManager(), "Alert");
             }

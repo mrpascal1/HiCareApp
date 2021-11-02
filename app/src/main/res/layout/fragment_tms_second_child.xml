@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.tms.TmsFirstChildFragment">
+    tools:context=".fragments.tms.TmsSecondChildFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:layout_margin="15dp">
+        android:layout_margin="15dp"
+        android:layout_centerInParent="true">
 
 
         <TextView
@@ -18,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="CONSULTATION"
+            android:text="INSPECTION"
             android:textColor="@color/lightRed"
             android:textSize="13sp" />
 
@@ -29,13 +28,11 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="1dp"
-            android:layout_below="@id/txtPart"
             android:visibility="gone"
-            android:text="About Consultation"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:layout_below="@id/txtPart"
+            android:text="About Inspection"
             android:textColor="@color/colorPrimary"
             android:textSize="18sp" />
-
 
 
         <LinearLayout
@@ -62,39 +59,37 @@
                 android:layout_marginBottom="8dp"
                 tools:listitem="@layout/layout_consulation_parent_adapter"/>
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/lnrBottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:gravity="center"
+
             android:orientation="horizontal"
             android:paddingBottom="8dp"
             android:weightSum="2">
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_cancel"
+                android:id="@+id/btnBack"
                 android:layout_width="0dp"
-                android:layout_height="42dp"
+                android:layout_height="40dp"
                 android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/round_border"
-                android:text="Back"
+                android:text="BACK"
                 android:textAllCaps="false"
                 android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                android:visibility="gone" />
+                android:textSize="15sp" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnNext"
+                android:id="@+id/btnSave"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_gravity="center"
                 android:layout_marginLeft="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/button_border"
-                android:gravity="center"
-                android:text="NEXT"
+                android:text="SAVE"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="15sp" />
@@ -105,4 +100,4 @@
 
     </RelativeLayout>
 
-</FrameLayout>
+</RelativeLayout>
