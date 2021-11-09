@@ -11,6 +11,7 @@ class TmsChipsAdapter(val context: Context, val items: ArrayList<String>) : Recy
 
     var onItemClickHandler: OnListItemClickHandler? = null
     var selectedPos = 0
+    var initial = true
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
         val view = ItemTmsChipsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -19,6 +20,9 @@ class TmsChipsAdapter(val context: Context, val items: ArrayList<String>) : Recy
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         holder.bindItems(items[position])
+        if (initial){
+            onItemClickHandler?.onItemClick(position, items[position])
+        }
         if (selectedPos == position) {
             holder.binding.cardView.setCardBackgroundColor(context.resources.getColor(R.color.colorPrimary));
             holder.binding.lnrCategory.background = context.resources.getDrawable(R.drawable.green_round_border);
@@ -30,6 +34,7 @@ class TmsChipsAdapter(val context: Context, val items: ArrayList<String>) : Recy
         }
         holder.itemView.setOnClickListener {
             selectedPos = position
+            initial = false
             onItemClickHandler?.onItemClick(position, items[position])
             notifyDataSetChanged()
         }
@@ -37,6 +42,18 @@ class TmsChipsAdapter(val context: Context, val items: ArrayList<String>) : Recy
 
     override fun getItemCount(): Int {
         return items.size
+    }
+
+    fun nextChip(position: Int){
+        selectedPos = position
+        onItemClickHandler?.onItemClick(position, items[position])
+        notifyDataSetChanged()
+    }
+
+    fun backChip(position: Int){
+        selectedPos = position
+        onItemClickHandler?.onItemClick(position, items[position])
+        notifyDataSetChanged()
     }
 
     class MyHolder(val binding: ItemTmsChipsBinding): RecyclerView.ViewHolder(binding.root){

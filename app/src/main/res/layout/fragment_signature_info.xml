@@ -27,7 +27,7 @@
                 android:layout_height="65dp"
                 android:background="@color/lightRed"
                 android:orientation="horizontal"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:weightSum="8">
 
                 <LinearLayout

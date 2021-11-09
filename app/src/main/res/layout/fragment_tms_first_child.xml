@@ -59,9 +59,61 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                tools:listitem="@layout/layout_consulation_parent_adapter"/>
+                android:layout_marginBottom="8dp"/>
+
+
+            <RelativeLayout
+                android:id="@+id/configLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@id/lnrData">
+                <LinearLayout
+                    android:id="@+id/backChipBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_round_border_tms"
+                    android:textSize="12sp"
+                    android:textAllCaps="false"
+                    android:padding="8dp"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/ic_round_arrow_back_black"
+                        android:layout_gravity="center_vertical"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Back"
+                        android:layout_marginStart="4dp"
+                        android:layout_gravity="center_vertical" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/nextChipBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_round_border_tms"
+                    android:textSize="12sp"
+                    android:textAllCaps="false"
+                    android:padding="8dp"
+                    android:orientation="horizontal"
+                    android:layout_alignParentEnd="true">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Next"
+                        android:layout_marginEnd="4dp"
+                        android:layout_gravity="center_vertical" />
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/ic_round_arrow_forward_black"
+                        android:layout_gravity="center_vertical"/>                </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/lnrBottom"
             android:layout_width="match_parent"

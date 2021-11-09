@@ -893,6 +893,11 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 public void onResponse(int requestCode, List<MenuData> response) {
                     menuData = new ArrayList<>();
                     menuData = response;
+                    /*for(MenuData m : menuData){
+                        if (m.getTitle().equalsIgnoreCase("Shiksha")){
+                            m.setIsVisible(true);
+                        }
+                    }*/
                     setDrawer();
                 }
 

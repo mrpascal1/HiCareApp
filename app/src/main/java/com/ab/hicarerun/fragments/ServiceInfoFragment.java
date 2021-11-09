@@ -2078,8 +2078,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 InspectionFragment alert = InspectionFragment.newInstance();
                 alert.show(getActivity().getSupportFragmentManager(), "Alert");
             } else {
-                //TmsConsultationFragment alert = TmsConsultationFragment.newInstance();
-                ConsultationFragment alert = ConsultationFragment.newInstance();
+                TmsConsultationFragment alert = TmsConsultationFragment.newInstance();
+                //ConsultationFragment alert = ConsultationFragment.newInstance();
                 alert.show(getActivity().getSupportFragmentManager(), "Alert");
             }
         } catch (Exception e) {
