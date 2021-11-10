@@ -87,7 +87,7 @@
                     android:id="@+id/chkAgree"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="I agree &amp; Understand to use the chemicals as recommended"
+                    android:text="I agree &amp; understand to use the chemicals as recommended"
                     android:textColor="@color/colorPrimary" />
                 <TextView
                     android:id="@+id/noteTv"

@@ -7,6 +7,7 @@ import android.graphics.Point
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
@@ -16,7 +17,11 @@ import com.ab.hicarerun.databinding.FragmentTmsConsultationBinding
 import com.ab.hicarerun.fragments.ConsultaionFirstChildFragmentt
 import com.ab.hicarerun.fragments.ConsultaionSecondChildFragment
 import com.ab.hicarerun.fragments.ConsultationFragment
+import com.ab.hicarerun.network.NetworkCallController
+import com.ab.hicarerun.network.NetworkResponseListner
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData
+import com.ab.hicarerun.network.models.TmsModel.QuestionTabList
+import com.ab.hicarerun.network.models.TmsModel.TmsData
 import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.ProgressBarDrawable
 import io.realm.RealmResults
@@ -28,6 +33,7 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
     private val SAVE_CON_REQ = 1000
     lateinit var mTaskDetailsData: RealmResults<GeneralData>
     lateinit var progressD: ProgressDialog
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment

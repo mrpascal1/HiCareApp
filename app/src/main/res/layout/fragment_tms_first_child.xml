@@ -56,62 +56,71 @@
                 tools:listitem="@layout/item_tms_chips"/>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycleView"
+                android:layout_below="@id/chipsRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"/>
-
+                android:layout_marginBottom="8dp"
+                tools:listitem="@layout/layout_consulation_parent_adapter"/>
 
             <RelativeLayout
                 android:id="@+id/configLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_below="@id/lnrData">
+                android:layout_marginTop="4dp"
+                android:layout_below="@id/recycleView"
+                android:orientation="horizontal">
+
                 <LinearLayout
                     android:id="@+id/backChipBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_round_border_tms"
-                    android:textSize="12sp"
-                    android:textAllCaps="false"
+                    android:orientation="horizontal"
                     android:padding="8dp"
-                    android:orientation="horizontal">
+                    android:textAllCaps="false"
+                    android:textSize="12sp">
+
                     <ImageView
                         android:layout_width="15dp"
                         android:layout_height="15dp"
-                        android:src="@drawable/ic_round_arrow_back_black"
-                        android:layout_gravity="center_vertical"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Back"
-                        android:layout_marginStart="4dp"
-                        android:layout_gravity="center_vertical" />
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/nextChipBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_round_border_tms"
-                    android:textSize="12sp"
-                    android:textAllCaps="false"
-                    android:padding="8dp"
-                    android:orientation="horizontal"
-                    android:layout_alignParentEnd="true">
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_round_arrow_back_black" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Next"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="4dp"
+                        android:text="Back" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/nextChipBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/bg_round_border_tms"
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    android:textAllCaps="false"
+                    android:textSize="12sp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:layout_marginEnd="4dp"
-                        android:layout_gravity="center_vertical" />
+                        android:text="Next" />
+
                     <ImageView
                         android:layout_width="15dp"
                         android:layout_height="15dp"
-                        android:src="@drawable/ic_round_arrow_forward_black"
-                        android:layout_gravity="center_vertical"/>                </LinearLayout>
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_round_arrow_forward_black" />
+                </LinearLayout>
             </RelativeLayout>
+
         </LinearLayout>
 
         <LinearLayout

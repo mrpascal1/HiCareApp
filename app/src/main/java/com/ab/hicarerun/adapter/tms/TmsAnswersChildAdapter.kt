@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.databinding.LayoutTmsChildAdapterBinding
 import com.ab.hicarerun.network.models.TmsModel.Option
+import com.ab.hicarerun.network.models.TmsModel.QuestionOption
 
 class TmsAnswersChildAdapter(val context: Context) : RecyclerView.Adapter<TmsAnswersChildAdapter.MyHolder>() {
 
-    var items: ArrayList<Option> = ArrayList()
+    var items: ArrayList<QuestionOption> = ArrayList()
     var selectedPos = -1
     var isSelected = false
+    var ansType = ""
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
         val view = LayoutTmsChildAdapterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -23,21 +25,43 @@ class TmsAnswersChildAdapter(val context: Context) : RecyclerView.Adapter<TmsAns
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         holder.bindItems(items[position])
 
+        if (ansType.equals("single select", true)){
+            holder.binding.rbAnswers.visibility = View.VISIBLE
+            holder.binding.chkAnswers.visibility = View.GONE
+        }else if (ansType.equals("multi select", true)){
+            holder.binding.rbAnswers.visibility = View.GONE
+            holder.binding.chkAnswers.visibility = View.VISIBLE
+        }else{
+            holder.binding.rbAnswers.visibility = View.GONE
+            holder.binding.chkAnswers.visibility = View.GONE
+        }
 
         holder.binding.rbAnswers.setOnClickListener {
-            Log.d("TAG: ", "Position $position and ID ${items[position].id}")
+            Log.d("TAG: ", "Position $position and ID ${items[position]}")
             selectedPos = position
-            items[position].selected = true
+            items[position].isSelected = true
             holder.binding.rbAnswers.isChecked = true
             for (i in 0 until items.size){
                 if (selectedPos != i) {
                     holder.binding.rbAnswers.isChecked = false;
-                    items[i].selected = false
+                    items[i].isSelected = false
                 }
             }
             notifyDataSetChanged()
         }
 
+        holder.binding.chkAnswers.setOnClickListener {
+            Log.d("TAG: ", "Position $position and ID ${items[position]}")
+            selectedPos = position
+            items[position].isSelected = holder.binding.chkAnswers.isChecked
+            /*for (i in 0 until items.size){
+                if (selectedPos != i) {
+                    holder.binding.rbAnswers.isChecked = false;
+                    items[i].isSelected = false
+                }
+            }*/
+            notifyDataSetChanged()
+        }
 
     }
 
@@ -45,19 +69,21 @@ class TmsAnswersChildAdapter(val context: Context) : RecyclerView.Adapter<TmsAns
         return items.size
     }
 
-    fun addData(options: List<Option>?, answerSelected: Boolean){
+    fun addData(options: List<QuestionOption>?, type: String?){
         items.clear()
         if (options != null) {
             items.addAll(options)
         }
-        isSelected = answerSelected
+        ansType = type.toString()
     }
 
     class MyHolder(val binding: LayoutTmsChildAdapterBinding): RecyclerView.ViewHolder(binding.root){
-        fun bindItems(item: Option){
+        fun bindItems(item: QuestionOption){
             binding.chkAnswers.visibility = View.GONE
-            binding.rbAnswers.text = item.option
-            binding.rbAnswers.isChecked = item.selected
+            binding.rbAnswers.text = item.optionText
+            binding.chkAnswers.text = item.optionText
+            binding.rbAnswers.isChecked = item.isSelected==true
+            binding.chkAnswers.isChecked = item.isSelected==true
         }
     }
 }

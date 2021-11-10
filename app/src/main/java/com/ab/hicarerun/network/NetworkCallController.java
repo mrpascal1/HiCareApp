@@ -121,6 +121,7 @@ import com.ab.hicarerun.network.models.TaskModel.UpdateTaskResponse;
 import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingRequest;
 import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingResponse;
 import com.ab.hicarerun.network.models.TechnicianRoutineModel.TechnicianRoutineResponse;
+import com.ab.hicarerun.network.models.TmsModel.QuestionBase;
 import com.ab.hicarerun.network.models.TrainingModel.TrainingResponse;
 import com.ab.hicarerun.network.models.TrainingModel.WelcomeVideoResponse;
 import com.ab.hicarerun.network.models.UpdateAppModel.UpdateResponse;
@@ -4064,6 +4065,43 @@ public class NetworkCallController {
 
                         @Override
                         public void onFailure(Call<ConsulationResponse> call, Throwable t) {
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void getTmsQuestions(final int requestCode, String taskId) {
+        try {
+            BaseApplication.getRetrofitAPI(true)
+                    .getTmsQuestions(taskId)
+                    .enqueue(new Callback<QuestionBase>() {
+                        @Override
+                        public void onResponse(Call<QuestionBase> call, Response<QuestionBase> response) {
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body().getData());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getExotelCalled", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<QuestionBase> call, Throwable t) {
                         }
                     });
         } catch (Exception e) {

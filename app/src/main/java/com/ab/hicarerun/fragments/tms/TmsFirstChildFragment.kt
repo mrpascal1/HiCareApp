@@ -1,20 +1,22 @@
 package com.ab.hicarerun.fragments.tms
 
+import android.content.res.Resources
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.ab.hicarerun.R
 import com.ab.hicarerun.adapter.tms.TmsChipsAdapter
 import com.ab.hicarerun.adapter.tms.TmsQuestionsParentAdapter
 import com.ab.hicarerun.databinding.FragmentTmsFirstChildBinding
-import com.ab.hicarerun.network.models.TmsModel.Option
-import com.ab.hicarerun.network.models.TmsModel.Questions
 import com.ab.hicarerun.network.models.TmsModel.QuestionsResponse
+import com.ab.hicarerun.utils.AppUtils
 
 
 class TmsFirstChildFragment : Fragment() {
@@ -32,11 +34,14 @@ class TmsFirstChildFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentTmsFirstChildBinding.inflate(inflater, container, false)
         val view = binding.root
-        chipsArray = arrayListOf("General", "Living Room", "Kitchen","Bedroom")
+        //chipsArray = arrayListOf("General", "Living Room", "Kitchen","Bedroom")
+        chipsArray = ArrayList()
+        chipsArray.addAll(AppUtils.tmsConsultationChips)
+
         val questionsArray = arrayListOf("What is android OS?", "What is android framework?",
             "What is android components","What is linux kernel?")
         questionsResponse = ArrayList()
-        questionsResponse.add(QuestionsResponse("General",
+        /*questionsResponse.add(QuestionsResponse("General",
             arrayListOf(
                 Questions("What is android OS?",
                     arrayListOf(
@@ -90,7 +95,7 @@ class TmsFirstChildFragment : Fragment() {
                         Option(8, "2nd Option 3", false)),
                     false)),
 
-        ))
+        ))*/
 
 
         chipsAdapter = TmsChipsAdapter(requireContext(), chipsArray)
@@ -101,7 +106,7 @@ class TmsFirstChildFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         val questionsLayoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        questionsLayoutManager.stackFromEnd = true
+        questionsLayoutManager.stackFromEnd = false
         questionsLayoutManager.reverseLayout = false
 
         val chipsLayoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
@@ -118,19 +123,33 @@ class TmsFirstChildFragment : Fragment() {
         chipsAdapter.setOnListItemClickHandler(object : TmsChipsAdapter.OnListItemClickHandler{
             override fun onItemClick(position: Int, category: String) {
                 currPos = position
-                questionsResponse.forEach {
-                    if (it.category.equals(category, true)){
+                AppUtils.tmsConsultationList.forEach {
+                    if (it.questionTab.equals(category, true)){
                         questionsParentAdapter.addData(it.questionList)
                         questionsParentAdapter.notifyDataSetChanged()
                     }
                 }
+                if (!isVisible(binding.configLayout)){
+                    val param = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        1f
+                    )
+                    binding.recycleView.layoutParams = param;
+                }else{
+                    val param = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        0f
+                    )
+                    binding.recycleView.layoutParams = param;
+                }
             }
         })
 
-
         binding.recycleView.layoutManager = questionsLayoutManager
         binding.recycleView.setHasFixedSize(true)
-        binding.recycleView.isNestedScrollingEnabled = false
+        binding.recycleView.isNestedScrollingEnabled = true
         binding.recycleView.adapter = questionsParentAdapter
 
         binding.btnNext.setOnClickListener {
@@ -157,6 +176,19 @@ class TmsFirstChildFragment : Fragment() {
         }
 
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    fun isVisible(view: View?): Boolean {
+        if (view == null) {
+            return false
+        }
+        if (!view.isShown) {
+            return false
+        }
+        val actualPosition = Rect()
+        view.getGlobalVisibleRect(actualPosition)
+        val screen = Rect(0, 0, Resources.getSystem().displayMetrics.widthPixels, Resources.getSystem().displayMetrics.heightPixels)
+        return actualPosition.intersect(screen)
     }
 
     interface FirstChildListener{

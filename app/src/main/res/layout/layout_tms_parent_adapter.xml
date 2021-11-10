@@ -43,7 +43,7 @@
             android:src="@drawable/ic_speaker"
             android:layout_toStartOf="@id/relPhoto"
             android:layout_alignWithParentIfMissing="true"
-            android:visibility="visible"/>
+            android:visibility="gone"/>
 
         <RelativeLayout
             android:id="@+id/relPhoto"
@@ -56,7 +56,7 @@
             android:background="@drawable/dotted_box"
             android:orientation="vertical"
             android:layout_alignParentEnd="true"
-            android:visibility="visible">
+            android:visibility="gone">
 
 
             <LinearLayout

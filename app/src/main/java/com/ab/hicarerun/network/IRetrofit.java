@@ -109,6 +109,7 @@ import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
 import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingRequest;
 import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingResponse;
 import com.ab.hicarerun.network.models.TechnicianRoutineModel.TechnicianRoutineResponse;
+import com.ab.hicarerun.network.models.TmsModel.QuestionBase;
 import com.ab.hicarerun.network.models.TrainingModel.TrainingResponse;
 import com.ab.hicarerun.network.models.TrainingModel.WelcomeVideoResponse;
 import com.ab.hicarerun.network.models.UpdateAppModel.UpdateResponse;
@@ -577,4 +578,8 @@ public interface IRetrofit {
 
     @GET("CustomerReferral/SendReferralMessage")
     Call<BaseResponse> sendReferralMessage(@Query("resourceId") String resourceId, @Query("taskId") String taskId);
+
+    @GET("TMSDigitisation/GetTMSQuestions")
+    Call<QuestionBase> getTmsQuestions(@Query("taskId") String taskId);
+
 }

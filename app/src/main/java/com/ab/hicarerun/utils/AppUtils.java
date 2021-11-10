@@ -53,6 +53,9 @@ import com.ab.hicarerun.network.models.GeneralModel.IncompleteReason;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShake;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLog;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
+import com.ab.hicarerun.network.models.TmsModel.QuestionList;
+import com.ab.hicarerun.network.models.TmsModel.QuestionTabList;
+import com.ab.hicarerun.network.models.TmsModel.TmsData;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
@@ -66,6 +69,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -86,6 +90,13 @@ public class AppUtils {
     public static List<Data> consulationList = null;
     public static List<Data> inspectionList = null;
     public static List<Data> ConsInsList = null;
+
+    public static List<String> tmsConsultationChips = null;
+    public static List<String> tmsInspectionChips = null;
+    public static ArrayList<QuestionTabList> tmsConsultationList = null;
+    public static List<QuestionList> tmsInspectionList = null;
+    public static List<TmsData> tmsConsInsList = null;
+
     public static List<TowerData> towerData = null;
     public static List<TowerData> mCommonTowerList = null;
     public static List<TowerData> mRegularTowerList = null;
@@ -803,5 +814,51 @@ public class AppUtils {
         }
     }
 
+    public static void getTmsQuestions(String taskId) {
+        try {
+            NetworkCallController controller = new NetworkCallController();
+            controller.setListner(new NetworkResponseListner<List<TmsData>>() {
+                @Override
+                public void onResponse(int requestCode, List<TmsData> items) {
+                    tmsConsultationChips = new ArrayList<>();
+                    tmsInspectionChips = new ArrayList<>();
+                    tmsConsultationList = new ArrayList<>();
+                    tmsInspectionList = new ArrayList<>();
+                    tmsConsInsList = new ArrayList<>();
+                    if (items != null && items.size() > 0) {
+                        tmsConsInsList = items;
+                        Log.d("TAG", "Called");
+                        for (TmsData data : items) {
+                            if (data.getType().equals("Consultation")) {
+                                for (int i =0; i<data.getQuestionTabList().size(); i++){
+                                    tmsConsultationChips.add(data.getQuestionTabList().get(i).getQuestionTab());
+                                }
+                                tmsConsultationList.addAll(data.getQuestionTabList());
+//                                mAdapter.addData(consulationList);
+//                                mAdapter.notifyDataSetChanged();
+                            } else {
+                                for (int i =0; i<data.getQuestionTabList().size(); i++){
+                                    tmsInspectionChips.add(data.getQuestionTabList().get(i).getQuestionTab());
+                                    tmsInspectionList.addAll(data.getQuestionTabList().get(i).getQuestionList());
+                                }
+                            }
+                        }
+//                        mAdapter.setOnItemClickHandler(position -> {
+//                            checkPosition = position;
+//                            requestStoragePermission(true);
+//                        });
+                    }
+                }
+
+                @Override
+                public void onFailure(int requestCode) {
+
+                }
+            });
+            controller.getTmsQuestions(1011, taskId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }
