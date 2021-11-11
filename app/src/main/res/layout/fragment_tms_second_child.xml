@@ -51,13 +51,78 @@
                 tools:itemCount="4"
                 tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 tools:listitem="@layout/item_tms_chips"/>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycleView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                tools:listitem="@layout/layout_consulation_parent_adapter"/>
+                tools:itemCount="1"
+                tools:listitem="@layout/layout_consulation_parent_adapter" />
+            <RelativeLayout
+                android:id="@+id/configLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="6dp"
+                android:layout_below="@id/recycleView"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/backChipBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_round_border_tms"
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    android:textAllCaps="false"
+                    android:textSize="12sp">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_round_arrow_back_black" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="4dp"
+                        android:text="Back" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/nextChipBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/bg_round_border_tms"
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    android:textAllCaps="false"
+                    android:textSize="12sp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="4dp"
+                        android:text="Next" />
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_round_arrow_forward_black" />
+                </LinearLayout>
+            </RelativeLayout>
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -65,7 +130,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-
+            android:gravity="center"
             android:orientation="horizontal"
             android:paddingBottom="8dp"
             android:weightSum="2">

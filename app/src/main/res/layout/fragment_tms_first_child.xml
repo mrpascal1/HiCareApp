@@ -54,6 +54,11 @@
                 tools:itemCount="4"
                 tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 tools:listitem="@layout/item_tms_chips"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycleView"
                 android:layout_below="@id/chipsRecyclerView"
@@ -120,6 +125,7 @@
                         android:src="@drawable/ic_round_arrow_forward_black" />
                 </LinearLayout>
             </RelativeLayout>
+        </LinearLayout>
 
         </LinearLayout>
 

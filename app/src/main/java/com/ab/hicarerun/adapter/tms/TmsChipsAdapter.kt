@@ -21,7 +21,8 @@ class TmsChipsAdapter(val context: Context, val items: ArrayList<String>) : Recy
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         holder.bindItems(items[position])
         if (initial){
-            onItemClickHandler?.onItemClick(position, items[position])
+            selectedPos = 0
+            onItemClickHandler?.onItemClick(0, items[0])
         }
         if (selectedPos == position) {
             holder.binding.cardView.setCardBackgroundColor(context.resources.getColor(R.color.colorPrimary));
@@ -45,12 +46,14 @@ class TmsChipsAdapter(val context: Context, val items: ArrayList<String>) : Recy
     }
 
     fun nextChip(position: Int){
+        initial = false
         selectedPos = position
         onItemClickHandler?.onItemClick(position, items[position])
         notifyDataSetChanged()
     }
 
     fun backChip(position: Int){
+        initial = false
         selectedPos = position
         onItemClickHandler?.onItemClick(position, items[position])
         notifyDataSetChanged()

@@ -28,7 +28,23 @@ class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<Tms
 
 
         val answersChildAdapter = TmsAnswersChildAdapter(context)
-        answersChildAdapter.addData(items[position].questionOption, items[position].questionType)
+        Log.d("TAG", "TYPE ${items[position].questionType}")
+        answersChildAdapter.addData(items[position].questionOption, answer = items[position].answer, items[position].questionType, items[position].questionId)
+
+/*        if (items[position].questionType.equals("numberText", true)){
+            answersChildAdapter.addData(items[position].questionOption, answer = items[position].answer, items[position].questionType, items[position].questionId)
+            //answersChildAdapter.addNumberText(items[position].answer, items[position].questionType, items[position].questionId)
+        }else{
+        }*/
+        answersChildAdapter.setOnChildTextChangedListener(object : TmsAnswersChildAdapter.OnTextChangedListener{
+            override fun onTextChange(childPosition: Int, str: String, questionId: Int) {
+                items.forEach {
+                    if (it.questionId == questionId){
+                        it.answer = str
+                    }
+                }
+            }
+        })
 
         holder.binding.recycleChild.layoutManager = LinearLayoutManager(context)
         holder.binding.recycleChild.setHasFixedSize(true)

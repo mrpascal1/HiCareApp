@@ -94,7 +94,7 @@ public class AppUtils {
     public static List<String> tmsConsultationChips = null;
     public static List<String> tmsInspectionChips = null;
     public static ArrayList<QuestionTabList> tmsConsultationList = null;
-    public static List<QuestionList> tmsInspectionList = null;
+    public static ArrayList<QuestionTabList> tmsInspectionList = null;
     public static List<TmsData> tmsConsInsList = null;
 
     public static List<TowerData> towerData = null;
@@ -839,8 +839,8 @@ public class AppUtils {
                             } else {
                                 for (int i =0; i<data.getQuestionTabList().size(); i++){
                                     tmsInspectionChips.add(data.getQuestionTabList().get(i).getQuestionTab());
-                                    tmsInspectionList.addAll(data.getQuestionTabList().get(i).getQuestionList());
                                 }
+                                tmsInspectionList.addAll(data.getQuestionTabList());
                             }
                         }
 //                        mAdapter.setOnItemClickHandler(position -> {

@@ -105,6 +105,12 @@ class TmsFirstChildFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
+        if (chipsArray.size == 1){
+            binding.configLayout.visibility = View.GONE
+        }else{
+            binding.configLayout.visibility = View.VISIBLE
+        }
+
         val questionsLayoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         questionsLayoutManager.stackFromEnd = false
         questionsLayoutManager.reverseLayout = false
@@ -122,7 +128,11 @@ class TmsFirstChildFragment : Fragment() {
         }
         chipsAdapter.setOnListItemClickHandler(object : TmsChipsAdapter.OnListItemClickHandler{
             override fun onItemClick(position: Int, category: String) {
+                Log.d("TAG", "$position")
                 currPos = position
+                binding.chipsRecyclerView.post {
+                    binding.chipsRecyclerView.smoothScrollToPosition(position)
+                }
                 AppUtils.tmsConsultationList.forEach {
                     if (it.questionTab.equals(category, true)){
                         questionsParentAdapter.addData(it.questionList)
@@ -136,20 +146,14 @@ class TmsFirstChildFragment : Fragment() {
                         1f
                     )
                     binding.recycleView.layoutParams = param;
-                }else{
-                    val param = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        0f
-                    )
-                    binding.recycleView.layoutParams = param;
                 }
+                Log.d("TAG", "Size ${AppUtils.tmsConsultationChips.size}")
             }
         })
 
         binding.recycleView.layoutManager = questionsLayoutManager
         binding.recycleView.setHasFixedSize(true)
-        binding.recycleView.isNestedScrollingEnabled = true
+        binding.recycleView.isNestedScrollingEnabled = false
         binding.recycleView.adapter = questionsParentAdapter
 
         binding.btnNext.setOnClickListener {

@@ -126,7 +126,7 @@
             android:layout_marginBottom="3dp"
             android:layout_below="@id/txtQuest"
             android:layout_toLeftOf="@id/relPhoto"
-            tools:listitem="@layout/layout_consulation_child_adapter"/>
+            tools:listitem="@layout/layout_tms_child_adapter"/>
 
     </RelativeLayout>
 
