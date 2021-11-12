@@ -3,6 +3,7 @@ package com.ab.hicarerun.adapter.tms
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -10,12 +11,14 @@ import com.ab.hicarerun.databinding.LayoutQuestionParentAdapterBinding
 import com.ab.hicarerun.databinding.LayoutTmsParentAdapterBinding
 import com.ab.hicarerun.handler.OnListItemClickHandler
 import com.ab.hicarerun.network.models.TmsModel.*
+import com.squareup.picasso.Picasso
 
 class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<TmsQuestionsParentAdapter.MyHolder>() {
 
     var items: ArrayList<QuestionList> = ArrayList()
     var optionList: ArrayList<Option> = ArrayList()
     var onItemClickHandler: OnListItemClickHandler? = null
+    var onCameraClickListener: OnCameraClickListener? = null
     var selectedPos = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
@@ -26,6 +29,50 @@ class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<Tms
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         holder.bindItems(items[position])
 
+        if (items[position].isPictureRequired == true){
+            holder.binding.relPhoto.visibility = View.VISIBLE
+        }else{
+            holder.binding.relPhoto.visibility = View.GONE
+        }
+
+        if (items[position].pictureURL != "" && items[position].pictureURL != null){
+            Picasso.get().load(items[position].pictureURL).fit().into(holder.binding.imgUploadedCheque)
+            holder.binding.lnrUpload.visibility = View.GONE
+            holder.binding.lnrImage.visibility = View.VISIBLE
+        }else{
+            holder.binding.lnrUpload.visibility = View.VISIBLE
+            holder.binding.lnrImage.visibility = View.GONE
+        }
+
+        /**
+         * Image Upload 1,2,3
+         * */
+        holder.binding.lnrUpload.setOnClickListener {
+            onCameraClickListener?.onCameraClicked(position, items[position].questionId, 1)
+        }
+
+        holder.binding.lnrUpload2.setOnClickListener {
+            onCameraClickListener?.onCameraClicked(position, items[position].questionId, 2)
+        }
+
+        holder.binding.lnrUpload3.setOnClickListener {
+            onCameraClickListener?.onCameraClicked(position, items[position].questionId, 3)
+        }
+
+        /**
+         * Image cancel 1,2,3
+        * */
+        holder.binding.imageCancel.setOnClickListener {
+            onCameraClickListener?.onCancelClicked(position, items[position].questionId, 1)
+        }
+
+        holder.binding.imageCancel.setOnClickListener {
+            onCameraClickListener?.onCancelClicked(position, items[position].questionId, 2)
+        }
+
+        holder.binding.imageCancel.setOnClickListener {
+            onCameraClickListener?.onCancelClicked(position, items[position].questionId, 3)
+        }
 
         val answersChildAdapter = TmsAnswersChildAdapter(context)
         Log.d("TAG", "TYPE ${items[position].questionType}")
@@ -72,12 +119,21 @@ class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<Tms
 
 
     class MyHolder(val context: Context, val binding: LayoutTmsParentAdapterBinding): RecyclerView.ViewHolder(binding.root){
-        fun bindItems(item: QuestionList){
+        fun bindItems(item: QuestionList) {
             binding.txtQuest.text = item.questionText
         }
     }
 
     fun setOnClickHandler(onItemClickHandler: OnListItemClickHandler){
         this.onItemClickHandler = onItemClickHandler
+    }
+
+    fun setOnCameraClickHandler(onCameraClickListener: OnCameraClickListener){
+        this.onCameraClickListener = onCameraClickListener
+    }
+
+    interface OnCameraClickListener{
+        fun onCameraClicked(position: Int, questionId: Int?, clickedBy: Int)
+        fun onCancelClicked(position: Int, questionId: Int?, clickedBy: Int)
     }
 }
