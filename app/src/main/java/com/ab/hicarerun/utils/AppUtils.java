@@ -53,6 +53,7 @@ import com.ab.hicarerun.network.models.GeneralModel.IncompleteReason;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShake;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLog;
 import com.ab.hicarerun.network.models.LoggerModel.ErrorLoggerModel;
+import com.ab.hicarerun.network.models.TmsModel.QuestionImageUrl;
 import com.ab.hicarerun.network.models.TmsModel.QuestionList;
 import com.ab.hicarerun.network.models.TmsModel.QuestionTabList;
 import com.ab.hicarerun.network.models.TmsModel.TmsData;
@@ -95,6 +96,7 @@ public class AppUtils {
     public static List<String> tmsInspectionChips = null;
     public static ArrayList<QuestionTabList> tmsConsultationList = null;
     public static ArrayList<QuestionTabList> tmsInspectionList = null;
+    public static ArrayList<QuestionImageUrl> tmsImageUrls = null;
     public static List<TmsData> tmsConsInsList = null;
 
     public static List<TowerData> towerData = null;
@@ -825,6 +827,11 @@ public class AppUtils {
                     tmsConsultationList = new ArrayList<>();
                     tmsInspectionList = new ArrayList<>();
                     tmsConsInsList = new ArrayList<>();
+                    tmsImageUrls = new ArrayList<>();
+
+                    tmsImageUrls.add(new QuestionImageUrl(0, null));
+                    tmsImageUrls.add(new QuestionImageUrl(1, null));
+                    tmsImageUrls.add(new QuestionImageUrl(2, null));
                     if (items != null && items.size() > 0) {
                         tmsConsInsList = items;
                         Log.d("TAG", "Called");

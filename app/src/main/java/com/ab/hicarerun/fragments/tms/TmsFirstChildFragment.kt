@@ -36,6 +36,7 @@ import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListData
 import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListRequest
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData
 import com.ab.hicarerun.network.models.LoginResponse
+import com.ab.hicarerun.network.models.TmsModel.QuestionImageUrl
 import com.ab.hicarerun.network.models.TmsModel.QuestionList
 import com.ab.hicarerun.network.models.TmsModel.QuestionsResponse
 import com.ab.hicarerun.utils.AppUtils
@@ -340,9 +341,29 @@ class TmsFirstChildFragment : Fragment() {
                             val url = response.fileUrl
                             tmsCList.forEach {
                                 if (it.questionId == qId){
-                                    it.pictureURL = url
+                                    var found1 = false
+                                    var found2 = false
+                                    var found3 = false
+                                    /*it.pictureURL?.forEach { image ->
+                                        if (cBy == 1 && image.id == cBy){
+                                            found1 = true
+                                        }
+                                        if (cBy == 2 && image.id == cBy){
+                                            found2 = true
+                                        }
+                                        if (cBy == 3 && image.id == cBy){
+                                            found3 = true
+                                        }
+                                    }*/
+                                    val q = QuestionImageUrl(cBy, url)
+                                    Log.d("TAG", "$q")
+                                    it.qPictureURL?.set(cBy, q)
+
+                                    /*it.qPictureURL!![cBy].id = cBy
+                                    it.qPictureURL!![cBy].url = url*/
                                 }
                             }
+                            Log.d("TAG", "Modified ${AppUtils.tmsConsultationList}")
                             questionsParentAdapter.notifyDataSetChanged()
                             Log.d("TAG", "Modified ${AppUtils.tmsConsultationList}")
                         } catch (e: Exception) {

@@ -31,6 +31,7 @@ import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListData
 import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListRequest
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData
 import com.ab.hicarerun.network.models.LoginResponse
+import com.ab.hicarerun.network.models.TmsModel.QuestionImageUrl
 import com.ab.hicarerun.network.models.TmsModel.QuestionList
 import com.ab.hicarerun.utils.AppUtils
 import io.realm.RealmResults
@@ -165,6 +166,9 @@ class TmsSecondChildFragment : Fragment() {
             val listener = parentFragment as SecondChildListener
             listener.onBackClicked()
         }
+        binding.btnSave.setOnClickListener {
+            Log.d("TAG", "save ${AppUtils.tmsInspectionList}")
+        }
         binding.backChipBtn.setOnClickListener {
             if (currPos > 0){
                 currPos -= 1
@@ -219,9 +223,30 @@ class TmsSecondChildFragment : Fragment() {
                             val url = response.fileUrl
                             tmsCList.forEach {
                                 if (it.questionId == qId){
-                                    it.pictureURL = url
+                                    /*if (it.qPictureURL == null){
+                                    }else{
+                                        it.qPictureURL?.set(cBy, QuestionImageUrl(cBy, url))
+                                    }*/
+
+                                    val q = QuestionImageUrl(cBy, url)
+                                    Log.d("TAG", "$q")
+                                    if (it.qPictureURL == null) {
+                                        it.qPictureURL = arrayListOf(q)
+                                    }else{
+                                        it.qPictureURL?.add(q)
+                                    }
+
+                                    /*it.qPictureURL?.forEach { image ->
+                                        image.id = cBy
+                                        image.url = url
+                                    }*/
+
+                                    /*it.qPictureURL!![cBy].id = cBy
+                                    it.qPictureURL!![cBy].url = url*/
                                 }
                             }
+                            Log.d("TAG", "by $cBy")
+                            Log.d("TAG", "Before Modified ${AppUtils.tmsInspectionList}")
                             questionsParentAdapter.notifyDataSetChanged()
                             Log.d("TAG", "Modified ${AppUtils.tmsInspectionList}")
                         } catch (e: Exception) {

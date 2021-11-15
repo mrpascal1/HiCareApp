@@ -705,7 +705,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 if (item.toString().equalsIgnoreCase("Home")) {
                     getSupportFragmentManager().beginTransaction().replace(mActivityHomeBinding.container.getId(), HomeFragment.newInstance()).addToBackStack(null).commit();
                     mActivityHomeBinding.drawer.closeDrawers();
-                } else if (item.toString().equalsIgnoreCase("Shiksha")) {
+                } else if (item.toString().equalsIgnoreCase(this.getResources().getString(R.string.shiksha))) {
                     mActivityHomeBinding.drawer.closeDrawers();
                     startActivity(new Intent(HomeActivity.this, ActivityQuizCategory.class).putExtra(HomeActivity.ARG_EVENT, false));
                 } else if (item.toString().equalsIgnoreCase("Self Access")) {

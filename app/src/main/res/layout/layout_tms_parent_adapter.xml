@@ -63,7 +63,7 @@
             android:background="@drawable/dotted_box"
             android:orientation="vertical"
             android:layout_alignParentEnd="true"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <LinearLayout
                 android:id="@+id/lnrImage"
