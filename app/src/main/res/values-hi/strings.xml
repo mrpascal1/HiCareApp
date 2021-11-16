@@ -1089,5 +1089,6 @@
     <string name="shiksha_quit">निस्तार</string>
     <string name="shiksha_confirm">पक्का</string>
     <string name="shiksha">PAATHशाला</string>
+    <string name="click_to_zoom">ज़ूम करने के लिए छवि पर क्लिक करें</string>
 
 </resources>

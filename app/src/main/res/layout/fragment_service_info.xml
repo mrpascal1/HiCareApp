@@ -736,7 +736,7 @@
             <RelativeLayout
                 android:id="@+id/lnr_reason"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="42dp"
                 android:background="@color/tab_textColor"
                 app:layout_constraintBottom_toBottomOf="@id/lnr_order">
 
@@ -762,7 +762,7 @@
                     <Button
                         android:id="@+id/btnCheckList"
                         android:layout_width="wrap_content"
-                        android:layout_height="26dp"
+                        android:layout_height="28dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
@@ -771,12 +771,12 @@
                         android:text="Post Job Check-List"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
-                        android:textSize="9sp" />
+                        android:textSize="11sp" />
 
                     <Button
                         android:id="@+id/btnPaymentJeopardy"
                         android:layout_width="wrap_content"
-                        android:layout_height="26dp"
+                        android:layout_height="28dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
@@ -784,7 +784,7 @@
                         android:text="@string/raise_jeopardy_service"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
-                        android:textSize="9sp" />
+                        android:textSize="11sp" />
 
 
                 </LinearLayout>

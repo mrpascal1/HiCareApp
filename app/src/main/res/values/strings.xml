@@ -655,6 +655,7 @@
     <string name="shiksha_quit">Quit</string>
     <string name="shiksha_confirm">Confirm</string>
     <string name="shiksha">PAATHशाला</string>
+    <string name="click_to_zoom">Click image to zoom</string>
 
 
 </resources>

@@ -77,6 +77,7 @@ import com.ab.hicarerun.network.models.FeedbackModel.FeedbackResponse;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.SlotModel.TimeSlot;
+import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SwipeToDeleteCallBack;
 import com.bumptech.glide.Glide;
@@ -280,6 +281,9 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     intent.putExtra(ServiceRenewalActivity.ARGS_TASKS, taskId);
                     startActivity(intent);
                 }
+            });
+            mFragmentSignatureInfoBinding.referBtn.setOnClickListener(v -> {
+                getReferral();
             });
 
             mFragmentSignatureInfoBinding.recycleView.setHasFixedSize(true);
@@ -1604,5 +1608,30 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
             e.printStackTrace();
         }
 
+    }
+
+    private void getReferral(){
+        if ((NewTaskDetailsActivity) getActivity() != null) {
+            mGeneralRealmData = getRealm().where(GeneralData.class).findAll();
+            if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
+                NetworkCallController controller = new NetworkCallController(this);
+                controller.setListner(new NetworkResponseListner<BaseResponse>() {
+                    @Override
+                    public void onResponse(int requestCode, BaseResponse response) {
+                        if(response.isSuccess()){
+                            Toasty.success(requireContext(), "Sent successfully.", Toasty.LENGTH_SHORT).show();
+                        }else {
+                            Toasty.error(requireContext(), "Please try again!", Toasty.LENGTH_SHORT);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int requestCode) {
+
+                    }
+                });
+                controller.sendReferralMessage(1611, mGeneralRealmData.get(0).getResourceId(), mGeneralRealmData.get(0).getTaskId() );
+            }
+        }
     }
 }

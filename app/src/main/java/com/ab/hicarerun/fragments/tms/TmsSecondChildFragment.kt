@@ -144,7 +144,18 @@ class TmsSecondChildFragment : Fragment() {
             }
 
             override fun onCancelClicked(position: Int, questionId: Int?, clickedBy: Int) {
-
+                val tmsCList = ArrayList<QuestionList>()
+                AppUtils.tmsInspectionList.forEach {
+                    tmsCList.addAll(it.questionList)
+                }
+                tmsCList.forEach {
+                    if (it.questionId == qId){
+                        if (it.qPictureURL!!.isEmpty()){
+                            it.qPictureURL = null
+                        }
+                    }
+                }
+                questionsParentAdapter.notifyDataSetChanged()
             }
         })
 

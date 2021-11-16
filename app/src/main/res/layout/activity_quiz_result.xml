@@ -214,7 +214,7 @@
                     android:background="@drawable/button_1_green"
                     android:layout_centerHorizontal="true"
                     android:layout_below="@id/currLevelLayout"
-                    android:text="Finish"
+                    android:text="@string/shiksha_finish"
                     android:textColor="@color/white"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintRight_toRightOf="parent"

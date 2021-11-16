@@ -7,10 +7,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.databinding.LayoutTmsChildAdapterBinding
 import com.ab.hicarerun.network.models.TmsModel.Option
 import com.ab.hicarerun.network.models.TmsModel.QuestionOption
+import java.lang.Exception
 
 class TmsAnswersChildAdapter(val context: Context) : RecyclerView.Adapter<TmsAnswersChildAdapter.MyHolder>() {
 
@@ -35,16 +37,19 @@ class TmsAnswersChildAdapter(val context: Context) : RecyclerView.Adapter<TmsAns
         if (ansType.equals("single select", true)){
             holder.binding.rbAnswers.visibility = View.VISIBLE
             holder.binding.chkAnswers.visibility = View.GONE
-            holder.binding.numberEt.visibility = View.GONE
+            holder.binding.numberLayout.visibility = View.GONE
         }
         if (ansType.equals("multi select", true)){
-            holder.binding.numberEt.visibility = View.GONE
+            holder.binding.numberLayout.visibility = View.GONE
             holder.binding.rbAnswers.visibility = View.GONE
             holder.binding.chkAnswers.visibility = View.VISIBLE
         }
         if (ansType.equals("numbertext", true)){
             holder.binding.numberEt.setText(qAnswer)
-            holder.binding.numberEt.visibility = View.VISIBLE
+            if (holder.binding.numberEt.text.toString().trim() == ""){
+                holder.binding.numberEt.setText("0")
+            }
+            holder.binding.numberLayout.visibility = View.VISIBLE
             holder.binding.rbAnswers.visibility = View.GONE
             holder.binding.chkAnswers.visibility = View.GONE
         }
@@ -89,10 +94,38 @@ class TmsAnswersChildAdapter(val context: Context) : RecyclerView.Adapter<TmsAns
                 onTextChangedListener?.onTextChange(position, p0.toString(), questionId)
             }
         })
+
+        holder.binding.addBtn.setOnClickListener {
+            addClick(holder, position)
+        }
+
+        holder.binding.minusBtn.setOnClickListener {
+            minusClick(holder, position)
+        }
     }
 
     override fun getItemCount(): Int {
         return items.size
+    }
+
+    private fun addClick(holder: MyHolder, position: Int){
+        try {
+            if (holder.binding.numberEt.text.toString().toInt() < 9999) {
+                holder.binding.numberEt.setText("${holder.binding.numberEt.text.toString().toInt() + 1}")
+            }else{
+                Toast.makeText(context, "Maximum value", Toast.LENGTH_SHORT).show()
+            }
+        }catch (e: Exception){ }
+    }
+
+    private fun minusClick(holder: MyHolder, position: Int) {
+        try {
+            if (holder.binding.numberEt.text.toString().toInt() > 0) {
+                holder.binding.numberEt.setText("${holder.binding.numberEt.text.toString().toInt() - 1}")
+            }else{
+                Toast.makeText(context, "Minimum value", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) { }
     }
 
     fun addData(options: List<QuestionOption>?, answer: String?, type: String?, id: Int?){

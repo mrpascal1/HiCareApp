@@ -213,6 +213,7 @@ class TmsFirstChildFragment : Fragment() {
             }
 
             override fun onCancelClicked(position: Int, questionId: Int?, clickedBy: Int) {
+                questionsParentAdapter.notifyDataSetChanged()
             }
         })
 
@@ -357,7 +358,11 @@ class TmsFirstChildFragment : Fragment() {
                                     }*/
                                     val q = QuestionImageUrl(cBy, url)
                                     Log.d("TAG", "$q")
-                                    it.qPictureURL?.set(cBy, q)
+                                    if (it.qPictureURL == null) {
+                                        it.qPictureURL = arrayListOf(q)
+                                    }else{
+                                        it.qPictureURL?.add(q)
+                                    }
 
                                     /*it.qPictureURL!![cBy].id = cBy
                                     it.qPictureURL!![cBy].url = url*/

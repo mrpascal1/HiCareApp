@@ -37,32 +37,7 @@ class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<Tms
 
         if (items[position].isPictureRequired == true){
             holder.binding.relPhoto.visibility = View.VISIBLE
-            var found1 = false
-            var found2 = false
-            var found3 = false
-            /*if (items[position].qPictureURL != null){
-                items[position].qPictureURL?.forEach {
-                    if (it.id == 0) found1 = true
-                    if (it.id == 1) found2 = true
-                    if (it.id == 2) found3 = true
-                }
-                holder.binding.relPhoto.visibility = View.VISIBLE
-                if (found1 && !found2){
-                    holder.binding.relPhoto2.visibility = View.VISIBLE
-                }
-                if (found2 && !found3) {
-                    holder.binding.relPhoto3.visibility = View.VISIBLE
-                }
-                if (found3 && !found1) {
-                    holder.binding.relPhoto.visibility = View.VISIBLE
-                }
-                if (found3 && !found2){
-                    holder.binding.relPhoto2.visibility = View.VISIBLE
-                }
-                if (found2 && !found1){
-                    holder.binding.relPhoto.visibility = View.VISIBLE
-                }
-            }*/
+            Log.d("TAG", "Called this")
         }else{
             holder.binding.relPhoto.visibility = View.GONE
             holder.binding.relPhoto2.visibility = View.GONE
@@ -82,207 +57,70 @@ class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<Tms
 
             val arrSize = foundArr.size
             if (arrSize == 3){
-                if (found1 && found2 && found3) {
-                    holder.binding.relPhoto.visibility = View.VISIBLE
-                    holder.binding.relPhoto2.visibility = View.VISIBLE
-                    holder.binding.relPhoto3.visibility = View.VISIBLE
+                holder.binding.relPhoto.visibility = View.VISIBLE
+                holder.binding.relPhoto2.visibility = View.VISIBLE
+                holder.binding.relPhoto3.visibility = View.VISIBLE
 
-                    Picasso.get().load(items[position].qPictureURL!![0].url).fit()
-                        .into(holder.binding.imgUploadedCheque)
-                    holder.binding.lnrUpload.visibility = View.GONE
-                    holder.binding.lnrImage.visibility = View.VISIBLE
+                Picasso.get().load(items[position].qPictureURL!![0].url).fit()
+                    .into(holder.binding.imgUploadedCheque)
+                holder.binding.lnrUpload.visibility = View.GONE
+                holder.binding.lnrImage.visibility = View.VISIBLE
 
-                    Picasso.get().load(items[position].qPictureURL!![1].url).fit()
-                        .into(holder.binding.imgUploadedCheque2)
-                    holder.binding.lnrUpload2.visibility = View.GONE
-                    holder.binding.lnrImage2.visibility = View.VISIBLE
+                Picasso.get().load(items[position].qPictureURL!![1].url).fit()
+                    .into(holder.binding.imgUploadedCheque2)
+                holder.binding.lnrUpload2.visibility = View.GONE
+                holder.binding.lnrImage2.visibility = View.VISIBLE
 
-                    Picasso.get().load(items[position].qPictureURL!![2].url).fit()
-                        .into(holder.binding.imgUploadedCheque3)
-                    holder.binding.lnrUpload3.visibility = View.GONE
-                    holder.binding.lnrImage3.visibility = View.VISIBLE
-                }
+                Picasso.get().load(items[position].qPictureURL!![2].url).fit()
+                    .into(holder.binding.imgUploadedCheque3)
+                holder.binding.lnrUpload3.visibility = View.GONE
+                holder.binding.lnrImage3.visibility = View.VISIBLE
+
             }
             if (arrSize == 2){
-                if (found1 && found2){
-                    holder.binding.relPhoto.visibility = View.VISIBLE
-                    holder.binding.relPhoto2.visibility = View.VISIBLE
-                    holder.binding.relPhoto3.visibility = View.VISIBLE
+                holder.binding.relPhoto.visibility = View.VISIBLE
+                holder.binding.relPhoto2.visibility = View.VISIBLE
+                holder.binding.relPhoto3.visibility = View.VISIBLE
 
+                Picasso.get().load(items[position].qPictureURL!![0].url).fit()
+                    .into(holder.binding.imgUploadedCheque)
+                holder.binding.lnrUpload.visibility = View.GONE
+                holder.binding.lnrImage.visibility = View.VISIBLE
 
-                    Picasso.get().load(items[position].qPictureURL!![0].url).fit()
-                        .into(holder.binding.imgUploadedCheque)
-                    holder.binding.lnrUpload.visibility = View.GONE
-                    holder.binding.lnrImage.visibility = View.VISIBLE
+                Picasso.get().load(items[position].qPictureURL!![1].url).fit()
+                    .into(holder.binding.imgUploadedCheque2)
+                holder.binding.lnrUpload2.visibility = View.GONE
+                holder.binding.lnrImage2.visibility = View.VISIBLE
 
-                    Picasso.get().load(items[position].qPictureURL!![1].url).fit()
-                        .into(holder.binding.imgUploadedCheque2)
-                    holder.binding.lnrUpload2.visibility = View.GONE
-                    holder.binding.lnrImage2.visibility = View.VISIBLE
+                holder.binding.lnrUpload3.visibility = View.VISIBLE
+                holder.binding.lnrImage3.visibility = View.GONE
 
-
-                    holder.binding.lnrUpload3.visibility = View.VISIBLE
-                    holder.binding.lnrImage3.visibility = View.GONE
-                }
-                if (found2 && found3){
-                    holder.binding.relPhoto.visibility = View.VISIBLE
-                    holder.binding.relPhoto2.visibility = View.VISIBLE
-                    holder.binding.relPhoto3.visibility = View.VISIBLE
-
-                    Picasso.get().load(items[position].qPictureURL!![1].url).fit()
-                        .into(holder.binding.imgUploadedCheque2)
-                    holder.binding.lnrUpload2.visibility = View.GONE
-                    holder.binding.lnrImage2.visibility = View.VISIBLE
-
-                    Picasso.get().load(items[position].qPictureURL!![2].url).fit()
-                        .into(holder.binding.imgUploadedCheque3)
-                    holder.binding.lnrUpload3.visibility = View.GONE
-                    holder.binding.lnrImage3.visibility = View.VISIBLE
-
-                    holder.binding.lnrUpload.visibility = View.VISIBLE
-                    holder.binding.lnrImage.visibility = View.GONE
-
-                }
-                if (found1 && found3){
-                    holder.binding.relPhoto.visibility = View.VISIBLE
-                    holder.binding.relPhoto2.visibility = View.VISIBLE
-                    holder.binding.relPhoto3.visibility = View.VISIBLE
-
-                    Picasso.get().load(items[position].qPictureURL!![0].url).fit()
-                        .into(holder.binding.imgUploadedCheque)
-                    holder.binding.lnrUpload.visibility = View.GONE
-                    holder.binding.lnrImage.visibility = View.VISIBLE
-
-                    Picasso.get().load(items[position].qPictureURL!![2].url).fit()
-                        .into(holder.binding.imgUploadedCheque3)
-                    holder.binding.lnrUpload3.visibility = View.GONE
-                    holder.binding.lnrImage3.visibility = View.VISIBLE
-
-                    holder.binding.lnrUpload2.visibility = View.VISIBLE
-                    holder.binding.lnrImage2.visibility = View.GONE
-                }
             }
             if (arrSize == 1){
-                if (found1){
-                    holder.binding.relPhoto2.visibility = View.VISIBLE
+                holder.binding.relPhoto.visibility = View.VISIBLE
+                holder.binding.relPhoto2.visibility = View.VISIBLE
+                holder.binding.relPhoto3.visibility = View.GONE
 
-                    Picasso.get().load(items[position].qPictureURL!![0].url).fit()
-                        .into(holder.binding.imgUploadedCheque)
-                    holder.binding.lnrUpload.visibility = View.GONE
-                    holder.binding.lnrImage.visibility = View.VISIBLE
-
-                    holder.binding.lnrUpload2.visibility = View.VISIBLE
-                    holder.binding.lnrImage2.visibility = View.GONE
-                }
-                if (found2){
-                    holder.binding.relPhoto3.visibility = View.VISIBLE
-
-                    Picasso.get().load(items[position].qPictureURL!![1].url).fit()
-                        .into(holder.binding.imgUploadedCheque2)
-                    holder.binding.lnrUpload2.visibility = View.GONE
-                    holder.binding.lnrImage2.visibility = View.VISIBLE
-
-                    holder.binding.lnrUpload3.visibility = View.VISIBLE
-                    holder.binding.lnrImage3.visibility = View.GONE
-                }
-                if (found3){
-                    holder.binding.relPhoto.visibility = View.VISIBLE
-
-                    Picasso.get().load(items[position].qPictureURL!![2].url).fit()
-                        .into(holder.binding.imgUploadedCheque3)
-                    holder.binding.lnrUpload3.visibility = View.GONE
-                    holder.binding.lnrImage3.visibility = View.VISIBLE
-
-                    holder.binding.lnrUpload.visibility = View.VISIBLE
-                    holder.binding.lnrImage.visibility = View.GONE
-                }
-            }
-
-            /*if (arrSize >= 1) {
-                if (found1) {
-                    Picasso.get().load(items[position].qPictureURL!![0].url).fit()
-                        .into(holder.binding.imgUploadedCheque)
-                    holder.binding.lnrUpload.visibility = View.GONE
-                    holder.binding.lnrImage.visibility = View.VISIBLE
-
-                    Picasso.get().load(items[position].qPictureURL!![1].url).fit()
-                        .into(holder.binding.imgUploadedCheque2)
-                    holder.binding.lnrUpload2.visibility = View.GONE
-                    holder.binding.lnrImage2.visibility = View.VISIBLE
-
-                    Picasso.get().load(items[position].qPictureURL!![2].url).fit()
-                        .into(holder.binding.imgUploadedCheque3)
-                    holder.binding.lnrUpload3.visibility = View.GONE
-                    holder.binding.lnrImage3.visibility = View.VISIBLE
-                    if (arrSize >= 2) {
-                        if (found2) {
-                            Picasso.get().load(items[position].qPictureURL!![1].url).fit()
-                                .into(holder.binding.imgUploadedCheque2)
-                            holder.binding.lnrUpload2.visibility = View.GONE
-                            holder.binding.lnrImage2.visibility = View.VISIBLE
-
-                            if (arrSize == 3) {
-                                if (found3) {
-                                    Picasso.get().load(items[position].qPictureURL!![2].url).fit()
-                                        .into(holder.binding.imgUploadedCheque3)
-                                    holder.binding.lnrUpload3.visibility = View.GONE
-                                    holder.binding.lnrImage3.visibility = View.VISIBLE
-
-                                } else {
-                                    Picasso.get().load(items[position].qPictureURL!![2].url).fit()
-                                        .into(holder.binding.imgUploadedCheque3)
-                                    holder.binding.lnrUpload3.visibility = View.GONE
-                                    holder.binding.lnrImage3.visibility = View.VISIBLE
-
-                                }
-                            }
-                        } else {
-                            Picasso.get().load(items[position].qPictureURL!![1].url).fit()
-                                .into(holder.binding.imgUploadedCheque2)
-                            holder.binding.lnrUpload2.visibility = View.GONE
-                            holder.binding.lnrImage2.visibility = View.VISIBLE
-                        }
-                    }
-                } else {
-                    Picasso.get().load(items[position].qPictureURL!![0].url).fit()
-                        .into(holder.binding.imgUploadedCheque)
-                    holder.binding.lnrUpload.visibility = View.GONE
-                    holder.binding.lnrImage.visibility = View.VISIBLE
-                }
-            }*/
-            /*if (found1 && !found2){
-                Picasso.get().load(items[position].qPictureURL!![0].url).fit().into(holder.binding.imgUploadedCheque)
+                Picasso.get().load(items[position].qPictureURL!![0].url).fit()
+                    .into(holder.binding.imgUploadedCheque)
                 holder.binding.lnrUpload.visibility = View.GONE
                 holder.binding.lnrImage.visibility = View.VISIBLE
 
-                holder.binding.lnrUpload2.visibility = View.GONE
-                holder.binding.lnrImage2.visibility = View.VISIBLE
-            }
-            if (found2 && !found3){
-                Picasso.get().load(items[position].qPictureURL!![1].url).fit().into(holder.binding.imgUploadedCheque2)
-                holder.binding.lnrUpload2.visibility = View.GONE
-                holder.binding.lnrImage2.visibility = View.VISIBLE
+                holder.binding.lnrUpload2.visibility = View.VISIBLE
+                holder.binding.lnrImage2.visibility = View.GONE
 
                 holder.binding.lnrUpload3.visibility = View.GONE
-                holder.binding.lnrImage3.visibility = View.VISIBLE
+                holder.binding.lnrImage3.visibility = View.GONE
             }
-            if (found3 && !found1){
-                Picasso.get().load(items[position].qPictureURL!![2].url).fit().into(holder.binding.imgUploadedCheque3)
-                holder.binding.lnrUpload3.visibility = View.GONE
-                holder.binding.lnrImage3.visibility = View.VISIBLE
-
-                holder.binding.lnrUpload.visibility = View.GONE
-                holder.binding.lnrImage.visibility = View.VISIBLE
-            }*/
         }else{
-            holder.binding.lnrUpload.visibility = View.VISIBLE
-            holder.binding.lnrImage.visibility = View.GONE
+            if (items[position].isPictureRequired == true){
+                holder.binding.relPhoto.visibility = View.VISIBLE
+                holder.binding.relPhoto2.visibility = View.GONE
+                holder.binding.relPhoto3.visibility = View.GONE
 
-            holder.binding.lnrUpload2.visibility = View.VISIBLE
-            holder.binding.lnrImage2.visibility = View.GONE
-
-            holder.binding.lnrUpload3.visibility = View.VISIBLE
-            holder.binding.lnrImage3.visibility = View.GONE
+                holder.binding.lnrUpload.visibility = View.VISIBLE
+                holder.binding.lnrImage.visibility = View.GONE
+            }
 
         }
 
@@ -305,14 +143,33 @@ class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<Tms
          * Image cancel 1,2,3
          * */
         holder.binding.imageCancel.setOnClickListener {
+            if (items[position].qPictureURL?.size!! >= 1){
+                items[position].qPictureURL?.removeAt(0)
+            }
             onCameraClickListener?.onCancelClicked(position, items[position].questionId, 0)
         }
 
         holder.binding.imageCancel2.setOnClickListener {
+            if (items[position].qPictureURL?.size!! >= 2){
+                items[position].qPictureURL?.removeAt(1)
+            }else{
+                items[position].qPictureURL?.removeAt(0)
+            }
             onCameraClickListener?.onCancelClicked(position, items[position].questionId, 1)
         }
 
         holder.binding.imageCancel3.setOnClickListener {
+            when {
+                items[position].qPictureURL?.size!! == 3 -> {
+                    items[position].qPictureURL?.removeAt(2)
+                }
+                items[position].qPictureURL?.size!! == 2 -> {
+                    items[position].qPictureURL?.removeAt(1)
+                }
+                else -> {
+                    items[position].qPictureURL?.removeAt(0)
+                }
+            }
             onCameraClickListener?.onCancelClicked(position, items[position].questionId, 2)
         }
 
