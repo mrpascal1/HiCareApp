@@ -10,6 +10,6 @@ data class QuestionList (
 	@SerializedName("Answer") var answer : String?,
 	@SerializedName("QuestionType") val questionType : String?,
 	@SerializedName("IsPictureRequired") val isPictureRequired : Boolean?,
-	@SerializedName("PictureURL") var pictureURL : String?,
+	@SerializedName("PictureURL") var pictureURL : List<String>?,
 	var qPictureURL : ArrayList<QuestionImageUrl>?
 )

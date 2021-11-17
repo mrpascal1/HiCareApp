@@ -836,10 +836,13 @@ public class AppUtils {
                         tmsConsInsList = items;
                         Log.d("TAG", "Called");
                         for (TmsData data : items) {
+                            Log.d("TAG", "Looping : Inside Data");
                             if (data.getType().equals("Consultation")) {
+                                Log.d("TAG", "Found consultation");
                                 for (int i =0; i<data.getQuestionTabList().size(); i++){
                                     tmsConsultationChips.add(data.getQuestionTabList().get(i).getQuestionTab());
                                 }
+                                Log.d("TAG", "Chips "+tmsConsultationChips.toString());
                                 tmsConsultationList.addAll(data.getQuestionTabList());
 //                                mAdapter.addData(consulationList);
 //                                mAdapter.notifyDataSetChanged();

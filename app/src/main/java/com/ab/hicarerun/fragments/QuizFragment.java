@@ -364,7 +364,9 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
             givenAnswers.clear();
             if (question.getCorrectAnswers() != null) {
                 for (QuizAnswer s : question.getCorrectAnswers()) {
-                    normalCorrectAns.add(s.getOptionId().toString());
+                    if (s != null) {
+                        normalCorrectAns.add(s.getOptionId().toString());
+                    }
                 }
             }
 
@@ -534,6 +536,12 @@ public class QuizFragment extends BaseFragment implements Player.EventListener {
                 mFragmentQuizBinding.recycleView.setLayoutManager(layoutManager);
                 mAdapter = new QuizOptionAdapter(getActivity(), question.getPuzzleQuestionType(), question.getPuzzleQuestionSelectionType(), question.getCorrectAnswers(), isNextPressed);
                 mAdapter.setData(question.getOptions(), question.getCorrectAnswers());
+                /**
+                 * Listen to option clicks in quiz option adapter.
+                 * 1. Add it to a new array list i.e collected.
+                 * 2. update flag optionSelected to true
+                 * 3. If option type is radio.
+                * */
                 mAdapter.setOnOptionClickListener((position, quizOption, givenAnswersIds, title, optionType, holder) -> {
                     //Log.d("TAG", quizOption.getOptionId().toString());
                     List<String> collected = new ArrayList<>();

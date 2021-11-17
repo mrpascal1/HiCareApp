@@ -116,6 +116,16 @@ class TmsSecondChildFragment : Fragment() {
             override fun onItemClick(position: Int, category: String) {
                 Log.d("TAG", "$position")
                 currPos = position
+                if (currPos == chipsArray.size-1){
+                    binding.nextChipBtn.visibility = View.GONE
+                }else{
+                    binding.nextChipBtn.visibility = View.VISIBLE
+                }
+                if (currPos == 0){
+                    binding.backChipBtn.visibility = View.GONE
+                }else{
+                    binding.backChipBtn.visibility = View.VISIBLE
+                }
                 binding.chipsRecyclerView.post {
                     binding.chipsRecyclerView.smoothScrollToPosition(position)
                 }

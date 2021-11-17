@@ -223,7 +223,11 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
                 holder.mLayoutOptionAdapterBinding.lnrRadio.setVisibility(View.VISIBLE);
                 holder.mLayoutOptionAdapterBinding.lnrCheck.setVisibility(View.GONE);
                 holder.mLayoutOptionAdapterBinding.lnrImgOption.setVisibility(View.GONE);
-                holder.mLayoutOptionAdapterBinding.txtRadioOption.setText(items.get(position).getOptionTitleDisplay());
+                if (items.get(position).getOptionTitleDisplay() != null) {
+                    holder.mLayoutOptionAdapterBinding.txtRadioOption.setText(items.get(position).getOptionTitleDisplay());
+                }else {
+                    holder.mLayoutOptionAdapterBinding.txtRadioOption.setText(items.get(position).getOptionTitle());
+                }
                 //holder.mLayoutOptionAdapterBinding.radioOption.setText(items.get(position).getOptionValue());
                 isRadioAndText = true;
                 isRadioAndImage = false;
@@ -260,7 +264,11 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
                 holder.mLayoutOptionAdapterBinding.lnrRadio.setVisibility(View.GONE);
                 holder.mLayoutOptionAdapterBinding.lnrCheck.setVisibility(View.VISIBLE);
                 holder.mLayoutOptionAdapterBinding.lnrImgOption.setVisibility(View.GONE);
-                holder.mLayoutOptionAdapterBinding.txtCheckOption.setText(items.get(position).getOptionTitleDisplay());
+                if (items.get(position).getOptionTitleDisplay() != null) {
+                    holder.mLayoutOptionAdapterBinding.txtCheckOption.setText(items.get(position).getOptionTitleDisplay());
+                }else {
+                    holder.mLayoutOptionAdapterBinding.txtCheckOption.setText(items.get(position).getOptionTitle());
+                }
                 isCheckboxAndText = true;
                 isRadioAndText = false;
                 isRadioAndImage = false;
@@ -635,7 +643,9 @@ public class QuizOptionAdapter extends RecyclerView.Adapter<QuizOptionAdapter.Vi
         items.addAll(data);
         answerList.addAll(correctAnswers);
         for (QuizAnswer answer: answerList){
-            answers.add(answer.getOptionValue());
+            if (answer != null) {
+                answers.add(answer.getOptionValue());
+            }
         }
         //        for (int index = 0; index < data.size(); index++) {
 //            QuizCategoryViewModel quizCategoryViewModel = new QuizCategoryViewModel();

@@ -190,6 +190,10 @@ class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<Tms
                     }
                 }
             }
+
+            override fun onOptionChange(childPosition: Int, str: String, questionId: Int) {
+
+            }
         })
 
         holder.binding.recycleChild.layoutManager = LinearLayoutManager(context)

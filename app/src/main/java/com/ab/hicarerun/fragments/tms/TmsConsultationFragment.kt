@@ -117,6 +117,10 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
             }
             binding.progressBar.max = 1
         }
+
+        binding.cancelBtn.setOnClickListener {
+            dialog?.cancel()
+        }
     }
 
     private fun saveConsInsData(value: Int){

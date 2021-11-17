@@ -17,14 +17,31 @@
         android:background="@drawable/shape_more_rounded_corner"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/txtTypeFlat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="13dp"
-            android:text="TMS"
-            android:textColor="@color/colorPrimary"
-            android:textSize="18sp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/cancelBtn"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/ic_completion_cancel" />
+
+            <TextView
+                android:id="@+id/txtTypeFlat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="TMS"
+                android:gravity="center"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
 
         <ProgressBar
             android:id="@+id/progress_bar"

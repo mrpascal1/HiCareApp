@@ -65,6 +65,7 @@ class TmsAnswersChildAdapter(val context: Context) : RecyclerView.Adapter<TmsAns
                     items[i]?.isSelected = false
                 }
             }
+            onTextChangedListener?.onOptionChange(position, items[position]?.optionText.toString(), questionId)
             notifyDataSetChanged()
         }
 
@@ -72,6 +73,7 @@ class TmsAnswersChildAdapter(val context: Context) : RecyclerView.Adapter<TmsAns
             Log.d("TAG: ", "Position $position and ID ${items[position]}")
             selectedPos = position
             items[position]?.isSelected = holder.binding.chkAnswers.isChecked
+            onTextChangedListener?.onOptionChange(position, items[position]?.optionText.toString(), questionId)
             /*for (i in 0 until items.size){
                 if (selectedPos != i) {
                     holder.binding.rbAnswers.isChecked = false;
@@ -163,5 +165,6 @@ class TmsAnswersChildAdapter(val context: Context) : RecyclerView.Adapter<TmsAns
 
     interface OnTextChangedListener{
         fun onTextChange(childPosition: Int, str: String, questionId: Int)
+        fun onOptionChange(childPosition: Int, str: String, questionId: Int)
     }
 }
