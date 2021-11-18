@@ -177,9 +177,10 @@
                             android:id="@+id/txtDefaultArea"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginLeft="5dp"
                             android:textColor="@color/black"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"
+                            android:text=""/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -211,9 +212,10 @@
                             android:id="@+id/txtDuration"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="3dp"
+                            android:layout_marginLeft="5dp"
                             android:textColor="@color/black"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"
+                            android:text=""/>
                     </LinearLayout>
 
                 </LinearLayout>

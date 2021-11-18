@@ -28,6 +28,37 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="6dp">
+                <TextView
+                    android:id="@+id/referralQuestionTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="18sp"
+                    android:textColor="@color/black" />
+                <RadioGroup
+                    android:id="@+id/radioGrp"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <RadioButton
+                        android:id="@+id/yesBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Yes"/>
+                    <RadioButton
+                        android:id="@+id/noBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No"
+                        android:layout_marginStart="6dp"/>
+                </RadioGroup>
+            </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.3dp"
@@ -45,11 +76,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="36dp"
+                    android:layout_marginLeft="16dp"
                     android:text="@string/add_customer_referrals"
                     android:textColor="@color/black"
                     android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@id/lnrAddJobCard"/>
 
                 <LinearLayout
                     android:id="@+id/lnrAddJobCard"
@@ -62,18 +95,18 @@
 
                     <Button
                         android:id="@+id/btnCheckList"
-                        android:layout_width="wrap_content"
+                        android:layout_width="120dp"
                         android:layout_height="26dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="17dp"
                         android:layout_toLeftOf="@id/btnPaymentJeopardy"
                         android:background="@drawable/button_background"
-                        android:text="Refer HiCare"
+                        android:text="Send Referral Code"
                         android:onClick="@{(view) -> handler.onReferHiCareClicked(view)}"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
-                        android:textSize="11sp" />
+                        android:textSize="12sp" />
 
                     <ImageView
                         android:layout_width="22dp"

@@ -131,6 +131,13 @@ public class GeneralData implements RealmModel {
     @Expose
     private Boolean ShowBarcode;
 
+    @SerializedName("RefferalQuestion")
+    @Expose
+    private String RefferalQuestion;
+
+    @SerializedName("IsCustomerInterestedToGiveRefferals")
+    @Expose
+    private Boolean IsCustomerInterestedToGiveRefferals;
 
     @SerializedName("ServiceType")
     @Expose
@@ -433,6 +440,9 @@ public class GeneralData implements RealmModel {
         Next_SR_Planned_End_Date = "NA";
         TaskAssignmentStartDate = "NA";
         TaskAssignmentEndDate = "NA";
+
+        RefferalQuestion = "NA";
+        IsCustomerInterestedToGiveRefferals = false;
     }
 
     public String getOrderNumber() {
@@ -1164,5 +1174,21 @@ public class GeneralData implements RealmModel {
 
     public void setCustomer_Instructions(String customer_Instructions) {
         Customer_Instructions = customer_Instructions;
+    }
+
+    public String getRefferalQuestion() {
+        return RefferalQuestion;
+    }
+
+    public void setRefferalQuestion(String refferalQuestion) {
+        RefferalQuestion = refferalQuestion;
+    }
+
+    public Boolean getCustomerInterestedToGiveRefferals() {
+        return IsCustomerInterestedToGiveRefferals;
+    }
+
+    public void setCustomerInterestedToGiveRefferals(Boolean customerInterestedToGiveRefferals) {
+        IsCustomerInterestedToGiveRefferals = customerInterestedToGiveRefferals;
     }
 }

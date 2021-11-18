@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -70,8 +72,10 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
     private static final int SEND_REFERRAL = 5000;
     private static final String ARG_TASK = "ARG_TASK";
     private static final String ARGS_MOBILE = "ARGS_MOBILE";
+    private static final String ARGS_REFERRAL_QUESTION = "ARGS_REFERRAL_QUESTION";
     private String taskId = "";
     private String technicianMobileNo = "";
+    private String referralQuestion = "";
     private String service = "";
     private String relation = "";
     private String name = "";
@@ -90,10 +94,11 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
         // Required empty public constructor
     }
 
-    public static ReferralFragment newInstance(String taskId, String technicianMobileNo) {
+    public static ReferralFragment newInstance(String taskId, String technicianMobileNo, String referralQuestion) {
         Bundle args = new Bundle();
         args.putString(ARG_TASK, taskId);
         args.putString(ARGS_MOBILE, technicianMobileNo);
+        args.putString(ARGS_REFERRAL_QUESTION, referralQuestion);
         ReferralFragment fragment = new ReferralFragment();
         fragment.setArguments(args);
         return fragment;
@@ -111,6 +116,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
         if (getArguments() != null) {
             taskId = getArguments().getString(ARG_TASK);
             technicianMobileNo = getArguments().getString(ARGS_MOBILE);
+            referralQuestion = getArguments().getString(ARGS_REFERRAL_QUESTION);
         }
     }
 
@@ -144,6 +150,21 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
         getReferralList();
         mfragmentReferralBinding.swipeRefreshLayout.setRefreshing(true);
 
+        mfragmentReferralBinding.referralQuestionTv.setText(referralQuestion);
+        mfragmentReferralBinding.radioGrp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                NewTaskDetailsActivity.referralChanged = true;
+                Log.d("TAG", ""+i);
+                if (i == R.id.yesBtn){
+                    NewTaskDetailsActivity.referralChecked = true;
+                }else if (i == R.id.noBtn){
+                    NewTaskDetailsActivity.referralChecked = false;
+                }
+                Log.d("TAG", "Is Checked "+NewTaskDetailsActivity.referralChecked + " Is Changed " +NewTaskDetailsActivity.referralChanged);
+            }
+        });
+        Log.d("TAG", "Is Checked "+NewTaskDetailsActivity.referralChecked + " Is Changed " +NewTaskDetailsActivity.referralChanged);
     }
 
 

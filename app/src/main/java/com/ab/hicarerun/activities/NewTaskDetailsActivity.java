@@ -279,6 +279,9 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private String assignmentStartDate = "";
     private String assignmentStartTime = "";
     private String assignmentEndTime = "";
+    private String referralQuestion = "";
+    public static boolean referralChanged = false;
+    public static boolean referralChecked = false;
 
     //   @Override
     //  protected void attachBaseContext(Context base) {
@@ -430,6 +433,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 //                            AppUtils.getServiceChemicalArea(149, 1, "CMS", true);
                             isPostJobCompletionDone = response.getData().getPostJob_Checklist_Done();
                             sta = response.getData().getSchedulingStatus();
+                            referralQuestion = response.getData().getRefferalQuestion();
+                            referralChecked = response.getData().getCustomerInterestedToGiveRefferals();
                             AppUtils.isInspectionDone = response.getData().getConsultationInspectionDone();
                             if (response.getData().getInspectionInfestationLevel() != null) {
                                 AppUtils.infestationLevel = response.getData().getInspectionInfestationLevel();
@@ -565,7 +570,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 if (isActivityThere) {
                     mAdapter.addFragment(ServiceUnitFragment.newInstance(isCombinedTasks, combinedOrderId, sequenceNo, orderId), "Activity");
                 }
-                mAdapter.addFragment(ReferralFragment.newInstance(taskId, technicianMobileNo), getResources().getString(R.string.referral_info));
+                mAdapter.addFragment(ReferralFragment.newInstance(taskId, technicianMobileNo, referralQuestion), getResources().getString(R.string.referral_info));
                 if (isCombinedTasks) {
                     mAdapter.addFragment(SignatureMSTInfoFragment.newInstance(taskId, combinedTaskId, combinedTaskTypes), getResources().getString(R.string.signature_info));
                 } else {
@@ -1177,6 +1182,14 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 }
                 progress.dismiss();
                 Toasty.error(this, "Please select gel appointment", Toast.LENGTH_SHORT, true).show();
+            } else if (Status.equals("Completed") && !referralChanged){
+                if (isActivityThere) {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                }else {
+                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(2);
+                }
+                progress.dismiss();
+                Toasty.error(this, "Please fill referral question", Toast.LENGTH_SHORT, true).show();
             } else if (Status.equals("Completed") && isTechnicianFeedbackEnable && Rate == 0) {
                 progress.dismiss();
                 showRatingDialog();
@@ -1246,6 +1259,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 request.setNext_SR_Service_Date(assignmentStartDate);
                 request.setNext_SR_Service_Start_Time(assignmentStartTime);
                 request.setNext_SR_Service_End_Time(assignmentEndTime);
+                request.setCustomerInterestedToGiveRefferals(referralChecked);
 
                 NetworkCallController controller = new NetworkCallController();
                 controller.setListner(new NetworkResponseListner() {
@@ -1649,7 +1663,17 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         isPostJobCompletionDone = true;
                         if (isFinalSave) {
                             progress.show();
-                            finalSave();
+                            if (referralChanged){
+                                finalSave();
+                            }else {
+                                if (isActivityThere) {
+                                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                                }else {
+                                    mActivityNewTaskDetailsBinding.pager.setCurrentItem(2);
+                                }
+                                progress.dismiss();
+                                Toasty.error(NewTaskDetailsActivity.this, "Please fill referral question", Toast.LENGTH_SHORT, true).show();
+                            }
                         }
                         mSaveList.clear();
                         alertDialog.dismiss();

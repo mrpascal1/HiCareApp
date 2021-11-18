@@ -150,7 +150,9 @@ public class UpdateTasksRequest {
     @Expose
     private String Next_SR_Service_End_Time;
 
-
+    @SerializedName("IsCustomerInterestedToGiveRefferals")
+    @Expose
+    private Boolean IsCustomerInterestedToGiveRefferals;
 
 
     public UpdateTasksRequest() {
@@ -197,6 +199,7 @@ public class UpdateTasksRequest {
         Next_SR_Service_Date = "";
         Next_SR_Service_Start_Time = "";
         Next_SR_Service_End_Time = "";
+        IsCustomerInterestedToGiveRefferals = false;
     }
 
     public String getUserId() {
@@ -551,5 +554,13 @@ public class UpdateTasksRequest {
 
     public void setNext_SR_Service_End_Time(String next_SR_Service_End_Time) {
         Next_SR_Service_End_Time = next_SR_Service_End_Time;
+    }
+
+    public Boolean getCustomerInterestedToGiveRefferals() {
+        return IsCustomerInterestedToGiveRefferals;
+    }
+
+    public void setCustomerInterestedToGiveRefferals(Boolean customerInterestedToGiveRefferals) {
+        IsCustomerInterestedToGiveRefferals = customerInterestedToGiveRefferals;
     }
 }

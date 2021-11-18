@@ -169,11 +169,13 @@ public class ConsulationParentAdapter extends RecyclerView.Adapter<ConsulationPa
                     Log.i("Parent_Position", newAppendValue);
                 } else {
                     String newAppendValue = checkItems.get(position);
-                    newAppendValue = newAppendValue.replace("," + optionValue, "");
-                    newAppendValue = newAppendValue.replace(optionValue, "");
-                    checkItems.put(position, newAppendValue);
+                    if (newAppendValue != null) {
+                        newAppendValue = newAppendValue.replace("," + optionValue, "");
+                        newAppendValue = newAppendValue.replace(optionValue, "");
+                        checkItems.put(position, newAppendValue);
+                    }
                     Log.i("Parent_Position", String.valueOf(position));
-                    Log.i("Parent_Position", newAppendValue);
+                    Log.i("Parent_Position", ""+newAppendValue);
                 }
 
                 strAnswer = (checkItems.get(position) == null) ? "" : checkItems.get(position);
@@ -253,7 +255,8 @@ public class ConsulationParentAdapter extends RecyclerView.Adapter<ConsulationPa
             });
 
         } catch (Exception e) {
-            e.printStackTrace();
+            String err = (e.getMessage()==null)?"":e.getMessage();
+            Log.e("err:", err);
         }
     }
 

@@ -1,6 +1,7 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,9 @@ public class ConsulationChildAdapter extends RecyclerView.Adapter<ConsulationChi
     private final Context mContext;
     private List<Optionlist> items = null;
     private int selectedPos = -1;
+    private int nonePos = -1;
+    private boolean noneSelected = false;
+    private boolean normalSelected = false;
     private String QuestionType = "";
     private OnCheckChanged onCheckChanged;
     private boolean isInspectionDone = false;
@@ -89,6 +93,23 @@ public class ConsulationChildAdapter extends RecyclerView.Adapter<ConsulationChi
                     notifyDataSetChanged();
                 });
             } else {
+                if (noneSelected){
+                    for (int i = 0; i < items.size(); i++){
+                        if (nonePos != i) {
+                            items.get(i).setIsselected(false);
+                        }
+                    }
+                    items.get(nonePos).setIsselected(true);
+                }
+                if (normalSelected){
+                    for (int i = 0; i < items.size(); i++){
+                        if (items.get(i).getOptionValueDisplayText().equalsIgnoreCase("None of the above")) {
+                            if (items.get(i).getIsselected()) {
+                                items.get(i).setIsselected(false);
+                            }
+                        }
+                    }
+                }
                 if (isInspectionDone) {
                     holder.mLayoutConsulationChildAdapterBinding.chkAnswers.setEnabled(false);
                 } else {
@@ -109,7 +130,32 @@ public class ConsulationChildAdapter extends RecyclerView.Adapter<ConsulationChi
                 holder.mLayoutConsulationChildAdapterBinding.chkAnswers.setChecked(items.get(position).getIsselected());
                 holder.mLayoutConsulationChildAdapterBinding.rbAnswers.setVisibility(View.GONE);
                 holder.mLayoutConsulationChildAdapterBinding.chkAnswers.setVisibility(View.VISIBLE);
-                holder.mLayoutConsulationChildAdapterBinding.chkAnswers.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                holder.mLayoutConsulationChildAdapterBinding.chkAnswers.setOnClickListener(v -> {
+                    if (holder.mLayoutConsulationChildAdapterBinding.chkAnswers.isChecked()){
+                        onCheckChanged.onChecked(position, true, items.get(position).isSelectedAndDisabled());
+                        onItemClickHandler.onItemClick(position);
+                        selectedPos = position;
+                        items.get(position).setIsselected(true);
+                        if (items.get(position).getOptionValueDisplayText().equalsIgnoreCase("None of the above")){
+                            noneSelected = true;
+                            normalSelected = false;
+                            nonePos = position;
+                            notifyDataSetChanged();
+                        }else {
+                            noneSelected = false;
+                            normalSelected = true;
+                            notifyDataSetChanged();
+                        }
+                    }else {
+                        if (items.get(position).getOptionValueDisplayText().equalsIgnoreCase("None of the above")){
+                            noneSelected = false;
+                        }
+                        Log.d("TAG", "pos "+position+ " UnChecked");
+                        onCheckChanged.onChecked(position, false, items.get(position).isSelectedAndDisabled());
+                        items.get(position).setIsselected(false);
+                    }
+                });
+                /*holder.mLayoutConsulationChildAdapterBinding.chkAnswers.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     onCheckChanged.onChecked(position, isChecked, items.get(position).isSelectedAndDisabled());
                     onItemClickHandler.onItemClick(position);
                     if(isChecked){
@@ -117,7 +163,7 @@ public class ConsulationChildAdapter extends RecyclerView.Adapter<ConsulationChi
                     }else {
                         items.get(position).setIsselected(false);
                     }
-                });
+                });*/
             }
 
         } catch (Exception e) {

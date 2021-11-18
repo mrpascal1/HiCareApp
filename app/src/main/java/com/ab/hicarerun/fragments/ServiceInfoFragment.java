@@ -1202,10 +1202,11 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     }
 
                     if (AppUtils.isInspectionDone) {
+                        mFragmentServiceInfoBinding.txtView.setText("VIEW");
                         mFragmentServiceInfoBinding.lnrConsIns.setBackgroundColor(Objects.requireNonNull(getActivity()).getResources().getColor(R.color.colorPrimary));
                     } else {
+                        mFragmentServiceInfoBinding.txtView.setText("PERFORM");
                         mFragmentServiceInfoBinding.lnrConsIns.setBackgroundColor(Objects.requireNonNull(getActivity()).getResources().getColor(R.color.yelold));
-
                     }
 
                     if (isCombinedTask) {
@@ -2078,8 +2079,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 InspectionFragment alert = InspectionFragment.newInstance();
                 alert.show(getActivity().getSupportFragmentManager(), "Alert");
             } else {
-                TmsConsultationFragment alert = TmsConsultationFragment.newInstance();
-                //ConsultationFragment alert = ConsultationFragment.newInstance();
+                //TmsConsultationFragment alert = TmsConsultationFragment.newInstance();
+                ConsultationFragment alert = ConsultationFragment.newInstance();
                 alert.show(getActivity().getSupportFragmentManager(), "Alert");
             }
         } catch (Exception e) {

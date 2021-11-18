@@ -177,6 +177,8 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
                                             v = (Vibrator) Objects.requireNonNull(getActivity()).getSystemService(getActivity().VIBRATOR_SERVICE);
                                             v.vibrate(3000);
                                         }
+                                    }else {
+                                        mFragmentConsultationThirdBinding.imgAlert.setVisibility(View.GONE);
                                     }
                                 } else {
                                     mFragmentConsultationThirdBinding.txtPart.setText("RECOMMENDATIONS");

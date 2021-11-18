@@ -194,7 +194,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:onClick="@{(view) -> handler.onViewBottonClicked(view)}"
-                        android:text="VIEW"
+                        android:text="PERFORM"
                         android:textColor="@color/white"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -736,7 +736,7 @@
             <RelativeLayout
                 android:id="@+id/lnr_reason"
                 android:layout_width="match_parent"
-                android:layout_height="42dp"
+                android:layout_height="44dp"
                 android:background="@color/tab_textColor"
                 app:layout_constraintBottom_toBottomOf="@id/lnr_order">
 
@@ -749,10 +749,13 @@
                     android:text="@string/payment_service"
                     android:textColor="@color/black"
                     android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@id/buttonLayout"/>
 
 
                 <LinearLayout
+                    android:id="@+id/buttonLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -762,7 +765,7 @@
                     <Button
                         android:id="@+id/btnCheckList"
                         android:layout_width="wrap_content"
-                        android:layout_height="28dp"
+                        android:layout_height="30dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
@@ -771,12 +774,12 @@
                         android:text="Post Job Check-List"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
-                        android:textSize="11sp" />
+                        android:textSize="14sp" />
 
                     <Button
                         android:id="@+id/btnPaymentJeopardy"
                         android:layout_width="wrap_content"
-                        android:layout_height="28dp"
+                        android:layout_height="30dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="15dp"
@@ -784,7 +787,7 @@
                         android:text="@string/raise_jeopardy_service"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
-                        android:textSize="11sp" />
+                        android:textSize="14sp" />
 
 
                 </LinearLayout>

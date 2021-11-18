@@ -85,7 +85,11 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
                 holder.layoutRecommendationsAdapterBinding.progressBar.setVisibility(GONE);
                 holder.layoutRecommendationsAdapterBinding.speakerIv.setVisibility(View.VISIBLE);
             }
-            holder.layoutRecommendationsAdapterBinding.txtTitle.setText(items.get(position).getRecommendationTitle());
+            if (items.get(position).getRecommendationTitle() != null || !items.get(position).getRecommendationTitle().equals("")) {
+                holder.layoutRecommendationsAdapterBinding.txtTitle.setText(items.get(position).getRecommendationTitle());
+            }else {
+                holder.layoutRecommendationsAdapterBinding.txtTitle.setVisibility(GONE);
+            }
             if (items.get(position).getRecommendationDescription() != null && !items.get(position).getRecommendationDescription().equals("")) {
                 if (type.equals("TMS")) {
                     holder.layoutRecommendationsAdapterBinding.txtDefaultArea.setTypeface(holder.layoutRecommendationsAdapterBinding.txtDefaultArea.getTypeface(), Typeface.BOLD);
@@ -153,6 +157,17 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
                 holder.layoutRecommendationsAdapterBinding.lnrRecommendationIv.setVisibility(View.GONE);
             }
 
+            if (items.get(position).getRecommendationImageUrl() == null && items.get(position).getChemicalValue() == null){
+                holder.layoutRecommendationsAdapterBinding.lnrRecommendationIv.setVisibility(GONE);
+                holder.layoutRecommendationsAdapterBinding.lnrChemicalValue.setVisibility(GONE);
+                LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                        0,
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        2f
+                );
+                holder.layoutRecommendationsAdapterBinding.lnrChem.setVisibility(GONE);
+                holder.layoutRecommendationsAdapterBinding.lnrData.setLayoutParams(param);
+            }
             holder.layoutRecommendationsAdapterBinding.recommendationIv.setOnClickListener(v -> {
                 //onImageClicked.onClicked(items.get(position).getRecommendationImageUrl(), position);
                 new ImageOverlayStfalcon(mContext, new String[]{items.get(position).getRecommendationImageUrl()});
