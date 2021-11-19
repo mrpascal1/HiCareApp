@@ -151,6 +151,17 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
         mfragmentReferralBinding.swipeRefreshLayout.setRefreshing(true);
 
         mfragmentReferralBinding.referralQuestionTv.setText(referralQuestion);
+        if (NewTaskDetailsActivity.isCompleted.equalsIgnoreCase("completed")){
+            mfragmentReferralBinding.yesBtn.setEnabled(false);
+            mfragmentReferralBinding.noBtn.setEnabled(false);
+            if (NewTaskDetailsActivity.referralChecked){
+                mfragmentReferralBinding.yesBtn.setChecked(true);
+                mfragmentReferralBinding.noBtn.setChecked(false);
+            }else {
+                mfragmentReferralBinding.yesBtn.setChecked(false);
+                mfragmentReferralBinding.noBtn.setChecked(true);
+            }
+        }
         mfragmentReferralBinding.radioGrp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {

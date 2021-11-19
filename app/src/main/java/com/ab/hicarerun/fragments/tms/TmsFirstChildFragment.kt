@@ -34,9 +34,9 @@ import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
 import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListData
 import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListRequest
+import com.ab.hicarerun.network.models.ConsulationModel.Data
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData
 import com.ab.hicarerun.network.models.LoginResponse
-import com.ab.hicarerun.network.models.TmsModel.QuestionImageUrl
 import com.ab.hicarerun.network.models.TmsModel.QuestionList
 import com.ab.hicarerun.network.models.TmsModel.QuestionsResponse
 import com.ab.hicarerun.utils.AppUtils
@@ -64,6 +64,7 @@ class TmsFirstChildFragment : Fragment() {
     private var checkPosition = 0
     private var qId = -1
     private var cBy = -1
+    private var currChip = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -77,65 +78,7 @@ class TmsFirstChildFragment : Fragment() {
         chipsArray = ArrayList()
         chipsArray.addAll(AppUtils.tmsConsultationChips)
 
-        val questionsArray = arrayListOf("What is android OS?", "What is android framework?",
-            "What is android components","What is linux kernel?")
         questionsResponse = ArrayList()
-        /*questionsResponse.add(QuestionsResponse("General",
-            arrayListOf(
-                Questions("What is android OS?",
-                    arrayListOf(
-                        Option(1, "1st Option -0", false),
-                        Option(2, "2nd Option -0", false))
-                    , false),
-                Questions("Second Question",
-                    arrayListOf(
-                        Option(3, "1st Option 0", false),
-                        Option(4, "2nd Option 0", false)), false)),
-
-        ))
-        questionsResponse.add(QuestionsResponse("Living Room",
-            arrayListOf(
-                Questions("What is android framework 0?",
-                    arrayListOf(
-                        Option(5, "1st Option -1", false),
-                        Option(6, "2nd Option -1", false))
-                    , false),
-                Questions("Second Question",
-                    arrayListOf(
-                        Option(7, "1st Option 1", false),
-                        Option(8, "2nd Option 1", false))
-                    , false)),
-
-        ))
-        questionsResponse.add(QuestionsResponse("Kitchen",
-            arrayListOf(
-                Questions("What is android framework 1?",
-                    arrayListOf(
-                        Option(5, "1st Option -2", false),
-                        Option(6, "2nd Option -2", false))
-                    , false),
-                Questions("Second Question",
-                    arrayListOf(
-                        Option(5, "1st Option 2", false),
-                        Option(6, "2nd Option 2", false)),
-                    false)),
-
-        ))
-        questionsResponse.add(QuestionsResponse("Bedroom",
-            arrayListOf(
-                Questions("What is android framework 2?",
-                    arrayListOf(
-                        Option(7, "1st Option 3", false),
-                        Option(8, "2nd Option 3", false)),
-                    false),
-                Questions("Second Question",
-                    arrayListOf(
-                        Option(7, "1st Option 3", false),
-                        Option(8, "2nd Option 3", false)),
-                    false)),
-
-        ))*/
-
 
         chipsAdapter = TmsChipsAdapter(requireContext(), chipsArray)
         questionsParentAdapter = TmsQuestionsParentAdapter(requireContext())
@@ -183,6 +126,7 @@ class TmsFirstChildFragment : Fragment() {
         chipsAdapter.setOnListItemClickHandler(object : TmsChipsAdapter.OnListItemClickHandler{
             override fun onItemClick(position: Int, category: String) {
                 Log.d("TAG", "$position")
+                currChip = category
                 currPos = position
                 if (currPos == chipsArray.size-1){
                     binding.nextChipBtn.visibility = View.GONE
@@ -224,7 +168,26 @@ class TmsFirstChildFragment : Fragment() {
             }
 
             override fun onCancelClicked(position: Int, questionId: Int?, clickedBy: Int) {
+                val tmsCList = ArrayList<QuestionList>()
+                AppUtils.tmsInspectionList.forEach {
+                    if (it.questionTab == currChip) {
+                        tmsCList.addAll(it.questionList)
+                    }
+                }
+                tmsCList.forEach {
+                    if (it.questionId == qId){
+                        if (it.pictureURL?.isEmpty() == true) {
+                            it.pictureURL = null
+                        }
+                    }
+                }
                 questionsParentAdapter.notifyDataSetChanged()
+            }
+        })
+
+        questionsParentAdapter.setOnItemClick(object : TmsQuestionsParentAdapter.OnItemClickListener{
+            override fun onItemClicked(position: Int, questionId: Int?, answer: String) {
+
             }
         })
 
@@ -348,7 +311,9 @@ class TmsFirstChildFragment : Fragment() {
                         try {
                             val tmsCList = ArrayList<QuestionList>()
                             AppUtils.tmsConsultationList.forEach {
-                                tmsCList.addAll(it.questionList)
+                                if (it.questionTab == currChip) {
+                                    tmsCList.addAll(it.questionList)
+                                }
                             }
                             val url = response.fileUrl
                             tmsCList.forEach {
@@ -367,12 +332,12 @@ class TmsFirstChildFragment : Fragment() {
                                             found3 = true
                                         }
                                     }*/
-                                    val q = QuestionImageUrl(cBy, url)
-                                    Log.d("TAG", "$q")
-                                    if (it.qPictureURL == null) {
-                                        it.qPictureURL = arrayListOf(q)
+                                    //val q = QuestionImageUrl(cBy, url)
+                                    //Log.d("TAG", "$q")
+                                    if (it.pictureURL == null) {
+                                        it.pictureURL = arrayListOf(url)
                                     }else{
-                                        it.qPictureURL?.add(q)
+                                        it.pictureURL?.add(url)
                                     }
 
                                     /*it.qPictureURL!![cBy].id = cBy
@@ -394,6 +359,30 @@ class TmsFirstChildFragment : Fragment() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun isImgChecked(inspectionList: List<QuestionList>): Boolean {
+        var isRequired = true
+        for (data in inspectionList) {
+            if (data.isPictureRequired == true) {
+                if (data.pictureURL != null && (data.pictureURL?.isNotEmpty()==true)) {
+                    isRequired = true
+                } else {
+                    isRequired = false
+                    break
+                }
+            }
+        }
+        return isRequired
+    }
+
+    private fun isListChecked(listData: List<QuestionList>): Boolean {
+        for (data in listData) {
+            if (data.answer == null || data.answer?.length == 0) {
+                return false
+            }
+        }
+        return true
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

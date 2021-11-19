@@ -282,6 +282,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private String referralQuestion = "";
     public static boolean referralChanged = false;
     public static boolean referralChecked = false;
+    public static String isCompleted = "no";
 
     //   @Override
     //  protected void attachBaseContext(Context base) {
@@ -294,6 +295,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         mActivityNewTaskDetailsBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_new_task_details);
 
+        referralChecked = false;
+        referralChanged = false;
         mActivityNewTaskDetailsBinding.setHandler(this);
         progress = new ProgressDialog(this, R.style.TransparentProgressDialog);
         progress.setCancelable(false);
@@ -433,6 +436,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 //                            AppUtils.getServiceChemicalArea(149, 1, "CMS", true);
                             isPostJobCompletionDone = response.getData().getPostJob_Checklist_Done();
                             sta = response.getData().getSchedulingStatus();
+                            isCompleted = response.getData().getSchedulingStatus();
                             referralQuestion = response.getData().getRefferalQuestion();
                             referralChecked = response.getData().getCustomerInterestedToGiveRefferals();
                             AppUtils.isInspectionDone = response.getData().getConsultationInspectionDone();
@@ -1203,7 +1207,17 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                     showRatingDialog();
                 }*/
             else {
-                finalSave();
+                if (referralChanged){
+                    finalSave();
+                }else {
+                    if (isActivityThere) {
+                        mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                    } else {
+                        mActivityNewTaskDetailsBinding.pager.setCurrentItem(2);
+                    }
+                    progress.dismiss();
+                    Toasty.error(this, "Please fill referral question", Toast.LENGTH_SHORT, true).show();
+                }
             }
         } catch (Exception e) {
             RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
@@ -1673,6 +1687,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                                 }
                                 progress.dismiss();
                                 Toasty.error(NewTaskDetailsActivity.this, "Please fill referral question", Toast.LENGTH_SHORT, true).show();
+                                return;
                             }
                         }
                         mSaveList.clear();

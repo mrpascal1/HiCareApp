@@ -56,6 +56,7 @@ class TmsSecondChildFragment : Fragment() {
     private var checkPosition = 0
     private var qId = -1
     private var cBy = -1
+    private var currChip = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -115,6 +116,7 @@ class TmsSecondChildFragment : Fragment() {
         chipsAdapter.setOnListItemClickHandler(object : TmsChipsAdapter.OnListItemClickHandler{
             override fun onItemClick(position: Int, category: String) {
                 Log.d("TAG", "$position")
+                currChip = category
                 currPos = position
                 if (currPos == chipsArray.size-1){
                     binding.nextChipBtn.visibility = View.GONE
@@ -156,12 +158,14 @@ class TmsSecondChildFragment : Fragment() {
             override fun onCancelClicked(position: Int, questionId: Int?, clickedBy: Int) {
                 val tmsCList = ArrayList<QuestionList>()
                 AppUtils.tmsInspectionList.forEach {
-                    tmsCList.addAll(it.questionList)
+                    if (it.questionTab == currChip) {
+                        tmsCList.addAll(it.questionList)
+                    }
                 }
                 tmsCList.forEach {
                     if (it.questionId == qId){
-                        if (it.qPictureURL!!.isEmpty()){
-                            it.qPictureURL = null
+                        if (it.pictureURL?.isEmpty() == true) {
+                            it.pictureURL = null
                         }
                     }
                 }
@@ -239,7 +243,9 @@ class TmsSecondChildFragment : Fragment() {
                         try {
                             val tmsCList = ArrayList<QuestionList>()
                             AppUtils.tmsInspectionList.forEach {
-                                tmsCList.addAll(it.questionList)
+                                if (it.questionTab == currChip) {
+                                    tmsCList.addAll(it.questionList)
+                                }
                             }
                             val url = response.fileUrl
                             tmsCList.forEach {
@@ -249,12 +255,12 @@ class TmsSecondChildFragment : Fragment() {
                                         it.qPictureURL?.set(cBy, QuestionImageUrl(cBy, url))
                                     }*/
 
-                                    val q = QuestionImageUrl(cBy, url)
-                                    Log.d("TAG", "$q")
-                                    if (it.qPictureURL == null) {
-                                        it.qPictureURL = arrayListOf(q)
+                                    //val q = QuestionImageUrl(cBy, url)
+                                    //Log.d("TAG", "$q")
+                                    if (it.pictureURL == null) {
+                                        it.pictureURL = arrayListOf(url)
                                     }else{
-                                        it.qPictureURL?.add(q)
+                                        it.pictureURL?.add(url)
                                     }
 
                                     /*it.qPictureURL?.forEach { image ->

@@ -21,7 +21,8 @@
     <LinearLayout
         android:id="@+id/numberLayout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone">
         <ImageView
             android:id="@+id/minusBtn"
             android:layout_width="25dp"
@@ -51,6 +52,29 @@
             android:background="@drawable/edit_border"
             android:padding="4dp"
             android:src="@drawable/ic_add_quantity"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/spinnerLayout"
+        android:layout_width="150dp"
+        android:layout_height="26dp"
+        android:background="@drawable/edit_box_border"
+        android:gravity="right"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="4dp">
+
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/spnType"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/textColorSecondary"
+            android:clickable="true"
+            android:ems="10"
+            android:popupBackground="@color/colorTextDrawerSecondary"
+            android:spinnerMode="dialog"
+            android:textSize="20sp"
+            android:layout_marginStart="12dp" />
     </LinearLayout>
 
 </LinearLayout>
