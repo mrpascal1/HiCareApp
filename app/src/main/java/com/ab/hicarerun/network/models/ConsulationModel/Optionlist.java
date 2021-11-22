@@ -19,6 +19,9 @@ public class Optionlist {
     @Expose
     @SerializedName("isSelectedAndDisabled")
     private boolean isSelectedAndDisabled;
+    @Expose
+    @SerializedName("SortValue")
+    private int SortValue;
 
     public boolean getIsselected() {
         return Isselected;
@@ -50,5 +53,13 @@ public class Optionlist {
 
     public void setSelectedAndDisabled(boolean selectedAndDisabled) {
         isSelectedAndDisabled = selectedAndDisabled;
+    }
+
+    public int getSortValue() {
+        return SortValue;
+    }
+
+    public void setSortValue(int sortValue) {
+        SortValue = sortValue;
     }
 }

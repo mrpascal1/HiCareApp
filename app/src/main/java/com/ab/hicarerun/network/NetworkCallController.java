@@ -122,6 +122,7 @@ import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingReque
 import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingResponse;
 import com.ab.hicarerun.network.models.TechnicianRoutineModel.TechnicianRoutineResponse;
 import com.ab.hicarerun.network.models.TmsModel.QuestionBase;
+import com.ab.hicarerun.network.models.TmsModel.TmsData;
 import com.ab.hicarerun.network.models.TrainingModel.TrainingResponse;
 import com.ab.hicarerun.network.models.TrainingModel.WelcomeVideoResponse;
 import com.ab.hicarerun.network.models.UpdateAppModel.UpdateResponse;
@@ -4102,6 +4103,31 @@ public class NetworkCallController {
 
                         @Override
                         public void onFailure(Call<QuestionBase> call, Throwable t) {
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void saveTmsQuestions(final int requestCode, List<HashMap<String, Object>> taskId) {
+        try {
+            BaseApplication.getRetrofitAPI(true)
+                    .saveTmsQuestions(taskId)
+                    .enqueue(new Callback<BaseResponse>() {
+                        @Override
+                        public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body());
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<BaseResponse> call, Throwable t) {
+                            mListner.onFailure(requestCode);
                         }
                     });
         } catch (Exception e) {

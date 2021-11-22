@@ -102,7 +102,7 @@
                         android:layout_marginRight="17dp"
                         android:layout_toLeftOf="@id/btnPaymentJeopardy"
                         android:background="@drawable/button_background"
-                        android:text="Send Referral Code"
+                        android:text="@string/send_referral_code"
                         android:onClick="@{(view) -> handler.onReferHiCareClicked(view)}"
                         android:textAllCaps="false"
                         android:textColor="@color/white"

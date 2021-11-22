@@ -103,6 +103,7 @@ public class AppUtils {
     public static List<TowerData> mCommonTowerList = null;
     public static List<TowerData> mRegularTowerList = null;
     public static boolean isInspectionDone = false;
+    public static boolean isTmsInspectionDone = false;
     public static String appointmentDate = "";
     public static String infestationLevel = "";
     public static String appointmentStartTime = "";

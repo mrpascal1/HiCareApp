@@ -656,6 +656,18 @@
     <string name="shiksha_confirm">Confirm</string>
     <string name="shiksha">PAATHशाला</string>
     <string name="click_to_zoom">Click image to zoom</string>
+    <string name="instructions">Instructions</string>
+    <string name="send_referral_code">Send Referral Code</string>
+    <string name="consultation_inspection">Consultation and Inspection</string>
+    <string name="perform">PERFORM</string>
+    <string name="view_cons_ins">VIEW</string>
+    <string name="cn_next">NEXT</string>
+    <string name="cn_back">BACK</string>
+    <string name="consultation">CONSULTATION</string>
+    <string name="inspection">INSPECTION</string>
+    <string name="cn_save">SAVE</string>
+    <string name="referral_yes">Yes</string>
+    <string name="referral_no">No</string>
 
 
 </resources>

@@ -118,12 +118,12 @@ class TmsAnswersChildAdapter(val context: Context) : RecyclerView.Adapter<TmsAns
                 if (selected != "Select Count"){
                     selectedPos = position
                     items[position]?.isSelected = true
-                    onTextChangedListener?.onTextChange(position, selected, questionId)
                     for (i in 0 until items.size){
                         if (selectedPos != i) {
                             items[i]?.isSelected = false
                         }
                     }
+                    onTextChangedListener?.onTextChange(position, selected, questionId)
                 }
                 //Log.d("TAG", selectedType)
             }

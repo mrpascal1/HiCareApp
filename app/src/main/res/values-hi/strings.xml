@@ -1090,5 +1090,18 @@
     <string name="shiksha_confirm">पक्का</string>
     <string name="shiksha">PAATHशाला</string>
     <string name="click_to_zoom">ज़ूम करने के लिए छवि पर क्लिक करें</string>
+    <string name="instructions">निर्देश</string>
+    <string name="send_referral_code">रेफरल कोड भेजें</string>
+    <string name="consultation_inspection">कन्सल्टेशन और इन्स्पेक्शन</string>
+    <string name="perform">पूरा करे</string>
+    <string name="view_cons_ins">पुन्हा देखे</string>
+    <string name="cn_next">अगला</string>
+    <string name="cn_back">वापस</string>
+    <string name="consultation">कन्सल्टेशन</string>
+    <string name="inspection">इन्स्पेक्शन</string>
+    <string name="cn_save">संचय</string>
+
+    <string name="referral_yes">हां</string>
+    <string name="referral_no">नहीं</string>
 
 </resources>

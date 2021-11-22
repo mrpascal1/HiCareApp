@@ -55,10 +55,12 @@ class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<Tms
                 }
 
                 val arrSize = foundArr.size
-                if (arrSize == 3) {
+
+                if (arrSize == 4) {
                     holder.binding.relPhoto.visibility = View.VISIBLE
                     holder.binding.relPhoto2.visibility = View.VISIBLE
                     holder.binding.relPhoto3.visibility = View.VISIBLE
+                    holder.binding.relPhoto4.visibility = View.VISIBLE
 
                     Picasso.get().load(items[position].pictureURL!![0]).fit()
                         .into(holder.binding.imgUploadedCheque)
@@ -75,11 +77,42 @@ class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<Tms
                     holder.binding.lnrUpload3.visibility = View.GONE
                     holder.binding.lnrImage3.visibility = View.VISIBLE
 
+                    Picasso.get().load(items[position].pictureURL!![3]).fit()
+                        .into(holder.binding.imgUploadedCheque4)
+                    holder.binding.lnrUpload4.visibility = View.GONE
+                    holder.binding.lnrImage4.visibility = View.VISIBLE
+
+                }
+                if (arrSize == 3) {
+                    holder.binding.relPhoto.visibility = View.VISIBLE
+                    holder.binding.relPhoto2.visibility = View.VISIBLE
+                    holder.binding.relPhoto3.visibility = View.VISIBLE
+                    holder.binding.relPhoto4.visibility = View.VISIBLE
+
+                    Picasso.get().load(items[position].pictureURL!![0]).fit()
+                        .into(holder.binding.imgUploadedCheque)
+                    holder.binding.lnrUpload.visibility = View.GONE
+                    holder.binding.lnrImage.visibility = View.VISIBLE
+
+                    Picasso.get().load(items[position].pictureURL!![1]).fit()
+                        .into(holder.binding.imgUploadedCheque2)
+                    holder.binding.lnrUpload2.visibility = View.GONE
+                    holder.binding.lnrImage2.visibility = View.VISIBLE
+
+                    Picasso.get().load(items[position].pictureURL!![2]).fit()
+                        .into(holder.binding.imgUploadedCheque3)
+                    holder.binding.lnrUpload3.visibility = View.GONE
+                    holder.binding.lnrImage3.visibility = View.VISIBLE
+
+                    holder.binding.lnrUpload4.visibility = View.VISIBLE
+                    holder.binding.lnrImage4.visibility = View.GONE
+
                 }
                 if (arrSize == 2) {
                     holder.binding.relPhoto.visibility = View.VISIBLE
                     holder.binding.relPhoto2.visibility = View.VISIBLE
                     holder.binding.relPhoto3.visibility = View.VISIBLE
+                    holder.binding.relPhoto4.visibility = View.GONE
 
                     Picasso.get().load(items[position].pictureURL!![0]).fit()
                         .into(holder.binding.imgUploadedCheque)
@@ -94,11 +127,15 @@ class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<Tms
                     holder.binding.lnrUpload3.visibility = View.VISIBLE
                     holder.binding.lnrImage3.visibility = View.GONE
 
+                    holder.binding.lnrUpload4.visibility = View.GONE
+                    holder.binding.lnrImage4.visibility = View.GONE
+
                 }
                 if (arrSize == 1) {
                     holder.binding.relPhoto.visibility = View.VISIBLE
                     holder.binding.relPhoto2.visibility = View.VISIBLE
                     holder.binding.relPhoto3.visibility = View.GONE
+                    holder.binding.relPhoto4.visibility = View.GONE
 
                     Picasso.get().load(items[position].pictureURL!![0]).fit()
                         .into(holder.binding.imgUploadedCheque)
@@ -110,22 +147,26 @@ class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<Tms
 
                     holder.binding.lnrUpload3.visibility = View.GONE
                     holder.binding.lnrImage3.visibility = View.GONE
+
+                    holder.binding.lnrUpload4.visibility = View.GONE
+                    holder.binding.lnrImage4.visibility = View.GONE
                 }
             } else {
                 if (items[position].isPictureRequired == true) {
                     holder.binding.relPhoto.visibility = View.VISIBLE
                     holder.binding.relPhoto2.visibility = View.GONE
                     holder.binding.relPhoto3.visibility = View.GONE
+                    holder.binding.relPhoto4.visibility = View.GONE
 
                     holder.binding.lnrUpload.visibility = View.VISIBLE
                     holder.binding.lnrImage.visibility = View.GONE
                 }
-
             }
         }else{
             holder.binding.relPhoto.visibility = View.GONE
             holder.binding.relPhoto2.visibility = View.GONE
             holder.binding.relPhoto3.visibility = View.GONE
+            holder.binding.relPhoto4.visibility = View.GONE
         }
 
         /**
@@ -205,6 +246,11 @@ class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<Tms
             }
 
             override fun onOptionChange(childPosition: Int, str: String, questionId: Int, type: String) {
+                items.forEach {
+                    if (it.questionId == questionId){
+                        it.answer = str
+                    }
+                }
                 onItemClickListener?.onItemClicked(position, questionId, str)
             }
 

@@ -110,6 +110,7 @@ import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingReque
 import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingResponse;
 import com.ab.hicarerun.network.models.TechnicianRoutineModel.TechnicianRoutineResponse;
 import com.ab.hicarerun.network.models.TmsModel.QuestionBase;
+import com.ab.hicarerun.network.models.TmsModel.TmsData;
 import com.ab.hicarerun.network.models.TrainingModel.TrainingResponse;
 import com.ab.hicarerun.network.models.TrainingModel.WelcomeVideoResponse;
 import com.ab.hicarerun.network.models.UpdateAppModel.UpdateResponse;
@@ -581,5 +582,8 @@ public interface IRetrofit {
 
     @GET("TMSDigitisation/GetTMSQuestions")
     Call<QuestionBase> getTmsQuestions(@Query("taskId") String taskId);
+
+    @POST("TMSDigitisation/UpdateTMSQuestions")
+    Call<BaseResponse> saveTmsQuestions(@Body List<HashMap<String, Object>> data);
 
 }

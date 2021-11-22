@@ -283,6 +283,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     public static boolean referralChanged = false;
     public static boolean referralChecked = false;
     public static String isCompleted = "no";
+    public static String referralInstructions = "";
 
     //   @Override
     //  protected void attachBaseContext(Context base) {
@@ -297,13 +298,14 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
         referralChecked = false;
         referralChanged = false;
+        referralInstructions = "";
         mActivityNewTaskDetailsBinding.setHandler(this);
         progress = new ProgressDialog(this, R.style.TransparentProgressDialog);
         progress.setCancelable(false);
         taskId = getIntent().getStringExtra(ARGS_TASKS);
         resourceId = getIntent().getStringExtra(ARGS_RESOURCE);
         AppUtils.getConsAndInsData(taskId/*"a239D000000YajWQAS"*/, resourceId/*"a1r9D000000OUNqQAO"*/, LocaleHelper.getLanguage(NewTaskDetailsActivity.this));
-        AppUtils.getTmsQuestions("23213");
+        //AppUtils.getTmsQuestions("23213");
         combinedTaskId = getIntent().getStringExtra(ARGS_COMBINED_TASKS_ID);
         isCombinedTasks = getIntent().getBooleanExtra(ARGS_COMBINED_TASKS, false);
         combinedOrderId = getIntent().getStringExtra(ARGS_COMBINED_ORDER);
@@ -439,6 +441,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             isCompleted = response.getData().getSchedulingStatus();
                             referralQuestion = response.getData().getRefferalQuestion();
                             referralChecked = response.getData().getCustomerInterestedToGiveRefferals();
+                            referralInstructions = response.getData().getCustomerRefferalAlert();
                             AppUtils.isInspectionDone = response.getData().getConsultationInspectionDone();
                             if (response.getData().getInspectionInfestationLevel() != null) {
                                 AppUtils.infestationLevel = response.getData().getInspectionInfestationLevel();
@@ -1193,7 +1196,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                     mActivityNewTaskDetailsBinding.pager.setCurrentItem(2);
                 }
                 progress.dismiss();
-                Toasty.error(this, "Please fill referral question", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, "Please complete the referral process", Toast.LENGTH_SHORT, true).show();
             } else if (Status.equals("Completed") && isTechnicianFeedbackEnable && Rate == 0) {
                 progress.dismiss();
                 showRatingDialog();
@@ -1207,16 +1210,20 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                     showRatingDialog();
                 }*/
             else {
-                if (referralChanged){
-                    finalSave();
-                }else {
-                    if (isActivityThere) {
-                        mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
-                    } else {
-                        mActivityNewTaskDetailsBinding.pager.setCurrentItem(2);
+                if (Status.equalsIgnoreCase("Completed")){
+                    if (referralChanged){
+                        finalSave();
+                    }else {
+                        if (isActivityThere) {
+                            mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                        } else {
+                            mActivityNewTaskDetailsBinding.pager.setCurrentItem(2);
+                        }
+                        progress.dismiss();
+                        Toasty.error(this, "Please complete the referral process", Toast.LENGTH_SHORT, true).show();
                     }
-                    progress.dismiss();
-                    Toasty.error(this, "Please fill referral question", Toast.LENGTH_SHORT, true).show();
+                }else {
+                    finalSave();
                 }
             }
         } catch (Exception e) {
@@ -1675,20 +1682,23 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 public void onResponse(int requestCode, CheckListResponse response) {
                     if (response.getIsSuccess()) {
                         isPostJobCompletionDone = true;
-                        if (isFinalSave) {
-                            progress.show();
-                            if (referralChanged){
-                                finalSave();
-                            }else {
+                        if (Status.equalsIgnoreCase("Completed")) {
+                            if (referralChanged) {
+                                isFinalSave = true;
+                            } else {
+                                isFinalSave = false;
                                 if (isActivityThere) {
                                     mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
-                                }else {
+                                } else {
                                     mActivityNewTaskDetailsBinding.pager.setCurrentItem(2);
                                 }
                                 progress.dismiss();
-                                Toasty.error(NewTaskDetailsActivity.this, "Please fill referral question", Toast.LENGTH_SHORT, true).show();
-                                return;
+                                Toasty.error(NewTaskDetailsActivity.this, "Please complete the referral process", Toast.LENGTH_SHORT, true).show();
                             }
+                        }
+                        if (isFinalSave) {
+                            progress.show();
+                            finalSave();
                         }
                         mSaveList.clear();
                         alertDialog.dismiss();

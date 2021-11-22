@@ -149,7 +149,7 @@
                 android:layout_height="50dp"
                 android:background="@color/yelold"
                 android:orientation="horizontal"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:weightSum="8">
 
                 <LinearLayout
@@ -166,7 +166,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="2dp"
-                        android:text="Consultation and Inspection"
+                        android:text="@string/consultation_inspection"
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         android:textStyle="bold|italic" />
@@ -194,7 +194,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:onClick="@{(view) -> handler.onViewBottonClicked(view)}"
-                        android:text="PERFORM"
+                        android:text="@string/perform"
                         android:textColor="@color/white"
                         android:textSize="15sp"
                         android:textStyle="bold" />

@@ -12,8 +12,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.ab.hicarerun.activities.Camera2Activity;
+import com.ab.hicarerun.network.models.ConsulationModel.Data;
+import com.ab.hicarerun.network.models.TmsModel.QuestionList;
 import com.ab.hicarerun.utils.AppUtils;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.List;
 
 public class TmsUtils {
 
@@ -75,4 +79,26 @@ public class TmsUtils {
             verifyPermissions(context, REQUEST_CODE);
         }
     }
-}
+
+    static boolean isImgChecked(List<QuestionList> inspectionList) {
+        boolean isRequired = true;
+        for (QuestionList data : inspectionList) {
+            if (data.isPictureRequired()) {
+                if (data.getPictureURL() != null && !data.getPictureURL().isEmpty()) {
+                    isRequired = true;
+                } else {
+                    isRequired = false;
+                    break;
+                }
+            }
+        }
+        return isRequired;
+    }
+    static boolean isListChecked(List<QuestionList> listData) {
+        for (QuestionList data : listData) {
+            if (data.getAnswer() == null || data.getAnswer().length() == 0) {
+                return false;
+            }
+        }
+        return true;
+    }}

@@ -261,9 +261,9 @@ public class ConsultaionFirstChildFragmentt extends Fragment implements UserFirs
                 }
             }
             if (AppUtils.inspectionList != null && AppUtils.inspectionList.size() > 0) {
-                mConsultaionFirstChildFragmenttBinding.btnNext.setText("NEXT");
+                mConsultaionFirstChildFragmenttBinding.btnNext.setText(R.string.cn_next);
             } else {
-                mConsultaionFirstChildFragmenttBinding.btnNext.setText("SAVE");
+                mConsultaionFirstChildFragmenttBinding.btnNext.setText(R.string.cn_save);
             }
 
         } catch (Exception e) {

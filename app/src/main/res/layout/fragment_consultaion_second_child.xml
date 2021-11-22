@@ -27,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:text="INSPECTION"
+                android:text="@string/inspection"
                 android:textColor="@color/lightRed"
                 android:textSize="13sp" />
 
@@ -73,7 +73,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/round_border"
                     android:onClick="@{(view) -> handler.onBackButtonClicked(view)}"
-                    android:text="BACK"
+                    android:text="@string/cn_back"
                     android:textAllCaps="false"
                     android:textColor="@color/colorPrimary"
                     android:textSize="15sp" />
@@ -86,7 +86,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/button_border"
                     android:onClick="@{(view) -> handler.onSaveButtonClicked(view)}"
-                    android:text="SAVE"
+                    android:text="@string/cn_save"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="15sp" />

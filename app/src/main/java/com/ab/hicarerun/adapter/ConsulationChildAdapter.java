@@ -103,7 +103,7 @@ public class ConsulationChildAdapter extends RecyclerView.Adapter<ConsulationChi
                 }
                 if (normalSelected){
                     for (int i = 0; i < items.size(); i++){
-                        if (items.get(i).getOptionValueDisplayText().equalsIgnoreCase("None of the above")) {
+                        if (items.get(i).getOptionvalue().equalsIgnoreCase("None of the above")) {
                             if (items.get(i).getIsselected()) {
                                 items.get(i).setIsselected(false);
                             }
@@ -136,7 +136,7 @@ public class ConsulationChildAdapter extends RecyclerView.Adapter<ConsulationChi
                         onItemClickHandler.onItemClick(position);
                         selectedPos = position;
                         items.get(position).setIsselected(true);
-                        if (items.get(position).getOptionValueDisplayText().equalsIgnoreCase("None of the above")){
+                        if (items.get(position).getOptionvalue().equalsIgnoreCase("None of the above")){
                             noneSelected = true;
                             normalSelected = false;
                             nonePos = position;
@@ -147,7 +147,7 @@ public class ConsulationChildAdapter extends RecyclerView.Adapter<ConsulationChi
                             notifyDataSetChanged();
                         }
                     }else {
-                        if (items.get(position).getOptionValueDisplayText().equalsIgnoreCase("None of the above")){
+                        if (items.get(position).getOptionvalue().equalsIgnoreCase("None of the above")){
                             noneSelected = false;
                         }
                         Log.d("TAG", "pos "+position+ " UnChecked");

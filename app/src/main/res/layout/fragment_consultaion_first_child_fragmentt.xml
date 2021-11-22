@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:text="CONSULTATION"
+                android:text="@string/consultation"
                 android:textColor="@color/lightRed"
                 android:textSize="13sp" />
 
@@ -91,7 +91,7 @@
                     android:background="@drawable/button_border"
                     android:gravity="center"
                     android:onClick="@{(view) -> handler.onNextButtonClicked(view)}"
-                    android:text="NEXT"
+                    android:text="@string/cn_next"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="15sp" />

@@ -386,7 +386,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     mCallback.amountCollectedAndType(s.toString(), mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString());
                 }
                 getValidated(AmountToCollect);
-                SharedPreferencesUtility.savePrefString(Objects.requireNonNull(getActivity()), SharedPreferencesUtility.PREF_AMOUNT, s.toString());
+                SharedPreferencesUtility.savePrefString(requireActivity(), SharedPreferencesUtility.PREF_AMOUNT, s.toString());
             }
         });
 
@@ -728,7 +728,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                             if (Mode.equals("None")) {
                                 mCallback.mode("");
                             } else {
-                                InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(getActivity().INPUT_METHOD_SERVICE);
+                                InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
                                 assert imm != null;
                                 imm.showSoftInput(mFragmentServiceInfoBinding.edtPaymentOTP, InputMethodManager.SHOW_IMPLICIT);
                                 mFragmentServiceInfoBinding.edtPaymentOTP.requestFocus();
@@ -742,7 +742,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                             if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("Cheque")) {
                                 mFragmentServiceInfoBinding.lnrCheque.setVisibility(View.VISIBLE);
                                 mFragmentServiceInfoBinding.lnrCollected.setVisibility(View.VISIBLE);
-                                InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(getActivity().INPUT_METHOD_SERVICE);
+                                InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
                                 assert imm != null;
                                 imm.showSoftInput(mFragmentServiceInfoBinding.edtPaymentOTP, InputMethodManager.SHOW_IMPLICIT);
                                 mFragmentServiceInfoBinding.edtPaymentOTP.requestFocus();
@@ -860,7 +860,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                 mFragmentServiceInfoBinding.lnrCollected.setVisibility(View.GONE);
                             }
                             if (mFragmentServiceInfoBinding.spnPaymentMode.getSelectedItem().toString().equals("Cash")) {
-                                InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(getActivity().INPUT_METHOD_SERVICE);
+                                InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
                                 assert imm != null;
                                 imm.showSoftInput(mFragmentServiceInfoBinding.edtPaymentOTP, InputMethodManager.SHOW_IMPLICIT);
                                 mFragmentServiceInfoBinding.edtPaymentOTP.requestFocus();
@@ -1202,11 +1202,11 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     }
 
                     if (AppUtils.isInspectionDone) {
-                        mFragmentServiceInfoBinding.txtView.setText("VIEW");
-                        mFragmentServiceInfoBinding.lnrConsIns.setBackgroundColor(Objects.requireNonNull(getActivity()).getResources().getColor(R.color.colorPrimary));
+                        mFragmentServiceInfoBinding.txtView.setText(R.string.view_cons_ins);
+                        mFragmentServiceInfoBinding.lnrConsIns.setBackgroundColor(requireActivity().getResources().getColor(R.color.colorPrimary));
                     } else {
-                        mFragmentServiceInfoBinding.txtView.setText("PERFORM");
-                        mFragmentServiceInfoBinding.lnrConsIns.setBackgroundColor(Objects.requireNonNull(getActivity()).getResources().getColor(R.color.yelold));
+                        mFragmentServiceInfoBinding.txtView.setText(R.string.perform);
+                        mFragmentServiceInfoBinding.lnrConsIns.setBackgroundColor(requireActivity().getResources().getColor(R.color.yelold));
                     }
 
                     if (isCombinedTask) {
@@ -1264,7 +1264,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             arrayStatus = type.toArray(arrayStatus);
 
             try {
-                ArrayAdapter<String> statusAdapter = new ArrayAdapter<String>(Objects.requireNonNull(getActivity()),
+                ArrayAdapter<String> statusAdapter = new ArrayAdapter<String>(requireActivity(),
                         R.layout.spinner_layout_new, arrayStatus);
                 statusAdapter.setDropDownViewResource(R.layout.spinner_popup);
                 mFragmentServiceInfoBinding.spnStatus.setAdapter(statusAdapter);

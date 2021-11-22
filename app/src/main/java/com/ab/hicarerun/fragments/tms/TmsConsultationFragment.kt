@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.ab.hicarerun.BaseApplication
@@ -20,10 +21,13 @@ import com.ab.hicarerun.fragments.ConsultationFragment
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData
+import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse
+import com.ab.hicarerun.network.models.TmsModel.QuestionList
 import com.ab.hicarerun.network.models.TmsModel.QuestionTabList
 import com.ab.hicarerun.network.models.TmsModel.TmsData
 import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.ProgressBarDrawable
+import com.zipow.cmmlib.AppUtil
 import io.realm.RealmResults
 
 
@@ -98,10 +102,10 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
         val emptyColor = ContextCompat.getColor(requireActivity(), R.color.tab_textColor)
         val separatorColor = ContextCompat.getColor(requireContext(), R.color.transparent)
 
-        if (AppUtils.inspectionList != null && AppUtils.inspectionList.size > 0) {
+        if (AppUtils.tmsInspectionList != null && AppUtils.tmsInspectionList.size > 0) {
             val progressDrawable = ProgressBarDrawable(2, fillColor, emptyColor, separatorColor)
             binding.progressBar.progressDrawable = progressDrawable
-            if (AppUtils.isInspectionDone) {
+            if (AppUtils.isTmsInspectionDone) {
                 binding.progressBar.progress = 2
             } else {
                 binding.progressBar.progress = 0
@@ -110,7 +114,7 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
         } else {
             val progressDrawable = ProgressBarDrawable(1, fillColor, emptyColor, separatorColor)
             binding.progressBar.progressDrawable = progressDrawable
-            if (AppUtils.isInspectionDone) {
+            if (AppUtils.isTmsInspectionDone) {
                 binding.progressBar.progress = 1
             } else {
                 binding.progressBar.progress = 0
@@ -124,17 +128,40 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
     }
 
     private fun saveConsInsData(value: Int){
-
     }
 
-    override fun onNextClicked() {
-        if (AppUtils.inspectionList.size > 0) {
+    private fun saveConsultationData(type: String, questionTab: String, questionList: ArrayList<QuestionList>){
+        val controller = NetworkCallController()
+        controller.setListner(object : NetworkResponseListner<BaseResponse>{
+            override fun onResponse(requestCode: Int, response: BaseResponse?) {
+                if (response?.isSuccess == true){
+                    Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show()
+                }else{
+                    Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(requestCode: Int) {
+                Log.d("TAG", "$requestCode")
+            }
+        })
+
+        val hashMap = HashMap<String, Any>()
+        hashMap["TaskId"] = "23213"
+        hashMap["type"] = type
+        hashMap["QuestionTabList"] = AppUtils.tmsConsultationList
+        controller.saveTmsQuestions(2211, arrayListOf(hashMap))
+    }
+
+    override fun onNextClicked(type: String, questionTab: String, questionList: ArrayList<QuestionList>) {
+        if (AppUtils.tmsInspectionList.size > 0) {
+            saveConsultationData(type, questionTab, questionList)
             val transaction = childFragmentManager.beginTransaction()
             val childFragment2 = TmsSecondChildFragment()
             transaction.replace(R.id.container_fragment, childFragment2)
             transaction.commit()
             requireActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
-            if (AppUtils.isInspectionDone) {
+            if (AppUtils.isTmsInspectionDone) {
                 binding.progressBar.setProgress(2)
             } else {
                 binding.progressBar.setProgress(1)

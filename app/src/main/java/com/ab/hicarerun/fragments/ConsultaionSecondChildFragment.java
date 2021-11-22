@@ -145,11 +145,11 @@ public class ConsultaionSecondChildFragment extends Fragment implements UserSeco
         if (AppUtils.isInspectionDone) {
             mFragmentConsultaionSecondChildBinding.btnSave.setEnabled(true);
             mFragmentConsultaionSecondChildBinding.btnSave.setAlpha(1f);
-            mFragmentConsultaionSecondChildBinding.btnSave.setText("NEXT");
+            mFragmentConsultaionSecondChildBinding.btnSave.setText(R.string.cn_next);
         } else {
             mFragmentConsultaionSecondChildBinding.btnSave.setEnabled(false);
             mFragmentConsultaionSecondChildBinding.btnSave.setAlpha(0.6f);
-            mFragmentConsultaionSecondChildBinding.btnSave.setText("SAVE");
+            mFragmentConsultaionSecondChildBinding.btnSave.setText(R.string.cn_save);
         }
 
         mAdapter = new ConsulationParentAdapter(getActivity(), AppUtils.isInspectionDone, "CMS", (position, option) -> {

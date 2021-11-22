@@ -1,6 +1,7 @@
 package com.ab.hicarerun.fragments;
 
 
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,9 +9,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -169,6 +173,7 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
                 Log.d("TAG", ""+i);
                 if (i == R.id.yesBtn){
                     NewTaskDetailsActivity.referralChecked = true;
+                    showInstructionDialog();
                 }else if (i == R.id.noBtn){
                     NewTaskDetailsActivity.referralChecked = false;
                 }
@@ -221,6 +226,57 @@ public class ReferralFragment extends BaseFragment implements UserReferralClickH
             NetworkCallController controller = new NetworkCallController(this);
             controller.setListner(this);
             controller.getReferrals(GET_REFERRAL_REQUEST, taskId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showInstructionDialog() {
+        try {
+
+            LayoutInflater li = LayoutInflater.from(getActivity());
+
+            View promptsView = li.inflate(R.layout.layout_referral_instruction_dialog, null);
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(requireContext());
+
+            alertDialogBuilder.setView(promptsView);
+            final AlertDialog alertDialog = alertDialogBuilder.create();
+
+            final TextView popupTitleTv =
+                    promptsView.findViewById(R.id.popupTitleTv);
+            final TextView txtInfo =
+                    promptsView.findViewById(R.id.txtInfo);
+            final AppCompatButton btnOk =
+                    promptsView.findViewById(R.id.btnOk);
+
+            final AppCompatButton btnCancel =
+                    promptsView.findViewById(R.id.btnCancel);
+
+            final RelativeLayout cancelLayout =
+                    promptsView.findViewById(R.id.cancelLayout);
+
+            popupTitleTv.setText(R.string.instructions);
+            txtInfo.setText(NewTaskDetailsActivity.referralInstructions);
+            btnOk.setText(R.string.send_referral_code);
+            /*txtInfo.setText("1. Choose the correct answer to earn points.\n" +
+                    "2. Complete all the given categories.\n" +
+                    "3. Proceed to the next level and buy yourself new items from bazaar.\n" +
+                    "4. You can play only 3 times in a day.");*/
+            txtInfo.setTypeface(txtInfo.getTypeface(), Typeface.BOLD);
+
+            cancelLayout.setOnClickListener(v -> {
+                alertDialog.dismiss();
+            });
+
+            btnOk.setOnClickListener(v -> {
+                onReferHiCareClicked(btnOk);
+            });
+
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            alertDialog.show();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

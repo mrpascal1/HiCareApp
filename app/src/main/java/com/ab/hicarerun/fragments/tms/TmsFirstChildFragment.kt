@@ -65,6 +65,7 @@ class TmsFirstChildFragment : Fragment() {
     private var qId = -1
     private var cBy = -1
     private var currChip = ""
+    lateinit var currentList: ArrayList<QuestionList>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -76,6 +77,7 @@ class TmsFirstChildFragment : Fragment() {
         //chipsArray = arrayListOf("General", "Living Room", "Kitchen","Bedroom")
         Log.d("TAG", "Chip first child ${AppUtils.tmsConsultationChips}")
         chipsArray = ArrayList()
+        currentList = ArrayList()
         chipsArray.addAll(AppUtils.tmsConsultationChips)
 
         questionsResponse = ArrayList()
@@ -128,6 +130,10 @@ class TmsFirstChildFragment : Fragment() {
                 Log.d("TAG", "$position")
                 currChip = category
                 currPos = position
+                /**
+                 * Controlling visibility of back/next
+                 * according to the first and last chip (Tab)
+                * */
                 if (currPos == chipsArray.size-1){
                     binding.nextChipBtn.visibility = View.GONE
                 }else{
@@ -141,12 +147,23 @@ class TmsFirstChildFragment : Fragment() {
                 binding.chipsRecyclerView.post {
                     binding.chipsRecyclerView.smoothScrollToPosition(position)
                 }
+                /**
+                 * This forEach loop Adding/updating questions
+                 * in the consultation page
+                 * according to the chips (Tabs).
+                * */
                 AppUtils.tmsConsultationList.forEach {
                     if (it.questionTab.equals(category, true)){
+                        currentList.addAll(it.questionList)
                         questionsParentAdapter.addData(it.questionList)
                         questionsParentAdapter.notifyDataSetChanged()
                     }
                 }
+
+                /**
+                 * Controlling the visibility of next and back button
+                 * according to the visibility because of the long list
+                * */
                 if (!isVisible(binding.configLayout)){
                     val param = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
@@ -155,6 +172,9 @@ class TmsFirstChildFragment : Fragment() {
                     )
                     binding.recycleView.layoutParams = param;
                 }
+
+                validate()
+
                 Log.d("TAG", "Size ${AppUtils.tmsConsultationChips.size}")
             }
         })
@@ -182,12 +202,13 @@ class TmsFirstChildFragment : Fragment() {
                     }
                 }
                 questionsParentAdapter.notifyDataSetChanged()
+                validate()
             }
         })
 
         questionsParentAdapter.setOnItemClick(object : TmsQuestionsParentAdapter.OnItemClickListener{
             override fun onItemClicked(position: Int, questionId: Int?, answer: String) {
-
+                validate()
             }
         })
 
@@ -198,7 +219,7 @@ class TmsFirstChildFragment : Fragment() {
 
         binding.btnNext.setOnClickListener {
             val listener = parentFragment as FirstChildListener
-            listener.onNextClicked()
+            listener.onNextClicked("Consultation", currChip, currentList)
         }
 
         binding.backChipBtn.setOnClickListener {
@@ -344,6 +365,7 @@ class TmsFirstChildFragment : Fragment() {
                                     it.qPictureURL!![cBy].url = url*/
                                 }
                             }
+                            validate()
                             Log.d("TAG", "Modified ${AppUtils.tmsConsultationList}")
                             questionsParentAdapter.notifyDataSetChanged()
                             Log.d("TAG", "Modified ${AppUtils.tmsConsultationList}")
@@ -361,28 +383,24 @@ class TmsFirstChildFragment : Fragment() {
         }
     }
 
-    private fun isImgChecked(inspectionList: List<QuestionList>): Boolean {
-        var isRequired = true
-        for (data in inspectionList) {
-            if (data.isPictureRequired == true) {
-                if (data.pictureURL != null && (data.pictureURL?.isNotEmpty()==true)) {
-                    isRequired = true
+    private fun validate(){
+        if (currentList.size == questionsParentAdapter.itemCount) {
+            if (TmsUtils.isImgChecked(currentList)) {
+                if (TmsUtils.isListChecked(currentList)) {
+                    binding.btnNext.isEnabled = true
+                    binding.btnNext.alpha = 1.0f
                 } else {
-                    isRequired = false
-                    break
+                    binding.btnNext.isEnabled = false
+                    binding.btnNext.alpha = 0.6f
                 }
+            } else {
+                binding.btnNext.isEnabled = false
+                binding.btnNext.alpha = 0.6f
             }
+        }else{
+            binding.btnNext.isEnabled = false
+            binding.btnNext.alpha = 0.6f
         }
-        return isRequired
-    }
-
-    private fun isListChecked(listData: List<QuestionList>): Boolean {
-        for (data in listData) {
-            if (data.answer == null || data.answer?.length == 0) {
-                return false
-            }
-        }
-        return true
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -425,6 +443,6 @@ class TmsFirstChildFragment : Fragment() {
     }
 
     interface FirstChildListener{
-        fun onNextClicked()
+        fun onNextClicked(type: String, questionTab: String, questionList: ArrayList<QuestionList>)
     }
 }

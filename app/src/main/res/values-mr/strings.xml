@@ -589,4 +589,8 @@
     <string name="there_is_no_history_to_display">प्रदर्शित करण्यासाठी कोणताही इतिहास नाही!</string>
     <string name="leader_board">लीडर बोर्ड</string>
     <string name="bazaar_history">Bazaar History</string>
+
+    <string name="referral_yes">होय</string>
+    <string name="referral_no">नाही</string>
+
 </resources>

@@ -346,4 +346,7 @@
     <string name="leader_board">લીડર બોર્ડ</string>
     <string name="bazaar_history">Bazaar History</string>
 
+    <string name="referral_yes">હા</string>
+    <string name="referral_no">ના</string>
+
 </resources>

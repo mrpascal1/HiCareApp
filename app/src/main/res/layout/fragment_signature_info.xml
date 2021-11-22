@@ -383,7 +383,7 @@
                         android:layout_marginStart="12dp"
                         android:layout_marginEnd="12dp"
                         android:background="@drawable/button_background"
-                        android:text="Send Referral Code"
+                        android:text="@string/send_referral_code"
                         android:textAllCaps="false"
                         android:textColor="@color/white" />
                 <androidx.appcompat.widget.AppCompatButton
