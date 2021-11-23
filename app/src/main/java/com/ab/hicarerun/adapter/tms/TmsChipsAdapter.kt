@@ -22,6 +22,7 @@ class TmsChipsAdapter(val context: Context, val items: ArrayList<String>) : Recy
         holder.bindItems(items[position])
         if (initial){
             selectedPos = 0
+            initial = false
             onItemClickHandler?.onItemClick(0, items[0])
         }
         if (selectedPos == position) {
@@ -33,12 +34,12 @@ class TmsChipsAdapter(val context: Context, val items: ArrayList<String>) : Recy
             holder.binding.lnrCategory.background = context.resources.getDrawable(R.drawable.white_round_border);
             holder.binding.categoryTv.setTextColor(context.resources.getColor(R.color.greyclose));
         }
-        holder.itemView.setOnClickListener {
+        /*holder.itemView.setOnClickListener {
             selectedPos = position
             initial = false
             onItemClickHandler?.onItemClick(position, items[position])
             notifyDataSetChanged()
-        }
+        }*/
     }
 
     override fun getItemCount(): Int {

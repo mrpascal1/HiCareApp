@@ -305,7 +305,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         taskId = getIntent().getStringExtra(ARGS_TASKS);
         resourceId = getIntent().getStringExtra(ARGS_RESOURCE);
         AppUtils.getConsAndInsData(taskId/*"a239D000000YajWQAS"*/, resourceId/*"a1r9D000000OUNqQAO"*/, LocaleHelper.getLanguage(NewTaskDetailsActivity.this));
-        //AppUtils.getTmsQuestions("23213");
+        AppUtils.getTmsQuestions("23213");
         combinedTaskId = getIntent().getStringExtra(ARGS_COMBINED_TASKS_ID);
         isCombinedTasks = getIntent().getBooleanExtra(ARGS_COMBINED_TASKS, false);
         combinedOrderId = getIntent().getStringExtra(ARGS_COMBINED_ORDER);

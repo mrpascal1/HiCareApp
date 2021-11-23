@@ -12,16 +12,17 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.Animation
+import android.view.animation.TranslateAnimation
+import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.BaseApplication
-import com.ab.hicarerun.R
 import com.ab.hicarerun.adapter.tms.TmsChipsAdapter
 import com.ab.hicarerun.adapter.tms.TmsQuestionsParentAdapter
 import com.ab.hicarerun.databinding.FragmentTmsSecondChildBinding
@@ -31,8 +32,8 @@ import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListData
 import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListRequest
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData
 import com.ab.hicarerun.network.models.LoginResponse
-import com.ab.hicarerun.network.models.TmsModel.QuestionImageUrl
 import com.ab.hicarerun.network.models.TmsModel.QuestionList
+import com.ab.hicarerun.network.models.TmsModel.QuestionTabList
 import com.ab.hicarerun.utils.AppUtils
 import io.realm.RealmResults
 import java.io.ByteArrayOutputStream
@@ -57,6 +58,9 @@ class TmsSecondChildFragment : Fragment() {
     private var qId = -1
     private var cBy = -1
     private var currChip = ""
+    lateinit var currentList: ArrayList<QuestionList>
+    lateinit var currentTabList: ArrayList<QuestionTabList>
+    var isLast = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,6 +70,8 @@ class TmsSecondChildFragment : Fragment() {
         binding = FragmentTmsSecondChildBinding.inflate(inflater, container, false)
         val view = binding.root
         chipsArray = ArrayList()
+        currentList = ArrayList()
+        currentTabList = ArrayList()
         chipsArray.addAll(AppUtils.tmsInspectionChips)
         chipsAdapter = TmsChipsAdapter(requireContext(), chipsArray)
         questionsParentAdapter = TmsQuestionsParentAdapter(requireContext())
@@ -119,8 +125,10 @@ class TmsSecondChildFragment : Fragment() {
                 currChip = category
                 currPos = position
                 if (currPos == chipsArray.size-1){
+                    isLast = true
                     binding.nextChipBtn.visibility = View.GONE
                 }else{
+                    isLast = false
                     binding.nextChipBtn.visibility = View.VISIBLE
                 }
                 if (currPos == 0){
@@ -132,19 +140,24 @@ class TmsSecondChildFragment : Fragment() {
                     binding.chipsRecyclerView.smoothScrollToPosition(position)
                 }
                 AppUtils.tmsInspectionList.forEach {
+                    var found = false
                     if (it.questionTab.equals(category, true)){
+                        currentList.clear()
+                        currentList.addAll(it.questionList)
                         questionsParentAdapter.addData(it.questionList)
+                        found = true
                         questionsParentAdapter.notifyDataSetChanged()
                     }
                 }
-                if (!isVisible(binding.configLayout)){
+                validate()
+                /*if (!isVisible(binding.configLayout)){
                     val param = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         1f
                     )
                     binding.recycleView.layoutParams = param;
-                }
+                }*/
             }
         })
         questionsParentAdapter.setOnCameraClickHandler(object : TmsQuestionsParentAdapter.OnCameraClickListener{
@@ -170,17 +183,23 @@ class TmsSecondChildFragment : Fragment() {
                     }
                 }
                 questionsParentAdapter.notifyDataSetChanged()
+                validate()
+            }
+        })
+        questionsParentAdapter.setOnItemClick(object : TmsQuestionsParentAdapter.OnItemClickListener{
+            override fun onItemClicked(position: Int, questionId: Int?, answer: String) {
+                validate()
             }
         })
 
-        if (!isVisible(binding.configLayout)){
+        /*if (!isVisible(binding.configLayout)){
             val param = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 1f
             )
             binding.recycleView.layoutParams = param;
-        }
+        }*/
 
         binding.recycleView.layoutManager = questionsLayoutManager
         binding.recycleView.setHasFixedSize(true)
@@ -192,11 +211,14 @@ class TmsSecondChildFragment : Fragment() {
             listener.onBackClicked()
         }
         binding.btnSave.setOnClickListener {
+            val listener = parentFragment as SecondChildListener
+            listener.onSaveClicked()
             Log.d("TAG", "save ${AppUtils.tmsInspectionList}")
         }
         binding.backChipBtn.setOnClickListener {
             if (currPos > 0){
                 currPos -= 1
+                binding.recycleView.startAnimation(TmsUtils.inFromLeftAnimation())
                 chipsAdapter.backChip(currPos)
             }else{
                 Log.d("TAG", "Last")
@@ -206,6 +228,9 @@ class TmsSecondChildFragment : Fragment() {
         binding.nextChipBtn.setOnClickListener {
             if (currPos < chipsArray.size-1){
                 currPos += 1
+                val listener = parentFragment as SecondChildListener
+                listener.onSaveAndNextClicked("Inspection", currChip, currentTabList)
+                binding.recycleView.startAnimation(TmsUtils.inFromRightAnimation())
                 chipsAdapter.nextChip(currPos)
             }else{
                 Log.d("TAG", "Last")
@@ -276,6 +301,7 @@ class TmsSecondChildFragment : Fragment() {
                             Log.d("TAG", "Before Modified ${AppUtils.tmsInspectionList}")
                             questionsParentAdapter.notifyDataSetChanged()
                             Log.d("TAG", "Modified ${AppUtils.tmsInspectionList}")
+                            validate()
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
@@ -287,6 +313,44 @@ class TmsSecondChildFragment : Fragment() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    private fun validate(){
+        if (currentList.size == questionsParentAdapter.itemCount) {
+            Log.d("Validate", "true")
+            if (TmsUtils.isImgChecked(currentList)) {
+                if (TmsUtils.isListChecked(currentList)) {
+                    if (isLast) {
+                        binding.btnSave.isEnabled = true
+                        binding.btnSave.alpha = 1.0f
+                    }else{
+                        binding.btnSave.isEnabled = false
+                        binding.btnSave.alpha = 0.6f
+                    }
+                    binding.nextChipBtn.isEnabled = true
+                    binding.nextChipBtn.alpha = 1.0f
+                } else {
+                    binding.btnSave.isEnabled = false
+                    binding.btnSave.alpha = 0.6f
+
+                    binding.nextChipBtn.isEnabled = false
+                    binding.nextChipBtn.alpha = 0.6f
+                }
+            } else {
+                binding.btnSave.isEnabled = false
+                binding.btnSave.alpha = 0.6f
+
+                binding.nextChipBtn.isEnabled = false
+                binding.nextChipBtn.alpha = 0.6f
+            }
+        }else{
+            Log.d("Validate", "false")
+            binding.btnSave.isEnabled = false
+            binding.btnSave.alpha = 0.6f
+
+            binding.nextChipBtn.isEnabled = false
+            binding.nextChipBtn.alpha = 0.6f
         }
     }
 
@@ -331,6 +395,7 @@ class TmsSecondChildFragment : Fragment() {
 
     interface SecondChildListener{
         fun onSaveClicked()
+        fun onSaveAndNextClicked(type: String, questionTab: String, questionList: ArrayList<QuestionTabList>)
         fun onBackClicked()
     }
 }

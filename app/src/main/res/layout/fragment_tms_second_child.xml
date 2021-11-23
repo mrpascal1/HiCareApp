@@ -52,6 +52,9 @@
                 tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 tools:listitem="@layout/item_tms_chips"/>
 
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
@@ -61,7 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="12dp"
                 tools:itemCount="1"
                 tools:listitem="@layout/layout_consulation_parent_adapter" />
             <RelativeLayout
@@ -69,19 +72,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:layout_marginBottom="6dp"
+                android:layout_marginBottom="8dp"
                 android:layout_below="@id/recycleView"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="2dp">
 
-                <LinearLayout
-                    android:id="@+id/backChipBtn"
+                <!--<LinearLayout
+                    android:id="@+id/backChipBtnOld"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_round_border_grey_tms"
                     android:orientation="horizontal"
                     android:padding="8dp"
                     android:textAllCaps="false"
-                    android:textSize="12sp">
+                    android:textSize="12sp"
+                    android:visibility="gone">
 
                     <ImageView
                         android:layout_width="15dp"
@@ -95,16 +100,35 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="4dp"
                         android:text="Back" />
-                </LinearLayout>
+                </LinearLayout>-->
 
-                <LinearLayout
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/backChipBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:background="@drawable/bg_round_border_grey_tms"
+                    android:text="Back"
+                    android:textSize="12sp"
+                    android:drawableStart="@drawable/ic_round_arrow_back_black"/>
+
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/nextChipBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/bg_round_border_grey_tms"
+                    android:text="Next"
+                    android:textSize="12sp"
+                    android:drawableEnd="@drawable/ic_round_arrow_forward_black"/>
+                <!--<LinearLayout
+                    android:id="@+id/nextChipBtnOld"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:background="@drawable/bg_round_border_grey_tms"
                     android:orientation="horizontal"
                     android:padding="8dp"
+                    android:visibility="gone"
                     android:textAllCaps="false"
                     android:textSize="12sp">
 
@@ -120,9 +144,10 @@
                         android:layout_height="15dp"
                         android:layout_gravity="center_vertical"
                         android:src="@drawable/ic_round_arrow_forward_black" />
-                </LinearLayout>
+                </LinearLayout>-->
             </RelativeLayout>
             </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
         </LinearLayout>
 
         <LinearLayout

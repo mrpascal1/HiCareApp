@@ -170,7 +170,7 @@ class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<Tms
         }
 
         /**
-         * Image Upload 1,2,3
+         * Image Upload 1,2,3,4
          * */
         holder.binding.lnrUpload.setOnClickListener {
             onCameraClickListener?.onCameraClicked(position, items[position].questionId, 0)
@@ -184,8 +184,12 @@ class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<Tms
             onCameraClickListener?.onCameraClicked(position, items[position].questionId, 2)
         }
 
+        holder.binding.lnrUpload4.setOnClickListener {
+            onCameraClickListener?.onCameraClicked(position, items[position].questionId, 3)
+        }
+
         /**
-         * Image cancel 1,2,3
+         * Image cancel 1,2,3,4
          * */
         holder.binding.imageCancel.setOnClickListener {
             if (items[position].pictureURL?.size!! >= 1){
@@ -204,7 +208,15 @@ class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<Tms
         }
 
         holder.binding.imageCancel3.setOnClickListener {
-            when (items[position].pictureURL?.size) {
+            if (items[position].pictureURL?.size!! >= 3){
+                items[position].pictureURL?.removeAt(2)
+            }else if(items[position].pictureURL?.size!! >= 2){
+                items[position].pictureURL?.removeAt(1)
+            }else {
+                items[position].pictureURL?.removeAt(0)
+            }
+
+            /*when (items[position].pictureURL?.size) {
                 3 -> {
                     items[position].pictureURL?.removeAt(2)
                 }
@@ -214,8 +226,32 @@ class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<Tms
                 else -> {
                     items[position].pictureURL?.removeAt(0)
                 }
-            }
+            }*/
             onCameraClickListener?.onCancelClicked(position, items[position].questionId, 2)
+        }
+
+        holder.binding.imageCancel4.setOnClickListener {
+            if (items[position].pictureURL?.size!! >= 4){
+                items[position].pictureURL?.removeAt(3)
+            }else if (items[position].pictureURL?.size!! >= 3){
+                items[position].pictureURL?.removeAt(2)
+            }else if(items[position].pictureURL?.size!! >= 2){
+                items[position].pictureURL?.removeAt(1)
+            }else {
+                items[position].pictureURL?.removeAt(0)
+            }
+            /*when (items[position].pictureURL?.size) {
+                3 -> {
+                    items[position].pictureURL?.removeAt(2)
+                }
+                2 -> {
+                    items[position].pictureURL?.removeAt(1)
+                }
+                else -> {
+                    items[position].pictureURL?.removeAt(0)
+                }
+            }*/
+            onCameraClickListener?.onCancelClicked(position, items[position].questionId, 3)
         }
 
         val answersChildAdapter = TmsAnswersChildAdapter(context)

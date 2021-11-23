@@ -105,7 +105,7 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
         if (AppUtils.tmsInspectionList != null && AppUtils.tmsInspectionList.size > 0) {
             val progressDrawable = ProgressBarDrawable(2, fillColor, emptyColor, separatorColor)
             binding.progressBar.progressDrawable = progressDrawable
-            if (AppUtils.isTmsInspectionDone) {
+            if (AppUtils.isInspectionDone) {
                 binding.progressBar.progress = 2
             } else {
                 binding.progressBar.progress = 0
@@ -114,7 +114,7 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
         } else {
             val progressDrawable = ProgressBarDrawable(1, fillColor, emptyColor, separatorColor)
             binding.progressBar.progressDrawable = progressDrawable
-            if (AppUtils.isTmsInspectionDone) {
+            if (AppUtils.isInspectionDone) {
                 binding.progressBar.progress = 1
             } else {
                 binding.progressBar.progress = 0
@@ -161,7 +161,8 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
             transaction.replace(R.id.container_fragment, childFragment2)
             transaction.commit()
             requireActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
-            if (AppUtils.isTmsInspectionDone) {
+            binding.containerFragment.startAnimation(TmsUtils.inFromRightAnimation())
+            if (AppUtils.isInspectionDone) {
                 binding.progressBar.setProgress(2)
             } else {
                 binding.progressBar.setProgress(1)
@@ -175,12 +176,36 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
 
     }
 
+    override fun onSaveAndNextClicked(type: String, questionTab: String, questionList: ArrayList<QuestionTabList>) {
+        val controller = NetworkCallController()
+        controller.setListner(object : NetworkResponseListner<BaseResponse>{
+            override fun onResponse(requestCode: Int, response: BaseResponse?) {
+                if (response?.isSuccess == true){
+                    Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show()
+                }else{
+                    Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(requestCode: Int) {
+                Log.d("TAG", "$requestCode")
+            }
+        })
+
+        val hashMap = HashMap<String, Any>()
+        hashMap["TaskId"] = "23213"
+        hashMap["type"] = type
+        hashMap["QuestionTabList"] = AppUtils.tmsInspectionList
+        controller.saveTmsQuestions(2211, arrayListOf(hashMap))
+    }
+
     override fun onBackClicked() {
         val transaction = childFragmentManager.beginTransaction()
         val childFragment1 = TmsFirstChildFragment()
         transaction.replace(R.id.container_fragment, childFragment1)
         transaction.commit()
         requireActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
+        binding.containerFragment.startAnimation(TmsUtils.inFromLeftAnimation())
     }
 
     override fun onConfirmClicked() {

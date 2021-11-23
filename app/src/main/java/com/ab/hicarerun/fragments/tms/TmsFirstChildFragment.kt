@@ -66,6 +66,7 @@ class TmsFirstChildFragment : Fragment() {
     private var cBy = -1
     private var currChip = ""
     lateinit var currentList: ArrayList<QuestionList>
+    var isLast = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -135,8 +136,10 @@ class TmsFirstChildFragment : Fragment() {
                  * according to the first and last chip (Tab)
                 * */
                 if (currPos == chipsArray.size-1){
+                    isLast = true
                     binding.nextChipBtn.visibility = View.GONE
                 }else{
+                    isLast = false
                     binding.nextChipBtn.visibility = View.VISIBLE
                 }
                 if (currPos == 0){
@@ -154,6 +157,7 @@ class TmsFirstChildFragment : Fragment() {
                 * */
                 AppUtils.tmsConsultationList.forEach {
                     if (it.questionTab.equals(category, true)){
+                        currentList.clear()
                         currentList.addAll(it.questionList)
                         questionsParentAdapter.addData(it.questionList)
                         questionsParentAdapter.notifyDataSetChanged()
@@ -164,14 +168,14 @@ class TmsFirstChildFragment : Fragment() {
                  * Controlling the visibility of next and back button
                  * according to the visibility because of the long list
                 * */
-                if (!isVisible(binding.configLayout)){
+                /*if (!isVisible(binding.configLayout)){
                     val param = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         1f
                     )
                     binding.recycleView.layoutParams = param;
-                }
+                }*/
 
                 validate()
 
@@ -385,21 +389,39 @@ class TmsFirstChildFragment : Fragment() {
 
     private fun validate(){
         if (currentList.size == questionsParentAdapter.itemCount) {
+            Log.d("Validate", "true")
             if (TmsUtils.isImgChecked(currentList)) {
                 if (TmsUtils.isListChecked(currentList)) {
-                    binding.btnNext.isEnabled = true
-                    binding.btnNext.alpha = 1.0f
+                    if (isLast) {
+                        binding.btnNext.isEnabled = true
+                        binding.btnNext.alpha = 1.0f
+                    }else{
+                        binding.btnNext.isEnabled = false
+                        binding.btnNext.alpha = 0.6f
+                    }
+                    binding.nextChipBtn.isEnabled = true
+                    binding.nextChipBtn.alpha = 1.0f
                 } else {
                     binding.btnNext.isEnabled = false
                     binding.btnNext.alpha = 0.6f
+
+                    binding.nextChipBtn.isEnabled = false
+                    binding.nextChipBtn.alpha = 0.6f
                 }
             } else {
                 binding.btnNext.isEnabled = false
                 binding.btnNext.alpha = 0.6f
+
+                binding.nextChipBtn.isEnabled = false
+                binding.nextChipBtn.alpha = 0.6f
             }
         }else{
+            Log.d("Validate", "false")
             binding.btnNext.isEnabled = false
             binding.btnNext.alpha = 0.6f
+
+            binding.nextChipBtn.isEnabled = false
+            binding.nextChipBtn.alpha = 0.6f
         }
     }
 
