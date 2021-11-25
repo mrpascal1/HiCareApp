@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.ab.hicarerun.BaseApplication
 import com.ab.hicarerun.R
+import com.ab.hicarerun.activities.NewTaskDetailsActivity
 import com.ab.hicarerun.databinding.FragmentTmsConsultationBinding
 import com.ab.hicarerun.fragments.ConsultaionFirstChildFragmentt
 import com.ab.hicarerun.fragments.ConsultaionSecondChildFragment
@@ -155,7 +156,9 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
 
     override fun onNextClicked(type: String, questionTab: String, questionList: ArrayList<QuestionList>) {
         if (AppUtils.tmsInspectionList.size > 0) {
-            saveConsultationData(type, questionTab, questionList)
+            if (!AppUtils.isInspectionDone){
+                saveConsultationData(type, questionTab, questionList)
+            }
             val transaction = childFragmentManager.beginTransaction()
             val childFragment2 = TmsSecondChildFragment()
             transaction.replace(R.id.container_fragment, childFragment2)
@@ -173,7 +176,13 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
     }
 
     override fun onSaveClicked() {
-
+        val transaction = childFragmentManager.beginTransaction()
+        val childFragment3 = TmsThirdChildFragment("TMS")
+        transaction.replace(R.id.container_fragment, childFragment3)
+        transaction.commit()
+        requireActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
+        binding.containerFragment.startAnimation(TmsUtils.inFromLeftAnimation())
+        //dialog?.dismiss()
     }
 
     override fun onSaveAndNextClicked(type: String, questionTab: String, questionList: ArrayList<QuestionTabList>) {
@@ -209,6 +218,8 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
     }
 
     override fun onConfirmClicked() {
-
+        dialog?.dismiss()
+        val mActivity = activity as NewTaskDetailsActivity
+        mActivity.refreshMyData()
     }
 }

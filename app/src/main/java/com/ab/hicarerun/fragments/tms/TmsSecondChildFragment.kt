@@ -228,8 +228,10 @@ class TmsSecondChildFragment : Fragment() {
         binding.nextChipBtn.setOnClickListener {
             if (currPos < chipsArray.size-1){
                 currPos += 1
-                val listener = parentFragment as SecondChildListener
-                listener.onSaveAndNextClicked("Inspection", currChip, currentTabList)
+                if (!AppUtils.isInspectionDone) {
+                    val listener = parentFragment as SecondChildListener
+                    listener.onSaveAndNextClicked("Inspection", currChip, currentTabList)
+                }
                 binding.recycleView.startAnimation(TmsUtils.inFromRightAnimation())
                 chipsAdapter.nextChip(currPos)
             }else{
@@ -317,6 +319,13 @@ class TmsSecondChildFragment : Fragment() {
     }
 
     private fun validate(){
+        if (AppUtils.isInspectionDone){
+            binding.btnSave.isEnabled = true
+            binding.btnSave.alpha = 1.0f
+            binding.nextChipBtn.isEnabled = true
+            binding.nextChipBtn.alpha = 1.0f
+            return
+        }
         if (currentList.size == questionsParentAdapter.itemCount) {
             Log.d("Validate", "true")
             if (TmsUtils.isImgChecked(currentList)) {

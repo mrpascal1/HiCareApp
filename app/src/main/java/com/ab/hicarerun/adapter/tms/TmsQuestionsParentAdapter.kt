@@ -11,6 +11,7 @@ import com.ab.hicarerun.databinding.LayoutTmsParentAdapterBinding
 import com.ab.hicarerun.network.models.TmsModel.Option
 import com.ab.hicarerun.network.models.TmsModel.QuestionImageUrl
 import com.ab.hicarerun.network.models.TmsModel.QuestionList
+import com.ab.hicarerun.utils.AppUtils
 import com.squareup.picasso.Picasso
 
 class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<TmsQuestionsParentAdapter.MyHolder>() {
@@ -325,6 +326,23 @@ class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<Tms
             onItemClickHandler?.onItemClick(position)
             notifyDataSetChanged()
         }*/
+        if (AppUtils.isInspectionDone){
+            holder.binding.relPhoto.isEnabled = false
+            holder.binding.relPhoto2.isEnabled = false
+            holder.binding.relPhoto3.isEnabled = false
+            holder.binding.relPhoto4.isEnabled = false
+
+
+            holder.binding.lnrUpload.isEnabled = false
+            holder.binding.lnrUpload2.isEnabled = false
+            holder.binding.lnrUpload3.isEnabled = false
+            holder.binding.lnrUpload4.isEnabled = false
+
+            holder.binding.imageCancel.isEnabled = false
+            holder.binding.imageCancel2.isEnabled = false
+            holder.binding.imageCancel3.isEnabled = false
+            holder.binding.imageCancel4.isEnabled = false
+        }
     }
 
     fun maintainVisibility(holder: MyHolder, item: List<QuestionImageUrl>){

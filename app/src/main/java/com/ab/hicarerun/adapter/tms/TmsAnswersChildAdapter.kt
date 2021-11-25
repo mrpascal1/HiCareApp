@@ -17,6 +17,7 @@ import com.ab.hicarerun.R
 import com.ab.hicarerun.databinding.LayoutTmsChildAdapterBinding
 import com.ab.hicarerun.network.models.TmsModel.Option
 import com.ab.hicarerun.network.models.TmsModel.QuestionOption
+import com.ab.hicarerun.utils.AppUtils
 import java.lang.Exception
 
 class TmsAnswersChildAdapter(val context: Context) : RecyclerView.Adapter<TmsAnswersChildAdapter.MyHolder>() {
@@ -47,12 +48,18 @@ class TmsAnswersChildAdapter(val context: Context) : RecyclerView.Adapter<TmsAns
             holder.binding.chkAnswers.visibility = View.GONE
             holder.binding.numberLayout.visibility = View.GONE
             holder.binding.spinnerLayout.visibility = View.GONE
+            if (AppUtils.isInspectionDone){
+                holder.binding.rbAnswers.isEnabled = false
+            }
         }
         if (ansType.equals("multi select", true)){
             holder.binding.numberLayout.visibility = View.GONE
             holder.binding.spinnerLayout.visibility = View.GONE
             holder.binding.rbAnswers.visibility = View.GONE
             holder.binding.chkAnswers.visibility = View.VISIBLE
+            if (AppUtils.isInspectionDone){
+                holder.binding.chkAnswers.isEnabled = false
+            }
         }
         if (ansType.equals("numbertext", true)){
             holder.binding.numberEt.setText(qAnswer)
@@ -71,6 +78,9 @@ class TmsAnswersChildAdapter(val context: Context) : RecyclerView.Adapter<TmsAns
             }*/
             holder.binding.rbAnswers.visibility = View.GONE
             holder.binding.chkAnswers.visibility = View.GONE
+            if (AppUtils.isInspectionDone){
+                holder.binding.spnType.isEnabled = false
+            }
         }
 
         arrayAdapter?.setDropDownViewResource(R.layout.spinner_popup)
