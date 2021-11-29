@@ -63,6 +63,8 @@ import com.ab.hicarerun.R;
 import com.ab.hicarerun.adapter.CheckListParentAdapter;
 import com.ab.hicarerun.adapter.SurveyAdapter;
 import com.ab.hicarerun.adapter.TaskViewPagerAdapter;
+import com.ab.hicarerun.adapter.tms.TmsChipsAdapter;
+import com.ab.hicarerun.adapter.tms.TmsQuestionsParentAdapter;
 import com.ab.hicarerun.databinding.ActivityNewTaskDetailsBinding;
 import com.ab.hicarerun.fragments.ChemicalActivityFragment;
 import com.ab.hicarerun.fragments.ChemicalActualFragment;
@@ -74,6 +76,7 @@ import com.ab.hicarerun.fragments.ServiceInfoFragment;
 import com.ab.hicarerun.fragments.ServiceUnitFragment;
 import com.ab.hicarerun.fragments.SignatureInfoFragment;
 import com.ab.hicarerun.fragments.SignatureMSTInfoFragment;
+import com.ab.hicarerun.fragments.tms.TmsUtils;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
 import com.ab.hicarerun.handler.UserTaskDetailsClickListener;
 import com.ab.hicarerun.network.NetworkCallController;
@@ -88,6 +91,8 @@ import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTaskResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
+import com.ab.hicarerun.network.models.TmsModel.QuestionList;
+import com.ab.hicarerun.network.models.TmsModel.QuestionTabList;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.GPSUtils;
 import com.ab.hicarerun.utils.LocaleHelper;
@@ -119,12 +124,15 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -173,9 +181,18 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private boolean mPermissions;
 
 
-    ServiceInfoFragment.ServiceInfoListener mCallback = () -> {
-        isFinalSave = false;
-        showCompletionDialog();
+    ServiceInfoFragment.ServiceInfoListener mCallback = new ServiceInfoFragment.ServiceInfoListener() {
+        @Override
+        public void onPostJobButtonClicked() {
+            isFinalSave = false;
+            showCompletionDialog();
+        }
+
+        @Override
+        public void onTmsPostJobButtonClicked() {
+            isFinalSave = false;
+            showTmsCompletionDialog();
+        }
     };
     public static final String LAT_LONG = "LAT_LONG";
     private static final String TAG = "NewTaskDetailsActivity";
@@ -188,6 +205,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private Marker mCustomerMarker;
     private TaskViewPagerAdapter mAdapter;
     private CheckListParentAdapter mCheckAdapter;
+    private TmsQuestionsParentAdapter mCheckTmsAdapter;
 
     private String userId = "";
     private String sta = "";
@@ -284,6 +302,14 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     public static boolean referralChecked = false;
     public static String isCompleted = "no";
     public static String referralInstructions = "";
+    String currChip = "";
+    int currPos = 0;
+    int qId = -1;
+    int cBy = -1;
+    boolean isFromTms = false;
+    boolean isLast = false;
+    public static String typeName = "";
+    private ImageUploaded imageUploaded = null;
 
     //   @Override
     //  protected void attachBaseContext(Context base) {
@@ -305,7 +331,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         taskId = getIntent().getStringExtra(ARGS_TASKS);
         resourceId = getIntent().getStringExtra(ARGS_RESOURCE);
         AppUtils.getConsAndInsData(taskId/*"a239D000000YajWQAS"*/, resourceId/*"a1r9D000000OUNqQAO"*/, LocaleHelper.getLanguage(NewTaskDetailsActivity.this));
-        AppUtils.getTmsQuestions("23213");
+        //AppUtils.getTmsQuestions("23213");
         combinedTaskId = getIntent().getStringExtra(ARGS_COMBINED_TASKS_ID);
         isCombinedTasks = getIntent().getBooleanExtra(ARGS_COMBINED_TASKS, false);
         combinedOrderId = getIntent().getStringExtra(ARGS_COMBINED_ORDER);
@@ -457,6 +483,12 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             technicianMobileNo = response.getData().getTechnicianMobileNo();
                             referralDiscount = Integer.parseInt(response.getData().getReferralDiscount());
                             mActualAmountToCollect = response.getData().getActualAmountToCollect();
+                            //typeName = response.getData().getTaskTypeName();
+                            typeName = "TMS";
+                            if (!response.getData().getTaskTypeName().equalsIgnoreCase("TMS")){
+                                AppUtils.getTmsQuestions("21213", progress);
+                                AppUtils.getServiceDeliveryQuestions("21213");
+                            }
                             mTaskCheckList = response.getData().getTaskCheckList();
                             isOnsiteImageRequired = response.getData().getOnsite_Image_Required();
                             mOnsiteImagePath = response.getData().getOnsite_Image_Path();
@@ -1423,6 +1455,169 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     }
 
 
+    private void showTmsCompletionDialog() {
+        try {
+            LayoutInflater li = LayoutInflater.from(NewTaskDetailsActivity.this);
+            View promptsView = li.inflate(R.layout.tms_completion_check_list_dialog, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(NewTaskDetailsActivity.this, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+            alertDialogBuilder.setView(promptsView);
+            final AlertDialog alertDialog = alertDialogBuilder.create();
+            final RecyclerView recyclerView =
+                    promptsView.findViewById(R.id.recycleView);
+            final RecyclerView chipsRecyclerView =
+                    promptsView.findViewById(R.id.chipsRecyclerView);
+            final AppCompatButton btnSend = promptsView.findViewById(R.id.btnSave);
+            final AppCompatButton nextChipBtn = promptsView.findViewById(R.id.nextChipBtn);
+            final AppCompatButton backChipBtn = promptsView.findViewById(R.id.backChipBtn);
+            final TextView txtTitle = promptsView.findViewById(R.id.txtTitle);
+            ArrayList<QuestionList> currentList = new ArrayList<>();
+
+            txtTitle.setTypeface(txtTitle.getTypeface(), Typeface.BOLD);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
+            chipsRecyclerView.setHasFixedSize(true);
+            chipsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+            if (map != null) {
+                map.clear();
+            }
+
+            mCheckTmsAdapter = new TmsQuestionsParentAdapter(this);
+            TmsChipsAdapter chipsAdapter = new TmsChipsAdapter(this, AppUtils.tmsServiceDeliveryChips);
+            recyclerView.setAdapter(mCheckTmsAdapter);
+            chipsRecyclerView.setAdapter(chipsAdapter);
+
+            chipsAdapter.setOnItemClickHandler((position, category) -> {
+                currChip = category;
+                currPos = position;
+
+                if (currPos == AppUtils.tmsServiceDeliveryChips.size()-1){
+                    isLast = true;
+                    nextChipBtn.setVisibility(View.GONE);
+                }else{
+                    isLast = false;
+                    nextChipBtn.setVisibility(View.VISIBLE);
+                }
+                if (currPos == 0){
+                    backChipBtn.setVisibility(View.GONE);
+                }else{
+                    backChipBtn.setVisibility(View.VISIBLE);
+                }
+                for (QuestionTabList it : AppUtils.tmsServiceDeliveryList) {
+                    if (it.getQuestionTab().equalsIgnoreCase(category)){
+                        currentList.clear();
+                        currentList.addAll(it.getQuestionList());
+                        mCheckTmsAdapter.addData(it.getQuestionList());
+                        mCheckTmsAdapter.notifyDataSetChanged();
+                    }
+                }
+                chipsRecyclerView.post(() -> chipsRecyclerView.smoothScrollToPosition(position));
+                recyclerView.post(() -> recyclerView.smoothScrollToPosition(0));
+
+                validate(currentList, btnSend, nextChipBtn);
+
+            });
+
+            mCheckTmsAdapter.setOnItemClickListener((position, questionId, answer) -> {
+                validate(currentList, btnSend, nextChipBtn);
+            });
+
+            mCheckTmsAdapter.setOnCameraClickHandler(new TmsQuestionsParentAdapter.OnCameraClickListener() {
+                @Override
+                public void onCameraClicked(int position, Integer questionId, int clickedBy) {
+                    qId = questionId;
+                    cBy = clickedBy;
+                    checkPosition = position;
+                    isFromTms = true;
+                    AppUtils.CAMERA_SCREEN = "Post-Job";
+                    LocalBroadcastManager.getInstance(NewTaskDetailsActivity.this).registerReceiver(mMessageReceiver,
+                            new IntentFilter(AppUtils.CAMERA_SCREEN));
+                    //checkPosition = position;
+//                requestStoragePermission(true);
+                    init();
+                }
+
+                @Override
+                public void onCancelClicked(int position, Integer questionId, int clickedBy) {
+                    qId = questionId;
+                    cBy = clickedBy;
+                    checkPosition = position;
+                    ArrayList<QuestionList> tmsCList = new ArrayList<>();
+                    for (QuestionTabList it : AppUtils.tmsServiceDeliveryList) {
+                        if (it.getQuestionTab().equals(currChip)) {
+                            tmsCList.addAll(it.getQuestionList());
+                        }
+                    }
+                    for (QuestionList it: tmsCList) {
+                        if (it.getQuestionId() == qId) {
+                            if (it.getPictureURL().isEmpty()) {
+                                it.setPictureURL(null);
+                            }
+                        }
+                    }
+                    mCheckTmsAdapter.notifyDataSetChanged();
+                    validate(currentList, btnSend, nextChipBtn);
+                }
+            });
+            setOnUploadedListener(() -> {
+                validate(currentList, btnSend, nextChipBtn);
+            });
+            nextChipBtn.setOnClickListener(v -> {
+                if (currPos < AppUtils.tmsServiceDeliveryChips.size()-1){
+                    currPos += 1;
+                    recyclerView.startAnimation(TmsUtils.inFromRightAnimation());
+                    chipsAdapter.nextChip(currPos);
+                }else{
+                    Log.d("TAG", "Last");
+                }
+            });
+            backChipBtn.setOnClickListener(v -> {
+                if (currPos > 0){
+                    currPos -= 1;
+                    recyclerView.startAnimation(TmsUtils.inFromLeftAnimation());
+                    chipsAdapter.backChip(currPos);
+                }else{
+                    Log.d("TAG", "Last");
+                }
+            });
+
+            validate(currentList, btnSend, nextChipBtn);
+            //saveHashSet = new HashSet<>();
+            btnSend.setEnabled(true);
+            btnSend.setAlpha(1f);
+
+            btnSend.setOnClickListener(v -> {
+                Log.d("TAG", "Save "+AppUtils.tmsServiceDeliveryList);
+                if (mOnsiteCheckList != null && mOnsiteCheckList.size() > 0) {
+                    if (TmsUtils.isListChecked(currentList)) {
+                        if (TmsUtils.isImgChecked(currentList)) {
+                            saveCheckList(alertDialog);
+                            alertDialog.dismiss();
+                        } else {
+                            Toasty.error(this, "Image required!", Toasty.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toasty.error(this, "All Questions are mandatory.", Toasty.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toasty.error(this, "All Questions are mandatory.", Toasty.LENGTH_SHORT).show();
+                }
+            });
+
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.setCancelable(false);
+            alertDialog.show();
+            alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     private void showCompletionDialog() {
         try {
             LayoutInflater li = LayoutInflater.from(NewTaskDetailsActivity.this);
@@ -1459,6 +1654,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             });
             recyclerView.setAdapter(mCheckAdapter);
             mCheckAdapter.setOnItemClickHandler(position -> {
+                isFromTms = false;
                 AppUtils.CAMERA_SCREEN = "Post-Job";
                 LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                         new IntentFilter(AppUtils.CAMERA_SCREEN));
@@ -1498,6 +1694,35 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
     }
 
+    private void validate(ArrayList<QuestionList> currentList, AppCompatButton btnSend, AppCompatButton nextChipBtn){
+        if (TmsUtils.isImgChecked(currentList)) {
+            if (TmsUtils.isListChecked(currentList)) {
+                if (isLast) {
+                    btnSend.setEnabled(true);
+                    btnSend.setAlpha(1.0f);
+                }else{
+                    btnSend.setEnabled(false);
+                    btnSend.setAlpha(0.6f);
+                }
+                nextChipBtn.setEnabled(true);
+                nextChipBtn.setAlpha(1.0f);
+            } else {
+                btnSend.setEnabled(false);
+                btnSend.setAlpha(0.6f);
+
+                nextChipBtn.setEnabled(false);
+                nextChipBtn.setAlpha(0.6f);
+            }
+        } else {
+            btnSend.setEnabled(false);
+            btnSend.setAlpha(0.6f);
+
+            nextChipBtn.setEnabled(false);
+            nextChipBtn.setAlpha(0.6f);
+        }
+        btnSend.setEnabled(true);
+        btnSend.setAlpha(1f);
+    }
 
     private boolean isImageChecked(List<TaskCheckList> mSaveList) {
         boolean isRequired = true;
@@ -1654,11 +1879,36 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 controller.setListner(new NetworkResponseListner<UploadCheckListData>() {
                     @Override
                     public void onResponse(int requestCode, UploadCheckListData response) {
-                        mCheckAdapter.getItem(checkPosition).setIconUrl(response.getFileUrl());
-                        mTaskCheckList.get(checkPosition).setIconUrl(response.getFileUrl());
-                        mTaskCheckList.get(checkPosition).setImagePath(response.getFileUrl());
-                        mOnsiteCheckList.get(checkPosition).setImagePath(response.getFileUrl());
-                        mCheckAdapter.notifyItemChanged(checkPosition);
+                        Log.d("TAG", "Save "+response.getFileUrl());
+                        if (isFromTms) {
+                            ArrayList<QuestionList> tmsCList = new ArrayList<>();
+                            for (QuestionTabList it : AppUtils.tmsServiceDeliveryList) {
+                                if (it.getQuestionTab().equals(currChip)) {
+                                    tmsCList.addAll(it.getQuestionList());
+                                }
+                            }
+                            ArrayList<String> url = new ArrayList<>();
+                            url.clear();
+                            url.add(response.getFileUrl());
+                            for (QuestionList it: tmsCList){
+                                if (it.getQuestionId().equals(qId)){
+                                    if (it.getPictureURL() == null){
+                                        it.setPictureURL(url);
+                                    }else {
+                                        it.getPictureURL().add(response.getFileUrl());
+                                    }
+                                }
+                            }
+                            mCheckTmsAdapter.notifyDataSetChanged();
+                            LocalBroadcastManager.getInstance(NewTaskDetailsActivity.this).unregisterReceiver(mMessageReceiver);
+                            imageUploaded.uploaded();
+                        } else {
+                            mCheckAdapter.getItem(checkPosition).setIconUrl(response.getFileUrl());
+                            mTaskCheckList.get(checkPosition).setIconUrl(response.getFileUrl());
+                            mTaskCheckList.get(checkPosition).setImagePath(response.getFileUrl());
+                            mOnsiteCheckList.get(checkPosition).setImagePath(response.getFileUrl());
+                            mCheckAdapter.notifyItemChanged(checkPosition);
+                        }
                     }
 
                     @Override
@@ -1712,7 +1962,15 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
                 }
             });
-            controller.saveCheckList(SAVE_CHECK_LIST, mOnsiteCheckList);
+            if (!typeName.equalsIgnoreCase("TMS")) {
+                controller.saveCheckList(SAVE_CHECK_LIST, mOnsiteCheckList);
+            }else {
+                HashMap<String, Object> hashMap = new HashMap<>();
+                hashMap.put("TaskId", "23213");
+                hashMap.put("type", "Service Delivery");
+                hashMap.put("QuestionTabList", AppUtils.tmsServiceDeliveryList);
+                controller.saveServiceDelivery(SAVE_CHECK_LIST, Collections.singletonList(hashMap));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -2132,5 +2390,11 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     protected void onDestroy() {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+    }
+    interface ImageUploaded{
+        void uploaded();
+    }
+    void setOnUploadedListener(ImageUploaded imageUploaded){
+        this.imageUploaded = imageUploaded;
     }
 }

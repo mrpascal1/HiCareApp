@@ -4111,10 +4111,47 @@ public class NetworkCallController {
 
     }
 
-    public void saveTmsQuestions(final int requestCode, List<HashMap<String, Object>> taskId) {
+    public void getServiceDeliveryQuestions(final int requestCode, String taskId) {
         try {
             BaseApplication.getRetrofitAPI(true)
-                    .saveTmsQuestions(taskId)
+                    .getServiceDeliveryQuestions(taskId)
+                    .enqueue(new Callback<QuestionBase>() {
+                        @Override
+                        public void onResponse(Call<QuestionBase> call, Response<QuestionBase> response) {
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body().getData());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getExotelCalled", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<QuestionBase> call, Throwable t) {
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void saveTmsQuestions(final int requestCode, List<HashMap<String, Object>> data) {
+        try {
+            BaseApplication.getRetrofitAPI(true)
+                    .saveTmsQuestions(data)
                     .enqueue(new Callback<BaseResponse>() {
                         @Override
                         public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
@@ -4127,6 +4164,31 @@ public class NetworkCallController {
 
                         @Override
                         public void onFailure(Call<BaseResponse> call, Throwable t) {
+                            mListner.onFailure(requestCode);
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void saveServiceDelivery(final int requestCode, List<HashMap<String, Object>> data) {
+        try {
+            BaseApplication.getRetrofitAPI(true)
+                    .saveServiceDelivery(data)
+                    .enqueue(new Callback<CheckListResponse>() {
+                        @Override
+                        public void onResponse(Call<CheckListResponse> call, Response<CheckListResponse> response) {
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body());
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<CheckListResponse> call, Throwable t) {
                             mListner.onFailure(requestCode);
                         }
                     });

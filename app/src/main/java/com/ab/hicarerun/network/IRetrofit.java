@@ -586,4 +586,9 @@ public interface IRetrofit {
     @POST("TMSDigitisation/UpdateTMSQuestions")
     Call<BaseResponse> saveTmsQuestions(@Body List<HashMap<String, Object>> data);
 
+    @GET("TMSDigitisation/GetServiceDeliveryQuestions")
+    Call<QuestionBase> getServiceDeliveryQuestions(@Query("taskId") String taskId);
+
+    @POST("TMSDigitisation/UpdateServiceDelivery")
+    Call<CheckListResponse> saveServiceDelivery(@Body List<HashMap<String, Object>> data);
 }

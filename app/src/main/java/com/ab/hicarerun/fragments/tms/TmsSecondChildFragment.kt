@@ -169,6 +169,9 @@ class TmsSecondChildFragment : Fragment() {
             }
 
             override fun onCancelClicked(position: Int, questionId: Int?, clickedBy: Int) {
+                qId = questionId.toString().toInt()
+                cBy = clickedBy
+                checkPosition = position
                 val tmsCList = ArrayList<QuestionList>()
                 AppUtils.tmsInspectionList.forEach {
                     if (it.questionTab == currChip) {

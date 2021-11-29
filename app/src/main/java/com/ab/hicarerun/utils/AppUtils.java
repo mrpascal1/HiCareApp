@@ -3,6 +3,7 @@ package com.ab.hicarerun.utils;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -94,8 +95,10 @@ public class AppUtils {
 
     public static List<String> tmsConsultationChips = null;
     public static List<String> tmsInspectionChips = null;
+    public static ArrayList<String> tmsServiceDeliveryChips = null;
     public static ArrayList<QuestionTabList> tmsConsultationList = null;
     public static ArrayList<QuestionTabList> tmsInspectionList = null;
+    public static ArrayList<QuestionTabList> tmsServiceDeliveryList = null;
     public static ArrayList<QuestionImageUrl> tmsImageUrls = null;
     public static List<TmsData> tmsConsInsList = null;
 
@@ -817,8 +820,9 @@ public class AppUtils {
         }
     }
 
-    public static void getTmsQuestions(String taskId) {
+    public static void getTmsQuestions(String taskId, ProgressDialog progressDialog) {
         try {
+            progressDialog.show();
             NetworkCallController controller = new NetworkCallController();
             controller.setListner(new NetworkResponseListner<List<TmsData>>() {
                 @Override
@@ -838,7 +842,7 @@ public class AppUtils {
                         Log.d("TAG", "Called");
                         for (TmsData data : items) {
                             Log.d("TAG", "Looping : Inside Data");
-                            if (data.getType().equals("Consultation")) {
+                            if (data.getType().equalsIgnoreCase("Consultation")) {
                                 Log.d("TAG", "Found consultation");
                                 for (int i =0; i<data.getQuestionTabList().size(); i++){
                                     tmsConsultationChips.add(data.getQuestionTabList().get(i).getQuestionTab());
@@ -859,11 +863,12 @@ public class AppUtils {
 //                            requestStoragePermission(true);
 //                        });
                     }
+                    progressDialog.dismiss();
                 }
 
                 @Override
                 public void onFailure(int requestCode) {
-
+                    progressDialog.dismiss();
                 }
             });
             controller.getTmsQuestions(1011, taskId);
@@ -872,4 +877,36 @@ public class AppUtils {
         }
     }
 
+    public static void getServiceDeliveryQuestions(String taskId){
+        try {
+            NetworkCallController controller = new NetworkCallController();
+            controller.setListner(new NetworkResponseListner<List<TmsData>>() {
+                @Override
+                public void onResponse(int requestCode, List<TmsData> items) {
+                    tmsServiceDeliveryChips = new ArrayList<>();
+                    tmsServiceDeliveryList = new ArrayList<>();
+                    if (items != null && items.size() > 0) {
+                        Log.d("TAG", "Called");
+                        for (TmsData data : items) {
+                            Log.d("TAG", "Looping : Inside Data");
+                            if (data.getType().equalsIgnoreCase("Service Delivery")){
+                                for (int i =0; i<data.getQuestionTabList().size(); i++){
+                                    tmsServiceDeliveryChips.add(data.getQuestionTabList().get(i).getQuestionTab());
+                                }
+                                tmsServiceDeliveryList.addAll(data.getQuestionTabList());
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(int requestCode) {
+
+                }
+            });
+            controller.getServiceDeliveryQuestions(1011, taskId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

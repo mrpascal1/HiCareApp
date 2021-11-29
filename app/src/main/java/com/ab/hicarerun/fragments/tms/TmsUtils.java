@@ -83,7 +83,7 @@ public class TmsUtils {
         }
     }
 
-    static boolean isImgChecked(List<QuestionList> inspectionList) {
+    public static boolean isImgChecked(List<QuestionList> inspectionList) {
         boolean isRequired = true;
         for (QuestionList data : inspectionList) {
             if (data.isPictureRequired()) {
@@ -97,7 +97,7 @@ public class TmsUtils {
         }
         return isRequired;
     }
-    static boolean isListChecked(List<QuestionList> listData) {
+    public static boolean isListChecked(List<QuestionList> listData) {
         for (QuestionList data : listData) {
             if (data.getAnswer() == null || data.getAnswer().length() == 0) {
                 return false;
@@ -106,7 +106,7 @@ public class TmsUtils {
         return true;
     }
 
-    static Animation inFromLeftAnimation() {
+    public static Animation inFromLeftAnimation() {
         Animation inFromLeft = new TranslateAnimation(
                 Animation.RELATIVE_TO_PARENT, -1.0f,
                 Animation.RELATIVE_TO_PARENT, 0.0f,
@@ -117,7 +117,7 @@ public class TmsUtils {
         return inFromLeft;
     }
 
-    static Animation inFromRightAnimation() {
+    public static Animation inFromRightAnimation() {
         Animation inFromRight = new TranslateAnimation(
                 Animation.RELATIVE_TO_PARENT, +1.0f,
                 Animation.RELATIVE_TO_PARENT, 0.0f,

@@ -1172,7 +1172,11 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     mFragmentServiceInfoBinding.btnCheckList.setOnClickListener(v -> {
                         if (!isPostJobCompletionDone) {
                             isPostJobCompletionDone = true;
-                            mListCallback.onPostJobButtonClicked();
+                            if (NewTaskDetailsActivity.typeName.equalsIgnoreCase("TMS")){
+                                mListCallback.onTmsPostJobButtonClicked();
+                            }else {
+                                mListCallback.onPostJobButtonClicked();
+                            }
                         } else {
                             Toasty.success(getActivity(), "You have successfully submitted Post Job Check-List").show();
                         }
@@ -2867,6 +2871,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
     public interface ServiceInfoListener {
         void onPostJobButtonClicked();
+        void onTmsPostJobButtonClicked();
 
     }
 }
