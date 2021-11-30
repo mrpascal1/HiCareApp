@@ -1172,7 +1172,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     mFragmentServiceInfoBinding.btnCheckList.setOnClickListener(v -> {
                         if (!isPostJobCompletionDone) {
                             isPostJobCompletionDone = true;
-                            if (NewTaskDetailsActivity.typeName.equalsIgnoreCase("TMS")){
+                            if (mTaskDetailsData.get(0).getTaskTypeName().equalsIgnoreCase("TMS")){
                                 mListCallback.onTmsPostJobButtonClicked();
                             }else {
                                 mListCallback.onPostJobButtonClicked();
@@ -2083,8 +2083,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 InspectionFragment alert = InspectionFragment.newInstance();
                 alert.show(getActivity().getSupportFragmentManager(), "Alert");
             } else {
-                TmsConsultationFragment alert = TmsConsultationFragment.newInstance();
-                //ConsultationFragment alert = ConsultationFragment.newInstance();
+                //TmsConsultationFragment alert = TmsConsultationFragment.newInstance();
+                ConsultationFragment alert = ConsultationFragment.newInstance();
                 alert.show(getActivity().getSupportFragmentManager(), "Alert");
             }
         } catch (Exception e) {
