@@ -1,6 +1,7 @@
 package com.ab.hicarerun.fragments;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -99,18 +100,6 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
                 checked = true;
                 mFragmentConsultationThirdBinding.btnHome.setEnabled(true);
                 mFragmentConsultationThirdBinding.btnHome.setAlpha(1f);
-                /*if (imgCount > 0) {
-                    if (imagesClicked.containsAll(initImages)) {
-                        mFragmentConsultationThirdBinding.btnHome.setEnabled(true);
-                        mFragmentConsultationThirdBinding.btnHome.setAlpha(1f);
-                    }else {
-                        mFragmentConsultationThirdBinding.btnHome.setEnabled(false);
-                        mFragmentConsultationThirdBinding.btnHome.setAlpha(0.6f);
-                    }
-                }else {
-                    mFragmentConsultationThirdBinding.btnHome.setEnabled(true);
-                    mFragmentConsultationThirdBinding.btnHome.setAlpha(1f);
-                }*/
             } else {
                 checked = false;
                 mFragmentConsultationThirdBinding.btnHome.setEnabled(false);
@@ -136,40 +125,13 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
         getRecommendations();
     }
 
-    /*@Override
-    public void onResume() {
-        mAdapter.setOnItemClickHandler((image, position) -> {
-            if (!imagesClicked.contains(image)) {
-                imagesClicked.add(image);
-            }
-            if (AppUtils.isInspectionDone) {
-                    mFragmentConsultationThirdBinding.chkAgree.setVisibility(View.GONE);
-                    mFragmentConsultationThirdBinding.btnHome.setEnabled(true);
-                    mFragmentConsultationThirdBinding.btnHome.setAlpha(1f);
-            } else {
-                mFragmentConsultationThirdBinding.chkAgree.setVisibility(View.VISIBLE);
-                if (imgCount > 0) {
-                    if (imagesClicked.containsAll(initImages) && checked){
-                        mFragmentConsultationThirdBinding.btnHome.setEnabled(true);
-                        mFragmentConsultationThirdBinding.btnHome.setAlpha(1f);
-                    }else{
-                        mFragmentConsultationThirdBinding.btnHome.setEnabled(false);
-                        mFragmentConsultationThirdBinding.btnHome.setAlpha(0.6f);
-                    }
-                }else {
-                    if (checked){
-                        mFragmentConsultationThirdBinding.btnHome.setEnabled(true);
-                        mFragmentConsultationThirdBinding.btnHome.setAlpha(1f);
-                    }else {
-                        mFragmentConsultationThirdBinding.btnHome.setEnabled(false);
-                        mFragmentConsultationThirdBinding.btnHome.setAlpha(0.6f);
-                    }
-                }
-            }
-        });
-       super.onResume();
-    }*/
-
+    /**
+     * This method calls the GetRecommendations API from the server and populates the recyclerView.<br>
+     * We also add all sound urls to the audio array if present in the JSON.<br>
+     * We set the txtPart according to the infestation level we get form the server. <br>
+     * Hides the imgAlert if infestation level is null or blank. <br>
+     * Accordingly, we hide the speaker ImageView if audios array is empty.<br>
+    * */
     private void getRecommendations() {
         try {
             if (mTaskDetailsData != null && mTaskDetailsData.size() > 0) {
@@ -192,7 +154,7 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
                                         Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.blink);
                                         mFragmentConsultationThirdBinding.imgAlert.startAnimation(animation);
                                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                                            v = (Vibrator) Objects.requireNonNull(getActivity()).getSystemService(getActivity().VIBRATOR_SERVICE);
+                                            v = (Vibrator) requireActivity().getSystemService(Context.VIBRATOR_SERVICE);
                                             v.vibrate(3000);
                                         }
                                     }else {
@@ -212,7 +174,7 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
                                 }
                             }
                             for (int i = 0; i < items.size(); i++){
-                                if (items.get(i).getRecommendationAudioUrl() != null && !items.get(i).getRecommendationAudioUrl().equals("")){
+                                if (items.get(i).isAudioEnabled() && (items.get(i).getRecommendationAudioUrl() != null && !items.get(i).getRecommendationAudioUrl().equals(""))){
                                     audios.add(items.get(i).getRecommendationAudioUrl());
                                 }/*else {
                                     audios.add("https://www.kozco.com/tech/piano2-CoolEdit.mp3");
@@ -223,29 +185,6 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
                             }else {
                                 mFragmentConsultationThirdBinding.speakerIv.setVisibility(View.GONE);
                             }
-                            /*if (imgCount > 0){
-                                if (AppUtils.isInspectionDone){
-                                    mFragmentConsultationThirdBinding.chkAgree.setVisibility(View.GONE);
-                                    mFragmentConsultationThirdBinding.btnHome.setEnabled(true);
-                                    mFragmentConsultationThirdBinding.btnHome.setAlpha(1f);
-                                }else {
-                                    mFragmentConsultationThirdBinding.chkAgree.setVisibility(View.VISIBLE);
-                                    mFragmentConsultationThirdBinding.noteTv.setVisibility(View.VISIBLE);
-                                    mFragmentConsultationThirdBinding.btnHome.setEnabled(false);
-                                    mFragmentConsultationThirdBinding.btnHome.setAlpha(0.6f);
-                                }
-                            }else{
-                                mFragmentConsultationThirdBinding.noteTv.setVisibility(View.GONE);
-                                if (AppUtils.isInspectionDone){
-                                    mFragmentConsultationThirdBinding.chkAgree.setVisibility(View.GONE);
-                                    mFragmentConsultationThirdBinding.btnHome.setEnabled(true);
-                                    mFragmentConsultationThirdBinding.btnHome.setAlpha(1f);
-                                }else {
-                                    mFragmentConsultationThirdBinding.chkAgree.setVisibility(View.VISIBLE);
-                                    mFragmentConsultationThirdBinding.btnHome.setEnabled(false);
-                                    mFragmentConsultationThirdBinding.btnHome.setAlpha(0.6f);
-                                }
-                            }*/
                             mAdapter.setData(items);
                             mAdapter.notifyDataSetChanged();
                         } else {
@@ -269,6 +208,14 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
         }
     }
 
+    /**
+     * This method starts playing the audio, initially with 0th element from audios array
+     * and show progressBar while preparing and then change the drawable from speaker to stop icon.
+     * Also, there is an onCompletionListener which attached to the MediaPlayer
+     * and notifies us when it played the current sound completely.
+     * We then increment the #playCompleted, resets the MediaPlayer and call this method again
+     * only if playCompleted is less then the total size of the audios array
+    * */
     public void playAudio(ImageView view, String url, int position) {
         if (mp == null) {
             mp = new MediaPlayer();
@@ -303,6 +250,10 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
         }
     }
 
+    /**
+     * This method stops playing the looping sound.
+     * Also changes the image drawable to speaker.
+    * */
     public void stopPlaying() {
         if (mp != null) {
             isPLAYING = false;
@@ -313,6 +264,11 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
         }
     }
 
+    /**
+     * When home button is clicked this method gets called and
+     * marks the isInspectionDone as true and then stops the audio
+     * and call the listener which is implemented in the #ConsultationFragment class
+    * */
     @Override
     public void onHomeButtonClicked(View view) {
         AppUtils.isInspectionDone = true;
@@ -321,6 +277,9 @@ public class ConsultationThirdFragment extends Fragment implements UserRecommend
         listener.onHomeButtonClicked();
     }
 
+    /**
+     * A listener which is implemented and defined in #ConsultationFragment class
+    * */
     interface ChildFragment3Listener {
         void onHomeButtonClicked();
     }

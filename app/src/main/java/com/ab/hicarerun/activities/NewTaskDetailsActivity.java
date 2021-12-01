@@ -308,7 +308,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     int cBy = -1;
     boolean isFromTms = false;
     boolean isLast = false;
-    public static String typeName = "";
+    public String typeName = "";
     private ImageUploaded imageUploaded = null;
 
     //   @Override
@@ -484,8 +484,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             referralDiscount = Integer.parseInt(response.getData().getReferralDiscount());
                             mActualAmountToCollect = response.getData().getActualAmountToCollect();
                             //typeName = response.getData().getTaskTypeName();
-                            typeName = "TMS";
-                            if (!response.getData().getTaskTypeName().equalsIgnoreCase("TMS")){
+                            if (response.getData().getTaskTypeName().contains("Termites for")){
+                                typeName = "TMS";
                                 AppUtils.getTmsQuestions("21213", progress);
                                 AppUtils.getServiceDeliveryQuestions("21213");
                             }
@@ -1584,12 +1584,10 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
             validate(currentList, btnSend, nextChipBtn);
             //saveHashSet = new HashSet<>();
-            btnSend.setEnabled(true);
-            btnSend.setAlpha(1f);
 
             btnSend.setOnClickListener(v -> {
                 Log.d("TAG", "Save "+AppUtils.tmsServiceDeliveryList);
-                if (mOnsiteCheckList != null && mOnsiteCheckList.size() > 0) {
+                if (currentList != null && currentList.size() > 0) {
                     if (TmsUtils.isListChecked(currentList)) {
                         if (TmsUtils.isImgChecked(currentList)) {
                             saveCheckList(alertDialog);

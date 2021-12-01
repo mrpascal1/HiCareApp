@@ -12,10 +12,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatSpinner
@@ -41,6 +38,7 @@ class TSScannerActivity : BaseActivity() {
     lateinit var binding: ActivityTsscannerBinding
     lateinit var modelBarcodeList: ArrayList<BarcodeList>
     lateinit var pestList: ArrayList<Pest_Type>
+    lateinit var serviceUnit: ArrayList<BarcodeType>
     lateinit var barcodeType: List<BarcodeType>
     lateinit var barcodeAdapter: BarcodeAdapter
     lateinit var progressDialog: ProgressDialog
@@ -58,6 +56,8 @@ class TSScannerActivity : BaseActivity() {
     var barcode_Type: String? = ""
     var isVerified: Boolean? = false
     var selectedType = ""
+    var selectedUnit = ""
+    var additional_Info = ""
     var isFetched = 0
     var requestFrom = 0
     lateinit var promptsView: View
@@ -80,6 +80,7 @@ class TSScannerActivity : BaseActivity() {
         val loginResponse: RealmResults<LoginResponse> = BaseApplication.getRealm().where(LoginResponse::class.java).findAll()
         if (loginResponse != null && loginResponse.size > 0){
             empCode = loginResponse[0]?.id?.toInt()
+            created_By = loginResponse[0]?.userName.toString()
             Log.d("TAG-Login", empCode.toString())
         }
 
@@ -92,6 +93,7 @@ class TSScannerActivity : BaseActivity() {
         modelBarcodeList = ArrayList()
         pestList = ArrayList()
         barcodeType = ArrayList()
+        serviceUnit = ArrayList()
         barcodeAdapter = BarcodeAdapter(this, modelBarcodeList, "TSScanner")
         val llManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         llManager.stackFromEnd = true
@@ -232,6 +234,7 @@ class TSScannerActivity : BaseActivity() {
             override fun onResponse(requestCode: Int, response: OrderDetails?) {
                 modelBarcodeList.clear()
                 pestList.clear()
+                serviceUnit.clear()
                 binding.searchBtn.isEnabled = true
                 val success = response?.isSuccess.toString()
                 if (success == "true"){
@@ -245,15 +248,23 @@ class TSScannerActivity : BaseActivity() {
                     val regionName = response?.data?.regionName
                     val serviceGroup = response?.data?.serviceGroup
                     val servicePlan = response?.data?.servicePlan
+                    val su = response?.data?.service_Units
+                    if (!su.isNullOrEmpty()){
+                        serviceUnit.addAll(su)
+                    }
                     if (!response?.data?.barcodeType.isNullOrEmpty()) {
                         barcodeType = response?.data?.barcodeType!!
                     }
+
                     val barcodeList = response?.data?.barcodeList
                     if (response?.data?.barcodeList != null){
                         var itemsCount = 0
+                        if (barcodeList != null) {
+                            modelBarcodeList.addAll(barcodeList)
+                        }
                         for (i in 0 until response.data.barcodeList.size) {
                             itemsCount++
-                            val id = response.data.barcodeList[i].id
+                            /*val id = response.data.barcodeList[i].id
                             account_No = response.data.barcodeList[i].account_No
                             order_No = response.data.barcodeList[i].order_No
                             val account_Name = response.data.barcodeList[i].account_Name
@@ -266,15 +277,16 @@ class TSScannerActivity : BaseActivity() {
                             created_By = response.data.barcodeList[i].created_By
                             isVerified = response.data.barcodeList[i].isVerified
                             barcode_Type = response.data.barcodeList[i].barcode_Type
-                            val pestList = response.data.barcodeList[i].pest_Type
+                            val pestList = response.data.barcodeList[i].pest_Type*/
                             /*if (!pestResp.isNullOrEmpty()){
                                 for (j in 0 until pestResp.size){
                                     pestList.add(Pest_Type(pestResp[j].text, pestResp[j].value))
                                 }
                             }*/
-                            modelBarcodeList.add(BarcodeList(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, barcode_Type, pestList, "no"))
+                            //modelBarcodeList.add(BarcodeList(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, barcode_Type, pestList, "no"))
                         }
-                        OrderDetails(response.isSuccess, Data(account_No, orderNo, account_Name, startDate, endDate, regionName, serviceGroup, servicePlan, barcodeType, modelBarcodeList), response.errorMessage, response.param1, response.responseMessage)
+                        OrderDetails(response.isSuccess, response.data, response.errorMessage, response.param1, response.responseMessage)
+                        //OrderDetails(response.isSuccess, Data(account_No, orderNo, account_Name, startDate, endDate, regionName, serviceGroup, servicePlan, barcodeType, modelBarcodeList), response.errorMessage, response.param1, response.responseMessage)
                         if (itemsCount > 0){
                             binding.barcodeErrorTv.visibility = View.GONE
                             binding.saveBtn.visibility = View.VISIBLE
@@ -334,23 +346,6 @@ class TSScannerActivity : BaseActivity() {
         barcodeAdapter.notifyDataSetChanged()
     }
 
-    /*private fun getEmpCode(){
-        val userId = SharedPreferencesUtility.getPrefString(this, SharedPreferencesUtility.PREF_USERID)
-        val controller = NetworkCallController()
-        controller.setListner(object : NetworkResponseListner<Any>{
-            override fun onResponse(requestCode: Int, response: Any) {
-                progressDialog.dismiss()
-                val responseProfile: Profile = response as Profile
-                empCode = responseProfile.employeeCode.toInt()
-                Log.d("TAG-profile", empCode.toString())
-            }
-            override fun onFailure(requestCode: Int) {
-                progressDialog.dismiss()
-                Log.d("TAG", requestCode.toString())
-            }
-        })
-        controller.getTechnicianProfile(1000, userId)
-    }*/
 
     private fun getBack(){
         val fragment = supportFragmentManager.backStackEntryCount
@@ -391,7 +386,7 @@ class TSScannerActivity : BaseActivity() {
     private fun addNewData(account_No: String?, order_No: String?, account_Name: String?,
                            barcode_Data: String?, last_Verified_On: String?, last_Verified_By: Int?,
                            created_On: String?, created_By_Id_User: Int?, verified_By: String?,
-                           created_By: String?, pestList: ArrayList<Pest_Type>?, isVerified: Boolean?, barcode_Type: String?){
+                           created_By: String?, service_Unit: String, additional_Info: String, pestList: ArrayList<Pest_Type>?, isVerified: Boolean?, barcode_Type: String?){
 
         var found = 0
         for (i in 0 until modelBarcodeList.size){
@@ -403,7 +398,7 @@ class TSScannerActivity : BaseActivity() {
         if (found == 0){
             modelBarcodeList.add(BarcodeList(0, account_No, order_No, account_Name, barcode_Data,
                 last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By,
-                created_By, isVerified, barcode_Type, pestList, "no"))
+                created_By, isVerified, barcode_Type, service_Unit, additional_Info, pestList, "no"))
             barcodeAdapter.notifyItemInserted(modelBarcodeList.lastIndex)
             binding.barcodeRecycler.post {
                 binding.barcodeRecycler.smoothScrollToPosition(barcodeAdapter.itemCount - 1)
@@ -427,14 +422,24 @@ class TSScannerActivity : BaseActivity() {
         alertDialogBuilder.setView(promptsView)
         val alertDialog = alertDialogBuilder.create()
         val spnType = promptsView.findViewById(R.id.spnType) as AppCompatSpinner
+        val suSpnType = promptsView.findViewById(R.id.suSpnType) as AppCompatSpinner
         val cancelBtn = promptsView.findViewById(R.id.btnCancel) as AppCompatButton
         val okBtn = promptsView.findViewById(R.id.okBtn) as AppCompatButton
+        val remarksEt = promptsView.findViewById(R.id.remarksEt) as EditText
+        okBtn.isEnabled = false
+        okBtn.alpha = 0.6f
 
-        val bType: ArrayList<String> = ArrayList()
+        val bType = ArrayList<String>()
+        val su = ArrayList<String>()
         bType.clear()
+        su.clear()
         bType.add("Select Type")
+        su.add("Select Unit")
         barcodeType.forEach {
             bType.add(it.value.toString())
+        }
+        serviceUnit.forEach {
+            su.add(it.value.toString())
         }
         val arrayAdapter = object : ArrayAdapter<String>(this, R.layout.spinner_layout_new, bType){
             override fun isEnabled(position: Int): Boolean {
@@ -459,7 +464,13 @@ class TSScannerActivity : BaseActivity() {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 selectedType = spnType.selectedItem.toString()
                 if (selectedType != "Select Type"){
-                    okBtn.isEnabled = true
+                    if (selectedUnit != "Select Unit" && selectedUnit != "") {
+                        okBtn.isEnabled = true
+                        okBtn.alpha = 1f
+                    }else{
+                        okBtn.isEnabled = false
+                        okBtn.alpha = 0.6f
+                    }
                 }
                 //Log.d("TAG", selectedType)
             }
@@ -468,7 +479,46 @@ class TSScannerActivity : BaseActivity() {
             }
         }
 
+        /**
+         * Adapter for Service Unit
+        * */
+        val suArrayAdapter = object : ArrayAdapter<String>(this, R.layout.spinner_layout_new, su){
+            override fun isEnabled(position: Int): Boolean {
+                return position != 0
+            }
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getDropDownView(position, convertView, parent)
+                val tv = view as TextView
+                if (position == 0){
+                    tv.setTextColor(Color.GRAY)
+                }else{
+                    tv.setTextColor(Color.BLACK)
+                }
+                return view
+            }
+        }
+        suArrayAdapter.setDropDownViewResource(R.layout.spinner_popup)
+        suSpnType.adapter = suArrayAdapter
+        suSpnType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                selectedUnit = suSpnType.selectedItem.toString()
+                if (selectedUnit != "Select Unit"){
+                    if (selectedType != "Select Type" && selectedType != "") {
+                        okBtn.isEnabled = true
+                        okBtn.alpha = 1f
+                    }else{
+                        okBtn.isEnabled = false
+                        okBtn.alpha = 0.6f
+                    }
+                }
+                //Log.d("TAG", selectedType)
+            }
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+            }
+        }
         okBtn.setOnClickListener {
+            additional_Info = remarksEt.text.toString().trim()
             Log.d("TAG", selectedType)
             if (selectedType != "Select Type"){
                 addNewData(
@@ -484,6 +534,8 @@ class TSScannerActivity : BaseActivity() {
                     created_By = created_By,
                     isVerified = isVerified,
                     barcode_Type = selectedType,
+                    service_Unit = selectedUnit,
+                    additional_Info = additional_Info,
                     pestList = pestList)
                 alertDialog.cancel()
             }

@@ -136,7 +136,7 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
         controller.setListner(object : NetworkResponseListner<BaseResponse>{
             override fun onResponse(requestCode: Int, response: BaseResponse?) {
                 if (response?.isSuccess == true){
-                    Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show()
                 }else{
                     Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT).show()
                 }
@@ -166,9 +166,9 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
             requireActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out)
             binding.containerFragment.startAnimation(TmsUtils.inFromRightAnimation())
             if (AppUtils.isInspectionDone) {
-                binding.progressBar.setProgress(2)
+                binding.progressBar.progress = 2
             } else {
-                binding.progressBar.setProgress(1)
+                binding.progressBar.progress = 1
             }
         } else {
             saveConsInsData(1)

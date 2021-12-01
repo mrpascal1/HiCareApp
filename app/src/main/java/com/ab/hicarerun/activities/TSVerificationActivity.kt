@@ -78,6 +78,8 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
     var verified_By: String? = ""
     var created_By: String? = ""
     var barcode_Type: String? = ""
+    var service_Unit: String? = ""
+    var additional_Info: String? = ""
     var isVerified: Boolean? = null
     var isFetched = 0
     var lat = ""
@@ -239,6 +241,8 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                             barcode_Type = response.data.barcodeList[i].barcode_Type
                             isVerified = response.data.barcodeList[i].isVerified
                             val pestResp = response.data.barcodeList[i].pest_Type
+                            service_Unit = response.data.barcodeList[i].service_Unit
+                            additional_Info = response.data.barcodeList[i].additional_Info
                             if (!pestResp.isNullOrEmpty()){
                                 for (j in 0 until pestResp.size){
                                     pestList.add(Pest_Type(
@@ -270,12 +274,21 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                                     created_By,
                                     isVerified,
                                     barcode_Type,
+                                    service_Unit,
+                                    additional_Info,
                                     pestList,
                                     "no"
                                 )
                             )
                         }
                         OrderDetails(
+                            response.isSuccess,
+                            response.data,
+                            response.errorMessage,
+                            response.param1,
+                            response.responseMessage
+                        )
+                        /*OrderDetails(
                             response.isSuccess,
                             Data(
                                 accountNo,
@@ -292,7 +305,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
                             response.errorMessage,
                             response.param1,
                             response.responseMessage
-                        )
+                        )*/
                         if (itemsCount > 0) {
                             binding.barcodeErrorTv.visibility = View.GONE
                         } else {
@@ -366,7 +379,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
     private fun modifyData(id: Int?, account_No: String?, order_No: String?, account_Name: String?,
                            barcode_Data: String?, last_Verified_On: String?, last_Verified_By: Int?,
                            created_On: String?, created_By_Id_User: Int?, verified_By: String?,
-                           created_By: String?, pestList: ArrayList<Pest_Type>?, isVerified: Boolean?, barcode_Type: String?){
+                           created_By: String?, service_Unit: String?, additional_Info: String?, pestList: ArrayList<Pest_Type>?, isVerified: Boolean?, barcode_Type: String?){
 
         binding.progressBar.visibility = View.VISIBLE
         var found = 0
@@ -374,7 +387,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
             if(modelBarcodeList[i].barcode_Data == barcode_Data){
                 if (modelBarcodeList[i].isVerified == false){
                     modelBarcodeList[i] = BarcodeList(modelBarcodeList[i].id, account_No, order_No, account_Name, barcode_Data,
-                        last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, barcode_Type, pestList, "no")
+                        last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, barcode_Type, service_Unit, additional_Info, pestList, "no")
                     Log.d("TAG-Veri", id.toString())
                     verifyBarcode(modelBarcodeList[i].id, "TSVerification", account_No, order_No, barcode_Data, lat, long, last_Verified_On, last_Verified_By)
                     barcodeAdapter.notifyItemChanged(i)
@@ -522,7 +535,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
             if (result.contents != null){
                 //showPestDialog()
                 modifyData(id, account_No, order_No, account_Name, result.contents, created_On, empCode,
-                    last_Verified_On, created_By_Id_User, verified_By, created_By, pestList, true, barcode_Type)
+                    last_Verified_On, created_By_Id_User, verified_By, created_By, service_Unit, additional_Info, pestList, true, barcode_Type)
                 Log.d("TAG-QR", result.contents)
             }else{
                 Log.d("TAG-QR", "Not found")

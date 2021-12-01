@@ -3,20 +3,23 @@ package com.ab.hicarerun.fragments.tms
 import android.app.ProgressDialog
 import android.content.Context
 import android.graphics.Typeface
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.os.Vibrator
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ab.hicarerun.BaseApplication.getRealm
 import com.ab.hicarerun.R
 import com.ab.hicarerun.adapter.RecommendationsAdapter
 import com.ab.hicarerun.databinding.FragmentTmsThirdChildBinding
-import com.ab.hicarerun.fragments.ConsultationThirdFragment
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
 import com.ab.hicarerun.network.models.ConsulationModel.Recommendations
@@ -24,17 +27,24 @@ import com.ab.hicarerun.network.models.GeneralModel.GeneralData
 import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.LocaleHelper
 import io.realm.RealmResults
+import java.io.IOException
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class TmsThirdChildFragment(val type: String) : Fragment() {
 
     lateinit var binding: FragmentTmsThirdChildBinding
-    val RECOMMENDATION_REQ = 1000;
     lateinit var mAdapter: RecommendationsAdapter
     lateinit var mTaskDetailsData : RealmResults<GeneralData>
     lateinit var progressD: ProgressDialog
+    lateinit var audios: ArrayList<String>
+    private var isPLAYING = false
     var checked = false
+    var playCompleted = 0
+    var mp: MediaPlayer? = null
+    val RECOMMENDATION_REQ = 1000
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -42,6 +52,7 @@ class TmsThirdChildFragment(val type: String) : Fragment() {
         val view = binding.root
         progressD = ProgressDialog(activity, R.style.TransparentProgressDialog)
         progressD.setCancelable(false)
+        audios = ArrayList()
         return view
     }
 
@@ -51,28 +62,16 @@ class TmsThirdChildFragment(val type: String) : Fragment() {
         mAdapter = RecommendationsAdapter(activity, type)
         binding.recycleView.layoutManager = LinearLayoutManager(activity)
         binding.recycleView.setHasFixedSize(true)
-        binding.recycleView.clipToPadding = false;
-        binding.recycleView.adapter = mAdapter;
+        binding.recycleView.clipToPadding = false
+        binding.recycleView.adapter = mAdapter
         binding.btnHome.isEnabled = false
         binding.btnHome.alpha = 0.6f
-        binding.txtTitle.setTypeface(binding.txtTitle.typeface, Typeface.BOLD);
-        binding.chkAgree.setOnCheckedChangeListener { compoundButton, isChecked ->
+        binding.txtTitle.setTypeface(binding.txtTitle.typeface, Typeface.BOLD)
+        binding.chkAgree.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                checked = true;
-                binding.btnHome.isEnabled = true;
-                binding.btnHome.alpha = 1f;
-                /*if (imgCount > 0) {
-                    if (imagesClicked.containsAll(initImages)) {
-                        binding.btnHome.setEnabled(true);
-                        binding.btnHome.setAlpha(1f);
-                    }else {
-                        binding.btnHome.setEnabled(false);
-                        binding.btnHome.setAlpha(0.6f);
-                    }
-                }else {
-                    binding.btnHome.setEnabled(true);
-                    binding.btnHome.setAlpha(1f);
-                }*/
+                checked = true
+                binding.btnHome.isEnabled = true
+                binding.btnHome.alpha = 1f
             } else {
                 checked = false
                 binding.btnHome.isEnabled = false
@@ -88,10 +87,18 @@ class TmsThirdChildFragment(val type: String) : Fragment() {
         }
 
         binding.btnHome.setOnClickListener {
-            AppUtils.isInspectionDone = true;
+            AppUtils.isInspectionDone = true
             mAdapter.stopPlaying()
             val listener = parentFragment as ThirdChildListener
             listener.onConfirmClicked()
+        }
+
+        binding.speakerIv.setOnClickListener {
+            if (!isPLAYING){
+                playAudio(binding.speakerIv, audios[0])
+            }else{
+                stopPlaying(binding.speakerIv)
+            }
         }
 
         getRecommendations()
@@ -109,74 +116,45 @@ class TmsThirdChildFragment(val type: String) : Fragment() {
                         progressD.dismiss()
                         if (items != null && items.size > 0) {
                             var v: Vibrator? = null
-                            if (type == "CMS") {
+                            if (type == "TMS") {
                                 if (items[0].overallInfestationLevel != null && items[0].overallInfestationLevel != "") {
-                                    binding.txtPart.setText("RECOMMENDATIONS " + "(" + items[0].overallInfestationLevel + ")")
-                                    if (items[0].overallInfestationLevel.equals(
-                                            "High Infestation",
-                                            ignoreCase = true
-                                        )
-                                    ) {
-                                        val animation = AnimationUtils.loadAnimation(
-                                            activity, R.anim.blink
-                                        )
-                                        binding.imgAlert.startAnimation(
-                                            animation
-                                        )
+                                    binding.txtPart.text = "RECOMMENDATIONS " + "(" + items[0].overallInfestationLevel + ")"
+                                    if (items[0].overallInfestationLevel.equals("High Infestation", ignoreCase = true)) {
+                                        val animation = AnimationUtils.loadAnimation(activity, R.anim.blink)
+                                        binding.imgAlert.startAnimation(animation)
                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                            v = Objects.requireNonNull(activity)!!.getSystemService(
-                                                Context.VIBRATOR_SERVICE
-                                            ) as Vibrator
+                                            v = activity?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
                                             v.vibrate(3000)
                                         }
                                     } else {
-                                        binding.imgAlert.setVisibility(
-                                            View.GONE
-                                        )
+                                        binding.imgAlert.visibility = View.GONE
                                     }
                                 } else {
-                                    binding.txtPart.setText("RECOMMENDATIONS")
+                                    binding.txtPart.text = "RECOMMENDATIONS"
                                 }
                                 AppUtils.infestationLevel = items[0].overallInfestationLevel
                             }
-                            binding.recycleView.setVisibility(View.VISIBLE)
-                            binding.txtEmpty.setVisibility(View.GONE)
-                            for (i in items.indices) {
-                                if (items[i].recommendationImageUrl != null && items[i].recommendationImageUrl != "") {
+                            binding.recycleView.visibility = View.VISIBLE
+                            binding.txtEmpty.visibility = View.GONE
+                            items.forEach{
+                                if (it.recommendationImageUrl != null && it.recommendationImageUrl != "") {
                                     /*imgCount++
                                     initImages.add(items[i].recommendationImageUrl)*/
                                 }
                             }
-                            /*if (imgCount > 0){
-                                if (AppUtils.isInspectionDone){
-                                    binding.chkAgree.setVisibility(View.GONE);
-                                    binding.btnHome.setEnabled(true);
-                                    binding.btnHome.setAlpha(1f);
-                                }else {
-                                    binding.chkAgree.setVisibility(View.VISIBLE);
-                                    binding.noteTv.setVisibility(View.VISIBLE);
-                                    binding.btnHome.setEnabled(false);
-                                    binding.btnHome.setAlpha(0.6f);
+                            items.forEach {
+                                if (it.isAudioEnabled && (it.recommendationAudioUrl != null && it.recommendationAudioUrl != "")){
+                                    audios.add(it.recommendationAudioUrl)
                                 }
-                            }else{
-                                binding.noteTv.setVisibility(View.GONE);
-                                if (AppUtils.isInspectionDone){
-                                    binding.chkAgree.setVisibility(View.GONE);
-                                    binding.btnHome.setEnabled(true);
-                                    binding.btnHome.setAlpha(1f);
-                                }else {
-                                    binding.chkAgree.setVisibility(View.VISIBLE);
-                                    binding.btnHome.setEnabled(false);
-                                    binding.btnHome.setAlpha(0.6f);
-                                }
-                            }*/mAdapter.setData(items)
+                            }
+                            mAdapter.setData(items)
                             mAdapter.notifyDataSetChanged()
                         } else {
-                            binding.chkAgree.setVisibility(View.GONE)
-                            binding.recycleView.setVisibility(View.GONE)
-                            binding.txtEmpty.setVisibility(View.VISIBLE)
-                            binding.btnHome.setEnabled(true)
-                            binding.btnHome.setAlpha(1f)
+                            binding.chkAgree.visibility = View.GONE
+                            binding.recycleView.visibility = View.GONE
+                            binding.txtEmpty.visibility = View.VISIBLE
+                            binding.btnHome.isEnabled = true
+                            binding.btnHome.alpha = 1f
                         }
                     }
 
@@ -188,13 +166,48 @@ class TmsThirdChildFragment(val type: String) : Fragment() {
             e.printStackTrace()
         }
     }
+    fun playAudio(speaker: ImageView, url: String) {
+        if (mp == null) {
+            mp = MediaPlayer()
+        }
+        isPLAYING = true
+        try {
+            speaker.setVisibility(View.GONE)
+            binding.progressBar.setVisibility(View.VISIBLE)
+            speaker.setImageDrawable(
+                ContextCompat.getDrawable(requireActivity(), R.drawable.ic_music_stop)
+            )
+            mp?.setDataSource(url)
+            mp?.prepareAsync()
+            mp?.setOnPreparedListener { mediaPlayer ->
+                binding.progressBar.setVisibility(View.GONE)
+                speaker.setVisibility(View.VISIBLE)
+                mediaPlayer.start()
+            }
+            mp?.setOnCompletionListener { mediaPlayer: MediaPlayer ->
+                playCompleted++
+                mediaPlayer.reset()
+                Log.d("TAG", "Completed $playCompleted")
+                if (playCompleted < audios.size) {
+                    playAudio(speaker, audios[playCompleted])
+                } else {
+                    stopPlaying(speaker)
+                }
+            }
+        } catch (e: IOException) {
+            Log.d("TAG", "prepare() failed")
+        }
+    }
 
-    /*fun newInstance(): TmsConsultationFragment {
-        val args = Bundle()
-        val fragment = TmsConsultationFragment()
-        fragment.arguments = args
-        return fragment
-    }*/
+    fun stopPlaying(speaker: ImageView) {
+        if (mp != null) {
+            isPLAYING = false
+            mp?.stop()
+            mp?.release()
+            mp = null
+            speaker.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_speaker))
+        }
+    }
 
     interface ThirdChildListener{
         fun onConfirmClicked()
