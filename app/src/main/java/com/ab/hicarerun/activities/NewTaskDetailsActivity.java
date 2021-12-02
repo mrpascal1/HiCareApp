@@ -1065,11 +1065,11 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
                 Toasty.error(this, getResources().getString(R.string.job_time_serice), Toasty.LENGTH_LONG, true).show();
                 progress.dismiss();
-            } else if (isOnsiteOtpRequired && Status.equals("On-Site")) {
+            } else if (isOnsiteOtpRequired && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
                 Toasty.error(this, getResources().getString(R.string.onsite_otp_required_service), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
-            } else if (isOnsiteOtpValidated && Status.equals("On-Site")) {
+            } else if (isOnsiteOtpValidated && Status.equals("Completed")) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
                 Toasty.error(this, getResources().getString(R.string.invalid_onsite_otp_service), Toast.LENGTH_SHORT, true).show();
                 progress.dismiss();
