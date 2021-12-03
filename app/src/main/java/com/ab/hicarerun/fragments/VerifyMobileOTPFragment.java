@@ -19,6 +19,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
+import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
@@ -82,6 +83,7 @@ public class VerifyMobileOTPFragment extends BaseFragment implements UserVerifyO
     GoogleApiClient mGoogleApiClient;
     //    private SMSListener reciever;
     SMSListener mSmsBroadcastReceiver;
+    CountDownTimer timer = null;
 
     public VerifyMobileOTPFragment() {
         // Required empty public constructor
@@ -121,17 +123,17 @@ public class VerifyMobileOTPFragment extends BaseFragment implements UserVerifyO
         appSignatureHelper.getAppSignatures();
         mSmsBroadcastReceiver = new SMSListener();
         //set google api client for hint request
-        mGoogleApiClient = new GoogleApiClient.Builder(Objects.requireNonNull(getContext()))
+        mGoogleApiClient = new GoogleApiClient.Builder(requireContext())
                 .addConnectionCallbacks(this)
-                .enableAutoManage(Objects.requireNonNull(getActivity()), this)
+                .enableAutoManage(requireActivity(), this)
                 .addApi(Auth.CREDENTIALS_API)
                 .build();
 
         mSmsBroadcastReceiver.setOnOtpListeners(this);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(SmsRetriever.SMS_RETRIEVED_ACTION);
-        getActivity().registerReceiver(mSmsBroadcastReceiver, intentFilter);
-        getActivity().setTitle("");
+        requireActivity().registerReceiver(mSmsBroadcastReceiver, intentFilter);
+        requireActivity().setTitle("");
         startSMSListener();
         return mFragmentVerifyMobileOtBinding.getRoot();
     }
@@ -139,8 +141,32 @@ public class VerifyMobileOTPFragment extends BaseFragment implements UserVerifyO
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        startTimer();
         mFragmentVerifyMobileOtBinding.txtNumber.setText("OTP has been sent to " + mobile);
         mFragmentVerifyMobileOtBinding.txtVerify.setTypeface(mFragmentVerifyMobileOtBinding.txtVerify.getTypeface(), Typeface.BOLD);
+    }
+
+    private void startTimer(){
+        timer = new CountDownTimer(60000, 1000){
+            @Override
+            public void onTick(long l) {
+                mFragmentVerifyMobileOtBinding.txtResend.setEnabled(false);
+                mFragmentVerifyMobileOtBinding.txtResend.setTextColor(requireActivity().getResources().getColor(R.color.grey));
+                mFragmentVerifyMobileOtBinding.txtResend.setText("Resend OTP in "+l/1000+" seconds");
+            }
+
+            @Override
+            public void onFinish() {
+                mFragmentVerifyMobileOtBinding.txtResend.setEnabled(true);
+                mFragmentVerifyMobileOtBinding.txtResend.setTextColor(requireActivity().getResources().getColor(R.color.sky));
+                mFragmentVerifyMobileOtBinding.txtResend.setText(R.string.resend_otp_verify);
+            }
+        }.start();
+    }
+    private void cancelTimer(){
+        if (timer != null){
+            timer.cancel();
+        }
     }
 
     @Override
@@ -151,6 +177,7 @@ public class VerifyMobileOTPFragment extends BaseFragment implements UserVerifyO
                 @Override
                 public void onResponse(int requestCode, SendOtpResponse response) {
                     if (response.getSuccess()) {
+                        startTimer();
                         otp = response.getData().getLoginotp();
                         startSMSListener();
                         Log.i("RESEND", "true");
@@ -193,9 +220,9 @@ public class VerifyMobileOTPFragment extends BaseFragment implements UserVerifyO
 
         String imei = "", device_info = "";
 
-        TelephonyManager telephonyManager = (TelephonyManager) Objects.requireNonNull(getActivity()).getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager telephonyManager = (TelephonyManager) requireActivity().getSystemService(Context.TELEPHONY_SERVICE);
         device_info = Build.MODEL;
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -275,7 +302,7 @@ public class VerifyMobileOTPFragment extends BaseFragment implements UserVerifyO
 
     private void startSMSListener() {
         try {
-            SmsRetrieverClient mClient = SmsRetriever.getClient(Objects.requireNonNull(getActivity()));
+            SmsRetrieverClient mClient = SmsRetriever.getClient(requireActivity());
             Task<Void> mTask = mClient.startSmsRetriever();
             mTask.addOnSuccessListener(aVoid -> Log.e("TAG_OTP", "SMS Retriever starts"));
             mTask.addOnFailureListener(e -> Log.e("TAG_OTP", "Error"));
@@ -348,7 +375,7 @@ public class VerifyMobileOTPFragment extends BaseFragment implements UserVerifyO
                 if (success) {
                     mFragmentVerifyMobileOtBinding.errorTv.setVisibility(View.GONE);
                     getWelcomeVideo();
-                    SharedPreferencesUtility.savePrefString(Objects.requireNonNull(getActivity()), SharedPreferencesUtility.PREF_LOGOUT, AppUtils.currentDate());
+                    SharedPreferencesUtility.savePrefString(requireActivity(), SharedPreferencesUtility.PREF_LOGOUT, AppUtils.currentDate());
                 } else {
                     mFragmentVerifyMobileOtBinding.otpView.setError("Invalid OTP!");
                     mFragmentVerifyMobileOtBinding.errorTv.setText("Invalid OTP!");
@@ -373,7 +400,7 @@ public class VerifyMobileOTPFragment extends BaseFragment implements UserVerifyO
                                 replaceFragment(FaceRecognizationFragment.newInstance(false, mobile, items.getVideoUrl()), "VerifyOtpFragment-FaceRecognizationFragment");
                             } else {
                                 if (items.getVideoUrl().length() > 0) {
-                                    if (SharedPreferencesUtility.getPrefBoolean(Objects.requireNonNull(getActivity()), SharedPreferencesUtility.IS_SKIP_VIDEO)) {
+                                    if (SharedPreferencesUtility.getPrefBoolean(requireActivity(), SharedPreferencesUtility.IS_SKIP_VIDEO)) {
                                         AppUtils.getHandShakeCall(mobile, getActivity());
                                     } else {
                                         startActivity(new Intent(getActivity(), StartVideoActivity.class)
@@ -409,6 +436,7 @@ public class VerifyMobileOTPFragment extends BaseFragment implements UserVerifyO
     @Override
     public void onDestroy() {
         super.onDestroy();
+        cancelTimer();
     }
 
     private boolean getValidated() {

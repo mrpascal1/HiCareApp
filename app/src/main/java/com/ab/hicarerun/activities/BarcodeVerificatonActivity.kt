@@ -68,6 +68,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
     lateinit var modelBarcodeList: ArrayList<BarcodeDetailsData>
     lateinit var modelBarcodeDDPestType: ArrayList<BarcodeDDPestType>
     lateinit var pestType: ArrayList<BarcodeDDPestType>
+    lateinit var notAccessibleList: ArrayList<BarcodeType>
     lateinit var barcodeAdapter: BarcodeAdapter2
     lateinit var pestTypeAdapter: PestTypeAdapter
     private var ARGS_COMBINE_ORDER = "ARGS_COMBINE_ORDER"
@@ -115,6 +116,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
     var TimeStamp = "";
     var currentItemCount = ""
     var prevImageLink = "";
+    var naReason = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -151,6 +153,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
 
         modelBarcodeList = ArrayList()
         modelBarcodeDDPestType = ArrayList()
+        notAccessibleList = ArrayList()
         barcodeAdapter = BarcodeAdapter2(this, modelBarcodeList, "TSVerification")
         val llManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         llManager.stackFromEnd = true
@@ -207,6 +210,13 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                             isVerified = response.data[i].isVerified
                             barcode_Type = response.data[i].barcode_Type
                             val pestType = response.data[i].pest_Type
+                            val reasons = response.data[i].not_Accessible_Reasons_List
+                            val su = response.data[i].service_Unit
+                            val additional_Info = response.data[i].additional_Info
+                            val nar = response.data[i].not_Accessible_Reason
+                            if (!reasons.isNullOrEmpty()){
+                                notAccessibleList.addAll(reasons)
+                            }
                             if (!pestType.isNullOrEmpty()){
                                 for (j in 0 until pestType.size){
                                     modelBarcodeDDPestType.add(BarcodeDDPestType(
@@ -224,7 +234,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                                     ))
                                 }
                             }
-                            modelBarcodeList.add(BarcodeDetailsData(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, barcode_Type, modelBarcodeDDPestType))
+                            modelBarcodeList.add(BarcodeDetailsData(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, barcode_Type, su, additional_Info, notAccessibleList, nar, modelBarcodeDDPestType))
                         }
                         BarcodeDetailsResponse(response.isSuccess, modelBarcodeList, response.errorMessage, response.param1, response.responseMessage)
                         if (modelBarcodeList.size > 0) {
@@ -289,14 +299,15 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
     private fun modifyData(id: Int?, account_No: String?, order_No: String?, account_Name: String?,
                            barcode_Data: String?, last_Verified_On: String?, last_Verified_By: Int?,
                            created_On: String?, created_By_Id_User: Int?, verified_By: String?,
-                           created_By: String?, isVerified: Boolean?, barcode_Type: String?, modelBarcodeDDPestType: ArrayList<BarcodeDDPestType>) {
+                           created_By: String?, isVerified: Boolean?, barcode_Type: String?, service_Unit: String?, additional_Info: String?,
+                           not_Accessible_Reason_List: ArrayList<BarcodeType>, not_Accessible_Reason: String, modelBarcodeDDPestType: ArrayList<BarcodeDDPestType>) {
 
         var found = 0
         for (i in 0 until modelBarcodeList.size) {
             if (modelBarcodeList[i].barcode_Data == barcode_Data) {
                 if (modelBarcodeList[i].isVerified == false) {
                     modelBarcodeList[i] = BarcodeDetailsData(modelBarcodeList[i].id, account_No, order_No, account_Name, barcode_Data,
-                            last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, barcode_Type, modelBarcodeDDPestType)
+                            last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, barcode_Type, service_Unit, additional_Info, not_Accessible_Reason_List, not_Accessible_Reason, modelBarcodeDDPestType)
                     Log.d("TAG-Veri", id.toString())
                     Log.d("TAG-VerifiedOn-start", last_Verified_On.toString())
                     verifyBarcode(modelBarcodeList[i].id, "Technician Scanner", account_No, order_No, barcode_Data, lat, long, last_Verified_On, last_Verified_By, modelBarcodeDDPestType)
@@ -559,6 +570,10 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                     created_By,
                     true,
                     barcode_Type,
+                    "",
+                    "",
+                    notAccessibleList,
+                    naReason,
                     pestType
                 )
                 optionType.clear()

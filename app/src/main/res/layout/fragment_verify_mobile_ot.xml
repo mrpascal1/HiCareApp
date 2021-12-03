@@ -108,7 +108,7 @@
                     android:onClick="@{(view) -> handler.onResendOtpClicked(view)}"
                     android:textColor="@color/sky"
                     android:text="@string/resend_otp_verify"
-                    android:textSize="14sp" />
+                    android:textSize="15sp" />
 
 
             </LinearLayout>
