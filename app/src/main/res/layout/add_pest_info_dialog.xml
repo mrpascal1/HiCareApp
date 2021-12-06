@@ -5,6 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -89,18 +92,18 @@
                             android:orientation="vertical">
 
                             <RadioGroup
-                                android:id="@+id/radioGrp"
+                                android:id="@+id/radioGrpOld"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content">
 
                                 <RadioButton
-                                    android:id="@+id/yesBtn"
+                                    android:id="@+id/yesBtnOld"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Yes" />
 
                                 <RadioButton
-                                    android:id="@+id/noBtn"
+                                    android:id="@+id/noBtnOld"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="No" />
@@ -136,10 +139,56 @@
                                 android:visibility="gone" />
 
                             <LinearLayout
+                                android:id="@+id/imageLinearLayout"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                android:gravity="center"
+                                android:layout_gravity="center"
+                                android:visibility="gone"
+                                android:background="@drawable/dotted_box">
+
+                                <RelativeLayout
+                                    android:id="@+id/imageLayout"
+                                    android:layout_width="45dp"
+                                    android:layout_height="45dp"
+                                    android:layout_gravity="center"
+                                    android:gravity="center">
+                                    <ImageView
+                                        android:id="@+id/imgCapture"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:text="@string/service_plan"
+                                        android:src="@drawable/ic_addimage" />
+                                    <ImageView
+                                        android:id="@+id/imgCaptured"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:visibility="gone"/>
+
+                                    <RelativeLayout
+                                        android:id="@+id/cancelLayout"
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        android:layout_alignParentEnd="true"
+                                        android:background="@drawable/bg_cancel_red"
+                                        android:visibility="gone">
+
+                                        <ImageView
+                                            android:id="@+id/cancelIv"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:src="@drawable/ic_cancel_nps" />
+                                    </RelativeLayout>
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
                                 android:id="@+id/relativeLayout1"
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
                                 android:padding="4dp"
+                                android:layout_marginTop="6dp"
                                 android:background="@color/tab_textColor"
                                 android:gravity="center">
 
@@ -203,7 +252,8 @@
                                     android:padding="5dp"
                                     android:singleLine="true"
                                     android:text="Image"
-                                    android:textColor="@color/black" />
+                                    android:textColor="@color/black"
+                                    android:visibility="gone"/>
                             </LinearLayout>
 
                             <LinearLayout
@@ -228,6 +278,36 @@
 
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="6dp">
+                        <TextView
+                            android:id="@+id/referralQuestionTv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Glue pad change required?"
+                            android:textSize="18sp"
+                            android:textColor="@color/black" />
+                        <RadioGroup
+                            android:id="@+id/radioGrp"
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+                            <RadioButton
+                                android:id="@+id/yesBtn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Yes"/>
+                            <RadioButton
+                                android:id="@+id/noBtn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="No"
+                                android:layout_marginStart="6dp"/>
+                        </RadioGroup>
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -275,5 +355,6 @@
         </RelativeLayout>
 
     </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </FrameLayout>

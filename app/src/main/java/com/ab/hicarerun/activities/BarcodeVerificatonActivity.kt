@@ -52,6 +52,7 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.DexterError
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.squareup.picasso.Picasso
 import io.realm.RealmResults
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -117,6 +118,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
     var currentItemCount = ""
     var prevImageLink = "";
     var naReason = ""
+    var imageUpdateListener: ImageUpdateListener? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -192,7 +194,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                     isFetched = 1
                     modelBarcodeList.clear()
                     modelBarcodeDDPestType.clear()
-                    if (response?.data != null) {
+                    if (response?.data != null && response.data.isNotEmpty()) {
                         var itemsCount = 0
                         for (i in 0 until response.data.size) {
                             itemsCount++
@@ -234,8 +236,9 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                                     ))
                                 }
                             }
-                            modelBarcodeList.add(BarcodeDetailsData(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, barcode_Type, su, additional_Info, notAccessibleList, nar, modelBarcodeDDPestType))
+                            //modelBarcodeList.add(BarcodeDetailsData(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, barcode_Type, su, additional_Info, notAccessibleList, nar, modelBarcodeDDPestType))
                         }
+                        modelBarcodeList.addAll(response.data)
                         BarcodeDetailsResponse(response.isSuccess, modelBarcodeList, response.errorMessage, response.param1, response.responseMessage)
                         if (modelBarcodeList.size > 0) {
                             binding.errorTv.visibility = View.GONE
@@ -286,7 +289,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                 }else{
                     bitmap = null
                     prevImageLink = ""
-                    showPestDialog(barcode_Data.toString(), last_Verified_On2)
+                    showPestDialog(barcode_Data.toString(), last_Verified_On2, modelBarcodeList[i].id)
                 }
                 found = true
             }
@@ -299,8 +302,10 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
     private fun modifyData(id: Int?, account_No: String?, order_No: String?, account_Name: String?,
                            barcode_Data: String?, last_Verified_On: String?, last_Verified_By: Int?,
                            created_On: String?, created_By_Id_User: Int?, verified_By: String?,
-                           created_By: String?, isVerified: Boolean?, barcode_Type: String?, service_Unit: String?, additional_Info: String?,
-                           not_Accessible_Reason_List: ArrayList<BarcodeType>, not_Accessible_Reason: String, modelBarcodeDDPestType: ArrayList<BarcodeDDPestType>) {
+                           created_By: String?, isVerified: Boolean?, barcode_Type: String?,
+                           service_Unit: String?, additional_Info: String?,
+                           not_Accessible_Reason_List: ArrayList<BarcodeType>,
+                           not_Accessible_Reason: String, modelBarcodeDDPestType: ArrayList<BarcodeDDPestType>) {
 
         var found = 0
         for (i in 0 until modelBarcodeList.size) {
@@ -366,7 +371,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         controller.verifyBarcodeDetails(20212, verifyMap)
     }
 
-    private fun showPestDialog(resultBarcode: String, last_Verified_On2: String){
+    private fun showPestDialog(resultBarcode: String, last_Verified_On2: String, barcodeId: Int?){
         val li = LayoutInflater.from(this)
         promptsView = li.inflate(R.layout.add_pest_info_dialog, null)
         val alertDialogBuilder = AlertDialog.Builder(this)
@@ -377,8 +382,16 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         val pestRecyclerView = promptsView.findViewById(R.id.pestRecyclerView) as RecyclerView
         val cancelBtn = promptsView.findViewById(R.id.btn_cancel) as AppCompatButton
         val saveBtn = promptsView.findViewById(R.id.saveBtn) as AppCompatButton
+        val imgCapture = promptsView.findViewById(R.id.imgCapture) as ImageView
+        val imgCaptured = promptsView.findViewById(R.id.imgCaptured) as ImageView
+        val imgCancel = promptsView.findViewById(R.id.cancelLayout) as RelativeLayout
+        val radioGrp = promptsView.findViewById(R.id.radioGrp) as RadioGroup
+        val yesBtn = promptsView.findViewById(R.id.yesBtn) as RadioButton
+        val noBtn = promptsView.findViewById(R.id.noBtn) as RadioButton
+        val imageLinearLayout = promptsView.findViewById(R.id.imageLinearLayout) as LinearLayout
         pestType = ArrayList()
         val optionType = ArrayList<String>()
+        var isChecked = false
 
         pestType.clear()
         optionType.clear()
@@ -414,6 +427,13 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                         }
                     }
                 }
+            }
+        }
+
+        pestType.forEach {
+            if (it.capture_Image == true){
+                imageLinearLayout.visibility = View.VISIBLE
+                return@forEach
             }
         }
         val arrayAdapter = object : ArrayAdapter<String>(this, R.layout.spinner_layout_new, optionType){
@@ -498,6 +518,28 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                 pestTypeAdapter.notifyDataSetChanged()
             }
         })
+        setOnImageUpdateListener(object : ImageUpdateListener{
+            override fun onUpdateImage(url: String) {
+                Picasso.get().load(url).fit().into(imgCaptured)
+                imgCapture.visibility = View.GONE
+                imgCaptured.visibility = View.VISIBLE
+                imgCancel.visibility = View.VISIBLE
+                pestType.forEach {
+                    it.image_Url = url
+                }
+            }
+        })
+        imgCapture.setOnClickListener {
+            getImageDialog(barcodeId, -1)
+        }
+        imgCancel.setOnClickListener {
+            imgCapture.visibility = View.VISIBLE
+            imgCaptured.visibility = View.GONE
+            imgCancel.visibility = View.GONE
+            pestType.forEach {
+                it.image_Url = null
+            }
+        }
         cancelBtn.setOnClickListener {
             pestType.forEach {
                 it.image_Url = null
@@ -505,22 +547,50 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
             }
             alertDialog.cancel()
         }
+
+        radioGrp.setOnCheckedChangeListener { _, _ ->
+            isChecked = true
+        }
+
         saveBtn.setOnClickListener {
             pestType.forEach {
                 Log.d("TAG", "Saving: ${it.sub_Type} ${it.pest_Count} ${it.image_Url}")
             }
             var foundAllEmpty = true
 
-            pestType.forEach {
-                //Check for each empty
-                if (it.image_Url != null && it.pest_Count != ""){
-                    foundAllEmpty = false
+            if (imageLinearLayout.visibility == View.VISIBLE) {
+                pestType.forEach {
+                    //Check for each empty
+                    if (it.image_Url != null && it.pest_Count != "") {
+                        foundAllEmpty = false
+                    }
+                }
+            }else{
+                pestType.forEach {
+                    //Check for each empty
+                    if (it.pest_Count != "") {
+                        foundAllEmpty = false
+                    }
                 }
             }
             var partialEmpty = false
             pestType.forEach {
                 //Check for partial Empty
-                if (it.image_Url == null && it.pest_Count != ""){
+                if (it.pest_Count != ""){
+                    //foundAllEmpty = false
+                    if (it.pest_Count.equals("yes", true)){
+                        yesBtn.isChecked = true
+                        isChecked = true
+                    }
+                    else if (it.pest_Count.equals("no", true)){ }
+                    else if (it.pest_Count.toString().toInt() > 0){
+                        yesBtn.isChecked = true
+                        isChecked = true
+                    }
+                }else{
+                    partialEmpty = true
+                }
+                /*if (it.image_Url == null && it.pest_Count != ""){
                     if (it.pest_Count.equals("no", true)){
                         foundAllEmpty = false
                         partialEmpty = false
@@ -528,6 +598,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                         if (it.pest_Count.equals("yes", true)) {
                             partialEmpty = true
                             foundAllEmpty = true
+                            yesBtn.isChecked = true
                             Toast.makeText(this, "Please enter the data correctly", Toast.LENGTH_SHORT).show()
                             return@setOnClickListener
                         }else if (it.pest_Count.toString().toInt() == 0){
@@ -547,15 +618,24 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                     Toast.makeText(this, "Please enter the data correctly", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
-                if ((it.pest_Count.equals("no", true) ||
-                            it.pest_Count.equals("yes", true)) && it.image_Url != null){
+                if ((it.pest_Count.equals("no", true) || it.pest_Count.equals("yes", true)) && it.image_Url != null){
+                    if (it.pest_Count.equals("yes", true)){
+                        yesBtn.isChecked = true
+                    }
                     foundAllEmpty = false
                     partialEmpty = false
                 }
+                if (it.pest_Count != ""){
+                    if (!it.pest_Count.equals("no", true) && !it.pest_Count.equals("yes", true)){
+                        if (it.pest_Count.toString().toInt() > 0){
+                            yesBtn.isChecked = true
+                        }
+                    }
+                }*/
             }
 
             Log.d("TAG", "Final $foundAllEmpty and $partialEmpty")
-            if (!foundAllEmpty && !partialEmpty) {
+            if (!foundAllEmpty && !partialEmpty && isChecked) {
                 modifyData(
                     id,
                     account_No,
@@ -594,9 +674,13 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
     private fun selectOldImage(){
         if (prevImageLink != ""){
             pestType.forEach {
-                if (it.barcodeId == barcodeIdFromAdapter && it.id == pestTypeIdFromAdapter) {
-                    //it.pest_Count = currentItemCount
-                    it.image_Url = prevImageLink
+                if (pestTypeIdFromAdapter == -1){
+                    imageUpdateListener?.onUpdateImage(prevImageLink)
+                }else {
+                    if (it.barcodeId == barcodeIdFromAdapter && it.id == pestTypeIdFromAdapter) {
+                        //it.pest_Count = currentItemCount
+                        it.image_Url = prevImageLink
+                    }
                 }
             }
             pestTypeAdapter.notifyDataSetChanged()
@@ -612,16 +696,20 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         controller.setListner(object : NetworkResponseListner<BaseResponse>{
             override fun onResponse(requestCode: Int, response: BaseResponse?) {
                 Log.d("TAG", response.toString())
-                if (response?.isSuccess == true){
-                    pestType.forEach {
-                        if (it.barcodeId == barcodeIdFromAdapter && it.id == pestTypeIdFromAdapter){
-                            //it.pest_Count = currentItemCount
-                            it.image_Url = response.data
-                            prevImageLink = response.data.toString()
+                if (response?.isSuccess == true) {
+                    if (pestTypeIdFromAdapter == -1) {
+                        imageUpdateListener?.onUpdateImage(response.data.toString())
+                    } else {
+                        pestType.forEach {
+                            if (it.barcodeId == barcodeIdFromAdapter && it.id == pestTypeIdFromAdapter) {
+                                //it.pest_Count = currentItemCount
+                                it.image_Url = response.data
+                                prevImageLink = response.data.toString()
+                            }
                         }
+                        //pestTypeAdapter.notifyItemChanged(pos)
+                        pestTypeAdapter.notifyDataSetChanged()
                     }
-                    //pestTypeAdapter.notifyItemChanged(pos)
-                    pestTypeAdapter.notifyDataSetChanged()
                 }
             }
 
@@ -921,6 +1009,15 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         }
         return myClass!!
     }
+
+    interface ImageUpdateListener{
+        fun onUpdateImage(url: String)
+    }
+
+    fun setOnImageUpdateListener(imageUpdateListener: ImageUpdateListener){
+        this.imageUpdateListener = imageUpdateListener
+    }
+
     override fun locationFetched(
             mLocation: Location?,
             oldLocation: Location?,
