@@ -153,6 +153,7 @@ dependencies {
 
     implementation 'nl.dionsegijn:konfetti:1.3.2'
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+    implementation 'com.budiyev.android:code-scanner:2.1.0'
 
     //dynamic module injection
 //    api 'com.google.android.play:core:1.7.1'

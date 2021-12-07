@@ -112,6 +112,7 @@ class BarcodeAdapter(
             val barcode_data = barcodeList.barcode_Data.toString()
             val isVerified = barcodeList.isVerified
             val id = barcodeList.id
+            binding.naBtn.visibility = View.GONE
             if (comingFrom == "TSScanner") {
                 binding.equipmentTypeLayout.visibility = View.VISIBLE
                 binding.equipmentTypeTv.text = barcodeList.barcode_Type

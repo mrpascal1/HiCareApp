@@ -1,5 +1,6 @@
 package com.ab.hicarerun.activities
 
+import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
@@ -549,6 +550,7 @@ class TSScannerActivity : BaseActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         val currentDateTime = AppUtils.currentDateTimeWithTimeZone()
         if (result != null){
@@ -566,6 +568,5 @@ class TSScannerActivity : BaseActivity() {
             }
         }
         requestFrom = 0
-        super.onActivityResult(requestCode, resultCode, data)
     }
 }

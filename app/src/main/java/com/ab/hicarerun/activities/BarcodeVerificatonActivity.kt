@@ -24,6 +24,7 @@ import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatSpinner
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -50,8 +51,11 @@ import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.DexterError
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.karumi.dexter.listener.single.PermissionListener
 import com.squareup.picasso.Picasso
 import io.realm.RealmResults
 import java.io.ByteArrayOutputStream
@@ -156,6 +160,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         modelBarcodeList = ArrayList()
         modelBarcodeDDPestType = ArrayList()
         notAccessibleList = ArrayList()
+        pestType = ArrayList()
         barcodeAdapter = BarcodeAdapter2(this, modelBarcodeList, "TSVerification")
         val llManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         llManager.stackFromEnd = true
@@ -166,13 +171,16 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         binding.barcodeRecycler.adapter = barcodeAdapter
 
         binding.scanBtn.setOnClickListener {
+            val intent = Intent(this, NewBarcodeActivity::class.java)
             val integrator = IntentIntegrator(this)
             integrator.setCaptureActivity(CaptureActivityPortrait::class.java)
             integrator.setBeepEnabled(false)
             integrator.setPrompt("Scan a barcode")
             if (isFetched == 1) {
                 if (modelBarcodeList.isNotEmpty()) {
-                    integrator.initiateScan()
+                    requestCameraPermission(intent)
+                    //startActivityForResult(intent, 3000)
+                    //integrator.initiateScan()
                 } else {
                     Toast.makeText(this, "Equipment not found", Toast.LENGTH_SHORT).show()
                 }
@@ -180,6 +188,12 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                 Toast.makeText(this, "Please Enter Order No", Toast.LENGTH_SHORT).show()
             }
         }
+
+        barcodeAdapter.setOnNAClickListener(object : BarcodeAdapter2.NotAccessibleListener{
+            override fun onNAClicked(barcodeData: String) {
+                showNADialog(barcodeData)
+            }
+        })
 
         getOrderDetails(empCode.toString())
     }
@@ -270,6 +284,115 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
 
     }
 
+    private fun showNADialog(barcode_Data: String?){
+        val li = LayoutInflater.from(this)
+        promptsView = li.inflate(R.layout.not_accessible_reason_dialog, null)
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        alertDialogBuilder.setView(promptsView)
+        val alertDialog = alertDialogBuilder.create()
+        val spnType = promptsView.findViewById(R.id.spnType) as Spinner
+        val cancelBtn = promptsView.findViewById(R.id.btnCancel) as AppCompatButton
+        val okBtn = promptsView.findViewById(R.id.okBtn) as AppCompatButton
+        okBtn.isEnabled = false
+        okBtn.alpha = 0.6f
+
+        val reasons = ArrayList<String>()
+        reasons.clear()
+        reasons.add("Select Reason")
+        for (i in modelBarcodeList.indices){
+            if (modelBarcodeList[i].barcode_Data == barcode_Data){
+                modelBarcodeList[i].not_Accessible_Reasons_List?.forEach {
+                    reasons.add(it.value.toString())
+                }
+            }
+        }
+        val arrayAdapter = object : ArrayAdapter<String>(this, R.layout.spinner_layout_new, reasons){
+            override fun isEnabled(position: Int): Boolean {
+                return position != 0
+            }
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getDropDownView(position, convertView, parent)
+                val tv = view as TextView
+                if (position == 0){
+                    tv.setTextColor(Color.GRAY)
+                }else{
+                    tv.setTextColor(Color.BLACK)
+                }
+                return view
+            }
+        }
+        arrayAdapter.setDropDownViewResource(R.layout.spinner_popup)
+        spnType.adapter = arrayAdapter
+
+        spnType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                naReason = spnType.selectedItem.toString()
+                if (naReason != "Select Reason"){
+                    okBtn.isEnabled = true
+                    okBtn.alpha = 1f
+                }else{
+                    okBtn.isEnabled = false
+                    okBtn.alpha = 0.6f
+                }
+                //Log.d("TAG", selectedType)
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+            }
+        }
+
+        okBtn.setOnClickListener {
+            //additional_Info = remarksEt.text.toString().trim()
+            //Log.d("TAG", selectedType)
+            val last_Verified_On2 = AppUtils.currentDateTimeWithTimeZone()
+            if (naReason != "" && naReason != "Select Reason"){
+                /*addNewData(
+                    account_No = account_No,
+                    order_No = order_No,
+                    account_Name = account_Name,
+                    barcode_Data = contents,
+                    last_Verified_On = currentDateTime,
+                    last_Verified_By = last_Verified_By,
+                    created_On = currentDateTime,
+                    created_By_Id_User = empCode,
+                    verified_By = empCode.toString(),
+                    created_By = created_By,
+                    isVerified = isVerified,
+                    barcode_Type = selectedType,
+                    service_Unit = selectedUnit,
+                    additional_Info = additional_Info,
+                    pestList = pestList)*/
+                modifyData(
+                    id,
+                    account_No,
+                    order_No,
+                    account_Name,
+                    barcode_Data,
+                    created_On,
+                    empCode,
+                    last_Verified_On2,
+                    created_By_Id_User,
+                    verified_By,
+                    created_By,
+                    true,
+                    barcode_Type,
+                    "",
+                    "",
+                    notAccessibleList,
+                    naReason,
+                    pestType
+                )
+                alertDialog.cancel()
+            }
+        }
+        cancelBtn.setOnClickListener {
+            alertDialog.cancel()
+        }
+        alertDialog.setCanceledOnTouchOutside(false)
+        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alertDialog.show()
+    }
 
     private fun isVerified(listData: List<BarcodeDetailsData>): Boolean {
         for (data in listData) {
@@ -315,7 +438,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                             last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, barcode_Type, service_Unit, additional_Info, not_Accessible_Reason_List, not_Accessible_Reason, modelBarcodeDDPestType)
                     Log.d("TAG-Veri", id.toString())
                     Log.d("TAG-VerifiedOn-start", last_Verified_On.toString())
-                    verifyBarcode(modelBarcodeList[i].id, "Technician Scanner", account_No, order_No, barcode_Data, lat, long, last_Verified_On, last_Verified_By, modelBarcodeDDPestType)
+                    verifyBarcode(modelBarcodeList[i].id, "Technician Scanner", account_No, order_No, barcode_Data, lat, long, last_Verified_On, last_Verified_By, modelBarcodeDDPestType, not_Accessible_Reason)
                     barcodeAdapter.notifyItemChanged(i)
                     binding.barcodeRecycler.post {
                         binding.barcodeRecycler.smoothScrollToPosition(i)
@@ -332,7 +455,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
     }
 
     private fun verifyBarcode(barcodeId: Int?, activityName: String?, account_No: String?, order_No: String?, barcode_Data: String?,
-                              lat: String?, long: String?, verifiedOn: String?, verifiedBy: Int?, pest_Type: ArrayList<BarcodeDDPestType>?) {
+                              lat: String?, long: String?, verifiedOn: String?, verifiedBy: Int?, pest_Type: ArrayList<BarcodeDDPestType>?, Not_Accessible_Reason: String) {
         Log.d("TAG-VerifiedOn-top", verifiedOn.toString())
         val verifyMap = HashMap<String, Any?>()
         verifyMap["BarcodeId"] = barcodeId
@@ -345,6 +468,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         verifyMap["VerifiedOn"] = verifiedOn
         verifyMap["VerifiedBy"] = verifiedBy
         verifyMap["Pest_Type"] = pest_Type
+        verifyMap["Not_Accessible_Reason"] = naReason
 
         Log.d("TAG-Verifier", verifyMap.toString())
         Log.d("TAG-VerifiedOn", verifiedOn.toString())
@@ -791,6 +915,39 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         }
     }
 
+    private fun requestCameraPermission(intent: Intent) {
+        try {
+            Dexter.withActivity(this)
+                .withPermission(
+                    Manifest.permission.CAMERA
+                )
+                .withListener(object : PermissionListener {
+                    override fun onPermissionGranted(response: PermissionGrantedResponse?) {
+                        startActivityForResult(intent, 3000)
+                    }
+
+                    override fun onPermissionDenied(response: PermissionDeniedResponse?) {
+                        Toast.makeText(applicationContext, "Camera permission is required by scanner", Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun onPermissionRationaleShouldBeShown(
+                        permission: PermissionRequest?,
+                        token: PermissionToken?
+                    ) {
+                        token?.continuePermissionRequest()
+                    }
+
+                })
+                .withErrorListener { error: DexterError? ->
+                    Toast.makeText(this, "Error occurred! ", Toast.LENGTH_SHORT).show()
+                }
+                .onSameThread()
+                .check()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     private fun requestStoragePermission(isCamera: Boolean, barcodeId: Int?, pestTypeId: Int?) {
         try {
             Dexter.withActivity(this)
@@ -934,9 +1091,15 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         val last_Verified_On2 = AppUtils.currentDateTimeWithTimeZone()
         Log.d("TAG-Act", last_Verified_On2)
+        if (requestCode == 3000){
+            val qrData = data?.getStringExtra("content")
+            checkVerification(qrData.toString(), last_Verified_On2)
+            return
+        }
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
             Log.d("TAG", "Cam Request")
 
@@ -979,7 +1142,6 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                 Log.d("TAG-QR", "Not found")
             }
         }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun getResizedBitmap(image: Bitmap, maxSize: Int): Bitmap? {

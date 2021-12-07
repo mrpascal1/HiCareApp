@@ -40,6 +40,11 @@
             <action android:name="android.media.action.IMAGE_CAPTURE" />
         </intent>
     </queries>
+    <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+    </queries>
 
     <application
         android:name=".BaseApplication"
@@ -53,17 +58,25 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.ZoomTransparentPopupActivity"
+        <activity android:name=".activities.NewBarcodeActivity"></activity>
+        <activity
+            android:name=".activities.ZoomTransparentPopupActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="portrait"
-            android:exported="true"/>
-        <activity android:name=".activities.CaptureActivityPortrait"
+            tools:replace="screenOrientation" />
+        <activity
+            android:name=".activities.CaptureActivityPortrait"
             android:screenOrientation="portrait"
             android:stateNotNeeded="true"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
-        <activity android:name=".activities.BarcodeVerificatonActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.BarcodeVerificatonActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan"
-            tools:ignore="LockedOrientationActivity"/>
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.TSVerificationActivity"
             android:screenOrientation="portrait"
@@ -75,16 +88,20 @@
             android:windowSoftInputMode="stateHidden|adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity android:name=".activities.Camera2Activity" />
-        <activity android:name=".activities.ActivityQuizCategory"
+        <activity
+            android:name=".activities.ActivityQuizCategory"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity android:name=".activities.QuizActivity"
+        <activity
+            android:name=".activities.QuizActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity android:name=".activities.QuizResultActivity"
+        <activity
+            android:name=".activities.QuizResultActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity android:name=".activities.QuizLeaderBoardActivity"
+        <activity
+            android:name=".activities.QuizLeaderBoardActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity android:name=".activities.KarmaActivity" />
@@ -379,12 +396,13 @@
         <meta-data
             android:name="com.onesignal.NotificationOpened.DEFAULT"
             android:value="DISABLE" />
-        <receiver android:name=".utils.ZoomBroadcast" android:exported="true"/>
-        <receiver android:name=".utils.ZoomNotificationClearer" android:exported="true"/>
+
+        <receiver
+            android:name=".utils.ZoomBroadcast"
+            android:exported="true" />
+        <receiver
+            android:name=".utils.ZoomNotificationClearer"
+            android:exported="true" />
     </application>
-    <queries>
-        <intent>
-            <action android:name="android.media.action.IMAGE_CAPTURE" />
-        </intent>
-    </queries>
+
 </manifest>

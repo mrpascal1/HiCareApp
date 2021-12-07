@@ -123,6 +123,14 @@
                         android:textSize="14sp" />
                 </RelativeLayout>
             </LinearLayout>
+            <Button
+                android:id="@+id/naBtn"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="6dp"
+                android:text="Not Accessible"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/colorPrimary"/>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/imgs"

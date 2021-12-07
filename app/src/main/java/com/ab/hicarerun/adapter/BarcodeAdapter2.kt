@@ -24,8 +24,12 @@ class BarcodeAdapter2(val context: Context, val barcodeList: ArrayList<BarcodeDe
     var lat = "0.0"
     var long = "0.0"
     private var onBarcodeCountListener: OnBarcodeCountListener? = null
+    private var notAccessibleListener: NotAccessibleListener? = null
     fun setOnBarcodeCountListener(l: OnBarcodeCountListener){
         onBarcodeCountListener = l
+    }
+    fun setOnNAClickListener(notAccessibleListener: NotAccessibleListener){
+        this.notAccessibleListener = notAccessibleListener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
@@ -35,6 +39,9 @@ class BarcodeAdapter2(val context: Context, val barcodeList: ArrayList<BarcodeDe
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         holder.bindItems(context, barcodeList[position])
+        holder.binding.naBtn.setOnClickListener {
+            notAccessibleListener?.onNAClicked(barcodeList[position].barcode_Data.toString())
+        }
     }
 
     override fun getItemCount(): Int {
@@ -53,11 +60,13 @@ class BarcodeAdapter2(val context: Context, val barcodeList: ArrayList<BarcodeDe
                 binding.isBarcodeVerified.visibility = View.GONE
                 //binding.verifiedOnLayout.visibility = View.GONE
                 binding.deleteBtn.visibility = View.VISIBLE
+                binding.naBtn.visibility = View.GONE
             }else{
                 binding.equipmentTypeLayout.visibility = View.VISIBLE
                 binding.deleteBtn.visibility = View.GONE
                 binding.isBarcodeVerified.visibility = View.VISIBLE
                 //binding.verifiedOnLayout.visibility = View.VISIBLE
+                binding.naBtn.visibility = View.VISIBLE
             }
             /*if (barcodeList.callForDelete == "yes"){
                 binding.dataCard.setCardBackgroundColor(ContextCompat.getColor(context, R.color.md_red_100))
@@ -72,9 +81,11 @@ class BarcodeAdapter2(val context: Context, val barcodeList: ArrayList<BarcodeDe
 
                 binding.verifiedOnTv.text = "At $time on $date"
                 //binding.verifiedOnTv.text = verifiedOn?.substring(0, 10)
+                binding.naBtn.visibility = View.GONE
                 binding.isBarcodeVerified.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_circle_green))
             }else{
                 binding.verifiedOnTv.text = "N/A"
+                binding.naBtn.visibility = View.VISIBLE
                 binding.isBarcodeVerified.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_circle_black))
             }
             /*if (id == 0){
@@ -110,6 +121,11 @@ class BarcodeAdapter2(val context: Context, val barcodeList: ArrayList<BarcodeDe
             bitmap.setPixels(pixels, 0, width, 0, 0, bitMatrixWidth, bitMatrixHeight)
             return bitmap
         }
+    }
+
+
+    interface NotAccessibleListener{
+        fun onNAClicked(barcodeData: String)
     }
 
     override fun locationFetched(mLocation: Location?, oldLocation: Location?, time: String?, locationProvider: String?) {
