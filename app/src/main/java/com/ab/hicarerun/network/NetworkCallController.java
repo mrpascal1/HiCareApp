@@ -115,6 +115,7 @@ import com.ab.hicarerun.network.models.TSScannerModel.BarcodeDetailsResponse;
 import com.ab.hicarerun.network.models.TSScannerModel.BarcodeList;
 import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse;
 import com.ab.hicarerun.network.models.TSScannerModel.OrderDetails;
+import com.ab.hicarerun.network.models.TSScannerModel.counts.CountsResponse;
 import com.ab.hicarerun.network.models.TaskModel.TaskListResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTaskResponse;
@@ -4946,6 +4947,24 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<BaseResponse> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void getBarcodeSummaryCount(int requestCode, String orderNo, String userId) {
+        BaseApplication.getRetrofitAPI(false)
+                .getBarcodeSummaryCount(orderNo, userId)
+                .enqueue(new Callback<CountsResponse>() {
+                    @Override
+                    public void onResponse(Call<CountsResponse> call, Response<CountsResponse> response) {
+                        if (response.body() != null) {
+                            mListner.onResponse(requestCode, response.body());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<CountsResponse> call, Throwable t) {
                         mListner.onFailure(requestCode);
                     }
                 });

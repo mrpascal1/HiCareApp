@@ -113,8 +113,14 @@ class BarcodeAdapter(
             val isVerified = barcodeList.isVerified
             val id = barcodeList.id
             binding.naBtn.visibility = View.GONE
+            if (barcodeList.service_Unit != null && barcodeList.service_Unit != "") {
+                binding.serviceUnitTv.text = barcodeList.service_Unit
+            }else{
+                binding.serviceUnitTv.text = "N/A"
+            }
             if (comingFrom == "TSScanner") {
                 binding.equipmentTypeLayout.visibility = View.VISIBLE
+                binding.serviceUnitLayout.visibility = View.VISIBLE
                 binding.equipmentTypeTv.text = barcodeList.barcode_Type
                 binding.isBarcodeVerified.visibility = View.GONE
                 binding.verifiedOnLayout.visibility = View.GONE

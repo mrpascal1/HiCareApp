@@ -55,6 +55,11 @@ class BarcodeAdapter2(val context: Context, val barcodeList: ArrayList<BarcodeDe
             val id = barcodeList.id
             binding.equipmentTypeTv.text = barcodeList.barcode_Type
             binding.verifiedOnLayout.visibility = View.GONE
+            if (barcodeList.service_Unit != null && barcodeList.service_Unit != ""){
+                binding.serviceUnitTv.text = barcodeList.service_Unit
+            }else{
+                binding.serviceUnitTv.text = "N/A"
+            }
             if (comingFrom == "TSScanner"){
                 binding.equipmentTypeLayout.visibility = View.GONE
                 binding.isBarcodeVerified.visibility = View.GONE
@@ -63,6 +68,7 @@ class BarcodeAdapter2(val context: Context, val barcodeList: ArrayList<BarcodeDe
                 binding.naBtn.visibility = View.GONE
             }else{
                 binding.equipmentTypeLayout.visibility = View.VISIBLE
+                binding.serviceUnitLayout.visibility = View.VISIBLE
                 binding.deleteBtn.visibility = View.GONE
                 binding.isBarcodeVerified.visibility = View.VISIBLE
                 //binding.verifiedOnLayout.visibility = View.VISIBLE
@@ -95,7 +101,7 @@ class BarcodeAdapter2(val context: Context, val barcodeList: ArrayList<BarcodeDe
             }*/
             binding.barcodeIv.setImageBitmap(textToImage(barcode_data, 300, 300))
             //displayBitmap(context, barcode_data)
-            binding.barcodeTv.text = barcode_data
+            binding.barcodeTv.text = "XXXXXXX${barcode_data.substring(0,2).uppercase()}"
             Log.d("TAG-Adapter", barcode_data)
         }
 

@@ -78,6 +78,7 @@ import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.SlotModel.TimeSlot;
 import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse;
+import com.ab.hicarerun.network.models.TSScannerModel.counts.CountsResponse;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SwipeToDeleteCallBack;
 import com.bumptech.glide.Glide;
@@ -162,6 +163,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
     static final int REQUEST_GALLERY_PHOTO = 2;
     File mPhotoFile;
     private Bitmap selectedBmp = null;
+    String uid = "";
 
 //    private Tasks model;
 
@@ -298,6 +300,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
         } catch (Exception e) {
             e.printStackTrace();
         }
+        getBarcodeCount(Order_Number, uid);
     }
 
 
@@ -614,6 +617,29 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void getBarcodeCount(String orderNo, String userId){
+        Log.d("TAG", "User "+userId+" order "+orderNo);
+        NetworkCallController controller = new NetworkCallController();
+        controller.setListner(new NetworkResponseListner<CountsResponse>() {
+            @Override
+            public void onResponse(int requestCode, CountsResponse response) {
+                if (response != null) {
+                    if (response.isSuccess()) {
+                        mFragmentSignatureInfoBinding.countTv.setText(response.getData().getTotalScanned()+" / "+response.getData().getDeployed());
+                    }
+                }else {
+                    mFragmentSignatureInfoBinding.lnrBarcodeCount.setVisibility(GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(int requestCode) {
+                Log.d("TAG", ""+requestCode);
+            }
+        });
+        controller.getBarcodeSummaryCount(202108, orderNo, userId);
     }
 
     @Override
@@ -1048,6 +1074,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                     BaseApplication.getRealm().where(LoginResponse.class).findAll();
             if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
                 UserId = LoginRealmModels.get(0).getUserID();
+                uid = LoginRealmModels.get(0).getId();
                 NetworkCallController controller = new NetworkCallController(this);
                 controller.setListner(new NetworkResponseListner<List<GetAttachmentList>>() {
 

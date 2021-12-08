@@ -103,6 +103,7 @@ import com.ab.hicarerun.network.models.TSScannerModel.BarcodeDetailsResponse;
 import com.ab.hicarerun.network.models.TSScannerModel.BarcodeList;
 import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse;
 import com.ab.hicarerun.network.models.TSScannerModel.OrderDetails;
+import com.ab.hicarerun.network.models.TSScannerModel.counts.CountsResponse;
 import com.ab.hicarerun.network.models.TaskModel.TaskListResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTaskResponse;
 import com.ab.hicarerun.network.models.TaskModel.UpdateTasksRequest;
@@ -546,6 +547,9 @@ public interface IRetrofit {
 
     @POST("Barcode/DeleteBarcodeDetails")
     Call<BaseResponse> deleteBarcode(@Body HashMap<String, Object> details);
+
+    @GET("Barcode/GetBarcodeOrderSummaryCount")
+    Call<CountsResponse> getBarcodeSummaryCount(@Query("orderNo") String orderNo, @Query("userId") String userId);
 
     @POST("Barcode/UploadBoxImage")
     Call<BaseResponse> uploadBoxImage(@Body HashMap<String, String> imageDetails);
