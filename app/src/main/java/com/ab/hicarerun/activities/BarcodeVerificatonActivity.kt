@@ -758,6 +758,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                 }*/
             }
 
+            naReason = ""
             Log.d("TAG", "Final $foundAllEmpty and $partialEmpty")
             if (!foundAllEmpty && !partialEmpty && isChecked) {
                 modifyData(

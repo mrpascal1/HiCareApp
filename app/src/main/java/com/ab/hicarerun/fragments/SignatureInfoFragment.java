@@ -300,9 +300,14 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
         } catch (Exception e) {
             e.printStackTrace();
         }
-        getBarcodeCount(Order_Number, uid);
+        //getBarcodeCount(Order_Number, uid);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getBarcodeCount(Order_Number, uid);
+    }
 
     private void enableSwipeToDeleteAndUndo() {
 

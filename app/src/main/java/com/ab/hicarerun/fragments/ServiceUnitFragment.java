@@ -38,6 +38,7 @@ import com.ab.hicarerun.network.models.ActivityModel.ActivityData;
 import com.ab.hicarerun.network.models.ActivityModel.AreaActivity;
 import com.ab.hicarerun.network.models.ActivityModel.SaveServiceActivity;
 import com.ab.hicarerun.network.models.ActivityModel.ServiceActivity;
+import com.ab.hicarerun.network.models.ActivityModel.SubActivity;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse;
 import com.ab.hicarerun.utils.AppUtils;
@@ -79,6 +80,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
     List<ServiceActivity> subItems = null;
     List<AreaActivity> areaList = null;
     List<ServiceActivity> mActivityList = null;
+    List<SubActivity> subActivityList = null;
     private List<String> mFloorList;
     HashMap<Integer, SaveServiceActivity> hashActivity = null;
     private List<SaveServiceActivity> mSaveActivityList = new ArrayList<>();
@@ -125,6 +127,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        subActivityList = new ArrayList<>();
         mGeneralRealmData =
                 getRealm().where(GeneralData.class).findAll();
         if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
@@ -291,6 +294,8 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                     (Button) promptsView.findViewById(R.id.btnCancel);
             final Button btnSkip =
                     (Button) promptsView.findViewById(R.id.btnSkip);
+            final Button verifyBtn =
+                    (Button) promptsView.findViewById(R.id.verifyBtn);
             txtTitle =
                     (TextView) promptsView.findViewById(R.id.txtTitle);
             txtQty =
@@ -302,6 +307,11 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
             layoutManager = new LinearLayoutManager(getActivity());
             recyclerView.setLayoutManager(layoutManager);
             mUnitAdapter = new ActivityAreaUnitAdapter(getActivity(), mAreaList, (position, value) -> {
+                /*if (mAreaList.get(position).getActivity().get(0).isShowQR()){
+                    verifyBtn.setVisibility(View.VISIBLE);
+                }else {
+                    verifyBtn.setVisibility(View.GONE);
+                }*/
                 SaveServiceActivity activityDetail = new SaveServiceActivity();
                 activityDetail.setActivityId(mUnitAdapter.getItem(position).getActivityId());
                 activityDetail.setServiceActivityId(mUnitAdapter.getItem(position).getService_Activity_Id());
@@ -337,6 +347,14 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                 btnSkip.setVisibility(View.GONE);
             } else {
                 btnSkip.setVisibility(View.VISIBLE);
+            }
+
+            for (AreaActivity list: mAreaList){
+                if (list.getActivity().get(0).isShowQR()){
+                    verifyBtn.setVisibility(View.VISIBLE);
+                }else {
+                    verifyBtn.setVisibility(View.GONE);
+                }
             }
 
             btnSkip.setOnClickListener(view -> {

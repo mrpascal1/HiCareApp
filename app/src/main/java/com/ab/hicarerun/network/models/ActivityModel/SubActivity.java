@@ -22,6 +22,15 @@ public class SubActivity {
     @SerializedName("Chemical_Name")
     @Expose
     private String chemicalName;
+
+    @SerializedName("ShowQR")
+    @Expose
+    private boolean showQR;
+
+    @SerializedName("QRType")
+    @Expose
+    private String qRType;
+
     @SerializedName("Status")
     @Expose
     private Object status;
@@ -72,5 +81,21 @@ public class SubActivity {
 
     public void setStatus(Object status) {
         this.status = status;
+    }
+
+    public boolean isShowQR() {
+        return showQR;
+    }
+
+    public void setShowQR(boolean showQR) {
+        this.showQR = showQR;
+    }
+
+    public String getqRType() {
+        return qRType;
+    }
+
+    public void setqRType(String qRType) {
+        this.qRType = qRType;
     }
 }
