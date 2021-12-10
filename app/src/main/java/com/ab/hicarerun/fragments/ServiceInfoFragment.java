@@ -2826,6 +2826,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                         mFragmentServiceInfoBinding.lnrNoCustomer.setVisibility(View.VISIBLE);
                         mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(GONE);
                         mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(GONE);
+                        mFragmentServiceInfoBinding.onsiteOtpTv.setText("Completion OTP");
                     } /*else if (isShowSlots) {
                         appointmentDate = "";
                         assignmentStartTime = "";

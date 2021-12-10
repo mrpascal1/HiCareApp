@@ -666,6 +666,7 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
+                        android:id="@+id/onsiteOtpTv"
                         android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:text="@string/on_site_otp_service"
@@ -717,7 +718,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:text="@string/click_here_if_customer_is_not_available_service"
+                        android:text="(Click here for OTP)"
                         android:textColor="@color/link"
                         android:textSize="11sp" />
 

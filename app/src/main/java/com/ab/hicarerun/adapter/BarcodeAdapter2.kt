@@ -89,6 +89,9 @@ class BarcodeAdapter2(val context: Context, val barcodeList: ArrayList<BarcodeDe
                 //binding.verifiedOnTv.text = verifiedOn?.substring(0, 10)
                 binding.naBtn.visibility = View.GONE
                 binding.isBarcodeVerified.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_circle_green))
+                if (barcodeList.not_Accessible_Reason != ""){
+                    binding.isBarcodeVerified.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_round_cancel_red))
+                }
             }else{
                 binding.verifiedOnTv.text = "N/A"
                 binding.naBtn.visibility = View.VISIBLE

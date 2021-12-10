@@ -172,6 +172,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                 intent.putExtra(ARGS_COMBINE_ORDER, combinedOrderId);
                 intent.putExtra(ARGS_ORDER, orderId);
                 intent.putExtra(ARGS_IS_COMBINE, isCombineTask);
+                intent.putExtra("barcodeType", "");
                 startActivity(intent);
 
                 Log.d("isCombine", combinedOrderId);
@@ -211,7 +212,9 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                             mActivityAdapter.addData(mActivityList);
                             mActivityAdapter.notifyDataSetChanged();
                         });
+                        mFragmentServiceUnitBinding.btnRodentScanner.setVisibility(View.GONE);
                     } else {
+                        mFragmentServiceUnitBinding.btnRodentScanner.setVisibility(View.VISIBLE);
                         mFragmentServiceUnitBinding.lnrData.setVisibility(View.GONE);
                         mFragmentServiceUnitBinding.txtNoData.setVisibility(View.VISIBLE);
                     }
@@ -349,13 +352,33 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                 btnSkip.setVisibility(View.VISIBLE);
             }
 
+            String barcodeType = "";
             for (AreaActivity list: mAreaList){
                 if (list.getActivity().get(0).isShowQR()){
+                    barcodeType = list.getActivity().get(0).getqRType();
                     verifyBtn.setVisibility(View.VISIBLE);
                 }else {
                     verifyBtn.setVisibility(View.GONE);
                 }
+                break;
             }
+            String finalBarcodeType = barcodeType;
+            verifyBtn.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), BarcodeVerificatonActivity.class);
+                intent.putExtra(ARGS_COMBINE_ORDER, combinedOrderId);
+                intent.putExtra(ARGS_ORDER, orderId);
+                intent.putExtra(ARGS_IS_COMBINE, isCombineTask);
+                intent.putExtra("barcodeType", finalBarcodeType);
+                startActivity(intent);
+                /*for (AreaActivity list: mAreaList){
+                    if (list.getActivity().get(0).isShowQR()){
+                        verifyBtn.setVisibility(View.VISIBLE);
+                    }else {
+                        verifyBtn.setVisibility(View.GONE);
+                    }
+                    break;
+                }*/
+            });
 
             btnSkip.setOnClickListener(view -> {
                 if (mActivityList.size() - 1 == activityPosition) {

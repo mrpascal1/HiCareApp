@@ -50,7 +50,7 @@
                                 android:layout_gravity="center"
                                 android:layout_marginTop="11dp"
                                 android:layout_marginBottom="11dp"
-                                android:text="Select Equipment Type"
+                                android:text="Not Accessible Reason"
                                 android:textColor="@color/white"
                                 android:textSize="16sp" />
 

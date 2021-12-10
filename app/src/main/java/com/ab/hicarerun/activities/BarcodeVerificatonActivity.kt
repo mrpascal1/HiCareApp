@@ -122,6 +122,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
     var currentItemCount = ""
     var prevImageLink = "";
     var naReason = ""
+    var barcodeType = ""
     var imageUpdateListener: ImageUpdateListener? = null
 
 
@@ -140,6 +141,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         combineOrder = intent.getStringExtra(ARGS_COMBINE_ORDER).toString()
         order = intent.getStringExtra(ARGS_ORDER).toString()
         isCombinedTask = intent.getBooleanExtra(ARGS_COMBINED_TASKS, false)
+        barcodeType = intent.getStringExtra("barcodeType").toString()
 
         Log.d("isCombine", combineOrder)
         Log.d("isCombine", isCombinedTask.toString())
@@ -277,9 +279,9 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
             }
         })
         if (isCombinedTask == true) {
-            controller.getBarcodeOrderDetails(combineOrder, uId)
+            controller.getBarcodeOrderDetails(combineOrder, uId, barcodeType)
         } else {
-            controller.getBarcodeOrderDetails(order, uId)
+            controller.getBarcodeOrderDetails(order, uId, barcodeType)
         }
 
     }
@@ -760,7 +762,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
 
             naReason = ""
             Log.d("TAG", "Final $foundAllEmpty and $partialEmpty")
-            if (!foundAllEmpty && !partialEmpty && isChecked) {
+            if (!foundAllEmpty && !partialEmpty) {
                 modifyData(
                     id,
                     account_No,
@@ -800,8 +802,10 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         if (prevImageLink != ""){
             pestType.forEach {
                 if (pestTypeIdFromAdapter == -1){
+                    Log.d("TAG", "Inside -1")
                     imageUpdateListener?.onUpdateImage(prevImageLink)
                 }else {
+                    Log.d("TAG", "Inside Normal")
                     if (it.barcodeId == barcodeIdFromAdapter && it.id == pestTypeIdFromAdapter) {
                         //it.pest_Count = currentItemCount
                         it.image_Url = prevImageLink
@@ -824,6 +828,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                 if (response?.isSuccess == true) {
                     if (pestTypeIdFromAdapter == -1) {
                         imageUpdateListener?.onUpdateImage(response.data.toString())
+                        prevImageLink = response.data.toString()
                     } else {
                         pestType.forEach {
                             if (it.barcodeId == barcodeIdFromAdapter && it.id == pestTypeIdFromAdapter) {
@@ -882,6 +887,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                         val b = baos.toByteArray()
                         val encodedImage =
                             Base64.encodeToString(b, Base64.DEFAULT)
+                        pestTypeIdFromAdapter = -1
                         selectOldImage()
                         //uploadBoxImage(resourceId, taskId, encodedImage)
                     }

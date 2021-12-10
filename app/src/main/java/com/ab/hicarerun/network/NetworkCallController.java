@@ -4876,9 +4876,9 @@ public class NetworkCallController {
                 });
     }
 
-    public void getBarcodeOrderDetails(String orderId, String userId) {
+    public void getBarcodeOrderDetails(String orderId, String userId, String barcodeType) {
         BaseApplication.getRetrofitAPI(false)
-                .getBarcodeOrderDetails(orderId, userId)
+                .getBarcodeOrderDetails(orderId, userId, barcodeType)
                 .enqueue(new Callback<BarcodeDetailsResponse>() {
                     @Override
                     public void onResponse(Call<BarcodeDetailsResponse> call, Response<BarcodeDetailsResponse> response) {

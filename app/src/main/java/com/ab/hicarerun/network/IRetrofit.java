@@ -537,7 +537,7 @@ public interface IRetrofit {
     Call<OrderDetails> getOrderDetails(@Query("orderNo") String orderNo, @Query("userId") String userId);
 
     @GET("Barcode/GetBarcodeOrderDetails")
-    Call<BarcodeDetailsResponse> getBarcodeOrderDetails(@Query("orderNo") String orderNo, @Query("userId") String userId);
+    Call<BarcodeDetailsResponse> getBarcodeOrderDetails(@Query("orderNo") String orderNo, @Query("userId") String userId, @Query("barcodeType") String barcodetType);
 
     @POST("Barcode/SaveBarcodeDetails")
     Call<BaseResponse> saveBarcode(@Body ArrayList<BarcodeList> barcodeList);

@@ -23,9 +23,9 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="@color/white"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:layout_gravity="center"
-                android:text="@string/on_site_confirmation_service"
+                android:text="Job completion confirmation"
                 />
         </LinearLayout>
 
