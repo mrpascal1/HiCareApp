@@ -384,6 +384,18 @@ public class GeneralData implements RealmModel {
     @Expose
     private String CustomerRefferalAlert;
 
+    @SerializedName("IsB2BJob")
+    @Expose
+    private boolean IsB2BJob;
+
+    @SerializedName("ShowOnsiteOTP")
+    @Expose
+    private boolean ShowOnsiteOTP;
+
+    @SerializedName("ShowCompletionOTP")
+    @Expose
+    private boolean ShowCompletionOTP;
+
     public GeneralData() {
         SchedulingStatus = "NA";
         PaymentMode = "NA";
@@ -450,6 +462,10 @@ public class GeneralData implements RealmModel {
         IsCustomerInterestedToGiveRefferals = false;
 
         CustomerRefferalAlert = "NA";
+
+        IsB2BJob = false;
+        ShowOnsiteOTP = false;
+        ShowCompletionOTP = false;
     }
 
     public String getOrderNumber() {
@@ -1205,5 +1221,29 @@ public class GeneralData implements RealmModel {
 
     public void setCustomerRefferalAlert(String customerRefferalAlert) {
         CustomerRefferalAlert = customerRefferalAlert;
+    }
+
+    public boolean isB2BJob() {
+        return IsB2BJob;
+    }
+
+    public void setB2BJob(boolean b2BJob) {
+        IsB2BJob = b2BJob;
+    }
+
+    public boolean isShowOnsiteOTP() {
+        return ShowOnsiteOTP;
+    }
+
+    public void setShowOnsiteOTP(boolean showOnsiteOTP) {
+        ShowOnsiteOTP = showOnsiteOTP;
+    }
+
+    public boolean isShowCompletionOTP() {
+        return ShowCompletionOTP;
+    }
+
+    public void setShowCompletionOTP(boolean showCompletionOTP) {
+        ShowCompletionOTP = showCompletionOTP;
     }
 }

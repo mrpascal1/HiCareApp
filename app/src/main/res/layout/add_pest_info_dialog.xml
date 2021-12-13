@@ -140,8 +140,8 @@
 
                             <LinearLayout
                                 android:id="@+id/imageLinearLayout"
-                                android:layout_width="60dp"
-                                android:layout_height="60dp"
+                                android:layout_width="80dp"
+                                android:layout_height="80dp"
                                 android:gravity="center"
                                 android:layout_gravity="center"
                                 android:visibility="gone"
@@ -149,8 +149,8 @@
 
                                 <RelativeLayout
                                     android:id="@+id/imageLayout"
-                                    android:layout_width="45dp"
-                                    android:layout_height="45dp"
+                                    android:layout_width="55dp"
+                                    android:layout_height="55dp"
                                     android:layout_gravity="center"
                                     android:gravity="center">
                                     <ImageView
@@ -167,8 +167,8 @@
 
                                     <RelativeLayout
                                         android:id="@+id/cancelLayout"
-                                        android:layout_width="20dp"
-                                        android:layout_height="20dp"
+                                        android:layout_width="25dp"
+                                        android:layout_height="25dp"
                                         android:layout_alignParentEnd="true"
                                         android:background="@drawable/bg_cancel_red"
                                         android:visibility="gone">

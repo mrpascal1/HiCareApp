@@ -2357,6 +2357,52 @@ public class NetworkCallController {
 
     }
 
+    public void getCompletionSiteOTP(final int requestCode, final String resourceId,
+                             final String taskId, final String userName,
+                             final String mobileNo) {
+        try {
+            mContext.showProgressDialog();
+            BaseApplication.getRetrofitAPI(true)
+                    .getCompletionOTP(resourceId, taskId, userName, mobileNo)
+                    .enqueue(new Callback<OnSiteOtpResponse>() {
+                        @Override
+                        public void onResponse(Call<OnSiteOtpResponse> call, Response<OnSiteOtpResponse> response) {
+                            mContext.dismissProgressDialog();
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        mContext.showServerError(jObjError.getString("ErrorMessage"));
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getChemicals", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            } else {
+                                mContext.showServerError();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<OnSiteOtpResponse> call, Throwable t) {
+                            mContext.dismissProgressDialog();
+                            mContext.showServerError(mContext.getString(R.string.something_went_wrong));
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void getValidateCompletionTime(final int requestCode, final String date_time,
                                           final String taskId) {
         try {

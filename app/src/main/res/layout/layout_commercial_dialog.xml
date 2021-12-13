@@ -19,13 +19,14 @@
             android:gravity="center">
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/headerTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:layout_gravity="center"
-                android:text="Job completion confirmation"
+                android:text="@string/on_site_confirmation_service"
                 />
         </LinearLayout>
 

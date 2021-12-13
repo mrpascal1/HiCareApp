@@ -326,6 +326,13 @@ public interface IRetrofit {
                                          @Query("customername") String customername,
                                          @Query("customermobile") String customermobile);
 
+
+    @GET("Task/ResendCompletionOTP")
+    Call<OnSiteOtpResponse> getCompletionOTP(@Query("resourceId") String resourceId,
+                                         @Query("taskId") String taskId,
+                                         @Query("customername") String customername,
+                                         @Query("customermobile") String customermobile);
+
     /*[Task/ValidateCompletionTime]*/
 
     @GET("Task/ValidateCompletionTime")

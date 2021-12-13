@@ -28,6 +28,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -517,8 +518,14 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                             promptsView.findViewById(R.id.btn_send);
                     final AppCompatButton btn_cancel =
                             promptsView.findViewById(R.id.btn_cancel);
+
+                    final AppCompatTextView headerTv =
+                            promptsView.findViewById(R.id.headerTv);
                     final String resourceId = mLoginRealmModels.get(0).getUserID();
                     final String mobileNo = mLoginRealmModels.get(0).getPhoneNumber();
+                    if (mTaskDetailsData.get(0).isB2BJob() && mTaskDetailsData.get(0).isShowCompletionOTP()) {
+                        headerTv.setText("Job Confirmation");
+                    }
 
                     btn_send.setOnClickListener(v -> {
                         if (isOnSiteValidate(edtmobile, edtName)) {
@@ -541,8 +548,12 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                     public void onFailure(int requestCode) {
                                     }
                                 });
-                                controller.getOnSiteOTP(ONSITE_REQUEST, resourceId, taskId, edtName.getText().toString(), edtmobile.getText().toString());
-                            } else {
+                                if (mTaskDetailsData.get(0).isB2BJob() && mTaskDetailsData.get(0).isShowCompletionOTP()) {
+                                    controller.getCompletionSiteOTP(ONSITE_REQUEST, resourceId, taskId, edtName.getText().toString(), edtmobile.getText().toString());
+                                } else {
+                                    controller.getOnSiteOTP(ONSITE_REQUEST, resourceId, taskId, edtName.getText().toString(), edtmobile.getText().toString());
+                                }
+                            }else {
                                 Toasty.error(getActivity(), getString(R.string.mobile_number_is_invalid)).show();
                             }
                         }
@@ -2776,12 +2787,14 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             if (Mode.equals("On-Site")) {
                 assert mTaskDetailsData.get(0) != null;
                 if (isFeedback && mTaskDetailsData.get(0).getOnsite_OTP() != null && !mTaskDetailsData.get(0).getOnsite_OTP().equals("")) {
-                    /*if (status.equals("Dispatched")) {
-                        mFragmentServiceInfoBinding.layoutOtp.setVisibility(View.VISIBLE);
-                        mFragmentServiceInfoBinding.lnrNoCustomer.setVisibility(View.VISIBLE);
-                        mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(GONE);
-                        mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(GONE);
-                    } else*/ if (isShowSlots) {
+                    if (status.equals("Dispatched")) {
+                        if (mTaskDetailsData.get(0).isShowOnsiteOTP()){
+                            mFragmentServiceInfoBinding.layoutOtp.setVisibility(View.VISIBLE);
+                            mFragmentServiceInfoBinding.lnrNoCustomer.setVisibility(View.VISIBLE);
+                            mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(GONE);
+                            mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(GONE);
+                        }
+                    } else if (isShowSlots) {
                         appointmentDate = "";
                         assignmentStartTime = "";
                         assignmentEndTime = "";
@@ -2794,24 +2807,26 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                         mFragmentServiceInfoBinding.lnrNoCustomer.setVisibility(View.GONE);
                         mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(GONE);
                     }
-                    /*assert mTaskDetailsData.get(0) != null;
-                    OnSiteOtp = mTaskDetailsData.get(0).getOnsite_OTP();
-                    assert mTaskDetailsData.get(0) != null;
-                    ScOtp = mTaskDetailsData.get(0).getSc_OTP();
-                    assert mTaskDetailsData.get(0) != null;
-                    PaymentOtp = mTaskDetailsData.get(0).getPaymentOtp();
-                    String otp = Objects.requireNonNull(mFragmentServiceInfoBinding.edtOnsiteOtp.getText()).toString();
-                    if (otp.length() != 0) {
-                        mCallback.isEmptyOnsiteOtp(false);
-                        if (otp.equals(OnSiteOtp) || otp.equals(ScOtp)) {
-                            mCallback.onSiteOtp(otp);
-                            mCallback.isOnsiteOtp(false);
+                    if (mTaskDetailsData.get(0).isShowOnsiteOTP()) {
+                        assert mTaskDetailsData.get(0) != null;
+                        OnSiteOtp = mTaskDetailsData.get(0).getOnsite_OTP();
+                        assert mTaskDetailsData.get(0) != null;
+                        ScOtp = mTaskDetailsData.get(0).getSc_OTP();
+                        assert mTaskDetailsData.get(0) != null;
+                        PaymentOtp = mTaskDetailsData.get(0).getPaymentOtp();
+                        String otp = Objects.requireNonNull(mFragmentServiceInfoBinding.edtOnsiteOtp.getText()).toString();
+                        if (otp.length() != 0) {
+                            mCallback.isEmptyOnsiteOtp(false);
+                            if (otp.equals(OnSiteOtp) || otp.equals(ScOtp)) {
+                                mCallback.onSiteOtp(otp);
+                                mCallback.isOnsiteOtp(false);
+                            } else {
+                                mCallback.isOnsiteOtp(true);
+                            }
                         } else {
-                            mCallback.isOnsiteOtp(true);
+                            mCallback.isEmptyOnsiteOtp(true);
                         }
-                    } else {
-                        mCallback.isEmptyOnsiteOtp(true);
-                    }*/
+                    }
                 } else {
                     mCallback.isEmptyOnsiteOtp(false);
                     mCallback.isOnsiteOtp(false);
@@ -2820,14 +2835,16 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
             } else if (Mode.equals("Completed")) {
                 assert mTaskDetailsData.get(0) != null;
-                if (isFeedback && mTaskDetailsData.get(0).getOnsite_OTP() != null && !mTaskDetailsData.get(0).getOnsite_OTP().equals("")) {
-                    if (status.equals("On-Site")) {
-                        mFragmentServiceInfoBinding.layoutOtp.setVisibility(View.VISIBLE);
-                        mFragmentServiceInfoBinding.lnrNoCustomer.setVisibility(View.VISIBLE);
-                        mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(GONE);
-                        mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(GONE);
-                        mFragmentServiceInfoBinding.onsiteOtpTv.setText("Completion OTP");
-                    } /*else if (isShowSlots) {
+                if (mTaskDetailsData.get(0).isB2BJob() && mTaskDetailsData.get(0).isShowCompletionOTP()) {
+                    if (isFeedback && mTaskDetailsData.get(0).getOnsite_OTP() != null && !mTaskDetailsData.get(0).getOnsite_OTP().equals("")) {
+                        if (status.equals("On-Site")) {
+                            mFragmentServiceInfoBinding.layoutOtp.setVisibility(View.VISIBLE);
+                            mFragmentServiceInfoBinding.lnrNoCustomer.setVisibility(View.VISIBLE);
+                            mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(GONE);
+                            mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(GONE);
+                            mFragmentServiceInfoBinding.btnOnsiteOtp.setText("(Click here for OTP)");
+                            mFragmentServiceInfoBinding.onsiteOtpTv.setText("Completion OTP");
+                        } /*else if (isShowSlots) {
                         appointmentDate = "";
                         assignmentStartTime = "";
                         assignmentEndTime = "";
@@ -2836,32 +2853,34 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                         showSlotsDialog();
                         mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(View.VISIBLE);
                     }*/ else {
-                        mFragmentServiceInfoBinding.layoutOtp.setVisibility(View.GONE);
-                        mFragmentServiceInfoBinding.lnrNoCustomer.setVisibility(View.GONE);
-                        mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(GONE);
-                    }
-                    assert mTaskDetailsData.get(0) != null;
-                    OnSiteOtp = mTaskDetailsData.get(0).getOnsite_OTP();
-                    assert mTaskDetailsData.get(0) != null;
-                    ScOtp = mTaskDetailsData.get(0).getSc_OTP();
-                    assert mTaskDetailsData.get(0) != null;
-                    PaymentOtp = mTaskDetailsData.get(0).getPaymentOtp();
-                    String otp = Objects.requireNonNull(mFragmentServiceInfoBinding.edtOnsiteOtp.getText()).toString();
-                    if (otp.length() != 0) {
-                        mCallback.isEmptyOnsiteOtp(false);
-                        if (otp.equals(OnSiteOtp) || otp.equals(ScOtp)) {
-                            mCallback.onSiteOtp(otp);
-                            mCallback.isOnsiteOtp(false);
+                            mFragmentServiceInfoBinding.layoutOtp.setVisibility(View.GONE);
+                            mFragmentServiceInfoBinding.lnrNoCustomer.setVisibility(View.GONE);
+                            mFragmentServiceInfoBinding.lnrServiceDate.setVisibility(GONE);
+                        }
+                        assert mTaskDetailsData.get(0) != null;
+                        //OnSiteOtp = mTaskDetailsData.get(0).getOnsite_OTP();
+                        OnSiteOtp = mTaskDetailsData.get(0).getCustomer_OTP();
+                        assert mTaskDetailsData.get(0) != null;
+                        ScOtp = mTaskDetailsData.get(0).getSc_OTP();
+                        assert mTaskDetailsData.get(0) != null;
+                        PaymentOtp = mTaskDetailsData.get(0).getPaymentOtp();
+                        String otp = Objects.requireNonNull(mFragmentServiceInfoBinding.edtOnsiteOtp.getText()).toString();
+                        if (otp.length() != 0) {
+                            mCallback.isEmptyOnsiteOtp(false);
+                            if (otp.equals(OnSiteOtp) || otp.equals(ScOtp)) {
+                                mCallback.onSiteOtp(otp);
+                                mCallback.isOnsiteOtp(false);
+                            } else {
+                                mCallback.isOnsiteOtp(true);
+                            }
                         } else {
-                            mCallback.isOnsiteOtp(true);
+                            mCallback.isEmptyOnsiteOtp(true);
                         }
                     } else {
-                        mCallback.isEmptyOnsiteOtp(true);
+                        mCallback.isEmptyOnsiteOtp(false);
+                        mCallback.isOnsiteOtp(false);
+                        mFragmentServiceInfoBinding.layoutOtp.setVisibility(View.GONE);
                     }
-                } else {
-                    mCallback.isEmptyOnsiteOtp(false);
-                    mCallback.isOnsiteOtp(false);
-                    mFragmentServiceInfoBinding.layoutOtp.setVisibility(View.GONE);
                 }
                 mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(GONE);
                 if (mTaskDetailsData.get(0).getRestrict_Early_Completion()) {
