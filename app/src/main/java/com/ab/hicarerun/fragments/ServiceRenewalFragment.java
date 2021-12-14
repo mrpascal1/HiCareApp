@@ -36,6 +36,7 @@ import com.ab.hicarerun.network.models.BasicResponse;
 import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonsList;
 import com.ab.hicarerun.network.models.ServicePlanModel.NotRenewalReasons;
 import com.ab.hicarerun.network.models.ServicePlanModel.PlanData;
+import com.ab.hicarerun.network.models.WalletModel.WalletBase;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.LocaleHelper;
 
@@ -57,6 +58,7 @@ public class ServiceRenewalFragment extends BaseFragment {
     private Double mDiscount = 0.0;
     private List<NotRenewalReasons> notRenewalReasonsList = new ArrayList<>();
     private Context mContext;
+    private int walletPoints;
 
 
     public ServiceRenewalFragment() {
@@ -116,6 +118,7 @@ public class ServiceRenewalFragment extends BaseFragment {
                 showNotInterestedReasons();
             }
         });
+        getWalletBalance(taskId);
     }
 
     private void showNotInterestedReasons() {
@@ -124,7 +127,7 @@ public class ServiceRenewalFragment extends BaseFragment {
             if (notRenewalReasonsList != null && notRenewalReasonsList.size() > 0) {
                 try {
 
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
                     LayoutInflater inflater = LayoutInflater.from(getActivity());
                     final View v = inflater.inflate(R.layout.jeopardy_reasons_layout, null, false);
                     final RadioGroup radioGroup = (RadioGroup) v.findViewById(R.id.radiogrp);
@@ -183,7 +186,7 @@ public class ServiceRenewalFragment extends BaseFragment {
                     dismissProgressDialog();
                 }
             } else {
-                Toasty.info(Objects.requireNonNull(getActivity()), getResources().getString(R.string.complete_first_job), Toasty.LENGTH_SHORT).show();
+                Toasty.info(requireActivity(), getResources().getString(R.string.complete_first_job), Toasty.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -265,8 +268,8 @@ public class ServiceRenewalFragment extends BaseFragment {
                         mFragmentServiceRenewalBinding.txtCurrentDisAmount.setVisibility(View.GONE);
                     }
                     mFragmentServiceRenewalBinding.lnrCurrentContinue.setOnClickListener(v -> {
-                        ServicePlanBottomSheet bottomSheet = new ServicePlanBottomSheet(response);
-                        bottomSheet.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), bottomSheet.getTag());
+                        ServicePlanBottomSheet bottomSheet = new ServicePlanBottomSheet(response, walletPoints);
+                        bottomSheet.show(requireActivity().getSupportFragmentManager(), bottomSheet.getTag());
                     });
 
                     if (response.getRenewalServicePlans() != null) {
@@ -278,8 +281,8 @@ public class ServiceRenewalFragment extends BaseFragment {
                             mAdapter.notifyDataSetChanged();
                         }
                         mAdapter.setOnItemClickHandler(position -> {
-                            ServicePlanBottomSheet bottomSheet = new ServicePlanBottomSheet(response.getRenewalServicePlans().get(position));
-                            bottomSheet.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), bottomSheet.getTag());
+                            ServicePlanBottomSheet bottomSheet = new ServicePlanBottomSheet(response.getRenewalServicePlans().get(position), walletPoints);
+                            bottomSheet.show(requireActivity().getSupportFragmentManager(), bottomSheet.getTag());
                         });
                     }
                 }
@@ -294,4 +297,46 @@ public class ServiceRenewalFragment extends BaseFragment {
         }
     }
 
+    private void getWalletBalance(String taskId){
+        NetworkCallController controller = new NetworkCallController(this);
+        controller.setListner(new NetworkResponseListner<WalletBase>() {
+            @Override
+            public void onResponse(int requestCode, WalletBase response) {
+                if (response != null){
+                    if (response.isSuccess()){
+                        if (response.getData() != null) {
+                            Log.d("TAG", "" + response);
+                            int pointsInWallet = response.getData().getPointsInWallet();
+                            walletPoints = pointsInWallet;
+                            int totalRPoints = response.getData().getTotalRedeemablePointsInWallet();
+                            int pointsEarned = response.getData().getPointsEarned();
+                            mFragmentServiceRenewalBinding.walletPointsTitleTv.setText("Total Points");
+                            mFragmentServiceRenewalBinding.walletPointsTv.setText("\u20B9 " + pointsInWallet);
+                            mFragmentServiceRenewalBinding.walletPointsTitleTv.setVisibility(View.VISIBLE);
+                            mFragmentServiceRenewalBinding.walletPointsTv.setVisibility(View.VISIBLE);
+                        }else {
+                            mFragmentServiceRenewalBinding.walletPointsTitleTv.setVisibility(View.GONE);
+                            mFragmentServiceRenewalBinding.walletPointsTv.setVisibility(View.GONE);
+                        }
+                    }else {
+                        mFragmentServiceRenewalBinding.walletPointsTitleTv.setVisibility(View.GONE);
+                        mFragmentServiceRenewalBinding.walletPointsTv.setVisibility(View.GONE);
+                    }
+                }else {
+                    mFragmentServiceRenewalBinding.walletPointsTitleTv.setVisibility(View.GONE);
+                    mFragmentServiceRenewalBinding.walletPointsTv.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(int requestCode) {
+            }
+        });
+        controller.getWalletBalance(14122021, taskId);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }

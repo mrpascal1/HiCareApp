@@ -115,6 +115,7 @@ import com.ab.hicarerun.network.models.TmsModel.TmsData;
 import com.ab.hicarerun.network.models.TrainingModel.TrainingResponse;
 import com.ab.hicarerun.network.models.TrainingModel.WelcomeVideoResponse;
 import com.ab.hicarerun.network.models.UpdateAppModel.UpdateResponse;
+import com.ab.hicarerun.network.models.WalletModel.WalletBase;
 import com.ab.hicarerun.network.models.voucher.VoucherResponseMain;
 
 import java.util.ArrayList;
@@ -544,7 +545,7 @@ public interface IRetrofit {
     Call<OrderDetails> getOrderDetails(@Query("orderNo") String orderNo, @Query("userId") String userId);
 
     @GET("Barcode/GetBarcodeOrderDetails")
-    Call<BarcodeDetailsResponse> getBarcodeOrderDetails(@Query("orderNo") String orderNo, @Query("userId") String userId, @Query("barcodeType") String barcodetType);
+    Call<BarcodeDetailsResponse> getBarcodeOrderDetails(@Query("orderNo") String orderNo, @Query("userId") String userId, @Query("barcodeType") String barcodeType);
 
     @POST("Barcode/SaveBarcodeDetails")
     Call<BaseResponse> saveBarcode(@Body ArrayList<BarcodeList> barcodeList);
@@ -602,4 +603,7 @@ public interface IRetrofit {
 
     @POST("TMSDigitisation/UpdateServiceDelivery")
     Call<CheckListResponse> saveServiceDelivery(@Body List<HashMap<String, Object>> data);
+
+    @GET("Renewal/GetWalletBalance")
+    Call<WalletBase> getWalletBalance(@Query("taskId") String taskId);
 }

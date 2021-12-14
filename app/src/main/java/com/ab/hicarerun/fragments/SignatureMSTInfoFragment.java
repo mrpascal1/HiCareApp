@@ -71,6 +71,7 @@ import com.ab.hicarerun.network.models.FeedbackModel.FeedbackRequest;
 import com.ab.hicarerun.network.models.FeedbackModel.FeedbackResponse;
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
 import com.ab.hicarerun.network.models.LoginResponse;
+import com.ab.hicarerun.network.models.TSScannerModel.counts.CountsResponse;
 import com.ab.hicarerun.network.models.TaskModel.Tasks;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
@@ -154,6 +155,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     private String combinedTaskId = "";
     private String combinedTaskType = "";
     private NewTaskDetailsActivity mActivity = null;
+    String uid = "";
 
 
     public SignatureMSTInfoFragment() {
@@ -185,6 +187,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     public void onResume() {
         super.onResume();
         getValidate();
+        getBarcodeCount(Order_Number, uid);
         try {
             AppUtils.statusCheck(getActivity());
         } catch (Exception e) {
@@ -223,6 +226,10 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
         mFragmentSignatureInfoBinding.setHandler(this);
         mActivity = (NewTaskDetailsActivity) getActivity();
         Objects.requireNonNull(mActivity).setAboutDataListener(this);
+        RealmResults<LoginResponse> loginResponses = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+        if (loginResponses != null && loginResponses.size() > 0){
+            uid = loginResponses.get(0).getId();
+        }
         return mFragmentSignatureInfoBinding.getRoot();
     }
 
@@ -278,6 +285,28 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
         });
     }
 
+    private void getBarcodeCount(String orderNo, String userId){
+        Log.d("TAG", "User "+userId+" order "+orderNo);
+        NetworkCallController controller = new NetworkCallController();
+        controller.setListner(new NetworkResponseListner<CountsResponse>() {
+            @Override
+            public void onResponse(int requestCode, CountsResponse response) {
+                if (response != null) {
+                    if (response.isSuccess()) {
+                        mFragmentSignatureInfoBinding.countTv.setText(response.getData().getTotalScanned()+" / "+response.getData().getDeployed());
+                    }
+                }else {
+                    mFragmentSignatureInfoBinding.lnrBarcodeCount.setVisibility(GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(int requestCode) {
+                Log.d("TAG", ""+requestCode);
+            }
+        });
+        controller.getBarcodeSummaryCount(202108, orderNo, userId);
+    }
 
     private void getJobCardDeleted(int parent, int child) {
         try {

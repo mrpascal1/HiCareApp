@@ -214,7 +214,13 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                         });
                         mFragmentServiceUnitBinding.btnRodentScanner.setVisibility(View.GONE);
                     } else {
-                        mFragmentServiceUnitBinding.btnRodentScanner.setVisibility(View.VISIBLE);
+                        if (showBarcode && !(status.equals("Completed") || status.equals("Incomplete"))) {
+                            mFragmentServiceUnitBinding.btnRodentScanner.setVisibility(View.VISIBLE);
+                            AppUtils.IS_QRCODE_THERE = true;
+                        } else {
+                            mFragmentServiceUnitBinding.btnRodentScanner.setVisibility(View.GONE);
+                            AppUtils.IS_QRCODE_THERE = false;
+                        }
                         mFragmentServiceUnitBinding.lnrData.setVisibility(View.GONE);
                         mFragmentServiceUnitBinding.txtNoData.setVisibility(View.VISIBLE);
                     }

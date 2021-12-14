@@ -2784,6 +2784,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
     private void getServiceValidate() {
         try {
+            Log.d("TAG", "Mode "+Mode+" Status "+status);
             if (Mode.equals("On-Site")) {
                 assert mTaskDetailsData.get(0) != null;
                 if (isFeedback && mTaskDetailsData.get(0).getOnsite_OTP() != null && !mTaskDetailsData.get(0).getOnsite_OTP().equals("")) {
@@ -2836,8 +2837,11 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             } else if (Mode.equals("Completed")) {
                 assert mTaskDetailsData.get(0) != null;
                 if (mTaskDetailsData.get(0).isB2BJob() && mTaskDetailsData.get(0).isShowCompletionOTP()) {
-                    if (isFeedback && mTaskDetailsData.get(0).getOnsite_OTP() != null && !mTaskDetailsData.get(0).getOnsite_OTP().equals("")) {
+                    Log.d("TAG", "Inside 1st if");
+                    if (isFeedback && mTaskDetailsData.get(0).getCustomer_OTP() != null && !mTaskDetailsData.get(0).getCustomer_OTP().equals("")) {
+                        Log.d("TAG", "Inside 2nd if");
                         if (status.equals("On-Site")) {
+                            Log.d("TAG", "Inside 3rd if");
                             mFragmentServiceInfoBinding.layoutOtp.setVisibility(View.VISIBLE);
                             mFragmentServiceInfoBinding.lnrNoCustomer.setVisibility(View.VISIBLE);
                             mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(GONE);
@@ -2881,6 +2885,10 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                         mCallback.isOnsiteOtp(false);
                         mFragmentServiceInfoBinding.layoutOtp.setVisibility(View.GONE);
                     }
+                }else {
+                    mCallback.isEmptyOnsiteOtp(false);
+                    mCallback.isOnsiteOtp(false);
+                    mFragmentServiceInfoBinding.layoutOtp.setVisibility(View.GONE);
                 }
                 mFragmentServiceInfoBinding.lnrIncomplete.setVisibility(GONE);
                 if (mTaskDetailsData.get(0).getRestrict_Early_Completion()) {

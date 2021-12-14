@@ -31,6 +31,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -59,6 +60,7 @@ import com.ab.hicarerun.network.models.ServicePlanModel.RenewOrder;
 import com.ab.hicarerun.network.models.ServicePlanModel.RenewOrderRequest;
 import com.ab.hicarerun.network.models.ServicePlanModel.RenewalOTPResponse;
 import com.ab.hicarerun.network.models.ServicePlanModel.RenewalServicePlan;
+import com.ab.hicarerun.network.models.WalletModel.WalletBase;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.GifDrawableImageViewTarget;
 import com.ab.hicarerun.utils.MyDividerItemDecoration;
@@ -114,16 +116,23 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
     private String OTP_1 = "";
     private String OTP_2 = "";
     private String edt_OTP = "";
+    private int redeemablePoints = 0;
+    private String actualAmount = "";
+    private int actualRedeemPoints = 0;
     private ProgressDialog progress;
     private Context mContext;
 
 
-    public ServicePlanBottomSheet(RenewalServicePlan renewalServicePlans) {
+    public ServicePlanBottomSheet(RenewalServicePlan renewalServicePlans, int redeemablePoints) {
         this.renewalServicePlans = renewalServicePlans;
+        this.redeemablePoints = redeemablePoints;
+        actualRedeemPoints = redeemablePoints;
     }
 
-    public ServicePlanBottomSheet(PlanData planData) {
+    public ServicePlanBottomSheet(PlanData planData, int redeemablePoints) {
         this.planData = planData;
+        this.redeemablePoints = redeemablePoints;
+        actualRedeemPoints = redeemablePoints;
     }
 
     @Override
@@ -184,6 +193,7 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
             accountNo = planData.getAccountId();
             orderNo = planData.getOrderNo();
             amount = planData.getDiscountedOrderAmount();
+            actualAmount = planData.getDiscountedOrderAmount();
             mFragmentServicePlanBottomSheetBinding.txtPlanAmount.setText("\u20B9" + " " + planData.getDiscountedOrderAmount());
             mFragmentServicePlanBottomSheetBinding.txtPlanAmount.setTypeface(mFragmentServicePlanBottomSheetBinding.txtPlanAmount.getTypeface(), Typeface.BOLD);
             mFragmentServicePlanBottomSheetBinding.txtPlanDis.setText("\u20B9" + " " + planData.getActualOrderAmount());
@@ -210,6 +220,7 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
             accountNo = renewalServicePlans.getAccountId();
             orderNo = renewalServicePlans.getOrderNo();
             amount = renewalServicePlans.getDiscountedOrderAmount();
+            actualAmount = renewalServicePlans.getDiscountedOrderAmount();
             mFragmentServicePlanBottomSheetBinding.txtPlanAmount.setText("\u20B9" + " " + renewalServicePlans.getDiscountedOrderAmount());
             mFragmentServicePlanBottomSheetBinding.txtPlanAmount.setTypeface(mFragmentServicePlanBottomSheetBinding.txtPlanAmount.getTypeface(), Typeface.BOLD);
             mFragmentServicePlanBottomSheetBinding.txtPlanDis.setText("\u20B9" + " " + renewalServicePlans.getActualOrderAmount());
@@ -232,6 +243,7 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
             }
         }
 
+        setHygienePoints();
         mFragmentServicePlanBottomSheetBinding.txtPlanDis.setPaintFlags(mFragmentServicePlanBottomSheetBinding.txtPlanDis.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         mFragmentServicePlanBottomSheetBinding.btnPayment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -250,6 +262,23 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
                     }
 
                 }
+            }
+        });
+        mFragmentServicePlanBottomSheetBinding.redeemChk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    if (redeemablePoints > Double.parseDouble(amount)){
+                        redeemablePoints = Integer.parseInt(String.valueOf(Math.round(redeemablePoints - Double.parseDouble(amount))));
+                        amount = String.valueOf(0);
+                    }else if (Double.parseDouble(amount) >= redeemablePoints){
+                        amount = String.valueOf(Math.round(Double.parseDouble(amount) - redeemablePoints));
+                    }
+                }else {
+                    redeemablePoints = actualRedeemPoints;
+                    amount = actualAmount;
+                }
+                mFragmentServicePlanBottomSheetBinding.txtPlanAmount.setText("\u20B9" + " " + amount);
             }
         });
     }
@@ -815,6 +844,61 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void setHygienePoints(){
+        if (actualRedeemPoints > 0) {
+            mFragmentServicePlanBottomSheetBinding.redeemablePointsTitleTv.setText("Available Hygiene Points");
+            mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setText("\u20B9 " + actualRedeemPoints);
+            mFragmentServicePlanBottomSheetBinding.redeemablePointsTitleTv.setVisibility(View.VISIBLE);
+            mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setVisibility(View.VISIBLE);
+        }else {
+            mFragmentServicePlanBottomSheetBinding.redeemablePointsTitleTv.setVisibility(GONE);
+            mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setVisibility(GONE);
+            mFragmentServicePlanBottomSheetBinding.redeemChk.setVisibility(GONE);
+        }
+    }
+
+    private void getWalletBalance(String taskId){
+        progress.show();
+        NetworkCallController controller = new NetworkCallController();
+        controller.setListner(new NetworkResponseListner<WalletBase>() {
+            @Override
+            public void onResponse(int requestCode, WalletBase response) {
+                progress.dismiss();
+                if (response != null){
+                    if (response.isSuccess()){
+                        if (response.getData() != null) {
+                            Log.d("TAG", "" + response);
+                            int pointsInWallet = response.getData().getPointsInWallet();
+                            int totalRPoints = response.getData().getTotalRedeemablePointsInWallet();
+                            int pointsEarned = response.getData().getPointsEarned();
+                            redeemablePoints = 3000;
+                            mFragmentServicePlanBottomSheetBinding.redeemablePointsTitleTv.setText("Available Hygiene Points");
+                            mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setText("\u20B9 "+redeemablePoints);
+                            mFragmentServicePlanBottomSheetBinding.redeemablePointsTitleTv.setVisibility(View.VISIBLE);
+                            mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setVisibility(View.VISIBLE);
+                        }else {
+                            mFragmentServicePlanBottomSheetBinding.redeemablePointsTitleTv.setVisibility(View.VISIBLE);
+                            mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setVisibility(View.VISIBLE);
+                        }
+                    }else {
+
+                        mFragmentServicePlanBottomSheetBinding.redeemablePointsTitleTv.setVisibility(View.VISIBLE);
+                        mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setVisibility(View.VISIBLE);
+                    }
+                }else {
+
+                    mFragmentServicePlanBottomSheetBinding.redeemablePointsTitleTv.setVisibility(View.VISIBLE);
+                    mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onFailure(int requestCode) {
+            }
+        });
+        controller.getWalletBalance(14122021, taskId);
     }
 
     @Override

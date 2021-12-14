@@ -127,6 +127,7 @@ import com.ab.hicarerun.network.models.TmsModel.TmsData;
 import com.ab.hicarerun.network.models.TrainingModel.TrainingResponse;
 import com.ab.hicarerun.network.models.TrainingModel.WelcomeVideoResponse;
 import com.ab.hicarerun.network.models.UpdateAppModel.UpdateResponse;
+import com.ab.hicarerun.network.models.WalletModel.WalletBase;
 import com.ab.hicarerun.network.models.voucher.VoucherResponseMain;
 import com.ab.hicarerun.utils.AppUtils;
 
@@ -5294,6 +5295,22 @@ public class NetworkCallController {
             e.printStackTrace();
         }
 
+    }
+
+    public void getWalletBalance(int requestCode, String taskId) {
+        BaseApplication.getRetrofitAPI(false)
+                .getWalletBalance(taskId)
+                .enqueue(new Callback<WalletBase>(){
+                    @Override
+                    public void onResponse(Call<WalletBase> call, Response<WalletBase> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<WalletBase> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
     }
 
 
