@@ -29,6 +29,7 @@ class NewBarcodeActivity : AppCompatActivity() {
         codeScanner.isAutoFocusEnabled = true // Whether to enable auto focus or not
         codeScanner.isFlashEnabled = false
         binding.submitBtn.setOnClickListener {
+            BarcodeVerificatonActivity.isBackPressed = false
             val customText = binding.customEt.text.toString().trim()
             if (customText != "") {
                 val intent = Intent()
@@ -43,6 +44,7 @@ class NewBarcodeActivity : AppCompatActivity() {
         codeScanner.decodeCallback = DecodeCallback {
             runOnUiThread {
                 //Toast.makeText(this, "Scan result: ${it.text}", Toast.LENGTH_LONG).show()
+                BarcodeVerificatonActivity.isBackPressed = false
                 val intent = Intent()
                 intent.putExtra("content", it.text)
                 setResult(3000, intent)
@@ -68,5 +70,10 @@ class NewBarcodeActivity : AppCompatActivity() {
     override fun onPause() {
         codeScanner.releaseResources()
         super.onPause()
+    }
+
+    override fun onBackPressed() {
+        BarcodeVerificatonActivity.isBackPressed = true
+        super.onBackPressed()
     }
 }

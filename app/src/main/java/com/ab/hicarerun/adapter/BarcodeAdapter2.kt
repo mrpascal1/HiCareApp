@@ -79,6 +79,12 @@ class BarcodeAdapter2(val context: Context, val barcodeList: ArrayList<BarcodeDe
             }else{
                 binding.dataCard.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white))
             }*/
+            if (barcodeList.additional_Info != null && barcodeList.additional_Info != ""){
+                binding.remarksTv.text = barcodeList.additional_Info
+                binding.remarksLayout.visibility = View.VISIBLE
+            }else{
+                binding.remarksLayout.visibility = View.GONE
+            }
             if (isVerified == true){
                 val verifiedOn = barcodeList.last_Verified_On
                 Log.d("TAG-Adapt", verifiedOn.toString())
@@ -89,12 +95,15 @@ class BarcodeAdapter2(val context: Context, val barcodeList: ArrayList<BarcodeDe
                 //binding.verifiedOnTv.text = verifiedOn?.substring(0, 10)
                 binding.naBtn.visibility = View.GONE
                 binding.isBarcodeVerified.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_circle_green))
-                if (barcodeList.not_Accessible_Reason != ""){
+                if (barcodeList.not_Accessible_Reason != null && barcodeList.not_Accessible_Reason != ""){
+                    binding.naTv.text = barcodeList.not_Accessible_Reason
+                    binding.naLayout.visibility = View.VISIBLE
                     binding.isBarcodeVerified.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_round_cancel_red))
                 }
             }else{
                 binding.verifiedOnTv.text = "N/A"
                 binding.naBtn.visibility = View.VISIBLE
+                binding.naLayout.visibility = View.GONE
                 binding.isBarcodeVerified.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_circle_black))
             }
             /*if (id == 0){

@@ -145,6 +145,12 @@ class BarcodeAdapter(
                     )
                 )
             }
+            if (barcodeList.additional_Info != null && barcodeList.additional_Info != ""){
+                binding.remarksTv.text = barcodeList.additional_Info
+                binding.remarksLayout.visibility = View.VISIBLE
+            }else{
+                binding.remarksLayout.visibility = View.GONE
+            }
             if (isVerified == true) {
                 val verifiedOn = barcodeList.last_Verified_On
                 val time = AppUtils.reFormatDateTime(verifiedOn, "HH:mm")

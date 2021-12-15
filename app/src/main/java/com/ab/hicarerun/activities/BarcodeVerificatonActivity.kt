@@ -124,7 +124,10 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
     var naReason = ""
     var barcodeType = ""
     var imageUpdateListener: ImageUpdateListener? = null
-
+    companion object{
+        @JvmStatic
+        var isBackPressed = false
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -256,18 +259,28 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                         }
                         modelBarcodeList.addAll(response.data)
                         BarcodeDetailsResponse(response.isSuccess, modelBarcodeList, response.errorMessage, response.param1, response.responseMessage)
+                        Log.d("TAG", "Size $modelBarcodeList")
+
                         if (modelBarcodeList.size > 0) {
+                            binding.barcodeRecycler.visibility = View.VISIBLE
                             binding.errorTv.visibility = View.GONE
                             AppUtils.IS_QRCODE_THERE = isVerified(modelBarcodeList)
 
                         } else {
                             binding.errorTv.visibility = View.VISIBLE
+                            binding.barcodeRecycler.visibility = View.GONE
                             AppUtils.IS_QRCODE_THERE = false
                         }
+                    }else{
+                        binding.errorTv.visibility = View.VISIBLE
+                        binding.barcodeRecycler.visibility = View.GONE
+                        AppUtils.IS_QRCODE_THERE = false
                     }
                     barcodeAdapter.notifyDataSetChanged()
                 } else {
                     modelBarcodeList.clear()
+                    binding.errorTv.visibility = View.VISIBLE
+                    binding.barcodeRecycler.visibility = View.GONE
                 }
             }
 
@@ -410,7 +423,11 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         for (i in 0 until modelBarcodeList.size){
             if (modelBarcodeList[i].barcode_Data == barcode_Data){
                 if (modelBarcodeList[i].isVerified == true){
-                    Toast.makeText(this, "Already Verified", Toast.LENGTH_SHORT).show()
+                    if (modelBarcodeList[i].not_Accessible_Reason != null && modelBarcodeList[i].not_Accessible_Reason != ""){
+                        Toast.makeText(this, "Already Updated", Toast.LENGTH_SHORT).show()
+                    }else {
+                        Toast.makeText(this, "Already Verified", Toast.LENGTH_SHORT).show()
+                    }
                 }else{
                     bitmap = null
                     prevImageLink = ""
@@ -419,8 +436,11 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                 found = true
             }
         }
-        if (!found){
-            Toast.makeText(this, "Equipment not found", Toast.LENGTH_SHORT).show()
+        if (!found) {
+            if (!isBackPressed) {
+                Toast.makeText(this, "Equipment not found", Toast.LENGTH_SHORT).show()
+                isBackPressed = false
+            }
         }
     }
 
@@ -481,13 +501,18 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                 if (response != null) {
                     if (response.isSuccess == true) {
                         if (response.data == "Verified") {
-                            Toast.makeText(applicationContext, "Verified successfully", Toast.LENGTH_SHORT).show()
+                            if (naReason != ""){
+                                Toast.makeText(applicationContext, "Updated successfully", Toast.LENGTH_SHORT).show()
+                            }else{
+                                Toast.makeText(applicationContext, "Verified successfully", Toast.LENGTH_SHORT).show()
+                            }
                             getOrderDetails(empCode.toString())
                         }
                     } else {
                         Log.d("TAG-VERIFIER", "Something wrong ${response.data}")
                     }
                 }
+                naReason = ""
             }
 
             override fun onFailure(requestCode: Int) {

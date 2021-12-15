@@ -61,7 +61,11 @@ public class RecycleByActivityAdapter extends RecyclerView.Adapter<RecycleByActi
             holder.mItemRecycleActivityUnitBinding.txtQty.setText(items.get(position).getChemical_Qty() + " " + items.get(position).getChemical_Unit().toLowerCase());
 
             if (items.get(position).getStatus() != null) {
-                holder.mItemRecycleActivityUnitBinding.isBarcodeVerified.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_check_circle_green));
+                if (items.get(position).getStatus().equalsIgnoreCase("Not Done")){
+                    holder.mItemRecycleActivityUnitBinding.isBarcodeVerified.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_check_circle_black));
+                }else {
+                    holder.mItemRecycleActivityUnitBinding.isBarcodeVerified.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_check_circle_green));
+                }
             } else {
                 holder.mItemRecycleActivityUnitBinding.isBarcodeVerified.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_check_circle_black));
             }

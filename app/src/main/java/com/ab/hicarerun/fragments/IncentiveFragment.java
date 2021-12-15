@@ -227,11 +227,11 @@ public class IncentiveFragment extends BaseFragment {
                         public void onResponse(int requestCode, Object data) {
                             IncentiveData response = (IncentiveData) data;
                             mFragmentIncentiveBinding.txtBadgePts.setText(String.valueOf(response.getTotalPoints()));
-                            mFragmentIncentiveBinding.txtOutOff.setText(String.valueOf(response.getTotalPoints() + "/" + "130"));
+                            mFragmentIncentiveBinding.txtOutOff.setText(String.valueOf(response.getTotalPoints() + "/" + "200"));
                             mFragmentIncentiveBinding.txtPoints.setText(String.valueOf(response.getTotalPoints()) + " Pts.");
                             mFragmentIncentiveBinding.txtBadgePts.setTypeface(Typeface.DEFAULT_BOLD, Typeface.BOLD);
                             mFragmentIncentiveBinding.txtOutOff.setTypeface(Typeface.DEFAULT_BOLD, Typeface.BOLD);
-                            mFragmentIncentiveBinding.progressBar.setMax(130);
+                            mFragmentIncentiveBinding.progressBar.setMax(200);
                             mFragmentIncentiveBinding.progressBar.setProgress(response.getTotalPoints());
                             mFragmentIncentiveBinding.txtIncentive.setText(String.valueOf(response.getTotalIncentiveAmount() + " Rs."));
                             if (response.getMonth() != null) {

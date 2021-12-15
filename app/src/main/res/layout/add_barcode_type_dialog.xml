@@ -55,7 +55,7 @@
                                     android:layout_gravity="center"
                                     android:layout_marginTop="11dp"
                                     android:layout_marginBottom="11dp"
-                                    android:text="Select Equipment Type"
+                                    android:text="Equipment Type"
                                     android:textColor="@color/white"
                                     android:textSize="16sp" />
 
@@ -123,7 +123,7 @@
                                                 android:layout_width="130dp"
                                                 android:layout_height="wrap_content"
                                                 android:layout_marginLeft="7dp"
-                                                android:text="Equipment"
+                                                android:text="@string/qr_equipment"
                                                 android:textColor="@color/colorAccentDrawerPrimaryLight"
                                                 android:textSize="15sp"
                                                 android:textStyle="bold" />
@@ -196,7 +196,7 @@
                                                 android:layout_width="130dp"
                                                 android:layout_height="wrap_content"
                                                 android:layout_marginLeft="7dp"
-                                                android:text="Service Unit"
+                                                android:text="@string/qr_serviceUnit"
                                                 android:textColor="@color/colorAccentDrawerPrimaryLight"
                                                 android:textSize="15sp"
                                                 android:textStyle="bold" />
@@ -278,7 +278,7 @@
 
                                         <LinearLayout
                                             android:layout_width="150dp"
-                                            android:layout_height="26dp"
+                                            android:layout_height="wrap_content"
                                             android:layout_marginRight="20dp"
                                             android:background="@drawable/edit_box_border"
                                             android:gravity="right"
@@ -291,14 +291,15 @@
                                             <EditText
                                                 android:id="@+id/remarksEt"
                                                 android:layout_width="wrap_content"
-                                                android:layout_height="match_parent"
+                                                android:layout_height="wrap_content"
                                                 android:backgroundTint="@color/textColorSecondary"
                                                 android:clickable="true"
                                                 android:background="@null"
                                                 android:ems="10"
                                                 android:padding="4dp"
+                                                android:inputType="textMultiLine"
                                                 android:popupBackground="@color/colorTextDrawerSecondary"
-                                                android:textSize="20sp"
+                                                android:textSize="15sp"
                                                 app:layout_constraintBottom_toBottomOf="parent"
                                                 app:layout_constraintRight_toRightOf="parent"
                                                 app:layout_constraintTop_toTopOf="parent" />

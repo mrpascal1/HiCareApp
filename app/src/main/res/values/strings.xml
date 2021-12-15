@@ -668,6 +668,8 @@
     <string name="cn_save">SAVE</string>
     <string name="referral_yes">Yes</string>
     <string name="referral_no">No</string>
+    <string name="qr_equipment">Equipment<font color='red'> *</font></string>
+    <string name="qr_serviceUnit">Service Unit<font color='red'> *</font></string>
 
 
 </resources>

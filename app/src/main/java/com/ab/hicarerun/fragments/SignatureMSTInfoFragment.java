@@ -293,7 +293,15 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
             public void onResponse(int requestCode, CountsResponse response) {
                 if (response != null) {
                     if (response.isSuccess()) {
-                        mFragmentSignatureInfoBinding.countTv.setText(response.getData().getTotalScanned()+" / "+response.getData().getDeployed());
+                        if (response.getData() != null) {
+                            if (!response.getData().getDeployed().equals("0")) {
+                                mFragmentSignatureInfoBinding.countTv.setText(response.getData().getTotalScanned() + " / " + response.getData().getDeployed());
+                            } else {
+                                mFragmentSignatureInfoBinding.lnrBarcodeCount.setVisibility(GONE);
+                            }
+                        }else {
+                            mFragmentSignatureInfoBinding.lnrBarcodeCount.setVisibility(GONE);
+                        }
                     }
                 }else {
                     mFragmentSignatureInfoBinding.lnrBarcodeCount.setVisibility(GONE);
