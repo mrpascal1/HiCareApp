@@ -119,6 +119,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     public static final String ARGS_COMBINED_TASKS_ID = "ARGS_COMBINED_TASKS_ID";
     public static final String ARGS_COMBINED_TYPE = "ARGS_COMBINED_TYPE";
     public static final String ARGS_SHOW_SIGNATURE = "ARGS_SHOW_SIGNATURE";
+    public static final String ARGS_COMBINE_ORDER = "ARGS_COMBINE_ORDER";
     private static final String ARG_VAR = "ARG_VAR";
     private String status = "";
     static String mFeedback = "";
@@ -156,17 +157,19 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     private String combinedTaskType = "";
     private NewTaskDetailsActivity mActivity = null;
     String uid = "";
+    private String combinedOrderId = "";
 
 
     public SignatureMSTInfoFragment() {
         // Required empty public constructor
     }
 
-    public static SignatureMSTInfoFragment newInstance(String taskId, String combinedId, String combinedTypes) {
+    public static SignatureMSTInfoFragment newInstance(String taskId, String combinedId, String combinedTypes, String combinedOrderId) {
         Bundle args = new Bundle();
         args.putString(ARG_TASK, taskId);
         args.putString(ARGS_COMBINED_TASKS_ID, combinedId);
         args.putString(ARGS_COMBINED_TYPE, combinedTypes);
+        args.putString(ARGS_COMBINE_ORDER, combinedOrderId);
         SignatureMSTInfoFragment fragment = new SignatureMSTInfoFragment();
         fragment.setArguments(args);
         return fragment;
@@ -179,6 +182,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
             taskId = getArguments().getString(ARG_TASK);
             combinedTaskId = getArguments().getString(ARGS_COMBINED_TASKS_ID);
             combinedTaskType = getArguments().getString(ARGS_COMBINED_TYPE);
+            combinedOrderId = getArguments().getString(ARGS_COMBINE_ORDER);
         }
 
     }
@@ -187,7 +191,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     public void onResume() {
         super.onResume();
         getValidate();
-        getBarcodeCount(Order_Number, uid);
+        getBarcodeCount(combinedOrderId, uid);
         try {
             AppUtils.statusCheck(getActivity());
         } catch (Exception e) {
@@ -294,8 +298,9 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                 if (response != null) {
                     if (response.isSuccess()) {
                         if (response.getData() != null) {
-                            if (!response.getData().getDeployed().equals("0")) {
+                            if (response.getData().getDeployed() > 0) {
                                 mFragmentSignatureInfoBinding.countTv.setText(response.getData().getTotalScanned() + " / " + response.getData().getDeployed());
+                                mFragmentSignatureInfoBinding.lnrBarcodeCount.setVisibility(View.VISIBLE);
                             } else {
                                 mFragmentSignatureInfoBinding.lnrBarcodeCount.setVisibility(GONE);
                             }

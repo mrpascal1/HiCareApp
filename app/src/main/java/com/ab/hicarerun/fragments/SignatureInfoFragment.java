@@ -633,8 +633,9 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
                 if (response != null) {
                     if (response.isSuccess()) {
                         if (response.getData() != null) {
-                            if (!response.getData().getDeployed().equals("0")) {
+                            if (response.getData().getDeployed() > 0) {
                                 mFragmentSignatureInfoBinding.countTv.setText(response.getData().getTotalScanned() + " / " + response.getData().getDeployed());
+                                mFragmentSignatureInfoBinding.lnrBarcodeCount.setVisibility(View.VISIBLE);
                             } else {
                                 mFragmentSignatureInfoBinding.lnrBarcodeCount.setVisibility(GONE);
                             }

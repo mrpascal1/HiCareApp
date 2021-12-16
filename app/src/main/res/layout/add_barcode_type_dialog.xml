@@ -55,7 +55,7 @@
                                     android:layout_gravity="center"
                                     android:layout_marginTop="11dp"
                                     android:layout_marginBottom="11dp"
-                                    android:text="Equipment Type"
+                                    android:text="Equipment Details"
                                     android:textColor="@color/white"
                                     android:textSize="16sp" />
 
@@ -109,7 +109,8 @@
                                                 android:text="@string/order_no"
                                                 android:textSize="15sp"
                                                 android:textStyle="bold"
-                                                app:srcCompat="@drawable/ic_process" />
+                                                app:srcCompat="@drawable/ic_process"
+                                                android:visibility="gone"/>
                                         </LinearLayout>
 
                                         <LinearLayout
@@ -131,7 +132,7 @@
 
 
                                         <LinearLayout
-                                            android:layout_width="150dp"
+                                            android:layout_width="160dp"
                                             android:layout_height="26dp"
                                             android:layout_marginRight="20dp"
                                             android:background="@drawable/edit_box_border"
@@ -182,7 +183,8 @@
                                                 android:text="@string/order_no"
                                                 android:textSize="15sp"
                                                 android:textStyle="bold"
-                                                app:srcCompat="@drawable/ic_process" />
+                                                app:srcCompat="@drawable/ic_process"
+                                                android:visibility="gone"/>
                                         </LinearLayout>
 
                                         <LinearLayout
@@ -204,7 +206,7 @@
 
 
                                         <LinearLayout
-                                            android:layout_width="150dp"
+                                            android:layout_width="160dp"
                                             android:layout_height="26dp"
                                             android:layout_marginRight="20dp"
                                             android:background="@drawable/edit_box_border"
@@ -255,7 +257,8 @@
                                                 android:text="@string/order_no"
                                                 android:textSize="15sp"
                                                 android:textStyle="bold"
-                                                app:srcCompat="@drawable/ic_process" />
+                                                app:srcCompat="@drawable/ic_process"
+                                                android:visibility="gone"/>
                                         </LinearLayout>
 
                                         <LinearLayout
@@ -269,7 +272,7 @@
                                                 android:layout_width="130dp"
                                                 android:layout_height="wrap_content"
                                                 android:layout_marginLeft="7dp"
-                                                android:text="Remarks"
+                                                android:text="Additional Info"
                                                 android:textColor="@color/colorAccentDrawerPrimaryLight"
                                                 android:textSize="15sp"
                                                 android:textStyle="bold" />
@@ -277,7 +280,7 @@
 
 
                                         <LinearLayout
-                                            android:layout_width="150dp"
+                                            android:layout_width="160dp"
                                             android:layout_height="wrap_content"
                                             android:layout_marginRight="20dp"
                                             android:background="@drawable/edit_box_border"
@@ -297,6 +300,7 @@
                                                 android:background="@null"
                                                 android:ems="10"
                                                 android:padding="4dp"
+                                                android:maxLength="40"
                                                 android:inputType="textMultiLine"
                                                 android:popupBackground="@color/colorTextDrawerSecondary"
                                                 android:textSize="15sp"

@@ -19,6 +19,7 @@ import com.squareup.picasso.Picasso
 class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPestType>, val arrayAdapter: ArrayAdapter<String>) : RecyclerView.Adapter<PestTypeAdapter.MyHolder>() {
 
     lateinit var onEditTextChanged: OnEditTextChanged
+    var isChanged = false
 
     fun setOnEditTextChangedListener(onEditTextChanged: OnEditTextChanged){
         this.onEditTextChanged = onEditTextChanged
@@ -56,7 +57,20 @@ class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPes
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
-            override fun afterTextChanged(p0: Editable?) {
+            override fun afterTextChanged(p0: Editable) {
+                if (!(p0.equals(""))) {
+                    if (!isChanged) {
+                        if (p0.toString().toInt() >= 1) {
+                            pestList.forEach {
+                                if (it.sub_Type.equals("Change glue pad", true)) {
+                                    it.pest_Count = "Yes"
+                                    isChanged = true
+                                }
+                            }
+                            notifyDataSetChanged()
+                        }
+                    }
+                }
                 onEditTextChanged.onTextChanged(position, p0.toString(), pestList[position].barcodeId, pestList[position].id)
             }
         })
@@ -70,6 +84,15 @@ class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPes
 
         holder.binding.cancelLayout.setOnClickListener {
             onEditTextChanged.onCancelIconClicked(position, holder.binding.countEt.text.toString(), pestList[position].barcodeId, pestList[position].id)
+        }
+        if (pestList[position].show_Option == true){
+            if (pestList[position].sub_Type.equals("Change glue pad", true)) {
+                if (pestList[position].pest_Count == "Yes") {
+                    holder.binding.spnType.setSelection(1)
+                    isChanged = true
+                    //notifyDataSetChanged()
+                }
+            }
         }
     }
 

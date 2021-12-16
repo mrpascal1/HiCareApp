@@ -543,6 +543,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         pestType = ArrayList()
         val optionType = ArrayList<String>()
         var isChecked = false
+        var isChangeDone = false
 
         pestType.clear()
         optionType.clear()
@@ -616,11 +617,35 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                 //Log.d("TAG-Count", charSeq)
                 var count = charSeq
                 currentItemCount = count.toString()
+                var changeRequired = false
                 pestType.forEach {
                     if (it.barcodeId == barcodeId && it.id == pestTypeId){
                         it.pest_Count = count
                     }
                 }
+                /*if (!isChangeDone) {
+                    if (count != "") {
+                        if (!(count.equals("yes", true) || count.equals("no", true))) {
+                            if (count?.toInt()!! >= 1) {
+                                changeRequired = true
+                            }
+                        }
+                    }
+                    if (changeRequired) {
+                        pestType.forEach {
+                            if (it.barcodeId == barcodeId) {
+                                if (it.sub_Type.equals("Change glue pad", true)) {
+                                    it.pest_Count = "Yes"
+                                    isChangeDone = true
+                                    changeRequired = false
+                                }
+                            }
+                        }
+                        if (!pestRecyclerView.isComputingLayout) {
+                            pestTypeAdapter.notifyDataSetChanged()
+                        }
+                    }
+                }*/
                 Log.d("TAG", "onText item position $position")
             }
 

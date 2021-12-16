@@ -612,7 +612,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 }
                 mAdapter.addFragment(ReferralFragment.newInstance(taskId, technicianMobileNo, referralQuestion), getResources().getString(R.string.referral_info));
                 if (isCombinedTasks) {
-                    mAdapter.addFragment(SignatureMSTInfoFragment.newInstance(taskId, combinedTaskId, combinedTaskTypes), getResources().getString(R.string.signature_info));
+                    mAdapter.addFragment(SignatureMSTInfoFragment.newInstance(taskId, combinedTaskId, combinedTaskTypes, combinedOrderId), getResources().getString(R.string.signature_info));
                 } else {
                     mAdapter.addFragment(SignatureInfoFragment.newInstance(taskId, Renewal_Type, Renewal_Order_No), getResources().getString(R.string.signature_info));
                 }
