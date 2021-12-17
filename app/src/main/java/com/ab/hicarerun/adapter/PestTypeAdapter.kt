@@ -3,6 +3,7 @@ package com.ab.hicarerun.adapter
 import android.content.Context
 import android.graphics.Color
 import android.text.Editable
+import android.text.Selection
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,6 +21,8 @@ class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPes
 
     lateinit var onEditTextChanged: OnEditTextChanged
     var isChanged = false
+    var changeFrom = -1
+    var reset = false
 
     fun setOnEditTextChangedListener(onEditTextChanged: OnEditTextChanged){
         this.onEditTextChanged = onEditTextChanged
@@ -58,16 +61,30 @@ class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPes
             }
 
             override fun afterTextChanged(p0: Editable) {
-                if (!(p0.equals(""))) {
+                if (p0.toString() != "") {
                     if (!isChanged) {
                         if (p0.toString().toInt() >= 1) {
                             pestList.forEach {
                                 if (it.sub_Type.equals("Change glue pad", true)) {
-                                    it.pest_Count = "Yes"
-                                    isChanged = true
+                                    if (it.show_Option == true) {
+                                        it.pest_Count = "Yes"
+                                        isChanged = true
+                                        reset = true
+                                        changeFrom = position
+                                        notifyDataSetChanged()
+                                        return@forEach
+                                    }
+                                }else if (it.sub_Type.equals("Replace cake", true)) {
+                                    if (it.show_Option == true) {
+                                        it.pest_Count = "Yes"
+                                        isChanged = true
+                                        reset = true
+                                        changeFrom = position
+                                        notifyDataSetChanged()
+                                        return@forEach
+                                    }
                                 }
                             }
-                            notifyDataSetChanged()
                         }
                     }
                 }
@@ -87,12 +104,31 @@ class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPes
         }
         if (pestList[position].show_Option == true){
             if (pestList[position].sub_Type.equals("Change glue pad", true)) {
-                if (pestList[position].pest_Count == "Yes") {
-                    holder.binding.spnType.setSelection(1)
-                    isChanged = true
-                    //notifyDataSetChanged()
+                if (pestList[position].pest_Count != null && pestList[position].pest_Count != "") {
+                    if (pestList[position].pest_Count.equals("Yes", true)) {
+                        holder.binding.spnType.setSelection(1)
+                        isChanged = true
+                    }
+                }
+            }else if (pestList[position].sub_Type.equals("Replace cake", true)) {
+                if (pestList[position].pest_Count != null && pestList[position].pest_Count != "") {
+                    if (pestList[position].pest_Count.equals("Yes", true)) {
+                        holder.binding.spnType.setSelection(1)
+                        isChanged = true
+                    }
                 }
             }
+        }
+        if (reset){
+            if (position == changeFrom){
+                holder.binding.countEt.requestFocus()
+                reset = false
+            }
+        }
+        if (pestList[position].show_Count == true) {
+            val length = holder.binding.countEt.length()
+            val text = holder.binding.countEt.text
+            Selection.setSelection(text, length)
         }
     }
 

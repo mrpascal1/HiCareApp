@@ -273,6 +273,7 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
                         amount = String.valueOf(0);
                     }else if (Double.parseDouble(amount) >= redeemablePoints){
                         amount = String.valueOf(Math.round(Double.parseDouble(amount) - redeemablePoints));
+                        //redeemablePoints = Math.round(Float.parseFloat(actualAmount)) - redeemablePoints;
                     }
                 }else {
                     redeemablePoints = actualRedeemPoints;

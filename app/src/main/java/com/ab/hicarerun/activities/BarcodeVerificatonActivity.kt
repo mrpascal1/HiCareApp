@@ -623,29 +623,6 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                         it.pest_Count = count
                     }
                 }
-                /*if (!isChangeDone) {
-                    if (count != "") {
-                        if (!(count.equals("yes", true) || count.equals("no", true))) {
-                            if (count?.toInt()!! >= 1) {
-                                changeRequired = true
-                            }
-                        }
-                    }
-                    if (changeRequired) {
-                        pestType.forEach {
-                            if (it.barcodeId == barcodeId) {
-                                if (it.sub_Type.equals("Change glue pad", true)) {
-                                    it.pest_Count = "Yes"
-                                    isChangeDone = true
-                                    changeRequired = false
-                                }
-                            }
-                        }
-                        if (!pestRecyclerView.isComputingLayout) {
-                            pestTypeAdapter.notifyDataSetChanged()
-                        }
-                    }
-                }*/
                 Log.d("TAG", "onText item position $position")
             }
 
