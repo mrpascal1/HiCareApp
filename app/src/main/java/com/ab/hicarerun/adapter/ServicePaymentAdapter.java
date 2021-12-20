@@ -32,6 +32,7 @@ public class ServicePaymentAdapter extends RecyclerView.Adapter<ServicePaymentAd
     private final Context mContext;
     private List<PaymentMode> items = null;
     private int selectedPos = 0;
+    private boolean cashTrue = false;
 
     public ServicePaymentAdapter(Context context) {
         if (items == null) {
@@ -72,6 +73,15 @@ public class ServicePaymentAdapter extends RecyclerView.Adapter<ServicePaymentAd
                 onItemClickHandler.onItemClick(position);
             });
 
+            /*if (cashTrue) {
+                if (items.get(position).getValue().contains("cash")) {
+                    selectedPos = position;
+                    cashTrue = false;
+                    onItemClickHandler.onItemClick(position);
+                    notifyDataSetChanged();
+                }
+            }*/
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -80,6 +90,11 @@ public class ServicePaymentAdapter extends RecyclerView.Adapter<ServicePaymentAd
     @Override
     public int getItemCount() {
         return items.size();
+    }
+
+    public void setMode(){
+        cashTrue = true;
+        notifyDataSetChanged();
     }
 
     public void setOnItemClickHandler(OnListItemClickHandler onItemClickHandler) {

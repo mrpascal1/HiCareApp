@@ -58,7 +58,7 @@ public class ServiceRenewalFragment extends BaseFragment {
     private Double mDiscount = 0.0;
     private List<NotRenewalReasons> notRenewalReasonsList = new ArrayList<>();
     private Context mContext;
-    private int walletPoints;
+    private double walletPoints = 0.0;
 
 
     public ServiceRenewalFragment() {
@@ -118,7 +118,7 @@ public class ServiceRenewalFragment extends BaseFragment {
                 showNotInterestedReasons();
             }
         });
-        getWalletBalance(taskId);
+        //getWalletBalance(taskId);
     }
 
     private void showNotInterestedReasons() {
@@ -306,9 +306,9 @@ public class ServiceRenewalFragment extends BaseFragment {
                     if (response.isSuccess()){
                         if (response.getData() != null) {
                             Log.d("TAG", "" + response);
-                            int pointsInWallet = response.getData().getPointsInWallet();
+                            double pointsInWallet = response.getData().getPointsInWallet();
                             walletPoints = pointsInWallet;
-                            int totalRPoints = response.getData().getTotalRedeemablePointsInWallet();
+                            double totalRPoints = response.getData().getTotalRedeemablePointsInWallet();
                             int pointsEarned = response.getData().getPointsEarned();
                             mFragmentServiceRenewalBinding.walletPointsTitleTv.setText("Total Points");
                             mFragmentServiceRenewalBinding.walletPointsTv.setText("\u20B9 " + pointsInWallet);

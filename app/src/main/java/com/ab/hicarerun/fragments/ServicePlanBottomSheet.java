@@ -116,20 +116,20 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
     private String OTP_1 = "";
     private String OTP_2 = "";
     private String edt_OTP = "";
-    private int redeemablePoints = 0;
+    private double redeemablePoints = 0;
     private String actualAmount = "";
-    private int actualRedeemPoints = 0;
+    private double actualRedeemPoints = 0;
     private ProgressDialog progress;
     private Context mContext;
 
 
-    public ServicePlanBottomSheet(RenewalServicePlan renewalServicePlans, int redeemablePoints) {
+    public ServicePlanBottomSheet(RenewalServicePlan renewalServicePlans, double redeemablePoints) {
         this.renewalServicePlans = renewalServicePlans;
         this.redeemablePoints = redeemablePoints;
         actualRedeemPoints = redeemablePoints;
     }
 
-    public ServicePlanBottomSheet(PlanData planData, int redeemablePoints) {
+    public ServicePlanBottomSheet(PlanData planData, double redeemablePoints) {
         this.planData = planData;
         this.redeemablePoints = redeemablePoints;
         actualRedeemPoints = redeemablePoints;
@@ -194,6 +194,7 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
             orderNo = planData.getOrderNo();
             amount = planData.getDiscountedOrderAmount();
             actualAmount = planData.getDiscountedOrderAmount();
+            //mFragmentServicePlanBottomSheetBinding.priceTv.setText("\u20B9" + " " + planData.getDiscountedOrderAmount());
             mFragmentServicePlanBottomSheetBinding.txtPlanAmount.setText("\u20B9" + " " + planData.getDiscountedOrderAmount());
             mFragmentServicePlanBottomSheetBinding.txtPlanAmount.setTypeface(mFragmentServicePlanBottomSheetBinding.txtPlanAmount.getTypeface(), Typeface.BOLD);
             mFragmentServicePlanBottomSheetBinding.txtPlanDis.setText("\u20B9" + " " + planData.getActualOrderAmount());
@@ -221,6 +222,7 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
             orderNo = renewalServicePlans.getOrderNo();
             amount = renewalServicePlans.getDiscountedOrderAmount();
             actualAmount = renewalServicePlans.getDiscountedOrderAmount();
+            //mFragmentServicePlanBottomSheetBinding.priceTv.setText("\u20B9" + " " + renewalServicePlans.getDiscountedOrderAmount());
             mFragmentServicePlanBottomSheetBinding.txtPlanAmount.setText("\u20B9" + " " + renewalServicePlans.getDiscountedOrderAmount());
             mFragmentServicePlanBottomSheetBinding.txtPlanAmount.setTypeface(mFragmentServicePlanBottomSheetBinding.txtPlanAmount.getTypeface(), Typeface.BOLD);
             mFragmentServicePlanBottomSheetBinding.txtPlanDis.setText("\u20B9" + " " + renewalServicePlans.getActualOrderAmount());
@@ -243,45 +245,57 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
             }
         }
 
-        setHygienePoints();
+        //setHygienePoints();
         mFragmentServicePlanBottomSheetBinding.txtPlanDis.setPaintFlags(mFragmentServicePlanBottomSheetBinding.txtPlanDis.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         mFragmentServicePlanBottomSheetBinding.btnPayment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mode.length() > 0) {
-                    if (mode.equalsIgnoreCase("paytm") || mode.equalsIgnoreCase("upi")) {
+                //if (Integer.parseInt(amount) > 0) {
+                    if (mode.length() > 0) {
+                        if (mode.equalsIgnoreCase("paytm") || mode.equalsIgnoreCase("upi")) {
 //                        if (timer != null) {
 //                            timer.cancel();
 //                        }
-                        showQRCodeDialog();
-                    } else {
-                        if (timer != null) {
-                            timer.cancel();
+                            showQRCodeDialog();
+                        } else {
+                            if (timer != null) {
+                                timer.cancel();
+                            }
+                            getRenewOtp(false);
                         }
-                        getRenewOtp(false);
-                    }
 
-                }
+                    }
+                /*}else {
+                    getRenewOtp(false);
+                }*/
             }
         });
-        mFragmentServicePlanBottomSheetBinding.redeemChk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        /*mFragmentServicePlanBottomSheetBinding.redeemChk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked){
                     if (redeemablePoints > Double.parseDouble(amount)){
-                        redeemablePoints = Integer.parseInt(String.valueOf(Math.round(redeemablePoints - Double.parseDouble(amount))));
+                        redeemablePoints = Integer.parseInt(String.valueOf(redeemablePoints - Double.parseDouble(amount)));
                         amount = String.valueOf(0);
+                        mAdapter.setMode();
                     }else if (Double.parseDouble(amount) >= redeemablePoints){
-                        amount = String.valueOf(Math.round(Double.parseDouble(amount) - redeemablePoints));
+                        amount = String.valueOf(Double.parseDouble(amount) - redeemablePoints);
                         //redeemablePoints = Math.round(Float.parseFloat(actualAmount)) - redeemablePoints;
+                        redeemablePoints = 0;
                     }
+                    mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setPaintFlags(mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    mFragmentServicePlanBottomSheetBinding.remainingPointsTv.setText("\u20B9" + " " + redeemablePoints);
+                    mFragmentServicePlanBottomSheetBinding.remainingPointsTv.setVisibility(View.VISIBLE);
                 }else {
                     redeemablePoints = actualRedeemPoints;
                     amount = actualAmount;
+                    mFragmentServicePlanBottomSheetBinding.remainingPointsTv.setVisibility(GONE);
+                    mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setPaintFlags(mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
                 }
-                mFragmentServicePlanBottomSheetBinding.txtPlanAmount.setText("\u20B9" + " " + amount);
+                mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setText("\u20B9" + " " + actualRedeemPoints);
+                mFragmentServicePlanBottomSheetBinding.priceTv.setText("\u20B9" + " " + amount);
             }
-        });
+        });*/
     }
 
     private void showQRCodeDialog() {
@@ -655,6 +669,7 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
                     request.setOrderValue(Double.parseDouble(planData.getDiscountedOrderAmount()));
                     request.setStandardValue(Double.parseDouble(planData.getActualOrderAmount()));
                     request.setSPCode(planData.getSpCode());
+                    //request.setWallet_Point(actualRedeemPoints);
                 } else {
                     request.setAccountId(renewalServicePlans.getAccountId());
                     request.setTaskId(renewalServicePlans.getTaskId());
@@ -663,6 +678,7 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
                     request.setOrderValue(Double.parseDouble(renewalServicePlans.getDiscountedOrderAmount()));
                     request.setStandardValue(Double.parseDouble(renewalServicePlans.getActualOrderAmount()));
                     request.setSPCode(renewalServicePlans.getSpCode());
+                    //request.setWallet_Point(actualRedeemPoints);
                 }
                 controller.setListner(new NetworkResponseListner<List<RenewOrder>>() {
 
@@ -849,13 +865,13 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
 
     private void setHygienePoints(){
         if (actualRedeemPoints > 0) {
+            mFragmentServicePlanBottomSheetBinding.hygienePointsLayout.setVisibility(View.VISIBLE);
             mFragmentServicePlanBottomSheetBinding.redeemablePointsTitleTv.setText("Available Hygiene Points");
             mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setText("\u20B9 " + actualRedeemPoints);
             mFragmentServicePlanBottomSheetBinding.redeemablePointsTitleTv.setVisibility(View.VISIBLE);
             mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setVisibility(View.VISIBLE);
         }else {
-            mFragmentServicePlanBottomSheetBinding.redeemablePointsTitleTv.setVisibility(GONE);
-            mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setVisibility(GONE);
+            mFragmentServicePlanBottomSheetBinding.hygienePointsLayout.setVisibility(GONE);
             mFragmentServicePlanBottomSheetBinding.redeemChk.setVisibility(GONE);
         }
     }
@@ -871,8 +887,8 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
                     if (response.isSuccess()){
                         if (response.getData() != null) {
                             Log.d("TAG", "" + response);
-                            int pointsInWallet = response.getData().getPointsInWallet();
-                            int totalRPoints = response.getData().getTotalRedeemablePointsInWallet();
+                            double pointsInWallet = response.getData().getPointsInWallet();
+                            double totalRPoints = response.getData().getTotalRedeemablePointsInWallet();
                             int pointsEarned = response.getData().getPointsEarned();
                             redeemablePoints = 3000;
                             mFragmentServicePlanBottomSheetBinding.redeemablePointsTitleTv.setText("Available Hygiene Points");
