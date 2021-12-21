@@ -536,7 +536,11 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                     public void onResponse(int requestCode, Object data) {
                                         OnSiteOtpResponse response = (OnSiteOtpResponse) data;
                                         if (response.getSuccess()) {
-                                            Toasty.success(getActivity(), getString(R.string.on_site_otp_is_sent_successfully)).show();
+                                            if (mTaskDetailsData.get(0).isB2BJob() && mTaskDetailsData.get(0).isShowCompletionOTP()) {
+                                                Toasty.success(getActivity(), "OTP sent successfully").show();
+                                            }else {
+                                                Toasty.success(getActivity(), getString(R.string.on_site_otp_is_sent_successfully)).show();
+                                            }
                                             alertDialog.dismiss();
                                         } else {
                                             Toasty.error(getActivity(), response.getErrorMessage()).show();

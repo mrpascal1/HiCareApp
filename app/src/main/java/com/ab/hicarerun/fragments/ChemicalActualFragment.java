@@ -223,6 +223,7 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
                 intent.putExtra(ARGS_COMBINE_ORDER, combineOrder);
                 intent.putExtra(ARGS_ORDER, orderId);
                 intent.putExtra(ARGS_COMBINED_TASKS, isCombinedTask);
+                intent.putExtra("barcodeType", "");
                 startActivity(intent);
             }
         });

@@ -176,6 +176,7 @@ public class ChemicalStandardFragment extends BaseFragment implements NetworkRes
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), BarcodeVerificatonActivity.class);
+                intent.putExtra("barcodeType", "");
 //                intent.putExtra(ServiceRenewalActivity.ARGS_TASKS, taskId);
                 startActivity(intent);
             }
