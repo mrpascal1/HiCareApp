@@ -487,8 +487,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             //typeName = response.getData().getTaskTypeName();
                             if (response.getData().getTaskTypeName().contains("Termites for")){
                                 typeName = "TMS";
-                                AppUtils.getTmsQuestions("21213", progress);
-                                AppUtils.getServiceDeliveryQuestions("21213");
+                                AppUtils.getTmsQuestions(taskId, progress);
+                                AppUtils.getServiceDeliveryQuestions(taskId);
                             }
                             mTaskCheckList = response.getData().getTaskCheckList();
                             isOnsiteImageRequired = response.getData().getOnsite_Image_Required();
@@ -1593,6 +1593,12 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
             validate(currentList, btnSend, nextChipBtn);
             //saveHashSet = new HashSet<>();
+            if (isPostJobCompletionDone){
+                nextChipBtn.setEnabled(true);
+                nextChipBtn.setAlpha(1.0f);
+                backChipBtn.setEnabled(true);
+                backChipBtn.setAlpha(1.0f);
+            }
 
             btnSend.setOnClickListener(v -> {
                 Log.d("TAG", "Save "+AppUtils.tmsServiceDeliveryList);
@@ -1969,11 +1975,13 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
                 }
             });
+            //controller.saveCheckList(SAVE_CHECK_LIST, mOnsiteCheckList);
+
             if (!typeName.equalsIgnoreCase("TMS")) {
                 controller.saveCheckList(SAVE_CHECK_LIST, mOnsiteCheckList);
             }else {
                 HashMap<String, Object> hashMap = new HashMap<>();
-                hashMap.put("TaskId", "23213");
+                hashMap.put("TaskId", taskId);
                 hashMap.put("type", "Service Delivery");
                 hashMap.put("QuestionTabList", AppUtils.tmsServiceDeliveryList);
                 controller.saveServiceDelivery(SAVE_CHECK_LIST, Collections.singletonList(hashMap));

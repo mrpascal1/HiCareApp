@@ -18,6 +18,7 @@ public class ServicePlanViewModel implements Parcelable {
     private String Image_URL;
     private String Discount;
     private String ActualOrderAmount;
+    private String DiscountAmount;
     private String DiscountedOrderAmount;
     private Boolean Is_Recommended;
     private String OfferText;
@@ -32,6 +33,7 @@ public class ServicePlanViewModel implements Parcelable {
         Discount = "NA";
         ActualOrderAmount = "NA";
         DiscountedOrderAmount = "NA";
+        DiscountAmount = "NA";
         Is_Recommended = false;
         OfferText = "NA";
     }
@@ -54,6 +56,7 @@ public class ServicePlanViewModel implements Parcelable {
         Discount = in.readString();
         ActualOrderAmount = in.readString();
         DiscountedOrderAmount = in.readString();
+        DiscountAmount = in.readString();
         byte tmpIs_Recommended = in.readByte();
         Is_Recommended = tmpIs_Recommended == 0 ? null : tmpIs_Recommended == 1;
         OfferText = in.readString();
@@ -159,7 +162,13 @@ public class ServicePlanViewModel implements Parcelable {
         OfferText = offerText;
     }
 
+    public String getDiscountAmount() {
+        return DiscountAmount;
+    }
 
+    public void setDiscountAmount(String discountAmount) {
+        DiscountAmount = discountAmount;
+    }
 
     public void clone(RenewalServicePlan servicePlan) {
         this.Id = servicePlan.getId();
@@ -174,6 +183,7 @@ public class ServicePlanViewModel implements Parcelable {
         this.Discount = servicePlan.getDiscount();
         this.Is_Recommended = servicePlan.getIsRecommended();
         this.OfferText = servicePlan.getOfferText();
+        this.DiscountAmount = servicePlan.getDiscountAmount();
     }
 
     @Override
@@ -202,6 +212,7 @@ public class ServicePlanViewModel implements Parcelable {
         dest.writeString(Discount);
         dest.writeString(ActualOrderAmount);
         dest.writeString(DiscountedOrderAmount);
+        dest.writeString(DiscountAmount);
         dest.writeByte((byte) (Is_Recommended == null ? 0 : Is_Recommended ? 1 : 2));
         dest.writeString(OfferText);
     }

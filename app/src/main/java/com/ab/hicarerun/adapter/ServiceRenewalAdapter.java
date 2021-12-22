@@ -94,13 +94,20 @@ public class ServiceRenewalAdapter extends RecyclerView.Adapter<ServiceRenewalAd
             holder.mRenewalServicePlansAdapterBinding.txtDiscount.setTypeface(holder.mRenewalServicePlansAdapterBinding.txtDiscount.getTypeface(), Typeface.BOLD);
             holder.mRenewalServicePlansAdapterBinding.txtOFF.setTypeface(holder.mRenewalServicePlansAdapterBinding.txtOFF.getTypeface(), Typeface.BOLD);
             holder.mRenewalServicePlansAdapterBinding.txtAmount.setTypeface(holder.mRenewalServicePlansAdapterBinding.txtAmount.getTypeface(), Typeface.BOLD);
+            if (!items.get(position).getDiscountAmount().equals("") && !items.get(position).getDiscountAmount().equals("0.00")
+                    && !items.get(position).getDiscountAmount().equals("0")){
+                holder.mRenewalServicePlansAdapterBinding.txtSaving.setText("You will save "+"\u20B9"+""+items.get(position).getDiscountAmount() + " on this service!");
+                holder.mRenewalServicePlansAdapterBinding.txtSaving.setVisibility(View.VISIBLE);
+            }else {
+                holder.mRenewalServicePlansAdapterBinding.txtSaving.setVisibility(View.GONE);
+            }
 
-            if(items.get(position).getDiscount()!=null && !items.get(position).getDiscount().equals("0.00")){
+            if(items.get(position).getDiscount()!=null && !items.get(position).getDiscount().equals("0.00") && !items.get(position).getDiscount().equals("0") && !items.get(position).getDiscount().equals("")){
                 holder.mRenewalServicePlansAdapterBinding.relOffer.setVisibility(View.VISIBLE);
                 holder.mRenewalServicePlansAdapterBinding.txtDisAmount.setVisibility(View.VISIBLE);
                 holder.mRenewalServicePlansAdapterBinding.txtInstant.setVisibility(View.VISIBLE);
             }else {
-                holder.mRenewalServicePlansAdapterBinding.relOffer.setVisibility(View.GONE);
+                //holder.mRenewalServicePlansAdapterBinding.relOffer.setVisibility(View.GONE);
                 holder.mRenewalServicePlansAdapterBinding.txtDisAmount.setVisibility(View.GONE);
                 holder.mRenewalServicePlansAdapterBinding.txtInstant.setVisibility(View.GONE);
             }

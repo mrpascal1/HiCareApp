@@ -242,6 +242,7 @@ public class ServiceRenewalFragment extends BaseFragment {
                     mFragmentServiceRenewalBinding.txtCurrentAmount.setText("\u20B9" + " " + response.getDiscountedOrderAmount());
                     mFragmentServiceRenewalBinding.txtCurrentDisAmount.setText("\u20B9" + " " + response.getActualOrderAmount());
                     mFragmentServiceRenewalBinding.txtCurrentDiscount.setText(response.getDiscount() + "%" + " OFF");
+                    mFragmentServiceRenewalBinding.txtSaving.setText("You save " + "\u20B9 " + response.getDiscountAmount());
                     mFragmentServiceRenewalBinding.txtCurrentDiscount.setTypeface(mFragmentServiceRenewalBinding.txtCurrentDiscount.getTypeface(), Typeface.BOLD);
                     mFragmentServiceRenewalBinding.txtRating.setTypeface(mFragmentServiceRenewalBinding.txtRating.getTypeface(), Typeface.BOLD);
                     mFragmentServiceRenewalBinding.txtCurrentAmount.setTypeface(mFragmentServiceRenewalBinding.txtCurrentAmount.getTypeface(), Typeface.BOLD);
@@ -258,7 +259,7 @@ public class ServiceRenewalFragment extends BaseFragment {
 //                        mDiscount = Double.parseDouble(response.getDiscount());
 //                    }
 
-                    if (response.getDiscount() != null && !response.getDiscount().equals("0.00")) {
+                    if (response.getDiscount() != null && !response.getDiscount().equals("0.00") && !response.getDiscount().equals("0")) {
                         mFragmentServiceRenewalBinding.txtCurrentDiscount.setVisibility(View.VISIBLE);
                         mFragmentServiceRenewalBinding.txtNow.setVisibility(View.VISIBLE);
                         mFragmentServiceRenewalBinding.txtCurrentDisAmount.setVisibility(View.VISIBLE);

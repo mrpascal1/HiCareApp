@@ -1188,6 +1188,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                         if (!isPostJobCompletionDone) {
                             isPostJobCompletionDone = true;
                             if (mTaskDetailsData.get(0).getTaskTypeName().contains("Termites for")){
+                                //mListCallback.onPostJobButtonClicked();
                                 mListCallback.onTmsPostJobButtonClicked();
                             }else {
                                 mListCallback.onPostJobButtonClicked();

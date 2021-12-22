@@ -54,6 +54,9 @@ public class PlanData {
     @SerializedName("DiscountedOrderAmount")
     @Expose
     private String discountedOrderAmount;
+    @SerializedName("DiscountAmount")
+    @Expose
+    private String DiscountAmount;
     @SerializedName("OfferText")
     @Expose
     private String OfferText;
@@ -289,5 +292,13 @@ public class PlanData {
 
     public void setCompletedServices(Integer completedServices) {
         CompletedServices = completedServices;
+    }
+
+    public String getDiscountAmount() {
+        return DiscountAmount;
+    }
+
+    public void setDiscountAmount(String discountAmount) {
+        DiscountAmount = discountAmount;
     }
 }

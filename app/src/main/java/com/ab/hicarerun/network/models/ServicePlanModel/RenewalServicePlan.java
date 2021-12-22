@@ -60,6 +60,9 @@ public class RenewalServicePlan {
     @SerializedName("Created_On")
     @Expose
     private String createdOn;
+    @SerializedName("DiscountAmount")
+    @Expose
+    private String DiscountAmount;
     @SerializedName("ServicePlanUnits")
     @Expose
     private Object servicePlanUnits;
@@ -217,5 +220,13 @@ public class RenewalServicePlan {
 
     public void setOfferText(String offerText) {
         OfferText = offerText;
+    }
+
+    public String getDiscountAmount() {
+        return DiscountAmount;
+    }
+
+    public void setDiscountAmount(String discountAmount) {
+        DiscountAmount = discountAmount;
     }
 }

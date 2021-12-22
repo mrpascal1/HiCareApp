@@ -148,7 +148,7 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
         })
 
         val hashMap = HashMap<String, Any>()
-        hashMap["TaskId"] = "23213"
+        hashMap["TaskId"] = mTaskDetailsData[0]?.taskId.toString()
         hashMap["type"] = type
         hashMap["QuestionTabList"] = AppUtils.tmsConsultationList
         controller.saveTmsQuestions(2211, arrayListOf(hashMap))
@@ -202,7 +202,7 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
         })
 
         val hashMap = HashMap<String, Any>()
-        hashMap["TaskId"] = "23213"
+        hashMap["TaskId"] = mTaskDetailsData[0]?.taskId.toString()
         hashMap["type"] = type
         hashMap["QuestionTabList"] = AppUtils.tmsInspectionList
         controller.saveTmsQuestions(2211, arrayListOf(hashMap))
