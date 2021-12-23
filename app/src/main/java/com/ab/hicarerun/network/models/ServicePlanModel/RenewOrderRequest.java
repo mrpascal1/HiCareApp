@@ -77,9 +77,9 @@ public class RenewOrderRequest {
     @SerializedName("TransactionId")
     @Expose
     private String TransactionId;
-    /*@SerializedName("Wallet_Point")
+    @SerializedName("Wallet_Point")
     @Expose
-    private double Wallet_Point;*/
+    private double Wallet_Point;
 
     public String getAccountId() {
         return accountId;
@@ -265,11 +265,11 @@ public class RenewOrderRequest {
         TransactionId = transactionId;
     }
 
-    /*public double getWallet_Point() {
+    public double getWallet_Point() {
         return Wallet_Point;
     }
 
     public void setWallet_Point(double wallet_Point) {
         Wallet_Point = wallet_Point;
-    }*/
+    }
 }

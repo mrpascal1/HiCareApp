@@ -104,7 +104,7 @@ class TmsAnswersChildAdapter(val context: Context) : RecyclerView.Adapter<TmsAns
                     items[i]?.isSelected = false
                 }
             }
-            onTextChangedListener?.onOptionChange(position, items[position]?.optionText.toString(), questionId, "radio")
+            onTextChangedListener?.onOptionChange(position, items[position]?.optionDisplayText.toString(), questionId, "radio")
             notifyDataSetChanged()
         }
 
@@ -112,7 +112,7 @@ class TmsAnswersChildAdapter(val context: Context) : RecyclerView.Adapter<TmsAns
             Log.d("TAG: ", "Position $position and ID ${items[position]}")
             selectedPos = position
             items[position]?.isSelected = holder.binding.chkAnswers.isChecked
-            onTextChangedListener?.onCheckboxClicked(position, holder.binding.chkAnswers.isChecked, items[position]?.optionText.toString(), questionId, "checkbox")
+            onTextChangedListener?.onCheckboxClicked(position, holder.binding.chkAnswers.isChecked, items[position]?.optionDisplayText.toString(), questionId, "checkbox")
             /*for (i in 0 until items.size){
                 if (selectedPos != i) {
                     holder.binding.rbAnswers.isChecked = false;
@@ -239,8 +239,8 @@ class TmsAnswersChildAdapter(val context: Context) : RecyclerView.Adapter<TmsAns
     class MyHolder(val binding: LayoutTmsChildAdapterBinding): RecyclerView.ViewHolder(binding.root){
         fun bindItems(item: QuestionOption?, context: Context){
             binding.chkAnswers.visibility = View.GONE
-            binding.rbAnswers.text = item?.optionText
-            binding.chkAnswers.text = item?.optionText
+            binding.rbAnswers.text = item?.optionDisplayText
+            binding.chkAnswers.text = item?.optionDisplayText
             binding.rbAnswers.isChecked = item?.isSelected==true
             binding.chkAnswers.isChecked = item?.isSelected==true
         }

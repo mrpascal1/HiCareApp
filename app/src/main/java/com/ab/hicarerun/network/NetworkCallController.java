@@ -4122,10 +4122,10 @@ public class NetworkCallController {
 
     }
 
-    public void getTmsQuestions(final int requestCode, String taskId) {
+    public void getTmsQuestions(final int requestCode, String taskId, String lan) {
         try {
             BaseApplication.getRetrofitAPI(true)
-                    .getTmsQuestions(taskId)
+                    .getTmsQuestions(taskId, lan)
                     .enqueue(new Callback<QuestionBase>() {
                         @Override
                         public void onResponse(Call<QuestionBase> call, Response<QuestionBase> response) {
@@ -4159,10 +4159,10 @@ public class NetworkCallController {
 
     }
 
-    public void getServiceDeliveryQuestions(final int requestCode, String taskId) {
+    public void getServiceDeliveryQuestions(final int requestCode, String taskId, String lan) {
         try {
             BaseApplication.getRetrofitAPI(true)
-                    .getServiceDeliveryQuestions(taskId)
+                    .getServiceDeliveryQuestions(taskId, lan)
                     .enqueue(new Callback<QuestionBase>() {
                         @Override
                         public void onResponse(Call<QuestionBase> call, Response<QuestionBase> response) {

@@ -593,13 +593,13 @@ public interface IRetrofit {
     Call<BaseResponse> sendReferralMessage(@Query("resourceId") String resourceId, @Query("taskId") String taskId);
 
     @GET("TMSDigitisation/GetTMSQuestions")
-    Call<QuestionBase> getTmsQuestions(@Query("taskId") String taskId);
+    Call<QuestionBase> getTmsQuestions(@Query("taskId") String taskId, @Query("lan") String lan);
 
     @POST("TMSDigitisation/UpdateTMSQuestions")
     Call<BaseResponse> saveTmsQuestions(@Body List<HashMap<String, Object>> data);
 
     @GET("TMSDigitisation/GetServiceDeliveryQuestions")
-    Call<QuestionBase> getServiceDeliveryQuestions(@Query("taskId") String taskId);
+    Call<QuestionBase> getServiceDeliveryQuestions(@Query("taskId") String taskId, @Query("lan") String lan);
 
     @POST("TMSDigitisation/UpdateServiceDelivery")
     Call<CheckListResponse> saveServiceDelivery(@Body List<HashMap<String, Object>> data);

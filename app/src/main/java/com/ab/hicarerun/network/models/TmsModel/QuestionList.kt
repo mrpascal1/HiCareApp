@@ -8,9 +8,14 @@ data class QuestionList (
 	@SerializedName("QuestionText") val questionText : String?,
 	@SerializedName("QuestionOption") val questionOption : List<QuestionOption>?,
 	@SerializedName("QuestionStrOption") val questionStrOption : ArrayList<String>?,
+	@SerializedName("QuestionImageUrl") val questionImageUrl : String?,
+	@SerializedName("QuestionDisplayText") val questionDisplayText : String?,
+	@SerializedName("QuestionAudioUrl") val questionAudioUrl : String?,
 	@SerializedName("Answer") var answer : String?,
 	@SerializedName("QuestionType") val questionType : String?,
 	@SerializedName("IsPictureRequired") val isPictureRequired : Boolean?,
 	@SerializedName("PictureURL") var pictureURL : ArrayList<String>?,
+	@SerializedName("TabName") var tabName : String?,
+	@SerializedName("TabIndex") var tabIndex : String?,
 	var qPictureURL : ArrayList<QuestionImageUrl>?
 )

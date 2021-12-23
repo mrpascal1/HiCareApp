@@ -1,6 +1,7 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +58,13 @@ public class ServicePaymentAdapter extends RecyclerView.Adapter<ServicePaymentAd
             if (selectedPos == position) {
                 holder.layoutPaymentModesBinding.checkMode.setChecked(true);
             } else {
+                if (cashTrue){
+                    holder.layoutPaymentModesBinding.checkMode.setEnabled(false);
+                    holder.itemView.setEnabled(false);
+                }else {
+                    holder.layoutPaymentModesBinding.checkMode.setEnabled(true);
+                    holder.itemView.setEnabled(true);
+                }
                 holder.layoutPaymentModesBinding.checkMode.setChecked(false);
             }
             holder.layoutPaymentModesBinding.txtModes.setText(items.get(position).getValue());
@@ -73,14 +81,6 @@ public class ServicePaymentAdapter extends RecyclerView.Adapter<ServicePaymentAd
                 onItemClickHandler.onItemClick(position);
             });
 
-            /*if (cashTrue) {
-                if (items.get(position).getValue().contains("cash")) {
-                    selectedPos = position;
-                    cashTrue = false;
-                    onItemClickHandler.onItemClick(position);
-                    notifyDataSetChanged();
-                }
-            }*/
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,9 +93,17 @@ public class ServicePaymentAdapter extends RecyclerView.Adapter<ServicePaymentAd
     }
 
     public void setMode(){
+        selectedPos = 0;
         cashTrue = true;
         notifyDataSetChanged();
+        onItemClickHandler.onItemClick(selectedPos);
     }
+    public void resetMode(){
+        cashTrue = false;
+        notifyDataSetChanged();
+        onItemClickHandler.onItemClick(selectedPos);
+    }
+
 
     public void setOnItemClickHandler(OnListItemClickHandler onItemClickHandler) {
         this.onItemClickHandler = onItemClickHandler;

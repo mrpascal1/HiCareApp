@@ -58,7 +58,7 @@ public class ServiceRenewalFragment extends BaseFragment {
     private Double mDiscount = 0.0;
     private List<NotRenewalReasons> notRenewalReasonsList = new ArrayList<>();
     private Context mContext;
-    private double walletPoints = 0.0;
+    private int walletPoints = 0;
 
 
     public ServiceRenewalFragment() {
@@ -118,7 +118,7 @@ public class ServiceRenewalFragment extends BaseFragment {
                 showNotInterestedReasons();
             }
         });
-        //getWalletBalance(taskId);
+        getWalletBalance(taskId);
     }
 
     private void showNotInterestedReasons() {
@@ -307,25 +307,22 @@ public class ServiceRenewalFragment extends BaseFragment {
                     if (response.isSuccess()){
                         if (response.getData() != null) {
                             Log.d("TAG", "" + response);
-                            double pointsInWallet = response.getData().getPointsInWallet();
-                            walletPoints = pointsInWallet;
-                            double totalRPoints = response.getData().getTotalRedeemablePointsInWallet();
-                            int pointsEarned = response.getData().getPointsEarned();
-                            mFragmentServiceRenewalBinding.walletPointsTitleTv.setText("Total Points");
-                            mFragmentServiceRenewalBinding.walletPointsTv.setText("\u20B9 " + pointsInWallet);
+                            walletPoints  = response.getData().getTotalRedeemablePointsInWallet();
+                            mFragmentServiceRenewalBinding.walletPointsTitleTv.setText("Hygiene Points");
+                            mFragmentServiceRenewalBinding.walletPointsTv.setText(" " + walletPoints);
                             mFragmentServiceRenewalBinding.walletPointsTitleTv.setVisibility(View.VISIBLE);
-                            mFragmentServiceRenewalBinding.walletPointsTv.setVisibility(View.VISIBLE);
+                            mFragmentServiceRenewalBinding.walletPointLayout.setVisibility(View.VISIBLE);
                         }else {
                             mFragmentServiceRenewalBinding.walletPointsTitleTv.setVisibility(View.GONE);
-                            mFragmentServiceRenewalBinding.walletPointsTv.setVisibility(View.GONE);
+                            mFragmentServiceRenewalBinding.walletPointLayout.setVisibility(View.GONE);
                         }
                     }else {
                         mFragmentServiceRenewalBinding.walletPointsTitleTv.setVisibility(View.GONE);
-                        mFragmentServiceRenewalBinding.walletPointsTv.setVisibility(View.GONE);
+                        mFragmentServiceRenewalBinding.walletPointLayout.setVisibility(View.GONE);
                     }
                 }else {
                     mFragmentServiceRenewalBinding.walletPointsTitleTv.setVisibility(View.GONE);
-                    mFragmentServiceRenewalBinding.walletPointsTv.setVisibility(View.GONE);
+                    mFragmentServiceRenewalBinding.walletPointLayout.setVisibility(View.GONE);
                 }
             }
 

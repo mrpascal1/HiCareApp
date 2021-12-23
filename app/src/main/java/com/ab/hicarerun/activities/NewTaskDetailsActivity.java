@@ -487,8 +487,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             //typeName = response.getData().getTaskTypeName();
                             if (response.getData().getTaskTypeName().contains("Termites for")){
                                 typeName = "TMS";
-                                AppUtils.getTmsQuestions(taskId, progress);
-                                AppUtils.getServiceDeliveryQuestions(taskId);
+                                AppUtils.getTmsQuestions(taskId, LocaleHelper.getLanguage(NewTaskDetailsActivity.this), progress);
+                                AppUtils.getServiceDeliveryQuestions(taskId, LocaleHelper.getLanguage(NewTaskDetailsActivity.this));
                             }
                             mTaskCheckList = response.getData().getTaskCheckList();
                             isOnsiteImageRequired = response.getData().getOnsite_Image_Required();

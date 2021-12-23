@@ -68,9 +68,18 @@
                         android:layout_marginTop="16dp"
                         android:textSize="18sp"
                         android:textColor="@color/red"
-                        android:text="Redeemable Points"
+                        android:text="Hygiene Points"
                         android:visibility="gone"/>
 
+                    <LinearLayout
+                        android:id="@+id/walletPointLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone">
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_wallet_new"/>
                     <TextView
                         android:id="@+id/walletPointsTv"
                         android:layout_width="wrap_content"
@@ -78,7 +87,9 @@
                         android:layout_marginTop="2dp"
                         android:textColor="@color/black"
                         android:textSize="16sp"
-                        android:visibility="gone"/>
+                        android:text="1600"
+                        android:visibility="visible"/>
+                    </LinearLayout>
 
                 </LinearLayout>
 

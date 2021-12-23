@@ -116,20 +116,20 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
     private String OTP_1 = "";
     private String OTP_2 = "";
     private String edt_OTP = "";
-    private double redeemablePoints = 0;
+    private int redeemablePoints = 0;
     private String actualAmount = "";
-    private double actualRedeemPoints = 0;
+    private int actualRedeemPoints = 0;
     private ProgressDialog progress;
     private Context mContext;
 
 
-    public ServicePlanBottomSheet(RenewalServicePlan renewalServicePlans, double redeemablePoints) {
+    public ServicePlanBottomSheet(RenewalServicePlan renewalServicePlans, int redeemablePoints) {
         this.renewalServicePlans = renewalServicePlans;
         this.redeemablePoints = redeemablePoints;
         actualRedeemPoints = redeemablePoints;
     }
 
-    public ServicePlanBottomSheet(PlanData planData, double redeemablePoints) {
+    public ServicePlanBottomSheet(PlanData planData, int redeemablePoints) {
         this.planData = planData;
         this.redeemablePoints = redeemablePoints;
         actualRedeemPoints = redeemablePoints;
@@ -194,7 +194,7 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
             orderNo = planData.getOrderNo();
             amount = planData.getDiscountedOrderAmount();
             actualAmount = planData.getDiscountedOrderAmount();
-            //mFragmentServicePlanBottomSheetBinding.priceTv.setText("\u20B9" + " " + planData.getDiscountedOrderAmount());
+            mFragmentServicePlanBottomSheetBinding.priceTv.setText("\u20B9" + " " + planData.getDiscountedOrderAmount());
             mFragmentServicePlanBottomSheetBinding.txtPlanAmount.setText("\u20B9" + " " + planData.getDiscountedOrderAmount());
             mFragmentServicePlanBottomSheetBinding.txtPlanAmount.setTypeface(mFragmentServicePlanBottomSheetBinding.txtPlanAmount.getTypeface(), Typeface.BOLD);
             mFragmentServicePlanBottomSheetBinding.txtPlanDis.setText("\u20B9" + " " + planData.getActualOrderAmount());
@@ -222,7 +222,7 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
             orderNo = renewalServicePlans.getOrderNo();
             amount = renewalServicePlans.getDiscountedOrderAmount();
             actualAmount = renewalServicePlans.getDiscountedOrderAmount();
-            //mFragmentServicePlanBottomSheetBinding.priceTv.setText("\u20B9" + " " + renewalServicePlans.getDiscountedOrderAmount());
+            mFragmentServicePlanBottomSheetBinding.priceTv.setText("\u20B9" + " " + renewalServicePlans.getDiscountedOrderAmount());
             mFragmentServicePlanBottomSheetBinding.txtPlanAmount.setText("\u20B9" + " " + renewalServicePlans.getDiscountedOrderAmount());
             mFragmentServicePlanBottomSheetBinding.txtPlanAmount.setTypeface(mFragmentServicePlanBottomSheetBinding.txtPlanAmount.getTypeface(), Typeface.BOLD);
             mFragmentServicePlanBottomSheetBinding.txtPlanDis.setText("\u20B9" + " " + renewalServicePlans.getActualOrderAmount());
@@ -245,12 +245,12 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
             }
         }
 
-        //setHygienePoints();
+        setHygienePoints();
         mFragmentServicePlanBottomSheetBinding.txtPlanDis.setPaintFlags(mFragmentServicePlanBottomSheetBinding.txtPlanDis.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         mFragmentServicePlanBottomSheetBinding.btnPayment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //if (Integer.parseInt(amount) > 0) {
+                if (Double.parseDouble(amount) > 0) {
                     if (mode.length() > 0) {
                         if (mode.equalsIgnoreCase("paytm") || mode.equalsIgnoreCase("upi")) {
 //                        if (timer != null) {
@@ -265,17 +265,17 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
                         }
 
                     }
-                /*}else {
+                }else {
                     getRenewOtp(false);
-                }*/
+                }
             }
         });
-        /*mFragmentServicePlanBottomSheetBinding.redeemChk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mFragmentServicePlanBottomSheetBinding.redeemChk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked){
                     if (redeemablePoints > Double.parseDouble(amount)){
-                        redeemablePoints = Integer.parseInt(String.valueOf(redeemablePoints - Double.parseDouble(amount)));
+                        redeemablePoints = Integer.parseInt(String.valueOf(Math.round(redeemablePoints - Double.parseDouble(amount))));
                         amount = String.valueOf(0);
                         mAdapter.setMode();
                     }else if (Double.parseDouble(amount) >= redeemablePoints){
@@ -284,18 +284,19 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
                         redeemablePoints = 0;
                     }
                     mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setPaintFlags(mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                    mFragmentServicePlanBottomSheetBinding.remainingPointsTv.setText("\u20B9" + " " + redeemablePoints);
-                    mFragmentServicePlanBottomSheetBinding.remainingPointsTv.setVisibility(View.VISIBLE);
+                    mFragmentServicePlanBottomSheetBinding.remainingPointsTv.setText(" " + redeemablePoints);
+                    mFragmentServicePlanBottomSheetBinding.remainingPointsTv.setVisibility(GONE);
                 }else {
+                    mAdapter.resetMode();
                     redeemablePoints = actualRedeemPoints;
                     amount = actualAmount;
                     mFragmentServicePlanBottomSheetBinding.remainingPointsTv.setVisibility(GONE);
                     mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setPaintFlags(mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
                 }
-                mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setText("\u20B9" + " " + actualRedeemPoints);
+                mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setText(" " + actualRedeemPoints);
                 mFragmentServicePlanBottomSheetBinding.priceTv.setText("\u20B9" + " " + amount);
             }
-        });*/
+        });
     }
 
     private void showQRCodeDialog() {
@@ -669,7 +670,7 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
                     request.setOrderValue(Double.parseDouble(planData.getDiscountedOrderAmount()));
                     request.setStandardValue(Double.parseDouble(planData.getActualOrderAmount()));
                     request.setSPCode(planData.getSpCode());
-                    //request.setWallet_Point(actualRedeemPoints);
+                    request.setWallet_Point(actualRedeemPoints);
                 } else {
                     request.setAccountId(renewalServicePlans.getAccountId());
                     request.setTaskId(renewalServicePlans.getTaskId());
@@ -678,7 +679,7 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
                     request.setOrderValue(Double.parseDouble(renewalServicePlans.getDiscountedOrderAmount()));
                     request.setStandardValue(Double.parseDouble(renewalServicePlans.getActualOrderAmount()));
                     request.setSPCode(renewalServicePlans.getSpCode());
-                    //request.setWallet_Point(actualRedeemPoints);
+                    request.setWallet_Point(actualRedeemPoints);
                 }
                 controller.setListner(new NetworkResponseListner<List<RenewOrder>>() {
 
@@ -864,15 +865,17 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
     }
 
     private void setHygienePoints(){
+        mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setTypeface(mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.getTypeface(), Typeface.BOLD);
+        mFragmentServicePlanBottomSheetBinding.grandTotalTitleTv.setTypeface(mFragmentServicePlanBottomSheetBinding.grandTotalTitleTv.getTypeface(), Typeface.BOLD);
+        mFragmentServicePlanBottomSheetBinding.priceTv.setTypeface(mFragmentServicePlanBottomSheetBinding.priceTv.getTypeface(), Typeface.BOLD);
         if (actualRedeemPoints > 0) {
+            mFragmentServicePlanBottomSheetBinding.grandTotalLayout.setVisibility(View.VISIBLE);
             mFragmentServicePlanBottomSheetBinding.hygienePointsLayout.setVisibility(View.VISIBLE);
-            mFragmentServicePlanBottomSheetBinding.redeemablePointsTitleTv.setText("Available Hygiene Points");
-            mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setText("\u20B9 " + actualRedeemPoints);
-            mFragmentServicePlanBottomSheetBinding.redeemablePointsTitleTv.setVisibility(View.VISIBLE);
-            mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setVisibility(View.VISIBLE);
+            mFragmentServicePlanBottomSheetBinding.redeemablePointsTitleTv.setText("Hygiene Points");
+            mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setText(" " + actualRedeemPoints);
         }else {
             mFragmentServicePlanBottomSheetBinding.hygienePointsLayout.setVisibility(GONE);
-            mFragmentServicePlanBottomSheetBinding.redeemChk.setVisibility(GONE);
+            mFragmentServicePlanBottomSheetBinding.grandTotalLayout.setVisibility(GONE);
         }
     }
 

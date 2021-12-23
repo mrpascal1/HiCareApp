@@ -369,7 +369,7 @@ class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<Tms
 
     class MyHolder(val context: Context, val binding: LayoutTmsParentAdapterBinding): RecyclerView.ViewHolder(binding.root){
         fun bindItems(item: QuestionList) {
-            binding.txtQuest.text = item.questionText
+            binding.txtQuest.text = item.questionDisplayText
         }
     }
 

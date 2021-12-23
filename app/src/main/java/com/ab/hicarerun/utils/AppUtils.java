@@ -820,7 +820,7 @@ public class AppUtils {
         }
     }
 
-    public static void getTmsQuestions(String taskId, ProgressDialog progressDialog) {
+    public static void getTmsQuestions(String taskId, String lan, ProgressDialog progressDialog) {
         try {
             progressDialog.show();
             NetworkCallController controller = new NetworkCallController();
@@ -871,13 +871,13 @@ public class AppUtils {
                     progressDialog.dismiss();
                 }
             });
-            controller.getTmsQuestions(1011, taskId);
+            controller.getTmsQuestions(1011, taskId, lan);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void getServiceDeliveryQuestions(String taskId){
+    public static void getServiceDeliveryQuestions(String taskId, String lan){
         try {
             NetworkCallController controller = new NetworkCallController();
             controller.setListner(new NetworkResponseListner<List<TmsData>>() {
@@ -904,7 +904,7 @@ public class AppUtils {
 
                 }
             });
-            controller.getServiceDeliveryQuestions(1011, taskId);
+            controller.getServiceDeliveryQuestions(1011, taskId, lan);
         } catch (Exception e) {
             e.printStackTrace();
         }
