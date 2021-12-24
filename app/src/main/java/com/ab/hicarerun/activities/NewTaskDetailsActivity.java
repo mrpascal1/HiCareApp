@@ -38,6 +38,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -464,6 +465,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             }
 //                            AppUtils.getServiceChemicalArea(149, 1, "CMS", true);
                             isPostJobCompletionDone = response.getData().getPostJob_Checklist_Done();
+                            AppUtils.isServiceDeliveryFilled = isPostJobCompletionDone;
                             sta = response.getData().getSchedulingStatus();
                             isCompleted = response.getData().getSchedulingStatus();
                             referralQuestion = response.getData().getRefferalQuestion();
@@ -485,11 +487,11 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             referralDiscount = Integer.parseInt(response.getData().getReferralDiscount());
                             mActualAmountToCollect = response.getData().getActualAmountToCollect();
                             //typeName = response.getData().getTaskTypeName();
-                            if (response.getData().getTaskTypeName().contains("Termites for")){
+                            //if (response.getData().getTaskTypeName().contains("Termites for")){
                                 typeName = "TMS";
                                 AppUtils.getTmsQuestions(taskId, LocaleHelper.getLanguage(NewTaskDetailsActivity.this), progress);
                                 AppUtils.getServiceDeliveryQuestions(taskId, LocaleHelper.getLanguage(NewTaskDetailsActivity.this));
-                            }
+                            //}
                             mTaskCheckList = response.getData().getTaskCheckList();
                             isOnsiteImageRequired = response.getData().getOnsite_Image_Required();
                             mOnsiteImagePath = response.getData().getOnsite_Image_Path();
@@ -1478,6 +1480,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             final AppCompatButton btnSend = promptsView.findViewById(R.id.btnSave);
             final AppCompatButton nextChipBtn = promptsView.findViewById(R.id.nextChipBtn);
             final AppCompatButton backChipBtn = promptsView.findViewById(R.id.backChipBtn);
+            final ImageView cancelBtn = promptsView.findViewById(R.id.cancelBtn);
             final TextView txtTitle = promptsView.findViewById(R.id.txtTitle);
             ArrayList<QuestionList> currentList = new ArrayList<>();
 
@@ -1492,7 +1495,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 map.clear();
             }
 
-            mCheckTmsAdapter = new TmsQuestionsParentAdapter(this);
+            mCheckTmsAdapter = new TmsQuestionsParentAdapter(this, true);
             TmsChipsAdapter chipsAdapter = new TmsChipsAdapter(this, AppUtils.tmsServiceDeliveryChips);
             recyclerView.setAdapter(mCheckTmsAdapter);
             chipsRecyclerView.setAdapter(chipsAdapter);
@@ -1500,6 +1503,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             chipsAdapter.setOnItemClickHandler((position, category) -> {
                 currChip = category;
                 currPos = position;
+                nextChipBtn.setEnabled(true);
+                backChipBtn.setAlpha(1.0f);
 
                 if (currPos == AppUtils.tmsServiceDeliveryChips.size()-1){
                     isLast = true;
@@ -1602,20 +1607,30 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
             btnSend.setOnClickListener(v -> {
                 Log.d("TAG", "Save "+AppUtils.tmsServiceDeliveryList);
-                if (currentList != null && currentList.size() > 0) {
-                    if (TmsUtils.isListChecked(currentList)) {
-                        if (TmsUtils.isImgChecked(currentList)) {
-                            saveCheckList(alertDialog);
-                            alertDialog.dismiss();
-                        } else {
-                            Toasty.error(this, "Image required!", Toasty.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toasty.error(this, "All Questions are mandatory.", Toasty.LENGTH_SHORT).show();
-                    }
+                String tabName = validate(currentList, btnSend, nextChipBtn);
+
+                if (tabName.equals("")) {
+                    saveCheckList(alertDialog);
+                    alertDialog.dismiss();
                 } else {
                     Toasty.error(this, "All Questions are mandatory.", Toasty.LENGTH_SHORT).show();
+                    for (int i = 0; i < AppUtils.tmsServiceDeliveryChips.size(); i++) {
+                        if (AppUtils.tmsServiceDeliveryChips.get(i).equalsIgnoreCase(tabName)){
+                            if (i > currPos){
+                                recyclerView.startAnimation(TmsUtils.inFromRightAnimation());
+                            }else {
+                                recyclerView.startAnimation(TmsUtils.inFromLeftAnimation());
+                            }
+                            chipsAdapter.nextChip(i);
+                        }
+                    }
+                    //Toasty.error(this, "All Questions are mandatory.", Toasty.LENGTH_SHORT).show();
                 }
+
+            });
+
+            cancelBtn.setOnClickListener(v -> {
+                alertDialog.dismiss();
             });
 
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -1707,34 +1722,27 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
     }
 
-    private void validate(ArrayList<QuestionList> currentList, AppCompatButton btnSend, AppCompatButton nextChipBtn){
-        if (TmsUtils.isImgChecked(currentList)) {
-            if (TmsUtils.isListChecked(currentList)) {
-                if (isLast) {
+    private String validate(ArrayList<QuestionList> currentList, AppCompatButton btnSend, AppCompatButton nextChipBtn){
+        String tabName = "";
+        for (int i = 0; i < AppUtils.tmsServiceDeliveryList.size(); i++){
+            tabName = TmsUtils.isListChecked2(AppUtils.tmsServiceDeliveryList.get(i).getQuestionList());
+            if (tabName.equals("")) {
+                tabName = TmsUtils.isImgChecked2(AppUtils.tmsServiceDeliveryList.get(i).getQuestionList());
+                if (tabName.equals("")) {
                     btnSend.setEnabled(true);
                     btnSend.setAlpha(1.0f);
-                }else{
-                    btnSend.setEnabled(false);
+                } else {
+                    btnSend.setEnabled(true);
                     btnSend.setAlpha(0.6f);
+                    return tabName;
                 }
-                nextChipBtn.setEnabled(true);
-                nextChipBtn.setAlpha(1.0f);
             } else {
-                btnSend.setEnabled(false);
+                btnSend.setEnabled(true);
                 btnSend.setAlpha(0.6f);
-
-                nextChipBtn.setEnabled(false);
-                nextChipBtn.setAlpha(0.6f);
+                return tabName;
             }
-        } else {
-            btnSend.setEnabled(false);
-            btnSend.setAlpha(0.6f);
-
-            nextChipBtn.setEnabled(false);
-            nextChipBtn.setAlpha(0.6f);
         }
-        btnSend.setEnabled(true);
-        btnSend.setAlpha(1f);
+        return tabName;
     }
 
     private boolean isImageChecked(List<TaskCheckList> mSaveList) {
@@ -1945,6 +1953,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 public void onResponse(int requestCode, CheckListResponse response) {
                     if (response.getIsSuccess()) {
                         isPostJobCompletionDone = true;
+                        AppUtils.isServiceDeliveryFilled = true;
+                        Toasty.success(NewTaskDetailsActivity.this, "Check-list submitted successfully", Toast.LENGTH_SHORT, true).show();
                         if (Status.equalsIgnoreCase("Completed")) {
                             if (referralChanged) {
                                 isFinalSave = true;

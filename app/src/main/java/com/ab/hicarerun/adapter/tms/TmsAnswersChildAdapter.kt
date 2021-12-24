@@ -20,7 +20,7 @@ import com.ab.hicarerun.network.models.TmsModel.QuestionOption
 import com.ab.hicarerun.utils.AppUtils
 import java.lang.Exception
 
-class TmsAnswersChildAdapter(val context: Context) : RecyclerView.Adapter<TmsAnswersChildAdapter.MyHolder>() {
+class TmsAnswersChildAdapter(val context: Context, private val isServiceDeliverySheet: Boolean) : RecyclerView.Adapter<TmsAnswersChildAdapter.MyHolder>() {
 
     var onTextChangedListener: OnTextChangedListener? = null
     var items: ArrayList<QuestionOption?> = ArrayList()
@@ -48,8 +48,14 @@ class TmsAnswersChildAdapter(val context: Context) : RecyclerView.Adapter<TmsAns
             holder.binding.chkAnswers.visibility = View.GONE
             holder.binding.numberLayout.visibility = View.GONE
             holder.binding.spinnerLayout.visibility = View.GONE
-            if (AppUtils.isInspectionDone){
-                holder.binding.rbAnswers.isEnabled = false
+            if (isServiceDeliverySheet){
+                if (AppUtils.isServiceDeliveryFilled){
+                    holder.binding.rbAnswers.isEnabled = false
+                }
+            }else{
+                if (AppUtils.isInspectionDone){
+                    holder.binding.rbAnswers.isEnabled = false
+                }
             }
         }
         if (ansType.equals("multi select", true)){
@@ -57,8 +63,14 @@ class TmsAnswersChildAdapter(val context: Context) : RecyclerView.Adapter<TmsAns
             holder.binding.spinnerLayout.visibility = View.GONE
             holder.binding.rbAnswers.visibility = View.GONE
             holder.binding.chkAnswers.visibility = View.VISIBLE
-            if (AppUtils.isInspectionDone){
-                holder.binding.chkAnswers.isEnabled = false
+            if (isServiceDeliverySheet){
+                if (AppUtils.isServiceDeliveryFilled){
+                    holder.binding.chkAnswers.isEnabled = false
+                }
+            }else{
+                if (AppUtils.isInspectionDone){
+                    holder.binding.chkAnswers.isEnabled = false
+                }
             }
         }
         if (ansType.equals("numbertext", true)){
@@ -78,8 +90,14 @@ class TmsAnswersChildAdapter(val context: Context) : RecyclerView.Adapter<TmsAns
             }*/
             holder.binding.rbAnswers.visibility = View.GONE
             holder.binding.chkAnswers.visibility = View.GONE
-            if (AppUtils.isInspectionDone){
-                holder.binding.spnType.isEnabled = false
+            if (isServiceDeliverySheet){
+                if (AppUtils.isServiceDeliveryFilled){
+                    holder.binding.spnType.isEnabled = false
+                }
+            }else{
+                if (AppUtils.isInspectionDone){
+                    holder.binding.spnType.isEnabled = false
+                }
             }
         }
 

@@ -84,7 +84,7 @@ class TmsFirstChildFragment : Fragment() {
         questionsResponse = ArrayList()
 
         chipsAdapter = TmsChipsAdapter(requireContext(), chipsArray)
-        questionsParentAdapter = TmsQuestionsParentAdapter(requireContext())
+        questionsParentAdapter = TmsQuestionsParentAdapter(requireContext(), false)
         return view
     }
 
@@ -149,6 +149,9 @@ class TmsFirstChildFragment : Fragment() {
                 }
                 binding.chipsRecyclerView.post {
                     binding.chipsRecyclerView.smoothScrollToPosition(position)
+                }
+                binding.recycleView.post {
+                    binding.recycleView.smoothScrollToPosition(0)
                 }
                 /**
                  * This forEach loop Adding/updating questions

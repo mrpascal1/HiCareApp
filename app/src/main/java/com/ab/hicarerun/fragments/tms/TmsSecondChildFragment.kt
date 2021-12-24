@@ -74,7 +74,7 @@ class TmsSecondChildFragment : Fragment() {
         currentTabList = ArrayList()
         chipsArray.addAll(AppUtils.tmsInspectionChips)
         chipsAdapter = TmsChipsAdapter(requireContext(), chipsArray)
-        questionsParentAdapter = TmsQuestionsParentAdapter(requireContext())
+        questionsParentAdapter = TmsQuestionsParentAdapter(requireContext(), false)
         return view
     }
 
@@ -139,6 +139,9 @@ class TmsSecondChildFragment : Fragment() {
                 binding.chipsRecyclerView.post {
                     binding.chipsRecyclerView.smoothScrollToPosition(position)
                 }
+                binding.recycleView.post {
+                    binding.recycleView.smoothScrollToPosition(0)
+                }
                 AppUtils.tmsInspectionList.forEach {
                     var found = false
                     if (it.questionTab.equals(category, true)){
@@ -149,7 +152,8 @@ class TmsSecondChildFragment : Fragment() {
                         questionsParentAdapter.notifyDataSetChanged()
                     }
                 }
-                validate()
+                //validate()
+                validate2()
                 /*if (!isVisible(binding.configLayout)){
                     val param = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
@@ -186,12 +190,14 @@ class TmsSecondChildFragment : Fragment() {
                     }
                 }
                 questionsParentAdapter.notifyDataSetChanged()
-                validate()
+                //validate()
+                validate2()
             }
         })
         questionsParentAdapter.setOnItemClick(object : TmsQuestionsParentAdapter.OnItemClickListener{
             override fun onItemClicked(position: Int, questionId: Int?, answer: String) {
-                validate()
+                //validate()
+                validate2()
             }
         })
 
@@ -214,9 +220,16 @@ class TmsSecondChildFragment : Fragment() {
             listener.onBackClicked()
         }
         binding.btnSave.setOnClickListener {
-            val listener = parentFragment as SecondChildListener
-            listener.onSaveClicked()
-            Log.d("TAG", "save ${AppUtils.tmsInspectionList}")
+            if (gotoTab()) {
+                val listener = parentFragment as SecondChildListener
+                if (!AppUtils.isInspectionDone) {
+                    listener.onSaveAndNextClicked("Inspection")
+                }
+                listener.onSaveClicked()
+                Log.d("TAG", "save ${AppUtils.tmsInspectionList}")
+            }else{
+                Log.d("TAG", "Missing fields")
+            }
         }
         binding.backChipBtn.setOnClickListener {
             if (currPos > 0){
@@ -231,10 +244,10 @@ class TmsSecondChildFragment : Fragment() {
         binding.nextChipBtn.setOnClickListener {
             if (currPos < chipsArray.size-1){
                 currPos += 1
-                if (!AppUtils.isInspectionDone) {
+                /*if (!AppUtils.isInspectionDone) {
                     val listener = parentFragment as SecondChildListener
                     listener.onSaveAndNextClicked("Inspection", currChip, currentTabList)
-                }
+                }*/
                 binding.recycleView.startAnimation(TmsUtils.inFromRightAnimation())
                 chipsAdapter.nextChip(currPos)
             }else{
@@ -306,7 +319,8 @@ class TmsSecondChildFragment : Fragment() {
                             Log.d("TAG", "Before Modified ${AppUtils.tmsInspectionList}")
                             questionsParentAdapter.notifyDataSetChanged()
                             Log.d("TAG", "Modified ${AppUtils.tmsInspectionList}")
-                            validate()
+                            //validate()
+                            validate2()
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
@@ -319,6 +333,47 @@ class TmsSecondChildFragment : Fragment() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun gotoTab(): Boolean{
+        val tabName = validate2()
+        if (tabName != ""){
+            for (i in 0 until AppUtils.tmsInspectionChips.size) {
+                if (AppUtils.tmsInspectionChips[i].equals(tabName, true)){
+                    if (i > currPos){
+                        binding.recycleView.startAnimation(TmsUtils.inFromRightAnimation())
+                    }else{
+                        binding.recycleView.startAnimation(TmsUtils.inFromLeftAnimation())
+                    }
+                    chipsAdapter.nextChip(i)
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    private fun validate2(): String{
+        var tabName = "";
+        AppUtils.tmsInspectionList.forEach {
+            tabName = TmsUtils.isListChecked2(it.questionList)
+            if (tabName == ""){
+                tabName = TmsUtils.isImgChecked2(it.questionList)
+                if (tabName == ""){
+                    binding.btnSave.isEnabled = true
+                    binding.btnSave.alpha = 1.0f
+                } else {
+                    binding.btnSave.isEnabled = true
+                    binding.btnSave.alpha = 0.6f
+                    return tabName
+                }
+            } else {
+                binding.btnSave.isEnabled = true
+                binding.btnSave.alpha = 0.6f
+                return tabName
+            }
+        }
+        return tabName
     }
 
     private fun validate(){
@@ -407,7 +462,7 @@ class TmsSecondChildFragment : Fragment() {
 
     interface SecondChildListener{
         fun onSaveClicked()
-        fun onSaveAndNextClicked(type: String, questionTab: String, questionList: ArrayList<QuestionTabList>)
+        fun onSaveAndNextClicked(type: String)
         fun onBackClicked()
     }
 }

@@ -185,7 +185,7 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
         //dialog?.dismiss()
     }
 
-    override fun onSaveAndNextClicked(type: String, questionTab: String, questionList: ArrayList<QuestionTabList>) {
+    override fun onSaveAndNextClicked(type: String) {
         val controller = NetworkCallController()
         controller.setListner(object : NetworkResponseListner<BaseResponse>{
             override fun onResponse(requestCode: Int, response: BaseResponse?) {

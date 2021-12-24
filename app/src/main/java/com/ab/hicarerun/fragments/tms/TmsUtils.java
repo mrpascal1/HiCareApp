@@ -97,6 +97,24 @@ public class TmsUtils {
         }
         return isRequired;
     }
+
+    public static String isImgChecked2(List<QuestionList> inspectionList) {
+        boolean isRequired = true;
+        String tabName = "";
+        for (QuestionList data : inspectionList) {
+            if (data.isPictureRequired()) {
+                if (data.getPictureURL() != null && !data.getPictureURL().isEmpty()) {
+                    isRequired = true;
+                } else {
+                    isRequired = false;
+                    tabName = data.getTabName();
+                    break;
+                }
+            }
+        }
+        return tabName;
+    }
+
     public static boolean isListChecked(List<QuestionList> listData) {
         for (QuestionList data : listData) {
             if (data.getAnswer() == null || data.getAnswer().length() == 0) {
@@ -104,6 +122,15 @@ public class TmsUtils {
             }
         }
         return true;
+    }
+
+    public static String isListChecked2(List<QuestionList> listData){
+        for (QuestionList data : listData) {
+            if (data.getAnswer() == null || data.getAnswer().length() == 0) {
+                return data.getTabName();
+            }
+        }
+        return "";
     }
 
     public static Animation inFromLeftAnimation() {

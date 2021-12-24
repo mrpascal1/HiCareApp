@@ -16,6 +16,6 @@ data class QuestionList (
 	@SerializedName("IsPictureRequired") val isPictureRequired : Boolean?,
 	@SerializedName("PictureURL") var pictureURL : ArrayList<String>?,
 	@SerializedName("TabName") var tabName : String?,
-	@SerializedName("TabIndex") var tabIndex : String?,
+	@SerializedName("TabIndex") var tabIndex : Int?,
 	var qPictureURL : ArrayList<QuestionImageUrl>?
 )

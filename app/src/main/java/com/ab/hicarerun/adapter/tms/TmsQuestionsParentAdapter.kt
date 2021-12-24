@@ -14,7 +14,7 @@ import com.ab.hicarerun.network.models.TmsModel.QuestionList
 import com.ab.hicarerun.utils.AppUtils
 import com.squareup.picasso.Picasso
 
-class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<TmsQuestionsParentAdapter.MyHolder>() {
+class TmsQuestionsParentAdapter(val context: Context, private val isServiceDeliverySheet: Boolean) : RecyclerView.Adapter<TmsQuestionsParentAdapter.MyHolder>() {
 
     var items: ArrayList<QuestionList> = ArrayList()
     var optionList: ArrayList<Option> = ArrayList()
@@ -255,7 +255,7 @@ class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<Tms
             onCameraClickListener?.onCancelClicked(position, items[position].questionId, 3)
         }
 
-        val answersChildAdapter = TmsAnswersChildAdapter(context)
+        val answersChildAdapter = TmsAnswersChildAdapter(context, isServiceDeliverySheet)
         Log.d("TAG", "TYPE ${items[position].questionType}")
         if (items[position].questionType.equals("DropdownSingleSelect")){
             answersChildAdapter.addNumberText(items[position].questionStrOption, items[position].answer, items[position].questionType, items[position].questionId)
@@ -326,22 +326,42 @@ class TmsQuestionsParentAdapter(val context: Context) : RecyclerView.Adapter<Tms
             onItemClickHandler?.onItemClick(position)
             notifyDataSetChanged()
         }*/
-        if (AppUtils.isInspectionDone){
-            holder.binding.relPhoto.isEnabled = false
-            holder.binding.relPhoto2.isEnabled = false
-            holder.binding.relPhoto3.isEnabled = false
-            holder.binding.relPhoto4.isEnabled = false
+        if (isServiceDeliverySheet){
+            if (AppUtils.isServiceDeliveryFilled) {
+                holder.binding.relPhoto.isEnabled = false
+                holder.binding.relPhoto2.isEnabled = false
+                holder.binding.relPhoto3.isEnabled = false
+                holder.binding.relPhoto4.isEnabled = false
 
 
-            holder.binding.lnrUpload.isEnabled = false
-            holder.binding.lnrUpload2.isEnabled = false
-            holder.binding.lnrUpload3.isEnabled = false
-            holder.binding.lnrUpload4.isEnabled = false
+                holder.binding.lnrUpload.isEnabled = false
+                holder.binding.lnrUpload2.isEnabled = false
+                holder.binding.lnrUpload3.isEnabled = false
+                holder.binding.lnrUpload4.isEnabled = false
 
-            holder.binding.imageCancel.isEnabled = false
-            holder.binding.imageCancel2.isEnabled = false
-            holder.binding.imageCancel3.isEnabled = false
-            holder.binding.imageCancel4.isEnabled = false
+                holder.binding.imageCancel.isEnabled = false
+                holder.binding.imageCancel2.isEnabled = false
+                holder.binding.imageCancel3.isEnabled = false
+                holder.binding.imageCancel4.isEnabled = false
+            }
+        }else{
+            if (AppUtils.isInspectionDone){
+                holder.binding.relPhoto.isEnabled = false
+                holder.binding.relPhoto2.isEnabled = false
+                holder.binding.relPhoto3.isEnabled = false
+                holder.binding.relPhoto4.isEnabled = false
+
+
+                holder.binding.lnrUpload.isEnabled = false
+                holder.binding.lnrUpload2.isEnabled = false
+                holder.binding.lnrUpload3.isEnabled = false
+                holder.binding.lnrUpload4.isEnabled = false
+
+                holder.binding.imageCancel.isEnabled = false
+                holder.binding.imageCancel2.isEnabled = false
+                holder.binding.imageCancel3.isEnabled = false
+                holder.binding.imageCancel4.isEnabled = false
+            }
         }
     }
 

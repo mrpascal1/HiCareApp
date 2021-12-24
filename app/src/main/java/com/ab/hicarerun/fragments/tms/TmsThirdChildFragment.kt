@@ -147,11 +147,17 @@ class TmsThirdChildFragment(val type: String) : Fragment() {
                                     audios.add(it.recommendationAudioUrl)
                                 }
                             }
+                            if (audios.size > 0){
+                                binding.speakerIv.visibility = View.VISIBLE
+                            }else{
+                                binding.speakerIv.visibility = View.GONE
+                            }
                             mAdapter.setData(items)
                             mAdapter.notifyDataSetChanged()
                         } else {
                             binding.chkAgree.visibility = View.GONE
                             binding.recycleView.visibility = View.GONE
+                            binding.speakerIv.visibility = View.GONE
                             binding.txtEmpty.visibility = View.VISIBLE
                             binding.btnHome.isEnabled = true
                             binding.btnHome.alpha = 1f
