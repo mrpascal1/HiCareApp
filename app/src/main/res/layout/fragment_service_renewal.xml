@@ -67,7 +67,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:textSize="18sp"
-                        android:textColor="@color/red"
+                        android:textColor="@color/colorPrimary"
                         android:text="Hygiene Points"
                         android:visibility="gone"/>
 

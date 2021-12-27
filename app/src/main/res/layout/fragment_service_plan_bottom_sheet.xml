@@ -67,6 +67,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
+                        android:text=""
                         android:textSize="16sp" />
 
                     <TextView
@@ -136,10 +137,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Hygiene points"
-                        android:textColor="@color/red"
+                        android:textColor="@color/black"
                         android:textSize="16sp"
-                        android:layout_weight="1.6"
-                        android:layout_marginStart="4dp"/>
+                        android:layout_weight="1.6"/>
 
                     <LinearLayout
                         android:orientation="vertical"
@@ -181,8 +181,10 @@
 
                 <CheckBox
                     android:id="@+id/redeemChk"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
                     android:text="Use hygiene points"
                     android:layout_marginTop="2dp"/>
 
@@ -198,11 +200,10 @@
                         android:id="@+id/grandTotalTitleTv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Grand Total"
+                        android:text="Total Amount"
                         android:textColor="@color/red"
                         android:textSize="16sp"
-                        android:layout_weight="1.6"
-                        android:layout_marginStart="4dp"/>
+                        android:layout_weight="1.6"/>
 
                     <LinearLayout
                         android:orientation="vertical"
@@ -228,6 +229,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="8dp"
                 android:text="SERVICE DETAIL"
+                android:visibility="gone"
                 android:textColor="@color/black" />
 
             <TextView
@@ -236,6 +238,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
+                android:visibility="gone"
                 android:layout_marginRight="10dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
