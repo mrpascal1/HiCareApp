@@ -487,11 +487,11 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             referralDiscount = Integer.parseInt(response.getData().getReferralDiscount());
                             mActualAmountToCollect = response.getData().getActualAmountToCollect();
                             //typeName = response.getData().getTaskTypeName();
-                            //if (response.getData().getTaskTypeName().contains("Termites for")){
+                            if (response.getData().getTaskTypeName().contains("Termites for")){
                                 typeName = "TMS";
                                 AppUtils.getTmsQuestions(taskId, LocaleHelper.getLanguage(NewTaskDetailsActivity.this), progress);
                                 AppUtils.getServiceDeliveryQuestions(taskId, LocaleHelper.getLanguage(NewTaskDetailsActivity.this));
-                            //}
+                            }
                             mTaskCheckList = response.getData().getTaskCheckList();
                             isOnsiteImageRequired = response.getData().getOnsite_Image_Required();
                             mOnsiteImagePath = response.getData().getOnsite_Image_Path();
@@ -1610,7 +1610,9 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 String tabName = validate(currentList, btnSend, nextChipBtn);
 
                 if (tabName.equals("")) {
-                    saveCheckList(alertDialog);
+                    if (!AppUtils.isServiceDeliveryFilled) {
+                        saveCheckList(alertDialog);
+                    }
                     alertDialog.dismiss();
                 } else {
                     Toasty.error(this, "All Questions are mandatory.", Toasty.LENGTH_SHORT).show();

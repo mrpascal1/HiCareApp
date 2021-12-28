@@ -58,7 +58,7 @@ public class ServiceRenewalFragment extends BaseFragment {
     private Double mDiscount = 0.0;
     private List<NotRenewalReasons> notRenewalReasonsList = new ArrayList<>();
     private Context mContext;
-    private int walletPoints = 0;
+    private double walletPoints = 0;
 
 
     public ServiceRenewalFragment() {

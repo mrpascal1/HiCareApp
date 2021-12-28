@@ -1172,7 +1172,11 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     if (status.equals("On-Site") && !mTaskDetailsData.get(0).getPostJob_Checklist_Done() && mTaskDetailsData.get(0).getTaskCheckList() != null && mTaskDetailsData.get(0).getTaskCheckList().size() > 0) {
                         mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
                     } else {
-                        mFragmentServiceInfoBinding.btnCheckList.setVisibility(GONE);
+                        if (status.equals("On-Site") && mTaskDetailsData.get(0).getTaskTypeName().contains("Termites for")){
+                            mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
+                        }else {
+                            mFragmentServiceInfoBinding.btnCheckList.setVisibility(GONE);
+                        }
                     }
 
                     mFragmentServiceInfoBinding.imgUser.setOnClickListener(new View.OnClickListener() {
@@ -1186,11 +1190,12 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
                     mFragmentServiceInfoBinding.btnCheckList.setOnClickListener(v -> {
                         if (!isPostJobCompletionDone) {
-                            isPostJobCompletionDone = true;
+                            //isPostJobCompletionDone = true;
                             if (mTaskDetailsData.get(0).getTaskTypeName().contains("Termites for")){
                                 //mListCallback.onPostJobButtonClicked();
                                 mListCallback.onTmsPostJobButtonClicked();
                             }else {
+                                isPostJobCompletionDone = true;
                                 mListCallback.onPostJobButtonClicked();
                             }
                         } else {
@@ -1218,7 +1223,11 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     if (mTaskDetailsData.get(0).getConsultationInspectionRequired() && (status.equals("On-Site") || status.equals("Completed"))) {
                         mFragmentServiceInfoBinding.lnrConsIns.setVisibility(View.VISIBLE);
                     } else {
-                        mFragmentServiceInfoBinding.lnrConsIns.setVisibility(View.GONE);
+                        if (mTaskDetailsData.get(0).getTaskTypeName().contains("Termites for") && (status.equals("On-Site") || status.equals("Completed"))){
+                            mFragmentServiceInfoBinding.lnrConsIns.setVisibility(View.VISIBLE);
+                        }else {
+                            mFragmentServiceInfoBinding.lnrConsIns.setVisibility(View.GONE);
+                        }
                     }
 
                     if (AppUtils.isInspectionDone) {

@@ -116,21 +116,21 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
     private String OTP_1 = "";
     private String OTP_2 = "";
     private String edt_OTP = "";
-    private int redeemablePoints = 0;
+    private double redeemablePoints = 0;
     private double utilizedPoints = 0;
     private String actualAmount = "";
-    private int actualRedeemPoints = 0;
+    private double actualRedeemPoints = 0;
     private ProgressDialog progress;
     private Context mContext;
 
 
-    public ServicePlanBottomSheet(RenewalServicePlan renewalServicePlans, int redeemablePoints) {
+    public ServicePlanBottomSheet(RenewalServicePlan renewalServicePlans, double redeemablePoints) {
         this.renewalServicePlans = renewalServicePlans;
         this.redeemablePoints = redeemablePoints;
         actualRedeemPoints = redeemablePoints;
     }
 
-    public ServicePlanBottomSheet(PlanData planData, int redeemablePoints) {
+    public ServicePlanBottomSheet(PlanData planData, double redeemablePoints) {
         this.planData = planData;
         this.redeemablePoints = redeemablePoints;
         actualRedeemPoints = redeemablePoints;
@@ -297,7 +297,7 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
                     mFragmentServicePlanBottomSheetBinding.remainingPointsTv.setVisibility(GONE);
                     //mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setPaintFlags(mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
                 }
-                mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setText(" " + actualRedeemPoints);
+                //mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setText(" " + actualRedeemPoints);
                 mFragmentServicePlanBottomSheetBinding.priceTv.setText("\u20B9" + " " + amount);
             }
         });
@@ -878,7 +878,11 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
             mFragmentServicePlanBottomSheetBinding.grandTotalLayout.setVisibility(View.VISIBLE);
             mFragmentServicePlanBottomSheetBinding.hygienePointsLayout.setVisibility(View.VISIBLE);
             mFragmentServicePlanBottomSheetBinding.redeemablePointsTitleTv.setText("Hygiene Points");
-            mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setText(" " + actualRedeemPoints);
+            if (redeemablePoints >= Double.parseDouble(actualAmount)){
+                mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setText(" " + actualAmount);
+            }else {
+                mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setText(" " + actualRedeemPoints);
+            }
         }else {
             mFragmentServicePlanBottomSheetBinding.hygienePointsLayout.setVisibility(GONE);
             mFragmentServicePlanBottomSheetBinding.grandTotalLayout.setVisibility(GONE);
