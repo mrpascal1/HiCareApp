@@ -251,7 +251,7 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
         mFragmentServicePlanBottomSheetBinding.btnPayment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Double.parseDouble(amount) > 0) {
+                if (Double.parseDouble(amount) > 0.0 && Double.parseDouble(amount) > 0.00) {
                     if (mode.length() > 0) {
                         if (mode.equalsIgnoreCase("paytm") || mode.equalsIgnoreCase("upi")) {
 //                        if (timer != null) {
@@ -874,11 +874,11 @@ public class ServicePlanBottomSheet extends BottomSheetDialogFragment {
         mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setTypeface(mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.getTypeface(), Typeface.BOLD);
         //mFragmentServicePlanBottomSheetBinding.grandTotalTitleTv.setTypeface(mFragmentServicePlanBottomSheetBinding.grandTotalTitleTv.getTypeface(), Typeface.BOLD);
         mFragmentServicePlanBottomSheetBinding.priceTv.setTypeface(mFragmentServicePlanBottomSheetBinding.priceTv.getTypeface(), Typeface.BOLD);
-        if (actualRedeemPoints > 0) {
+        if (actualRedeemPoints > 0.0 && actualRedeemPoints > 0.00) {
             mFragmentServicePlanBottomSheetBinding.grandTotalLayout.setVisibility(View.VISIBLE);
             mFragmentServicePlanBottomSheetBinding.hygienePointsLayout.setVisibility(View.VISIBLE);
             mFragmentServicePlanBottomSheetBinding.redeemablePointsTitleTv.setText("Hygiene Points");
-            if (redeemablePoints >= Double.parseDouble(actualAmount)){
+            if (actualRedeemPoints >= Double.parseDouble(actualAmount)){
                 mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setText(" " + actualAmount);
             }else {
                 mFragmentServicePlanBottomSheetBinding.redeemablePointsTv.setText(" " + actualRedeemPoints);

@@ -58,7 +58,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.NewBarcodeActivity"></activity>
+        <activity android:name=".activities.InventoryActivity"></activity>
+        <activity android:name=".activities.NewBarcodeActivity" />
         <activity
             android:name=".activities.ZoomTransparentPopupActivity"
             android:exported="true"

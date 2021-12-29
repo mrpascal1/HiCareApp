@@ -705,6 +705,9 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 if (item.toString().equalsIgnoreCase("Home")) {
                     getSupportFragmentManager().beginTransaction().replace(mActivityHomeBinding.container.getId(), HomeFragment.newInstance()).addToBackStack(null).commit();
                     mActivityHomeBinding.drawer.closeDrawers();
+                } else if (item.toString().equalsIgnoreCase(this.getResources().getString(R.string.inventory))) {
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, InventoryActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
                 } else if (item.toString().equalsIgnoreCase(this.getResources().getString(R.string.shiksha))) {
                     mActivityHomeBinding.drawer.closeDrawers();
                     startActivity(new Intent(HomeActivity.this, ActivityQuizCategory.class).putExtra(HomeActivity.ARG_EVENT, false));
@@ -953,12 +956,14 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
             MenuItem routineCheck = menu.findItem(R.id.nav_routine);
             MenuItem assignCode = menu.findItem(R.id.nav_tsScanner);
             MenuItem tsVerify = menu.findItem(R.id.nav_tsVerfication);
+            MenuItem inventory = menu.findItem(R.id.nav_inventory);
             if (isTsEnable.equals("0")) {
                 groom.setVisible(true);
                 jobCount.setVisible(true);
                 routineCheck.setVisible(true);
                 assignCode.setVisible(true);
                 tsVerify.setVisible(true);
+                inventory.setVisible(true);
 
             } else {
                 groom.setVisible(false);
@@ -966,6 +971,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 routineCheck.setVisible(false);
                 assignCode.setVisible(false);
                 tsVerify.setVisible(false);
+                inventory.setVisible(false);
             }
             PackageInfo pInfo = null;
             try {
@@ -997,6 +1003,11 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 case R.id.nav_home:
 //                    getSupportFragmentManager().beginTransaction().replace(mActivityHomeBinding.container.getId(), HomeFragment.newInstance()).addToBackStack(null).commit();
                     mActivityHomeBinding.drawer.closeDrawers();
+                    break;
+
+                case R.id.nav_inventory:
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, InventoryActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
                     break;
 
                 case R.id.nav_quiz:
