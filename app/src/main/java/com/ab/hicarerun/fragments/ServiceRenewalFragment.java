@@ -308,7 +308,7 @@ public class ServiceRenewalFragment extends BaseFragment {
                         if (response.getData() != null) {
                             Log.d("TAG", "" + response);
                             walletPoints  = response.getData().getTotalRedeemablePointsInWallet();
-                            mFragmentServiceRenewalBinding.walletPointsTitleTv.setText("Hygiene Points");
+                            mFragmentServiceRenewalBinding.walletPointsTitleTv.setText("Available Hygiene Points");
                             mFragmentServiceRenewalBinding.walletPointsTv.setText(" " + walletPoints);
                             mFragmentServiceRenewalBinding.walletPointsTitleTv.setVisibility(View.VISIBLE);
                             mFragmentServiceRenewalBinding.walletPointLayout.setVisibility(View.VISIBLE);

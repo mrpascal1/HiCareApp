@@ -30,8 +30,8 @@ class TmsChipsAdapter(val context: Context, val items: ArrayList<String>) : Recy
             holder.binding.lnrCategory.background = context.resources.getDrawable(R.drawable.green_round_border);
             holder.binding.categoryTv.setTextColor(context.resources.getColor(R.color.colorPrimary));
         } else {
-            holder.binding.cardView.setCardBackgroundColor(context.resources.getColor(R.color.greyclose));
-            holder.binding.lnrCategory.background = context.resources.getDrawable(R.drawable.white_round_border);
+            holder.binding.cardView.setCardBackgroundColor(context.resources.getColor(R.color.colorPrimary));
+            holder.binding.lnrCategory.background = context.resources.getDrawable(R.drawable.white_round_border_tms);
             holder.binding.categoryTv.setTextColor(context.resources.getColor(R.color.greyclose));
         }
         holder.itemView.setOnClickListener {

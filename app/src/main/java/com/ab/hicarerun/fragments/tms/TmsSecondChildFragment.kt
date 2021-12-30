@@ -35,6 +35,7 @@ import com.ab.hicarerun.network.models.LoginResponse
 import com.ab.hicarerun.network.models.TmsModel.QuestionList
 import com.ab.hicarerun.network.models.TmsModel.QuestionTabList
 import com.ab.hicarerun.utils.AppUtils
+import es.dmoral.toasty.Toasty
 import io.realm.RealmResults
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -228,6 +229,7 @@ class TmsSecondChildFragment : Fragment() {
                 listener.onSaveClicked()
                 Log.d("TAG", "save ${AppUtils.tmsInspectionList}")
             }else{
+                Toasty.error(requireContext(), "All fields are mandatory").show()
                 Log.d("TAG", "Missing fields")
             }
         }

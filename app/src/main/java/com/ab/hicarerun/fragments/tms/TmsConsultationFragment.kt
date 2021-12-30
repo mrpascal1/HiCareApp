@@ -29,6 +29,7 @@ import com.ab.hicarerun.network.models.TmsModel.TmsData
 import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.ProgressBarDrawable
 import com.zipow.cmmlib.AppUtil
+import es.dmoral.toasty.Toasty
 import io.realm.RealmResults
 
 
@@ -190,9 +191,10 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
         controller.setListner(object : NetworkResponseListner<BaseResponse>{
             override fun onResponse(requestCode: Int, response: BaseResponse?) {
                 if (response?.isSuccess == true){
-                    Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show()
+                    //Toasty.success(requireContext(), "OTP sent successfully").show()
+                    //Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show()
                 }else{
-                    Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Server error", Toast.LENGTH_SHORT).show()
                 }
             }
 

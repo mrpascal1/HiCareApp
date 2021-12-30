@@ -136,7 +136,7 @@
                         android:id="@+id/redeemablePointsTitleTv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Hygiene points"
+                        android:text="Hygiene points applicable"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         android:layout_weight="1.6"/>
@@ -200,7 +200,7 @@
                         android:id="@+id/grandTotalTitleTv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Total Amount"
+                        android:text="Amount to collect"
                         android:textColor="@color/red"
                         android:textSize="16sp"
                         android:layout_weight="1.6"/>
