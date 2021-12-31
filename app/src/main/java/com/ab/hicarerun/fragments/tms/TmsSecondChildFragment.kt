@@ -145,7 +145,7 @@ class TmsSecondChildFragment : Fragment() {
                 }
                 AppUtils.tmsInspectionList.forEach {
                     var found = false
-                    if (it.questionTab.equals(category, true)){
+                    if (it.questionDisplayTab.equals(category, true)){
                         currentList.clear()
                         currentList.addAll(it.questionList)
                         questionsParentAdapter.addData(it.questionList)
@@ -179,7 +179,7 @@ class TmsSecondChildFragment : Fragment() {
                 checkPosition = position
                 val tmsCList = ArrayList<QuestionList>()
                 AppUtils.tmsInspectionList.forEach {
-                    if (it.questionTab == currChip) {
+                    if (it.questionDisplayTab == currChip) {
                         tmsCList.addAll(it.questionList)
                     }
                 }
@@ -288,7 +288,7 @@ class TmsSecondChildFragment : Fragment() {
                         try {
                             val tmsCList = ArrayList<QuestionList>()
                             AppUtils.tmsInspectionList.forEach {
-                                if (it.questionTab == currChip) {
+                                if (it.questionDisplayTab == currChip) {
                                     tmsCList.addAll(it.questionList)
                                 }
                             }
@@ -341,7 +341,7 @@ class TmsSecondChildFragment : Fragment() {
         val tabName = validate2()
         if (tabName != ""){
             for (i in 0 until AppUtils.tmsInspectionChips.size) {
-                if (AppUtils.tmsInspectionChips[i].equals(tabName, true)){
+                if (tabName == i.toString()){
                     if (i > currPos){
                         binding.recycleView.startAnimation(TmsUtils.inFromRightAnimation())
                     }else{
@@ -350,6 +350,15 @@ class TmsSecondChildFragment : Fragment() {
                     chipsAdapter.nextChip(i)
                     return false
                 }
+                /*if (AppUtils.tmsInspectionChips[i].equals(tabName, true)){
+                    if (i > currPos){
+                        binding.recycleView.startAnimation(TmsUtils.inFromRightAnimation())
+                    }else{
+                        binding.recycleView.startAnimation(TmsUtils.inFromLeftAnimation())
+                    }
+                    chipsAdapter.nextChip(i)
+                    return false
+                }*/
             }
         }
         return true

@@ -159,7 +159,7 @@ class TmsFirstChildFragment : Fragment() {
                  * according to the chips (Tabs).
                 * */
                 AppUtils.tmsConsultationList.forEach {
-                    if (it.questionTab.equals(category, true)){
+                    if (it.questionDisplayTab.equals(category, true)){
                         currentList.clear()
                         currentList.addAll(it.questionList)
                         questionsParentAdapter.addData(it.questionList)
@@ -200,7 +200,7 @@ class TmsFirstChildFragment : Fragment() {
                 checkPosition = position
                 val tmsCList = ArrayList<QuestionList>()
                 AppUtils.tmsInspectionList.forEach {
-                    if (it.questionTab == currChip) {
+                    if (it.questionDisplayTab == currChip) {
                         tmsCList.addAll(it.questionList)
                     }
                 }
@@ -342,7 +342,7 @@ class TmsFirstChildFragment : Fragment() {
                         try {
                             val tmsCList = ArrayList<QuestionList>()
                             AppUtils.tmsConsultationList.forEach {
-                                if (it.questionTab == currChip) {
+                                if (it.questionDisplayTab == currChip) {
                                     tmsCList.addAll(it.questionList)
                                 }
                             }

@@ -846,7 +846,7 @@ public class AppUtils {
                             if (data.getType().equalsIgnoreCase("Consultation")) {
                                 Log.d("TAG", "Found consultation");
                                 for (int i =0; i<data.getQuestionTabList().size(); i++){
-                                    tmsConsultationChips.add(data.getQuestionTabList().get(i).getQuestionTab());
+                                    tmsConsultationChips.add(data.getQuestionTabList().get(i).getQuestionDisplayTab());
                                 }
                                 Log.d("TAG", "Chips "+tmsConsultationChips.toString());
                                 tmsConsultationList.addAll(data.getQuestionTabList());
@@ -854,7 +854,7 @@ public class AppUtils {
 //                                mAdapter.notifyDataSetChanged();
                             } else {
                                 for (int i =0; i<data.getQuestionTabList().size(); i++){
-                                    tmsInspectionChips.add(data.getQuestionTabList().get(i).getQuestionTab());
+                                    tmsInspectionChips.add(data.getQuestionTabList().get(i).getQuestionDisplayTab());
                                 }
                                 tmsInspectionList.addAll(data.getQuestionTabList());
                             }
@@ -892,7 +892,7 @@ public class AppUtils {
                             Log.d("TAG", "Looping : Inside Data");
                             if (data.getType().equalsIgnoreCase("Service Delivery")){
                                 for (int i =0; i<data.getQuestionTabList().size(); i++){
-                                    tmsServiceDeliveryChips.add(data.getQuestionTabList().get(i).getQuestionTab());
+                                    tmsServiceDeliveryChips.add(data.getQuestionTabList().get(i).getQuestionDisplayTab());
                                 }
                                 tmsServiceDeliveryList.addAll(data.getQuestionTabList());
                             }

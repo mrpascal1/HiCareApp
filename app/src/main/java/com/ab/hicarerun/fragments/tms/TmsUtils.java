@@ -107,7 +107,7 @@ public class TmsUtils {
                     isRequired = true;
                 } else {
                     isRequired = false;
-                    tabName = data.getTabName();
+                    tabName = String.valueOf(data.getTabIndex());
                     break;
                 }
             }
@@ -127,7 +127,7 @@ public class TmsUtils {
     public static String isListChecked2(List<QuestionList> listData){
         for (QuestionList data : listData) {
             if (data.getAnswer() == null || data.getAnswer().length() == 0) {
-                return data.getTabName();
+                return String.valueOf(data.getTabIndex());
             }
         }
         return "";

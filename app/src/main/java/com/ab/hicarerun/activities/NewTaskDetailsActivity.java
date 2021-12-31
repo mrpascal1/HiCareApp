@@ -1519,7 +1519,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                     backChipBtn.setVisibility(View.VISIBLE);
                 }
                 for (QuestionTabList it : AppUtils.tmsServiceDeliveryList) {
-                    if (it.getQuestionTab().equalsIgnoreCase(category)){
+                    if (it.getQuestionDisplayTab().equalsIgnoreCase(category)){
                         currentList.clear();
                         currentList.addAll(it.getQuestionList());
                         mCheckTmsAdapter.addData(it.getQuestionList());
@@ -1559,7 +1559,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                     checkPosition = position;
                     ArrayList<QuestionList> tmsCList = new ArrayList<>();
                     for (QuestionTabList it : AppUtils.tmsServiceDeliveryList) {
-                        if (it.getQuestionTab().equals(currChip)) {
+                        if (it.getQuestionDisplayTab().equals(currChip)) {
                             tmsCList.addAll(it.getQuestionList());
                         }
                     }
@@ -1617,7 +1617,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 } else {
                     Toasty.error(this, "All Questions are mandatory.", Toasty.LENGTH_SHORT).show();
                     for (int i = 0; i < AppUtils.tmsServiceDeliveryChips.size(); i++) {
-                        if (AppUtils.tmsServiceDeliveryChips.get(i).equalsIgnoreCase(tabName)){
+                        if (String.valueOf(i).equals(tabName)){
                             if (i > currPos){
                                 recyclerView.startAnimation(TmsUtils.inFromRightAnimation());
                             }else {
@@ -1625,6 +1625,14 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             }
                             chipsAdapter.nextChip(i);
                         }
+                        /*if (AppUtils.tmsServiceDeliveryChips.get(i).equalsIgnoreCase(tabName)){
+                            if (i > currPos){
+                                recyclerView.startAnimation(TmsUtils.inFromRightAnimation());
+                            }else {
+                                recyclerView.startAnimation(TmsUtils.inFromLeftAnimation());
+                            }
+                            chipsAdapter.nextChip(i);
+                        }*/
                     }
                     //Toasty.error(this, "All Questions are mandatory.", Toasty.LENGTH_SHORT).show();
                 }
@@ -1906,7 +1914,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         if (isFromTms) {
                             ArrayList<QuestionList> tmsCList = new ArrayList<>();
                             for (QuestionTabList it : AppUtils.tmsServiceDeliveryList) {
-                                if (it.getQuestionTab().equals(currChip)) {
+                                if (it.getQuestionDisplayTab().equals(currChip)) {
                                     tmsCList.addAll(it.getQuestionList());
                                 }
                             }

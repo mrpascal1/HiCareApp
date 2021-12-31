@@ -5,11 +5,20 @@ import android.os.Bundle
 import android.view.MenuItem
 import com.ab.hicarerun.BaseActivity
 import com.ab.hicarerun.R
+import com.ab.hicarerun.databinding.ActivityInventoryBinding
 
 class InventoryActivity : BaseActivity() {
+    lateinit var binding: ActivityInventoryBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_inventory)
+        binding = ActivityInventoryBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
+        binding.backIv.setOnClickListener {
+            getBack()
+        }
     }
 
     private fun getBack(){

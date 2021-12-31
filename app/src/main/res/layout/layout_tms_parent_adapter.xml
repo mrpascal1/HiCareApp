@@ -15,7 +15,6 @@
             android:layout_height="wrap_content"
             android:text="In what age range did you write?"
             android:textSize="17dp"
-            android:layout_toLeftOf="@id/basePhotoLayout"
             android:textColor="@color/black"
             android:layout_marginTop="12dp"
             android:textStyle="bold"
@@ -47,11 +46,10 @@
 
         <LinearLayout
             android:id="@+id/basePhotoLayout"
+            android:layout_below="@id/txtQuest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:orientation="vertical"
-            android:layout_alignParentEnd="true">
+            android:orientation="horizontal">
             <RelativeLayout
                 android:id="@+id/relPhoto"
                 android:layout_width="40dp"
@@ -346,8 +344,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="3dp"
-            android:layout_below="@id/txtQuest"
-            android:layout_toLeftOf="@id/basePhotoLayout"
+            android:layout_below="@id/basePhotoLayout"
             tools:listitem="@layout/layout_tms_child_adapter"/>
 
     </RelativeLayout>
