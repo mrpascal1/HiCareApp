@@ -52,6 +52,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -486,8 +487,9 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             technicianMobileNo = response.getData().getTechnicianMobileNo();
                             referralDiscount = Integer.parseInt(response.getData().getReferralDiscount());
                             mActualAmountToCollect = response.getData().getActualAmountToCollect();
+                            AppUtils.sequenceNo = response.getData().getService_Sequence_Number();
                             //typeName = response.getData().getTaskTypeName();
-                            if (response.getData().getTaskTypeName().contains("Termites for")){
+                            if (response.getData().isTMS()){
                                 typeName = "TMS";
                                 AppUtils.getTmsQuestions(taskId, LocaleHelper.getLanguage(NewTaskDetailsActivity.this), progress);
                                 AppUtils.getServiceDeliveryQuestions(taskId, LocaleHelper.getLanguage(NewTaskDetailsActivity.this));
@@ -1482,6 +1484,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             final AppCompatButton backChipBtn = promptsView.findViewById(R.id.backChipBtn);
             final ImageView cancelBtn = promptsView.findViewById(R.id.cancelBtn);
             final TextView txtTitle = promptsView.findViewById(R.id.txtTitle);
+            final NestedScrollView nestedScrollView = promptsView.findViewById(R.id.nestedScrollView);
             ArrayList<QuestionList> currentList = new ArrayList<>();
 
             txtTitle.setTypeface(txtTitle.getTypeface(), Typeface.BOLD);
@@ -1527,10 +1530,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                     }
                 }
                 chipsRecyclerView.post(() -> chipsRecyclerView.smoothScrollToPosition(position));
-                recyclerView.post(() -> recyclerView.smoothScrollToPosition(0));
-
+                nestedScrollView.post(() -> nestedScrollView.smoothScrollTo(0,0));
                 validate(currentList, btnSend, nextChipBtn);
-
             });
 
             mCheckTmsAdapter.setOnItemClickListener((position, questionId, answer) -> {
@@ -1615,7 +1616,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                     }
                     alertDialog.dismiss();
                 } else {
-                    Toasty.error(this, "All Questions are mandatory.", Toasty.LENGTH_SHORT).show();
+                    Toasty.error(this, "All questions are mandatory.", Toasty.LENGTH_SHORT).show();
                     for (int i = 0; i < AppUtils.tmsServiceDeliveryChips.size(); i++) {
                         if (String.valueOf(i).equals(tabName)){
                             if (i > currPos){

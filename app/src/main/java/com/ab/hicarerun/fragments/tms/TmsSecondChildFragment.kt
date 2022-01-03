@@ -116,8 +116,17 @@ class TmsSecondChildFragment : Fragment() {
         binding.chipsRecyclerView.setHasFixedSize(true)
         binding.chipsRecyclerView.isNestedScrollingEnabled = false
         binding.chipsRecyclerView.adapter = chipsAdapter
+
+        binding.recycleView.layoutManager = questionsLayoutManager
+        binding.recycleView.setHasFixedSize(true)
+        binding.recycleView.isNestedScrollingEnabled = false
+        binding.recycleView.adapter = questionsParentAdapter
+
         binding.chipsRecyclerView.post {
             binding.chipsRecyclerView.smoothScrollToPosition(0)
+        }
+        binding.nestedScrollView.post {
+            binding.nestedScrollView.smoothScrollTo(0,0)
         }
 
         chipsAdapter.setOnListItemClickHandler(object : TmsChipsAdapter.OnListItemClickHandler{
@@ -140,9 +149,6 @@ class TmsSecondChildFragment : Fragment() {
                 binding.chipsRecyclerView.post {
                     binding.chipsRecyclerView.smoothScrollToPosition(position)
                 }
-                binding.recycleView.post {
-                    binding.recycleView.smoothScrollToPosition(0)
-                }
                 AppUtils.tmsInspectionList.forEach {
                     var found = false
                     if (it.questionDisplayTab.equals(category, true)){
@@ -155,6 +161,9 @@ class TmsSecondChildFragment : Fragment() {
                 }
                 //validate()
                 validate2()
+                binding.nestedScrollView.post {
+                    binding.nestedScrollView.smoothScrollTo(0,0)
+                }
                 /*if (!isVisible(binding.configLayout)){
                     val param = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
@@ -211,10 +220,6 @@ class TmsSecondChildFragment : Fragment() {
             binding.recycleView.layoutParams = param;
         }*/
 
-        binding.recycleView.layoutManager = questionsLayoutManager
-        binding.recycleView.setHasFixedSize(true)
-        binding.recycleView.isNestedScrollingEnabled = false
-        binding.recycleView.adapter = questionsParentAdapter
 
         binding.btnBack.setOnClickListener {
             val listener = parentFragment as SecondChildListener
@@ -229,7 +234,7 @@ class TmsSecondChildFragment : Fragment() {
                 listener.onSaveClicked()
                 Log.d("TAG", "save ${AppUtils.tmsInspectionList}")
             }else{
-                Toasty.error(requireContext(), "All fields are mandatory").show()
+                Toasty.error(requireContext(), "All questions are mandatory.").show()
                 Log.d("TAG", "Missing fields")
             }
         }

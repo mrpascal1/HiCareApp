@@ -12,6 +12,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.R
 import com.ab.hicarerun.databinding.LayoutTmsChildAdapterBinding
@@ -93,10 +94,12 @@ class TmsAnswersChildAdapter(val context: Context, private val isServiceDelivery
             if (isServiceDeliverySheet){
                 if (AppUtils.isServiceDeliveryFilled){
                     holder.binding.spnType.isEnabled = false
+                    holder.binding.spinnerLayout.background = ContextCompat.getDrawable(context, R.drawable.edit_box_border_disabled)
                 }
             }else{
                 if (AppUtils.isInspectionDone){
                     holder.binding.spnType.isEnabled = false
+                    holder.binding.spinnerLayout.background = ContextCompat.getDrawable(context, R.drawable.edit_box_border_disabled)
                 }
             }
         }

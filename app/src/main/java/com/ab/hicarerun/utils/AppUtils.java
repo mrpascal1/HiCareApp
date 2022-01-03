@@ -108,6 +108,7 @@ public class AppUtils {
     public static boolean isInspectionDone = false;
     public static boolean isTmsInspectionDone = false;
     public static boolean isServiceDeliveryFilled = false;
+    public static String sequenceNo = "";
     public static String appointmentDate = "";
     public static String infestationLevel = "";
     public static String appointmentStartTime = "";

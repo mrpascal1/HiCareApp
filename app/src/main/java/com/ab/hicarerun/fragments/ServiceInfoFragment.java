@@ -1172,7 +1172,9 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     if (status.equals("On-Site") && !mTaskDetailsData.get(0).getPostJob_Checklist_Done() && mTaskDetailsData.get(0).getTaskCheckList() != null && mTaskDetailsData.get(0).getTaskCheckList().size() > 0) {
                         mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
                     } else {
-                        if (status.equals("On-Site") && mTaskDetailsData.get(0).getTaskTypeName().contains("Termites for")){
+                        if (status.equals("On-Site") && mTaskDetailsData.get(0).isTMS() && !mTaskDetailsData.get(0).getPostJob_Checklist_Done()){
+                            mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
+                        }else if (status.equals("On-Site") && mTaskDetailsData.get(0).isTMS() && mTaskDetailsData.get(0).getPostJob_Checklist_Done()){
                             mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
                         }else {
                             mFragmentServiceInfoBinding.btnCheckList.setVisibility(GONE);
@@ -1191,7 +1193,10 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     mFragmentServiceInfoBinding.btnCheckList.setOnClickListener(v -> {
                         if (!isPostJobCompletionDone) {
                             //isPostJobCompletionDone = true;
-                            if (mTaskDetailsData.get(0).getTaskTypeName().contains("Termites for")){
+                            if (mTaskDetailsData.get(0).isTMS()){
+                                if (mTaskDetailsData.get(0).getPostJob_Checklist_Done()){
+                                    AppUtils.isServiceDeliveryFilled = true;
+                                }
                                 //mListCallback.onPostJobButtonClicked();
                                 mListCallback.onTmsPostJobButtonClicked();
                             }else {
@@ -1199,7 +1204,11 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                 mListCallback.onPostJobButtonClicked();
                             }
                         } else {
-                            Toasty.success(getActivity(), "You have successfully submitted Post Job Check-List").show();
+                            if (mTaskDetailsData.get(0).isTMS()){
+                                Toasty.success(getActivity(), "You have successfully submitted service delivery sheet").show();
+                            }else {
+                                Toasty.success(getActivity(), "You have successfully submitted Post Job Check-List").show();
+                            }
                         }
 
                     });
@@ -1223,11 +1232,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     if (mTaskDetailsData.get(0).getConsultationInspectionRequired() && (status.equals("On-Site") || status.equals("Completed"))) {
                         mFragmentServiceInfoBinding.lnrConsIns.setVisibility(View.VISIBLE);
                     } else {
-                        if (mTaskDetailsData.get(0).getTaskTypeName().contains("Termites for") && (status.equals("On-Site") || status.equals("Completed"))){
-                            mFragmentServiceInfoBinding.lnrConsIns.setVisibility(View.VISIBLE);
-                        }else {
-                            mFragmentServiceInfoBinding.lnrConsIns.setVisibility(View.GONE);
-                        }
+                        mFragmentServiceInfoBinding.lnrConsIns.setVisibility(View.GONE);
                     }
 
                     if (AppUtils.isInspectionDone) {
@@ -2104,7 +2109,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     @Override
     public void onViewBottonClicked(View view) {
         try {
-            if (mTaskDetailsData.get(0).getTaskTypeName().contains("Termites for")) {
+            if (mTaskDetailsData.get(0).isTMS()) {
                 //InspectionFragment alert = InspectionFragment.newInstance();
                 TmsConsultationFragment alert = TmsConsultationFragment.newInstance();
                 alert.show(getActivity().getSupportFragmentManager(), "Alert");

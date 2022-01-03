@@ -396,6 +396,10 @@ public class GeneralData implements RealmModel {
     @Expose
     private boolean ShowCompletionOTP;
 
+    @SerializedName("IsTMS")
+    @Expose
+    private boolean IsTMS;
+
     public GeneralData() {
         SchedulingStatus = "NA";
         PaymentMode = "NA";
@@ -466,6 +470,7 @@ public class GeneralData implements RealmModel {
         IsB2BJob = false;
         ShowOnsiteOTP = false;
         ShowCompletionOTP = false;
+        IsTMS = false;
     }
 
     public String getOrderNumber() {
@@ -1245,5 +1250,13 @@ public class GeneralData implements RealmModel {
 
     public void setShowCompletionOTP(boolean showCompletionOTP) {
         ShowCompletionOTP = showCompletionOTP;
+    }
+
+    public boolean isTMS() {
+        return IsTMS;
+    }
+
+    public void setTMS(boolean TMS) {
+        IsTMS = TMS;
     }
 }

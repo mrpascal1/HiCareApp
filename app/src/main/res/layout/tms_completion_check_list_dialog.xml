@@ -88,8 +88,10 @@
                         tools:listitem="@layout/item_tms_chips"/>
 
                     <androidx.core.widget.NestedScrollView
+                        android:id="@+id/nestedScrollView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:fillViewport="true">
                         <LinearLayout
                             android:orientation="vertical"
                             android:layout_width="match_parent"

@@ -484,6 +484,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         verifyMap["ActivityName"] = activityName
         verifyMap["Account_No"] = account_No
         verifyMap["Order_No"] = order_No
+        verifyMap["Service_No"] = AppUtils.sequenceNo;
         verifyMap["Barcode_Data"] = barcode_Data
         verifyMap["Lat"] = lat
         verifyMap["Long"] = long

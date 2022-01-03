@@ -11,9 +11,9 @@
 
         <TextView
             android:id="@+id/txtQuest"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="In what age range did you write?"
+            android:text="In what age range did you write?In what age range did you write?"
             android:textSize="17dp"
             android:textColor="@color/black"
             android:layout_marginTop="12dp"
@@ -29,7 +29,7 @@
             app:indicatorSize="20dp"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="2dp"
-            android:layout_toStartOf="@id/basePhotoLayout"
+            android:layout_alignEnd="@id/txtQuest"
             android:layout_alignWithParentIfMissing="true"
             android:visibility="gone"/>
 
@@ -40,7 +40,7 @@
             android:layout_marginTop="12dp"
             android:layout_marginEnd="2dp"
             android:src="@drawable/ic_speaker"
-            android:layout_toStartOf="@id/basePhotoLayout"
+            android:layout_alignEnd="@id/txtQuest"
             android:layout_alignWithParentIfMissing="true"
             android:visibility="gone"/>
 

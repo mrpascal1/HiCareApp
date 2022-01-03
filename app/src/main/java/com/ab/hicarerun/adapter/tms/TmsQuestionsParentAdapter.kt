@@ -1,18 +1,25 @@
 package com.ab.hicarerun.adapter.tms
 
 import android.content.Context
+import android.media.MediaPlayer
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ab.hicarerun.R
 import com.ab.hicarerun.databinding.LayoutTmsParentAdapterBinding
 import com.ab.hicarerun.network.models.TmsModel.Option
 import com.ab.hicarerun.network.models.TmsModel.QuestionImageUrl
 import com.ab.hicarerun.network.models.TmsModel.QuestionList
 import com.ab.hicarerun.utils.AppUtils
+import com.ab.hicarerun.utils.ImageOverlayStfalcon
 import com.squareup.picasso.Picasso
+import java.io.IOException
 
 class TmsQuestionsParentAdapter(val context: Context, private val isServiceDeliverySheet: Boolean) : RecyclerView.Adapter<TmsQuestionsParentAdapter.MyHolder>() {
 
@@ -24,6 +31,11 @@ class TmsQuestionsParentAdapter(val context: Context, private val isServiceDeliv
     var onItemClickListener: OnItemClickListener? = null
     var onCameraClickListener: OnCameraClickListener? = null
     var selectedPos = 0
+
+    private var isPLAYING = false
+    var mp: MediaPlayer? = null
+    private var lastPlaying = -1
+    private var startedPlaying = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
         val view = LayoutTmsParentAdapterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -363,6 +375,87 @@ class TmsQuestionsParentAdapter(val context: Context, private val isServiceDeliv
                 holder.binding.imageCancel4.isEnabled = false
             }
         }
+
+        if (mp != null) {
+            mp?.setOnCompletionListener { _: MediaPlayer? ->
+                if (mp != null) {
+                    mp?.release()
+                    isPLAYING = false
+                    mp = null
+                    notifyItemChanged(lastPlaying)
+                    lastPlaying = -1
+                }
+            }
+        }
+        if (mp != null) {
+            mp?.setOnPreparedListener { mediaPlayer: MediaPlayer ->
+                mediaPlayer.start()
+                if (mp?.isPlaying == true) {
+                    startedPlaying = true
+                    notifyDataSetChanged()
+                }
+            }
+            if (position == lastPlaying) {
+                if (mp?.isPlaying == false) {
+                    Log.d("TAG", "Not Playing")
+                    holder.binding.progressBar.visibility = View.VISIBLE
+                    holder.binding.speakerIv.visibility = View.GONE
+                } else {
+                    holder.binding.speakerIv.visibility = View.VISIBLE
+                    holder.binding.progressBar.visibility = View.GONE
+                }
+            }
+        }
+
+        holder.binding.speakerIv.setOnClickListener { view ->
+            holder.binding.progressBar.visibility = View.VISIBLE
+            holder.binding.speakerIv.visibility = View.GONE
+            if (position == lastPlaying) {
+                stopPlaying()
+                //holder.binding.txtQuest.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_speaker), null);
+                holder.binding.speakerIv.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_speaker))
+                notifyItemChanged(lastPlaying)
+                lastPlaying = -1
+            } else {
+                stopPlaying()
+                if (items[position].questionAudioUrl != null && items[position].questionAudioUrl != "") {
+                    playAudio(holder.binding.speakerIv, items[position].questionAudioUrl, position)
+                } else {
+                    playAudio(holder.binding.speakerIv, "https://www.kozco.com/tech/piano2-CoolEdit.mp3", position)
+                }
+                notifyDataSetChanged()
+            }
+        }
+
+
+        holder.binding.imgUploadedCheque.setOnClickListener {
+            val arrayList = arrayOf(items[position].pictureURL!![0])
+            ImageOverlayStfalcon(context, arrayList)
+        }
+
+        holder.binding.imgUploadedCheque2.setOnClickListener {
+            val arrayList = arrayOf(items[position].pictureURL!![1])
+            ImageOverlayStfalcon(context, arrayList)
+        }
+
+        holder.binding.imgUploadedCheque3.setOnClickListener {
+            val arrayList = arrayOf(items[position].pictureURL!![2])
+            ImageOverlayStfalcon(context, arrayList)
+        }
+
+        holder.binding.imgUploadedCheque4.setOnClickListener {
+            val arrayList = arrayOf(items[position].pictureURL!![3])
+            ImageOverlayStfalcon(context, arrayList)
+        }
+
+        if (items[position].questionAudioUrl != null && items[position].questionAudioUrl != ""){
+            holder.binding.speakerIv.visibility = View.VISIBLE
+        }else{
+            val param = holder.binding.txtQuest.layoutParams as ViewGroup.MarginLayoutParams
+            param.marginEnd = 0
+            holder.binding.txtQuest.layoutParams = param
+            holder.binding.speakerIv.visibility = View.GONE
+        }
     }
 
     fun maintainVisibility(holder: MyHolder, item: List<QuestionImageUrl>){
@@ -373,6 +466,38 @@ class TmsQuestionsParentAdapter(val context: Context, private val isServiceDeliv
             if (it.id == 0)found0 = true
             if (it.id == 1)found1 = true
             if (it.id == 2)found2 = true
+        }
+    }
+
+    fun playAudio(view: ImageView, url: String?, position: Int) {
+        mp = MediaPlayer()
+        if (!isPLAYING) {
+            isPLAYING = true
+            lastPlaying = position
+            try {
+                view.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_music_stop))
+                //view.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null , ContextCompat.getDrawable(mContext, R.drawable.ic_music_stop), null);
+                mp?.setDataSource(context, Uri.parse(url))
+                //mp.setOnPreparedListener(MediaPlayer::start);
+                mp?.prepareAsync()
+                //mp.start();
+            } catch (e: IOException) {
+                Log.d("TAG", "prepare() failed")
+            }
+        } else {
+            isPLAYING = false
+            stopPlaying()
+            view.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_speaker))
+            //view.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_speaker), null);
+        }
+    }
+
+    fun stopPlaying() {
+        if (mp != null) {
+            isPLAYING = false
+            mp?.stop()
+            mp?.release()
+            mp = null
         }
     }
     override fun getItemCount(): Int {
