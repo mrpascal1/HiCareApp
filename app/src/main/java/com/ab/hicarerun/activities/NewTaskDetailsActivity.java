@@ -1387,8 +1387,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
                         byte[] b = baos.toByteArray();
                         String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-//                        uploadOnsiteImage(encodedImage);
-
+                        uploadOnsiteImage(encodedImage);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1546,11 +1545,11 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                     checkPosition = position;
                     isFromTms = true;
                     AppUtils.CAMERA_SCREEN = "Post-Job";
-                    LocalBroadcastManager.getInstance(NewTaskDetailsActivity.this).registerReceiver(mMessageReceiver,
-                            new IntentFilter(AppUtils.CAMERA_SCREEN));
+                    requestStoragePermission(true);
+                    //LocalBroadcastManager.getInstance(NewTaskDetailsActivity.this).registerReceiver(mMessageReceiver, new IntentFilter(AppUtils.CAMERA_SCREEN));
                     //checkPosition = position;
 //                requestStoragePermission(true);
-                    init();
+                    //init();
                 }
 
                 @Override
@@ -1932,7 +1931,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                                 }
                             }
                             mCheckTmsAdapter.notifyDataSetChanged();
-                            LocalBroadcastManager.getInstance(NewTaskDetailsActivity.this).unregisterReceiver(mMessageReceiver);
+                            //LocalBroadcastManager.getInstance(NewTaskDetailsActivity.this).unregisterReceiver(mMessageReceiver);
                             imageUploaded.uploaded();
                         } else {
                             mCheckAdapter.getItem(checkPosition).setIconUrl(response.getFileUrl());
@@ -1965,7 +1964,11 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                     if (response.getIsSuccess()) {
                         isPostJobCompletionDone = true;
                         AppUtils.isServiceDeliveryFilled = true;
-                        Toasty.success(NewTaskDetailsActivity.this, "Check-list submitted successfully", Toast.LENGTH_SHORT, true).show();
+                        if (typeName.equals("TMS")) {
+                            Toasty.success(NewTaskDetailsActivity.this, "Service delivery sheet submitted successfully", Toast.LENGTH_SHORT, true).show();
+                        }else {
+                            Toasty.success(NewTaskDetailsActivity.this, "Check-list submitted successfully", Toast.LENGTH_SHORT, true).show();
+                        }
                         if (Status.equalsIgnoreCase("Completed")) {
                             if (referralChanged) {
                                 isFinalSave = true;
@@ -1998,7 +2001,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             });
             //controller.saveCheckList(SAVE_CHECK_LIST, mOnsiteCheckList);
 
-            if (!typeName.equalsIgnoreCase("TMS")) {
+            if (!typeName.equals("TMS")) {
                 controller.saveCheckList(SAVE_CHECK_LIST, mOnsiteCheckList);
             }else {
                 HashMap<String, Object> hashMap = new HashMap<>();

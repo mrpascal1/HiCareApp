@@ -1,15 +1,19 @@
 package com.ab.hicarerun.fragments.tms
 
+import android.Manifest
 import android.app.Activity
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.content.res.Resources
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
+import android.hardware.Camera
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,11 +22,15 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.BaseApplication
+import com.ab.hicarerun.BuildConfig
 import com.ab.hicarerun.adapter.tms.TmsChipsAdapter
 import com.ab.hicarerun.adapter.tms.TmsQuestionsParentAdapter
 import com.ab.hicarerun.databinding.FragmentTmsSecondChildBinding
@@ -35,10 +43,19 @@ import com.ab.hicarerun.network.models.LoginResponse
 import com.ab.hicarerun.network.models.TmsModel.QuestionList
 import com.ab.hicarerun.network.models.TmsModel.QuestionTabList
 import com.ab.hicarerun.utils.AppUtils
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import es.dmoral.toasty.Toasty
 import io.realm.RealmResults
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class TmsSecondChildFragment : Fragment() {
@@ -52,7 +69,7 @@ class TmsSecondChildFragment : Fragment() {
     var REQUEST_CODE = 1234
     val REQUEST_TAKE_PHOTO = 1
     private var selectedImagePath = ""
-    private val mPhotoFile: File? = null
+    private var mPhotoFile: File? = null
     private var bitmap: Bitmap? = null
     private val mTaskDetailsData: RealmResults<GeneralData>? = null
     private var checkPosition = 0
@@ -62,6 +79,8 @@ class TmsSecondChildFragment : Fragment() {
     lateinit var currentList: ArrayList<QuestionList>
     lateinit var currentTabList: ArrayList<QuestionTabList>
     var isLast = false
+    val CAMERA_REQUEST = 1
+    val REQUEST_GALLERY_PHOTO = 2
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -179,7 +198,9 @@ class TmsSecondChildFragment : Fragment() {
                 qId = questionId.toString().toInt()
                 cBy = clickedBy
                 checkPosition = position
-                TmsUtils.init(requireContext(), 1)
+                requestStoragePermission(true)
+                //CameraUtil(100, 200).requestStoragePermission(true)
+                //TmsUtils.init(requireContext(), 1)
             }
 
             override fun onCancelClicked(position: Int, questionId: Int?, clickedBy: Int) {
@@ -437,10 +458,163 @@ class TmsSecondChildFragment : Fragment() {
         }
     }
 
+    private fun dispatchTakePictureIntent() {
+        try {
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            if (intent.resolveActivity(requireActivity().packageManager) != null) {
+                // Create the File where the photo should go
+                val photoFile = createImageFile()
+                val photoURI: Uri = FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID + ".provider", photoFile)
+                mPhotoFile = photoFile
+                intent.putExtra("android.intent.extras.CAMERA_FACING", Camera.CameraInfo.CAMERA_FACING_BACK)
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                val TimeStamp = AppUtils.getCurrentTimeStamp()
+                startActivityForResult(intent, CAMERA_REQUEST)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+    private fun dispatchGalleryIntent() {
+        try {
+            val pickPhoto = Intent(
+                Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            )
+            pickPhoto.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            startActivityForResult(pickPhoto, REQUEST_GALLERY_PHOTO)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+    private fun requestStoragePermission(isCamera: Boolean) {
+        try {
+            Dexter.withActivity(requireActivity())
+                .withPermissions(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA
+                )
+                .withListener(object : MultiplePermissionsListener {
+                    override fun onPermissionsChecked(report: MultiplePermissionsReport) {
+                        // check if all permissions are granted
+                        if (report.areAllPermissionsGranted()) {
+                            if (isCamera) {
+                                dispatchTakePictureIntent()
+                            } else {
+                                dispatchGalleryIntent()
+                            }
+                        }
+                        // check for permanent denial of any permission
+                        if (report.isAnyPermissionPermanentlyDenied) {
+                            // show alert dialog navigating to Settings
+                            showSettingsDialog()
+                        }
+                    }
+
+                    override fun onPermissionRationaleShouldBeShown(
+                        permissions: List<PermissionRequest>,
+                        token: PermissionToken
+                    ) {
+                        token.continuePermissionRequest()
+                    }
+                })
+                .withErrorListener {
+                    Toast.makeText(requireContext(), "Error occurred! ", Toast.LENGTH_SHORT).show()
+                }
+                .onSameThread()
+                .check()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+    private fun openSettings() {
+        try {
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            val uri = Uri.fromParts("package", requireActivity().packageName, null)
+            intent.data = uri
+            startActivityForResult(intent, 101)
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+    }
+    private fun showSettingsDialog() {
+        try {
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("Need Permissions")
+            builder.setMessage(
+                "This app needs permission to use this feature. You can grant them in app settings."
+            )
+            builder.setPositiveButton("GOTO SETTINGS") { dialog: DialogInterface, which: Int ->
+                dialog.cancel()
+                openSettings()
+            }
+            builder.setNegativeButton(
+                "Cancel"
+            ) { dialog: DialogInterface, which: Int -> dialog.cancel() }
+            builder.show()
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        // Create an image file name
+        val timeStamp =
+            SimpleDateFormat("yyyyMMddHHmmss").format(Date())
+        val mFileName = "JPEG_" + timeStamp + "_"
+        val storageDir: File? = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(mFileName, ".jpg", storageDir)
+    }
+
+    private fun getRealPathFromUri(contentUri: Uri?): String? {
+        var cursor: Cursor? = null
+        return try {
+            val proj = arrayOf(MediaStore.Images.Media.DATA)
+            cursor = requireActivity().contentResolver.query(contentUri!!, proj, null, null, null)
+            assert(cursor != null)
+            val column_index = cursor?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            cursor?.moveToFirst()
+            cursor?.getString(column_index!!)
+        } finally {
+            cursor?.close()
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_TAKE_PHOTO) {
+        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+            Log.d("TAG", "Cam Request")
+            selectedImagePath = mPhotoFile?.path ?: ""
+            if (selectedImagePath != null || selectedImagePath != ""){
+                val bit = BitmapDrawable(resources, selectedImagePath).bitmap
+                Log.d("TAG", bit.toString())
+                val i = (bit.height * (1024.0 / bit.width)).toInt()
+                bitmap = Bitmap.createScaledBitmap(bit, 1024, i, true)
+            }
+            val baos = ByteArrayOutputStream()
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+            val b = baos.toByteArray()
+            val encodedImage = Base64.encodeToString(b, Base64.DEFAULT)
+            Log.d("TAG-Image", encodedImage)
+            uploadOnsiteImage(encodedImage)
+        }else if (requestCode == REQUEST_GALLERY_PHOTO && resultCode == Activity.RESULT_OK){
+            val selectedImage = data?.data
+            mPhotoFile = File(getRealPathFromUri(selectedImage).toString())
+            selectedImagePath = mPhotoFile!!.path
+            if (selectedImagePath != null) {
+                val bit = BitmapDrawable(this.resources, selectedImagePath).bitmap
+                val i = (bit.height * (1024.0 / bit.width)).toInt()
+                bitmap = Bitmap.createScaledBitmap(bit, 1024, i, true)
+            }
+            val baos = ByteArrayOutputStream()
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+            val b = baos.toByteArray()
+            val encodedImage = Base64.encodeToString(b, Base64.DEFAULT)
+            uploadOnsiteImage(encodedImage)
+        }
+        /*if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == CAMERA_REQUEST) {
                 try {
                     selectedImagePath = mPhotoFile?.path.toString()
                     if (selectedImagePath != null || selectedImagePath != "") {
@@ -457,7 +631,7 @@ class TmsSecondChildFragment : Fragment() {
                     e.printStackTrace()
                 }
             }
-        }
+        }*/
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

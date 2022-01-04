@@ -1170,11 +1170,24 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     mFragmentServiceInfoBinding.txtView.setTypeface(mFragmentServiceInfoBinding.txtView.getTypeface(), Typeface.BOLD);
 
                     if (status.equals("On-Site") && !mTaskDetailsData.get(0).getPostJob_Checklist_Done() && mTaskDetailsData.get(0).getTaskCheckList() != null && mTaskDetailsData.get(0).getTaskCheckList().size() > 0) {
+                        if (mTaskDetailsData.get(0).isTMS()){
+                            mFragmentServiceInfoBinding.btnCheckList.setText("Service delivery sheet");
+                        }
                         mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
                     } else {
                         if (status.equals("On-Site") && mTaskDetailsData.get(0).isTMS() && !mTaskDetailsData.get(0).getPostJob_Checklist_Done()){
+                            mFragmentServiceInfoBinding.btnCheckList.setText("Service delivery sheet");
                             mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
                         }else if (status.equals("On-Site") && mTaskDetailsData.get(0).isTMS() && mTaskDetailsData.get(0).getPostJob_Checklist_Done()){
+                            mFragmentServiceInfoBinding.btnCheckList.setText("Service delivery sheet");
+                            mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
+                        }else {
+                            mFragmentServiceInfoBinding.btnCheckList.setVisibility(GONE);
+                        }
+                    }
+                    if (status.equalsIgnoreCase("Completed")){
+                        if (mTaskDetailsData.get(0).isTMS() && mTaskDetailsData.get(0).getPostJob_Checklist_Done()){
+                            mFragmentServiceInfoBinding.btnCheckList.setText("Service delivery sheet");
                             mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
                         }else {
                             mFragmentServiceInfoBinding.btnCheckList.setVisibility(GONE);

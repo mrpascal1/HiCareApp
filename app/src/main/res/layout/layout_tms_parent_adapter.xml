@@ -84,8 +84,6 @@
                             android:id="@+id/imgUploadedCheque"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:adjustViewBounds="true"
-                            android:scaleType="fitXY"
                             android:src="@drawable/sample" />
 
                         <ImageButton
@@ -153,8 +151,6 @@
                             android:id="@+id/imgUploadedCheque2"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:adjustViewBounds="true"
-                            android:scaleType="fitXY"
                             android:src="@drawable/sample" />
 
                         <ImageButton
@@ -226,8 +222,6 @@
                             android:id="@+id/imgUploadedCheque3"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:adjustViewBounds="true"
-                            android:scaleType="fitXY"
                             android:src="@drawable/sample" />
 
                         <ImageButton
@@ -299,8 +293,6 @@
                             android:id="@+id/imgUploadedCheque4"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:adjustViewBounds="true"
-                            android:scaleType="fitXY"
                             android:src="@drawable/sample" />
 
                         <ImageButton
