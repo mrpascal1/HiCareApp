@@ -69,6 +69,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -109,6 +110,7 @@ public class AppUtils {
     public static boolean isTmsInspectionDone = false;
     public static boolean isServiceDeliveryFilled = false;
     public static String sequenceNo = "";
+    public static String resourceId = "";
     public static String appointmentDate = "";
     public static String infestationLevel = "";
     public static String appointmentStartTime = "";

@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/lnrCheckList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true">
+
+            <RelativeLayout
+                android:id="@+id/rel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_margin="5dp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginEnd="5dp"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="10dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/green_round_corner_popup_bg"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/popupTitleTv"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginTop="11dp"
+                                    android:layout_marginBottom="11dp"
+                                    android:text="Add Details"
+                                    android:textColor="@color/white"
+                                    android:textSize="16sp" />
+
+
+                            </LinearLayout>
+
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/txtInfo"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="15dp"
+                                    android:layout_marginBottom="15dp"
+                                    android:layout_marginLeft="15dp"
+                                    android:layout_marginRight="15dp"
+                                    android:gravity="center"
+                                    android:text="Please ensure all safety precautions before coming to service."
+                                    android:textSize="14sp"
+                                    android:textColor="@color/black"
+                                    android:visibility="gone"/>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
+
+                                    <androidx.constraintlayout.widget.ConstraintLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="15dp">
+
+                                        <LinearLayout
+                                            android:id="@+id/lnrStatus"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginStart="10dp"
+                                            android:layout_marginLeft="10dp"
+                                            app:layout_constraintBottom_toBottomOf="parent"
+                                            app:layout_constraintLeft_toLeftOf="parent"
+                                            app:layout_constraintTop_toTopOf="parent">
+
+                                            <ImageView
+                                                android:layout_width="20dp"
+                                                android:layout_height="20dp"
+                                                android:layout_gravity="center"
+                                                android:text="@string/order_no"
+                                                android:textSize="15sp"
+                                                android:textStyle="bold"
+                                                app:srcCompat="@drawable/ic_process"
+                                                android:visibility="gone"/>
+                                        </LinearLayout>
+
+                                        <LinearLayout
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            app:layout_constraintBottom_toBottomOf="parent"
+                                            app:layout_constraintLeft_toRightOf="@id/lnrStatus"
+                                            app:layout_constraintTop_toTopOf="parent">
+
+                                            <TextView
+                                                android:layout_width="130dp"
+                                                android:layout_height="wrap_content"
+                                                android:layout_marginLeft="7dp"
+                                                android:text="Select Action"
+                                                android:textColor="@color/colorAccentDrawerPrimaryLight"
+                                                android:textSize="15sp"
+                                                android:textStyle="bold" />
+                                        </LinearLayout>
+
+
+                                        <LinearLayout
+                                            android:layout_width="160dp"
+                                            android:layout_height="26dp"
+                                            android:layout_marginRight="20dp"
+                                            android:background="@drawable/edit_box_border"
+                                            android:gravity="right"
+                                            android:layout_marginStart="20dp"
+                                            app:layout_constraintBottom_toBottomOf="parent"
+                                            app:layout_constraintRight_toRightOf="parent"
+                                            app:layout_constraintTop_toTopOf="parent">
+
+
+                                            <androidx.appcompat.widget.AppCompatSpinner
+                                                android:id="@+id/spnAction"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="match_parent"
+                                                android:backgroundTint="@color/textColorSecondary"
+                                                android:clickable="true"
+                                                android:ems="10"
+                                                android:popupBackground="@color/colorTextDrawerSecondary"
+                                                android:spinnerMode="dialog"
+                                                android:textSize="20sp"
+                                                android:layout_marginStart="12dp"
+                                                app:layout_constraintBottom_toBottomOf="parent"
+                                                app:layout_constraintRight_toRightOf="parent"
+                                                app:layout_constraintTop_toTopOf="parent" />
+                                        </LinearLayout>
+
+
+                                    </androidx.constraintlayout.widget.ConstraintLayout>
+                                    <androidx.constraintlayout.widget.ConstraintLayout
+                                        android:id="@+id/technicianLayout"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="15dp">
+
+                                        <LinearLayout
+                                            android:id="@+id/lnrTechnician"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginStart="10dp"
+                                            android:layout_marginLeft="10dp"
+                                            app:layout_constraintBottom_toBottomOf="parent"
+                                            app:layout_constraintLeft_toLeftOf="parent"
+                                            app:layout_constraintTop_toTopOf="parent">
+
+                                            <ImageView
+                                                android:layout_width="20dp"
+                                                android:layout_height="20dp"
+                                                android:layout_gravity="center"
+                                                android:text="@string/order_no"
+                                                android:textSize="15sp"
+                                                android:textStyle="bold"
+                                                app:srcCompat="@drawable/ic_process"
+                                                android:visibility="gone"/>
+                                        </LinearLayout>
+
+                                        <LinearLayout
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            app:layout_constraintBottom_toBottomOf="parent"
+                                            app:layout_constraintLeft_toRightOf="@id/lnrTechnician"
+                                            app:layout_constraintTop_toTopOf="parent">
+
+                                            <TextView
+                                                android:layout_width="130dp"
+                                                android:layout_height="wrap_content"
+                                                android:layout_marginLeft="7dp"
+                                                android:text="Select Technician"
+                                                android:textColor="@color/colorAccentDrawerPrimaryLight"
+                                                android:textSize="15sp"
+                                                android:textStyle="bold" />
+                                        </LinearLayout>
+
+
+                                        <LinearLayout
+                                            android:layout_width="160dp"
+                                            android:layout_height="26dp"
+                                            android:layout_marginRight="20dp"
+                                            android:background="@drawable/edit_box_border"
+                                            android:gravity="right"
+                                            android:layout_marginStart="20dp"
+                                            app:layout_constraintBottom_toBottomOf="parent"
+                                            app:layout_constraintRight_toRightOf="parent"
+                                            app:layout_constraintTop_toTopOf="parent">
+
+
+                                            <androidx.appcompat.widget.AppCompatSpinner
+                                                android:id="@+id/spnTechnician"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="match_parent"
+                                                android:backgroundTint="@color/textColorSecondary"
+                                                android:clickable="true"
+                                                android:ems="10"
+                                                android:popupBackground="@color/colorTextDrawerSecondary"
+                                                android:spinnerMode="dialog"
+                                                android:textSize="20sp"
+                                                android:layout_marginStart="12dp"
+                                                app:layout_constraintBottom_toBottomOf="parent"
+                                                app:layout_constraintRight_toRightOf="parent"
+                                                app:layout_constraintTop_toTopOf="parent"  />
+                                        </LinearLayout>
+
+
+                                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                                </LinearLayout>
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/typeRecycler"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:padding="4dp"
+                                    android:visibility="gone"/>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_gravity="center"
+                                android:gravity="center">
+
+                                <androidx.appcompat.widget.AppCompatButton
+                                    android:id="@+id/btnCancel"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="35dp"
+                                    android:layout_gravity="center"
+                                    android:layout_margin="8dp"
+                                    android:background="@drawable/round_border"
+                                    android:baselineAligned="false"
+                                    android:elevation="2dp"
+                                    android:gravity="center"
+                                    android:text="Cancel"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="16sp"
+                                    android:layout_weight="1"/>
+
+                                <androidx.appcompat.widget.AppCompatButton
+                                    android:id="@+id/okBtn"
+                                    android:layout_weight="1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="35dp"
+                                    android:layout_gravity="center"
+                                    android:layout_margin="8dp"
+                                    android:background="@drawable/button_background"
+                                    android:baselineAligned="false"
+                                    android:elevation="2dp"
+                                    android:gravity="center"
+                                    android:text="Ok"
+                                    android:enabled="false"
+                                    android:textColor="@color/white"
+                                    android:textSize="16sp" />
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_above="@id/rel"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="-55dp"
+                android:background="@drawable/completion_dialog_circle"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true"
+                    android:backgroundTint="@color/colorPrimaryDark"
+                    app:srcCompat="@drawable/ic_info_black" />
+
+            </RelativeLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+</RelativeLayout>

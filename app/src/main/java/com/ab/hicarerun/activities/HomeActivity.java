@@ -261,6 +261,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 builder.setLocationListner(this);
                 builder.build();
                 userId = Objects.requireNonNull(LoginRealmModels.get(0)).getUserID();
+                AppUtils.resourceId = userId;
                 SharedPreferencesUtility.savePrefString(HomeActivity.this, SharedPreferencesUtility.PREF_USERID, userId);
             }
 

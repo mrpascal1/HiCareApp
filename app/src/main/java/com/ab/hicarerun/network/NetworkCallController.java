@@ -48,6 +48,7 @@ import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeRequest;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShakeResponse;
 import com.ab.hicarerun.network.models.IncentiveModel.IncentiveResponse;
+import com.ab.hicarerun.network.models.InventoryModel.AddInventoryResult;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyRequest;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyResponse;
 import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonModel;
@@ -5308,6 +5309,22 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<WalletBase> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void addInventory(int requestCode, HashMap<String, Object> body) {
+        BaseApplication.getInventoryApi()
+                .addInventory(body)
+                .enqueue(new Callback<AddInventoryResult>(){
+                    @Override
+                    public void onResponse(Call<AddInventoryResult> call, Response<AddInventoryResult> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<AddInventoryResult> call, Throwable t) {
                         mListner.onFailure(requestCode);
                     }
                 });

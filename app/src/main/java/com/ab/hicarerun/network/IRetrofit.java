@@ -36,6 +36,7 @@ import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeRequest;
 import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShakeResponse;
 import com.ab.hicarerun.network.models.IncentiveModel.IncentiveResponse;
+import com.ab.hicarerun.network.models.InventoryModel.AddInventoryResult;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyRequest;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyResponse;
 import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonModel;
@@ -143,6 +144,7 @@ public interface IRetrofit {
     String SLOT_URL = "http://api.hicare.in/slot/api/";
     String UAT = "http://api.hicare.in/Mobile/api/";
     String B2B_URL = "http://connect.hicare.in/b2bwow/api/";
+    String INVENTORY_URL = "http://connect.hicare.in/inventory_api/api/";
 
     /*[Verify User]*/
     @GET("userverification/VerifyUser")
@@ -606,4 +608,7 @@ public interface IRetrofit {
 
     @GET("Renewal/GetWalletBalance")
     Call<WalletBase> getWalletBalance(@Query("taskId") String taskId);
+
+    @POST("Inventory/AddInventory")
+    Call<AddInventoryResult> addInventory(@Body HashMap<String, Object> data);
 }
