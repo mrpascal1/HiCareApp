@@ -49,6 +49,7 @@ import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShakeResponse;
 import com.ab.hicarerun.network.models.IncentiveModel.IncentiveResponse;
 import com.ab.hicarerun.network.models.InventoryModel.AddInventoryResult;
+import com.ab.hicarerun.network.models.InventoryModel.InventoryListModel.InventoryListResult;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyRequest;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyResponse;
 import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonModel;
@@ -4284,6 +4285,43 @@ public class NetworkCallController {
 
     }
 
+    public void getTmsRecommendations(final int requestCode, String resourceId, String taskId, String lan) {
+        try {
+            BaseApplication.getRetrofitAPI(true)
+                    .getRecommendations(resourceId, taskId, lan)
+                    .enqueue(new Callback<RecommendationResponse>() {
+                        @Override
+                        public void onResponse(Call<RecommendationResponse> call, Response<RecommendationResponse> response) {
+                            if (response != null) {
+                                if (response.body() != null) {
+                                    mListner.onResponse(requestCode, response.body());
+                                } else if (response.errorBody() != null) {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        RealmResults<LoginResponse> mLoginRealmModels = BaseApplication.getRealm().where(LoginResponse.class).findAll();
+                                        if (mLoginRealmModels != null && mLoginRealmModels.size() > 0) {
+                                            String userName = "TECHNICIAN NAME : " + mLoginRealmModels.get(0).getUserName();
+                                            String lineNo = String.valueOf(new Exception().getStackTrace()[0].getLineNumber());
+                                            String DeviceName = "DEVICE_NAME : " + Build.DEVICE + ", DEVICE_VERSION : " + Build.VERSION.SDK_INT;
+                                            AppUtils.sendErrorLogs(response.errorBody().string(), getClass().getSimpleName(), "getExotelCalled", lineNo, userName, DeviceName);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<RecommendationResponse> call, Throwable t) {
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     public void saveConsultationNdInspection(final int requestCode, List<Data> request) {
         try {
@@ -5325,6 +5363,22 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<AddInventoryResult> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void getInventoryList(int requestCode, String userId) {
+        BaseApplication.getInventoryApi()
+                .getInventoryList(userId)
+                .enqueue(new Callback<InventoryListResult>(){
+                    @Override
+                    public void onResponse(Call<InventoryListResult> call, Response<InventoryListResult> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<InventoryListResult> call, Throwable t) {
                         mListner.onFailure(requestCode);
                     }
                 });

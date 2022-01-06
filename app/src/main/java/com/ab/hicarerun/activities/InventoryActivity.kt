@@ -18,13 +18,17 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.BaseActivity
 import com.ab.hicarerun.R
+import com.ab.hicarerun.adapter.inventory.InventoryAdapter
 import com.ab.hicarerun.databinding.ActivityInventoryBinding
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
 import com.ab.hicarerun.network.models.InventoryModel.ActionList
 import com.ab.hicarerun.network.models.InventoryModel.AddInventoryResult
+import com.ab.hicarerun.network.models.InventoryModel.InventoryListModel.InventoryListResult
 import com.ab.hicarerun.network.models.InventoryModel.TechnicianList
 import com.ab.hicarerun.utils.AppUtils
 import com.karumi.dexter.Dexter
@@ -44,7 +48,7 @@ class InventoryActivity : BaseActivity() {
     lateinit var binding: ActivityInventoryBinding
     lateinit var actionList: ArrayList<ActionList>
     lateinit var technicianList: ArrayList<TechnicianList>
-    lateinit var progressDialog: ProgressDialog
+    lateinit var inventoryAdapter: InventoryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,10 +58,16 @@ class InventoryActivity : BaseActivity() {
 
         actionList = ArrayList()
         technicianList = ArrayList()
-        progressDialog = ProgressDialog(this, R.style.TransparentProgressDialog);
-        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Small);
-        progressDialog.setCancelable(false);
-        progressDialog.isIndeterminate = true;
+        inventoryAdapter = InventoryAdapter(this)
+
+        val inventoryLayoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        inventoryLayoutManager.stackFromEnd = false
+        inventoryLayoutManager.reverseLayout = false
+
+        binding.inventoryRecyclerView.layoutManager = inventoryLayoutManager
+        binding.inventoryRecyclerView.setHasFixedSize(true)
+        binding.inventoryRecyclerView.isNestedScrollingEnabled = false
+        binding.inventoryRecyclerView.adapter = inventoryAdapter
 
         binding.addBtn.setOnClickListener {
             val intent = Intent(this, NewBarcodeActivity::class.java)
@@ -67,6 +77,8 @@ class InventoryActivity : BaseActivity() {
         binding.backIv.setOnClickListener {
             getBack()
         }
+
+        getInventoryList()
     }
 
     private fun requestCameraPermission(intent: Intent) {
@@ -264,6 +276,26 @@ class InventoryActivity : BaseActivity() {
             }
         })
         controller.addInventory(2022, hashMap)
+    }
+
+    private fun getInventoryList(){
+        showProgressDialog()
+        val controller = NetworkCallController()
+        controller.setListner(object : NetworkResponseListner<InventoryListResult>{
+            override fun onResponse(requestCode: Int, response: InventoryListResult?) {
+                if (response != null && response.isSuccess == true){
+                    if (response.data != null && response.data.isNotEmpty()){
+                        inventoryAdapter.addData(response.data)
+                    }
+                }
+                inventoryAdapter.notifyDataSetChanged()
+                dismissProgressDialog()
+            }
+            override fun onFailure(requestCode: Int) {
+                dismissProgressDialog()
+            }
+        })
+        controller.getInventoryList(202206, AppUtils.resourceId)
     }
 
     private fun getDate(str: String): String{

@@ -27,6 +27,7 @@
             android:layout_centerVertical="true"/>
     </RelativeLayout>
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/inventoryRecyclerView"
         android:layout_below="@id/headerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

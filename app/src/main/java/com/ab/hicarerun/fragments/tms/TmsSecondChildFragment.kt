@@ -249,10 +249,8 @@ class TmsSecondChildFragment : Fragment() {
         binding.btnSave.setOnClickListener {
             if (gotoTab()) {
                 val listener = parentFragment as SecondChildListener
-                if (!AppUtils.isInspectionDone) {
-                    listener.onSaveAndNextClicked("Inspection")
-                }
-                listener.onSaveClicked()
+                listener.onSaveAndNextClicked("Inspection")
+                //listener.onSaveClicked()
                 Log.d("TAG", "save ${AppUtils.tmsInspectionList}")
             }else{
                 Toasty.error(requireContext(), "All questions are mandatory.").show()

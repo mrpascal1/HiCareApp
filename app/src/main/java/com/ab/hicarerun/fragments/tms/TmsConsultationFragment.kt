@@ -21,12 +21,15 @@ import com.ab.hicarerun.fragments.ConsultaionSecondChildFragment
 import com.ab.hicarerun.fragments.ConsultationFragment
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
+import com.ab.hicarerun.network.models.ConsulationModel.RecommendationResponse
+import com.ab.hicarerun.network.models.ConsulationModel.Recommendations
 import com.ab.hicarerun.network.models.GeneralModel.GeneralData
 import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse
 import com.ab.hicarerun.network.models.TmsModel.QuestionList
 import com.ab.hicarerun.network.models.TmsModel.QuestionTabList
 import com.ab.hicarerun.network.models.TmsModel.TmsData
 import com.ab.hicarerun.utils.AppUtils
+import com.ab.hicarerun.utils.LocaleHelper
 import com.ab.hicarerun.utils.ProgressBarDrawable
 import com.zipow.cmmlib.AppUtil
 import es.dmoral.toasty.Toasty
@@ -129,29 +132,42 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
         }
     }
 
-    private fun saveConsInsData(value: Int){
+    private fun getRecommendations(){
+        val controller = NetworkCallController()
+        controller.setListner(object : NetworkResponseListner<RecommendationResponse>{
+            override fun onResponse(requestCode: Int, response: RecommendationResponse?) {
+                progressD.dismiss()
+                if (response != null && response.isSuccess == true){
+                    AppUtils.isInspectionDone = true
+                    Toasty.success(requireContext(), "Consultation and Inspection submitted successfully.").show()
+                    onConfirmClicked()
+                }else{
+                    Toast.makeText(requireContext(), "Something went wrong.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            override fun onFailure(requestCode: Int) {
+            }
+        })
+        controller.getTmsRecommendations(202206, mTaskDetailsData[0]?.resourceId, mTaskDetailsData[0]?.taskId, LocaleHelper.getLanguage(activity))
     }
 
     private fun saveConsultationData(type: String, questionTab: String, questionList: ArrayList<QuestionList>){
-        val controller = NetworkCallController()
-        controller.setListner(object : NetworkResponseListner<BaseResponse>{
-            override fun onResponse(requestCode: Int, response: BaseResponse?) {
-                if (response?.isSuccess == true){
-                    //Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show()
-                }else{
-                    Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onFailure(requestCode: Int) {
-                Log.d("TAG", "$requestCode")
-            }
-        })
-
         val hashMap = HashMap<String, Any>()
         hashMap["TaskId"] = mTaskDetailsData[0]?.taskId.toString()
         hashMap["type"] = type
         hashMap["QuestionTabList"] = AppUtils.tmsConsultationList
+
+        val controller = NetworkCallController()
+        controller.setListner(object : NetworkResponseListner<BaseResponse>{
+            override fun onResponse(requestCode: Int, response: BaseResponse?) {
+                if (response?.isSuccess == false){
+                    Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+            override fun onFailure(requestCode: Int) {
+                Log.d("TAG", "$requestCode")
+            }
+        })
         controller.saveTmsQuestions(2211, arrayListOf(hashMap))
     }
 
@@ -171,8 +187,6 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
             } else {
                 binding.progressBar.progress = 1
             }
-        } else {
-            saveConsInsData(1)
         }
     }
 
@@ -187,27 +201,32 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
     }
 
     override fun onSaveAndNextClicked(type: String) {
+        progressD.show()
         val controller = NetworkCallController()
         controller.setListner(object : NetworkResponseListner<BaseResponse>{
             override fun onResponse(requestCode: Int, response: BaseResponse?) {
-                if (response?.isSuccess == true){
-                    //Toasty.success(requireContext(), "OTP sent successfully").show()
-                    //Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show()
+                if (response != null && response.isSuccess == true){
+                    getRecommendations()
                 }else{
-                    Toast.makeText(requireContext(), "Server error", Toast.LENGTH_SHORT).show()
+                    progressD.dismiss()
+                    Toast.makeText(requireContext(), "Something went wrong.", Toast.LENGTH_SHORT).show()
                 }
             }
-
             override fun onFailure(requestCode: Int) {
+                progressD.dismiss()
                 Log.d("TAG", "$requestCode")
             }
         })
-
-        val hashMap = HashMap<String, Any>()
-        hashMap["TaskId"] = mTaskDetailsData[0]?.taskId.toString()
-        hashMap["type"] = type
-        hashMap["QuestionTabList"] = AppUtils.tmsInspectionList
-        controller.saveTmsQuestions(2211, arrayListOf(hashMap))
+        if (!AppUtils.isInspectionDone){
+            val hashMap = HashMap<String, Any>()
+            hashMap["TaskId"] = mTaskDetailsData[0]?.taskId.toString()
+            hashMap["type"] = type
+            hashMap["QuestionTabList"] = AppUtils.tmsInspectionList
+            controller.saveTmsQuestions(2211, arrayListOf(hashMap))
+        }else{
+            progressD.dismiss()
+            onConfirmClicked()
+        }
     }
 
     override fun onBackClicked() {

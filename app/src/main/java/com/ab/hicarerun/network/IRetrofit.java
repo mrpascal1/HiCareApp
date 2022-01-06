@@ -37,6 +37,7 @@ import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeResponse;
 import com.ab.hicarerun.network.models.HandShakeModel.HandShakeResponse;
 import com.ab.hicarerun.network.models.IncentiveModel.IncentiveResponse;
 import com.ab.hicarerun.network.models.InventoryModel.AddInventoryResult;
+import com.ab.hicarerun.network.models.InventoryModel.InventoryListModel.InventoryListResult;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyRequest;
 import com.ab.hicarerun.network.models.JeopardyModel.CWFJeopardyResponse;
 import com.ab.hicarerun.network.models.JeopardyModel.JeopardyReasonModel;
@@ -611,4 +612,7 @@ public interface IRetrofit {
 
     @POST("Inventory/AddInventory")
     Call<AddInventoryResult> addInventory(@Body HashMap<String, Object> data);
+
+    @GET("Inventory/GetInventoryList")
+    Call<InventoryListResult> getInventoryList(@Query("userId") String userId);
 }
