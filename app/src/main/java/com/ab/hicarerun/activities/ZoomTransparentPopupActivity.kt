@@ -149,7 +149,7 @@ class ZoomTransparentPopupActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         OneSignal.clearOneSignalNotifications()
-        OneSignal.cancelNotification(2)
+        //OneSignal.cancelNotification(2)
         val CHANNEL_ID = BuildConfig.APPLICATION_ID + "_notification_id"
         NotificationManagerCompat.from(this).cancelAll()
         NotificationManagerCompat.from(this).deleteNotificationChannel(CHANNEL_ID)

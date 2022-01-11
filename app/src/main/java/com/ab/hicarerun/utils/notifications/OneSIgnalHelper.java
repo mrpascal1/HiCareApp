@@ -12,7 +12,7 @@ public class OneSIgnalHelper extends Application {
 
     public OneSIgnalHelper(final Context context) {
         // OneSignal Initialization
-        OneSignal.startInit(context)
+        /*OneSignal.initWithContext(context);
                 .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
                 .unsubscribeWhenNotificationsAreDisabled(true)
                 .setNotificationOpenedHandler(new OneSignalSilentNotificationHandlerService(context))
@@ -26,16 +26,16 @@ public class OneSIgnalHelper extends Application {
                 if (registrationId != null)
                     Logger.d("OneSignal", "registrationId:" + registrationId);
             }
-        });
+        });*/
     }
 
-    public synchronized String fetchPlayerID(OneSignal.IdsAvailableHandler mOneSIgnalIdshandler){
+    /*public synchronized String fetchPlayerID(OneSignal.IdsAvailableHandler mOneSIgnalIdshandler){
         if(mStrUserID==null){
             OneSignal.idsAvailable(mOneSIgnalIdshandler);
         }
 
         return mStrUserID;
-    }
+    }*/
 
     public synchronized String getmStrUserID() {
         return mStrUserID;

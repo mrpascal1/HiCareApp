@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
@@ -14,14 +15,17 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
+import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.R;
@@ -32,17 +36,22 @@ import com.ab.hicarerun.activities.ZoomTransparentPopupActivity;
 import com.ab.hicarerun.utils.ZoomBroadcast;
 import com.ab.hicarerun.utils.ZoomNotificationClearer;
 import com.onesignal.BuildConfig;
-import com.onesignal.NotificationExtenderService;
 import com.onesignal.OSNotification;
 import com.onesignal.OSNotificationAction;
-import com.onesignal.OSNotificationOpenResult;
-import com.onesignal.OSNotificationReceivedResult;
+import com.onesignal.OSNotificationOpenedResult;
 import com.onesignal.OneSignal;
+import com.onesignal.OneSignalNotificationManager;
 import com.orhanobut.logger.Logger;
 
 import org.json.JSONObject;
 
-public class OneSignalSilentNotificationHandlerService extends NotificationExtenderService implements OneSignal.NotificationOpenedHandler {
+public class OneSignalSilentNotificationHandlerService extends Service implements OneSignal.OSNotificationOpenedHandler {
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
 
     private Context context;
     String notificationId;
@@ -55,17 +64,15 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
 
     }
 
-
-    @Override
-    protected boolean onNotificationProcessing(OSNotificationReceivedResult notification) {
+    protected boolean onNotificationProcessing(OSNotification notification) {
         Logger.d("...Here we go ...");
         Logger.d("...Magic begins ...");
 
-        notificationId = notification.payload.notificationID;
-        String mStrHeader = notification.payload.title;
-        String mStrDescription = notification.payload.body;
+        notificationId = notification.getNotificationId();
+        String mStrHeader = notification.getTitle();
+        String mStrDescription = notification.getBody();
         int mIntPopupType = 0;
-        final JSONObject mJsonObjectAdditionalData = notification.payload.additionalData;
+        final JSONObject mJsonObjectAdditionalData = notification.getAdditionalData();
         try {
             if (mJsonObjectAdditionalData != null) {
                 Logger.d("additionalData:: mJsonObjectAdditionalData " + mJsonObjectAdditionalData.toString());
@@ -97,7 +104,7 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
 //                    System.exit(2);
 
                     NotificationManager notificationManager =
-                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                            (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
                     String CHANNEL_ID = BuildConfig.APPLICATION_ID.concat("_notification_id");
                     String CHANNEL_NAME = BuildConfig.APPLICATION_ID.concat("_notification_name");
@@ -109,10 +116,10 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
                         notificationManager.createNotificationChannel(mChannel);
                     }
 
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID);
 
                     builder.setSmallIcon(R.mipmap.logo)
-                            .setContentTitle(getString(R.string.app_name))
+                            .setContentTitle(context.getString(R.string.app_name))
                             .setContentText("Renewal")
                             .setPriority(NotificationCompat.PRIORITY_HIGH)
                             .setCategory(NotificationCompat.CATEGORY_CALL)
@@ -161,14 +168,14 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
 
         /**
          *  Zoom Meeting notification starter
-        * */
+         * */
         Log.d("TAG", "HEADER: "+mStrHeader);
         if (mStrHeader != null && mStrHeader.equalsIgnoreCase("Inspection Meeting")) {
 
             if (!BaseApplication.inAMeeting) {
 
                 //Uri soundUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() + "/" + R.raw.mu_inspection_request2);
-                MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.mu_inspection_request2);
+                MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.mu_inspection_request2);
                 mediaPlayer.start();
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -191,7 +198,7 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
 
                         if (BaseApplication.isActivityVisible()) {
                             mediaPlayer.start();
-                            startActivity(new Intent(this, ZoomTransparentPopupActivity.class)
+                            context.startActivity(new Intent(context, ZoomTransparentPopupActivity.class)
                                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                     .putExtra("popup_type", mIntPopupType)
                                     .putExtra("popup_header", mStrHeader)
@@ -212,10 +219,10 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
                                 notificationManager.createNotificationChannel(mChannel);
                             }
 
-                            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID);
 
                             builder.setSmallIcon(R.mipmap.logo)
-                                    .setContentTitle(getString(R.string.app_name))
+                                    .setContentTitle(context.getString(R.string.app_name))
                                     .setContentText("Click here to join inspection meeting")
                                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                                     .setCategory(NotificationCompat.CATEGORY_CALL)
@@ -302,10 +309,10 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
          * */
         if (mStrHeader != null && mStrHeader.equalsIgnoreCase("Inspection meeting ended")){
             OneSignal.clearOneSignalNotifications();
-            OneSignal.cancelNotification(2);
+            OneSignal.removeNotification(2);
             String CHANNEL_ID = BuildConfig.APPLICATION_ID + "_notification_id";
-            NotificationManagerCompat.from(this).cancelAll();
-            NotificationManagerCompat.from(this).deleteNotificationChannel(CHANNEL_ID);
+            NotificationManagerCompat.from(context).cancelAll();
+            NotificationManagerCompat.from(context).deleteNotificationChannel(CHANNEL_ID);
         }
 //        else if (mStrDescription != null && mStrDescription.equalsIgnoreCase("Congratulations! You have earned a reward.")) {
 //            try {
@@ -333,6 +340,7 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
         //ActivityTransparentPopUp.startActivityIntent(getBaseContext(),mIntPopupType ,mStrHeader,mStrDescription);
         return false;
     }
+
     private void registerBroadcastReceiver() {
 
         final IntentFilter intentFilter = new IntentFilter();
@@ -343,26 +351,26 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
 
         ZoomBroadcast zoomBroadcast = new ZoomBroadcast();
 
-        registerReceiver(zoomBroadcast, intentFilter);
+        context.registerReceiver(zoomBroadcast, intentFilter);
     }
 
 
     public void clearNotification(){
-        Intent intent = new Intent(this, ZoomNotificationClearer.class);
+        Intent intent = new Intent(context, ZoomNotificationClearer.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                this, 234324243, intent, 0);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                context, 234324243, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
                 + (1), pendingIntent);
     }
     public void startAlert(int mPopupType, String mPopupHeader, String mPopupDescription){
-        Intent intent = new Intent(this, ZoomBroadcast.class);
+        Intent intent = new Intent(context, ZoomBroadcast.class);
         intent.putExtra("popup_type", mPopupType);
         intent.putExtra("popup_header", mPopupHeader);
         intent.putExtra("popup_description", mPopupDescription);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                this, 234324243, intent, 0);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                context, 234324243, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
                 + (1), pendingIntent);
     }
@@ -371,28 +379,28 @@ public class OneSignalSilentNotificationHandlerService extends NotificationExten
         Intent fullScreenIntent;
         if (mStrHeader.equalsIgnoreCase("Inspection Meeting")){
             Log.d("TAG", "Opening from pending intent");
-            fullScreenIntent = new Intent(this, ZoomTransparentPopupActivity.class);
+            fullScreenIntent = new Intent(context, ZoomTransparentPopupActivity.class);
             fullScreenIntent.putExtra("popup_type", mIntPopupType);
             fullScreenIntent.putExtra("popup_header", mStrHeader);
             fullScreenIntent.putExtra("popup_description", mStrDescription);
         }else {
-            fullScreenIntent = new Intent(this, ActivityTransparentPopup.class);
+            fullScreenIntent = new Intent(context, ActivityTransparentPopup.class);
             fullScreenIntent.putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_TYPE, mIntPopupType);
             fullScreenIntent.putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_HEADER, mStrHeader);
             fullScreenIntent.putExtra(ActivityTransparentPopup.INTENT_CONSTANT_ARG_POPUP_DESCRIPTION, mStrDescription);
         }
 //        fullScreenIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK /*| Intent.FLAG_ACTIVITY_CLEAR_TASK*/ | Intent.FLAG_ACTIVITY_NO_HISTORY);
-        return PendingIntent.getActivity(this, 0, fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getActivity(context, 0, fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     @Override
-    public void notificationOpened(OSNotificationOpenResult result) {
+    public void notificationOpened(OSNotificationOpenedResult result) {
         Log.d("TAG", "Opened");
         try {
-            OSNotificationAction.ActionType actionType = result.action.type;
-            JSONObject data = result.notification.payload.additionalData;
-            String mStrHeader = result.notification.payload.title;
-            String mStrDescription = result.notification.payload.body;
+            OSNotificationAction.ActionType actionType = result.getAction().getType();
+            JSONObject data = result.getNotification().getAdditionalData();
+            String mStrHeader = result.getNotification().getTitle();
+            String mStrDescription = result.getNotification().getBody();
             Logger.d("Description ss :: mStrDescription " + mStrDescription);
 
             if (context != null) {
