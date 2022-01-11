@@ -3,7 +3,7 @@ package com.ab.hicarerun.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentList;
+import com.ab.hicarerun.network.models.attachmentmodel.GetAttachmentList;
 
 public class AttachmentListViewModel implements Parcelable {
     private Integer id;

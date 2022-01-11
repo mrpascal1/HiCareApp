@@ -2,8 +2,6 @@ package com.ab.hicarerun.fragments;
 
 
 import android.app.Activity;
-import android.content.ClipData;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -27,15 +25,12 @@ import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.GrommingGalleryActivity;
-import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.activities.TechnicianSeniorActivity;
-import com.ab.hicarerun.adapter.ReferralListAdapter;
 import com.ab.hicarerun.adapter.TechnicianGroomingAdapter;
 import com.ab.hicarerun.databinding.FragmentTechnicianSeniorBinding;
 import com.ab.hicarerun.handler.OnCaptureListItemClickHandler;
@@ -44,28 +39,19 @@ import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.BasicResponse;
 import com.ab.hicarerun.network.models.Item;
 import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
-import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroom;
-import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroomingRequest;
+import com.ab.hicarerun.network.models.techniciangroomingmodel.TechGroom;
+import com.ab.hicarerun.network.models.techniciangroomingmodel.TechGroomingRequest;
 import com.ab.hicarerun.utils.AppUtils;
-import com.ab.hicarerun.viewmodel.GroomingViewModel;
-import com.vansuita.pickimage.bundle.PickSetup;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
-
-import static android.app.Activity.RESULT_OK;
-import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
 
 public class TechnicianSeniorFragment extends BaseFragment implements OnCaptureListItemClickHandler {
     FragmentTechnicianSeniorBinding mFragmentTechnicianSeniorBinding;

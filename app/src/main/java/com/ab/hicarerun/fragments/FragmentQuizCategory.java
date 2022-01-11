@@ -1,7 +1,6 @@
 package com.ab.hicarerun.fragments;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -19,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
@@ -31,12 +29,12 @@ import com.ab.hicarerun.adapter.QuizLevelMatrixAdapter;
 import com.ab.hicarerun.databinding.FragmentQuizCategoryBinding;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
+import com.ab.hicarerun.network.models.generalmodel.GeneralData;
 import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.network.models.QuizLevelModel.QuizLevelData;
-import com.ab.hicarerun.network.models.QuizLevelModel.QuizLevelModelBase;
-import com.ab.hicarerun.network.models.QuizModel.QuizCategoryData;
-import com.ab.hicarerun.network.models.QuizModel.QuizPuzzleStats;
+import com.ab.hicarerun.network.models.quizlevelmodel.QuizLevelData;
+import com.ab.hicarerun.network.models.quizlevelmodel.QuizLevelModelBase;
+import com.ab.hicarerun.network.models.quizmodel.QuizCategoryData;
+import com.ab.hicarerun.network.models.quizmodel.QuizPuzzleStats;
 import com.ab.hicarerun.utils.LocaleHelper;
 import com.squareup.picasso.Picasso;
 

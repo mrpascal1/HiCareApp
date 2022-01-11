@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,25 +13,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.databinding.LayoutConsulationParentAdapterBinding;
 import com.ab.hicarerun.databinding.LayoutNewCompletionListBinding;
 import com.ab.hicarerun.handler.OnCheckListClickHandler;
-import com.ab.hicarerun.handler.OnCheckListItemClickHandler;
-import com.ab.hicarerun.handler.OnConsultationClickHandler;
-import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.ConsulationModel.Data;
-import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
-import com.ab.hicarerun.network.models.GeneralModel.TaskCheckList;
-import com.ab.hicarerun.network.models.TechnicianRoutineModel.ValueData;
-import com.ab.hicarerun.viewmodel.ConsulationViewModel;
+import com.ab.hicarerun.network.models.generalmodel.TaskCheckList;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.realm.RealmResults;
 
 import static android.view.View.GONE;
 

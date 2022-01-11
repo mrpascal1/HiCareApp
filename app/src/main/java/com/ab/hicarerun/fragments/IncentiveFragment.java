@@ -12,52 +12,31 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatEditText;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.text.Html;
 import android.util.Base64;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.activities.HomeActivity;
-import com.ab.hicarerun.activities.IncentivesActivity;
-import com.ab.hicarerun.activities.NewTaskDetailsActivity;
-import com.ab.hicarerun.activities.VerifyOtpActivity;
-import com.ab.hicarerun.adapter.ChemicalRecycleAdapter;
 import com.ab.hicarerun.adapter.IncentiveDetailsAdapter;
 import com.ab.hicarerun.adapter.IncentiveMatrixAdapter;
-import com.ab.hicarerun.adapter.ReferralListAdapter;
-import com.ab.hicarerun.adapter.ReferralRelationAdapter;
-import com.ab.hicarerun.adapter.ReferralServiceAdapter;
 import com.ab.hicarerun.databinding.FragmentIncentiveBinding;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
-import com.ab.hicarerun.network.models.IncentiveModel.Incentive;
-import com.ab.hicarerun.network.models.IncentiveModel.IncentiveCriteriaList;
-import com.ab.hicarerun.network.models.IncentiveModel.IncentiveData;
+import com.ab.hicarerun.network.models.incentivemodel.IncentiveCriteriaList;
+import com.ab.hicarerun.network.models.incentivemodel.IncentiveData;
 import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.network.models.ProfileModel.Profile;
-import com.ab.hicarerun.network.models.ReferralModel.ReferralRequest;
-import com.ab.hicarerun.network.models.ReferralModel.ReferralResponse;
-import com.ab.hicarerun.network.models.ReferralModel.ReferralSRData;
+import com.ab.hicarerun.network.models.profilemodel.Profile;
 import com.ab.hicarerun.utils.AppUtils;
-import com.ab.hicarerun.utils.LocaleHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -65,7 +44,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import es.dmoral.toasty.Toasty;
 import io.realm.RealmResults;
 
 /**

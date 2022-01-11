@@ -1,9 +1,7 @@
 package com.ab.hicarerun.adapter;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +13,9 @@ import android.widget.TextView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.handler.OnAddJobCardClickHandler;
-import com.ab.hicarerun.handler.OnDeleteListItemClickHandler;
 import com.ab.hicarerun.handler.OnJobCardDeleteClickHandler;
-import com.ab.hicarerun.handler.OnRecentTaskClickHandler;
-import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentList;
-import com.ab.hicarerun.network.models.AttachmentModel.MSTAttachment;
-import com.ab.hicarerun.network.models.OnSiteModel.OnSiteRecent;
+import com.ab.hicarerun.network.models.attachmentmodel.GetAttachmentList;
+import com.ab.hicarerun.network.models.attachmentmodel.MSTAttachment;
 import com.ab.hicarerun.utils.AppUtils;
 import com.bumptech.glide.Glide;
 

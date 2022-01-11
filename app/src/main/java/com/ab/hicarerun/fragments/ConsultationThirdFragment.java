@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -29,15 +28,14 @@ import com.ab.hicarerun.databinding.FragmentConsultationThirdBinding;
 import com.ab.hicarerun.handler.UserRecommendationHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.ConsulationModel.Recommendations;
-import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
+import com.ab.hicarerun.network.models.consulationmodel.Recommendations;
+import com.ab.hicarerun.network.models.generalmodel.GeneralData;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.LocaleHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import io.realm.RealmResults;
 

@@ -13,9 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.R
 import com.ab.hicarerun.databinding.LayoutTmsParentAdapterBinding
-import com.ab.hicarerun.network.models.TmsModel.Option
-import com.ab.hicarerun.network.models.TmsModel.QuestionImageUrl
-import com.ab.hicarerun.network.models.TmsModel.QuestionList
+import com.ab.hicarerun.network.models.tmsmodel.Option
+import com.ab.hicarerun.network.models.tmsmodel.QuestionImageUrl
+import com.ab.hicarerun.network.models.tmsmodel.QuestionList
 import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.ImageOverlayStfalcon
 import com.squareup.picasso.Picasso

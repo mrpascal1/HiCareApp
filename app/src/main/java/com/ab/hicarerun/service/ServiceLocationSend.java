@@ -7,11 +7,9 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
@@ -42,20 +40,16 @@ import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.HandShakeModel.ContinueHandShakeRequest;
+import com.ab.hicarerun.network.models.handshakemodel.ContinueHandShakeRequest;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.HandShakeReceiver;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
-import com.ab.hicarerun.utils.notifications.OneSIgnalHelper;
 
 
-import java.security.Provider;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
-import java.util.UUID;
 
 import io.realm.RealmResults;
 

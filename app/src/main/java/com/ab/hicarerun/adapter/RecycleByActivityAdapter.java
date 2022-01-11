@@ -11,10 +11,9 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.databinding.ItemChemicalAreaChildAdapterBinding;
 import com.ab.hicarerun.databinding.ItemRecycleActivityUnitBinding;
 import com.ab.hicarerun.handler.OnAddActivityClickHandler;
-import com.ab.hicarerun.network.models.ActivityModel.ServiceActivity;
+import com.ab.hicarerun.network.models.activitymodel.ServiceActivity;
 
 import org.jetbrains.annotations.NotNull;
 

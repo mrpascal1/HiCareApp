@@ -1,12 +1,9 @@
 package com.ab.hicarerun.activities
 
 import android.Manifest
-import android.app.Activity
-import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -26,10 +23,10 @@ import com.ab.hicarerun.adapter.inventory.InventoryAdapter
 import com.ab.hicarerun.databinding.ActivityInventoryBinding
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
-import com.ab.hicarerun.network.models.InventoryModel.ActionList
-import com.ab.hicarerun.network.models.InventoryModel.AddInventoryResult
-import com.ab.hicarerun.network.models.InventoryModel.InventoryListModel.InventoryListResult
-import com.ab.hicarerun.network.models.InventoryModel.TechnicianList
+import com.ab.hicarerun.network.models.inventorymodel.ActionList
+import com.ab.hicarerun.network.models.inventorymodel.AddInventoryResult
+import com.ab.hicarerun.network.models.inventorymodel.InventoryListModel.InventoryListResult
+import com.ab.hicarerun.network.models.inventorymodel.TechnicianList
 import com.ab.hicarerun.utils.AppUtils
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken

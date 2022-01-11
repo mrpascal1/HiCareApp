@@ -4,14 +4,11 @@ package com.ab.hicarerun.fragments;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.IntentSender;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,28 +31,22 @@ import androidx.databinding.DataBindingUtil;
 
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.activities.StartVideoActivity;
-import com.ab.hicarerun.activities.VerifyOtpActivity;
-import com.ab.hicarerun.databinding.FragmentOtpLoginBinding;
 import com.ab.hicarerun.databinding.FragmentVerifyOtpBinding;
-import com.ab.hicarerun.handler.Common;
 import com.ab.hicarerun.handler.OtpReceivedInterface;
 import com.ab.hicarerun.handler.UserVerifyOtpClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.network.models.OtpModel.SendOtpResponse;
-import com.ab.hicarerun.network.models.TrainingModel.Videos;
+import com.ab.hicarerun.network.models.otpmodel.SendOtpResponse;
+import com.ab.hicarerun.network.models.trainingmodel.Videos;
 import com.ab.hicarerun.utils.AppSignatureHelper;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SMSListener;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 import com.ab.hicarerun.utils.notifications.OneSIgnalHelper;
-import com.ab.hicarerun.viewmodel.UserLoginViewModel;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.credentials.HintRequest;
 import com.google.android.gms.auth.api.phone.SmsRetriever;
 import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
 import com.google.android.gms.common.ConnectionResult;
@@ -66,9 +57,7 @@ import com.google.android.gms.tasks.Task;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 
 public class VerifyOtpFragment extends BaseFragment implements UserVerifyOtpClickHandler, GoogleApiClient.ConnectionCallbacks,

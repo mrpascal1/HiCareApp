@@ -1,27 +1,18 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LayoutAssessReportAdapterBinding;
-import com.ab.hicarerun.databinding.LayoutCheckListAdapterBinding;
-import com.ab.hicarerun.databinding.LayoutCompletionListAdapterBinding;
 import com.ab.hicarerun.handler.OnCheckListItemClickHandler;
-import com.ab.hicarerun.network.models.ChemicalModel.Chemicals;
-import com.ab.hicarerun.network.models.GeneralModel.TaskCheckList;
-import com.ab.hicarerun.network.models.SelfAssessModel.AssessmentReport;
-import com.ab.hicarerun.network.models.SelfAssessModel.ResourceCheckList;
+import com.ab.hicarerun.network.models.selfassessmodel.AssessmentReport;
 import com.ab.hicarerun.viewmodel.AssessmentReportViewModel;
-import com.ab.hicarerun.viewmodel.SelfAccessViewModel;
 
 import org.jetbrains.annotations.NotNull;
 

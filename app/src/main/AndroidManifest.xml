@@ -58,117 +58,145 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.InventoryActivity"></activity>
-        <activity android:name=".activities.NewBarcodeActivity" />
+        <activity android:name=".activities.InventoryActivity"
+            android:exported="true" />
+        <activity android:name=".activities.NewBarcodeActivity"
+            android:exported="true" />
         <activity
             android:name=".activities.ZoomTransparentPopupActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
+            android:exported="true"
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="portrait"
             tools:replace="screenOrientation" />
         <activity
+            android:exported="true"
             android:name=".activities.CaptureActivityPortrait"
             android:screenOrientation="portrait"
             android:stateNotNeeded="true"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
+            android:exported="true"
             android:name=".activities.BarcodeVerificatonActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".activities.TSVerificationActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".activities.TSScannerActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".activities.Camera2Activity" />
+        <activity android:name=".activities.Camera2Activity"
+            android:exported="true" />
         <activity
+            android:exported="true"
             android:name=".activities.ActivityQuizCategory"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
+            android:exported="true"
             android:name=".activities.QuizActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
+            android:exported="true"
             android:name=".activities.QuizResultActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
+            android:exported="true"
             android:name=".activities.QuizLeaderBoardActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity android:name=".activities.KarmaActivity" />
+        <activity android:name=".activities.KarmaActivity"
+            android:exported="true" />
         <activity
+            android:exported="true"
             android:name=".activities.KycActivity"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".activities.TechnicianRoutineActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".activities.HicareProductsActivity" />
+        <activity android:name=".activities.HicareProductsActivity"
+            android:exported="true" />
         <activity
+            android:exported="true"
             android:name=".activities.ServiceRenewalActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".activities.AssessChatActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".activities.LeaderBoardActivity"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".activities.OffersHistoryActivity"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".activities.BazaarActivity"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".utils.notifications.ActivityTransparentPopup"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".activities.RewardsHistoryActivity"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".activities.OfferActivity"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".activities.TechChemicalCountActivity"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".activities.OnSiteAccountDetailsActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".activities.OnSiteTaskActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".activities.StartVideoActivity"
             android:configChanges="orientation|screenSize|layoutDirection" />
         <activity
@@ -180,33 +208,39 @@
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".activities.VoucherActivity"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".activities.AttendanceActivity"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".activities.IncentivesActivity"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" /> <!-- <activity -->
         <activity
+            android:exported="true"
             android:name=".activities.TechIdActivity"
             android:configChanges="keyboardHidden"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".activities.GrommingGalleryActivity"
             android:configChanges="keyboardHidden"
             android:parentActivityName=".activities.TechnicianSeniorActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".activities.TechnicianSeniorActivity"
             android:configChanges="keyboardHidden"
             android:launchMode="singleTop"
@@ -218,26 +252,31 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".activities.ExoplayerActivity" />
+        <activity android:name=".activities.ExoplayerActivity"
+            android:exported="true" />
         <activity
+            android:exported="true"
             android:name=".activities.VerifyOtpActivity"
             android:configChanges="keyboardHidden"
             android:parentActivityName=".activities.LoginActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".activities.TrainingActivity"
             android:configChanges="keyboardHidden"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".activities.HelpActivity"
             android:configChanges="keyboardHidden"
             android:parentActivityName=".activities.HomeActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:exported="true"
             android:name=".activities.LoginActivity"
             android:configChanges="keyboardHidden"
             android:screenOrientation="portrait"
@@ -245,6 +284,7 @@
         <!-- android:name=".BaseApplication" -->
         <!-- android:screenOrientation="portrait" /> -->
         <activity
+            android:exported="true"
             android:name=".activities.HomeActivity"
             android:configChanges="keyboardHidden"
             android:screenOrientation="portrait"
@@ -275,6 +315,7 @@
         </activity>
 
         <service
+            android:exported="true"
             android:name=".service.ServiceLocationSend"
             android:enabled="true"
             android:foregroundServiceType="location"
@@ -287,6 +328,7 @@
         <!-- </intent-filter> -->
         <!-- </service> -->
         <service
+            android:exported="true"
             android:name=".utils.DownloadService"
             android:enabled="true" />
 
@@ -316,7 +358,7 @@
                 <action android:name="com.google.android.gms.auth.api.phone.SMS_RETRIEVE" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".utils.HandShakeReceiver">
+        <receiver android:name=".utils.HandShakeReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
@@ -324,7 +366,7 @@
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".utils.notifications.CallServiceAfterReboot">
+        <receiver android:exported="true" android:name=".utils.notifications.CallServiceAfterReboot">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
@@ -365,7 +407,7 @@
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:name=".android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/image_path" />
         </provider>
         <!--
@@ -386,8 +428,8 @@
         </provider>
         -->
         <service
+            android:exported="true"
             android:name=".utils.notifications.OneSignalSilentNotificationHandlerService"
-            android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE">
             <intent-filter>
                 <action android:name="com.onesignal.NotificationExtender" />
@@ -399,11 +441,11 @@
             android:value="DISABLE" />
 
         <receiver
-            android:name=".utils.ZoomBroadcast"
-            android:exported="true" />
+            android:exported="true"
+            android:name=".utils.ZoomBroadcast" />
         <receiver
-            android:name=".utils.ZoomNotificationClearer"
-            android:exported="true" />
+            android:exported="true"
+            android:name=".utils.ZoomNotificationClearer" />
     </application>
 
 </manifest>

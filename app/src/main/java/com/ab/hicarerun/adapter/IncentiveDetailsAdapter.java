@@ -9,12 +9,9 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.databinding.IncentiveMatrixAdapterBinding;
 import com.ab.hicarerun.databinding.LayoutIncentiveListAdapterBinding;
-import com.ab.hicarerun.network.models.IncentiveModel.IncentiiveDetailList;
-import com.ab.hicarerun.network.models.IncentiveModel.IncentiveCriteriaList;
+import com.ab.hicarerun.network.models.incentivemodel.IncentiiveDetailList;
 import com.ab.hicarerun.viewmodel.IncentiveDetailViewModel;
-import com.ab.hicarerun.viewmodel.IncentiveMatrixViewModel;
 
 import org.jetbrains.annotations.NotNull;
 

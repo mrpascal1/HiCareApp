@@ -3,8 +3,7 @@ package com.ab.hicarerun.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
-import com.ab.hicarerun.network.models.TaskModel.Tasks;
+import com.ab.hicarerun.network.models.referralmodel.ReferralList;
 
 public class ReferralListViewModel implements Parcelable {
     private Integer id;

@@ -1,8 +1,6 @@
 package com.ab.hicarerun.fragments;
 
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,22 +10,18 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.adapter.IncentiveMatrixAdapter;
 import com.ab.hicarerun.adapter.RewardLeadersAdapter;
 import com.ab.hicarerun.databinding.FragmentLeaderBoardBinding;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.LeaderBoardModel.RewardLeaders;
+import com.ab.hicarerun.network.models.leaderboardmodel.RewardLeaders;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.utils.AppUtils;
 

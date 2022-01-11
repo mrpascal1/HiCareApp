@@ -18,14 +18,11 @@ import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.adapter.RecycleOfferHistoryAdapter;
-import com.ab.hicarerun.adapter.RecycleOffersAdapter;
 import com.ab.hicarerun.databinding.FragmentRewardsHistoryBinding;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.network.models.RewardsModel.RewardsData;
-
-import java.util.ArrayList;
+import com.ab.hicarerun.network.models.rewardsmodel.RewardsData;
 
 import io.realm.RealmResults;
 

@@ -19,9 +19,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.Animation
-import android.view.animation.TranslateAnimation
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
@@ -36,12 +33,12 @@ import com.ab.hicarerun.adapter.tms.TmsQuestionsParentAdapter
 import com.ab.hicarerun.databinding.FragmentTmsSecondChildBinding
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
-import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListData
-import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListRequest
-import com.ab.hicarerun.network.models.GeneralModel.GeneralData
+import com.ab.hicarerun.network.models.checklistmodel.UploadCheckListData
+import com.ab.hicarerun.network.models.checklistmodel.UploadCheckListRequest
+import com.ab.hicarerun.network.models.generalmodel.GeneralData
 import com.ab.hicarerun.network.models.LoginResponse
-import com.ab.hicarerun.network.models.TmsModel.QuestionList
-import com.ab.hicarerun.network.models.TmsModel.QuestionTabList
+import com.ab.hicarerun.network.models.tmsmodel.QuestionList
+import com.ab.hicarerun.network.models.tmsmodel.QuestionTabList
 import com.ab.hicarerun.utils.AppUtils
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport

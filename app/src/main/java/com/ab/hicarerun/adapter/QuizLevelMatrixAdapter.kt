@@ -2,11 +2,10 @@ package com.ab.hicarerun.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.databinding.IncentiveMatrixAdapterBinding
-import com.ab.hicarerun.network.models.QuizLevelModel.QuizLevelData
+import com.ab.hicarerun.network.models.quizlevelmodel.QuizLevelData
 
 class QuizLevelMatrixAdapter(val context: Context, val quizLevelData: List<QuizLevelData>): RecyclerView.Adapter<QuizLevelMatrixAdapter.MyHolder>() {
 

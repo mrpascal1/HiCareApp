@@ -1,12 +1,6 @@
 package com.ab.hicarerun.adapter;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,17 +13,10 @@ import android.widget.TextView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.handler.OnAddChemicalClickHandler;
-import com.ab.hicarerun.handler.OnAddJobCardClickHandler;
-import com.ab.hicarerun.handler.OnRecentTaskClickHandler;
-import com.ab.hicarerun.network.models.ChemicalModel.Chemicals;
-import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
+import com.ab.hicarerun.network.models.chemicalmodel.Chemicals;
 
 import java.util.HashMap;
 import java.util.List;
-
-import io.realm.RealmResults;
-
-import static com.ab.hicarerun.BaseApplication.getRealm;
 
 /**
  * Created by Arjun Bhatt on 1/3/2020.

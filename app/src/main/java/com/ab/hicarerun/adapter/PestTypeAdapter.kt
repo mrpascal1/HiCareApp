@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.text.Editable
 import android.text.Selection
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,8 +12,7 @@ import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.R
 import com.ab.hicarerun.databinding.RowBarcodePestTypeBinding
-import com.ab.hicarerun.network.models.TSScannerModel.BarcodeDDPestType
-import com.ab.hicarerun.network.models.TSScannerModel.Option_List
+import com.ab.hicarerun.network.models.tsscannermodel.BarcodeDDPestType
 import com.squareup.picasso.Picasso
 
 class PestTypeAdapter(val context: Context, val pestList: ArrayList<BarcodeDDPestType>, val arrayAdapter: ArrayAdapter<String>) : RecyclerView.Adapter<PestTypeAdapter.MyHolder>() {

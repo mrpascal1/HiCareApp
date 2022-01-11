@@ -1,28 +1,21 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
 import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ItemChemicalAreaChildAdapterBinding;
 import com.ab.hicarerun.handler.OnAddChemicalActivity;
-import com.ab.hicarerun.handler.OnAddChemicalClickHandler;
-import com.ab.hicarerun.network.models.ChemicalModel.AreaData;
+import com.ab.hicarerun.network.models.chemicalmodel.AreaData;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.view.View.VISIBLE;
 
 /**
  * Created by Arjun Bhatt on 6/27/2021.

@@ -1,10 +1,8 @@
 package com.ab.hicarerun.viewmodel;
 
-import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentList;
-import com.ab.hicarerun.network.models.ChemicalModel.Chemicals;
+import com.ab.hicarerun.network.models.chemicalmodel.Chemicals;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class ChemicalViewModel {
     private String id;

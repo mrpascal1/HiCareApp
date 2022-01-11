@@ -3,7 +3,6 @@ package com.ab.hicarerun.adapter;
 import android.content.Context;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.databinding.DataBindingUtil;
@@ -11,12 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LayoutProductCartAdapterBinding;
-import com.ab.hicarerun.databinding.ProductUnitsAdapterBinding;
 import com.ab.hicarerun.handler.OnCartItemClickHandler;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.ProductCartModel.ProductCart;
-import com.ab.hicarerun.network.models.ProductModel.ServicePlanUnits;
-import com.ab.hicarerun.viewmodel.TaskViewModel;
+import com.ab.hicarerun.network.models.productcartmodel.ProductCart;
 
 import org.jetbrains.annotations.NotNull;
 

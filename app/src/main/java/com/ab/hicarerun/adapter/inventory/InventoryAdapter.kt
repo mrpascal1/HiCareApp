@@ -8,7 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.R
 import com.ab.hicarerun.databinding.ItemInventoryListBinding
-import com.ab.hicarerun.network.models.InventoryModel.InventoryListModel.Data
+import com.ab.hicarerun.network.models.inventorymodel.InventoryListModel.Data
 
 class InventoryAdapter(val context: Context) : RecyclerView.Adapter<InventoryAdapter.MyHolder>(){
 

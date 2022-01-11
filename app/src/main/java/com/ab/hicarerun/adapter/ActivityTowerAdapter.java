@@ -11,8 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ItemChemicalTowerAdapterBinding;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.ActivityModel.ActivityData;
-import com.ab.hicarerun.network.models.ChemicalModel.ServiceChemicalData;
+import com.ab.hicarerun.network.models.activitymodel.ActivityData;
 
 import org.jetbrains.annotations.NotNull;
 

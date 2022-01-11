@@ -27,10 +27,10 @@ import com.ab.hicarerun.handler.OnRecentTaskClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.network.models.OnSiteModel.Account;
-import com.ab.hicarerun.network.models.OnSiteModel.OnSiteHead;
-import com.ab.hicarerun.network.models.OnSiteModel.OnSiteRecent;
-import com.ab.hicarerun.network.models.OnSiteModel.SaveAccountAreaResponse;
+import com.ab.hicarerun.network.models.onsitemodel.Account;
+import com.ab.hicarerun.network.models.onsitemodel.OnSiteHead;
+import com.ab.hicarerun.network.models.onsitemodel.OnSiteRecent;
+import com.ab.hicarerun.network.models.onsitemodel.SaveAccountAreaResponse;
 
 import org.jetbrains.annotations.NotNull;
 

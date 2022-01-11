@@ -18,7 +18,7 @@ import com.ab.hicarerun.databinding.FragmentTechIdBinding;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.network.models.ProfileModel.Profile;
+import com.ab.hicarerun.network.models.profilemodel.Profile;
 import com.ab.hicarerun.utils.AppUtils;
 import org.jetbrains.annotations.NotNull;
 import io.realm.RealmResults;

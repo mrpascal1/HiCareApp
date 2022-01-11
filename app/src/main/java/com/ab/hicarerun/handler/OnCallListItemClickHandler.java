@@ -1,6 +1,6 @@
 package com.ab.hicarerun.handler;
 
-import com.ab.hicarerun.network.models.ProfileModel.Profile;
+import com.ab.hicarerun.network.models.profilemodel.Profile;
 
 public interface OnCallListItemClickHandler extends OnListItemClickHandler {
     void onPrimaryMobileClicked(int position);

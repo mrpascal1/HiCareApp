@@ -21,7 +21,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
@@ -39,13 +38,12 @@ import com.ab.hicarerun.adapter.tms.TmsQuestionsParentAdapter
 import com.ab.hicarerun.databinding.FragmentTmsFirstChildBinding
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
-import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListData
-import com.ab.hicarerun.network.models.CheckListModel.UploadCheckListRequest
-import com.ab.hicarerun.network.models.ConsulationModel.Data
-import com.ab.hicarerun.network.models.GeneralModel.GeneralData
+import com.ab.hicarerun.network.models.checklistmodel.UploadCheckListData
+import com.ab.hicarerun.network.models.checklistmodel.UploadCheckListRequest
+import com.ab.hicarerun.network.models.generalmodel.GeneralData
 import com.ab.hicarerun.network.models.LoginResponse
-import com.ab.hicarerun.network.models.TmsModel.QuestionList
-import com.ab.hicarerun.network.models.TmsModel.QuestionsResponse
+import com.ab.hicarerun.network.models.tmsmodel.QuestionList
+import com.ab.hicarerun.network.models.tmsmodel.QuestionsResponse
 import com.ab.hicarerun.utils.AppUtils
 import com.google.android.material.snackbar.Snackbar
 import com.karumi.dexter.Dexter

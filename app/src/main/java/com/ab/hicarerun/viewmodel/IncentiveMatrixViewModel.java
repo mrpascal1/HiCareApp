@@ -3,8 +3,7 @@ package com.ab.hicarerun.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.ab.hicarerun.network.models.IncentiveModel.IncentiveCriteriaList;
-import com.ab.hicarerun.network.models.IncentiveModel.Matrix;
+import com.ab.hicarerun.network.models.incentivemodel.IncentiveCriteriaList;
 
 /**
  * Created by Arjun Bhatt on 10/16/2019.

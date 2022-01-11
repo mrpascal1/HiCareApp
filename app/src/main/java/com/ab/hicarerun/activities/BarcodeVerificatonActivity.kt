@@ -24,7 +24,6 @@ import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.AppCompatSpinner
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,10 +37,10 @@ import com.ab.hicarerun.adapter.PestTypeAdapter
 import com.ab.hicarerun.databinding.ActivityBarcodeVerificatonBinding
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
-import com.ab.hicarerun.network.models.GeneralModel.GeneralData
+import com.ab.hicarerun.network.models.generalmodel.GeneralData
 import com.ab.hicarerun.network.models.Item
 import com.ab.hicarerun.network.models.LoginResponse
-import com.ab.hicarerun.network.models.TSScannerModel.*
+import com.ab.hicarerun.network.models.tsscannermodel.*
 import com.ab.hicarerun.service.listner.LocationManagerListner
 import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.LocaleHelper

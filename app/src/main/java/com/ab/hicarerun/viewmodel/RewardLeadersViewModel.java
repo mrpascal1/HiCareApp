@@ -3,7 +3,7 @@ package com.ab.hicarerun.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.ab.hicarerun.network.models.LeaderBoardModel.RewardLeaders;
+import com.ab.hicarerun.network.models.leaderboardmodel.RewardLeaders;
 
 /**
  * Created by Arjun Bhatt on 4/9/2020.

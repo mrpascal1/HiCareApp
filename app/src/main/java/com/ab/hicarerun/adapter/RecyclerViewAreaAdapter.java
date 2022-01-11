@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LayoutAreaAdapterBinding;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.OnSiteModel.OnSiteArea;
+import com.ab.hicarerun.network.models.onsitemodel.OnSiteArea;
 
 import org.jetbrains.annotations.NotNull;
 

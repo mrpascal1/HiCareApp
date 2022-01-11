@@ -1,17 +1,12 @@
 package com.ab.hicarerun.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.ab.hicarerun.BaseActivity;
@@ -19,8 +14,7 @@ import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ActivityHicareProductsBinding;
 import com.ab.hicarerun.fragments.HicareProductsFragment;
 import com.ab.hicarerun.fragments.Product_Cart_Fragment;
-import com.ab.hicarerun.fragments.ServiceRenewalFragment;
-import com.ab.hicarerun.network.models.ProductCartModel.ProductCart;
+import com.ab.hicarerun.network.models.productcartmodel.ProductCart;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.LocaleHelper;
 

@@ -1,30 +1,18 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.databinding.LayoutBazaarAdapterBinding;
 import com.ab.hicarerun.databinding.LayoutScratchDetailAdapterBinding;
-import com.ab.hicarerun.databinding.OffersHistoryFooterAdapterBinding;
-import com.ab.hicarerun.handler.OnBazaarItemClickHandler;
-import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.NewRewardsModel.NewRewardDetailSummary;
-import com.ab.hicarerun.network.models.OffersModel.RewardDetailSummary;
-import com.ab.hicarerun.network.models.RewardsModel.AvailableOffer;
-import com.squareup.picasso.Picasso;
+import com.ab.hicarerun.network.models.offersmodel.RewardDetailSummary;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 

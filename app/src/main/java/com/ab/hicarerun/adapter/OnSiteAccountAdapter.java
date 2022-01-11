@@ -11,14 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.OnsiteAccountAdapterBinding;
-import com.ab.hicarerun.databinding.ReferralListAdapterBinding;
 import com.ab.hicarerun.handler.OnAccountOnsiteClickHandler;
-import com.ab.hicarerun.handler.OnDeleteListItemClickHandler;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.OnSiteModel.OnSiteAccounts;
-import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
+import com.ab.hicarerun.network.models.onsitemodel.OnSiteAccounts;
 import com.ab.hicarerun.viewmodel.OnSiteAccountViewModel;
-import com.ab.hicarerun.viewmodel.ReferralListViewModel;
 
 import org.jetbrains.annotations.NotNull;
 

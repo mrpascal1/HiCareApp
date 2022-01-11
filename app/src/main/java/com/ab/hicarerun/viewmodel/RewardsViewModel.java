@@ -3,8 +3,7 @@ package com.ab.hicarerun.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.ab.hicarerun.network.models.NewRewardsModel.RewardListData;
-import com.ab.hicarerun.network.models.OffersModel.RewardList;
+import com.ab.hicarerun.network.models.offersmodel.RewardList;
 
 /**
  * Created by Arjun Bhatt on 3/26/2020.

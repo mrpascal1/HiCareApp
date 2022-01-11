@@ -1,7 +1,6 @@
 package com.ab.hicarerun.fragments;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -10,14 +9,12 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.CountDownTimer;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,12 +30,12 @@ import com.ab.hicarerun.databinding.FragmentQuizBinding;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.network.models.QuizModel.QuizAnswer;
-import com.ab.hicarerun.network.models.QuizModel.QuizData;
-import com.ab.hicarerun.network.models.QuizModel.QuizPuzzleStats;
-import com.ab.hicarerun.network.models.QuizModel.QuizSaveAnswers;
-import com.ab.hicarerun.network.models.QuizModel.VideoDependentQuest;
-import com.ab.hicarerun.network.models.QuizSaveModel.QuizSaveResponseBase;
+import com.ab.hicarerun.network.models.quizmodel.QuizAnswer;
+import com.ab.hicarerun.network.models.quizmodel.QuizData;
+import com.ab.hicarerun.network.models.quizmodel.QuizPuzzleStats;
+import com.ab.hicarerun.network.models.quizmodel.QuizSaveAnswers;
+import com.ab.hicarerun.network.models.quizmodel.VideoDependentQuest;
+import com.ab.hicarerun.network.models.quizsavemodel.QuizSaveResponseBase;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.LocaleHelper;
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -73,7 +70,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import io.realm.RealmResults;
 

@@ -1,9 +1,6 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,22 +9,15 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.databinding.ChemicalRecycleRowBinding;
 import com.ab.hicarerun.databinding.LayoutChemicalsDialogAdapterBinding;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.ChemicalModel.Chemicals;
-import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
+import com.ab.hicarerun.network.models.chemicalmodel.Chemicals;
 import com.ab.hicarerun.viewmodel.ChemicalViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-import io.realm.RealmResults;
-
-import static com.ab.hicarerun.BaseApplication.getRealm;
 
 /**
  * Created by Arjun Bhatt on 3/12/2020.

@@ -2,7 +2,6 @@ package com.ab.hicarerun.adapter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 
@@ -18,10 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.ExoplayerActivity;
-import com.ab.hicarerun.network.models.TrainingModel.Videos;
+import com.ab.hicarerun.network.models.trainingmodel.Videos;
 import com.bumptech.glide.RequestManager;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class VideoPlayerViewHolder extends RecyclerView.ViewHolder {

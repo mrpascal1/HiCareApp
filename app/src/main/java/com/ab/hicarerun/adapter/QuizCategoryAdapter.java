@@ -1,7 +1,6 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +10,9 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.databinding.ProductUnitsAdapterBinding;
 import com.ab.hicarerun.databinding.QuizCategoryAdapterBinding;
-import com.ab.hicarerun.databinding.QuizCategoryAdapterBindingImpl;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.KarmaModel.KarmaHistoryDetails;
-import com.ab.hicarerun.network.models.ProductModel.ServicePlanUnits;
-import com.ab.hicarerun.network.models.QuizModel.QuizCategoryData;
-import com.ab.hicarerun.viewmodel.ProductViewModel;
+import com.ab.hicarerun.network.models.quizmodel.QuizCategoryData;
 import com.ab.hicarerun.viewmodel.QuizCategoryViewModel;
 import com.squareup.picasso.Picasso;
 

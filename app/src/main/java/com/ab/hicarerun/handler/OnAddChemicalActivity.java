@@ -1,6 +1,6 @@
 package com.ab.hicarerun.handler;
 
-import com.ab.hicarerun.network.models.ChemicalModel.ActivityData;
+import com.ab.hicarerun.network.models.chemicalmodel.ActivityData;
 
 import java.util.List;
 

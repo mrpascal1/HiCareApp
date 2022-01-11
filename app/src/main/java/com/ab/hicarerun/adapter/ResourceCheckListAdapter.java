@@ -13,12 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LayoutCheckListAdapterBinding;
-import com.ab.hicarerun.databinding.LayoutCompletionListAdapterBinding;
 import com.ab.hicarerun.handler.OnCheckListItemClickHandler;
-import com.ab.hicarerun.network.models.ChemicalModel.Chemicals;
-import com.ab.hicarerun.network.models.GeneralModel.TaskCheckList;
-import com.ab.hicarerun.network.models.SelfAssessModel.ResourceCheckList;
-import com.ab.hicarerun.viewmodel.ReferralListViewModel;
+import com.ab.hicarerun.network.models.selfassessmodel.ResourceCheckList;
 import com.ab.hicarerun.viewmodel.SelfAccessViewModel;
 
 import org.jetbrains.annotations.NotNull;

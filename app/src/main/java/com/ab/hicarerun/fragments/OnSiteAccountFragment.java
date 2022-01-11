@@ -1,7 +1,6 @@
 package com.ab.hicarerun.fragments;
 
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -13,7 +12,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,17 +21,15 @@ import android.widget.Toast;
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.activities.OnSiteAccountDetailsActivity;
 import com.ab.hicarerun.activities.OnSiteTaskActivity;
 import com.ab.hicarerun.adapter.OnSiteAccountAdapter;
 import com.ab.hicarerun.databinding.FragmentOnsiteAccountBinding;
 import com.ab.hicarerun.handler.OnAccountOnsiteClickHandler;
-import com.ab.hicarerun.handler.OnListItemClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.network.models.OnSiteModel.OnSiteAccounts;
+import com.ab.hicarerun.network.models.onsitemodel.OnSiteAccounts;
 import com.ab.hicarerun.utils.AppUtils;
 
 import org.jetbrains.annotations.NotNull;

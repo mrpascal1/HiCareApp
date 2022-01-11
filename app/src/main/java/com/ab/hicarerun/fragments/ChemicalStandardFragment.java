@@ -1,62 +1,36 @@
 package com.ab.hicarerun.fragments;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.ViewCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.BarcodeVerificatonActivity;
-import com.ab.hicarerun.adapter.AddActivityAdapter;
-import com.ab.hicarerun.adapter.AddChemicalActivityAdapter;
-import com.ab.hicarerun.adapter.ChemicalAreaParentAdapter;
 import com.ab.hicarerun.adapter.ChemicalRecycleAdapter;
-import com.ab.hicarerun.adapter.ChemicalTowerAdapter;
-import com.ab.hicarerun.databinding.FragmentChemicalActualBinding;
 import com.ab.hicarerun.databinding.FragmentChemicalStandardBinding;
-import com.ab.hicarerun.handler.OnAddChemicalActivity;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
-import com.ab.hicarerun.handler.OnSelectChemicalClickHandler;
-import com.ab.hicarerun.handler.OnSelectServiceClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.ChemicalModel.ActivityData;
-import com.ab.hicarerun.network.models.ChemicalModel.Chemicals;
-import com.ab.hicarerun.network.models.ChemicalModel.ServiceChemicalData;
-import com.ab.hicarerun.network.models.ChemicalModel.ServiceData;
-import com.ab.hicarerun.network.models.ChemicalModel.TowerData;
-import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
-import com.ab.hicarerun.network.models.OnSiteModel.ActivityDetail;
-import com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;
-import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.network.models.chemicalmodel.Chemicals;
+import com.ab.hicarerun.network.models.generalmodel.GeneralData;
 
 import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Text;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import io.realm.RealmResults;
 

@@ -3,13 +3,8 @@ package com.ab.hicarerun.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.ab.hicarerun.network.models.NewRewardsModel.MissedRewardDetailSummary;
-import com.ab.hicarerun.network.models.NewRewardsModel.RewardListData;
-import com.ab.hicarerun.network.models.NewRewardsModel.RewardListObject;
-import com.ab.hicarerun.network.models.NewRewardsModel.RewardsMissedObject;
-import com.ab.hicarerun.network.models.OnSiteModel.RecentActivityDetails;
-
-import java.util.List;
+import com.ab.hicarerun.network.models.newrewardsmodel.RewardListData;
+import com.ab.hicarerun.network.models.newrewardsmodel.RewardListObject;
 
 /**
  * Created by Arjun Bhatt on 7/2/2020.

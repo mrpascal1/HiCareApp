@@ -2,7 +2,6 @@ package com.ab.hicarerun.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.databinding.DataBindingUtil;
@@ -10,9 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.AddActivityAdapterBinding;
-import com.ab.hicarerun.handler.OnAddActivityClickHandler;
-import com.ab.hicarerun.handler.OnSelectServiceClickHandler;
-import com.ab.hicarerun.network.models.OnSiteModel.RecentActivityDetails;
+import com.ab.hicarerun.network.models.onsitemodel.RecentActivityDetails;
 import com.ab.hicarerun.viewmodel.AccountAreaViewModel;
 
 import org.jetbrains.annotations.NotNull;

@@ -12,12 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ChemicalRecycleRowBinding;
-import com.ab.hicarerun.databinding.LayoutChemicalHeaderBinding;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.ChemicalModel.Chemicals;
-import com.ab.hicarerun.network.models.ChemicalModel.MSTChemicals;
-import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
-import com.ab.hicarerun.viewmodel.ChemicalMSTViewModel;
+import com.ab.hicarerun.network.models.chemicalmodel.Chemicals;
+import com.ab.hicarerun.network.models.generalmodel.GeneralData;
 import com.ab.hicarerun.viewmodel.ChemicalViewModel;
 
 import java.util.ArrayList;

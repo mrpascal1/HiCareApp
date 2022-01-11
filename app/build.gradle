@@ -24,10 +24,10 @@ android {
         versionCode 64
         versionName "7.7"
         multiDexEnabled true
-        dynamicFeatures = [":ondemand"]
+        //dynamicFeatures = [":ondemand"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [
-                onesignal_app_id               : '388766c1-4dc5-4e4d-a206-9b4f583d5d9d',
+                onesignal_app_id: '388766c1-4dc5-4e4d-a206-9b4f583d5d9d',
                 // Project number pulled f;prom dashboard, local value is ignored.
                 onesignal_google_project_number: 'REMOTE'
         ]
@@ -68,7 +68,7 @@ android {
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
     }
-    dynamicFeatures = [":LanguageModule", ":MarathiLanguage"]
+    //dynamicFeatures = [":LanguageModule", ":MarathiLanguage"]
 
     bundle {
         language {

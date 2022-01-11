@@ -1,31 +1,18 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.media.ThumbnailUtils;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LayoutKarmaAdapterBinding;
-import com.ab.hicarerun.databinding.LayoutOffersAdapterBinding;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.handler.OnRewardtemClickHandler;
-import com.ab.hicarerun.network.models.KarmaModel.KarmaHistoryDetails;
-import com.ab.hicarerun.network.models.OffersModel.RewardList;
-import com.ab.hicarerun.viewmodel.AssessmentReportViewModel;
-import com.ab.hicarerun.viewmodel.RewardsViewModel;
-import com.bumptech.glide.Glide;
-import com.squareup.picasso.Picasso;
+import com.ab.hicarerun.network.models.karmamodel.KarmaHistoryDetails;
 
 import org.jetbrains.annotations.NotNull;
 

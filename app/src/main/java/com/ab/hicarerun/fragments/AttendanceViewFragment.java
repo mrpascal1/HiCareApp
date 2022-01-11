@@ -1,7 +1,6 @@
 package com.ab.hicarerun.fragments;
 
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,7 +21,7 @@ import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.databinding.FragmentAttendanceViewBinding;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.AttendanceModel.AttendanceDetail;
+import com.ab.hicarerun.network.models.attendancemodel.AttendanceDetail;
 import com.ab.hicarerun.network.models.LoginResponse;
 
 import org.jetbrains.annotations.NotNull;

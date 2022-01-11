@@ -1,6 +1,5 @@
 package com.ab.hicarerun.fragments;
 
-import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
@@ -12,9 +11,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -22,11 +18,8 @@ import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.adapter.ProductUnitAdapter;
 import com.ab.hicarerun.databinding.FragmentProductDetailBinding;
-import com.ab.hicarerun.network.models.ProductCartModel.ProductCart;
-import com.ab.hicarerun.network.models.ProductModel.ProductData;
-import com.ab.hicarerun.utils.AppUtils;
-
-import io.realm.RealmResults;
+import com.ab.hicarerun.network.models.productcartmodel.ProductCart;
+import com.ab.hicarerun.network.models.productmodel.ProductData;
 
 /**
  * A simple {@link Fragment} subclass.

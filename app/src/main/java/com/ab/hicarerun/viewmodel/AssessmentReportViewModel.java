@@ -3,8 +3,7 @@ package com.ab.hicarerun.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.ab.hicarerun.network.models.SelfAssessModel.AssessmentReport;
-import com.ab.hicarerun.network.models.SelfAssessModel.ResourceCheckList;
+import com.ab.hicarerun.network.models.selfassessmodel.AssessmentReport;
 
 /**
  * Created by Arjun Bhatt on 5/21/2020.

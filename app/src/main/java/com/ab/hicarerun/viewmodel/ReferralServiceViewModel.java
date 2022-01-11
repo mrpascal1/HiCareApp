@@ -3,9 +3,7 @@ package com.ab.hicarerun.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
-import com.ab.hicarerun.network.models.ReferralModel.ReferralSRData;
-import com.ab.hicarerun.network.models.ReferralModel.ReferralService;
+import com.ab.hicarerun.network.models.referralmodel.ReferralService;
 
 /**
  * Created by Arjun Bhatt on 7/9/2020.

@@ -1,6 +1,5 @@
 package com.ab.hicarerun.activities
 
-import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
@@ -28,7 +27,7 @@ import com.ab.hicarerun.handler.OnBarcodeCountListener
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
 import com.ab.hicarerun.network.models.LoginResponse
-import com.ab.hicarerun.network.models.TSScannerModel.*
+import com.ab.hicarerun.network.models.tsscannermodel.*
 import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.LocaleHelper
 import com.google.zxing.integration.android.IntentIntegrator

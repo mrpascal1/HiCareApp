@@ -16,22 +16,15 @@ import com.ab.hicarerun.BaseApplication
 import com.ab.hicarerun.R
 import com.ab.hicarerun.activities.NewTaskDetailsActivity
 import com.ab.hicarerun.databinding.FragmentTmsConsultationBinding
-import com.ab.hicarerun.fragments.ConsultaionFirstChildFragmentt
-import com.ab.hicarerun.fragments.ConsultaionSecondChildFragment
-import com.ab.hicarerun.fragments.ConsultationFragment
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
-import com.ab.hicarerun.network.models.ConsulationModel.RecommendationResponse
-import com.ab.hicarerun.network.models.ConsulationModel.Recommendations
-import com.ab.hicarerun.network.models.GeneralModel.GeneralData
-import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse
-import com.ab.hicarerun.network.models.TmsModel.QuestionList
-import com.ab.hicarerun.network.models.TmsModel.QuestionTabList
-import com.ab.hicarerun.network.models.TmsModel.TmsData
+import com.ab.hicarerun.network.models.consulationmodel.RecommendationResponse
+import com.ab.hicarerun.network.models.generalmodel.GeneralData
+import com.ab.hicarerun.network.models.tsscannermodel.BaseResponse
+import com.ab.hicarerun.network.models.tmsmodel.QuestionList
 import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.LocaleHelper
 import com.ab.hicarerun.utils.ProgressBarDrawable
-import com.zipow.cmmlib.AppUtil
 import es.dmoral.toasty.Toasty
 import io.realm.RealmResults
 

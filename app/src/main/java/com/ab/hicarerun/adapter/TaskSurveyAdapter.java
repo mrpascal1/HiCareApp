@@ -6,15 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.network.models.GeneralModel.TaskCheckList;
-import com.ab.hicarerun.network.models.OffersModel.RewardDetailHistorySummary;
-import com.ab.hicarerun.network.models.OffersModel.RewardHistoryList;
+import com.ab.hicarerun.network.models.generalmodel.TaskCheckList;
 
 import java.util.HashMap;
 import java.util.List;

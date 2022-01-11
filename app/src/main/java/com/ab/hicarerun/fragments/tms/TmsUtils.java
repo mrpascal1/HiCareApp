@@ -15,8 +15,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.ab.hicarerun.activities.Camera2Activity;
-import com.ab.hicarerun.network.models.ConsulationModel.Data;
-import com.ab.hicarerun.network.models.TmsModel.QuestionList;
+import com.ab.hicarerun.network.models.tmsmodel.QuestionList;
 import com.ab.hicarerun.utils.AppUtils;
 import com.google.android.material.snackbar.Snackbar;
 

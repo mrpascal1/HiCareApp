@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.R
 import com.ab.hicarerun.databinding.RowBarcodeItemBinding
 import com.ab.hicarerun.handler.OnBarcodeCountListener
-import com.ab.hicarerun.network.models.TSScannerModel.BarcodeDetailsData
+import com.ab.hicarerun.network.models.tsscannermodel.BarcodeDetailsData
 import com.ab.hicarerun.service.listner.LocationManagerListner
 import com.ab.hicarerun.utils.AppUtils
 import com.google.zxing.BarcodeFormat

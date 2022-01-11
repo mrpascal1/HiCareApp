@@ -1,9 +1,7 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.databinding.DataBindingUtil;
@@ -11,11 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LayoutPaymentModesBinding;
-import com.ab.hicarerun.handler.OnBankClickHandler;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.OnSiteModel.OnSiteArea;
-import com.ab.hicarerun.network.models.ServicePlanModel.PaymentMode;
-import com.ab.hicarerun.viewmodel.ServicePlanViewModel;
+import com.ab.hicarerun.network.models.serviceplanmodel.PaymentMode;
 
 //import net.igenius.customcheckbox.CustomCheckBox;
 

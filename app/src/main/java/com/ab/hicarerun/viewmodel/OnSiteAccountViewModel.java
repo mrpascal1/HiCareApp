@@ -3,9 +3,7 @@ package com.ab.hicarerun.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.ab.hicarerun.network.models.OnSiteModel.Account;
-import com.ab.hicarerun.network.models.OnSiteModel.OnSiteAccounts;
-import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroom;
+import com.ab.hicarerun.network.models.onsitemodel.OnSiteAccounts;
 
 /**
  * Created by Arjun Bhatt on 12/18/2019.

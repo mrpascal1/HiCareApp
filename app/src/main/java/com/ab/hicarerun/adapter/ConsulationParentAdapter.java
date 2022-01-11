@@ -9,9 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,17 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LayoutConsulationParentAdapterBinding;
-import com.ab.hicarerun.databinding.LayoutOffersAdapterBinding;
-import com.ab.hicarerun.handler.OnCheckListItemClickHandler;
 import com.ab.hicarerun.handler.OnConsultationClickHandler;
-import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.handler.OnRewardtemClickHandler;
-import com.ab.hicarerun.network.models.ConsulationModel.Data;
-import com.ab.hicarerun.network.models.ConsulationModel.Optionlist;
-import com.ab.hicarerun.network.models.OffersModel.RewardList;
+import com.ab.hicarerun.network.models.consulationmodel.Data;
 import com.ab.hicarerun.viewmodel.ConsulationViewModel;
-import com.ab.hicarerun.viewmodel.RewardsViewModel;
-import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;

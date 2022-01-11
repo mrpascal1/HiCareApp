@@ -1,7 +1,6 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
-import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,17 +9,12 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.databinding.LayoutBazaarAdapterBinding;
 import com.ab.hicarerun.databinding.ProductUnitsAdapterBinding;
-import com.ab.hicarerun.handler.OnBazaarItemClickHandler;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.ProductModel.ServicePlanUnits;
-import com.ab.hicarerun.network.models.RewardsModel.AvailableOffer;
-import com.squareup.picasso.Picasso;
+import com.ab.hicarerun.network.models.productmodel.ServicePlanUnits;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 

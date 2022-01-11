@@ -3,9 +3,8 @@ package com.ab.hicarerun.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.ab.hicarerun.network.models.ChemicalModel.Chemicals;
-import com.ab.hicarerun.network.models.ChemicalModel.MSTChemicals;
-import com.ab.hicarerun.network.models.OnSiteModel.RecentActivityDetails;
+import com.ab.hicarerun.network.models.chemicalmodel.Chemicals;
+import com.ab.hicarerun.network.models.chemicalmodel.MSTChemicals;
 
 import java.util.List;
 

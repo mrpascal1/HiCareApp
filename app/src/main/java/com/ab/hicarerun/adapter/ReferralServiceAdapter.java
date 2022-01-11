@@ -1,22 +1,16 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LayoutReferralInterestAdapterBinding;
-import com.ab.hicarerun.databinding.ReferralListAdapterBinding;
-import com.ab.hicarerun.handler.OnDeleteListItemClickHandler;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
-import com.ab.hicarerun.network.models.ReferralModel.ReferralService;
-import com.ab.hicarerun.viewmodel.ReferralListViewModel;
+import com.ab.hicarerun.network.models.referralmodel.ReferralService;
 import com.ab.hicarerun.viewmodel.ReferralServiceViewModel;
 
 import org.jetbrains.annotations.NotNull;

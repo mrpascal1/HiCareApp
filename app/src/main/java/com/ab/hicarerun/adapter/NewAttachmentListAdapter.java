@@ -12,11 +12,9 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.databinding.AttachmentListAdapterBinding;
 import com.ab.hicarerun.databinding.NewAttachmentListAdapterBinding;
 import com.ab.hicarerun.handler.OnDeleteListItemClickHandler;
-import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentList;
+import com.ab.hicarerun.network.models.attachmentmodel.GetAttachmentList;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.viewmodel.AttachmentListViewModel;
 import com.bumptech.glide.Glide;

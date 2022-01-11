@@ -13,14 +13,12 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.databinding.LayoutConsulationChildAdapterBinding;
 import com.ab.hicarerun.databinding.LayoutOptionAdapterBinding;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
 import com.ab.hicarerun.handler.OnOptionClickListener;
 import com.ab.hicarerun.handler.OnVideoOptionClickListener;
-import com.ab.hicarerun.network.models.ConsulationModel.Optionlist;
-import com.ab.hicarerun.network.models.QuizModel.QuizAnswer;
-import com.ab.hicarerun.network.models.QuizModel.QuizOption;
+import com.ab.hicarerun.network.models.quizmodel.QuizAnswer;
+import com.ab.hicarerun.network.models.quizmodel.QuizOption;
 
 import org.jetbrains.annotations.NotNull;
 

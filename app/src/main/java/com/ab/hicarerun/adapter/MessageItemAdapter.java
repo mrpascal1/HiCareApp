@@ -1,27 +1,20 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.databinding.LayoutFlexItemBinding;
-import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.MessageModel.Message;
-import com.squareup.picasso.Picasso;
+import com.ab.hicarerun.network.models.messagemodel.Message;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Arjun Bhatt on 5/11/2020.

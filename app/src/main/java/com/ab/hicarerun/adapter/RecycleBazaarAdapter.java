@@ -11,10 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LayoutBazaarAdapterBinding;
-import com.ab.hicarerun.databinding.LayoutOffersAdapterBinding;
 import com.ab.hicarerun.handler.OnBazaarItemClickHandler;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.RewardsModel.AvailableOffer;
+import com.ab.hicarerun.network.models.rewardsmodel.AvailableOffer;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;

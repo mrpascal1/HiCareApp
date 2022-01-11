@@ -1,23 +1,18 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.databinding.LayoutConsulationChildAdapterBinding;
 import com.ab.hicarerun.databinding.LayoutNewCompletionChildListBinding;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.ConsulationModel.Optionlist;
-import com.ab.hicarerun.network.models.TechnicianRoutineModel.ValueData;
+import com.ab.hicarerun.network.models.technicianroutinemodel.ValueData;
 
 import org.jetbrains.annotations.NotNull;
 

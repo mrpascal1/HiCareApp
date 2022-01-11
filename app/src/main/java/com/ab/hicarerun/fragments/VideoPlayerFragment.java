@@ -14,7 +14,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
@@ -35,13 +34,10 @@ import android.view.animation.AnimationUtils;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.HomeActivity;
-import com.ab.hicarerun.activities.LoginActivity;
-import com.ab.hicarerun.activities.SplashActiviy;
 import com.ab.hicarerun.databinding.FragmentVideoPlayerBinding;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.TrainingModel.Videos;
-import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.network.models.trainingmodel.Videos;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 
 import org.jetbrains.annotations.NotNull;

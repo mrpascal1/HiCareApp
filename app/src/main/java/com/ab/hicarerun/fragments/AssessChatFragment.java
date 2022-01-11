@@ -7,32 +7,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.adapter.FlexItemAdapter;
 import com.ab.hicarerun.adapter.MessageItemAdapter;
-import com.ab.hicarerun.adapter.RecycleBazaarAdapter;
 import com.ab.hicarerun.databinding.FragmentAssessChatBinding;
-import com.ab.hicarerun.network.models.MessageModel.Message;
-import com.google.android.flexbox.AlignItems;
+import com.ab.hicarerun.network.models.messagemodel.Message;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexboxLayoutManager;
-import com.google.android.flexbox.JustifyContent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,7 +31,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Objects;
 
 /**

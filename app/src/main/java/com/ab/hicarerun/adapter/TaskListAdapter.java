@@ -2,71 +2,46 @@ package com.ab.hicarerun.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.hardware.Camera;
-import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.SystemClock;
-import android.text.Html;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.format.Time;
 import android.text.style.ForegroundColorSpan;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
-import android.widget.Chronometer;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ab.hicarerun.BaseApplication;
-import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.activities.HomeActivity;
 import com.ab.hicarerun.databinding.TaskListAdapterBinding;
 import com.ab.hicarerun.fragments.HomeFragment;
 import com.ab.hicarerun.handler.OnCallListItemClickHandler;
-import com.ab.hicarerun.handler.OnDeleteListItemClickHandler;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.network.models.ProfileModel.Profile;
-import com.ab.hicarerun.network.models.TaskModel.Tasks;
+import com.ab.hicarerun.network.models.profilemodel.Profile;
+import com.ab.hicarerun.network.models.taskmodel.Tasks;
 import com.ab.hicarerun.utils.AppUtils;
-import com.ab.hicarerun.utils.MyCountDownTimer;
 import com.ab.hicarerun.viewmodel.TaskViewModel;
-import com.orhanobut.logger.Logger;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Timer;
-import java.util.TimerTask;
 
-import io.realm.RealmResults;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 

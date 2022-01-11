@@ -1,7 +1,6 @@
 package com.ab.hicarerun.handler;
 
-import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentList;
-import com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;
+import com.ab.hicarerun.network.models.attachmentmodel.GetAttachmentList;
 
 import java.util.List;
 

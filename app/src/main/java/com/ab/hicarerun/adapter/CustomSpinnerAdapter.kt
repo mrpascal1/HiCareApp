@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.ab.hicarerun.R
-import com.ab.hicarerun.network.models.TSScannerModel.Option_List
+import com.ab.hicarerun.network.models.tsscannermodel.Option_List
 
 class CustomSpinnerAdapter(context: Context, resource: Int, val optionList: List<Option_List>) : ArrayAdapter<Option_List>(context, resource) {
 

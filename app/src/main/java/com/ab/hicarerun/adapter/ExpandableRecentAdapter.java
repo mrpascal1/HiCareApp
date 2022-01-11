@@ -2,7 +2,6 @@ package com.ab.hicarerun.adapter;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +12,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
-
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.handler.OnRecentTaskClickHandler;
-import com.ab.hicarerun.network.models.OnSiteModel.OnSiteRecent;
+import com.ab.hicarerun.network.models.onsitemodel.OnSiteRecent;
 import com.ab.hicarerun.utils.AppUtils;
 
 import java.text.ParseException;

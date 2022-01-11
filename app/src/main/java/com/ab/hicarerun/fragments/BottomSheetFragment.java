@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,11 +17,8 @@ import android.widget.Toast;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.adapter.RecyclerViewAreaAdapter;
 import com.ab.hicarerun.databinding.FragmentBottomSheetBinding;
-import com.ab.hicarerun.network.models.OnSiteModel.OnSiteArea;
-import com.ab.hicarerun.utils.SharedPreferencesUtility;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.ab.hicarerun.network.models.onsitemodel.OnSiteArea;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;

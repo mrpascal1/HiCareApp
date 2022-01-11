@@ -1,20 +1,16 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.databinding.LayoutRoutineCheckAdapterBinding;
 import com.ab.hicarerun.databinding.LayoutRoutineSubmittedAdapterBinding;
 import com.ab.hicarerun.handler.OnConsultationClickHandler;
-import com.ab.hicarerun.network.models.RoutineModel.RoutineOption;
-import com.ab.hicarerun.network.models.RoutineModel.RoutineQuestion;
+import com.ab.hicarerun.network.models.routinemodel.RoutineQuestion;
 
 import org.jetbrains.annotations.NotNull;
 

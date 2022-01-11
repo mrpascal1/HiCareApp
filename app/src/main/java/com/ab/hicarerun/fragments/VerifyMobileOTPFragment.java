@@ -22,9 +22,6 @@ import androidx.fragment.app.Fragment;
 import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
-import android.text.Editable;
-import android.text.Html;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,8 +37,8 @@ import com.ab.hicarerun.handler.UserVerifyOtpClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.network.models.OtpModel.SendOtpResponse;
-import com.ab.hicarerun.network.models.TrainingModel.Videos;
+import com.ab.hicarerun.network.models.otpmodel.SendOtpResponse;
+import com.ab.hicarerun.network.models.trainingmodel.Videos;
 import com.ab.hicarerun.utils.AppSignatureHelper;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.SMSListener;
@@ -53,13 +50,9 @@ import com.google.android.gms.auth.api.phone.SmsRetriever;
 import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.

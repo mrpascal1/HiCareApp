@@ -14,7 +14,6 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -24,21 +23,13 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.adapter.RoutineCheckUpParentAdapter;
 import com.ab.hicarerun.adapter.RoutineSubmittedAdapter;
-import com.ab.hicarerun.databinding.FragmentRoutineCheckBinding;
 import com.ab.hicarerun.databinding.FragmentRoutineSubmittedBinding;
 import com.ab.hicarerun.handler.UserRoutineCheckClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.RoutineModel.RoutineQuestion;
-import com.ab.hicarerun.network.models.RoutineModel.SaveRoutineResponse;
-import com.ab.hicarerun.network.models.RoutineModel.TechRoutineData;
+import com.ab.hicarerun.network.models.routinemodel.TechRoutineData;
 import com.ab.hicarerun.utils.LocaleHelper;
-
-import java.util.List;
-
-import es.dmoral.toasty.Toasty;
 
 /**
  * A simple {@link Fragment} subclass.

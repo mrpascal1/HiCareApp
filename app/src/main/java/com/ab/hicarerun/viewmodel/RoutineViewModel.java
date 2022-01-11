@@ -3,14 +3,10 @@ package com.ab.hicarerun.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.ab.hicarerun.network.models.RoutineModel.RoutineOption;
-import com.ab.hicarerun.network.models.RoutineModel.RoutineQuestion;
-import com.ab.hicarerun.network.models.RoutineModel.ValueNo;
-import com.ab.hicarerun.network.models.RoutineModel.ValueYes;
-import com.ab.hicarerun.network.models.TechnicianRoutineModel.RoutineQuestions;
-import com.ab.hicarerun.network.models.TechnicianRoutineModel.RoutineValue;
-import com.ab.hicarerun.network.models.TechnicianRoutineModel.RoutineValueNo;
-import com.ab.hicarerun.network.models.TechnicianRoutineModel.RoutineValueYes;
+import com.ab.hicarerun.network.models.routinemodel.RoutineOption;
+import com.ab.hicarerun.network.models.routinemodel.RoutineQuestion;
+import com.ab.hicarerun.network.models.routinemodel.ValueNo;
+import com.ab.hicarerun.network.models.routinemodel.ValueYes;
 
 import java.util.List;
 

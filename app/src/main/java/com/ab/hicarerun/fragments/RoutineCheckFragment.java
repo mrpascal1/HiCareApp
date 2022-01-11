@@ -1,6 +1,5 @@
 package com.ab.hicarerun.fragments;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,7 +10,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
@@ -25,30 +23,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
 
-import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.activities.TechnicianSeniorActivity;
 import com.ab.hicarerun.adapter.RoutineCheckUpParentAdapter;
-import com.ab.hicarerun.adapter.TechnicianRoutineAdapter;
 import com.ab.hicarerun.databinding.FragmentRoutineCheckBinding;
 import com.ab.hicarerun.handler.UserRoutineCheckClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.network.models.MessageModel.Message;
-import com.ab.hicarerun.network.models.RoutineModel.RoutineOption;
-import com.ab.hicarerun.network.models.RoutineModel.RoutineQuestion;
-import com.ab.hicarerun.network.models.RoutineModel.SaveRoutineResponse;
-import com.ab.hicarerun.network.models.RoutineModel.TechRoutineData;
-import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.network.models.routinemodel.RoutineQuestion;
+import com.ab.hicarerun.network.models.routinemodel.SaveRoutineResponse;
+import com.ab.hicarerun.network.models.routinemodel.TechRoutineData;
 import com.ab.hicarerun.utils.LocaleHelper;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
-import java.util.logging.Logger;
 
 import es.dmoral.toasty.Toasty;
 

@@ -30,12 +30,12 @@ import com.ab.hicarerun.handler.OnAddActivityClickHandler;
 import com.ab.hicarerun.handler.OnSelectServiceClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.ChemicalModel.ActivityData;
-import com.ab.hicarerun.network.models.ChemicalModel.AreaData;
-import com.ab.hicarerun.network.models.ChemicalModel.SaveActivityRequest;
-import com.ab.hicarerun.network.models.ChemicalModel.ServiceChemicalData;
-import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
-import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse;
+import com.ab.hicarerun.network.models.chemicalmodel.ActivityData;
+import com.ab.hicarerun.network.models.chemicalmodel.AreaData;
+import com.ab.hicarerun.network.models.chemicalmodel.SaveActivityRequest;
+import com.ab.hicarerun.network.models.chemicalmodel.ServiceChemicalData;
+import com.ab.hicarerun.network.models.generalmodel.GeneralData;
+import com.ab.hicarerun.network.models.tsscannermodel.BaseResponse;
 import com.ab.hicarerun.utils.AppUtils;
 
 import org.jetbrains.annotations.NotNull;

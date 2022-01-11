@@ -3,7 +3,7 @@ package com.ab.hicarerun.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.ab.hicarerun.network.models.TechnicianRoutineModel.TechnicianData;
+import com.ab.hicarerun.network.models.technicianroutinemodel.TechnicianData;
 
 /**
  * Created by Arjun Bhatt on 8/13/2020.

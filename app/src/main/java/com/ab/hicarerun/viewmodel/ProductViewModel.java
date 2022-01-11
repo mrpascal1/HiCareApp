@@ -3,10 +3,8 @@ package com.ab.hicarerun.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.ab.hicarerun.network.models.OnSiteModel.OnSiteRecent;
-import com.ab.hicarerun.network.models.OnSiteModel.RecentActivityDetails;
-import com.ab.hicarerun.network.models.ProductModel.ProductData;
-import com.ab.hicarerun.network.models.ProductModel.ServicePlanUnits;
+import com.ab.hicarerun.network.models.productmodel.ProductData;
+import com.ab.hicarerun.network.models.productmodel.ServicePlanUnits;
 
 import java.util.List;
 

@@ -3,8 +3,7 @@ package com.ab.hicarerun.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
-import com.ab.hicarerun.network.models.TrainingModel.Videos;
+import com.ab.hicarerun.network.models.trainingmodel.Videos;
 
 /**
  * Created by Arjun Bhatt on 7/16/2019.

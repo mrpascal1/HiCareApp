@@ -14,9 +14,8 @@ import com.ab.hicarerun.databinding.LayoutQuizParentAdapterBinding;
 import com.ab.hicarerun.handler.OnConsultationClickHandler;
 import com.ab.hicarerun.handler.OnOptionClickListener;
 import com.ab.hicarerun.handler.OnVideoOptionClickListener;
-import com.ab.hicarerun.network.models.QuizModel.QuizAnswer;
-import com.ab.hicarerun.network.models.QuizModel.QuizData;
-import com.ab.hicarerun.network.models.QuizModel.VideoDependentQuest;
+import com.ab.hicarerun.network.models.quizmodel.QuizAnswer;
+import com.ab.hicarerun.network.models.quizmodel.VideoDependentQuest;
 
 import org.jetbrains.annotations.NotNull;
 

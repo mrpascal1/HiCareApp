@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
@@ -15,17 +14,11 @@ import android.widget.Toast;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.adapter.RecyclerViewAreaAdapter;
-import com.ab.hicarerun.databinding.FragmentBottomSheetBinding;
 import com.ab.hicarerun.databinding.FragmentFloorBottomSheetBinding;
-import com.ab.hicarerun.network.models.OnSiteModel.OnSiteArea;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.realm.RealmResults;
-
-import static com.ab.hicarerun.BaseApplication.getRealm;
 
 public class FloorBottomSheetFragment extends BottomSheetDialogFragment {
     FragmentFloorBottomSheetBinding mFragmentBottomSheetBinding;

@@ -13,7 +13,7 @@ import com.ab.hicarerun.adapter.TaskViewPagerAdapter;
 import com.ab.hicarerun.databinding.ActivityOnSiteAccountDetailsBinding;
 import com.ab.hicarerun.fragments.OnSiteTaskFragment;
 import com.ab.hicarerun.fragments.RecentOnsiteTaskFragment;
-import com.ab.hicarerun.network.models.OnSiteModel.Account;
+import com.ab.hicarerun.network.models.onsitemodel.Account;
 import com.ab.hicarerun.utils.LocaleHelper;
 
 public class OnSiteAccountDetailsActivity extends BaseActivity {

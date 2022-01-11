@@ -9,7 +9,6 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.network.models.GeneralModel.TaskCheckList;
 
 import java.util.List;
 import java.util.Map;

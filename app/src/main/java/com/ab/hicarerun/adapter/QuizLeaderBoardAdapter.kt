@@ -6,12 +6,10 @@ import android.util.Base64
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.ab.hicarerun.R
-import com.ab.hicarerun.databinding.LeaderBoardAdapterBinding
 import com.ab.hicarerun.databinding.RowQuizLeaderboardBinding
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
-import com.ab.hicarerun.network.models.QuizLeaderBoardModel.QuizLBResourceList
+import com.ab.hicarerun.network.models.quizleaderboardmodel.QuizLBResourceList
 
 class QuizLeaderBoardAdapter(val context: Context, val quizLBResourceList: List<QuizLBResourceList>, var highest: Int) : RecyclerView.Adapter<QuizLeaderBoardAdapter.MyHolder>(){
 

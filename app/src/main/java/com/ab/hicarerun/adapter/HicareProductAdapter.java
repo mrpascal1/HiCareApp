@@ -11,12 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.HicareProductListAdapterBinding;
-import com.ab.hicarerun.databinding.RenewalServicePlansAdapterBinding;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.ProductModel.ProductData;
-import com.ab.hicarerun.network.models.ServicePlanModel.RenewalServicePlan;
+import com.ab.hicarerun.network.models.productmodel.ProductData;
 import com.ab.hicarerun.viewmodel.ProductViewModel;
-import com.ab.hicarerun.viewmodel.ServicePlanViewModel;
 
 import org.jetbrains.annotations.NotNull;
 

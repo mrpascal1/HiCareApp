@@ -3,8 +3,7 @@ package com.ab.hicarerun.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.ab.hicarerun.network.models.SelfAssessModel.ResourceCheckList;
-import com.ab.hicarerun.network.models.ServicePlanModel.RenewalServicePlan;
+import com.ab.hicarerun.network.models.serviceplanmodel.RenewalServicePlan;
 
 /**
  * Created by Arjun Bhatt on 5/27/2020.

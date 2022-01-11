@@ -9,9 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LayoutMissedDetailAdapterBinding;
-import com.ab.hicarerun.databinding.LayoutScratchDetailAdapterBinding;
-import com.ab.hicarerun.network.models.NewRewardsModel.MissedRewardDetailSummary;
-import com.ab.hicarerun.network.models.NewRewardsModel.NewRewardDetailSummary;
+import com.ab.hicarerun.network.models.newrewardsmodel.MissedRewardDetailSummary;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -3,9 +3,7 @@ package com.ab.hicarerun.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentList;
-import com.ab.hicarerun.network.models.OnSiteModel.AccountsArea;
-import com.ab.hicarerun.network.models.OnSiteModel.OnSiteArea;
+import com.ab.hicarerun.network.models.onsitemodel.OnSiteArea;
 
 /**
  * Created by Arjun Bhatt on 12/19/2019.

@@ -25,14 +25,13 @@ import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.adapter.KarmaAdapter;
 import com.ab.hicarerun.adapter.KarmaProgressAdapter;
-import com.ab.hicarerun.adapter.RewardLeadersAdapter;
 import com.ab.hicarerun.databinding.FragmentKarmaBinding;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.KarmaModel.KarmaHistoryData;
-import com.ab.hicarerun.network.models.KarmaModel.KarmaHistoryDetails;
+import com.ab.hicarerun.network.models.karmamodel.KarmaHistoryData;
+import com.ab.hicarerun.network.models.karmamodel.KarmaHistoryDetails;
 import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.network.models.ProfileModel.Profile;
+import com.ab.hicarerun.network.models.profilemodel.Profile;
 
 import java.util.ArrayList;
 import java.util.List;

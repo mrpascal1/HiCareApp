@@ -17,10 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LayoutRoutineCheckChildAdapterBinding;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.RoutineModel.RoutineNoValue;
-import com.ab.hicarerun.network.models.RoutineModel.RoutineOption;
-import com.ab.hicarerun.network.models.RoutineModel.ValueNo;
-import com.ab.hicarerun.network.models.RoutineModel.ValueYes;
+import com.ab.hicarerun.network.models.routinemodel.RoutineNoValue;
+import com.ab.hicarerun.network.models.routinemodel.RoutineOption;
+import com.ab.hicarerun.network.models.routinemodel.ValueNo;
+import com.ab.hicarerun.network.models.routinemodel.ValueYes;
 
 import org.jetbrains.annotations.NotNull;
 

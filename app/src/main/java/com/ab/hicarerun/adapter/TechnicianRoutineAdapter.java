@@ -1,32 +1,17 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Typeface;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView.OnItemClickListener;
 
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.TechnicianRoutineAdapterBinding;
-import com.ab.hicarerun.handler.OnConsultationClickHandler;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.NetworkCallController;
-import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.ConsulationModel.Data;
-import com.ab.hicarerun.network.models.TechnicianRoutineModel.TechnicianData;
-import com.ab.hicarerun.viewmodel.ConsulationViewModel;
+import com.ab.hicarerun.network.models.technicianroutinemodel.TechnicianData;
 import com.ab.hicarerun.viewmodel.TechnicianDataViewModel;
-import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 

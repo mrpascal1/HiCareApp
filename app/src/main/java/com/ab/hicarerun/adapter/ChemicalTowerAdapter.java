@@ -1,7 +1,6 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
-import android.content.ServiceConnection;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,12 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ItemChemicalTowerAdapterBinding;
-import com.ab.hicarerun.databinding.ProductUnitsAdapterBinding;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.ChemicalModel.ServiceChemicalData;
-import com.ab.hicarerun.network.models.ChemicalModel.TowerData;
-import com.ab.hicarerun.network.models.ProductModel.ServicePlanUnits;
-import com.ab.hicarerun.viewmodel.AccountAreaViewModel;
+import com.ab.hicarerun.network.models.chemicalmodel.ServiceChemicalData;
 
 import org.jetbrains.annotations.NotNull;
 

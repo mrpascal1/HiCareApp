@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.databinding.DataBindingUtil;
@@ -14,13 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.ExoplayerActivity;
-import com.ab.hicarerun.activities.TrainingActivity;
 import com.ab.hicarerun.databinding.LayoutVideoListItemBinding;
-import com.ab.hicarerun.databinding.ReferralListAdapterBinding;
-import com.ab.hicarerun.handler.OnDeleteListItemClickHandler;
-import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
-import com.ab.hicarerun.network.models.TrainingModel.Videos;
-import com.ab.hicarerun.viewmodel.ReferralListViewModel;
+import com.ab.hicarerun.network.models.trainingmodel.Videos;
 import com.ab.hicarerun.viewmodel.VideoPlayerViewModel;
 import com.bumptech.glide.RequestManager;
 

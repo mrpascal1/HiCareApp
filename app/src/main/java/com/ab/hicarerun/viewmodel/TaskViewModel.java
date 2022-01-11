@@ -3,8 +3,7 @@ package com.ab.hicarerun.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.ab.hicarerun.network.models.TaskModel.Tasks;
-import com.google.android.gms.tasks.Task;
+import com.ab.hicarerun.network.models.taskmodel.Tasks;
 
 public class TaskViewModel implements Parcelable {
     private String AccountName;

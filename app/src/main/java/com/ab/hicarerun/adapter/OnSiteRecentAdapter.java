@@ -1,28 +1,19 @@
 package com.ab.hicarerun.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.databinding.OnsiteListAdapterBinding;
 import com.ab.hicarerun.databinding.OnsiteRecentAdapterBinding;
-import com.ab.hicarerun.handler.OnAddActivityClickHandler;
-import com.ab.hicarerun.handler.OnDeleteListItemClickHandler;
 import com.ab.hicarerun.handler.OnRecentTaskClickHandler;
-import com.ab.hicarerun.network.models.OnSiteModel.OnSiteArea;
-import com.ab.hicarerun.network.models.OnSiteModel.OnSiteRecent;
+import com.ab.hicarerun.network.models.onsitemodel.OnSiteRecent;
 import com.ab.hicarerun.utils.AppUtils;
-import com.ab.hicarerun.viewmodel.AccountAreaViewModel;
 import com.ab.hicarerun.viewmodel.RecentActivityViewModel;
 
 import org.jetbrains.annotations.NotNull;

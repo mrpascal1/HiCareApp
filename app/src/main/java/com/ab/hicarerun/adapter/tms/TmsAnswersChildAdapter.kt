@@ -2,8 +2,6 @@ package com.ab.hicarerun.adapter.tms
 
 import android.content.Context
 import android.graphics.Color
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,8 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.R
 import com.ab.hicarerun.databinding.LayoutTmsChildAdapterBinding
-import com.ab.hicarerun.network.models.TmsModel.Option
-import com.ab.hicarerun.network.models.TmsModel.QuestionOption
+import com.ab.hicarerun.network.models.tmsmodel.QuestionOption
 import com.ab.hicarerun.utils.AppUtils
 import java.lang.Exception
 

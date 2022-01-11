@@ -18,15 +18,11 @@ import android.widget.Toast;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.adapter.ProductCartAdapter;
-import com.ab.hicarerun.adapter.ProductUnitAdapter;
 import com.ab.hicarerun.databinding.FragmentProductCartBinding;
 import com.ab.hicarerun.handler.OnCartItemClickHandler;
-import com.ab.hicarerun.network.models.ProductCartModel.ProductCart;
-import com.ab.hicarerun.utils.AppUtils;
+import com.ab.hicarerun.network.models.productcartmodel.ProductCart;
 
 import io.realm.RealmResults;
-
-import static com.ab.hicarerun.BaseApplication.getRealm;
 
 /**
  * A simple {@link Fragment} subclass.

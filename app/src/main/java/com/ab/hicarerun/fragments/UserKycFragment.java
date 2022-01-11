@@ -4,10 +4,7 @@ import android.Manifest;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -23,35 +20,27 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Environment;
-import android.os.Handler;
-import android.os.ResultReceiver;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.KycActivity;
-import com.ab.hicarerun.activities.TechnicianRoutineActivity;
 import com.ab.hicarerun.adapter.KycDocumentAdapter;
 import com.ab.hicarerun.databinding.FragmentUserKycBinding;
 import com.ab.hicarerun.handler.OnKycClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.KycModel.DocumentData;
-import com.ab.hicarerun.network.models.KycModel.KycTypesData;
+import com.ab.hicarerun.network.models.kycmodel.DocumentData;
+import com.ab.hicarerun.network.models.kycmodel.KycTypesData;
 import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.utils.DownloadService;
 import com.ab.hicarerun.utils.LocaleHelper;
 
 import java.io.File;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 

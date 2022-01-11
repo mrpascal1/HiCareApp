@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,13 +22,12 @@ import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.BarcodeVerificatonActivity;
 import com.ab.hicarerun.adapter.ChemicalRecycleAdapter;
 import com.ab.hicarerun.databinding.FragmentChemicalActualBinding;
-import com.ab.hicarerun.databinding.FragmentChemicalInfoBinding;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.ChemicalModel.Chemicals;
-import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
-import com.ab.hicarerun.network.models.TaskModel.TaskChemicalList;
+import com.ab.hicarerun.network.models.chemicalmodel.Chemicals;
+import com.ab.hicarerun.network.models.generalmodel.GeneralData;
+import com.ab.hicarerun.network.models.taskmodel.TaskChemicalList;
 import com.ab.hicarerun.utils.AppUtils;
 
 import org.jetbrains.annotations.NotNull;

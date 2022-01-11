@@ -15,18 +15,14 @@ import android.view.ViewGroup;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.adapter.HicareProductAdapter;
-import com.ab.hicarerun.adapter.RecycleBazaarAdapter;
 import com.ab.hicarerun.databinding.FragmentHicareProductsBinding;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
-import com.ab.hicarerun.network.models.ProductCartModel.ProductCart;
-import com.ab.hicarerun.network.models.ProductModel.ProductData;
-import com.ab.hicarerun.network.models.ProductModel.ProductResponse;
+import com.ab.hicarerun.network.models.productcartmodel.ProductCart;
+import com.ab.hicarerun.network.models.productmodel.ProductData;
 
 import java.util.List;
 
-import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**

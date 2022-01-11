@@ -1,10 +1,8 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.GradientDrawable;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,21 +13,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LeaderBoardAdapterBinding;
-import com.ab.hicarerun.databinding.OnsiteRecentAdapterBinding;
-import com.ab.hicarerun.handler.OnRecentTaskClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.LeaderBoardModel.RewardLeaders;
-import com.ab.hicarerun.network.models.OffersModel.RewardList;
-import com.ab.hicarerun.network.models.OnSiteModel.OnSiteRecent;
-import com.ab.hicarerun.network.models.ProfileModel.Profile;
+import com.ab.hicarerun.network.models.leaderboardmodel.RewardLeaders;
 import com.ab.hicarerun.utils.AppUtils;
-import com.ab.hicarerun.viewmodel.RecentActivityViewModel;
 import com.ab.hicarerun.viewmodel.RewardLeadersViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 

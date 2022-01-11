@@ -17,8 +17,8 @@ import com.ab.hicarerun.databinding.RowBarcodeItemBinding
 import com.ab.hicarerun.handler.OnBarcodeCountListener
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
-import com.ab.hicarerun.network.models.TSScannerModel.BarcodeList
-import com.ab.hicarerun.network.models.TSScannerModel.BaseResponse
+import com.ab.hicarerun.network.models.tsscannermodel.BarcodeList
+import com.ab.hicarerun.network.models.tsscannermodel.BaseResponse
 import com.ab.hicarerun.service.listner.LocationManagerListner
 import com.ab.hicarerun.utils.AppUtils
 import com.google.zxing.BarcodeFormat

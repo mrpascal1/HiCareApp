@@ -3,10 +3,7 @@ package com.ab.hicarerun.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
-import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroom;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.ab.hicarerun.network.models.techniciangroomingmodel.TechGroom;
 
 /**
  * Created by Arjun Bhatt on 7/18/2019.

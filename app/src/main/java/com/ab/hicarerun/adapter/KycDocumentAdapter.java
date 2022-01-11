@@ -11,13 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LayoutKycAdapterBinding;
-import com.ab.hicarerun.databinding.TechnicianRoutineAdapterBinding;
 import com.ab.hicarerun.handler.OnKycClickHandler;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.KycModel.DocumentData;
-import com.ab.hicarerun.network.models.TechnicianRoutineModel.TechnicianData;
+import com.ab.hicarerun.network.models.kycmodel.DocumentData;
 import com.ab.hicarerun.viewmodel.KycDocumentViewModel;
-import com.ab.hicarerun.viewmodel.TechnicianDataViewModel;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;

@@ -9,15 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Switch;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
@@ -25,8 +21,8 @@ import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.FragmentKarmaVideoBinding;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.KarmaModel.SaveKarmaRequest;
-import com.ab.hicarerun.network.models.KarmaModel.SaveKarmaResponse;
+import com.ab.hicarerun.network.models.karmamodel.SaveKarmaRequest;
+import com.ab.hicarerun.network.models.karmamodel.SaveKarmaResponse;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.utils.AppUtils;
 import com.google.android.exoplayer2.DefaultLoadControl;

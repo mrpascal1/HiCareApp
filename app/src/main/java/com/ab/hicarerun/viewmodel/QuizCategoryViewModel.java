@@ -3,8 +3,7 @@ package com.ab.hicarerun.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.ab.hicarerun.network.models.ProductModel.ProductData;
-import com.ab.hicarerun.network.models.QuizModel.QuizCategoryData;
+import com.ab.hicarerun.network.models.quizmodel.QuizCategoryData;
 
 /**
  * Created by Arjun Bhatt on 2/11/2021.

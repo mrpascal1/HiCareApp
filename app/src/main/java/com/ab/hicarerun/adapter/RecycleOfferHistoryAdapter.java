@@ -1,10 +1,7 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
-import android.graphics.PorterDuff;
-import android.util.TimeUtils;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.databinding.DataBindingUtil;
@@ -12,10 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LayoutOfferHistoryAdapterBinding;
-import com.ab.hicarerun.databinding.LayoutOffersAdapterBinding;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.RewardsModel.AvailableOffer;
-import com.ab.hicarerun.network.models.RewardsModel.RedeemedOffer;
+import com.ab.hicarerun.network.models.rewardsmodel.RedeemedOffer;
 import com.ab.hicarerun.utils.AppUtils;
 import com.squareup.picasso.Picasso;
 

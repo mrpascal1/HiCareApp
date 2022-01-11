@@ -1,7 +1,6 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
-import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -18,12 +17,8 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.databinding.LayoutProductCartAdapterBinding;
 import com.ab.hicarerun.databinding.LayoutRecommendationsAdapterBinding;
-import com.ab.hicarerun.handler.OnCartItemClickHandler;
-import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.ConsulationModel.Recommendations;
-import com.ab.hicarerun.network.models.ProductCartModel.ProductCart;
+import com.ab.hicarerun.network.models.consulationmodel.Recommendations;
 import com.ab.hicarerun.utils.ImageOverlayStfalcon;
 import com.squareup.picasso.Picasso;
 
@@ -34,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.View.GONE;
-import static com.ab.hicarerun.BaseApplication.getRealm;
 
 /**
  * Created by Arjun Bhatt on 7/23/2020.

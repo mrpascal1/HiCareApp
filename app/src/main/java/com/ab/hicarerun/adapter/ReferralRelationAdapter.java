@@ -2,7 +2,6 @@ package com.ab.hicarerun.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.databinding.DataBindingUtil;
@@ -10,13 +9,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LayoutReferralRelationAdapterBinding;
-import com.ab.hicarerun.databinding.ReferralListAdapterBinding;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.ReferralModel.MultiSelectedService;
-import com.ab.hicarerun.network.models.ReferralModel.ReferralRelation;
-import com.ab.hicarerun.network.models.ReferralModel.ReferralService;
+import com.ab.hicarerun.network.models.referralmodel.ReferralRelation;
 import com.ab.hicarerun.viewmodel.ReferralRelationViewModel;
-import com.ab.hicarerun.viewmodel.ReferralServiceViewModel;
 
 import org.jetbrains.annotations.NotNull;
 

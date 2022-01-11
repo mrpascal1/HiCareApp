@@ -11,13 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.OnJobTechniciansListBinding;
-import com.ab.hicarerun.databinding.ReferralListAdapterBinding;
 import com.ab.hicarerun.handler.OnCaptureListItemClickHandler;
-import com.ab.hicarerun.handler.OnDeleteListItemClickHandler;
-import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
-import com.ab.hicarerun.network.models.TechnicianGroomingModel.TechGroom;
+import com.ab.hicarerun.network.models.techniciangroomingmodel.TechGroom;
 import com.ab.hicarerun.viewmodel.GroomingViewModel;
-import com.ab.hicarerun.viewmodel.ReferralListViewModel;
 import com.bumptech.glide.Glide;
 
 import org.jetbrains.annotations.NotNull;

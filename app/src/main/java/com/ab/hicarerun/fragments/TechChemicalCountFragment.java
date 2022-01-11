@@ -22,25 +22,18 @@ import android.widget.TextView;
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.activities.TechnicianSeniorActivity;
 import com.ab.hicarerun.databinding.FragmentTechChemicalCountBinding;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.ChemicalCountModel.ChemicalCount;
-import com.ab.hicarerun.network.models.ChemicalCountModel.ChemicalCountResponse;
+import com.ab.hicarerun.network.models.chemicalcountmodel.ChemicalCount;
 import com.ab.hicarerun.network.models.LoginResponse;
-import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import io.realm.RealmResults;
 

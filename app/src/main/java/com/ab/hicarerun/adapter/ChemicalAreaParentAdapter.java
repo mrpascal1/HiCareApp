@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ItemChemicalAreaParentAdapterBinding;
 import com.ab.hicarerun.handler.OnAddChemicalActivity;
-import com.ab.hicarerun.network.models.ChemicalModel.ActivityData;
-import com.ab.hicarerun.network.models.ChemicalModel.ServiceData;
+import com.ab.hicarerun.network.models.chemicalmodel.ActivityData;
+import com.ab.hicarerun.network.models.chemicalmodel.ServiceData;
 
 import org.jetbrains.annotations.NotNull;
 

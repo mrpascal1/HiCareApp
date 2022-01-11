@@ -8,13 +8,10 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.databinding.AddActivityAdapterBinding;
 import com.ab.hicarerun.databinding.AddChemicalActivityAdapterBinding;
 import com.ab.hicarerun.handler.OnAddActivityClickHandler;
-import com.ab.hicarerun.handler.OnSelectChemicalClickHandler;
 import com.ab.hicarerun.handler.OnSelectServiceClickHandler;
-import com.ab.hicarerun.network.models.ChemicalModel.ActivityData;
-import com.ab.hicarerun.viewmodel.AccountAreaViewModel;
+import com.ab.hicarerun.network.models.chemicalmodel.ActivityData;
 
 import org.jetbrains.annotations.NotNull;
 

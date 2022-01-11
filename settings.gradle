@@ -1,3 +1,4 @@
-include ':app', ':LanguageModule', ':MarathiLanguage'
+//include ':app', ':LanguageModule', ':MarathiLanguage'
+include ':app'
 include ':commonlib'
 include ':mobilertc'

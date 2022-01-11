@@ -2,28 +2,19 @@ package com.ab.hicarerun.adapter;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.RatingBar;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.OnsiteListAdapterBinding;
-import com.ab.hicarerun.databinding.ReferralListAdapterBinding;
 import com.ab.hicarerun.handler.OnAddActivityClickHandler;
-import com.ab.hicarerun.handler.OnDeleteListItemClickHandler;
-import com.ab.hicarerun.network.models.OnSiteModel.OnSiteArea;
-import com.ab.hicarerun.network.models.ReferralModel.ReferralList;
+import com.ab.hicarerun.network.models.onsitemodel.OnSiteArea;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.viewmodel.AccountAreaViewModel;
-import com.ab.hicarerun.viewmodel.ReferralListViewModel;
 
 import org.jetbrains.annotations.NotNull;
 

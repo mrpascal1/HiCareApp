@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
@@ -20,19 +19,15 @@ import android.widget.Toast;
 
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.activities.HomeActivity;
-import com.ab.hicarerun.adapter.CheckListParentAdapter;
 import com.ab.hicarerun.adapter.CovidCheckListParentAdapter;
-import com.ab.hicarerun.adapter.RoutineCheckUpParentAdapter;
 import com.ab.hicarerun.databinding.FragmentCovidCheckBinding;
 import com.ab.hicarerun.handler.CovidCheckListHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.ConsulationModel.Data;
 import com.ab.hicarerun.network.models.LoginResponse;
-import com.ab.hicarerun.network.models.SelfAssessModel.ResourceCheckList;
-import com.ab.hicarerun.network.models.SelfAssessModel.SelfAssessmentRequest;
-import com.ab.hicarerun.network.models.SelfAssessModel.SelfAssessmentResponse;
+import com.ab.hicarerun.network.models.selfassessmodel.ResourceCheckList;
+import com.ab.hicarerun.network.models.selfassessmodel.SelfAssessmentRequest;
+import com.ab.hicarerun.network.models.selfassessmodel.SelfAssessmentResponse;
 import com.ab.hicarerun.utils.LocaleHelper;
 import com.ab.hicarerun.utils.SharedPreferencesUtility;
 

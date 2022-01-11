@@ -1,22 +1,17 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.databinding.ItemChemicalAreaChildAdapterBinding;
 import com.ab.hicarerun.databinding.ItemRecycleAreaUnitBinding;
 import com.ab.hicarerun.handler.OnAddActivityClickHandler;
 import com.ab.hicarerun.handler.OnSelectServiceClickHandler;
-import com.ab.hicarerun.network.models.ActivityModel.AreaActivity;
-import com.ab.hicarerun.network.models.ActivityModel.ServiceActivity;
-import com.ab.hicarerun.network.models.ChemicalModel.AreaData;
+import com.ab.hicarerun.network.models.activitymodel.AreaActivity;
 
 import org.jetbrains.annotations.NotNull;
 

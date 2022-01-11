@@ -1,27 +1,17 @@
 package com.ab.hicarerun.adapter;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.ExpandableListView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.handler.OnAddJobCardClickHandler;
-import com.ab.hicarerun.handler.OnJobCardDeleteClickHandler;
-import com.ab.hicarerun.network.models.AttachmentModel.GetAttachmentList;
-import com.ab.hicarerun.network.models.AttachmentModel.MSTAttachment;
-import com.ab.hicarerun.network.models.OffersModel.RewardDetailHistorySummary;
-import com.ab.hicarerun.network.models.OffersModel.RewardHistoryList;
-import com.ab.hicarerun.utils.AppUtils;
-import com.bumptech.glide.Glide;
+import com.ab.hicarerun.network.models.offersmodel.RewardDetailHistorySummary;
+import com.ab.hicarerun.network.models.offersmodel.RewardHistoryList;
 
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;

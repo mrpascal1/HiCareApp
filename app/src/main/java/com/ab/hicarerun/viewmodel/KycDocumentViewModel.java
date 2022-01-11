@@ -3,9 +3,7 @@ package com.ab.hicarerun.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.ab.hicarerun.network.models.KycModel.DocumentData;
-
-import org.w3c.dom.DocumentType;
+import com.ab.hicarerun.network.models.kycmodel.DocumentData;
 
 /**
  * Created by Arjun Bhatt on 9/23/2020.

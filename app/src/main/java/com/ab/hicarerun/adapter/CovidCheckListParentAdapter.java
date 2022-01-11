@@ -15,11 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LayoutCheckListAdapterBinding;
-import com.ab.hicarerun.databinding.LayoutRoutineCheckAdapterBinding;
 import com.ab.hicarerun.handler.OnConsultationClickHandler;
-import com.ab.hicarerun.network.models.RoutineModel.RoutineOption;
-import com.ab.hicarerun.network.models.RoutineModel.RoutineQuestion;
-import com.ab.hicarerun.network.models.SelfAssessModel.ResourceCheckList;
+import com.ab.hicarerun.network.models.routinemodel.RoutineOption;
+import com.ab.hicarerun.network.models.selfassessmodel.ResourceCheckList;
 
 import org.jetbrains.annotations.NotNull;
 

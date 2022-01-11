@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.TrainingActivity;
-import com.ab.hicarerun.network.models.TrainingModel.Videos;
+import com.ab.hicarerun.network.models.trainingmodel.Videos;
 import com.bumptech.glide.RequestManager;
 
 import java.util.List;

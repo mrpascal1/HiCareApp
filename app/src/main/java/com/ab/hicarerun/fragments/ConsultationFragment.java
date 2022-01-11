@@ -30,8 +30,8 @@ import com.ab.hicarerun.activities.NewTaskDetailsActivity;
 import com.ab.hicarerun.databinding.FragmentConsultationBinding;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
-import com.ab.hicarerun.network.models.ConsulationModel.SaveConsulationResponse;
-import com.ab.hicarerun.network.models.GeneralModel.GeneralData;
+import com.ab.hicarerun.network.models.consulationmodel.SaveConsulationResponse;
+import com.ab.hicarerun.network.models.generalmodel.GeneralData;
 import com.ab.hicarerun.utils.AppUtils;
 import com.ab.hicarerun.utils.ProgressBarDrawable;
 

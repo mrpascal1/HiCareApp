@@ -5,18 +5,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LayoutConsulationChildAdapterBinding;
-import com.ab.hicarerun.databinding.LayoutConsulationParentAdapterBinding;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
-import com.ab.hicarerun.network.models.ConsulationModel.Data;
-import com.ab.hicarerun.network.models.ConsulationModel.Optionlist;
-import com.ab.hicarerun.viewmodel.ConsulationViewModel;
+import com.ab.hicarerun.network.models.consulationmodel.Optionlist;
 
 import org.jetbrains.annotations.NotNull;
 

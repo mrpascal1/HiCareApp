@@ -16,8 +16,8 @@ import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.adapter.TaskViewPagerAdapter;
 import com.ab.hicarerun.databinding.FragmentOnSiteAccountDetailsBinding;
-import com.ab.hicarerun.network.models.OnSiteModel.Account;
-import com.ab.hicarerun.network.models.OnSiteModel.OnSiteAccounts;
+import com.ab.hicarerun.network.models.onsitemodel.Account;
+import com.ab.hicarerun.network.models.onsitemodel.OnSiteAccounts;
 
 import org.jetbrains.annotations.NotNull;
 

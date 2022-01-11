@@ -13,14 +13,11 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ab.hicarerun.R;
-import com.ab.hicarerun.databinding.LayoutKarmaAdapterBinding;
 import com.ab.hicarerun.databinding.LayoutLifelineProgressAdapterBinding;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
 import com.ab.hicarerun.handler.OnRewardtemClickHandler;
-import com.ab.hicarerun.network.models.KarmaModel.KarmaHistoryData;
-import com.ab.hicarerun.network.models.OffersModel.RewardList;
+import com.ab.hicarerun.network.models.karmamodel.KarmaHistoryData;
 import com.ab.hicarerun.viewmodel.KarmaProgressViewModel;
-import com.ab.hicarerun.viewmodel.RewardsViewModel;
 
 import org.jetbrains.annotations.NotNull;
 

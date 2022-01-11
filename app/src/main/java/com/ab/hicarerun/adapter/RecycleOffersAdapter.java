@@ -12,9 +12,7 @@ import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.LayoutOffersAdapterBinding;
 import com.ab.hicarerun.handler.OnListItemClickHandler;
 import com.ab.hicarerun.handler.OnRewardtemClickHandler;
-import com.ab.hicarerun.network.models.NewRewardsModel.RewardListData;
-import com.ab.hicarerun.network.models.OffersModel.RewardList;
-import com.ab.hicarerun.viewmodel.NewRewardsViewModel;
+import com.ab.hicarerun.network.models.offersmodel.RewardList;
 import com.ab.hicarerun.viewmodel.RewardsViewModel;
 
 import org.jetbrains.annotations.NotNull;
