@@ -7,9 +7,9 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
 import com.ab.hicarerun.BaseApplication
+import com.ab.hicarerun.BuildConfig
 import com.ab.hicarerun.databinding.ActivityZoomTransparentPopupBinding
 import com.ab.hicarerun.network.models.LoginResponse
-import com.onesignal.BuildConfig
 import com.onesignal.OneSignal
 import io.realm.RealmResults
 import us.zoom.sdk.*
@@ -149,7 +149,7 @@ class ZoomTransparentPopupActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         OneSignal.clearOneSignalNotifications()
-        //OneSignal.cancelNotification(2)
+        OneSignal.removeNotification(2)
         val CHANNEL_ID = BuildConfig.APPLICATION_ID + "_notification_id"
         NotificationManagerCompat.from(this).cancelAll()
         NotificationManagerCompat.from(this).deleteNotificationChannel(CHANNEL_ID)
