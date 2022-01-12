@@ -40,6 +40,9 @@ class InventoryActivity : BaseActivity() {
     val BARCODE_CAMERA_REQUEST = 3000
     var selectedAction = ""
     var selectedTechnician = ""
+    var bucketId = 0
+    var reasons = ""
+    var itemSerialNo = ""
     val la = ArrayList<String>()
     val lt = ArrayList<String>()
     lateinit var binding: ActivityInventoryBinding
@@ -158,6 +161,13 @@ class InventoryActivity : BaseActivity() {
                             okBtn.isEnabled = false
                             okBtn.alpha = 0.6f
                         }
+                        actionList.forEach {
+                            if (it.reasons == selectedAction){
+                                reasons = it.reasons
+                                bucketId = it.bucket_Id.toString().toInt()
+                                return@forEach
+                            }
+                        }
                     }else{
                         technicianLayout.visibility = View.GONE
                         okBtn.isEnabled = true
@@ -216,6 +226,12 @@ class InventoryActivity : BaseActivity() {
         technicianAdapter.setDropDownViewResource(R.layout.spinner_popup)
         spnTechnician.adapter = technicianAdapter
 
+        okBtn.setOnClickListener {
+            dismissProgressDialog()
+            alertDialog.cancel()
+            //updateInventory()
+        }
+
         cancelBtn.setOnClickListener {
             dismissProgressDialog()
             alertDialog.cancel()
@@ -223,6 +239,37 @@ class InventoryActivity : BaseActivity() {
         alertDialog.setCanceledOnTouchOutside(false)
         alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         alertDialog.show()
+    }
+
+    private fun updateInventory(){
+        showProgressDialog()
+        val hashMap = HashMap<String, Any>()
+        hashMap["Reasons"] = reasons
+        hashMap["Bucket_Id"] = bucketId
+        hashMap["ItemCode"] = itemSerialNo
+        hashMap["User_Id"] = AppUtils.resourceId
+        hashMap["Reference_Id"] = AppUtils.resourceId
+
+        val controller = NetworkCallController()
+        controller.setListner(object : NetworkResponseListner<AddInventoryResult>{
+            override fun onResponse(requestCode: Int, response: AddInventoryResult?) {
+                if (response != null){
+                    if (response.isSuccess == true){
+                        getInventoryList()
+                    }else{
+                        dismissProgressDialog()
+                    }
+                }else{
+                    dismissProgressDialog()
+                }
+            }
+
+            override fun onFailure(requestCode: Int) {
+                dismissProgressDialog()
+                Log.d("TAG", "Error")
+            }
+        })
+        controller.addInventory(2022, hashMap)
     }
 
     private fun addInventory(userId: String, itemSerialNo: String, date: String, barcodeData: String){
@@ -337,7 +384,8 @@ class InventoryActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == BARCODE_CAMERA_REQUEST){
             val barcode = data?.getStringExtra("content").toString()
-            addInventory(AppUtils.resourceId, getItemSerialNo(barcode), getDate(barcode), barcode)
+            itemSerialNo = getItemSerialNo(barcode)
+            addInventory(AppUtils.resourceId, itemSerialNo, getDate(barcode), barcode)
         }
     }
 }
