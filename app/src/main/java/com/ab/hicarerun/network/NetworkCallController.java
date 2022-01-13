@@ -5262,6 +5262,26 @@ public class NetworkCallController {
                 });
     }
 
+    public void saveChemicalConsumptionByServiceActivity(List<HashMap<Object, Object>> body) {
+        BaseApplication.getB2BWoWApi()
+                .saveChemicalConsumptionByServiceActivity(body)
+                .enqueue(new Callback<BaseResponse>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                        if (response.body() != null) {
+                            mListner.onResponse(20211, response.body());
+                            //Log.d("TAG-UAT", responseBody);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse> call, Throwable t) {
+                        Log.d("TAG-UAT-Error", t.getMessage());
+                        mListner.onFailure(20211);
+                    }
+                });
+    }
+
     public void getResourceMenu(String resourceId) {
         BaseApplication.getRetrofitAPI(false)
                 .getResourceMenu(resourceId)

@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -46,6 +47,7 @@ import com.ab.hicarerun.utils.AppUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -77,12 +79,14 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
     private String orderId = "";
     private String floor = "";
     private String status = "";
+    private String areaType = "Common Area";
     List<ServiceActivity> subItems = null;
     List<AreaActivity> areaList = null;
     List<ServiceActivity> mActivityList = null;
     List<SubActivity> subActivityList = null;
     private List<String> mFloorList;
     HashMap<Integer, SaveServiceActivity> hashActivity = null;
+    HashMap<Object, Object> saveChemicalMap = null;
     private List<SaveServiceActivity> mSaveActivityList = new ArrayList<>();
     private static final int UPDATE_REQ = 1000;
     private int activityPosition = 0;
@@ -159,7 +163,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
             try {
                 FloorBottomSheetFragment bottomSheetFragment = new FloorBottomSheetFragment(mFloorList);
                 bottomSheetFragment.setListener(this);
-                bottomSheetFragment.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), bottomSheetFragment.getTag());
+                bottomSheetFragment.show(requireActivity().getSupportFragmentManager(), bottomSheetFragment.getTag());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -209,6 +213,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                             mFloorList = new ArrayList<>();
                             mActivityList = mAdapter.getItem(position).getServiceActivity();
                             mFloorList = mAdapter.getItem(position).getFloorList();
+                            areaType = mAdapter.getItem(position).getAreaType();
                             mActivityAdapter.addData(mActivityList);
                             mActivityAdapter.notifyDataSetChanged();
                         });
@@ -294,21 +299,17 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
             alertDialogBuilder.setView(promptsView);
             final AlertDialog alertDialog = alertDialogBuilder.create();
             hashActivity = new HashMap<>();
+            saveChemicalMap = new HashMap<>();
+
             alertDialog.setCancelable(false);
-            recyclerView =
-                    (RecyclerView) promptsView.findViewById(R.id.recycleView);
-            final Button btnDone =
-                    (Button) promptsView.findViewById(R.id.btnDone);
-            final Button btnCancel =
-                    (Button) promptsView.findViewById(R.id.btnCancel);
-            final Button btnSkip =
-                    (Button) promptsView.findViewById(R.id.btnSkip);
-            final Button verifyBtn =
-                    (Button) promptsView.findViewById(R.id.verifyBtn);
-            txtTitle =
-                    (TextView) promptsView.findViewById(R.id.txtTitle);
-            txtQty =
-                    (TextView) promptsView.findViewById(R.id.txtQty);
+            recyclerView = (RecyclerView) promptsView.findViewById(R.id.recycleView);
+            final Button btnDone = (Button) promptsView.findViewById(R.id.btnDone);
+            final Button btnCancel = (Button) promptsView.findViewById(R.id.btnCancel);
+            final Button btnSkip = (Button) promptsView.findViewById(R.id.btnSkip);
+            final Button verifyBtn = (Button) promptsView.findViewById(R.id.verifyBtn);
+            txtTitle = (TextView) promptsView.findViewById(R.id.txtTitle);
+            txtQty = (TextView) promptsView.findViewById(R.id.txtQty);
+            final EditText chemicalValue = (EditText) promptsView.findViewById(R.id.chemicalValueEt);
             txtTitle.setText(chemical_name + " - " + activityName);
             txtQty.setText("Qty" + " - " + chemical_qty + " " + chemical_unit.toLowerCase());
             txtTitle.setTypeface(txtTitle.getTypeface(), Typeface.BOLD);
@@ -330,11 +331,29 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                 activityDetail.setServiceType(mUnitAdapter.getItem(position).getServices());
                 activityDetail.setStatus(value);
                 hashActivity.put(mUnitAdapter.getItem(position).getAreaId(), activityDetail);
+                if (!saveChemicalMap.containsValue(mUnitAdapter.getItem(position).getChemicalCode())){
+                    saveChemicalMap.put("ActivityId", mUnitAdapter.getItem(position).getActivityId());
+                    saveChemicalMap.put("ServiceActivityId", mUnitAdapter.getItem(position).getService_Activity_Id());
+                    saveChemicalMap.put("AreaType", areaType);
+                    saveChemicalMap.put("ChemicalId", mUnitAdapter.getItem(position).getChemicalId());
+                    saveChemicalMap.put("ChemicalCode", mUnitAdapter.getItem(position).getChemicalCode());
+                    saveChemicalMap.put("OrderNo", orderId);
+                    saveChemicalMap.put("ServiceSequenceNo", sequenceNo);
+                }
 //                mSaveActivityList.add(activityDetail);
             });
             recyclerView.setAdapter(mUnitAdapter);
             btnDone.setOnClickListener(v -> {
-                updateActivityStatus(hashActivity, true, "", txtTitle.getText().toString(), txtQty.getText().toString());
+                Log.d("TAG-chem", txtTitle.getText().toString() + " : "+txtQty.getText().toString());
+                Log.d("TAG-chemVal", chemicalValue.getText().toString());
+                if (chemicalValue.getText().toString().trim().equals("")){
+                    Toast.makeText(requireContext(), "Please enter chemical value", Toast.LENGTH_SHORT).show();
+                    return;
+                }else {
+                    saveChemicalMap.put("ChemicalQuantity", Double.parseDouble(chemicalValue.getText().toString()));
+                }
+                saveChemicalConsumptionByServiceActivity();
+                //updateActivityStatus(hashActivity, true, "", txtTitle.getText().toString(), txtQty.getText().toString());
                 if (mActivityList.size() - 1 == activityPosition) {
                     alertDialog.dismiss();
                 }
@@ -408,6 +427,15 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                     activityDetail.setServiceType(mUnitAdapter.getItem(position).getServices());
                     activityDetail.setStatus(value);
                     hashActivity.put(mUnitAdapter.getItem(position).getAreaId(), activityDetail);
+                    if (!saveChemicalMap.containsValue(mUnitAdapter.getItem(position).getChemicalCode())){
+                        saveChemicalMap.put("ActivityId", mUnitAdapter.getItem(position).getActivityId());
+                        saveChemicalMap.put("AreaType", areaType);
+                        saveChemicalMap.put("ServiceActivityId", mUnitAdapter.getItem(position).getService_Activity_Id());
+                        saveChemicalMap.put("ChemicalId", mUnitAdapter.getItem(position).getChemicalId());
+                        saveChemicalMap.put("ChemicalCode", mUnitAdapter.getItem(position).getChemicalCode());
+                        saveChemicalMap.put("OrderNo", orderId);
+                        saveChemicalMap.put("ServiceSequenceNo", sequenceNo);
+                    }
                 });
                 recyclerView.setAdapter(mUnitAdapter);
             });
@@ -427,6 +455,15 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                     activityDetail.setServiceType(mUnitAdapter.getItem(position).getServices());
                     activityDetail.setStatus("Yes");
                     hashActivity.put(mUnitAdapter.getItem(position).getAreaId(), activityDetail);
+                    if (!saveChemicalMap.containsValue(mUnitAdapter.getItem(position).getChemicalCode())){
+                        saveChemicalMap.put("ActivityId", mUnitAdapter.getItem(position).getActivityId());
+                        saveChemicalMap.put("AreaType", areaType);
+                        saveChemicalMap.put("ServiceActivityId", mUnitAdapter.getItem(position).getService_Activity_Id());
+                        saveChemicalMap.put("ChemicalId", mUnitAdapter.getItem(position).getChemicalId());
+                        saveChemicalMap.put("ChemicalCode", mUnitAdapter.getItem(position).getChemicalCode());
+                        saveChemicalMap.put("OrderNo", orderId);
+                        saveChemicalMap.put("ServiceSequenceNo", sequenceNo);
+                    }
                 }
 
                 @Override
@@ -439,12 +476,22 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                     activityDetail.setServiceType(mUnitAdapter.getItem(position).getServices());
                     activityDetail.setStatus("No");
                     hashActivity.put(mUnitAdapter.getItem(position).getAreaId(), activityDetail);
+                    if (!saveChemicalMap.containsValue(mUnitAdapter.getItem(position).getChemicalCode())){
+                        saveChemicalMap.put("ActivityId", mUnitAdapter.getItem(position).getActivityId());
+                        saveChemicalMap.put("AreaType", areaType);
+                        saveChemicalMap.put("ServiceActivityId", mUnitAdapter.getItem(position).getService_Activity_Id());
+                        saveChemicalMap.put("ChemicalId", mUnitAdapter.getItem(position).getChemicalId());
+                        saveChemicalMap.put("ChemicalCode", mUnitAdapter.getItem(position).getChemicalCode());
+                        saveChemicalMap.put("OrderNo", orderId);
+                        saveChemicalMap.put("ServiceSequenceNo", sequenceNo);
+                    }
                 }
             });
 
             btnCancel.setOnClickListener(view -> {
                 if (hashActivity != null) {
                     hashActivity.clear();
+                    saveChemicalMap.clear();
                     mSaveActivityList.clear();
                 }
                 alertDialog.dismiss();
@@ -469,7 +516,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                     try {
                         List<String> list = (List<String>) response;
                         dismissProgressDialog();
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
                         LayoutInflater inflater = LayoutInflater.from(getActivity());
                         final View v = inflater.inflate(R.layout.jeopardy_reasons_layout, null, false);
                         final RadioGroup radioGroup = (RadioGroup) v.findViewById(R.id.radiogrp);
@@ -581,6 +628,15 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                             activityDetail.setServiceType(mUnitAdapter.getItem(position).getServices());
                             activityDetail.setStatus(value);
                             hashActivity.put(mUnitAdapter.getItem(position).getAreaId(), activityDetail);
+                            if (!saveChemicalMap.containsValue(mUnitAdapter.getItem(position).getChemicalCode())){
+                                saveChemicalMap.put("ActivityId", mUnitAdapter.getItem(position).getActivityId());
+                                saveChemicalMap.put("AreaType", areaType);
+                                saveChemicalMap.put("ServiceActivityId", mUnitAdapter.getItem(position).getService_Activity_Id());
+                                saveChemicalMap.put("ChemicalId", mUnitAdapter.getItem(position).getChemicalId());
+                                saveChemicalMap.put("ChemicalCode", mUnitAdapter.getItem(position).getChemicalCode());
+                                saveChemicalMap.put("OrderNo", orderId);
+                                saveChemicalMap.put("ServiceSequenceNo", sequenceNo);
+                            }
 //                            mSaveActivityList.add(activityDetail);
                         });
                         recyclerView.setAdapter(mUnitAdapter);
@@ -602,6 +658,29 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void saveChemicalConsumptionByServiceActivity(){
+        NetworkCallController controller = new NetworkCallController();
+        controller.setListner(new NetworkResponseListner<BaseResponse>() {
+            @Override
+            public void onResponse(int requestCode, BaseResponse response) {
+                if (response != null) {
+                    if (response.isSuccess()) {
+                        Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT).show();
+                    }
+                }else {
+                    Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(int requestCode) {
+            }
+        });
+        controller.saveChemicalConsumptionByServiceActivity(Collections.singletonList(saveChemicalMap));
     }
 
 }

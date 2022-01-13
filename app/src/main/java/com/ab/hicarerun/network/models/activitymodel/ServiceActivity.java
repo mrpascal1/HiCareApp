@@ -33,6 +33,15 @@ public class ServiceActivity {
     @SerializedName("Chemical_Name")
     @Expose
     private String Chemical_Name = "2.0 ml";
+    @SerializedName("ChemicalId")
+    @Expose
+    private int ChemicalId = 0;
+    @SerializedName("ChemicalCode")
+    @Expose
+    private String ChemicalCode = "";
+    @SerializedName("UserConsumedChemicalQuantity")
+    @Expose
+    private double UserConsumedChemicalQuantity = 0.0;
     @SerializedName("Chemical_Qty")
     @Expose
     private String Chemical_Qty;
@@ -132,5 +141,29 @@ public class ServiceActivity {
 
     public void setChemical_Unit(String chemical_Unit) {
         Chemical_Unit = chemical_Unit;
+    }
+
+    public int getChemicalId() {
+        return ChemicalId;
+    }
+
+    public void setChemicalId(int chemicalId) {
+        ChemicalId = chemicalId;
+    }
+
+    public String getChemicalCode() {
+        return ChemicalCode;
+    }
+
+    public void setChemicalCode(String chemicalCode) {
+        ChemicalCode = chemicalCode;
+    }
+
+    public double getUserConsumedChemicalQuantity() {
+        return UserConsumedChemicalQuantity;
+    }
+
+    public void setUserConsumedChemicalQuantity(double userConsumedChemicalQuantity) {
+        UserConsumedChemicalQuantity = userConsumedChemicalQuantity;
     }
 }

@@ -59,10 +59,22 @@
 
 
             <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white">
 
+                <EditText
+                    android:id="@+id/chemicalValueEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="6dp"
+                    android:hint="Enter Chemical Value"
+                    android:maxLength="6"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="12dp"
+                    android:background="@drawable/edit_border" />
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycleView"
                     android:layout_width="match_parent"

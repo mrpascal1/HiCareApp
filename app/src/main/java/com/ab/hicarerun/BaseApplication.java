@@ -2,6 +2,7 @@ package com.ab.hicarerun;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
@@ -119,6 +120,7 @@ public class BaseApplication extends Application implements LifecycleObserver {
             header.setHeaderName("Authorization");
             assert query.get(0) != null;
             assert query.get(0) != null;
+            Log.d("TAG", query.get(0).getTokenType() + " " + query.get(0).getAccessToken());
             header.setHeaderValue(query.get(0).getTokenType() + " " + query.get(0).getAccessToken());
         }
         return header;

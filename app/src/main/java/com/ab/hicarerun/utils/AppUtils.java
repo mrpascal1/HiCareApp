@@ -66,6 +66,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -116,6 +117,8 @@ public class AppUtils {
     public static boolean IS_ACTIVITY_THERE = false;
     public static boolean IS_QRCODE_THERE = true;
     public static boolean IS_FLASH_ON= true;
+    public static boolean CHEMICAL_OVERRIDE= false;
+    public static HashMap<String, String> activityChemical = new HashMap<>();
 
     public static Bitmap createCustomMarker(Context context, Bitmap resource, String accountName, String _name) {
 
