@@ -26,6 +26,7 @@ public class ActivityTowerAdapter extends RecyclerView.Adapter<ActivityTowerAdap
     private final Context mContext;
     private List<ActivityData> items = null;
     private int selectedPos = 0;
+    private boolean initial = true;
 
     public ActivityTowerAdapter(Context context) {
         if (items == null) {
@@ -46,6 +47,12 @@ public class ActivityTowerAdapter extends RecyclerView.Adapter<ActivityTowerAdap
     @Override
     public void onBindViewHolder(@NotNull ActivityTowerAdapter.ViewHolder holder, final int position) {
         try {
+            if (initial){
+                initial = false;
+                selectedPos = position;
+                items.get(position).setSelectedPos(selectedPos);
+                onItemClickHandler.onItemClick(position);
+            }
             if (selectedPos == position) {
                 holder.mItemChemicalTowerAdapterBinding.cardView.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
                 holder.mItemChemicalTowerAdapterBinding.lnrTower.setBackground(mContext.getResources().getDrawable(R.drawable.green_round_border));
@@ -58,13 +65,13 @@ public class ActivityTowerAdapter extends RecyclerView.Adapter<ActivityTowerAdap
             items.get(position).setSelectedPos(selectedPos);
             if (items.get(position).getAreaType().equals("Common Area")) {
                 if (items.get(position).getTowerName() != null) {
-                    holder.mItemChemicalTowerAdapterBinding.txtTower.setText(items.get(position).getTowerName());
+                    holder.mItemChemicalTowerAdapterBinding.txtTower.setText(items.get(position).getTowerName()+"/"+items.get(position).getAreaType());
                 } else {
                     holder.mItemChemicalTowerAdapterBinding.txtTower.setText("Common Area");
                 }
             } else {
                 if (items.get(position).getTowerName() != null) {
-                    holder.mItemChemicalTowerAdapterBinding.txtTower.setText(items.get(position).getTowerName());
+                    holder.mItemChemicalTowerAdapterBinding.txtTower.setText(items.get(position).getTowerName()+"/"+items.get(position).getAreaType());
                 } else {
 //                    holder.mItemChemicalTowerAdapterBinding.txtTower.setText("Tower " + String.valueOf(items.get(position).getTower()));
                     holder.mItemChemicalTowerAdapterBinding.txtTower.setText(items.get(position).getAreaType());
@@ -75,6 +82,7 @@ public class ActivityTowerAdapter extends RecyclerView.Adapter<ActivityTowerAdap
                 public void onClick(View v) {
                     onItemClickHandler.onItemClick(position);
                     selectedPos = position;
+                    initial = false;
                     items.get(position).setSelectedPos(selectedPos);
                     notifyDataSetChanged();
                 }

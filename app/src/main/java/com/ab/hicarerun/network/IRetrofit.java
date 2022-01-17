@@ -14,6 +14,7 @@ import com.ab.hicarerun.network.models.BasicResponse;
 import com.ab.hicarerun.network.models.checklistmodel.CheckListResponse;
 import com.ab.hicarerun.network.models.checklistmodel.UploadCheckListRequest;
 import com.ab.hicarerun.network.models.checklistmodel.UploadCheckListResponse;
+import com.ab.hicarerun.network.models.chemicalcmodel.ChemicalConsumption;
 import com.ab.hicarerun.network.models.chemicalcountmodel.ChemicalCountResponse;
 import com.ab.hicarerun.network.models.chemicalmodel.ChemicalResponse;
 import com.ab.hicarerun.network.models.chemicalmodel.SaveActivityRequest;
@@ -574,6 +575,9 @@ public interface IRetrofit {
 
     @POST("Integration/SaveChemicalConsumptionByServiceActivity")
     Call<BaseResponse> saveChemicalConsumptionByServiceActivity(@Body List<HashMap<Object, Object>> body);
+
+    @GET("Integration/GetChemicalConsumptionForAllServiceActivity")
+    Call<ChemicalConsumption> getChemicalConsumptionForAllServiceActivity(@Query("orderNo") String orderNo, @Query("serviceSequenceNo") String serviceSequenceNo);
 
     @POST("Integration/UpdateServiceActivityStatus")
     Call<BaseResponse> updateActivityServiceStatus(@Body List<SaveServiceActivity> requests);

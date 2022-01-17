@@ -14,6 +14,7 @@ import com.ab.hicarerun.R;
 import com.ab.hicarerun.databinding.ItemRecycleActivityUnitBinding;
 import com.ab.hicarerun.handler.OnAddActivityClickHandler;
 import com.ab.hicarerun.network.models.activitymodel.ServiceActivity;
+import com.ab.hicarerun.utils.AppUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -28,6 +29,8 @@ public class RecycleByActivityAdapter extends RecyclerView.Adapter<RecycleByActi
     private final Context mContext;
     private List<ServiceActivity> items = null;
     private String status;
+    private String areaType = "";
+    private ArrayList<String> loaded = new ArrayList<>();
 
     public RecycleByActivityAdapter(Context mContext, String status) {
         this.mContext = mContext;
@@ -49,6 +52,14 @@ public class RecycleByActivityAdapter extends RecyclerView.Adapter<RecycleByActi
     @Override
     public void onBindViewHolder(@NotNull RecycleByActivityAdapter.ViewHolder holder, final int position) {
         try {
+            if (!loaded.contains(areaType+"_"+items.get(position).getFloor())){
+                loaded.add(areaType+"_"+items.get(position).getFloor());
+                holder.mItemRecycleActivityUnitBinding.floorNoTv.setTypeface(null, Typeface.BOLD);
+                holder.mItemRecycleActivityUnitBinding.floorNoTv.setText("Floor No: "+items.get(position).getFloor());
+                holder.mItemRecycleActivityUnitBinding.floorNoTv.setVisibility(View.VISIBLE);
+            }else {
+                holder.mItemRecycleActivityUnitBinding.floorNoTv.setVisibility(View.GONE);
+            }
             if (status.equals("Completed") || status.equals("Incomplete")) {
                 holder.mItemRecycleActivityUnitBinding.lnrUpdate.setEnabled(false);
                 holder.mItemRecycleActivityUnitBinding.btnFinish.setAlpha(0.7f);
@@ -93,9 +104,11 @@ public class RecycleByActivityAdapter extends RecyclerView.Adapter<RecycleByActi
         this.onItemClickHandler = onItemClickHandler;
     }
 
-    public void addData(List<ServiceActivity> data) {
+    public void addData(String areaType, List<ServiceActivity> data) {
         items.clear();
+        loaded.clear();
         items.addAll(data);
+        this.areaType = areaType;
     }
 
     @Override

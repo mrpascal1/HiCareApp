@@ -316,6 +316,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppUtils.IS_COMBINED_TASK = false;
         mActivityNewTaskDetailsBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_new_task_details);
 
@@ -334,6 +335,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         combinedOrderId = getIntent().getStringExtra(ARGS_COMBINED_ORDER);
         combinedTaskTypes = getIntent().getStringExtra(ARGS_COMBINED_TYPE);
         nextTaskId = getIntent().getStringExtra(ARGS_NEXT_TASK);
+        AppUtils.IS_COMBINED_TASK = isCombinedTasks;
         new GPSUtils(this).turnGPSOn(isGPSEnable -> {
             try {
                 // turn on GPS

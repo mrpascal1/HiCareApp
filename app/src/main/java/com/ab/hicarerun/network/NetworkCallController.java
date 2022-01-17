@@ -26,6 +26,7 @@ import com.ab.hicarerun.network.models.BasicResponse;
 import com.ab.hicarerun.network.models.checklistmodel.CheckListResponse;
 import com.ab.hicarerun.network.models.checklistmodel.UploadCheckListRequest;
 import com.ab.hicarerun.network.models.checklistmodel.UploadCheckListResponse;
+import com.ab.hicarerun.network.models.chemicalcmodel.ChemicalConsumption;
 import com.ab.hicarerun.network.models.chemicalcountmodel.ChemicalCountResponse;
 import com.ab.hicarerun.network.models.chemicalmodel.ChemicalResponse;
 import com.ab.hicarerun.network.models.chemicalmodel.SaveActivityRequest;
@@ -5276,6 +5277,26 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<BaseResponse> call, Throwable t) {
+                        Log.d("TAG-UAT-Error", t.getMessage());
+                        mListner.onFailure(20211);
+                    }
+                });
+    }
+
+    public void getChemicalConsumptionForAllServiceActivity(String orderNo, String serviceSeqeunceNo) {
+        BaseApplication.getB2BWoWApi()
+                .getChemicalConsumptionForAllServiceActivity(orderNo, serviceSeqeunceNo)
+                .enqueue(new Callback<ChemicalConsumption>() {
+                    @Override
+                    public void onResponse(Call<ChemicalConsumption> call, Response<ChemicalConsumption> response) {
+                        if (response.body() != null) {
+                            mListner.onResponse(20211, response.body());
+                            //Log.d("TAG-UAT", responseBody);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ChemicalConsumption> call, Throwable t) {
                         Log.d("TAG-UAT-Error", t.getMessage());
                         mListner.onFailure(20211);
                     }

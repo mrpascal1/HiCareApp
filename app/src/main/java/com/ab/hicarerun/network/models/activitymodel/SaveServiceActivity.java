@@ -28,6 +28,15 @@ public class SaveServiceActivity {
     @SerializedName("CompletionDateTime")
     @Expose
     private String completionDateTime;
+    @SerializedName("FloorNo")
+    @Expose
+    private String floorNo;
+    @SerializedName("TowerNo")
+    @Expose
+    private int towerNo;
+    @SerializedName("AreaType")
+    @Expose
+    private String areaType;
 
     public Integer getActivityId() {
         return activityId;
@@ -83,5 +92,29 @@ public class SaveServiceActivity {
 
     public void setCompletionDateTime(String completionDateTime) {
         this.completionDateTime = completionDateTime;
+    }
+
+    public String getFloorNo() {
+        return floorNo;
+    }
+
+    public void setFloorNo(String floorNo) {
+        this.floorNo = floorNo;
+    }
+
+    public int getTowerNo() {
+        return towerNo;
+    }
+
+    public void setTowerNo(int towerNo) {
+        this.towerNo = towerNo;
+    }
+
+    public String getAreaType() {
+        return areaType;
+    }
+
+    public void setAreaType(String areaType) {
+        this.areaType = areaType;
     }
 }

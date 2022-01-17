@@ -118,7 +118,8 @@ public class AppUtils {
     public static boolean IS_QRCODE_THERE = true;
     public static boolean IS_FLASH_ON= true;
     public static boolean CHEMICAL_OVERRIDE= false;
-    public static HashMap<String, String> activityChemical = new HashMap<>();
+    public static boolean IS_COMBINED_TASK = false;
+    public static HashMap<String, String> floorDrawn = new HashMap<>();
 
     public static Bitmap createCustomMarker(Context context, Bitmap resource, String accountName, String _name) {
 
