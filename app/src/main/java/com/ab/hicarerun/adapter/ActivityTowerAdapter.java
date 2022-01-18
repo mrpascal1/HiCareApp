@@ -65,16 +65,16 @@ public class ActivityTowerAdapter extends RecyclerView.Adapter<ActivityTowerAdap
             items.get(position).setSelectedPos(selectedPos);
             if (items.get(position).getAreaType().equals("Common Area")) {
                 if (items.get(position).getTowerName() != null) {
-                    holder.mItemChemicalTowerAdapterBinding.txtTower.setText(items.get(position).getTowerName()+"/"+items.get(position).getAreaType());
+                    holder.mItemChemicalTowerAdapterBinding.txtTower.setText(items.get(position).getTowerName()+"-"+items.get(position).getAreaType());
                 } else {
-                    holder.mItemChemicalTowerAdapterBinding.txtTower.setText("Common Area");
+                    holder.mItemChemicalTowerAdapterBinding.txtTower.setText("Tower "+items.get(position).getTower()+"-"+"Common Area");
                 }
             } else {
                 if (items.get(position).getTowerName() != null) {
-                    holder.mItemChemicalTowerAdapterBinding.txtTower.setText(items.get(position).getTowerName()+"/"+items.get(position).getAreaType());
+                    holder.mItemChemicalTowerAdapterBinding.txtTower.setText(items.get(position).getTowerName()+"-"+items.get(position).getAreaType());
                 } else {
 //                    holder.mItemChemicalTowerAdapterBinding.txtTower.setText("Tower " + String.valueOf(items.get(position).getTower()));
-                    holder.mItemChemicalTowerAdapterBinding.txtTower.setText(items.get(position).getAreaType());
+                    holder.mItemChemicalTowerAdapterBinding.txtTower.setText("Tower "+items.get(position).getTower()+"-"+items.get(position).getAreaType());
                 }
             }
             holder.itemView.setOnClickListener(new View.OnClickListener() {

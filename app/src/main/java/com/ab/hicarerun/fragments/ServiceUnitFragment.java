@@ -241,6 +241,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
             });
             if (isCombineTask) {
                 controller.getServiceActivityChemical(combinedOrderId, sequenceNo, "", true);
+                //controller.getServiceActivityChemical("22011568660", 1, "", true);
             } else {
                 controller.getServiceActivityChemical(orderId, sequenceNo, "", true);
             }
@@ -332,6 +333,9 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                 activityDetail.setCompletionDateTime(String.valueOf(AppUtils.currentDateTimeWithTimeZone()));
                 activityDetail.setServiceType(mUnitAdapter.getItem(position).getServices());
                 activityDetail.setStatus(value);
+                activityDetail.setAreaType(areaType);
+                activityDetail.setTowerNo(towerNo);
+                activityDetail.setFloorNo(mActivityList.get(position).getFloor());
                 hashActivity.put(mUnitAdapter.getItem(position).getAreaId(), activityDetail);
                 if (!saveChemicalMap.containsValue(mUnitAdapter.getItem(position).getChemicalCode())){
                     saveChemicalMap.put("ActivityId", mUnitAdapter.getItem(position).getActivityId());
@@ -339,11 +343,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                     saveChemicalMap.put("AreaType", areaType);
                     saveChemicalMap.put("ChemicalId", mUnitAdapter.getItem(position).getChemicalId());
                     saveChemicalMap.put("ChemicalCode", mUnitAdapter.getItem(position).getChemicalCode());
-                    if (isCombineTask){
-                        saveChemicalMap.put("OrderNo", combinedOrderId);
-                    }else {
-                        saveChemicalMap.put("OrderNo", orderId);
-                    }
+                    saveChemicalMap.put("OrderNo", isCombineTask ? combinedOrderId : orderId);
                     saveChemicalMap.put("ServiceSequenceNo", sequenceNo);
                     saveChemicalMap.put("TowerNo", towerNo);
                     saveChemicalMap.put("FloorNo", mUnitAdapter.getItem(position).getFloorNo());
@@ -360,8 +360,8 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                 }else {
                     saveChemicalMap.put("ChemicalQuantity", Double.parseDouble(chemicalValue.getText().toString()));
                 }
-                saveChemicalConsumptionByServiceActivity();
-                //updateActivityStatus(hashActivity, true, "", txtTitle.getText().toString(), txtQty.getText().toString());
+                saveChemicalConsumptionByServiceActivity(chemicalValue);
+                updateActivityStatus(hashActivity, true, "", txtTitle.getText().toString(), txtQty.getText().toString());
                 if (mActivityList.size() - 1 == activityPosition) {
                     alertDialog.dismiss();
                 }
@@ -444,11 +444,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                         saveChemicalMap.put("ServiceActivityId", mUnitAdapter.getItem(position).getService_Activity_Id());
                         saveChemicalMap.put("ChemicalId", mUnitAdapter.getItem(position).getChemicalId());
                         saveChemicalMap.put("ChemicalCode", mUnitAdapter.getItem(position).getChemicalCode());
-                        if (isCombineTask){
-                            saveChemicalMap.put("OrderNo", combinedOrderId);
-                        }else {
-                            saveChemicalMap.put("OrderNo", orderId);
-                        }
+                        saveChemicalMap.put("OrderNo", isCombineTask ? combinedOrderId : orderId);
                         saveChemicalMap.put("ServiceSequenceNo", sequenceNo);
                         saveChemicalMap.put("TowerNo", towerNo);
                         saveChemicalMap.put("FloorNo", mUnitAdapter.getItem(position).getFloorNo());
@@ -481,11 +477,8 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                         saveChemicalMap.put("ServiceActivityId", mUnitAdapter.getItem(position).getService_Activity_Id());
                         saveChemicalMap.put("ChemicalId", mUnitAdapter.getItem(position).getChemicalId());
                         saveChemicalMap.put("ChemicalCode", mUnitAdapter.getItem(position).getChemicalCode());
-                        if (isCombineTask){
-                            saveChemicalMap.put("OrderNo", combinedOrderId);
-                        }else {
-                            saveChemicalMap.put("OrderNo", orderId);
-                        }                        saveChemicalMap.put("ServiceSequenceNo", sequenceNo);
+                        saveChemicalMap.put("OrderNo", isCombineTask ? combinedOrderId : orderId);
+                        saveChemicalMap.put("ServiceSequenceNo", sequenceNo);
                         saveChemicalMap.put("TowerNo", towerNo);
                         saveChemicalMap.put("FloorNo", mUnitAdapter.getItem(position).getFloorNo());
                     }
@@ -510,11 +503,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                         saveChemicalMap.put("ServiceActivityId", mUnitAdapter.getItem(position).getService_Activity_Id());
                         saveChemicalMap.put("ChemicalId", mUnitAdapter.getItem(position).getChemicalId());
                         saveChemicalMap.put("ChemicalCode", mUnitAdapter.getItem(position).getChemicalCode());
-                        if (isCombineTask){
-                            saveChemicalMap.put("OrderNo", combinedOrderId);
-                        }else {
-                            saveChemicalMap.put("OrderNo", orderId);
-                        }
+                        saveChemicalMap.put("OrderNo", isCombineTask ? combinedOrderId : orderId);
                         saveChemicalMap.put("ServiceSequenceNo", sequenceNo);
                         saveChemicalMap.put("TowerNo", towerNo);
                         saveChemicalMap.put("FloorNo", mUnitAdapter.getItem(position).getFloorNo());
@@ -634,6 +623,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
 
     public void updateActivityStatus(HashMap<Integer, SaveServiceActivity> activity, boolean isServiceDone, String option, String s, String toString) {
         try {
+            showProgressDialog();
             mSaveActivityList = new ArrayList<>(hashActivity.values());
             NetworkCallController controller = new NetworkCallController(this);
             controller.setListner(new NetworkResponseListner<BaseResponse>() {
@@ -674,11 +664,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                                 saveChemicalMap.put("ServiceActivityId", mUnitAdapter.getItem(position).getService_Activity_Id());
                                 saveChemicalMap.put("ChemicalId", mUnitAdapter.getItem(position).getChemicalId());
                                 saveChemicalMap.put("ChemicalCode", mUnitAdapter.getItem(position).getChemicalCode());
-                                if (isCombineTask){
-                                    saveChemicalMap.put("OrderNo", combinedOrderId);
-                                }else {
-                                    saveChemicalMap.put("OrderNo", orderId);
-                                }
+                                saveChemicalMap.put("OrderNo", isCombineTask ? combinedOrderId : orderId);
                                 saveChemicalMap.put("ServiceSequenceNo", sequenceNo);
                                 saveChemicalMap.put("TowerNo", towerNo);
                                 saveChemicalMap.put("FloorNo", mUnitAdapter.getItem(position).getFloorNo());
@@ -687,17 +673,18 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                         });
                         recyclerView.setAdapter(mUnitAdapter);
                         if (isServiceDone) {
-                            Toasty.success(getActivity(), "Activity completed successfully", Toasty.LENGTH_SHORT).show();
+                            Toasty.success(requireContext(), "Activity completed successfully", Toasty.LENGTH_SHORT).show();
                         } else {
-                            Toasty.success(getActivity(), "Activity marked incomplete", Toasty.LENGTH_SHORT).show();
+                            Toasty.success(requireContext(), "Activity marked incomplete", Toasty.LENGTH_SHORT).show();
                         }
                         getServiceByActivity(floor);
                     }
+                    dismissProgressDialog();
                 }
 
                 @Override
                 public void onFailure(int requestCode) {
-
+                    dismissProgressDialog();
                 }
             });
             controller.updateActivityStatus(UPDATE_REQ, mSaveActivityList);
@@ -706,24 +693,29 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
         }
     }
 
-    private void saveChemicalConsumptionByServiceActivity(){
+    private void saveChemicalConsumptionByServiceActivity(EditText chemicalValue){
+        showProgressDialog();
         NetworkCallController controller = new NetworkCallController();
         controller.setListner(new NetworkResponseListner<BaseResponse>() {
             @Override
             public void onResponse(int requestCode, BaseResponse response) {
                 if (response != null) {
                     if (response.isSuccess()) {
-                        Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show();
+                        chemicalValue.setText("");
+                        //Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show();
+                        //updateActivityStatus(hashActivity, true, "", txtTitle.getText().toString(), txtQty.getText().toString());
                     }else {
                         Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT).show();
                     }
                 }else {
                     Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT).show();
                 }
+                dismissProgressDialog();
             }
 
             @Override
             public void onFailure(int requestCode) {
+                dismissProgressDialog();
             }
         });
         controller.saveChemicalConsumptionByServiceActivity(Collections.singletonList(saveChemicalMap));
