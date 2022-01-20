@@ -618,6 +618,9 @@ public interface IRetrofit {
     @POST("Inventory/AddInventory")
     Call<AddInventoryResult> addInventory(@Body HashMap<String, Object> data);
 
+    @POST("Inventory/UpdateInventory")
+    Call<BaseResponse> updateInventory(@Body HashMap<String, Object> data);
+
     @GET("Inventory/GetInventoryList")
     Call<InventoryListResult> getInventoryList(@Query("userId") String userId);
 }

@@ -5407,6 +5407,22 @@ public class NetworkCallController {
                 });
     }
 
+    public void updateInventory(int requestCode, HashMap<String, Object> body) {
+        BaseApplication.getInventoryApi()
+                .updateInventory(body)
+                .enqueue(new Callback<BaseResponse>(){
+                    @Override
+                    public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
     public void getInventoryList(int requestCode, String userId) {
         BaseApplication.getInventoryApi()
                 .getInventoryList(userId)
