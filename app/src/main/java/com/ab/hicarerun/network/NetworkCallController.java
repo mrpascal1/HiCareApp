@@ -5283,9 +5283,9 @@ public class NetworkCallController {
                 });
     }
 
-    public void getChemicalConsumptionForAllServiceActivity(String orderNo, String serviceSeqeunceNo) {
+    public void getChemicalConsumptionForAllServiceActivity(String orderNo, String serviceSequenceNo) {
         BaseApplication.getB2BWoWApi()
-                .getChemicalConsumptionForAllServiceActivity(orderNo, serviceSeqeunceNo)
+                .getChemicalConsumptionForAllServiceActivity(orderNo, serviceSequenceNo)
                 .enqueue(new Callback<ChemicalConsumption>() {
                     @Override
                     public void onResponse(Call<ChemicalConsumption> call, Response<ChemicalConsumption> response) {

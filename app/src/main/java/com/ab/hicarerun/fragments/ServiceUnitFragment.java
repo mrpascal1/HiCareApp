@@ -335,7 +335,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                 activityDetail.setStatus(value);
                 activityDetail.setAreaType(areaType);
                 activityDetail.setTowerNo(towerNo);
-                activityDetail.setFloorNo(mActivityList.get(position).getFloor());
+                activityDetail.setFloorNo(mUnitAdapter.getItem(position).getFloorNo());
                 hashActivity.put(mUnitAdapter.getItem(position).getAreaId(), activityDetail);
                 if (!saveChemicalMap.containsValue(mUnitAdapter.getItem(position).getChemicalCode())){
                     saveChemicalMap.put("ActivityId", mUnitAdapter.getItem(position).getActivityId());
@@ -435,7 +435,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                     activityDetail.setServiceType(mUnitAdapter.getItem(position).getServices());
                     activityDetail.setStatus(value);
                     activityDetail.setAreaType(areaType);
-                    activityDetail.setFloorNo(mActivityList.get(position).getFloor());
+                    activityDetail.setFloorNo(mUnitAdapter.getItem(position).getFloorNo());
                     activityDetail.setTowerNo(towerNo);
                     hashActivity.put(mUnitAdapter.getItem(position).getAreaId(), activityDetail);
                     if (!saveChemicalMap.containsValue(mUnitAdapter.getItem(position).getChemicalCode())){
@@ -468,7 +468,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                     activityDetail.setServiceType(mUnitAdapter.getItem(position).getServices());
                     activityDetail.setStatus("Yes");
                     activityDetail.setAreaType(areaType);
-                    activityDetail.setFloorNo(mActivityList.get(position).getFloor());
+                    activityDetail.setFloorNo(mUnitAdapter.getItem(position).getFloorNo());
                     activityDetail.setTowerNo(towerNo);
                     hashActivity.put(mUnitAdapter.getItem(position).getAreaId(), activityDetail);
                     if (!saveChemicalMap.containsValue(mUnitAdapter.getItem(position).getChemicalCode())){
@@ -494,7 +494,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                     activityDetail.setServiceType(mUnitAdapter.getItem(position).getServices());
                     activityDetail.setStatus("No");
                     activityDetail.setAreaType(areaType);
-                    activityDetail.setFloorNo(mActivityList.get(position).getFloor());
+                    activityDetail.setFloorNo(mUnitAdapter.getItem(position).getFloorNo());
                     activityDetail.setTowerNo(towerNo);
                     hashActivity.put(mUnitAdapter.getItem(position).getAreaId(), activityDetail);
                     if (!saveChemicalMap.containsValue(mUnitAdapter.getItem(position).getChemicalCode())){
@@ -655,7 +655,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                             activityDetail.setServiceType(mUnitAdapter.getItem(position).getServices());
                             activityDetail.setStatus(value);
                             activityDetail.setAreaType(areaType);
-                            activityDetail.setFloorNo(mActivityList.get(position).getFloor());
+                            activityDetail.setFloorNo(mUnitAdapter.getItem(position).getFloorNo());
                             activityDetail.setTowerNo(towerNo);
                             hashActivity.put(mUnitAdapter.getItem(position).getAreaId(), activityDetail);
                             if (!saveChemicalMap.containsValue(mUnitAdapter.getItem(position).getChemicalCode())){
@@ -701,6 +701,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
             public void onResponse(int requestCode, BaseResponse response) {
                 if (response != null) {
                     if (response.isSuccess()) {
+                        AppUtils.CHEMICAL_CHANGED = true;
                         chemicalValue.setText("");
                         //Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show();
                         //updateActivityStatus(hashActivity, true, "", txtTitle.getText().toString(), txtQty.getText().toString());

@@ -4,10 +4,12 @@ import android.content.Context;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,6 +35,7 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
     private OnListItemClickHandler onItemClickHandler;
     private final Context mContext;
     private static List<ChemicalViewModel> items = null;
+    private static List<Integer> indexToDisable = null;
     private static HashMap<Integer, String> map = new HashMap();
     private Boolean isVerified = false;
     private OnEditTextChanged onEditTextChanged;
@@ -46,6 +49,7 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
     public ChemicalRecycleAdapter(Context context, Boolean isCombined, Boolean showStandardChemicals, String type, OnEditTextChanged onEditTextChanged) {
         if (items == null) {
             items = new ArrayList<>();
+            indexToDisable = new ArrayList<>();
         }
         this.mContext = context;
         this.onEditTextChanged = onEditTextChanged;
@@ -69,6 +73,11 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
         try {
             final ChemicalViewModel model = items.get(position);
             holder.mChemicalRecycleRowBinding.chemName.setText(model.getName());
+            if (indexToDisable.contains(position)){
+                holder.mChemicalRecycleRowBinding.edtActual.setEnabled(false);
+                holder.mChemicalRecycleRowBinding.edtActual.setTextColor(ContextCompat.getColor(mContext, R.color.grey));
+            }
+            holder.mChemicalRecycleRowBinding.edtActual.setText(model.getEdtActual());
             holder.mChemicalRecycleRowBinding.chemConsumption.setText(model.getConsumption().toLowerCase());
             String unit = model.getConsumption().toLowerCase();
             holder.mChemicalRecycleRowBinding.chemStandard.setText(model.getStandard() + " " + unit);
@@ -124,7 +133,7 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
 //                        holder.mChemicalRecycleRowBinding.edtActual.setText("");
 //                    }
 
-                    holder.mChemicalRecycleRowBinding.edtActual.requestFocus();
+                    //holder.mChemicalRecycleRowBinding.edtActual.requestFocus();
                     holder.mChemicalRecycleRowBinding.edtActual.setOnFocusChangeListener((view, b) -> {
                         try {
                             onEditTextChanged.onTextChanged(position, holder.mChemicalRecycleRowBinding.edtActual.getText().toString());
@@ -174,6 +183,11 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return items.size();
+    }
+
+    @Override
     public int getItemCount() {
         return items.size();
 
@@ -189,6 +203,20 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
         for (int index = 0; index < data.size(); index++) {
             ChemicalViewModel chemicalViewModel = new ChemicalViewModel();
             chemicalViewModel.clone(data.get(index));
+            items.add(chemicalViewModel);
+        }
+    }
+
+    public void setData(List<Chemicals> data, HashMap<String, String> map, ArrayList<Integer> itd) {
+        items.clear();
+        indexToDisable.clear();
+        indexToDisable.addAll(itd);
+        for (int index = 0; index < data.size(); index++) {
+            ChemicalViewModel chemicalViewModel = new ChemicalViewModel();
+            chemicalViewModel.clone(data.get(index));
+            if (map.containsKey(chemicalViewModel.getProductCode())){
+                chemicalViewModel.setEdtActual(map.get(chemicalViewModel.getProductCode()));
+            }
             items.add(chemicalViewModel);
         }
     }

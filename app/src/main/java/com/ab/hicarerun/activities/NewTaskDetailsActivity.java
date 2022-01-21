@@ -4,7 +4,9 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.app.Dialog;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -57,6 +59,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.BaseApplication;
@@ -75,6 +78,7 @@ import com.ab.hicarerun.fragments.ServiceUnitFragment;
 import com.ab.hicarerun.fragments.SignatureInfoFragment;
 import com.ab.hicarerun.fragments.SignatureMSTInfoFragment;
 import com.ab.hicarerun.fragments.tms.TmsUtils;
+import com.ab.hicarerun.handler.ChemicalVisitListener;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
 import com.ab.hicarerun.handler.UserTaskDetailsClickListener;
 import com.ab.hicarerun.network.NetworkCallController;
@@ -307,7 +311,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     public String typeName = "";
     private ImageUploaded imageUploaded = null;
     public String from = "";
-
+    ChemicalVisitListener chemicalVisitListener;
     //   @Override
     //  protected void attachBaseContext(Context base) {
     //     super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
@@ -419,6 +423,31 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 }
             }
         });
+        mActivityNewTaskDetailsBinding.pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Log.d("TAG", position+"");
+                if (position == 1) {
+                    if (AppUtils.CHEMICAL_CHANGED) {
+                        chemicalVisitListener.refresh();
+                    }
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
+    public void setOnChemicalVisitListener(ChemicalVisitListener chemicalVisitListener){
+        this.chemicalVisitListener = chemicalVisitListener;
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {

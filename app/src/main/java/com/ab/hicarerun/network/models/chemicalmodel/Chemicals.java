@@ -31,6 +31,9 @@ public class Chemicals {
     @SerializedName("Is_Chemical_Changed__c") @Expose
     private Boolean IsChemicalChanged;
 
+    @SerializedName("ProductMaster__r") @Expose
+    private ChemicalProductCode chemicalProductCode;
+
     public Chemicals() {
         Id = "NA";
         Standard_Usage = "NA";
@@ -41,6 +44,7 @@ public class Chemicals {
         ChemType = "NA";
         ServiceArea = "NA";
         IsChemicalChanged = false;
+        chemicalProductCode = null;
     }
 
     public String getId() {
@@ -113,5 +117,13 @@ public class Chemicals {
 
     public void setChemicalChanged(Boolean chemicalChanged) {
         IsChemicalChanged = chemicalChanged;
+    }
+
+    public ChemicalProductCode getChemicalProductCode() {
+        return chemicalProductCode;
+    }
+
+    public void setChemicalProductCode(ChemicalProductCode chemicalProductCode) {
+        this.chemicalProductCode = chemicalProductCode;
     }
 }

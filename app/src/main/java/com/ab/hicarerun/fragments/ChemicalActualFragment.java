@@ -20,11 +20,14 @@ import android.view.ViewGroup;
 import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.BarcodeVerificatonActivity;
+import com.ab.hicarerun.activities.NewTaskDetailsActivity;
 import com.ab.hicarerun.adapter.ChemicalRecycleAdapter;
 import com.ab.hicarerun.databinding.FragmentChemicalActualBinding;
+import com.ab.hicarerun.handler.ChemicalVisitListener;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
+import com.ab.hicarerun.network.models.chemicalcmodel.ChemicalConsumption;
 import com.ab.hicarerun.network.models.chemicalmodel.Chemicals;
 import com.ab.hicarerun.network.models.generalmodel.GeneralData;
 import com.ab.hicarerun.network.models.taskmodel.TaskChemicalList;
@@ -227,6 +230,12 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
         });
 
         setChemicals();
+        ((NewTaskDetailsActivity) requireActivity()).setOnChemicalVisitListener(new ChemicalVisitListener() {
+            @Override
+            public void refresh() {
+                setChemicals();
+            }
+        });
     }
 
     private static boolean isChemicalChanged(List<TaskChemicalList> arraylist) {
@@ -240,6 +249,7 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
 
     private void setChemicals() {
         try {
+            showProgressDialog();
             if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
                 assert mGeneralRealmData.get(0) != null;
                 isVerified = mGeneralRealmData.get(0).getAutoSubmitChemicals();
@@ -268,8 +278,16 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
                 if (pageNumber == 1 && items.size() > 0) {
                     mAdapter.setData(items);
                     mAdapter.notifyDataSetChanged();
+                    dismissProgressDialog();
+                    Log.d("TAG", "Called only this");
+                    if (isCombinedTask){
+                        getChemicalConsumptionForAllServiceActivity(combineOrder, AppUtils.sequenceNo, items);
+                    }else {
+                        getChemicalConsumptionForAllServiceActivity(orderId, AppUtils.sequenceNo, items);
+                    }
                 } else if (items.size() > 0) {
                     mAdapter.addData(items);
+                    Log.d("TAG", "this is also called");
                     mAdapter.notifyDataSetChanged();
                 } else {
                     pageNumber--;
@@ -283,6 +301,7 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
 
     @Override
     public void onFailure(int requestCode) {
+        dismissProgressDialog();
     }
 
     private void getValidation(int position) {
@@ -313,6 +332,7 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
 
     private void callAfterResponse() {
         try {
+            dismissProgressDialog();
             if (isVerified || ActualStatus.equals("Completed") || ActualStatus.equals("Incomplete")) {
                 mFragmentChemicalInfoBinding.checkChemVerified.setEnabled(false);
                 mFragmentChemicalInfoBinding.checkChemVerified.setChecked(true);
@@ -329,4 +349,44 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
         }
     }
 
+    private void getChemicalConsumptionForAllServiceActivity(String orderNo, String serviceSequenceNo, List<Chemicals> items){
+        showProgressDialog();
+        NetworkCallController controller = new NetworkCallController();
+        controller.setListner(new NetworkResponseListner<ChemicalConsumption>() {
+            @Override
+            public void onResponse(int requestCode, ChemicalConsumption response) {
+                HashMap<String, String> map = new HashMap<>();
+                if (response != null) {
+                    if (response.isSuccess()) {
+                        AppUtils.CHEMICAL_CHANGED = false;
+                        if (response.getData() != null){
+                            int size = response.getData().size();
+                            ArrayList<Integer> indexToDisable = new ArrayList<>();
+                            for (int i = 0; i < size; i++) {
+                                for (int j = 0; j < items.size(); j++){
+                                    if (response.getData().get(i).getChemicalCode().equals(items.get(j).getChemicalProductCode().getProductCode())){
+                                        map.put(response.getData().get(i).getChemicalCode(), String.valueOf(response.getData().get(i).getChemicalQuantity()));
+                                        indexToDisable.add(j);
+                                    }
+                                }
+                            }
+                            mAdapter.setData(items, map, indexToDisable);
+                            mAdapter.notifyDataSetChanged();
+                            dismissProgressDialog();
+                            /*new Thread(() -> {
+                                requireActivity().runOnUiThread(() -> {
+                                });
+                            }).start();*/
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int requestCode) {
+                dismissProgressDialog();
+            }
+        });
+        controller.getChemicalConsumptionForAllServiceActivity(orderNo, serviceSequenceNo);
+    }
 }

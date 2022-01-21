@@ -117,7 +117,7 @@ public class AppUtils {
     public static boolean IS_ACTIVITY_THERE = false;
     public static boolean IS_QRCODE_THERE = true;
     public static boolean IS_FLASH_ON= true;
-    public static boolean CHEMICAL_OVERRIDE= false;
+    public static boolean CHEMICAL_CHANGED = false;
     public static boolean IS_COMBINED_TASK = false;
     public static HashMap<String, String> floorDrawn = new HashMap<>();
 
