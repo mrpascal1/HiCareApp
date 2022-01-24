@@ -278,7 +278,6 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
                 if (pageNumber == 1 && items.size() > 0) {
                     mAdapter.setData(items);
                     mAdapter.notifyDataSetChanged();
-                    dismissProgressDialog();
                     Log.d("TAG", "Called only this");
                     if (isCombinedTask){
                         getChemicalConsumptionForAllServiceActivity(combineOrder, AppUtils.sequenceNo, items);
@@ -293,6 +292,8 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
                     pageNumber--;
                 }
                 callAfterResponse();
+            }else {
+                dismissProgressDialog();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -332,7 +333,6 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
 
     private void callAfterResponse() {
         try {
-            dismissProgressDialog();
             if (isVerified || ActualStatus.equals("Completed") || ActualStatus.equals("Incomplete")) {
                 mFragmentChemicalInfoBinding.checkChemVerified.setEnabled(false);
                 mFragmentChemicalInfoBinding.checkChemVerified.setChecked(true);
@@ -377,8 +377,14 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
                                 requireActivity().runOnUiThread(() -> {
                                 });
                             }).start();*/
+                        }else {
+                            dismissProgressDialog();
                         }
+                    }else {
+                        dismissProgressDialog();
                     }
+                }else {
+                    dismissProgressDialog();
                 }
             }
 

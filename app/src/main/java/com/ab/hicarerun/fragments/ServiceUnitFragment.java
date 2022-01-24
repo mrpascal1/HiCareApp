@@ -231,10 +231,12 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                         mFragmentServiceUnitBinding.lnrData.setVisibility(View.GONE);
                         mFragmentServiceUnitBinding.txtNoData.setVisibility(View.VISIBLE);
                     }
+                    dismissProgressDialog();
                 }
 
                 @Override
                 public void onFailure(int requestCode) {
+                    dismissProgressDialog();
                     mFragmentServiceUnitBinding.lnrData.setVisibility(View.GONE);
                     mFragmentServiceUnitBinding.txtNoData.setVisibility(View.VISIBLE);
                 }
@@ -678,8 +680,9 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                             Toasty.success(requireContext(), "Activity marked incomplete", Toasty.LENGTH_SHORT).show();
                         }
                         getServiceByActivity(floor);
+                    }else {
+                        dismissProgressDialog();
                     }
-                    dismissProgressDialog();
                 }
 
                 @Override
@@ -706,17 +709,15 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                         //Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show();
                         //updateActivityStatus(hashActivity, true, "", txtTitle.getText().toString(), txtQty.getText().toString());
                     }else {
-                        Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "Failed to update chemical", Toast.LENGTH_SHORT).show();
                     }
                 }else {
-                    Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Failed to update chemical", Toast.LENGTH_SHORT).show();
                 }
-                dismissProgressDialog();
             }
 
             @Override
             public void onFailure(int requestCode) {
-                dismissProgressDialog();
             }
         });
         controller.saveChemicalConsumptionByServiceActivity(Collections.singletonList(saveChemicalMap));

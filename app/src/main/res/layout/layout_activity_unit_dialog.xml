@@ -67,15 +67,16 @@
                 <EditText
                     android:id="@+id/chemicalValueEt"
                     android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginEnd="4dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_marginBottom="6dp"
                     android:hint="Enter Chemical Value"
                     android:maxLength="6"
                     android:inputType="numberDecimal"
                     android:paddingStart="12dp"
+                    android:textSize="15sp"
                     android:background="@drawable/edit_border" />
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycleView"
