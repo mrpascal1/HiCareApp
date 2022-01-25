@@ -110,8 +110,8 @@ public class ConsultaionSecondChildFragment extends Fragment implements UserSeco
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AppUtils.CAMERA_SCREEN = "Consultation2";
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
-                new IntentFilter(AppUtils.CAMERA_SCREEN));
+        /*LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
+                new IntentFilter(AppUtils.CAMERA_SCREEN));*/
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -472,8 +472,8 @@ public class ConsultaionSecondChildFragment extends Fragment implements UserSeco
     public void onCameraClicked(int position) {
         try {
             checkPosition = position;
-//            requestStoragePermission(true);
-            init();
+            requestStoragePermission(true);
+            //init();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -589,6 +589,6 @@ public class ConsultaionSecondChildFragment extends Fragment implements UserSeco
     @Override
     public void onDestroy() {
         super.onDestroy();
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
+        //LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
     }
 }
