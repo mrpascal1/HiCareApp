@@ -472,8 +472,8 @@ public class ConsultaionSecondChildFragment extends Fragment implements UserSeco
     public void onCameraClicked(int position) {
         try {
             checkPosition = position;
-//            requestStoragePermission(true);
-            init();
+            requestStoragePermission(true);
+//            init();
         } catch (Exception e) {
             e.printStackTrace();
         }

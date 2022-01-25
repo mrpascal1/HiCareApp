@@ -1722,8 +1722,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                         new IntentFilter(AppUtils.CAMERA_SCREEN));
                 checkPosition = position;
-//                requestStoragePermission(true);
-                init();
+                requestStoragePermission(true);
+//                init();
             });
             saveHashSet = new HashSet<>();
             btnSend.setOnClickListener(v -> {

@@ -85,8 +85,6 @@
                             android:layout_height="match_parent"
                             android:adjustViewBounds="true"
                             android:scaleType="fitXY"
-                            android:scaleY="-1"
-                            android:scaleX="-1"
                             android:src="@drawable/sample" />
 
                         <ImageButton
