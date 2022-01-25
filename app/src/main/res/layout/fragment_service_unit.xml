@@ -222,6 +222,17 @@
 
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/viewFloorTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/view_floor"
+                    android:textSize="17sp" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycleArea"
                     android:layout_width="match_parent"
