@@ -69,6 +69,7 @@ import com.ab.hicarerun.BuildConfig;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.Camera2Activity;
 import com.ab.hicarerun.activities.NewTaskDetailsActivity;
+import com.ab.hicarerun.activities.inventory.TaskInventoryActivity;
 import com.ab.hicarerun.adapter.BankSearchAdapter;
 import com.ab.hicarerun.adapter.ChemicalDialogAdapter;
 import com.ab.hicarerun.adapter.SlotsAdapter;
@@ -147,6 +148,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     public static final String ARGS_COMBINED_TYPE = "ARGS_COMBINED_TYPE";
     public static final String ARGS_COMBINED_ORDER = "ARGS_COMBINED_ORDER";
     public static final String ARGS_COMBINED_ID = "ARGS_COMBINED_ID";
+    public static final String ARGS_ORDER_ID = "ARGS_ORDER_ID";
 
     private static final int SAVE_CHECK_LIST = 3000;
     private static final int ONSITE_REQUEST = 1000;
@@ -233,15 +235,17 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private CameraManager mCameraManager;
     private String mCameraId;
     private static int VIDEO_REQUEST = 100;
+    private String oId = "";
 
 
-    public static ServiceInfoFragment newInstance(String taskId, String combinedTaskId, boolean isCombinedTasks, String combinedTypes, String combinedOrders, ServiceInfoListener mPostCallback) {
+    public static ServiceInfoFragment newInstance(String taskId, String combinedTaskId, boolean isCombinedTasks, String combinedTypes, String combinedOrders, String oId, ServiceInfoListener mPostCallback) {
         Bundle args = new Bundle();
         args.putString(ARGS_TASKS, taskId);
         args.putBoolean(ARGS_COMBINED_TASKS, isCombinedTasks);
         args.putString(ARGS_COMBINED_ORDER, combinedOrders);
         args.putString(ARGS_COMBINED_TYPE, combinedTypes);
         args.putString(ARGS_COMBINED_ID, combinedTaskId);
+        args.putString(ARGS_ORDER_ID, oId);
         mListCallback = mPostCallback;
         ServiceInfoFragment fragment = new ServiceInfoFragment();
         fragment.setArguments(args);
@@ -279,6 +283,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             combiedTaskOrders = getArguments().getString(ARGS_COMBINED_ORDER);
             combinedTypes = getArguments().getString(ARGS_COMBINED_TYPE);
             isCombinedTask = getArguments().getBoolean(ARGS_COMBINED_TASKS);
+            oId = getArguments().getString(ARGS_ORDER_ID);
         }
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
                 new IntentFilter("Onsite-Image"));
@@ -460,6 +465,12 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     e.printStackTrace();
                 }
             }
+        });
+
+        mFragmentServiceInfoBinding.inventoryBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), TaskInventoryActivity.class);
+            intent.putExtra("orderNo", isCombinedTask ? combiedTaskOrders : oId);
+            startActivity(intent);
         });
     }
 

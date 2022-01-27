@@ -631,10 +631,10 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             mAdapter = new TaskViewPagerAdapter(getSupportFragmentManager(), this);
 
             if (sta.equals("Dispatched") || sta.equals("Incomplete")) {
-                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId, mCallback), getResources().getString(R.string.service_info));
+                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId, orderId, mCallback), getResources().getString(R.string.service_info));
                 mActivityNewTaskDetailsBinding.viewpagertab.setDistributeEvenly(false);
             } else {
-                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId, mCallback), getResources().getString(R.string.service_info));
+                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId, orderId, mCallback), getResources().getString(R.string.service_info));
                 mAdapter.addFragment(ChemicalActualFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedOrderId, orderId), getResources().getString(R.string.chemical_info));
                 if (isActivityThere) {
                     mAdapter.addFragment(ServiceUnitFragment.newInstance(isCombinedTasks, combinedOrderId, sequenceNo, orderId), "Activity");

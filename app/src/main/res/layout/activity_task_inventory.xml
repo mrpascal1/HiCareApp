@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.inventory.InventoryActivity">
+    tools:context=".activities.inventory.TaskInventoryActivity">
 
     <RelativeLayout
         android:id="@+id/headerLayout"
@@ -18,9 +18,10 @@
             android:src="@drawable/ic_arrow_back_white"
             android:padding="12dp"/>
         <TextView
+            android:id="@+id/titleTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Inventory"
+            android:text="Update Inventory"
             android:textSize="18sp"
             android:textColor="@color/white"
             android:layout_centerHorizontal="true"
@@ -38,27 +39,15 @@
         android:id="@+id/buttonsLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp">
+        android:layout_alignParentBottom="true">
         <Button
-            android:id="@+id/addBtn"
-            android:layout_width="wrap_content"
+            android:id="@+id/scanBtn"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Add"
+            android:text="Scan Item"
             android:textColor="@color/white"
             android:backgroundTint="@color/colorPrimary"
             android:layout_alignParentStart="true"/>
-
-        <Button
-            android:id="@+id/returnBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Return"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/colorPrimary"
-            android:layout_alignParentEnd="true"/>
     </RelativeLayout>
 
 </RelativeLayout>

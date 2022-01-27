@@ -1,16 +1,20 @@
-package com.ab.hicarerun.activities
+package com.ab.hicarerun.activities.inventory
 
 import android.Manifest
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatSpinner
@@ -19,8 +23,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.BaseActivity
 import com.ab.hicarerun.R
+import com.ab.hicarerun.activities.NewBarcodeActivity
 import com.ab.hicarerun.adapter.inventory.InventoryAdapter
-import com.ab.hicarerun.databinding.ActivityInventoryBinding
+import com.ab.hicarerun.databinding.ActivityTaskInventoryBinding
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
 import com.ab.hicarerun.network.models.inventorymodel.ActionList
@@ -38,7 +43,8 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import es.dmoral.toasty.Toasty
 
-class InventoryActivity : BaseActivity() {
+class TaskInventoryActivity : BaseActivity() {
+
     val BARCODE_CAMERA_REQUEST = 3000
     var selectedAction = ""
     var selectedTechnician = ""
@@ -46,18 +52,26 @@ class InventoryActivity : BaseActivity() {
     var reasons = ""
     var itemSerialNo = ""
     var referenceId = ""
+    var orderNo = ""
     val la = ArrayList<String>()
     val lt = ArrayList<String>()
-    lateinit var binding: ActivityInventoryBinding
+    lateinit var binding: ActivityTaskInventoryBinding
     lateinit var actionList: ArrayList<ActionList>
     lateinit var technicianList: ArrayList<TechnicianList>
     lateinit var inventoryAdapter: InventoryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityInventoryBinding.inflate(layoutInflater)
+        binding = ActivityTaskInventoryBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        binding.titleTv.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
+        binding.scanBtn.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
+
+        val intent = intent
+        orderNo = intent.getStringExtra("orderNo").toString()
+        Log.d("TAG", orderNo)
 
         actionList = ArrayList()
         technicianList = ArrayList()
@@ -72,16 +86,59 @@ class InventoryActivity : BaseActivity() {
         binding.inventoryRecyclerView.isNestedScrollingEnabled = false
         binding.inventoryRecyclerView.adapter = inventoryAdapter
 
-        binding.addBtn.setOnClickListener {
-            val intent = Intent(this, NewBarcodeActivity::class.java)
-            requestCameraPermission(intent)
+        binding.scanBtn.setOnClickListener {
+            val scannerIntent = Intent(this, NewBarcodeActivity::class.java)
+            requestCameraPermission(scannerIntent)
         }
 
         binding.backIv.setOnClickListener {
-            getBack()
+            finish()
         }
 
-        getInventoryList()
+        getInventoryListByOrderNo(orderNo)
+    }
+
+    fun getInventoryListByOrderNo(orderNo: String){
+        showProgressDialog()
+        val controller = NetworkCallController()
+        controller.setListner(object : NetworkResponseListner<InventoryListResult>{
+            override fun onResponse(requestCode: Int, response: InventoryListResult?) {
+                if (response != null && response.isSuccess == true){
+                    if (response.data != null && response.data.isNotEmpty()) {
+                        inventoryAdapter.addData(response.data, true)
+                    }
+                }
+                inventoryAdapter.notifyDataSetChanged()
+                dismissProgressDialog()
+            }
+
+            override fun onFailure(requestCode: Int) {
+                dismissProgressDialog()
+                Log.d("TAG", "$requestCode")
+            }
+        })
+
+        controller.getInventoryListByOrderNo(202211, orderNo)
+    }
+
+    private fun getDate(str: String): String{
+        val date = str.substring(0, 6)
+        var formatted = ""
+        var count = 0
+        for (i in 0 until date.length){
+            if (count == 2){
+                formatted += "-"
+                count = 0
+            }
+            formatted += date[i]
+            count++
+        }
+        formatted = AppUtils.getFormatted(formatted, "dd-MM-yyyy", "dd-MM-yy")
+        return formatted
+    }
+
+    private fun getItemSerialNo(str: String): String{
+        return str.substring(6)
     }
 
     private fun requestCameraPermission(intent: Intent) {
@@ -290,7 +347,7 @@ class InventoryActivity : BaseActivity() {
                         Toasty.success(applicationContext, "Inventory updated successfully").show()
                         dismissProgressDialog()
                         alertDialog.cancel()
-                        getInventoryList()
+                        getInventoryListByOrderNo(orderNo)
                     }else{
                         dismissProgressDialog()
                     }
@@ -307,7 +364,7 @@ class InventoryActivity : BaseActivity() {
         controller.updateInventory(2022, hashMap)
     }
 
-    private fun addInventory(userId: String, itemSerialNo: String, date: String, barcodeData: String){
+    private fun addInventory(userId: String, itemSerialNo: String, date: String, barcodeData: String, orderNo: String){
         showProgressDialog()
         val hashMap = HashMap<String, Any>()
         hashMap["UserId"] = userId
@@ -357,64 +414,6 @@ class InventoryActivity : BaseActivity() {
         controller.addInventory(2022, hashMap)
     }
 
-    private fun getInventoryList(){
-        showProgressDialog()
-        val controller = NetworkCallController()
-        controller.setListner(object : NetworkResponseListner<InventoryListResult>{
-            override fun onResponse(requestCode: Int, response: InventoryListResult?) {
-                if (response != null && response.isSuccess == true){
-                    if (response.data != null && response.data.isNotEmpty()){
-                        inventoryAdapter.addData(response.data)
-                    }
-                }
-                inventoryAdapter.notifyDataSetChanged()
-                dismissProgressDialog()
-            }
-            override fun onFailure(requestCode: Int) {
-                dismissProgressDialog()
-            }
-        })
-        controller.getInventoryList(202206, AppUtils.resourceId)
-    }
-
-    private fun getDate(str: String): String{
-        val date = str.substring(0, 6)
-        var formatted = ""
-        var count = 0
-        for (i in 0 until date.length){
-            if (count == 2){
-                formatted += "-"
-                count = 0
-            }
-            formatted += date[i]
-            count++
-        }
-        formatted = AppUtils.getFormatted(formatted, "dd-MM-yyyy", "dd-MM-yy")
-        return formatted
-    }
-
-    private fun getItemSerialNo(str: String): String{
-        return str.substring(6)
-    }
-
-    private fun getBack(){
-        val fragment = supportFragmentManager.backStackEntryCount
-        if (fragment < 1){
-            finish()
-        }else{
-            fragmentManager.popBackStack()
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            android.R.id.home -> {
-                getBack()
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == BARCODE_CAMERA_REQUEST) {
@@ -425,8 +424,17 @@ class InventoryActivity : BaseActivity() {
                     return
                 }
                 itemSerialNo = getItemSerialNo(barcode)
-                addInventory(AppUtils.resourceId, itemSerialNo, getDate(barcode), barcode)
+                //addInventory(AppUtils.resourceId, itemSerialNo, getDate(barcode), barcode)
             }
+        }
+    }
+
+    private fun getBack(){
+        val fragment = supportFragmentManager.backStackEntryCount
+        if (fragment < 1){
+            finish()
+        }else{
+            fragmentManager.popBackStack()
         }
     }
 }

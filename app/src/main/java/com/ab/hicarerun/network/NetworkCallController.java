@@ -5439,6 +5439,22 @@ public class NetworkCallController {
                 });
     }
 
+    public void getInventoryListByOrderNo(int requestCode, String orderNo) {
+        BaseApplication.getInventoryApi()
+                .getInventoryListByOrderNo(orderNo)
+                .enqueue(new Callback<InventoryListResult>(){
+                    @Override
+                    public void onResponse(Call<InventoryListResult> call, Response<InventoryListResult> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<InventoryListResult> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
 
     public String getRefreshToken() {
         String refreshToken = null;

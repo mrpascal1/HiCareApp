@@ -58,9 +58,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.BrowserActivity"></activity>
+        <activity android:name=".activities.inventory.TaskInventoryActivity"></activity>
+        <activity android:name=".activities.BrowserActivity" />
         <activity
-            android:name=".activities.InventoryActivity"
+            android:name=".activities.inventory.InventoryActivity"
             android:exported="true" />
         <activity
             android:name=".activities.NewBarcodeActivity"

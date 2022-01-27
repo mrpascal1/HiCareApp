@@ -49,6 +49,7 @@ import androidx.fragment.app.FragmentManager;
 import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.R;
+import com.ab.hicarerun.activities.inventory.InventoryActivity;
 import com.ab.hicarerun.databinding.ActivityHomeBinding;
 import com.ab.hicarerun.fragments.AttendanceViewFragment;
 import com.ab.hicarerun.fragments.BazaarFragment;

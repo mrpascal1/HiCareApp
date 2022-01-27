@@ -623,4 +623,7 @@ public interface IRetrofit {
 
     @GET("Inventory/GetInventoryList")
     Call<InventoryListResult> getInventoryList(@Query("userId") String userId);
+
+    @GET("Inventory/GetInventoryListByOrderNo")
+    Call<InventoryListResult> getInventoryListByOrderNo(@Query("orderno") String orderNo);
 }
