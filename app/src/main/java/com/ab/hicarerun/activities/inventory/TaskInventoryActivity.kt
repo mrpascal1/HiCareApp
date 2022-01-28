@@ -364,7 +364,7 @@ class TaskInventoryActivity : BaseActivity() {
         controller.updateInventory(2022, hashMap)
     }
 
-    private fun addInventory(userId: String, itemSerialNo: String, date: String, barcodeData: String, orderNo: String){
+    private fun addInventory(userId: String, itemSerialNo: String, date: String, barcodeData: String){
         showProgressDialog()
         val hashMap = HashMap<String, Any>()
         hashMap["UserId"] = userId
@@ -424,7 +424,7 @@ class TaskInventoryActivity : BaseActivity() {
                     return
                 }
                 itemSerialNo = getItemSerialNo(barcode)
-                //addInventory(AppUtils.resourceId, itemSerialNo, getDate(barcode), barcode)
+                addInventory(AppUtils.resourceId, itemSerialNo, getDate(barcode), barcode)
             }
         }
     }

@@ -34,9 +34,9 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
 
     private OnListItemClickHandler onItemClickHandler;
     private final Context mContext;
-    private static List<ChemicalViewModel> items = null;
-    private static List<Integer> indexToDisable = null;
-    private static HashMap<Integer, String> map = new HashMap();
+    private List<ChemicalViewModel> items = null;
+    private List<Integer> indexToDisable = null;
+    private HashMap<Integer, String> map = new HashMap();
     private Boolean isVerified = false;
     private OnEditTextChanged onEditTextChanged;
     private int ChemicalNo = 0;
@@ -74,10 +74,10 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
             final ChemicalViewModel model = items.get(position);
             holder.mChemicalRecycleRowBinding.chemName.setText(model.getName());
             if (indexToDisable.contains(position)){
+                holder.mChemicalRecycleRowBinding.edtActual.setText(model.getEdtActual());
                 holder.mChemicalRecycleRowBinding.edtActual.setEnabled(false);
                 holder.mChemicalRecycleRowBinding.edtActual.setTextColor(ContextCompat.getColor(mContext, R.color.grey));
             }
-            holder.mChemicalRecycleRowBinding.edtActual.setText(model.getEdtActual());
             holder.mChemicalRecycleRowBinding.chemConsumption.setText(model.getConsumption().toLowerCase());
             String unit = model.getConsumption().toLowerCase();
             holder.mChemicalRecycleRowBinding.chemStandard.setText(model.getStandard() + " " + unit);
