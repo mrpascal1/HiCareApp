@@ -72,7 +72,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
     RecycleByActivityAdapter mActivityAdapter;
     ActivityAreaUnitAdapter mUnitAdapter;
     private RecyclerView recyclerView;
-    private TextView txtTitle;
+    private TextView txtTitle, serviceCodeTv;
     private TextView txtQty;
     private String combinedOrderId = "";
     private int sequenceNo = 0;
@@ -300,10 +300,10 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
         areaList = new ArrayList<>();
         areaList = mActivityList.get(position).getArea();
         activityPosition = position;
-        showAddActivityDialog(areaList, mActivityList.get(position).getServiceActivityName(), mActivityList.get(position).getChemical_Name(), mActivityList, mActivityList.get(position).getChemical_Qty(), mActivityList.get(position).getChemical_Unit());
+        showAddActivityDialog(areaList, mActivityList.get(position).getServiceActivityName(), mActivityList.get(position).getChemical_Name(), mActivityList, mActivityList.get(position).getChemical_Qty(), mActivityList.get(position).getChemical_Unit(), mActivityList.get(position).getService_Code());
     }
 
-    private void showAddActivityDialog(List<AreaActivity> mAreaList, String activityName, String chemical_name, List<ServiceActivity> mActivityList, String chemical_qty, String chemical_unit) {
+    private void showAddActivityDialog(List<AreaActivity> mAreaList, String activityName, String chemical_name, List<ServiceActivity> mActivityList, String chemical_qty, String chemical_unit, String serviceCode) {
         try {
             LayoutInflater li = LayoutInflater.from(getActivity());
             View promptsView = li.inflate(R.layout.layout_activity_unit_dialog, null);
@@ -320,11 +320,15 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
             final Button btnSkip = (Button) promptsView.findViewById(R.id.btnSkip);
             final Button verifyBtn = (Button) promptsView.findViewById(R.id.verifyBtn);
             txtTitle = (TextView) promptsView.findViewById(R.id.txtTitle);
+            serviceCodeTv = (TextView) promptsView.findViewById(R.id.serviceCodeTv);
             txtQty = (TextView) promptsView.findViewById(R.id.txtQty);
             final EditText chemicalValue = (EditText) promptsView.findViewById(R.id.chemicalValueEt);
             txtTitle.setText(chemical_name + " - " + activityName);
-            txtQty.setText("Qty" + " - " + chemical_qty + " " + chemical_unit.toLowerCase());
+            serviceCodeTv.setText(serviceCode);
+            txtQty.setText(chemical_qty + " " + chemical_unit.toLowerCase());
+            //txtQty.setText("Qty" + " - " + chemical_qty + " " + chemical_unit.toLowerCase());
             txtTitle.setTypeface(txtTitle.getTypeface(), Typeface.BOLD);
+            txtQty.setTypeface(txtTitle.getTypeface(), Typeface.BOLD);
             recyclerView.setHasFixedSize(true);
             layoutManager = new LinearLayoutManager(getActivity());
             recyclerView.setLayoutManager(layoutManager);
@@ -429,8 +433,9 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                 } else {
                     activityPosition++;
                 }
+                serviceCodeTv.setText(mActivityList.get(activityPosition).getService_Code());
                 txtTitle.setText(mActivityList.get(activityPosition).getChemical_Name() + " - " + mActivityList.get(activityPosition).getServiceActivityName());
-                txtQty.setText("Qty" + " - " + mActivityList.get(activityPosition).getChemical_Qty() + " " + mActivityList.get(activityPosition).getChemical_Unit().toLowerCase());
+                txtQty.setText(mActivityList.get(activityPosition).getChemical_Qty() + " " + mActivityList.get(activityPosition).getChemical_Unit().toLowerCase());
                 if (hashActivity != null) {
                     hashActivity.clear();
                 }
@@ -648,8 +653,9 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                         } else {
                             activityPosition++;
                         }
+                        serviceCodeTv.setText(mActivityList.get(activityPosition).getService_Code());
                         txtTitle.setText(mActivityList.get(activityPosition).getChemical_Name() + " - " + mActivityList.get(activityPosition).getServiceActivityName());
-                        txtQty.setText("Qty" + " - " + mActivityList.get(activityPosition).getChemical_Qty() + " " + mActivityList.get(activityPosition).getChemical_Unit().toLowerCase());
+                        txtQty.setText(mActivityList.get(activityPosition).getChemical_Qty() + " " + mActivityList.get(activityPosition).getChemical_Unit().toLowerCase());
                         if (mSaveActivityList != null) {
                             mSaveActivityList.clear();
                             hashActivity.clear();

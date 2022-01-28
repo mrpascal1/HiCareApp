@@ -84,6 +84,7 @@ public class AppUtils {
     private static final int CONSINS_REQ = 5000;
     private static final int ACTIVITY_REQ = 6000;
     public static int Ins_Size = 0;
+    public static String taskTypeName = "";
 
     public static List<Data> dataList = new ArrayList<>();
     public static List<Data> consulationList = null;

@@ -66,6 +66,7 @@ import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BuildConfig;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.adapter.CheckListParentAdapter;
+import com.ab.hicarerun.adapter.ChemicalRecycleAdapter;
 import com.ab.hicarerun.adapter.SurveyAdapter;
 import com.ab.hicarerun.adapter.TaskViewPagerAdapter;
 import com.ab.hicarerun.adapter.tms.TmsChipsAdapter;
@@ -513,7 +514,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             referralDiscount = Integer.parseInt(response.getData().getReferralDiscount());
                             mActualAmountToCollect = response.getData().getActualAmountToCollect();
                             AppUtils.sequenceNo = response.getData().getService_Sequence_Number();
-                            //typeName = response.getData().getTaskTypeName();
+                            AppUtils.taskTypeName = response.getData().getTaskTypeName();
                             if (response.getData().isTMS()){
                                 typeName = "TMS";
                                 AppUtils.getTmsQuestions(taskId, LocaleHelper.getLanguage(NewTaskDetailsActivity.this), progress);
@@ -2453,6 +2454,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ChemicalRecycleAdapter.items = null;
+        ChemicalRecycleAdapter.indexToDisable = null;
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
     }
     interface ImageUploaded{

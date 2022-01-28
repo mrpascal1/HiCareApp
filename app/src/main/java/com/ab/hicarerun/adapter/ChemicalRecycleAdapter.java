@@ -34,8 +34,8 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
 
     private OnListItemClickHandler onItemClickHandler;
     private final Context mContext;
-    private List<ChemicalViewModel> items = null;
-    private List<Integer> indexToDisable = null;
+    public static List<ChemicalViewModel> items = null;
+    public static List<Integer> indexToDisable = null;
     private HashMap<Integer, String> map = new HashMap();
     private Boolean isVerified = false;
     private OnEditTextChanged onEditTextChanged;
@@ -223,6 +223,7 @@ public class ChemicalRecycleAdapter extends RecyclerView.Adapter<ChemicalRecycle
 
     public void addData(List<Chemicals> data) {
         items.clear();
+        indexToDisable.clear();
         for (int index = 0; index < data.size(); index++) {
             ChemicalViewModel chemicalViewModel = new ChemicalViewModel();
             chemicalViewModel.clone(data.get(index));
