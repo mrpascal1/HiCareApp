@@ -177,7 +177,9 @@ public class BaseApplication extends Application implements LifecycleObserver {
         }.getType(), RealmStringListTypeAdapter.INSTANCE);
 
         Gson gson = gsonBuilder.create();
-        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
+                .readTimeout(120, TimeUnit.SECONDS)
+                .connectTimeout(120, TimeUnit.SECONDS);
 
         if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();

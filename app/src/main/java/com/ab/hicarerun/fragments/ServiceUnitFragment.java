@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -94,6 +95,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
     RealmResults<GeneralData> mGeneralRealmData = null;
     private boolean showBarcode = false;
     private int towerNo = 0;
+    EditText chemicalValue;
 
 
     public ServiceUnitFragment() {
@@ -300,10 +302,10 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
         areaList = new ArrayList<>();
         areaList = mActivityList.get(position).getArea();
         activityPosition = position;
-        showAddActivityDialog(areaList, mActivityList.get(position).getServiceActivityName(), mActivityList.get(position).getChemical_Name(), mActivityList, mActivityList.get(position).getChemical_Qty(), mActivityList.get(position).getChemical_Unit(), mActivityList.get(position).getService_Code());
+        showAddActivityDialog(areaList, mActivityList.get(position).getUserConsumedChemicalQuantity(), mActivityList.get(position).getServiceActivityName(), mActivityList.get(position).getChemical_Name(), mActivityList, mActivityList.get(position).getChemical_Qty(), mActivityList.get(position).getChemical_Unit(), mActivityList.get(position).getService_Code());
     }
 
-    private void showAddActivityDialog(List<AreaActivity> mAreaList, String activityName, String chemical_name, List<ServiceActivity> mActivityList, String chemical_qty, String chemical_unit, String serviceCode) {
+    private void showAddActivityDialog(List<AreaActivity> mAreaList, double userChemicalConsumed, String activityName, String chemical_name, List<ServiceActivity> mActivityList, String chemical_qty, String chemical_unit, String serviceCode) {
         try {
             LayoutInflater li = LayoutInflater.from(getActivity());
             View promptsView = li.inflate(R.layout.layout_activity_unit_dialog, null);
@@ -319,13 +321,20 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
             final Button btnCancel = (Button) promptsView.findViewById(R.id.btnCancel);
             final Button btnSkip = (Button) promptsView.findViewById(R.id.btnSkip);
             final Button verifyBtn = (Button) promptsView.findViewById(R.id.verifyBtn);
+            final NestedScrollView nestedScrollView = promptsView.findViewById(R.id.nestedScrollView);
+            nestedScrollView.post(()->{
+                nestedScrollView.scrollTo(0,0);
+            });
             txtTitle = (TextView) promptsView.findViewById(R.id.txtTitle);
             serviceCodeTv = (TextView) promptsView.findViewById(R.id.serviceCodeTv);
             txtQty = (TextView) promptsView.findViewById(R.id.txtQty);
-            final EditText chemicalValue = (EditText) promptsView.findViewById(R.id.chemicalValueEt);
+            chemicalValue = (EditText) promptsView.findViewById(R.id.chemicalValueEt);
             txtTitle.setText(chemical_name + " - " + activityName);
             serviceCodeTv.setText(serviceCode);
             txtQty.setText(chemical_qty + " " + chemical_unit.toLowerCase());
+            if (userChemicalConsumed > 0.0){
+                chemicalValue.setText(userChemicalConsumed+"");
+            }
             //txtQty.setText("Qty" + " - " + chemical_qty + " " + chemical_unit.toLowerCase());
             txtTitle.setTypeface(txtTitle.getTypeface(), Typeface.BOLD);
             txtQty.setTypeface(txtTitle.getTypeface(), Typeface.BOLD);
@@ -644,6 +653,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                 @Override
                 public void onResponse(int requestCode, BaseResponse response) {
                     if (response.isSuccess()) {
+                        chemicalValue.setText("");
                         if (mSaveActivityList != null) {
                             mSaveActivityList.clear();
                             hashActivity.clear();
@@ -652,6 +662,10 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                             activityPosition = 0;
                         } else {
                             activityPosition++;
+                        }
+                        double chemicalConsumed = mActivityList.get(activityPosition).getUserConsumedChemicalQuantity();
+                        if (chemicalConsumed > 0.0){
+                            chemicalValue.setText(chemicalConsumed+"");
                         }
                         serviceCodeTv.setText(mActivityList.get(activityPosition).getService_Code());
                         txtTitle.setText(mActivityList.get(activityPosition).getChemical_Name() + " - " + mActivityList.get(activityPosition).getServiceActivityName());

@@ -175,6 +175,10 @@ class TaskInventoryActivity : BaseActivity() {
     }
 
     private fun showDialog(){
+        selectedAction = ""
+        selectedTechnician = ""
+        bucketId = 0
+        reasons = ""
         val li = LayoutInflater.from(this)
         val promptsView = li.inflate(R.layout.add_inventory_action_dialog, null)
         val alertDialogBuilder = AlertDialog.Builder(this)
