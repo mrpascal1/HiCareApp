@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 data class Data (
 	@SerializedName("Id") val id : Int?,
-	@SerializedName("Inventory_Code") val inventory_Code : Int?,
-	@SerializedName("Item_Code") val item_Code : Int?,
+	@SerializedName("Inventory_Code") val inventory_Code : String?,
+	@SerializedName("Item_Code") val item_Code : String?,
 	@SerializedName("Manufacturing_Date") val manufacturing_Date : String?,
 	@SerializedName("Manufacturing_Date__Date") val manufacturing_Date__Date : String?,
 	@SerializedName("Expiry_Date") val expiry_Date : String?,

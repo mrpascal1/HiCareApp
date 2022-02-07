@@ -30,6 +30,12 @@ public class AreaActivity {
     @SerializedName("Chemical_Name")
     @Expose
     private String chemicalName;
+    @SerializedName("ChemicalId")
+    @Expose
+    private int ChemicalId = 0;
+    @SerializedName("ChemicalCode")
+    @Expose
+    private String ChemicalCode = "";
     @SerializedName("Status")
     @Expose
     private String status;
@@ -107,5 +113,21 @@ public class AreaActivity {
 
     public void setService_Activity_Id(Integer service_Activity_Id) {
         Service_Activity_Id = service_Activity_Id;
+    }
+
+    public int getChemicalId() {
+        return ChemicalId;
+    }
+
+    public void setChemicalId(int chemicalId) {
+        ChemicalId = chemicalId;
+    }
+
+    public String getChemicalCode() {
+        return ChemicalCode;
+    }
+
+    public void setChemicalCode(String chemicalCode) {
+        ChemicalCode = chemicalCode;
     }
 }

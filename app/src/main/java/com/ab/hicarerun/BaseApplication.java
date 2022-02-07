@@ -2,6 +2,7 @@ package com.ab.hicarerun;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
@@ -119,6 +120,7 @@ public class BaseApplication extends Application implements LifecycleObserver {
             header.setHeaderName("Authorization");
             assert query.get(0) != null;
             assert query.get(0) != null;
+            Log.d("TAG", query.get(0).getTokenType() + " " + query.get(0).getAccessToken());
             header.setHeaderValue(query.get(0).getTokenType() + " " + query.get(0).getAccessToken());
         }
         return header;
@@ -175,7 +177,9 @@ public class BaseApplication extends Application implements LifecycleObserver {
         }.getType(), RealmStringListTypeAdapter.INSTANCE);
 
         Gson gson = gsonBuilder.create();
-        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
+        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
+                .readTimeout(120, TimeUnit.SECONDS)
+                .connectTimeout(120, TimeUnit.SECONDS);
 
         if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();

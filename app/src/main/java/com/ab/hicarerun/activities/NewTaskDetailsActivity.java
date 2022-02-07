@@ -4,7 +4,9 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.app.Dialog;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -57,12 +59,14 @@ import androidx.databinding.DataBindingUtil;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.ab.hicarerun.BaseActivity;
 import com.ab.hicarerun.BaseApplication;
 import com.ab.hicarerun.BuildConfig;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.adapter.CheckListParentAdapter;
+import com.ab.hicarerun.adapter.ChemicalRecycleAdapter;
 import com.ab.hicarerun.adapter.SurveyAdapter;
 import com.ab.hicarerun.adapter.TaskViewPagerAdapter;
 import com.ab.hicarerun.adapter.tms.TmsChipsAdapter;
@@ -75,6 +79,7 @@ import com.ab.hicarerun.fragments.ServiceUnitFragment;
 import com.ab.hicarerun.fragments.SignatureInfoFragment;
 import com.ab.hicarerun.fragments.SignatureMSTInfoFragment;
 import com.ab.hicarerun.fragments.tms.TmsUtils;
+import com.ab.hicarerun.handler.ChemicalVisitListener;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
 import com.ab.hicarerun.handler.UserTaskDetailsClickListener;
 import com.ab.hicarerun.network.NetworkCallController;
@@ -307,7 +312,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     public String typeName = "";
     private ImageUploaded imageUploaded = null;
     public String from = "";
-
+    ChemicalVisitListener chemicalVisitListener;
     //   @Override
     //  protected void attachBaseContext(Context base) {
     //     super.attachBaseContext(LocaleHelper.onAttach(base, LocaleHelper.getLanguage(base)));
@@ -316,6 +321,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppUtils.IS_COMBINED_TASK = false;
         mActivityNewTaskDetailsBinding =
                 DataBindingUtil.setContentView(this, R.layout.activity_new_task_details);
 
@@ -334,6 +340,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         combinedOrderId = getIntent().getStringExtra(ARGS_COMBINED_ORDER);
         combinedTaskTypes = getIntent().getStringExtra(ARGS_COMBINED_TYPE);
         nextTaskId = getIntent().getStringExtra(ARGS_NEXT_TASK);
+        AppUtils.IS_COMBINED_TASK = isCombinedTasks;
         new GPSUtils(this).turnGPSOn(isGPSEnable -> {
             try {
                 // turn on GPS
@@ -417,6 +424,31 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 }
             }
         });
+        mActivityNewTaskDetailsBinding.pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Log.d("TAG", position+"");
+                if (position == 1) {
+                    if (AppUtils.CHEMICAL_CHANGED) {
+                        chemicalVisitListener.refresh();
+                    }
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
+    public void setOnChemicalVisitListener(ChemicalVisitListener chemicalVisitListener){
+        this.chemicalVisitListener = chemicalVisitListener;
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -482,7 +514,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             referralDiscount = Integer.parseInt(response.getData().getReferralDiscount());
                             mActualAmountToCollect = response.getData().getActualAmountToCollect();
                             AppUtils.sequenceNo = response.getData().getService_Sequence_Number();
-                            //typeName = response.getData().getTaskTypeName();
+                            AppUtils.taskTypeName = response.getData().getTaskTypeName();
                             if (response.getData().isTMS()){
                                 typeName = "TMS";
                                 AppUtils.getTmsQuestions(taskId, LocaleHelper.getLanguage(NewTaskDetailsActivity.this), progress);
@@ -600,10 +632,10 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             mAdapter = new TaskViewPagerAdapter(getSupportFragmentManager(), this);
 
             if (sta.equals("Dispatched") || sta.equals("Incomplete")) {
-                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId, mCallback), getResources().getString(R.string.service_info));
+                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId, orderId, mCallback), getResources().getString(R.string.service_info));
                 mActivityNewTaskDetailsBinding.viewpagertab.setDistributeEvenly(false);
             } else {
-                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId, mCallback), getResources().getString(R.string.service_info));
+                mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId, orderId, mCallback), getResources().getString(R.string.service_info));
                 mAdapter.addFragment(ChemicalActualFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedOrderId, orderId), getResources().getString(R.string.chemical_info));
                 if (isActivityThere) {
                     mAdapter.addFragment(ServiceUnitFragment.newInstance(isCombinedTasks, combinedOrderId, sequenceNo, orderId), "Activity");
@@ -1691,8 +1723,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                         new IntentFilter(AppUtils.CAMERA_SCREEN));
                 checkPosition = position;
-//                requestStoragePermission(true);
-                init();
+                requestStoragePermission(true);
+//                init();
             });
             saveHashSet = new HashSet<>();
             btnSend.setOnClickListener(v -> {
@@ -2422,6 +2454,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ChemicalRecycleAdapter.items = null;
+        ChemicalRecycleAdapter.indexToDisable = null;
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
     }
     interface ImageUploaded{

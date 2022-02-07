@@ -111,8 +111,8 @@ public class ConsultaionFirstChildFragmentt extends Fragment implements UserFirs
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AppUtils.CAMERA_SCREEN = "Consultation1";
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
-                new IntentFilter(AppUtils.CAMERA_SCREEN));
+        /*LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
+                new IntentFilter(AppUtils.CAMERA_SCREEN));*/
     }
 
 
@@ -284,7 +284,7 @@ public class ConsultaionFirstChildFragmentt extends Fragment implements UserFirs
 
                         byte[] b = baos.toByteArray();
                         String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-//                        uploadOnsiteImage(encodedImage);
+                        uploadOnsiteImage(encodedImage);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -471,8 +471,8 @@ public class ConsultaionFirstChildFragmentt extends Fragment implements UserFirs
     @Override
     public void onCameraClicked(int position) {
         checkPosition = position;
-        init();
-//        requestStoragePermission(true);
+//        init();
+        requestStoragePermission(true);
     }
 
     private void init() {
@@ -577,7 +577,7 @@ public class ConsultaionFirstChildFragmentt extends Fragment implements UserFirs
     @Override
     public void onDestroy() {
         super.onDestroy();
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
+        //LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
 
     }
 }

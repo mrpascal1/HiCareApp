@@ -16,6 +16,7 @@ public class ChemicalViewModel {
     private String serviceArea;
     private String orignal;
     private Boolean isChemicalChanged;
+    private String productCode;
 
     public ChemicalViewModel() {
         this.id = "NA";
@@ -27,6 +28,7 @@ public class ChemicalViewModel {
         this.chemType = "NA";
         this.serviceArea = "NA";
         this.orignal = "NA";
+        this.productCode = "NA";
         this.isChemicalChanged = false;
     }
 
@@ -119,6 +121,14 @@ public class ChemicalViewModel {
         isChemicalChanged = chemicalChanged;
     }
 
+    public String getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
+    }
+
     public void clone(Chemicals chemicals) {
         this.id = chemicals.getId();
         this.name = chemicals.getCWFProductName();
@@ -129,6 +139,7 @@ public class ChemicalViewModel {
         this.serviceArea = chemicals.getServiceArea();
         this.orignal = chemicals.getOrignal();
         this.isChemicalChanged = chemicals.getChemicalChanged();
+        this.productCode = chemicals.getChemicalProductCode().getProductCode();
     }
 
 }

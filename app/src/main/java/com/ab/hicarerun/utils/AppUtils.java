@@ -66,6 +66,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -83,6 +84,7 @@ public class AppUtils {
     private static final int CONSINS_REQ = 5000;
     private static final int ACTIVITY_REQ = 6000;
     public static int Ins_Size = 0;
+    public static String taskTypeName = "";
 
     public static List<Data> dataList = new ArrayList<>();
     public static List<Data> consulationList = null;
@@ -116,6 +118,9 @@ public class AppUtils {
     public static boolean IS_ACTIVITY_THERE = false;
     public static boolean IS_QRCODE_THERE = true;
     public static boolean IS_FLASH_ON= true;
+    public static boolean CHEMICAL_CHANGED = false;
+    public static boolean IS_COMBINED_TASK = false;
+    public static HashMap<String, String> floorDrawn = new HashMap<>();
 
     public static Bitmap createCustomMarker(Context context, Bitmap resource, String accountName, String _name) {
 

@@ -270,13 +270,14 @@ class TmsQuestionsParentAdapter(val context: Context, private val isServiceDeliv
         val answersChildAdapter = TmsAnswersChildAdapter(context, isServiceDeliverySheet)
         Log.d("TAG", "TYPE ${items[position].questionType}")
         if (items[position].questionType.equals("DropdownSingleSelect")){
-            answersChildAdapter.addNumberText(items[position].questionStrOption, items[position].answer, items[position].questionType, items[position].questionId)
+            answersChildAdapter.addNumberText(items[position].questionStrOption, items[position].answer, items[position].questionType, items[position].questionId, items[position].isDisabled)
         }else {
             answersChildAdapter.addData(
                 items[position].questionOption,
                 answer = items[position].answer,
                 items[position].questionType,
-                items[position].questionId
+                items[position].questionId,
+                items[position].isDisabled
             )
         }
 /*        if (items[position].questionType.equals("numberText", true)){

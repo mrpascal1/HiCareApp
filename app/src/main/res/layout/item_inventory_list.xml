@@ -346,11 +346,11 @@
                     android:text="delete"
                     android:layout_marginRight="10dp"
                     android:visibility="gone"
-                    android:layout_toLeftOf="@id/isBarcodeVerified"
+                    android:layout_toLeftOf="@id/historyBtn"
                     android:src="@drawable/ic_trash_round_red"
                     />
                 <ImageView
-                    android:id="@+id/isBarcodeVerified"
+                    android:id="@+id/historyBtn"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:src="@drawable/ic_round_history_black" />

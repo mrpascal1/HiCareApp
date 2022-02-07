@@ -26,6 +26,7 @@ import com.ab.hicarerun.network.models.BasicResponse;
 import com.ab.hicarerun.network.models.checklistmodel.CheckListResponse;
 import com.ab.hicarerun.network.models.checklistmodel.UploadCheckListRequest;
 import com.ab.hicarerun.network.models.checklistmodel.UploadCheckListResponse;
+import com.ab.hicarerun.network.models.chemicalcmodel.ChemicalConsumption;
 import com.ab.hicarerun.network.models.chemicalcountmodel.ChemicalCountResponse;
 import com.ab.hicarerun.network.models.chemicalmodel.ChemicalResponse;
 import com.ab.hicarerun.network.models.chemicalmodel.SaveActivityRequest;
@@ -5262,6 +5263,46 @@ public class NetworkCallController {
                 });
     }
 
+    public void saveChemicalConsumptionByServiceActivity(List<HashMap<Object, Object>> body) {
+        BaseApplication.getB2BWoWApi()
+                .saveChemicalConsumptionByServiceActivity(body)
+                .enqueue(new Callback<BaseResponse>() {
+                    @Override
+                    public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                        if (response.body() != null) {
+                            mListner.onResponse(20211, response.body());
+                            //Log.d("TAG-UAT", responseBody);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse> call, Throwable t) {
+                        Log.d("TAG-UAT-Error", t.getMessage());
+                        mListner.onFailure(20211);
+                    }
+                });
+    }
+
+    public void getChemicalConsumptionForAllServiceActivity(String orderNo, String serviceSequenceNo) {
+        BaseApplication.getB2BWoWApi()
+                .getChemicalConsumptionForAllServiceActivity(orderNo, serviceSequenceNo)
+                .enqueue(new Callback<ChemicalConsumption>() {
+                    @Override
+                    public void onResponse(Call<ChemicalConsumption> call, Response<ChemicalConsumption> response) {
+                        if (response.body() != null) {
+                            mListner.onResponse(20211, response.body());
+                            //Log.d("TAG-UAT", responseBody);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ChemicalConsumption> call, Throwable t) {
+                        Log.d("TAG-UAT-Error", t.getMessage());
+                        mListner.onFailure(20211);
+                    }
+                });
+    }
+
     public void getResourceMenu(String resourceId) {
         BaseApplication.getRetrofitAPI(false)
                 .getResourceMenu(resourceId)
@@ -5366,9 +5407,41 @@ public class NetworkCallController {
                 });
     }
 
+    public void updateInventory(int requestCode, HashMap<String, Object> body) {
+        BaseApplication.getInventoryApi()
+                .updateInventory(body)
+                .enqueue(new Callback<BaseResponse>(){
+                    @Override
+                    public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
     public void getInventoryList(int requestCode, String userId) {
         BaseApplication.getInventoryApi()
                 .getInventoryList(userId)
+                .enqueue(new Callback<InventoryListResult>(){
+                    @Override
+                    public void onResponse(Call<InventoryListResult> call, Response<InventoryListResult> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<InventoryListResult> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void getInventoryListByOrderNo(int requestCode, String orderNo) {
+        BaseApplication.getInventoryApi()
+                .getInventoryListByOrderNo(orderNo)
                 .enqueue(new Callback<InventoryListResult>(){
                     @Override
                     public void onResponse(Call<InventoryListResult> call, Response<InventoryListResult> response) {

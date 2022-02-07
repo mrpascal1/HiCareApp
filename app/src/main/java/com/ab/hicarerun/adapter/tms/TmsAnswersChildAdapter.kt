@@ -28,6 +28,7 @@ class TmsAnswersChildAdapter(val context: Context, private val isServiceDelivery
     var questionId = -1
     var qAnswer = ""
     var givenAnswer = ""
+    var isDisabled = false
     var dropdownArr: ArrayList<String> = ArrayList()
     var arrayAdapter: ArrayAdapter<String>? = null
 
@@ -46,13 +47,17 @@ class TmsAnswersChildAdapter(val context: Context, private val isServiceDelivery
             holder.binding.chkAnswers.visibility = View.GONE
             holder.binding.numberLayout.visibility = View.GONE
             holder.binding.spinnerLayout.visibility = View.GONE
-            if (isServiceDeliverySheet){
-                if (AppUtils.isServiceDeliveryFilled){
-                    holder.binding.rbAnswers.isEnabled = false
-                }
-            }else{
-                if (AppUtils.isInspectionDone){
-                    holder.binding.rbAnswers.isEnabled = false
+            if (isDisabled){
+                holder.binding.rbAnswers.isEnabled = false
+            }else {
+                if (isServiceDeliverySheet) {
+                    if (AppUtils.isServiceDeliveryFilled) {
+                        holder.binding.rbAnswers.isEnabled = false
+                    }
+                } else {
+                    if (AppUtils.isInspectionDone) {
+                        holder.binding.rbAnswers.isEnabled = false
+                    }
                 }
             }
         }
@@ -61,13 +66,17 @@ class TmsAnswersChildAdapter(val context: Context, private val isServiceDelivery
             holder.binding.spinnerLayout.visibility = View.GONE
             holder.binding.rbAnswers.visibility = View.GONE
             holder.binding.chkAnswers.visibility = View.VISIBLE
-            if (isServiceDeliverySheet){
-                if (AppUtils.isServiceDeliveryFilled){
-                    holder.binding.chkAnswers.isEnabled = false
-                }
-            }else{
-                if (AppUtils.isInspectionDone){
-                    holder.binding.chkAnswers.isEnabled = false
+            if (isDisabled){
+                holder.binding.chkAnswers.isEnabled = false
+            }else {
+                if (isServiceDeliverySheet) {
+                    if (AppUtils.isServiceDeliveryFilled) {
+                        holder.binding.chkAnswers.isEnabled = false
+                    }
+                } else {
+                    if (AppUtils.isInspectionDone) {
+                        holder.binding.chkAnswers.isEnabled = false
+                    }
                 }
             }
         }
@@ -88,15 +97,23 @@ class TmsAnswersChildAdapter(val context: Context, private val isServiceDelivery
             }*/
             holder.binding.rbAnswers.visibility = View.GONE
             holder.binding.chkAnswers.visibility = View.GONE
-            if (isServiceDeliverySheet){
-                if (AppUtils.isServiceDeliveryFilled){
-                    holder.binding.spnType.isEnabled = false
-                    holder.binding.spinnerLayout.background = ContextCompat.getDrawable(context, R.drawable.edit_box_border_disabled)
-                }
-            }else{
-                if (AppUtils.isInspectionDone){
-                    holder.binding.spnType.isEnabled = false
-                    holder.binding.spinnerLayout.background = ContextCompat.getDrawable(context, R.drawable.edit_box_border_disabled)
+            if (isDisabled){
+                holder.binding.spnType.isEnabled = false
+                holder.binding.spinnerLayout.background =
+                    ContextCompat.getDrawable(context, R.drawable.edit_box_border_disabled)
+            }else {
+                if (isServiceDeliverySheet) {
+                    if (AppUtils.isServiceDeliveryFilled) {
+                        holder.binding.spnType.isEnabled = false
+                        holder.binding.spinnerLayout.background =
+                            ContextCompat.getDrawable(context, R.drawable.edit_box_border_disabled)
+                    }
+                } else {
+                    if (AppUtils.isInspectionDone) {
+                        holder.binding.spnType.isEnabled = false
+                        holder.binding.spinnerLayout.background =
+                            ContextCompat.getDrawable(context, R.drawable.edit_box_border_disabled)
+                    }
                 }
             }
         }
@@ -208,7 +225,7 @@ class TmsAnswersChildAdapter(val context: Context, private val isServiceDelivery
         } catch (e: Exception) { }
     }
 
-    fun addData(options: List<QuestionOption>?, answer: String?, type: String?, id: Int?){
+    fun addData(options: List<QuestionOption>?, answer: String?, type: String?, id: Int?, isDisabled: Boolean){
         items.clear()
         dropdownArr.clear()
         if (options != null) {
@@ -216,13 +233,14 @@ class TmsAnswersChildAdapter(val context: Context, private val isServiceDelivery
         }else{
             items.add(null)
         }
+        this.isDisabled = isDisabled
         Log.d("TAG", "$items")
         qAnswer = answer.toString()
         ansType = type.toString()
         questionId = id.toString().toInt()
         Log.d("TAG", "Ans Type $ansType")
     }
-    fun addNumberText(answer: ArrayList<String>?, gAnswer: String?, type: String?, id: Int?){
+    fun addNumberText(answer: ArrayList<String>?, gAnswer: String?, type: String?, id: Int?, isDisabled: Boolean){
         dropdownArr.clear()
         items.clear()
         items.add(null)
@@ -230,6 +248,7 @@ class TmsAnswersChildAdapter(val context: Context, private val isServiceDelivery
         answer?.forEach {
             dropdownArr.add(it)
         }
+        this.isDisabled = isDisabled
         qAnswer = answer.toString()
         givenAnswer = gAnswer.toString()
         ansType = type.toString()
@@ -256,7 +275,6 @@ class TmsAnswersChildAdapter(val context: Context, private val isServiceDelivery
 
     class MyHolder(val binding: LayoutTmsChildAdapterBinding): RecyclerView.ViewHolder(binding.root){
         fun bindItems(item: QuestionOption?, context: Context){
-            binding.chkAnswers.visibility = View.GONE
             binding.rbAnswers.text = item?.optionDisplayText
             binding.chkAnswers.text = item?.optionDisplayText
             binding.rbAnswers.isChecked = item?.isSelected==true

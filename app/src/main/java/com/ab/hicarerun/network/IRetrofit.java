@@ -14,6 +14,7 @@ import com.ab.hicarerun.network.models.BasicResponse;
 import com.ab.hicarerun.network.models.checklistmodel.CheckListResponse;
 import com.ab.hicarerun.network.models.checklistmodel.UploadCheckListRequest;
 import com.ab.hicarerun.network.models.checklistmodel.UploadCheckListResponse;
+import com.ab.hicarerun.network.models.chemicalcmodel.ChemicalConsumption;
 import com.ab.hicarerun.network.models.chemicalcountmodel.ChemicalCountResponse;
 import com.ab.hicarerun.network.models.chemicalmodel.ChemicalResponse;
 import com.ab.hicarerun.network.models.chemicalmodel.SaveActivityRequest;
@@ -142,7 +143,7 @@ public interface IRetrofit {
     String JEOPARDY_URL = "http://apps.hicare.in/cwf/";
     String SLOT_URL = "http://api.hicare.in/slot/api/";
     String UAT = "http://api.hicare.in/Mobile/api/";
-    String B2B_URL = "http://connect.hicare.in/b2bwow/api/";
+    String B2B_URL = "http://connect.hicare.in/b2bwowuat/api/"; //b2bwow(production) & b2bwowuat(uat)
     String INVENTORY_URL = "http://connect.hicare.in/inventory_api/api/";
 
     /*[Verify User]*/
@@ -572,6 +573,12 @@ public interface IRetrofit {
     @GET("Integration/GetOrderActivityChemical")
     Call<ActivityResponse> getServiceActivityChemical(@Query("orderNo") String activityId, @Query("serviceNo") int serviceNo, @Query("serviceType") String seviceType, @Query("showAllService") boolean showAllService);
 
+    @POST("Integration/SaveChemicalConsumptionByServiceActivity")
+    Call<BaseResponse> saveChemicalConsumptionByServiceActivity(@Body List<HashMap<Object, Object>> body);
+
+    @GET("Integration/GetChemicalConsumptionForAllServiceActivity")
+    Call<ChemicalConsumption> getChemicalConsumptionForAllServiceActivity(@Query("orderNo") String orderNo, @Query("serviceSequenceNo") String serviceSequenceNo);
+
     @POST("Integration/UpdateServiceActivityStatus")
     Call<BaseResponse> updateActivityServiceStatus(@Body List<SaveServiceActivity> requests);
 
@@ -611,6 +618,12 @@ public interface IRetrofit {
     @POST("Inventory/AddInventory")
     Call<AddInventoryResult> addInventory(@Body HashMap<String, Object> data);
 
+    @POST("Inventory/UpdateInventory")
+    Call<BaseResponse> updateInventory(@Body HashMap<String, Object> data);
+
     @GET("Inventory/GetInventoryList")
     Call<InventoryListResult> getInventoryList(@Query("userId") String userId);
+
+    @GET("Inventory/GetInventoryListByOrderNo")
+    Call<InventoryListResult> getInventoryListByOrderNo(@Query("orderno") String orderNo);
 }

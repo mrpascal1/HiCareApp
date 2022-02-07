@@ -1,16 +1,20 @@
-package com.ab.hicarerun.activities
+package com.ab.hicarerun.activities.inventory
 
 import android.Manifest
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatSpinner
@@ -19,14 +23,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.BaseActivity
 import com.ab.hicarerun.R
+import com.ab.hicarerun.activities.NewBarcodeActivity
 import com.ab.hicarerun.adapter.inventory.InventoryAdapter
-import com.ab.hicarerun.databinding.ActivityInventoryBinding
+import com.ab.hicarerun.databinding.ActivityTaskInventoryBinding
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
 import com.ab.hicarerun.network.models.inventorymodel.ActionList
 import com.ab.hicarerun.network.models.inventorymodel.AddInventoryResult
 import com.ab.hicarerun.network.models.inventorymodel.InventoryListModel.InventoryListResult
 import com.ab.hicarerun.network.models.inventorymodel.TechnicianList
+import com.ab.hicarerun.network.models.tsscannermodel.BaseResponse
 import com.ab.hicarerun.utils.AppUtils
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -35,23 +41,37 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
+import es.dmoral.toasty.Toasty
 
-class InventoryActivity : BaseActivity() {
+class TaskInventoryActivity : BaseActivity() {
+
     val BARCODE_CAMERA_REQUEST = 3000
     var selectedAction = ""
     var selectedTechnician = ""
+    var bucketId = 0
+    var reasons = ""
+    var itemSerialNo = ""
+    var referenceId = ""
+    var orderNo = ""
     val la = ArrayList<String>()
     val lt = ArrayList<String>()
-    lateinit var binding: ActivityInventoryBinding
+    lateinit var binding: ActivityTaskInventoryBinding
     lateinit var actionList: ArrayList<ActionList>
     lateinit var technicianList: ArrayList<TechnicianList>
     lateinit var inventoryAdapter: InventoryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityInventoryBinding.inflate(layoutInflater)
+        binding = ActivityTaskInventoryBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        binding.titleTv.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
+        binding.scanBtn.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
+
+        val intent = intent
+        orderNo = intent.getStringExtra("orderNo").toString()
+        Log.d("TAG", orderNo)
 
         actionList = ArrayList()
         technicianList = ArrayList()
@@ -66,16 +86,59 @@ class InventoryActivity : BaseActivity() {
         binding.inventoryRecyclerView.isNestedScrollingEnabled = false
         binding.inventoryRecyclerView.adapter = inventoryAdapter
 
-        binding.addBtn.setOnClickListener {
-            val intent = Intent(this, NewBarcodeActivity::class.java)
-            requestCameraPermission(intent)
+        binding.scanBtn.setOnClickListener {
+            val scannerIntent = Intent(this, NewBarcodeActivity::class.java)
+            requestCameraPermission(scannerIntent)
         }
 
         binding.backIv.setOnClickListener {
-            getBack()
+            finish()
         }
 
-        getInventoryList()
+        getInventoryListByOrderNo(orderNo)
+    }
+
+    fun getInventoryListByOrderNo(orderNo: String){
+        showProgressDialog()
+        val controller = NetworkCallController()
+        controller.setListner(object : NetworkResponseListner<InventoryListResult>{
+            override fun onResponse(requestCode: Int, response: InventoryListResult?) {
+                if (response != null && response.isSuccess == true){
+                    if (response.data != null && response.data.isNotEmpty()) {
+                        inventoryAdapter.addData(response.data, true)
+                    }
+                }
+                inventoryAdapter.notifyDataSetChanged()
+                dismissProgressDialog()
+            }
+
+            override fun onFailure(requestCode: Int) {
+                dismissProgressDialog()
+                Log.d("TAG", "$requestCode")
+            }
+        })
+
+        controller.getInventoryListByOrderNo(202211, orderNo)
+    }
+
+    private fun getDate(str: String): String{
+        val date = str.substring(0, 6)
+        var formatted = ""
+        var count = 0
+        for (i in 0 until date.length){
+            if (count == 2){
+                formatted += "-"
+                count = 0
+            }
+            formatted += date[i]
+            count++
+        }
+        formatted = AppUtils.getFormatted(formatted, "dd-MM-yyyy", "dd-MM-yy")
+        return formatted
+    }
+
+    private fun getItemSerialNo(str: String): String{
+        return str.substring(6)
     }
 
     private fun requestCameraPermission(intent: Intent) {
@@ -112,6 +175,10 @@ class InventoryActivity : BaseActivity() {
     }
 
     private fun showDialog(){
+        selectedAction = ""
+        selectedTechnician = ""
+        bucketId = 0
+        reasons = ""
         val li = LayoutInflater.from(this)
         val promptsView = li.inflate(R.layout.add_inventory_action_dialog, null)
         val alertDialogBuilder = AlertDialog.Builder(this)
@@ -159,9 +226,29 @@ class InventoryActivity : BaseActivity() {
                             okBtn.alpha = 0.6f
                         }
                     }else{
+                        selectedTechnician = ""
                         technicianLayout.visibility = View.GONE
                         okBtn.isEnabled = true
                         okBtn.alpha = 1f
+                    }
+                    actionList.forEach {
+                        if (it.reasons == selectedAction){
+                            reasons = it.reasons
+                            bucketId = it.allocate_Bucket_Id.toString().toInt()
+                        }
+                    }
+                    if (bucketId == 2){
+                        if (selectedTechnician != "" && selectedTechnician != "Select Technician"){
+                            technicianList.forEach {
+                                if (it.technicianName == selectedTechnician){
+                                    referenceId = it.technicianId.toString()
+                                }
+                            }
+                        }
+                    }else if (bucketId == 1){
+                        referenceId = AppUtils.resourceId
+                    }else{
+                        referenceId = ""
                     }
                 }else{
                     technicianLayout.visibility = View.GONE
@@ -181,8 +268,26 @@ class InventoryActivity : BaseActivity() {
                     if (selectedTechnician != "Select Technician"){
                         okBtn.isEnabled = true
                         okBtn.alpha = 1f
+                        if (bucketId == 2){
+                            if (selectedTechnician != "" && selectedTechnician != "Select Technician"){
+                                technicianList.forEach {
+                                    if (it.technicianName == selectedTechnician){
+                                        referenceId = it.technicianId.toString()
+                                    }
+                                }
+                            }
+                        }else if(bucketId == 1){
+                            referenceId = AppUtils.resourceId
+                        }else{
+                            referenceId = ""
+                        }
                     }else{
-                        okBtn.isEnabled = true
+                        if (bucketId == 3){
+                            referenceId = ""
+                        }else if(bucketId == 1){
+                            referenceId = AppUtils.resourceId
+                        }
+                        okBtn.isEnabled = false
                         okBtn.alpha = 0.6f
                     }
                 }else{
@@ -216,6 +321,10 @@ class InventoryActivity : BaseActivity() {
         technicianAdapter.setDropDownViewResource(R.layout.spinner_popup)
         spnTechnician.adapter = technicianAdapter
 
+        okBtn.setOnClickListener {
+            updateInventory(alertDialog)
+        }
+
         cancelBtn.setOnClickListener {
             dismissProgressDialog()
             alertDialog.cancel()
@@ -223,6 +332,40 @@ class InventoryActivity : BaseActivity() {
         alertDialog.setCanceledOnTouchOutside(false)
         alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         alertDialog.show()
+    }
+
+    private fun updateInventory(alertDialog: AlertDialog){
+        showProgressDialog()
+        val hashMap = HashMap<String, Any>()
+        hashMap["Reasons"] = reasons
+        hashMap["Bucket_Id"] = bucketId
+        hashMap["ItemCode"] = itemSerialNo
+        hashMap["User_Id"] = AppUtils.resourceId
+        hashMap["Reference_Id"] = referenceId
+
+        val controller = NetworkCallController()
+        controller.setListner(object : NetworkResponseListner<BaseResponse>{
+            override fun onResponse(requestCode: Int, response: BaseResponse?) {
+                if (response != null){
+                    if (response.isSuccess == true){
+                        Toasty.success(applicationContext, "Inventory updated successfully").show()
+                        dismissProgressDialog()
+                        alertDialog.cancel()
+                        getInventoryListByOrderNo(orderNo)
+                    }else{
+                        dismissProgressDialog()
+                    }
+                }else{
+                    dismissProgressDialog()
+                }
+            }
+
+            override fun onFailure(requestCode: Int) {
+                dismissProgressDialog()
+                Log.d("TAG", "Error")
+            }
+        })
+        controller.updateInventory(2022, hashMap)
     }
 
     private fun addInventory(userId: String, itemSerialNo: String, date: String, barcodeData: String){
@@ -275,44 +418,19 @@ class InventoryActivity : BaseActivity() {
         controller.addInventory(2022, hashMap)
     }
 
-    private fun getInventoryList(){
-        showProgressDialog()
-        val controller = NetworkCallController()
-        controller.setListner(object : NetworkResponseListner<InventoryListResult>{
-            override fun onResponse(requestCode: Int, response: InventoryListResult?) {
-                if (response != null && response.isSuccess == true){
-                    if (response.data != null && response.data.isNotEmpty()){
-                        inventoryAdapter.addData(response.data)
-                    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == BARCODE_CAMERA_REQUEST) {
+            if (data != null) {
+                val barcode = data.getStringExtra("content").toString()
+                if (barcode.length < 7) {
+                    Toasty.error(this, "Invalid QR code").show()
+                    return
                 }
-                inventoryAdapter.notifyDataSetChanged()
-                dismissProgressDialog()
+                itemSerialNo = getItemSerialNo(barcode)
+                addInventory(AppUtils.resourceId, itemSerialNo, getDate(barcode), barcode)
             }
-            override fun onFailure(requestCode: Int) {
-                dismissProgressDialog()
-            }
-        })
-        controller.getInventoryList(202206, AppUtils.resourceId)
-    }
-
-    private fun getDate(str: String): String{
-        val date = str.substring(0, 6)
-        var formatted = ""
-        var count = 0
-        for (i in 0 until date.length){
-            if (count == 2){
-                formatted += "-"
-                count = 0
-            }
-            formatted += date[i]
-            count++
         }
-        formatted = AppUtils.getFormatted(formatted, "dd-MM-yyyy", "dd-MM-yy")
-        return formatted
-    }
-
-    private fun getItemSerialNo(str: String): String{
-        return str.substring(6)
     }
 
     private fun getBack(){
@@ -321,23 +439,6 @@ class InventoryActivity : BaseActivity() {
             finish()
         }else{
             fragmentManager.popBackStack()
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            android.R.id.home -> {
-                getBack()
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == BARCODE_CAMERA_REQUEST){
-            val barcode = data?.getStringExtra("content").toString()
-            addInventory(AppUtils.resourceId, getItemSerialNo(barcode), getDate(barcode), barcode)
         }
     }
 }
