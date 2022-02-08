@@ -19,7 +19,7 @@
                 android:id="@+id/lnrData"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@id/btnRodentScanner"
+                android:layout_above="@id/buttonsLayout"
                 android:orientation="vertical">
 
                 <TextView
@@ -252,20 +252,45 @@
                 android:text="No Data Available!"
                 android:visibility="gone" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnRodentScanner"
+            <LinearLayout
+                android:id="@+id/buttonsLayout"
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="38dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginLeft="100dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="100dp"
-                android:layout_marginBottom="30dp"
-                android:background="@drawable/button_background"
-                android:clickable="true"
-                android:text="Verify Equipment"
-                android:textAllCaps="false"
-                android:textColor="@color/white" />
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true">
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnRodentScanner"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/button_bg"
+                    android:clickable="true"
+                    android:text="Verify Equipment"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white" />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnRoach"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/button_bg"
+                    android:clickable="true"
+                    android:text="Add Roach"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:visibility="visible"/>
+
+            </LinearLayout>
 
 
         </RelativeLayout>
