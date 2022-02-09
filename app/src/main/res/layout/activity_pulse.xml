@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.inventory.TaskInventoryActivity">
+    tools:context=".activities.PulseActivity">
 
     <RelativeLayout
         android:id="@+id/headerLayout"
@@ -21,39 +21,34 @@
             android:id="@+id/titleTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Update Inventory"
+            android:text="Pulse"
             android:textSize="18sp"
             android:textColor="@color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"/>
     </RelativeLayout>
-    <TextView
-        android:id="@+id/errorTv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="No items found"
-        android:textSize="16sp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:visibility="gone"/>
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/inventoryRecyclerView"
+        android:id="@+id/questionListRecycler"
         android:layout_below="@id/headerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:listitem="@layout/item_inventory_list"
+        tools:listitem="@layout/layout_pulse_parent"
         android:layout_above="@id/buttonsLayout"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
         android:layout_marginBottom="4dp"/>
+
     <RelativeLayout
         android:id="@+id/buttonsLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
         <Button
-            android:id="@+id/scanBtn"
+            android:id="@+id/saveBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Scan Item"
+            android:text="SAVE"
             android:textColor="@color/white"
             android:backgroundTint="@color/colorPrimary"
             android:layout_alignParentStart="true"/>

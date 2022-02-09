@@ -332,6 +332,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         progress = new ProgressDialog(this, R.style.TransparentProgressDialog);
         progress.setCancelable(false);
         taskId = getIntent().getStringExtra(ARGS_TASKS);
+        AppUtils.taskId = taskId;
         resourceId = getIntent().getStringExtra(ARGS_RESOURCE);
         AppUtils.getConsAndInsData(taskId/*"a239D000000YajWQAS"*/, resourceId/*"a1r9D000000OUNqQAO"*/, LocaleHelper.getLanguage(NewTaskDetailsActivity.this));
         //AppUtils.getTmsQuestions("23213");
@@ -2454,6 +2455,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        AppUtils.taskId = "";
         ChemicalRecycleAdapter.items = null;
         ChemicalRecycleAdapter.indexToDisable = null;
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);

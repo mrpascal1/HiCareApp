@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RadioButton
+        android:id="@+id/rbAnswers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="At 20 Years"
+        android:textSize="14sp" />
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/chkAnswers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14dp"
+        android:text="@string/cancel_feedback"/>
+
+    <LinearLayout
+        android:id="@+id/numberLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+        <ImageView
+            android:id="@+id/minusBtn"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@drawable/edit_border"
+            android:padding="4dp"
+            android:src="@drawable/ic_minus"
+            android:layout_marginStart="4dp" />
+        <EditText
+            android:id="@+id/numberEt"
+            android:layout_width="120dp"
+            android:layout_height="25dp"
+            android:inputType="number"
+            android:textSize="14sp"
+            android:maxLength="3"
+            android:padding="4dp"
+            android:gravity="center"
+            android:hint="Enter here"
+            android:digits="0123456789"
+            android:textColor="@color/black"
+            android:background="@drawable/edit_border"
+            android:focusable="true"/>
+        <ImageView
+            android:id="@+id/addBtn"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@drawable/edit_border"
+            android:padding="4dp"
+            android:src="@drawable/ic_add_quantity"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/spinnerLayout"
+        android:layout_width="130dp"
+        android:layout_height="26dp"
+        android:background="@drawable/edit_box_border"
+        android:gravity="right"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="2dp">
+
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/spnType"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/textColorSecondary"
+            android:clickable="true"
+            android:ems="10"
+            android:popupBackground="@color/colorTextDrawerSecondary"
+            android:spinnerMode="dialog"
+            android:textSize="20sp"
+            android:layout_marginStart="12dp" />
+    </LinearLayout>
+
+
+</LinearLayout>

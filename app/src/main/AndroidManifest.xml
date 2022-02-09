@@ -58,9 +58,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.RoachActivity" android:exported="true"/>
-        <activity android:name=".activities.inventory.TaskInventoryActivity" android:exported="true"/>
-        <activity android:name=".activities.BrowserActivity" android:exported="true"/>
+        <activity android:name=".activities.PulseActivity"></activity>
+        <activity
+            android:name=".activities.RoachActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activities.inventory.TaskInventoryActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activities.BrowserActivity"
+            android:exported="true" />
         <activity
             android:name=".activities.inventory.InventoryActivity"
             android:exported="true" />

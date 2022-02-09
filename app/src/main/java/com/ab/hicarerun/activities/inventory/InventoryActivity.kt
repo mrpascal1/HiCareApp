@@ -78,6 +78,11 @@ class InventoryActivity : BaseActivity() {
             requestCameraPermission(intent)
         }
 
+        binding.returnBtn.setOnClickListener {
+            val intent = Intent(this, NewBarcodeActivity::class.java)
+            requestCameraPermission(intent)
+        }
+
         binding.backIv.setOnClickListener {
             getBack()
         }
@@ -188,6 +193,8 @@ class InventoryActivity : BaseActivity() {
                                     referenceId = it.technicianId.toString()
                                 }
                             }
+                        }else{
+                            referenceId = AppUtils.resourceId
                         }
                     }else if (bucketId == 1){
                         referenceId = AppUtils.resourceId
@@ -219,6 +226,8 @@ class InventoryActivity : BaseActivity() {
                                         referenceId = it.technicianId.toString()
                                     }
                                 }
+                            }else{
+                                referenceId = AppUtils.resourceId
                             }
                         }else if(bucketId == 1){
                             referenceId = AppUtils.resourceId
@@ -370,6 +379,11 @@ class InventoryActivity : BaseActivity() {
                 if (response != null && response.isSuccess == true){
                     if (response.data != null && response.data.isNotEmpty()){
                         inventoryAdapter.addData(response.data, false)
+                        binding.errorTv.visibility = View.GONE
+                        binding.inventoryRecyclerView.visibility = View.VISIBLE
+                    }else{
+                        binding.inventoryRecyclerView.visibility = View.GONE
+                        binding.errorTv.visibility = View.VISIBLE
                     }
                 }
                 inventoryAdapter.notifyDataSetChanged()

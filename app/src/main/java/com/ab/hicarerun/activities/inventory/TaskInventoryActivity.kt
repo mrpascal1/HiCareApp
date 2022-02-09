@@ -106,6 +106,11 @@ class TaskInventoryActivity : BaseActivity() {
                 if (response != null && response.isSuccess == true){
                     if (response.data != null && response.data.isNotEmpty()) {
                         inventoryAdapter.addData(response.data, true)
+                        binding.errorTv.visibility = View.GONE
+                        binding.inventoryRecyclerView.visibility = View.VISIBLE
+                    }else{
+                        binding.inventoryRecyclerView.visibility = View.GONE
+                        binding.errorTv.visibility = View.VISIBLE
                     }
                 }
                 inventoryAdapter.notifyDataSetChanged()
@@ -244,11 +249,13 @@ class TaskInventoryActivity : BaseActivity() {
                                     referenceId = it.technicianId.toString()
                                 }
                             }
+                        }else{
+                            referenceId = AppUtils.resourceId
                         }
                     }else if (bucketId == 1){
                         referenceId = AppUtils.resourceId
-                    }else{
-                        referenceId = ""
+                    }else if (bucketId == 3){
+                        referenceId = AppUtils.taskId
                     }
                 }else{
                     technicianLayout.visibility = View.GONE
@@ -275,15 +282,17 @@ class TaskInventoryActivity : BaseActivity() {
                                         referenceId = it.technicianId.toString()
                                     }
                                 }
+                            }else{
+                                referenceId = AppUtils.resourceId
                             }
                         }else if(bucketId == 1){
                             referenceId = AppUtils.resourceId
-                        }else{
-                            referenceId = ""
+                        }else if (bucketId == 3){
+                            referenceId = AppUtils.taskId
                         }
                     }else{
                         if (bucketId == 3){
-                            referenceId = ""
+                            referenceId = AppUtils.taskId
                         }else if(bucketId == 1){
                             referenceId = AppUtils.resourceId
                         }

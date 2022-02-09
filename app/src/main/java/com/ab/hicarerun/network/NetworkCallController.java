@@ -66,6 +66,7 @@ import com.ab.hicarerun.network.models.loggermodel.ErrorLoggerModel;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
 import com.ab.hicarerun.network.models.menumodel.MenuResponse;
+import com.ab.hicarerun.network.models.pulsemodel.PulseResponse;
 import com.ab.hicarerun.network.models.qrcodemodel.CheckCodeResponse;
 import com.ab.hicarerun.network.models.qrcodemodel.CheckPhonePeResponse;
 import com.ab.hicarerun.network.models.qrcodemodel.PhonePeQRCodeResponse;
@@ -5450,6 +5451,22 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<InventoryListResult> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void getPulseB2bInspectionQuestions(int requestCode, String taskId, String resourceId, String lan) {
+        BaseApplication.getRetrofitAPI(false)
+                .getPulseB2bInspectionQuestions(taskId, resourceId, lan)
+                .enqueue(new Callback<PulseResponse>(){
+                    @Override
+                    public void onResponse(Call<PulseResponse> call, Response<PulseResponse> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<PulseResponse> call, Throwable t) {
                         mListner.onFailure(requestCode);
                     }
                 });

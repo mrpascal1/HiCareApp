@@ -69,6 +69,7 @@ import com.ab.hicarerun.BuildConfig;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.Camera2Activity;
 import com.ab.hicarerun.activities.NewTaskDetailsActivity;
+import com.ab.hicarerun.activities.PulseActivity;
 import com.ab.hicarerun.activities.inventory.TaskInventoryActivity;
 import com.ab.hicarerun.adapter.BankSearchAdapter;
 import com.ab.hicarerun.adapter.ChemicalDialogAdapter;
@@ -475,6 +476,11 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
         mFragmentServiceInfoBinding.inventoryBtn.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), TaskInventoryActivity.class);
             intent.putExtra("orderNo", isCombinedTask ? combiedTaskOrders : oId);
+            startActivity(intent);
+        });
+
+        mFragmentServiceInfoBinding.pulsePerformBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), PulseActivity.class);
             startActivity(intent);
         });
     }
