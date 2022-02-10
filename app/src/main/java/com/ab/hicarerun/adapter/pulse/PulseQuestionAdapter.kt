@@ -3,11 +3,13 @@ package com.ab.hicarerun.adapter.pulse
 import android.content.Context
 import android.graphics.Typeface
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.databinding.LayoutPulseParentBinding
 import com.ab.hicarerun.network.models.pulsemodel.QuestionList
+import com.ab.hicarerun.network.models.pulsemodel.SubQuestionList
 
 class PulseQuestionAdapter(val context: Context): RecyclerView.Adapter<PulseQuestionAdapter.MyHolder>(){
 
@@ -22,12 +24,24 @@ class PulseQuestionAdapter(val context: Context): RecyclerView.Adapter<PulseQues
         holder.bindItems(items[position])
         val answersAdapter = PulseAnswerChildAdapter(context)
         holder.binding.recycleChild.config(answersAdapter)
+        val sublistQuestionAdapter = PulseSublistQuestionAdapter(context)
+        holder.binding.recycleSubChild.config(sublistQuestionAdapter)
         answersAdapter.addData(
             items[position].questionOption,
             items[position].questionId,
             items[position].questionType,
             items[position].answer,
             items[position].isDisabled)
+        answersAdapter.setOnListPresentListener(object : PulseAnswerChildAdapter.OnSubListPresentListener{
+            override fun sendAndNotify(position: Int, isSublistPresent: Boolean?, subList: List<SubQuestionList>?) {
+                if (isSublistPresent == true && !subList.isNullOrEmpty()){
+                    sublistQuestionAdapter.addData(subList)
+                    holder.binding.recycleSubChild.visibility = View.VISIBLE
+                }else{
+                    holder.binding.recycleSubChild.visibility = View.GONE
+                }
+            }
+        })
     }
 
     override fun getItemCount(): Int {
@@ -40,6 +54,13 @@ class PulseQuestionAdapter(val context: Context): RecyclerView.Adapter<PulseQues
         clipToPadding = false
         adapter = answerChildAdapter
     }
+    private fun RecyclerView.config(sublistQuestionAdapter: PulseSublistQuestionAdapter){
+        layoutManager = LinearLayoutManager(context)
+        setHasFixedSize(true)
+        clipToPadding = false
+        adapter = sublistQuestionAdapter
+    }
+
 
     fun addData(items: ArrayList<QuestionList>){
         this.items.clear()

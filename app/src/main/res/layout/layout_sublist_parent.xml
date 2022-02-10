@@ -330,31 +330,15 @@
         </LinearLayout>
 
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_below="@id/basePhotoLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycleChild"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="3dp"
-            tools:listitem="@layout/layout_pulse_child"
+            android:layout_below="@id/basePhotoLayout"
+            tools:listitem="@layout/layout_sublist_child"
             tools:itemCount="1"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycleSubChild"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="3dp"
-            android:layout_marginStart="10dp"
-            tools:listitem="@layout/layout_sublist_parent"
-            tools:itemCount="1"
-            android:visibility="gone"/>
-        </LinearLayout>
     </RelativeLayout>
 
 </RelativeLayout>
