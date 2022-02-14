@@ -12,11 +12,11 @@ data class QuestionList (
 	@SerializedName("QuestionAudioUrl") val questionAudioUrl : String?,
 	@SerializedName("QuestionOption") val questionOption : List<QuestionOption>?,
 	@SerializedName("QuestionStrOption") val questionStrOption : ArrayList<String>?,
-	@SerializedName("Answer") val answer : String?,
+	@SerializedName("Answer") var answer : String?,
 	@SerializedName("QuestionType") val questionType : String?,
 	@SerializedName("IsPictureRequired") val isPictureRequired : Boolean?,
 	@SerializedName("IsDisabled") val isDisabled : Boolean?,
-	@SerializedName("PictureURL") val pictureURL : ArrayList<String>?,
+	@SerializedName("PictureURL") var pictureURL : ArrayList<String>?,
 	@SerializedName("TabName") val tabName : String?,
 	@SerializedName("TabIndex") val tabIndex : Int?
 )

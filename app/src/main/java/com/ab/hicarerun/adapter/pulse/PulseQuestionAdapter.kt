@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ab.hicarerun.adapter.tms.TmsQuestionsParentAdapter
 import com.ab.hicarerun.databinding.LayoutPulseParentBinding
 import com.ab.hicarerun.network.models.pulsemodel.QuestionList
 import com.ab.hicarerun.network.models.pulsemodel.SubQuestionList
@@ -17,6 +18,11 @@ import com.squareup.picasso.Picasso
 class PulseQuestionAdapter(val context: Context): RecyclerView.Adapter<PulseQuestionAdapter.MyHolder>(){
 
     val items = ArrayList<QuestionList>()
+    val showSubList = ArrayList<String>()
+    val hashMap = HashMap<String, List<SubQuestionList>>()
+    val checkItems: HashMap<Int, String> = HashMap()
+    var strAnswer = ""
+    var onItemClickListener: OnItemClickListener? = null
     var onCameraClickListener: OnCameraClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
@@ -218,16 +224,89 @@ class PulseQuestionAdapter(val context: Context): RecyclerView.Adapter<PulseQues
             items[position].answer,
             items[position].isDisabled,
             items[position].questionStrOption)
+        items[position].questionOption?.forEach {
+            if (it.isSubQuestion == true && !it.subQuestionList.isNullOrEmpty()){
+                sublistQuestionAdapter.addData(it.subQuestionList)
+            }
+        }
         answersAdapter.setOnListPresentListener(object : PulseAnswerChildAdapter.OnSubListPresentListener{
-            override fun sendAndNotify(position: Int, isSublistPresent: Boolean?, subList: List<SubQuestionList>?) {
+            override fun sendAndNotify(p: Int, qId: String, isSublistPresent: Boolean?, subList: List<SubQuestionList>?) {
                 if (isSublistPresent == true && !subList.isNullOrEmpty()){
-                    sublistQuestionAdapter.addData(subList)
+                    if (!showSubList.contains(qId)){
+                        showSubList.add(qId)
+                        hashMap[qId] = subList
+                    }
                     holder.binding.recycleSubChild.visibility = View.VISIBLE
                 }else{
+                    if (showSubList.contains(qId)){
+                        showSubList.remove(qId)
+                        hashMap.remove(qId)
+                    }
                     holder.binding.recycleSubChild.visibility = View.GONE
                 }
             }
         })
+        answersAdapter.setOnChildTextChangedListener(object : PulseAnswerChildAdapter.OnTextChangedListener{
+            override fun onTextChange(childPosition: Int, str: String, questionId: Int) {
+                items.forEach {
+                    if (it.questionId == questionId){
+                        it.answer = str
+                    }
+                }
+                //onItemClickListener?.onItemClicked(position, questionId, str, subListClick)
+            }
+
+            override fun onOptionChange(childPosition: Int, str: String, questionId: Int, type: String) {
+                items.forEach {
+                    if (it.questionId == questionId){
+                        it.answer = str
+                    }
+                }
+                //onItemClickListener?.onItemClicked(position, questionId, str, subListClick)
+
+            }
+
+            override fun onCheckboxClicked(childPosition: Int, isChecked: Boolean, str: String, questionId: Int, type: String) {
+                val optionValue = items[position].questionOption?.get(childPosition)?.optionText
+
+                if (isChecked){
+                    val newAppendValue = if (checkItems[position] != null) checkItems[position].toString() + "," + optionValue else optionValue
+                    checkItems[position] = newAppendValue.toString()
+                }else{
+                    var newAppendValue = checkItems[position]
+                    if (newAppendValue != null) {
+                        newAppendValue = newAppendValue.replace(",$optionValue", "")
+                        newAppendValue = newAppendValue.replace(optionValue.toString(), "")
+                        checkItems[position] = newAppendValue
+                    }
+                }
+                strAnswer = if (checkItems[position] == null) "" else checkItems[position].toString()
+                items.forEach {
+                    if (it.questionId == questionId){
+                        it.answer = strAnswer
+                    }
+                }
+                //onItemClickListener?.onItemClicked(position, questionId, strAnswer, subListClick)
+            }
+        })
+        sublistQuestionAdapter.setOnCameraClickHandler(object : PulseSublistQuestionAdapter.OnCameraClickListener {
+            override fun onCameraClicked(position: Int, questionId: Int?, clickedBy: Int, sublistClick: Boolean) {
+                onCameraClickListener?.onCameraClicked(position, questionId, clickedBy, sublistClick)
+            }
+
+            override fun onCancelClicked(position: Int, questionId: Int?, clickedBy: Int, sublistClick: Boolean) {
+                onCameraClickListener?.onCancelClicked(position, questionId, clickedBy, sublistClick)
+            }
+        })
+
+        if (showSubList.contains(items[position].questionId.toString())){
+            Log.d("TAG", "Matched")
+            Log.d("Sublist", "$showSubList")
+            //sublistQuestionAdapter.addData(hashMap[items[position].questionId.toString()])
+            holder.binding.recycleSubChild.visibility = View.VISIBLE
+        }else{
+            holder.binding.recycleSubChild.visibility = View.GONE
+        }
     }
 
     override fun getItemCount(): Int {
@@ -265,6 +344,10 @@ class PulseQuestionAdapter(val context: Context): RecyclerView.Adapter<PulseQues
             binding.txtQuest.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
             binding.txtQuest.text = "-> ${question.questionDisplayText}"
         }
+    }
+
+    fun setOnItemClick(onItemClickListener: OnItemClickListener){
+        this.onItemClickListener = onItemClickListener
     }
 
     fun setOnCameraClickHandler(onCameraClickListener: OnCameraClickListener){

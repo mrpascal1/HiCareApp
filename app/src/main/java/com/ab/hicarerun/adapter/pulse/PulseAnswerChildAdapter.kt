@@ -7,18 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.R
 import com.ab.hicarerun.databinding.LayoutPulseChildBinding
-import com.ab.hicarerun.fragments.tms.TmsUtils
-import com.ab.hicarerun.network.models.pulsemodel.QuestionList
 import com.ab.hicarerun.network.models.pulsemodel.QuestionOption
 import com.ab.hicarerun.network.models.pulsemodel.SubQuestionList
+import com.ab.hicarerun.utils.AppUtils
 
 class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<PulseAnswerChildAdapter.MyHolder>() {
 
+    var onTextChangedListener: OnTextChangedListener? = null
     var onSubListPresentListener: OnSubListPresentListener? = null
     val items = ArrayList<QuestionOption?>()
     var questionId = ""
@@ -29,7 +27,7 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
     var givenAnswer = ""
     var selectedPos = -1
     var isSelected = false
-    var prevEmojiSelected = -1
+    var rating = -1
     var dropdownArr: ArrayList<String> = ArrayList()
     var arrayAdapter: ArrayAdapter<String>? = null
 
@@ -40,6 +38,10 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         holder.bindItems(items[position])
+        Log.d("TAG", "Current ${AppUtils.pulseRating}")
+        if (AppUtils.pulseRating != -1){
+            selectEmoji(holder)
+        }
 
         if (type.equals("Single Select", true)){
             holder.binding.rbAnswers.visibility = View.VISIBLE
@@ -68,23 +70,22 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
                 holder.binding.spinnerLayout.visibility = View.VISIBLE
                 holder.binding.ratingEmoji.visibility = View.GONE
             }
-        }
-
-        arrayAdapter?.setDropDownViewResource(R.layout.spinner_popup)
-        holder.binding.spnType.adapter = arrayAdapter
-        if (givenAnswer != "") {
-            for (i in 0 until dropdownArr.size){
-                if (dropdownArr[i] == givenAnswer){
-                    holder.binding.spnType.setSelection(i)
+            arrayAdapter?.setDropDownViewResource(R.layout.spinner_popup)
+            holder.binding.spnType.adapter = arrayAdapter
+            if (answer != "") {
+                for (i in 0 until dropdownArr.size){
+                    if (dropdownArr[i] == answer){
+                        holder.binding.spnType.setSelection(i)
+                    }
                 }
             }
         }
 
-        holder.binding.veryBad.onClick(position, holder)
-        holder.binding.badLayout.onClick(position, holder)
-        holder.binding.averageLayout.onClick(position, holder)
-        holder.binding.goodLayout.onClick(position, holder)
-        holder.binding.veryGoodLayout.onClick(position, holder)
+        holder.binding.veryBadLayout.onClick(holder)
+        holder.binding.badLayout.onClick(holder)
+        holder.binding.averageLayout.onClick(holder)
+        holder.binding.goodLayout.onClick(holder)
+        holder.binding.veryGoodLayout.onClick(holder)
 
         holder.binding.rbAnswers.setOnClickListener {
             Log.d("TAG: ", "Position $position and ID ${items[position]}")
@@ -99,22 +100,18 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
             }
             onSubListPresentListener?.sendAndNotify(
                 selectedPos,
+                questionId,
                 items[position]?.isSubQuestion,
                 items[position]?.subQuestionList
             )
+            onTextChangedListener?.onOptionChange(position, items[position]?.optionDisplayText.toString(), questionId.toInt(), "radio")
             notifyDataSetChanged()
         }
         holder.binding.chkAnswers.setOnClickListener {
             Log.d("TAG: ", "Position $position and ID ${items[position]}")
             selectedPos = position
             items[position]?.isSelected = holder.binding.chkAnswers.isChecked
-            //onTextChangedListener?.onCheckboxClicked(position, holder.binding.chkAnswers.isChecked, items[position]?.optionDisplayText.toString(), questionId, "checkbox")
-            /*for (i in 0 until items.size){
-                if (selectedPos != i) {
-                    holder.binding.rbAnswers.isChecked = false;
-                    items[i].isSelected = false
-                }
-            }*/
+            onTextChangedListener?.onCheckboxClicked(position, holder.binding.chkAnswers.isChecked, items[position]?.optionDisplayText.toString(), questionId.toInt(), "checkbox")
             notifyDataSetChanged()
         }
         holder.binding.spnType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
@@ -128,9 +125,8 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
                             items[i]?.isSelected = false
                         }
                     }
-                    //onTextChangedListener?.onTextChange(position, selected, questionId)
+                    onTextChangedListener?.onTextChange(position, selected, questionId.toInt())
                 }
-                //Log.d("TAG", selectedType)
             }
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }
@@ -141,16 +137,59 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
         return items.size
     }
 
-    fun LinearLayout.onClick(position: Int, holder: MyHolder){
+    fun LinearLayout.onClick(holder: MyHolder){
         setOnClickListener {
-            removeAllBgs(holder)
-            setBackgroundResource(R.drawable.bg_green_border)
-            prevEmojiSelected = position
+            set(holder)
+        }
+    }
+
+    fun LinearLayout.set(holder: MyHolder){
+        when {
+            this == holder.binding.veryBadLayout -> {
+                AppUtils.pulseRating = 1
+            }
+            this == holder.binding.badLayout -> {
+                AppUtils.pulseRating = 2
+            }
+            this == holder.binding.averageLayout -> {
+                AppUtils.pulseRating = 3
+            }
+            this == holder.binding.goodLayout -> {
+                AppUtils.pulseRating = 4
+            }
+            this == holder.binding.veryGoodLayout -> {
+                AppUtils.pulseRating = 5
+            }
+        }
+        removeAllBgs(holder)
+        setBackgroundResource(R.drawable.bg_green_border)
+        Log.d("TAG", "Selected ${AppUtils.pulseRating}")
+    }
+
+    private fun selectEmoji(holder: MyHolder){
+        Log.d("TAG", "Inside Select")
+        Log.d("TAG", "${AppUtils.pulseRating}")
+        when (AppUtils.pulseRating) {
+            1 -> {
+                holder.binding.veryBadLayout.set(holder)
+            }
+            2 -> {
+                holder.binding.badLayout.set(holder)
+            }
+            3 -> {
+                holder.binding.averageLayout.set(holder)
+            }
+            4 -> {
+                holder.binding.goodLayout.set(holder)
+            }
+            5 -> {
+                holder.binding.veryGoodLayout.set(holder)
+            }
         }
     }
 
     fun removeAllBgs(holder: MyHolder){
-        holder.binding.veryBad.removeBg()
+        holder.binding.veryBadLayout.removeBg()
         holder.binding.badLayout.removeBg()
         holder.binding.averageLayout.removeBg()
         holder.binding.goodLayout.removeBg()
@@ -196,7 +235,7 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
                 }
             }
         }
-        notifyDataSetChanged()
+        //notifyDataSetChanged()
     }
 
     class MyHolder(val binding: LayoutPulseChildBinding): RecyclerView.ViewHolder(binding.root){
@@ -213,6 +252,16 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
     }
 
     interface OnSubListPresentListener{
-        fun sendAndNotify(position: Int, isSublistPresent: Boolean?, subList: List<SubQuestionList>?)
+        fun sendAndNotify(p: Int, qId: String, isSublistPresent: Boolean?, subList: List<SubQuestionList>?)
+    }
+
+    fun setOnChildTextChangedListener(onTextChangedListener: OnTextChangedListener){
+        this.onTextChangedListener = onTextChangedListener
+    }
+
+    interface OnTextChangedListener{
+        fun onTextChange(childPosition: Int, str: String, questionId: Int)
+        fun onOptionChange(childPosition: Int, str: String, questionId: Int, type: String)
+        fun onCheckboxClicked(childPosition: Int, isChecked: Boolean, str: String, questionId: Int, type: String)
     }
 }

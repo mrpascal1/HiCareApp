@@ -11,11 +11,13 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.R
+import com.ab.hicarerun.adapter.tms.TmsAnswersChildAdapter
 import com.ab.hicarerun.databinding.LayoutSublistChildBinding
 import com.ab.hicarerun.network.models.pulsemodel.QuestionOption
 
 class PulseSublistChildAdapter(val context: Context): RecyclerView.Adapter<PulseSublistChildAdapter.MyHolder>(){
 
+    var onTextChangedListener: OnTextChangedListener? = null
     val items = ArrayList<QuestionOption?>()
     var questionId = ""
     var type = ""
@@ -51,14 +53,14 @@ class PulseSublistChildAdapter(val context: Context): RecyclerView.Adapter<Pulse
             holder.binding.rbAnswers.visibility = View.GONE
             holder.binding.chkAnswers.visibility = View.GONE
             holder.binding.numberLayout.visibility = View.GONE
-        }
 
-        arrayAdapter?.setDropDownViewResource(R.layout.spinner_popup)
-        holder.binding.spnType.adapter = arrayAdapter
-        if (givenAnswer != "") {
-            for (i in 0 until dropdownArr.size){
-                if (dropdownArr[i] == givenAnswer){
-                    holder.binding.spnType.setSelection(i)
+            arrayAdapter?.setDropDownViewResource(R.layout.spinner_popup)
+            holder.binding.spnType.adapter = arrayAdapter
+            if (answer != "") {
+                for (i in 0 until dropdownArr.size){
+                    if (dropdownArr[i] == answer){
+                        holder.binding.spnType.setSelection(i)
+                    }
                 }
             }
         }
@@ -70,10 +72,25 @@ class PulseSublistChildAdapter(val context: Context): RecyclerView.Adapter<Pulse
             holder.binding.rbAnswers.isChecked = true
             for (i in 0 until items.size){
                 if (selectedPos != i) {
-                    holder.binding.rbAnswers.isChecked = false;
+                    holder.binding.rbAnswers.isChecked = false
                     items[i]?.isSelected = false
                 }
             }
+            onTextChangedListener?.onOptionChange(position, items[position]?.optionDisplayText.toString(), questionId.toInt(), "radio")
+            notifyDataSetChanged()
+        }
+
+        holder.binding.chkAnswers.setOnClickListener {
+            Log.d("TAG: ", "Position $position and ID ${items[position]}")
+            selectedPos = position
+            items[position]?.isSelected = holder.binding.chkAnswers.isChecked
+            onTextChangedListener?.onCheckboxClicked(position, holder.binding.chkAnswers.isChecked, items[position]?.optionDisplayText.toString(), questionId.toInt(), "checkbox")
+            /*for (i in 0 until items.size){
+                if (selectedPos != i) {
+                    holder.binding.rbAnswers.isChecked = false;
+                    items[i].isSelected = false
+                }
+            }*/
             notifyDataSetChanged()
         }
 
@@ -88,7 +105,7 @@ class PulseSublistChildAdapter(val context: Context): RecyclerView.Adapter<Pulse
                             items[i]?.isSelected = false
                         }
                     }
-                    //onTextChangedListener?.onTextChange(position, selected, questionId)
+                    onTextChangedListener?.onTextChange(position, selected, questionId.toInt())
                 }
                 //Log.d("TAG", selectedType)
             }
@@ -137,7 +154,7 @@ class PulseSublistChildAdapter(val context: Context): RecyclerView.Adapter<Pulse
                 }
             }
         }
-        notifyDataSetChanged()
+        //notifyDataSetChanged()
     }
     class MyHolder(val binding: LayoutSublistChildBinding) : RecyclerView.ViewHolder(binding.root){
         fun bindItems(option: QuestionOption?){
@@ -146,5 +163,15 @@ class PulseSublistChildAdapter(val context: Context): RecyclerView.Adapter<Pulse
             binding.rbAnswers.isChecked = option?.isSelected==true
             binding.chkAnswers.isChecked = option?.isSelected==true
         }
+    }
+
+    fun setOnChildTextChangedListener(onTextChangedListener: OnTextChangedListener){
+        this.onTextChangedListener = onTextChangedListener
+    }
+
+    interface OnTextChangedListener{
+        fun onTextChange(childPosition: Int, str: String, questionId: Int)
+        fun onOptionChange(childPosition: Int, str: String, questionId: Int, type: String)
+        fun onCheckboxClicked(childPosition: Int, isChecked: Boolean, str: String, questionId: Int, type: String)
     }
 }

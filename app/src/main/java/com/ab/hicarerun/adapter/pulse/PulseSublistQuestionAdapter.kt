@@ -17,7 +17,9 @@ import com.squareup.picasso.Picasso
 class PulseSublistQuestionAdapter(val context: Context): RecyclerView.Adapter<PulseSublistQuestionAdapter.MyHolder>(){
 
     var items = ArrayList<SubQuestionList>()
-    var onCameraClickListener: PulseQuestionAdapter.OnCameraClickListener? = null
+    val checkItems: HashMap<Int, String> = HashMap()
+    var strAnswer = ""
+    var onCameraClickListener: OnCameraClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
         val view = LayoutSublistParentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -161,16 +163,16 @@ class PulseSublistQuestionAdapter(val context: Context): RecyclerView.Adapter<Pu
         /**
          * Image Upload 1,2,3,4
          * */
-        holder.binding.lnrUpload.upload(position, items[position].questionId, 0, false)
-        holder.binding.lnrUpload2.upload(position, items[position].questionId, 1, false)
-        holder.binding.lnrUpload3.upload(position, items[position].questionId, 2, false)
-        holder.binding.lnrUpload4.upload(position, items[position].questionId, 3, false)
+        holder.binding.lnrUpload.upload(position, items[position].questionId, 0, true)
+        holder.binding.lnrUpload2.upload(position, items[position].questionId, 1, true)
+        holder.binding.lnrUpload3.upload(position, items[position].questionId, 2, true)
+        holder.binding.lnrUpload4.upload(position, items[position].questionId, 3, true)
 
         holder.binding.imageCancel.setOnClickListener {
             if (items[position].pictureURL?.size!! >= 1){
                 items[position].pictureURL?.removeAt(0)
             }
-            onCameraClickListener?.onCancelClicked(position, items[position].questionId, 0, false)
+            onCameraClickListener?.onCancelClicked(position, items[position].questionId, 0, true)
         }
 
         holder.binding.imageCancel2.setOnClickListener {
@@ -179,7 +181,7 @@ class PulseSublistQuestionAdapter(val context: Context): RecyclerView.Adapter<Pu
             }else{
                 items[position].pictureURL?.removeAt(0)
             }
-            onCameraClickListener?.onCancelClicked(position, items[position].questionId, 1, false)
+            onCameraClickListener?.onCancelClicked(position, items[position].questionId, 1, true)
         }
 
         holder.binding.imageCancel3.setOnClickListener {
@@ -190,7 +192,7 @@ class PulseSublistQuestionAdapter(val context: Context): RecyclerView.Adapter<Pu
             }else {
                 items[position].pictureURL?.removeAt(0)
             }
-            onCameraClickListener?.onCancelClicked(position, items[position].questionId, 2, false)
+            onCameraClickListener?.onCancelClicked(position, items[position].questionId, 2, true)
         }
 
         holder.binding.imageCancel4.setOnClickListener {
@@ -203,7 +205,7 @@ class PulseSublistQuestionAdapter(val context: Context): RecyclerView.Adapter<Pu
             }else {
                 items[position].pictureURL?.removeAt(0)
             }
-            onCameraClickListener?.onCancelClicked(position, items[position].questionId, 3,false)
+            onCameraClickListener?.onCancelClicked(position, items[position].questionId, 3,true)
         }
 
 
@@ -216,6 +218,46 @@ class PulseSublistQuestionAdapter(val context: Context): RecyclerView.Adapter<Pu
             items[position].answer,
             items[position].isDisabled,
             items[position].questionStrOption)
+
+        pulseSublistChildAdapter.setOnChildTextChangedListener(object : PulseSublistChildAdapter.OnTextChangedListener{
+            override fun onTextChange(childPosition: Int, str: String, questionId: Int) {
+                items.forEach {
+                    if (it.questionId == questionId){
+                        it.answer = str
+                    }
+                }
+            }
+
+            override fun onOptionChange(childPosition: Int, str: String, questionId: Int, type: String) {
+                items.forEach {
+                    if (it.questionId == questionId){
+                        it.answer = str
+                    }
+                }
+            }
+
+            override fun onCheckboxClicked(childPosition: Int, isChecked: Boolean, str: String, questionId: Int, type: String) {
+                val optionValue = items[position].questionOption?.get(childPosition)?.optionText
+
+                if (isChecked){
+                    val newAppendValue = if (checkItems[position] != null) checkItems[position].toString() + "," + optionValue else optionValue
+                    checkItems[position] = newAppendValue.toString()
+                }else{
+                    var newAppendValue = checkItems[position]
+                    if (newAppendValue != null) {
+                        newAppendValue = newAppendValue.replace(",$optionValue", "")
+                        newAppendValue = newAppendValue.replace(optionValue.toString(), "")
+                        checkItems[position] = newAppendValue
+                    }
+                }
+                strAnswer = if (checkItems[position] == null) "" else checkItems[position].toString()
+                items.forEach {
+                    if (it.questionId == questionId){
+                        it.answer = strAnswer
+                    }
+                }
+            }
+        })
     }
 
 
@@ -249,5 +291,14 @@ class PulseSublistQuestionAdapter(val context: Context): RecyclerView.Adapter<Pu
             binding.txtQuest.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
             binding.txtQuest.text = item.questionDisplayText
         }
+    }
+
+    fun setOnCameraClickHandler(onCameraClickListener: OnCameraClickListener){
+        this.onCameraClickListener = onCameraClickListener
+    }
+
+    interface OnCameraClickListener{
+        fun onCameraClicked(position: Int, questionId: Int?, clickedBy: Int, sublistClick: Boolean)
+        fun onCancelClicked(position: Int, questionId: Int?, clickedBy: Int, sublistClick: Boolean)
     }
 }

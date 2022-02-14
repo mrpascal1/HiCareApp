@@ -750,7 +750,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="25dp"
-                        android:text="B2B Pulse"
+                        android:text="B2B Pulse Survey"
                         android:textColor="@color/black"
                         android:textSize="15sp"
                         android:textStyle="bold"
