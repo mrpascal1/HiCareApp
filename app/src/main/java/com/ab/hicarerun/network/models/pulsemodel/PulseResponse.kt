@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class PulseResponse (
 	@SerializedName("IsSuccess") val isSuccess : Boolean?,
-	@SerializedName("Data") val data : Data?,
+	@SerializedName("Data") val data : PulseData?,
 	@SerializedName("ErrorMessage") val errorMessage : String?,
 	@SerializedName("Param1") val param1 : Boolean?,
 	@SerializedName("ResponseMessage") val responseMessage : String?

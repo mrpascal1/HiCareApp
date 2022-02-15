@@ -66,6 +66,10 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
             if (questionTitle.equals("How happy is client with HiCare services", true)){
                 holder.binding.spinnerLayout.visibility = View.GONE
                 holder.binding.ratingEmoji.visibility = View.VISIBLE
+                AppUtils.pulseRatingQID = questionId.toInt()
+                if (answer.isNotEmpty()){
+                    selectEmoji(holder)
+                }
             }else{
                 holder.binding.spinnerLayout.visibility = View.VISIBLE
                 holder.binding.ratingEmoji.visibility = View.GONE
@@ -163,6 +167,7 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
         }
         removeAllBgs(holder)
         setBackgroundResource(R.drawable.bg_green_border)
+        onTextChangedListener?.onOptionChange(0, AppUtils.pulseRating.toString(), AppUtils.pulseRatingQID, "radio")
         Log.d("TAG", "Selected ${AppUtils.pulseRating}")
     }
 

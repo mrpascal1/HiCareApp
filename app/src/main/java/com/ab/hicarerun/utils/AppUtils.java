@@ -116,6 +116,8 @@ public class AppUtils {
     public static String CAMERA_SCREEN = "";
     public static String taskId = "";
     public static int pulseRating = -1;
+    public static int pulseRatingQID = -1;
+    public static String status = "";
     public static boolean NOT_RENEWAL_DONE = false;
     public static boolean IS_ACTIVITY_THERE = false;
     public static boolean IS_QRCODE_THERE = true;

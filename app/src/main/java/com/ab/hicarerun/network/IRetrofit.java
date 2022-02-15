@@ -54,6 +54,7 @@ import com.ab.hicarerun.network.models.loggermodel.ErrorLoggerModel;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
 import com.ab.hicarerun.network.models.menumodel.MenuResponse;
+import com.ab.hicarerun.network.models.pulsemodel.PulseData;
 import com.ab.hicarerun.network.models.pulsemodel.PulseResponse;
 import com.ab.hicarerun.network.models.qrcodemodel.CheckCodeResponse;
 import com.ab.hicarerun.network.models.qrcodemodel.CheckPhonePeResponse;
@@ -630,4 +631,7 @@ public interface IRetrofit {
 
     @GET("B2BInspection/GetB2bInspectionQuestions")
     Call<PulseResponse> getPulseB2bInspectionQuestions(@Query("taskId") String taskId, @Query("resourceId") String resourceId, @Query("lan") String lan);
+
+    @GET("B2BInspection/UpdateB2BInspection")
+    Call<BaseResponse> updateB2BInspection(@Body PulseData data);
 }

@@ -385,6 +385,9 @@ class InventoryActivity : BaseActivity() {
                         binding.inventoryRecyclerView.visibility = View.GONE
                         binding.errorTv.visibility = View.VISIBLE
                     }
+                }else{
+                    binding.inventoryRecyclerView.visibility = View.GONE
+                    binding.errorTv.visibility = View.VISIBLE
                 }
                 inventoryAdapter.notifyDataSetChanged()
                 dismissProgressDialog()
@@ -397,19 +400,24 @@ class InventoryActivity : BaseActivity() {
     }
 
     private fun getDate(str: String): String{
-        val date = str.substring(0, 6)
-        var formatted = ""
-        var count = 0
-        for (i in 0 until date.length){
-            if (count == 2){
-                formatted += "-"
-                count = 0
+        try {
+            val date = str.substring(0, 6)
+            var formatted = ""
+            var count = 0
+            for (i in 0 until date.length) {
+                if (count == 2) {
+                    formatted += "-"
+                    count = 0
+                }
+                formatted += date[i]
+                count++
             }
-            formatted += date[i]
-            count++
+            formatted = AppUtils.getFormatted(formatted, "dd-MM-yyyy", "dd-MM-yy")
+            return formatted
+        }catch (e: Exception) {
+            Toasty.error(this, "Invalid date").show()
         }
-        formatted = AppUtils.getFormatted(formatted, "dd-MM-yyyy", "dd-MM-yy")
-        return formatted
+        return ""
     }
 
     private fun getItemSerialNo(str: String): String{
@@ -444,7 +452,10 @@ class InventoryActivity : BaseActivity() {
                     return
                 }
                 itemSerialNo = getItemSerialNo(barcode)
-                addInventory(AppUtils.resourceId, itemSerialNo, getDate(barcode), barcode)
+                val date = getDate(barcode)
+                if (date != "") {
+                    addInventory(AppUtils.resourceId, itemSerialNo, date, barcode)
+                }
             }
         }
     }

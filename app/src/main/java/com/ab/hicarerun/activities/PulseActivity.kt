@@ -33,10 +33,8 @@ import com.ab.hicarerun.network.NetworkResponseListner
 import com.ab.hicarerun.network.models.LoginResponse
 import com.ab.hicarerun.network.models.checklistmodel.UploadCheckListData
 import com.ab.hicarerun.network.models.checklistmodel.UploadCheckListRequest
-import com.ab.hicarerun.network.models.pulsemodel.PulseResponse
-import com.ab.hicarerun.network.models.pulsemodel.QuestionList
-import com.ab.hicarerun.network.models.pulsemodel.QuestionOption
-import com.ab.hicarerun.network.models.pulsemodel.SubQuestionList
+import com.ab.hicarerun.network.models.pulsemodel.*
+import com.ab.hicarerun.network.models.tsscannermodel.BaseResponse
 import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.LocaleHelper
 import com.karumi.dexter.Dexter
@@ -58,6 +56,7 @@ class PulseActivity : BaseActivity() {
     val questionList = ArrayList<QuestionList>()
     val questionOptions = ArrayList<QuestionOption>()
     val subQuestionList = ArrayList<SubQuestionList>()
+    var pulseData: PulseData? = null
     var mPermissions = false
     var REQUEST_CODE = 1234
     private var selectedImagePath = ""
@@ -87,6 +86,10 @@ class PulseActivity : BaseActivity() {
 
         binding.backIv.setOnClickListener {
             finish()
+        }
+
+        binding.saveBtn.setOnClickListener {
+            updateB2BInspection()
         }
 
         getPulseB2bInspectionQuestions(AppUtils.taskId, AppUtils.resourceId, LocaleHelper.getLanguage(this))
@@ -130,7 +133,6 @@ class PulseActivity : BaseActivity() {
                 //validate2()
             }
         })
-
     }
 
     private fun getPulseB2bInspectionQuestions(taskId: String, resourceId: String, lan: String){
@@ -139,15 +141,19 @@ class PulseActivity : BaseActivity() {
             override fun onResponse(requestCode: Int, response: PulseResponse?) {
                 if (response != null){
                     if (response.isSuccess == true){
+                        pulseData = response.data
                         if (response.data != null){
                             if (response.data.isTabList == false){
+                                questionList.clear()
+                                questionOptions.clear()
+                                subQuestionList.clear()
                                 questionList.addAll(response.data.questionList!!)
                                 questionList.forEach {
                                     if (!it.questionOption.isNullOrEmpty()) {
                                         questionOptions.addAll(it.questionOption)
                                     }
                                 }
-                                questionOptions.forEach { it ->
+                                questionOptions.forEach {
                                     if (!it.subQuestionList.isNullOrEmpty()) {
                                         subQuestionList.addAll(it.subQuestionList)
                                     }
@@ -165,6 +171,55 @@ class PulseActivity : BaseActivity() {
         controller.getPulseB2bInspectionQuestions(202202, taskId, resourceId, lan)
     }
 
+    private fun updateB2BInspection(){
+        val controller = NetworkCallController()
+        controller.setListner(object : NetworkResponseListner<BaseResponse>{
+            override fun onResponse(requestCode: Int, response: BaseResponse?) {
+                if (response != null){
+                    if (response.isSuccess == true){
+                        if (!response.data.isNullOrEmpty()){
+                            Toast.makeText(applicationContext, "Success", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+
+            override fun onFailure(requestCode: Int) {
+                Log.d("TAG", "$requestCode")
+            }
+        })
+        Log.d("Update", "$pulseData")
+        //controller.updateB2BInspection(202215, pulseData)
+    }
+
+    private fun isImgChecked(questionList: List<QuestionList>): Boolean {
+        questionList.forEach {
+            if (it.isPictureRequired == true) {
+                if (it.pictureURL != null && it.pictureURL!!.isNotEmpty()) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    private fun isSubListChecked(listData: List<SubQuestionList>): Boolean{
+        listData.forEach {
+            if (it.answer == null || it.answer?.length == 0) {
+                return false
+            }
+        }
+        return false
+    }
+
+    private fun isListChecked(listData: List<QuestionList>): Boolean{
+        listData.forEach {
+            if (it.answer == null || it.answer?.length == 0) {
+                return false
+            }
+        }
+        return true
+    }
 
     private fun uploadOnsiteImage(base64: String) {
         try {

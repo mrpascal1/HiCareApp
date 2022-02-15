@@ -68,6 +68,11 @@ class TaskInventoryActivity : BaseActivity() {
 
         binding.titleTv.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
         binding.scanBtn.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
+        if (AppUtils.status == "Completed"){
+            binding.scanBtn.visibility = View.GONE
+        }else{
+            binding.scanBtn.visibility = View.VISIBLE
+        }
 
         val intent = intent
         orderNo = intent.getStringExtra("orderNo").toString()
@@ -112,6 +117,9 @@ class TaskInventoryActivity : BaseActivity() {
                         binding.inventoryRecyclerView.visibility = View.GONE
                         binding.errorTv.visibility = View.VISIBLE
                     }
+                }else{
+                    binding.inventoryRecyclerView.visibility = View.GONE
+                    binding.errorTv.visibility = View.VISIBLE
                 }
                 inventoryAdapter.notifyDataSetChanged()
                 dismissProgressDialog()
@@ -127,19 +135,24 @@ class TaskInventoryActivity : BaseActivity() {
     }
 
     private fun getDate(str: String): String{
-        val date = str.substring(0, 6)
-        var formatted = ""
-        var count = 0
-        for (i in 0 until date.length){
-            if (count == 2){
-                formatted += "-"
-                count = 0
+        try {
+            val date = str.substring(0, 6)
+            var formatted = ""
+            var count = 0
+            for (i in 0 until date.length) {
+                if (count == 2) {
+                    formatted += "-"
+                    count = 0
+                }
+                formatted += date[i]
+                count++
             }
-            formatted += date[i]
-            count++
+            formatted = AppUtils.getFormatted(formatted, "dd-MM-yyyy", "dd-MM-yy")
+            return formatted
+        }catch (e: Exception) {
+            Toasty.error(this, "Invalid date").show()
         }
-        formatted = AppUtils.getFormatted(formatted, "dd-MM-yyyy", "dd-MM-yy")
-        return formatted
+        return ""
     }
 
     private fun getItemSerialNo(str: String): String{
@@ -437,7 +450,10 @@ class TaskInventoryActivity : BaseActivity() {
                     return
                 }
                 itemSerialNo = getItemSerialNo(barcode)
-                addInventory(AppUtils.resourceId, itemSerialNo, getDate(barcode), barcode)
+                val date = getDate(barcode)
+                if (date != "") {
+                    addInventory(AppUtils.resourceId, itemSerialNo, date, barcode)
+                }
             }
         }
     }

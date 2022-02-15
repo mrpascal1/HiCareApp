@@ -496,6 +496,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             AppUtils.isServiceDeliveryFilled = isPostJobCompletionDone;
                             sta = response.getData().getSchedulingStatus();
                             isCompleted = response.getData().getSchedulingStatus();
+                            AppUtils.status = response.getData().getSchedulingStatus();
                             referralQuestion = response.getData().getRefferalQuestion();
                             referralChecked = response.getData().getCustomerInterestedToGiveRefferals();
                             referralInstructions = response.getData().getCustomerRefferalAlert();
@@ -2457,6 +2458,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         super.onDestroy();
         AppUtils.taskId = "";
         AppUtils.pulseRating = -1;
+        AppUtils.pulseRatingQID = -1;
+        AppUtils.status = "";
         ChemicalRecycleAdapter.items = null;
         ChemicalRecycleAdapter.indexToDisable = null;
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);

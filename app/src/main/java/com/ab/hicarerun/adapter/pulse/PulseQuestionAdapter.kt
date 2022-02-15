@@ -240,10 +240,13 @@ class PulseQuestionAdapter(val context: Context): RecyclerView.Adapter<PulseQues
                 }else{
                     if (showSubList.contains(qId)){
                         showSubList.remove(qId)
+                        clearSelected(qId, hashMap[qId])
                         hashMap.remove(qId)
+                        sublistQuestionAdapter.notifyDataSetChanged()
                     }
                     holder.binding.recycleSubChild.visibility = View.GONE
                 }
+                Log.d("TAG", "$showSubList")
             }
         })
         answersAdapter.setOnChildTextChangedListener(object : PulseAnswerChildAdapter.OnTextChangedListener{
@@ -306,6 +309,16 @@ class PulseQuestionAdapter(val context: Context): RecyclerView.Adapter<PulseQues
             holder.binding.recycleSubChild.visibility = View.VISIBLE
         }else{
             holder.binding.recycleSubChild.visibility = View.GONE
+        }
+    }
+
+    fun clearSelected(qId: String, subQuestionList: List<SubQuestionList>?){
+        subQuestionList?.forEach {
+            it.answer = null
+            it.pictureURL = arrayListOf()
+            it.questionOption?.forEach { q ->
+                q.isSelected = false
+            }
         }
     }
 
