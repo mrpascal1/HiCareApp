@@ -58,7 +58,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.PulseActivity"></activity>
+        <activity android:name=".activities.PulseActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
         <activity
             android:name=".activities.RoachActivity"
             android:exported="true" />

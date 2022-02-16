@@ -237,6 +237,7 @@ class PulseSublistQuestionAdapter(val context: Context): RecyclerView.Adapter<Pu
             }
 
             override fun onCheckboxClicked(childPosition: Int, isChecked: Boolean, str: String, questionId: Int, type: String) {
+                Log.d("TAG", "Child Here")
                 val optionValue = items[position].questionOption?.get(childPosition)?.optionText
 
                 if (isChecked){

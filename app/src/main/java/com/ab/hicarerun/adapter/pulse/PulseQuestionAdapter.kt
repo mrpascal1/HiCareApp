@@ -270,6 +270,7 @@ class PulseQuestionAdapter(val context: Context): RecyclerView.Adapter<PulseQues
             }
 
             override fun onCheckboxClicked(childPosition: Int, isChecked: Boolean, str: String, questionId: Int, type: String) {
+                Log.d("TAG", "Parent Here")
                 val optionValue = items[position].questionOption?.get(childPosition)?.optionText
 
                 if (isChecked){

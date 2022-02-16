@@ -5,12 +5,15 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.database.Cursor
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.hardware.Camera
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -18,7 +21,7 @@ import android.provider.Settings
 import android.util.Base64
 import android.util.Log
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,6 +40,7 @@ import com.ab.hicarerun.network.models.pulsemodel.*
 import com.ab.hicarerun.network.models.tsscannermodel.BaseResponse
 import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.LocaleHelper
+import com.google.android.material.chip.Chip
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -73,6 +77,31 @@ class PulseActivity : BaseActivity() {
         binding = ActivityPulseBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setStatusBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
+        }
+
+        val genres = arrayOf("Thriller", "Comedy", "Adventure", "Thriller", "Comedy", "Adventure", "Thriller", "Comedy", "Adventure")
+        genres.forEach {
+            val states = arrayOf(
+                intArrayOf(android.R.attr.state_checked),
+                intArrayOf(-android.R.attr.state_checked)
+            )
+            val colors = intArrayOf(
+                Color.parseColor("#2BB77A"),
+                // chip unchecked color
+                Color.parseColor("#E0E0E0")
+            )
+            val colorList = ColorStateList(states, colors)
+            val chip = Chip(view.context)
+            chip.text = it
+            chip.isClickable = true
+            chip.isCheckable = true
+            chip.isCheckedIconVisible = false
+            chip.chipBackgroundColor = colorList
+            //binding.chipGroup.addView(chip)
+        }
 
         binding.titleTv.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
 

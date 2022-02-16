@@ -1,6 +1,7 @@
 package com.ab.hicarerun.adapter.pulse
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import com.ab.hicarerun.databinding.LayoutPulseChildBinding
 import com.ab.hicarerun.network.models.pulsemodel.QuestionOption
 import com.ab.hicarerun.network.models.pulsemodel.SubQuestionList
 import com.ab.hicarerun.utils.AppUtils
+import com.google.android.material.chip.Chip
 
 class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<PulseAnswerChildAdapter.MyHolder>() {
 
@@ -30,6 +32,16 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
     var rating = -1
     var dropdownArr: ArrayList<String> = ArrayList()
     var arrayAdapter: ArrayAdapter<String>? = null
+    val states = arrayOf(
+        intArrayOf(android.R.attr.state_checked),
+        intArrayOf(-android.R.attr.state_checked)
+    )
+    val colors = intArrayOf(
+        Color.parseColor("#2BB77A"),
+        // chip unchecked color
+        Color.parseColor("#E0E0E0")
+    )
+    val colorList = ColorStateList(states, colors)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
         val view = LayoutPulseChildBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -39,9 +51,6 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         holder.bindItems(items[position])
         Log.d("TAG", "Current ${AppUtils.pulseRating}")
-        if (AppUtils.pulseRating != -1){
-            selectEmoji(holder)
-        }
 
         if (type.equals("Single Select", true)){
             holder.binding.rbAnswers.visibility = View.VISIBLE
@@ -49,13 +58,15 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
             holder.binding.numberLayout.visibility = View.GONE
             holder.binding.spinnerLayout.visibility = View.GONE
             holder.binding.ratingEmoji.visibility = View.GONE
+            holder.binding.chipLayout.visibility = View.GONE
         }
         if (type.equals("Multi Select", true)){
+            holder.binding.chkAnswers.visibility = View.VISIBLE
             holder.binding.numberLayout.visibility = View.GONE
             holder.binding.ratingEmoji.visibility = View.GONE
             holder.binding.spinnerLayout.visibility = View.GONE
             holder.binding.rbAnswers.visibility = View.GONE
-            holder.binding.chkAnswers.visibility = View.VISIBLE
+            holder.binding.chipLayout.visibility = View.GONE
         }
         if (type.equals("DropdownSingleSelect", true)){
             holder.binding.spinnerLayout.visibility = View.VISIBLE
@@ -63,17 +74,9 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
             holder.binding.ratingEmoji.visibility = View.GONE
             holder.binding.chkAnswers.visibility = View.GONE
             holder.binding.numberLayout.visibility = View.GONE
-            if (questionTitle.equals("How happy is client with HiCare services", true)){
-                holder.binding.spinnerLayout.visibility = View.GONE
-                holder.binding.ratingEmoji.visibility = View.VISIBLE
-                AppUtils.pulseRatingQID = questionId.toInt()
-                if (answer.isNotEmpty()){
-                    selectEmoji(holder)
-                }
-            }else{
-                holder.binding.spinnerLayout.visibility = View.VISIBLE
-                holder.binding.ratingEmoji.visibility = View.GONE
-            }
+            holder.binding.ratingEmoji.visibility = View.GONE
+            holder.binding.chipLayout.visibility = View.GONE
+
             arrayAdapter?.setDropDownViewResource(R.layout.spinner_popup)
             holder.binding.spnType.adapter = arrayAdapter
             if (answer != "") {
@@ -82,6 +85,46 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
                         holder.binding.spnType.setSelection(i)
                     }
                 }
+            }
+        }
+        if (type.equals("ChipMultiSelect", true)){
+            holder.binding.spinnerLayout.visibility = View.GONE
+            holder.binding.rbAnswers.visibility = View.GONE
+            holder.binding.chkAnswers.visibility = View.GONE
+            holder.binding.numberLayout.visibility = View.GONE
+            holder.binding.ratingEmoji.visibility = View.GONE
+            holder.binding.chipLayout.visibility = View.VISIBLE
+            dropdownArr.forEach {
+                val chip = Chip(holder.binding.chipGroup.context)
+                chip.text = it
+                chip.isClickable = true
+                chip.isCheckable = true
+                chip.isCheckedIconVisible = false
+                chip.chipBackgroundColor = colorList
+                chip.isChecked = true
+                if (it == answer){
+                    chip.isChecked = true
+                }
+                holder.binding.chipGroup.addView(chip)
+                chip.setOnClickListener {
+                    Log.d("TAG: ", "Position $position and ID ${items[position]}")
+                    selectedPos = position
+                    //items[position]?.isSelected = chip.isChecked
+                    onTextChangedListener?.onCheckboxClicked(position, chip.isChecked, items[position]?.optionDisplayText.toString(), questionId.toInt(), "checkbox")
+                    notifyDataSetChanged()
+                }
+            }
+        }
+        if (type.equals("SingleRating", true)){
+            holder.binding.ratingEmoji.visibility = View.VISIBLE
+            holder.binding.spinnerLayout.visibility = View.GONE
+            holder.binding.rbAnswers.visibility = View.GONE
+            holder.binding.chkAnswers.visibility = View.GONE
+            holder.binding.numberLayout.visibility = View.GONE
+            holder.binding.chipLayout.visibility = View.GONE
+            AppUtils.pulseRatingQID = questionId.toInt()
+            if (answer != "null" && answer != ""){
+                selectEmoji(holder)
             }
         }
 
@@ -167,14 +210,14 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
         }
         removeAllBgs(holder)
         setBackgroundResource(R.drawable.bg_green_border)
-        onTextChangedListener?.onOptionChange(0, AppUtils.pulseRating.toString(), AppUtils.pulseRatingQID, "radio")
+        onTextChangedListener?.onOptionChange(0, AppUtils.pulseRating.toString(), questionId.toInt(), "radio")
         Log.d("TAG", "Selected ${AppUtils.pulseRating}")
     }
 
     private fun selectEmoji(holder: MyHolder){
         Log.d("TAG", "Inside Select")
         Log.d("TAG", "${AppUtils.pulseRating}")
-        when (AppUtils.pulseRating) {
+        when (answer.toInt()) {
             1 -> {
                 holder.binding.veryBadLayout.set(holder)
             }
@@ -216,6 +259,12 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
         this.type = type.toString()
         this.answer = answer.toString()
         this.isDisabled = isDisabled == true
+        if (type.equals("ChipMultiSelect", true)){
+            dropdownArr.clear()
+            if (!questionStrOption.isNullOrEmpty()){
+                dropdownArr.addAll(questionStrOption)
+            }
+        }
         if (type.equals("DropdownSingleSelect", true)){
             dropdownArr.clear()
             dropdownArr.add(0, "Select Option")
