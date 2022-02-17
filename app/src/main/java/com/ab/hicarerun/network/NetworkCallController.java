@@ -5473,7 +5473,7 @@ public class NetworkCallController {
                 });
     }
 
-    public void updateB2BInspection(int requestCode, PulseData data) {
+    public void updateB2BInspection(int requestCode, List<PulseData> data) {
         BaseApplication.getRetrofitAPI(false)
                 .updateB2BInspection(data)
                 .enqueue(new Callback<BaseResponse>(){

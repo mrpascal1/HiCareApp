@@ -13,6 +13,7 @@ import com.ab.hicarerun.adapter.tms.TmsQuestionsParentAdapter
 import com.ab.hicarerun.databinding.LayoutPulseParentBinding
 import com.ab.hicarerun.network.models.pulsemodel.QuestionList
 import com.ab.hicarerun.network.models.pulsemodel.SubQuestionList
+import com.ab.hicarerun.utils.AppUtils.checkItems
 import com.squareup.picasso.Picasso
 
 class PulseQuestionAdapter(val context: Context): RecyclerView.Adapter<PulseQuestionAdapter.MyHolder>(){
@@ -20,7 +21,7 @@ class PulseQuestionAdapter(val context: Context): RecyclerView.Adapter<PulseQues
     val items = ArrayList<QuestionList>()
     val showSubList = ArrayList<String>()
     val hashMap = HashMap<String, List<SubQuestionList>>()
-    val checkItems: HashMap<Int, String> = HashMap()
+    //val checkItems: HashMap<Int, String> = HashMap()
     var strAnswer = ""
     var onItemClickListener: OnItemClickListener? = null
     var onCameraClickListener: OnCameraClickListener? = null
@@ -274,23 +275,46 @@ class PulseQuestionAdapter(val context: Context): RecyclerView.Adapter<PulseQues
                 val optionValue = items[position].questionOption?.get(childPosition)?.optionText
 
                 if (isChecked){
-                    val newAppendValue = if (checkItems[position] != null) checkItems[position].toString() + "," + optionValue else optionValue
-                    checkItems[position] = newAppendValue.toString()
+                    val newAppendValue = if (checkItems[questionId] != null) checkItems[questionId].toString() + "," + optionValue else optionValue
+                    checkItems[questionId] = newAppendValue.toString()
                 }else{
-                    var newAppendValue = checkItems[position]
+                    var newAppendValue = checkItems[questionId]
                     if (newAppendValue != null) {
                         newAppendValue = newAppendValue.replace(",$optionValue", "")
                         newAppendValue = newAppendValue.replace(optionValue.toString(), "")
-                        checkItems[position] = newAppendValue
+                        checkItems[questionId] = newAppendValue
                     }
                 }
-                strAnswer = if (checkItems[position] == null) "" else checkItems[position].toString()
+                strAnswer = if (checkItems[questionId] == null) "" else checkItems[questionId].toString()
                 items.forEach {
                     if (it.questionId == questionId){
                         it.answer = strAnswer
                     }
                 }
                 //onItemClickListener?.onItemClicked(position, questionId, strAnswer, subListClick)
+            }
+
+            override fun onChipClicked(childPosition: Int, isChecked: Boolean, str: String, questionId: Int) {
+                val optionValue = str
+
+                if (isChecked){
+                    val newAppendValue = if (checkItems[questionId] != null) checkItems[questionId].toString() + "," + optionValue else optionValue
+                    checkItems[questionId] = newAppendValue.toString()
+                }else{
+                    var newAppendValue = checkItems[questionId]
+                    if (newAppendValue != null) {
+                        newAppendValue = newAppendValue!!.replace(",$optionValue", "")
+                        newAppendValue = newAppendValue!!.replace(optionValue.toString(), "")
+                        checkItems[questionId] = newAppendValue!!
+                    }
+                }
+                strAnswer = if (checkItems[questionId] == null) "" else checkItems[questionId].toString()
+                items.forEach {
+                    if (it.questionId == questionId){
+                        it.answer = strAnswer
+                    }
+                }
+                Log.d("TAG", strAnswer)
             }
         })
         sublistQuestionAdapter.setOnCameraClickHandler(object : PulseSublistQuestionAdapter.OnCameraClickListener {
@@ -315,8 +339,13 @@ class PulseQuestionAdapter(val context: Context): RecyclerView.Adapter<PulseQues
 
     fun clearSelected(qId: String, subQuestionList: List<SubQuestionList>?){
         subQuestionList?.forEach {
+            Log.d("TAG", "clearing id ${it.questionId}")
             it.answer = null
             it.pictureURL = arrayListOf()
+            if (checkItems.containsKey(it.questionId)){
+                Log.d("TAG", "clearing from map ${it.questionId}")
+                checkItems.remove(it.questionId)
+            }
             it.questionOption?.forEach { q ->
                 q.isSelected = false
             }

@@ -632,6 +632,6 @@ public interface IRetrofit {
     @GET("B2BInspection/GetB2bInspectionQuestions")
     Call<PulseResponse> getPulseB2bInspectionQuestions(@Query("taskId") String taskId, @Query("resourceId") String resourceId, @Query("lan") String lan);
 
-    @GET("B2BInspection/UpdateB2BInspection")
-    Call<BaseResponse> updateB2BInspection(@Body PulseData data);
+    @POST("B2BInspection/UpdateB2BInspection")
+    Call<BaseResponse> updateB2BInspection(@Body List<PulseData> data);
 }

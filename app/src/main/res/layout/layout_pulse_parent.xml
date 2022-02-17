@@ -339,8 +339,7 @@
             android:id="@+id/recycleChild"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="3dp"
+            android:layout_marginTop="2dp"
             tools:listitem="@layout/layout_pulse_child"
             tools:itemCount="1"/>
 

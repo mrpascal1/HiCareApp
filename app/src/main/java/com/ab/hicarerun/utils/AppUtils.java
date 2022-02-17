@@ -115,8 +115,6 @@ public class AppUtils {
     public static String CAMERA_ORIENTATION = "CAMERA_ORIENTATION";
     public static String CAMERA_SCREEN = "";
     public static String taskId = "";
-    public static int pulseRating = -1;
-    public static int pulseRatingQID = -1;
     public static String status = "";
     public static boolean NOT_RENEWAL_DONE = false;
     public static boolean IS_ACTIVITY_THERE = false;
@@ -124,7 +122,7 @@ public class AppUtils {
     public static boolean IS_FLASH_ON= true;
     public static boolean CHEMICAL_CHANGED = false;
     public static boolean IS_COMBINED_TASK = false;
-    public static HashMap<String, String> floorDrawn = new HashMap<>();
+    public static HashMap<Integer, String> checkItems = new HashMap<>();
 
     public static Bitmap createCustomMarker(Context context, Bitmap resource, String accountName, String _name) {
 

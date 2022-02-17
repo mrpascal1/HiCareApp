@@ -15,6 +15,7 @@ data class SubQuestionList (
 	@SerializedName("Answer") var answer : String?,
 	@SerializedName("QuestionType") val questionType : String?,
 	@SerializedName("IsPictureRequired") val isPictureRequired : Boolean?,
+	@SerializedName("IsDependentQuestion") val isDependentQuestion : Boolean?,
 	@SerializedName("IsDisabled") val isDisabled : Boolean?,
 	@SerializedName("PictureURL") var pictureURL : ArrayList<String>?,
 	@SerializedName("TabName") val tabName : String?,

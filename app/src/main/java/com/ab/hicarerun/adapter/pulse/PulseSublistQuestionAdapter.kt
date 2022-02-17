@@ -12,12 +12,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.databinding.LayoutPulseParentBinding
 import com.ab.hicarerun.databinding.LayoutSublistParentBinding
 import com.ab.hicarerun.network.models.pulsemodel.SubQuestionList
+import com.ab.hicarerun.utils.AppUtils
+import com.ab.hicarerun.utils.AppUtils.checkItems
 import com.squareup.picasso.Picasso
 
 class PulseSublistQuestionAdapter(val context: Context): RecyclerView.Adapter<PulseSublistQuestionAdapter.MyHolder>(){
 
     var items = ArrayList<SubQuestionList>()
-    val checkItems: HashMap<Int, String> = HashMap()
+    //val checkItems: HashMap<Int, String> = HashMap()
     var strAnswer = ""
     var onCameraClickListener: OnCameraClickListener? = null
 
@@ -241,22 +243,45 @@ class PulseSublistQuestionAdapter(val context: Context): RecyclerView.Adapter<Pu
                 val optionValue = items[position].questionOption?.get(childPosition)?.optionText
 
                 if (isChecked){
-                    val newAppendValue = if (checkItems[position] != null) checkItems[position].toString() + "," + optionValue else optionValue
-                    checkItems[position] = newAppendValue.toString()
+                    val newAppendValue = if (checkItems[questionId] != null) checkItems[questionId].toString() + "," + optionValue else optionValue
+                    checkItems[questionId] = newAppendValue.toString()
                 }else{
-                    var newAppendValue = checkItems[position]
+                    var newAppendValue = checkItems[questionId]
                     if (newAppendValue != null) {
                         newAppendValue = newAppendValue.replace(",$optionValue", "")
                         newAppendValue = newAppendValue.replace(optionValue.toString(), "")
-                        checkItems[position] = newAppendValue
+                        checkItems[questionId] = newAppendValue
                     }
                 }
-                strAnswer = if (checkItems[position] == null) "" else checkItems[position].toString()
+                strAnswer = if (checkItems[questionId] == null) "" else checkItems[questionId].toString()
                 items.forEach {
                     if (it.questionId == questionId){
                         it.answer = strAnswer
                     }
                 }
+            }
+
+            override fun onChipClicked(childPosition: Int, isChecked: Boolean, str: String, questionId: Int) {
+                val optionValue = str
+
+                if (isChecked){
+                    val newAppendValue = if (checkItems[questionId] != null) checkItems[questionId].toString() + "," + optionValue else optionValue
+                    checkItems[questionId] = newAppendValue.toString()
+                }else{
+                    var newAppendValue = checkItems[questionId]
+                    if (newAppendValue != null) {
+                        newAppendValue = newAppendValue!!.replace(",$optionValue", "")
+                        newAppendValue = newAppendValue!!.replace(optionValue.toString(), "")
+                        checkItems[questionId] = newAppendValue!!
+                    }
+                }
+                strAnswer = if (checkItems[questionId] == null) "" else checkItems[questionId].toString()
+                items.forEach {
+                    if (it.questionId == questionId){
+                        it.answer = strAnswer
+                    }
+                }
+                Log.d("TAG", "id $questionId answer $strAnswer")
             }
         })
     }

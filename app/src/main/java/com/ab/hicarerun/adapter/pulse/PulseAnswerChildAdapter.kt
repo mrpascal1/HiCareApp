@@ -50,7 +50,6 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         holder.bindItems(items[position])
-        Log.d("TAG", "Current ${AppUtils.pulseRating}")
 
         if (type.equals("Single Select", true)){
             holder.binding.rbAnswers.visibility = View.VISIBLE
@@ -59,6 +58,14 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
             holder.binding.spinnerLayout.visibility = View.GONE
             holder.binding.ratingEmoji.visibility = View.GONE
             holder.binding.chipLayout.visibility = View.GONE
+            if (items[position]?.isSelected == true && items[position]?.isSubQuestion == true){
+                onSubListPresentListener?.sendAndNotify(
+                    position,
+                    questionId,
+                    items[position]?.isSubQuestion,
+                    items[position]?.subQuestionList
+                )
+            }
         }
         if (type.equals("Multi Select", true)){
             holder.binding.chkAnswers.visibility = View.VISIBLE
@@ -101,17 +108,15 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
                 chip.isCheckable = true
                 chip.isCheckedIconVisible = false
                 chip.chipBackgroundColor = colorList
-                chip.isChecked = true
-                if (it == answer){
+                if (answer.contains(it)){
                     chip.isChecked = true
                 }
                 holder.binding.chipGroup.addView(chip)
                 chip.setOnClickListener {
                     Log.d("TAG: ", "Position $position and ID ${items[position]}")
                     selectedPos = position
-                    //items[position]?.isSelected = chip.isChecked
-                    onTextChangedListener?.onCheckboxClicked(position, chip.isChecked, items[position]?.optionDisplayText.toString(), questionId.toInt(), "checkbox")
-                    notifyDataSetChanged()
+                    items[position]?.isSelected = chip.isChecked
+                    onTextChangedListener?.onChipClicked(position, chip.isChecked, chip.text.toString(), questionId.toInt())
                 }
             }
         }
@@ -122,7 +127,6 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
             holder.binding.chkAnswers.visibility = View.GONE
             holder.binding.numberLayout.visibility = View.GONE
             holder.binding.chipLayout.visibility = View.GONE
-            AppUtils.pulseRatingQID = questionId.toInt()
             if (answer != "null" && answer != ""){
                 selectEmoji(holder)
             }
@@ -141,7 +145,7 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
             holder.binding.rbAnswers.isChecked = true
             for (i in 0 until items.size){
                 if (selectedPos != i) {
-                    holder.binding.rbAnswers.isChecked = false;
+                    holder.binding.rbAnswers.isChecked = false
                     items[i]?.isSelected = false
                 }
             }
@@ -191,32 +195,31 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
     }
 
     fun LinearLayout.set(holder: MyHolder){
+        var pulseRating = -1
         when {
             this == holder.binding.veryBadLayout -> {
-                AppUtils.pulseRating = 1
+                pulseRating = 1
             }
             this == holder.binding.badLayout -> {
-                AppUtils.pulseRating = 2
+                pulseRating = 2
             }
             this == holder.binding.averageLayout -> {
-                AppUtils.pulseRating = 3
+                pulseRating = 3
             }
             this == holder.binding.goodLayout -> {
-                AppUtils.pulseRating = 4
+                pulseRating = 4
             }
             this == holder.binding.veryGoodLayout -> {
-                AppUtils.pulseRating = 5
+                pulseRating = 5
             }
         }
         removeAllBgs(holder)
         setBackgroundResource(R.drawable.bg_green_border)
-        onTextChangedListener?.onOptionChange(0, AppUtils.pulseRating.toString(), questionId.toInt(), "radio")
-        Log.d("TAG", "Selected ${AppUtils.pulseRating}")
+        onTextChangedListener?.onOptionChange(0, pulseRating.toString(), questionId.toInt(), "radio")
     }
 
     private fun selectEmoji(holder: MyHolder){
         Log.d("TAG", "Inside Select")
-        Log.d("TAG", "${AppUtils.pulseRating}")
         when (answer.toInt()) {
             1 -> {
                 holder.binding.veryBadLayout.set(holder)
@@ -317,5 +320,6 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
         fun onTextChange(childPosition: Int, str: String, questionId: Int)
         fun onOptionChange(childPosition: Int, str: String, questionId: Int, type: String)
         fun onCheckboxClicked(childPosition: Int, isChecked: Boolean, str: String, questionId: Int, type: String)
+        fun onChipClicked(childPosition: Int, isChecked: Boolean, str: String, questionId: Int)
     }
 }

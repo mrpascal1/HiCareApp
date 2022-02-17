@@ -46,12 +46,14 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import es.dmoral.toasty.Toasty
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class PulseActivity : BaseActivity() {
 
@@ -63,6 +65,7 @@ class PulseActivity : BaseActivity() {
     var pulseData: PulseData? = null
     var mPermissions = false
     var REQUEST_CODE = 1234
+    var taskId = ""
     private var selectedImagePath = ""
     private var mPhotoFile: File? = null
     private var bitmap: Bitmap? = null
@@ -71,6 +74,7 @@ class PulseActivity : BaseActivity() {
     private var cBy = -1
     private var isFromSubList = false
     val CAMERA_REQUEST = 1
+    val hashMap = HashMap<String, Any?>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,27 +84,6 @@ class PulseActivity : BaseActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
-        }
-
-        val genres = arrayOf("Thriller", "Comedy", "Adventure", "Thriller", "Comedy", "Adventure", "Thriller", "Comedy", "Adventure")
-        genres.forEach {
-            val states = arrayOf(
-                intArrayOf(android.R.attr.state_checked),
-                intArrayOf(-android.R.attr.state_checked)
-            )
-            val colors = intArrayOf(
-                Color.parseColor("#2BB77A"),
-                // chip unchecked color
-                Color.parseColor("#E0E0E0")
-            )
-            val colorList = ColorStateList(states, colors)
-            val chip = Chip(view.context)
-            chip.text = it
-            chip.isClickable = true
-            chip.isCheckable = true
-            chip.isCheckedIconVisible = false
-            chip.chipBackgroundColor = colorList
-            //binding.chipGroup.addView(chip)
         }
 
         binding.titleTv.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
@@ -118,7 +101,13 @@ class PulseActivity : BaseActivity() {
         }
 
         binding.saveBtn.setOnClickListener {
-            updateB2BInspection()
+            if (isImgChecked(questionList)){
+                if (isListChecked(questionList)){
+                    updateB2BInspection()
+                }
+            }else{
+                Toasty.error(this, "All Images are mandatory").show()
+            }
         }
 
         getPulseB2bInspectionQuestions(AppUtils.taskId, AppUtils.resourceId, LocaleHelper.getLanguage(this))
@@ -206,9 +195,7 @@ class PulseActivity : BaseActivity() {
             override fun onResponse(requestCode: Int, response: BaseResponse?) {
                 if (response != null){
                     if (response.isSuccess == true){
-                        if (!response.data.isNullOrEmpty()){
-                            Toast.makeText(applicationContext, "Success", Toast.LENGTH_SHORT).show()
-                        }
+                        Toasty.success(applicationContext, "Success").show()
                     }
                 }
             }
@@ -218,13 +205,13 @@ class PulseActivity : BaseActivity() {
             }
         })
         Log.d("Update", "$pulseData")
-        //controller.updateB2BInspection(202215, pulseData)
+        controller.updateB2BInspection(202215, Collections.singletonList(pulseData))
     }
 
     private fun isImgChecked(questionList: List<QuestionList>): Boolean {
         questionList.forEach {
             if (it.isPictureRequired == true) {
-                if (it.pictureURL != null && it.pictureURL!!.isNotEmpty()) {
+                if (it.pictureURL.isNullOrEmpty()) {
                     return false
                 }
             }
@@ -234,17 +221,37 @@ class PulseActivity : BaseActivity() {
 
     private fun isSubListChecked(listData: List<SubQuestionList>): Boolean{
         listData.forEach {
+            if (it.isPictureRequired == true){
+                if (it.pictureURL.isNullOrEmpty()) {
+                    Toasty.error(this, "All images are mandatory").show()
+                    return false
+                }
+            }
             if (it.answer == null || it.answer?.length == 0) {
+                Toasty.error(this, "All questions are mandatory").show()
                 return false
             }
         }
-        return false
+        return true
     }
 
     private fun isListChecked(listData: List<QuestionList>): Boolean{
         listData.forEach {
             if (it.answer == null || it.answer?.length == 0) {
+                Toasty.error(this, "All questions are mandatory").show()
                 return false
+            }else{
+                if (it.isDependentQuestion == true){
+                    it.questionOption?.forEach { q ->
+                        if (q.isSelected == true) {
+                            if (q.subQuestionList != null) {
+                                if (!isSubListChecked(q.subQuestionList)){
+                                    return false
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
         return true
@@ -452,5 +459,10 @@ class PulseActivity : BaseActivity() {
         }
         dialog.setNegativeButton(getString(R.string.no)) { dialogInterface: DialogInterface, _: Int -> dialogInterface.dismiss() }
         dialog.show()
+    }
+
+    override fun onDestroy() {
+        AppUtils.checkItems.clear()
+        super.onDestroy()
     }
 }

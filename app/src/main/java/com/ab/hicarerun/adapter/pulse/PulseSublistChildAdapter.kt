@@ -9,10 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.R
-import com.ab.hicarerun.adapter.tms.TmsAnswersChildAdapter
 import com.ab.hicarerun.databinding.LayoutSublistChildBinding
 import com.ab.hicarerun.network.models.pulsemodel.QuestionOption
 import com.ab.hicarerun.utils.AppUtils
@@ -98,17 +98,17 @@ class PulseSublistChildAdapter(val context: Context): RecyclerView.Adapter<Pulse
                 chip.isCheckable = true
                 chip.isCheckedIconVisible = false
                 chip.chipBackgroundColor = colorList
-                if (it == answer){
+                if (answer.contains(it)){
+                    Log.d("TAG", "Chip Matched")
                     chip.isChecked = true
                 }
-                holder.binding.chipGroup.addView(chip)
                 chip.setOnClickListener {
                     Log.d("TAG: ", "Position $position and ID ${items[position]}")
                     selectedPos = position
-                    //items[position]?.isSelected = chip.isChecked
-                    onTextChangedListener?.onCheckboxClicked(position, chip.isChecked, items[position]?.optionDisplayText.toString(), questionId.toInt(), "checkbox")
-                    notifyDataSetChanged()
+                    items[position]?.isSelected = chip.isChecked
+                    onTextChangedListener?.onChipClicked(position, chip.isChecked, chip.text.toString(), questionId.toInt())
                 }
+                holder.binding.chipGroup.addView(chip)
             }
         }
         if (type.equals("SingleRating", true)){
@@ -118,11 +118,16 @@ class PulseSublistChildAdapter(val context: Context): RecyclerView.Adapter<Pulse
             holder.binding.chkAnswers.visibility = View.GONE
             holder.binding.numberLayout.visibility = View.GONE
             holder.binding.chipLayout.visibility = View.GONE
-            AppUtils.pulseRatingQID = questionId.toInt()
-            if (answer.isNotEmpty()){
-                //selectEmoji(holder)
+            if (answer != "null" && answer != ""){
+                selectEmoji(holder)
             }
         }
+
+        holder.binding.veryBadLayout.onClick(holder)
+        holder.binding.badLayout.onClick(holder)
+        holder.binding.averageLayout.onClick(holder)
+        holder.binding.goodLayout.onClick(holder)
+        holder.binding.veryGoodLayout.onClick(holder)
 
         holder.binding.rbAnswers.setOnClickListener {
             Log.d("TAG: ", "Position $position and ID ${items[position]}")
@@ -176,6 +181,68 @@ class PulseSublistChildAdapter(val context: Context): RecyclerView.Adapter<Pulse
 
     override fun getItemCount(): Int {
         return items.size
+    }
+
+    fun LinearLayout.onClick(holder: MyHolder){
+        setOnClickListener {
+            set(holder)
+        }
+    }
+
+    fun LinearLayout.set(holder: MyHolder){
+        var pulseRating = -1
+        when {
+            this == holder.binding.veryBadLayout -> {
+                pulseRating = 1
+            }
+            this == holder.binding.badLayout -> {
+                pulseRating = 2
+            }
+            this == holder.binding.averageLayout -> {
+                pulseRating = 3
+            }
+            this == holder.binding.goodLayout -> {
+                pulseRating = 4
+            }
+            this == holder.binding.veryGoodLayout -> {
+                pulseRating = 5
+            }
+        }
+        removeAllBgs(holder)
+        setBackgroundResource(R.drawable.bg_green_border)
+        onTextChangedListener?.onOptionChange(0, pulseRating.toString(), questionId.toInt(), "radio")
+    }
+
+    private fun selectEmoji(holder: MyHolder){
+        Log.d("TAG", "Inside Select")
+        when (answer.toInt()) {
+            1 -> {
+                holder.binding.veryBadLayout.set(holder)
+            }
+            2 -> {
+                holder.binding.badLayout.set(holder)
+            }
+            3 -> {
+                holder.binding.averageLayout.set(holder)
+            }
+            4 -> {
+                holder.binding.goodLayout.set(holder)
+            }
+            5 -> {
+                holder.binding.veryGoodLayout.set(holder)
+            }
+        }
+    }
+
+    fun removeAllBgs(holder: MyHolder){
+        holder.binding.veryBadLayout.removeBg()
+        holder.binding.badLayout.removeBg()
+        holder.binding.averageLayout.removeBg()
+        holder.binding.goodLayout.removeBg()
+        holder.binding.veryGoodLayout.removeBg()
+    }
+    fun LinearLayout.removeBg(){
+        setBackgroundResource(0)
     }
 
     fun addData(items: List<QuestionOption>?, questionId: Int?, type: String?, answer: String?, isDisabled: Boolean?, questionStrOption: ArrayList<String>?){
@@ -238,5 +305,6 @@ class PulseSublistChildAdapter(val context: Context): RecyclerView.Adapter<Pulse
         fun onTextChange(childPosition: Int, str: String, questionId: Int)
         fun onOptionChange(childPosition: Int, str: String, questionId: Int, type: String)
         fun onCheckboxClicked(childPosition: Int, isChecked: Boolean, str: String, questionId: Int, type: String)
+        fun onChipClicked(childPosition: Int, isChecked: Boolean, str: String, questionId: Int)
     }
 }

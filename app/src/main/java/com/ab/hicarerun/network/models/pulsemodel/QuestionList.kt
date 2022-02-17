@@ -16,6 +16,7 @@ data class QuestionList (
 	@SerializedName("QuestionType") val questionType : String?,
 	@SerializedName("IsPictureRequired") val isPictureRequired : Boolean?,
 	@SerializedName("IsDisabled") val isDisabled : Boolean?,
+	@SerializedName("IsDependentQuestion") val isDependentQuestion : Boolean?,
 	@SerializedName("PictureURL") var pictureURL : ArrayList<String>?,
 	@SerializedName("TabName") val tabName : String?,
 	@SerializedName("TabIndex") val tabIndex : Int?
