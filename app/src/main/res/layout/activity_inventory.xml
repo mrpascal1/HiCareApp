@@ -35,14 +35,19 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:visibility="gone"/>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/inventoryRecyclerView"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_below="@id/headerLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:listitem="@layout/item_inventory_list"
-        android:layout_above="@id/buttonsLayout"
-        android:layout_marginBottom="4dp"/>
+        android:layout_height="match_parent"
+        android:layout_above="@id/buttonsLayout">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/inventoryRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/item_inventory_list"
+            android:layout_marginBottom="4dp"/>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <RelativeLayout
         android:id="@+id/buttonsLayout"
         android:layout_width="match_parent"

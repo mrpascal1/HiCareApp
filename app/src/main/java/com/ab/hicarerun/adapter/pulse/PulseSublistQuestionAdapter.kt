@@ -30,7 +30,22 @@ class PulseSublistQuestionAdapter(val context: Context): RecyclerView.Adapter<Pu
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         holder.bindItems(items[position])
+        if (AppUtils.isPulseSubmitted){
+            holder.binding.relPhoto.isEnabled = false
+            holder.binding.relPhoto2.isEnabled = false
+            holder.binding.relPhoto3.isEnabled = false
+            holder.binding.relPhoto4.isEnabled = false
 
+            holder.binding.lnrUpload.isEnabled = false
+            holder.binding.lnrUpload2.isEnabled = false
+            holder.binding.lnrUpload3.isEnabled = false
+            holder.binding.lnrUpload4.isEnabled = false
+
+            holder.binding.imageCancel.isEnabled = false
+            holder.binding.imageCancel2.isEnabled = false
+            holder.binding.imageCancel3.isEnabled = false
+            holder.binding.imageCancel4.isEnabled = false
+        }
         if (items[position].isPictureRequired == true) {
             holder.binding.relPhoto.visibility = View.VISIBLE
             Log.d("TAG", "Called this")

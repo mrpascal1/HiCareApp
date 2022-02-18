@@ -9,10 +9,11 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.R
 import com.ab.hicarerun.databinding.ItemInventoryListBinding
-import com.ab.hicarerun.network.models.inventorymodel.InventoryListModel.Data
+import com.ab.hicarerun.network.models.inventorymodel.inventorylistmodel.Data
 
 class InventoryAdapter(val context: Context) : RecyclerView.Adapter<InventoryAdapter.MyHolder>(){
 
+    var historyClickListener: HistoryClickListener? = null
     var items = ArrayList<Data>()
     var isFromTask = false
 
@@ -23,6 +24,7 @@ class InventoryAdapter(val context: Context) : RecyclerView.Adapter<InventoryAda
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         holder.bindItems(items[position], isFromTask)
+        historyClickListener?.onClick(items[position].item_Code.toString())
     }
 
     override fun getItemCount(): Int {
@@ -56,5 +58,9 @@ class InventoryAdapter(val context: Context) : RecyclerView.Adapter<InventoryAda
                 binding.historyBtn.visibility = View.VISIBLE
             }
         }
+    }
+
+    interface HistoryClickListener{
+        fun onClick(itemCode: String)
     }
 }

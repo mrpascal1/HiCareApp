@@ -1,4 +1,4 @@
-package com.ab.hicarerun.network.models.inventorymodel.InventoryListModel
+package com.ab.hicarerun.network.models.inventorymodel.inventorylistmodel
 
 import com.google.gson.annotations.SerializedName
 

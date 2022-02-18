@@ -2458,6 +2458,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         super.onDestroy();
         AppUtils.taskId = "";
         AppUtils.status = "";
+        AppUtils.isPulseSubmitted = false;
         AppUtils.checkItems.clear();
         ChemicalRecycleAdapter.items = null;
         ChemicalRecycleAdapter.indexToDisable = null;

@@ -26,7 +26,7 @@ import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
 import com.ab.hicarerun.network.models.inventorymodel.ActionList
 import com.ab.hicarerun.network.models.inventorymodel.AddInventoryResult
-import com.ab.hicarerun.network.models.inventorymodel.InventoryListModel.InventoryListResult
+import com.ab.hicarerun.network.models.inventorymodel.inventorylistmodel.InventoryListResult
 import com.ab.hicarerun.network.models.inventorymodel.TechnicianList
 import com.ab.hicarerun.network.models.tsscannermodel.BaseResponse
 import com.ab.hicarerun.utils.AppUtils
@@ -85,6 +85,11 @@ class InventoryActivity : BaseActivity() {
 
         binding.backIv.setOnClickListener {
             getBack()
+        }
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            getInventoryList()
+            binding.swipeRefreshLayout.isRefreshing = false
         }
 
         getInventoryList()
@@ -321,6 +326,10 @@ class InventoryActivity : BaseActivity() {
         controller.updateInventory(2022, hashMap)
     }
 
+    private fun showInventoryHistoryDialog(){
+
+    }
+
     private fun addInventory(userId: String, itemSerialNo: String, date: String, barcodeData: String){
         showProgressDialog()
         val hashMap = HashMap<String, Any>()
@@ -415,7 +424,7 @@ class InventoryActivity : BaseActivity() {
             formatted = AppUtils.getFormatted(formatted, "dd-MM-yyyy", "dd-MM-yy")
             return formatted
         }catch (e: Exception) {
-            Toasty.error(this, "Invalid date").show()
+            Toasty.error(this, "Invalid QR code").show()
         }
         return ""
     }

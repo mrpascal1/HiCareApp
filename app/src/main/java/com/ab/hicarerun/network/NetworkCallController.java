@@ -49,7 +49,8 @@ import com.ab.hicarerun.network.models.handshakemodel.ContinueHandShakeResponse;
 import com.ab.hicarerun.network.models.handshakemodel.HandShakeResponse;
 import com.ab.hicarerun.network.models.incentivemodel.IncentiveResponse;
 import com.ab.hicarerun.network.models.inventorymodel.AddInventoryResult;
-import com.ab.hicarerun.network.models.inventorymodel.InventoryListModel.InventoryListResult;
+import com.ab.hicarerun.network.models.inventorymodel.historymodel.InventoryHistoryBase;
+import com.ab.hicarerun.network.models.inventorymodel.inventorylistmodel.InventoryListResult;
 import com.ab.hicarerun.network.models.jeopardymodel.CWFJeopardyRequest;
 import com.ab.hicarerun.network.models.jeopardymodel.CWFJeopardyResponse;
 import com.ab.hicarerun.network.models.jeopardymodel.JeopardyReasonModel;
@@ -5452,6 +5453,22 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<InventoryListResult> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void getInventoryHistory(int requestCode, String itemCode) {
+        BaseApplication.getInventoryApi()
+                .getInventoryHistory(itemCode)
+                .enqueue(new Callback<InventoryHistoryBase>(){
+                    @Override
+                    public void onResponse(Call<InventoryHistoryBase> call, Response<InventoryHistoryBase> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<InventoryHistoryBase> call, Throwable t) {
                         mListner.onFailure(requestCode);
                     }
                 });

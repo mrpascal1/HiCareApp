@@ -3,6 +3,7 @@ package com.ab.hicarerun.activities
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -20,6 +21,7 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Base64
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -83,18 +85,19 @@ class PulseActivity : BaseActivity() {
         setContentView(view)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.setStatusBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
+            window.statusBarColor = ContextCompat.getColor(this,R.color.colorPrimaryDark);
         }
 
         binding.titleTv.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
+        if (AppUtils.isPulseSubmitted){
+            binding.saveBtn.visibility = View.GONE
+        }else{
+            binding.saveBtn.visibility = View.VISIBLE
+        }
 
         pulseQuestionAdapter = PulseQuestionAdapter(this)
 
-        val questionsLayoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        binding.questionListRecycler.layoutManager = questionsLayoutManager
-        binding.questionListRecycler.setHasFixedSize(true)
-        binding.questionListRecycler.isNestedScrollingEnabled = false
-        binding.questionListRecycler.adapter = pulseQuestionAdapter
+        binding.questionListRecycler.configure(this)
 
         binding.backIv.setOnClickListener {
             finish()
@@ -154,9 +157,11 @@ class PulseActivity : BaseActivity() {
     }
 
     private fun getPulseB2bInspectionQuestions(taskId: String, resourceId: String, lan: String){
+        showProgressDialog()
         val controller = NetworkCallController()
         controller.setListner(object: NetworkResponseListner<PulseResponse>{
             override fun onResponse(requestCode: Int, response: PulseResponse?) {
+                dismissProgressDialog()
                 if (response != null){
                     if (response.isSuccess == true){
                         pulseData = response.data
@@ -183,6 +188,7 @@ class PulseActivity : BaseActivity() {
                 }
             }
             override fun onFailure(requestCode: Int) {
+                dismissProgressDialog()
                 Log.d("TAG", "Failed $requestCode")
             }
         })
@@ -190,17 +196,24 @@ class PulseActivity : BaseActivity() {
     }
 
     private fun updateB2BInspection(){
+        showProgressDialog()
         val controller = NetworkCallController()
         controller.setListner(object : NetworkResponseListner<BaseResponse>{
             override fun onResponse(requestCode: Int, response: BaseResponse?) {
+                dismissProgressDialog()
                 if (response != null){
                     if (response.isSuccess == true){
-                        Toasty.success(applicationContext, "Success").show()
+                        AppUtils.isPulseSubmitted = true;
+                        Toasty.success(applicationContext, "Updated successfully").show()
+                        finish()
+                    }else{
+                        Toasty.error(applicationContext, "Error").show()
                     }
                 }
             }
 
             override fun onFailure(requestCode: Int) {
+                dismissProgressDialog()
                 Log.d("TAG", "$requestCode")
             }
         })
@@ -259,6 +272,7 @@ class PulseActivity : BaseActivity() {
 
     private fun uploadOnsiteImage(base64: String) {
         try {
+            showProgressDialog()
             val LoginRealmModels = BaseApplication.getRealm().where(LoginResponse::class.java).findAll()
             if (LoginRealmModels != null && LoginRealmModels.size > 0) {
                 val UserId = LoginRealmModels[0]?.userID
@@ -272,6 +286,7 @@ class PulseActivity : BaseActivity() {
                 controller.setListner(object : NetworkResponseListner<UploadCheckListData> {
                     override fun onResponse(requestCode: Int, response: UploadCheckListData) {
                         try {
+                            dismissProgressDialog()
                             val pulseList = ArrayList<QuestionList>()
                             pulseList.addAll(questionList)
                             val pulseSubList = ArrayList<SubQuestionList>()
@@ -305,11 +320,14 @@ class PulseActivity : BaseActivity() {
                             //validate()
                             //validate2()
                         } catch (e: Exception) {
+                            dismissProgressDialog()
                             e.printStackTrace()
                         }
                     }
 
-                    override fun onFailure(requestCode: Int) {}
+                    override fun onFailure(requestCode: Int) {
+                        dismissProgressDialog()
+                    }
                 })
                 controller.uploadCheckListAttachment(1211, request)
             }
@@ -459,6 +477,13 @@ class PulseActivity : BaseActivity() {
         }
         dialog.setNegativeButton(getString(R.string.no)) { dialogInterface: DialogInterface, _: Int -> dialogInterface.dismiss() }
         dialog.show()
+    }
+
+    fun RecyclerView.configure(context: Context){
+        layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        isNestedScrollingEnabled = false
+        setHasFixedSize(true)
+        adapter = pulseQuestionAdapter
     }
 
     override fun onDestroy() {

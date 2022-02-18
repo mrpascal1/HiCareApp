@@ -29,6 +29,7 @@ import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.BarcodeVerificatonActivity;
 import com.ab.hicarerun.activities.BrowserActivity;
+import com.ab.hicarerun.activities.RoachActivity;
 import com.ab.hicarerun.adapter.ActivityAreaUnitAdapter;
 import com.ab.hicarerun.adapter.ActivityTowerAdapter;
 import com.ab.hicarerun.adapter.RecycleByActivityAdapter;
@@ -186,6 +187,10 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                 Log.d("isCombine", combinedOrderId);
                 Log.d("isCombine", String.valueOf(isCombineTask));
             }
+        });
+        mFragmentServiceUnitBinding.btnRoach.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), RoachActivity.class);
+            startActivity(intent);
         });
         mFragmentServiceUnitBinding.viewFloorTv.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), BrowserActivity.class);

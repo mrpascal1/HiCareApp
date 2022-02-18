@@ -37,7 +37,8 @@ import com.ab.hicarerun.network.models.handshakemodel.ContinueHandShakeResponse;
 import com.ab.hicarerun.network.models.handshakemodel.HandShakeResponse;
 import com.ab.hicarerun.network.models.incentivemodel.IncentiveResponse;
 import com.ab.hicarerun.network.models.inventorymodel.AddInventoryResult;
-import com.ab.hicarerun.network.models.inventorymodel.InventoryListModel.InventoryListResult;
+import com.ab.hicarerun.network.models.inventorymodel.historymodel.InventoryHistoryBase;
+import com.ab.hicarerun.network.models.inventorymodel.inventorylistmodel.InventoryListResult;
 import com.ab.hicarerun.network.models.jeopardymodel.CWFJeopardyRequest;
 import com.ab.hicarerun.network.models.jeopardymodel.CWFJeopardyResponse;
 import com.ab.hicarerun.network.models.jeopardymodel.JeopardyReasonModel;
@@ -628,6 +629,9 @@ public interface IRetrofit {
 
     @GET("Inventory/GetInventoryListByOrderNo")
     Call<InventoryListResult> getInventoryListByOrderNo(@Query("orderno") String orderNo);
+
+    @GET("Inventory/GetInventoryHistory")
+    Call<InventoryHistoryBase> getInventoryHistory(@Query("itemCode") String itemCode);
 
     @GET("B2BInspection/GetB2bInspectionQuestions")
     Call<PulseResponse> getPulseB2bInspectionQuestions(@Query("taskId") String taskId, @Query("resourceId") String resourceId, @Query("lan") String lan);

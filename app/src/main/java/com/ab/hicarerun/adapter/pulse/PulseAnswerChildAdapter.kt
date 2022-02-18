@@ -15,6 +15,7 @@ import com.ab.hicarerun.network.models.pulsemodel.QuestionOption
 import com.ab.hicarerun.network.models.pulsemodel.SubQuestionList
 import com.ab.hicarerun.utils.AppUtils
 import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 
 class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<PulseAnswerChildAdapter.MyHolder>() {
 
@@ -131,6 +132,7 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
                 selectEmoji(holder)
             }
         }
+        disableAlliFSubmitted(holder)
 
         holder.binding.veryBadLayout.onClick(holder)
         holder.binding.badLayout.onClick(holder)
@@ -248,6 +250,27 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
     }
     fun LinearLayout.removeBg(){
         setBackgroundResource(0)
+    }
+    fun disableRating(linearLayout: LinearLayout){
+        for (i in 0 until linearLayout.childCount){
+            val child = linearLayout.getChildAt(i)
+            child.isEnabled = false
+        }
+    }
+    fun disableChips(chipGroup: ChipGroup){
+        for (i in 0 until chipGroup.childCount){
+            val chip = chipGroup.getChildAt(i)
+            chip.isEnabled = false
+        }
+    }
+    fun disableAlliFSubmitted(holder: MyHolder){
+        if (AppUtils.isPulseSubmitted){
+            holder.binding.rbAnswers.isEnabled = false
+            holder.binding.chkAnswers.isEnabled = false
+            holder.binding.spnType.isEnabled = false
+            disableRating(holder.binding.ratingEmoji)
+            disableChips(holder.binding.chipGroup)
+        }
     }
 
     fun addData(items: List<QuestionOption>?, questionTitle: String?, questionId: Int?, type: String?, answer: String?, isDisabled: Boolean?, questionStrOption: ArrayList<String>?){

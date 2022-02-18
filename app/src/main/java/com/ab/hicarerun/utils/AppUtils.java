@@ -106,6 +106,7 @@ public class AppUtils {
     public static boolean isInspectionDone = false;
     public static boolean isTmsInspectionDone = false;
     public static boolean isServiceDeliveryFilled = false;
+    public static boolean isPulseSubmitted = false;
     public static String sequenceNo = "";
     public static String resourceId = "";
     public static String appointmentDate = "";
@@ -116,6 +117,7 @@ public class AppUtils {
     public static String CAMERA_SCREEN = "";
     public static String taskId = "";
     public static String status = "";
+    public static String accountId = "";
     public static boolean NOT_RENEWAL_DONE = false;
     public static boolean IS_ACTIVITY_THERE = false;
     public static boolean IS_QRCODE_THERE = true;

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -30,7 +29,7 @@ import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
 import com.ab.hicarerun.network.models.inventorymodel.ActionList
 import com.ab.hicarerun.network.models.inventorymodel.AddInventoryResult
-import com.ab.hicarerun.network.models.inventorymodel.InventoryListModel.InventoryListResult
+import com.ab.hicarerun.network.models.inventorymodel.inventorylistmodel.InventoryListResult
 import com.ab.hicarerun.network.models.inventorymodel.TechnicianList
 import com.ab.hicarerun.network.models.tsscannermodel.BaseResponse
 import com.ab.hicarerun.utils.AppUtils
@@ -100,6 +99,11 @@ class TaskInventoryActivity : BaseActivity() {
             finish()
         }
 
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            getInventoryListByOrderNo(orderNo)
+            binding.swipeRefreshLayout.isRefreshing = false
+        }
+
         getInventoryListByOrderNo(orderNo)
     }
 
@@ -150,7 +154,7 @@ class TaskInventoryActivity : BaseActivity() {
             formatted = AppUtils.getFormatted(formatted, "dd-MM-yyyy", "dd-MM-yy")
             return formatted
         }catch (e: Exception) {
-            Toasty.error(this, "Invalid date").show()
+            Toasty.error(this, "Invalid QR code").show()
         }
         return ""
     }

@@ -13,6 +13,7 @@ import com.ab.hicarerun.adapter.tms.TmsQuestionsParentAdapter
 import com.ab.hicarerun.databinding.LayoutPulseParentBinding
 import com.ab.hicarerun.network.models.pulsemodel.QuestionList
 import com.ab.hicarerun.network.models.pulsemodel.SubQuestionList
+import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.AppUtils.checkItems
 import com.squareup.picasso.Picasso
 
@@ -33,6 +34,23 @@ class PulseQuestionAdapter(val context: Context): RecyclerView.Adapter<PulseQues
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         holder.bindItems(items[position])
+
+        if (AppUtils.isPulseSubmitted){
+            holder.binding.relPhoto.isEnabled = false
+            holder.binding.relPhoto2.isEnabled = false
+            holder.binding.relPhoto3.isEnabled = false
+            holder.binding.relPhoto4.isEnabled = false
+
+            holder.binding.lnrUpload.isEnabled = false
+            holder.binding.lnrUpload2.isEnabled = false
+            holder.binding.lnrUpload3.isEnabled = false
+            holder.binding.lnrUpload4.isEnabled = false
+
+            holder.binding.imageCancel.isEnabled = false
+            holder.binding.imageCancel2.isEnabled = false
+            holder.binding.imageCancel3.isEnabled = false
+            holder.binding.imageCancel4.isEnabled = false
+        }
 
         if (items[position].isPictureRequired == true) {
             holder.binding.relPhoto.visibility = View.VISIBLE
