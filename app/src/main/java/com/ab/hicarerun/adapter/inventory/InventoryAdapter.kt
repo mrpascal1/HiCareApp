@@ -9,12 +9,12 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.R
 import com.ab.hicarerun.databinding.ItemInventoryListBinding
-import com.ab.hicarerun.network.models.inventorymodel.inventorylistmodel.Data
+import com.ab.hicarerun.network.models.inventorymodel.inventorylistmodel.InventoryListData
 
 class InventoryAdapter(val context: Context) : RecyclerView.Adapter<InventoryAdapter.MyHolder>(){
 
     var historyClickListener: HistoryClickListener? = null
-    var items = ArrayList<Data>()
+    var items = ArrayList<InventoryListData>()
     var isFromTask = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
@@ -24,21 +24,25 @@ class InventoryAdapter(val context: Context) : RecyclerView.Adapter<InventoryAda
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         holder.bindItems(items[position], isFromTask)
-        historyClickListener?.onClick(items[position].item_Code.toString())
+        holder.binding.historyBtn.setOnClickListener {
+            historyClickListener?.onClick(items[position].item_Code.toString())
+        }
     }
 
     override fun getItemCount(): Int {
         return items.size
     }
 
-    fun addData(item: List<Data>?, isFromTask: Boolean){
+    fun addData(item: List<InventoryListData>?, isFromTask: Boolean){
         this.isFromTask = isFromTask
         items.clear()
-        items.addAll(item!!)
+        if (item != null){
+            items.addAll(item)
+        }
     }
 
     class MyHolder(val binding: ItemInventoryListBinding, val context: Context) : RecyclerView.ViewHolder(binding.root){
-        fun bindItems(data: Data, isFromTask: Boolean){
+        fun bindItems(data: InventoryListData, isFromTask: Boolean){
             binding.inventoryCodeTv.setTypeface(null, Typeface.BOLD)
             binding.statusTv.setTypeface(null, Typeface.BOLD)
             binding.inventoryCodeTv.text = data.inventory_Code.toString()
@@ -60,7 +64,7 @@ class InventoryAdapter(val context: Context) : RecyclerView.Adapter<InventoryAda
         }
     }
 
-    interface HistoryClickListener{
+    fun interface HistoryClickListener{
         fun onClick(itemCode: String)
     }
 }

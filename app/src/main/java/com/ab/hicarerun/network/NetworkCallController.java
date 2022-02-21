@@ -104,6 +104,8 @@ import com.ab.hicarerun.network.models.referralmodel.ReferralSRResponse;
 import com.ab.hicarerun.network.models.rewardsmodel.RewardsResponse;
 import com.ab.hicarerun.network.models.rewardsmodel.SaveRedeemRequest;
 import com.ab.hicarerun.network.models.rewardsmodel.SaveRedeemResponse;
+import com.ab.hicarerun.network.models.roachmodel.roachlistmodel.RoachBase;
+import com.ab.hicarerun.network.models.roachmodel.saveroachmodel.RoachSaveBase;
 import com.ab.hicarerun.network.models.routinemodel.RoutineResponse;
 import com.ab.hicarerun.network.models.routinemodel.SaveRoutineResponse;
 import com.ab.hicarerun.network.models.routinemodel.TechRoutineData;
@@ -5501,6 +5503,36 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<BaseResponse> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void saveDeviceRegistrationForApp(int requestCode, HashMap<String, Object> data) {
+        BaseApplication.getIotApi()
+                .saveDeviceRegistrationForApp(data)
+                .enqueue(new Callback<RoachSaveBase>(){
+                    @Override
+                    public void onResponse(Call<RoachSaveBase> call, Response<RoachSaveBase> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+                    @Override
+                    public void onFailure(Call<RoachSaveBase> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void getAllDeviceByAccount(int requestCode, String accountNo) {
+        BaseApplication.getIotApi()
+                .getAllDeviceByAccount(accountNo)
+                .enqueue(new Callback<RoachBase>(){
+                    @Override
+                    public void onResponse(Call<RoachBase> call, Response<RoachBase> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+                    @Override
+                    public void onFailure(Call<RoachBase> call, Throwable t) {
                         mListner.onFailure(requestCode);
                     }
                 });

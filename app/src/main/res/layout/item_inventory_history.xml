@@ -47,7 +47,7 @@
                     android:visibility="visible">
 
                     <TextView
-                        android:layout_width="115dp"
+                        android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="Bucket Name"
                         android:textSize="14sp" />
@@ -86,7 +86,7 @@
                     android:visibility="visible">
 
                     <TextView
-                        android:layout_width="115dp"
+                        android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="Assign Type"
                         android:textSize="14sp" />
@@ -125,7 +125,7 @@
                     android:visibility="visible">
 
                     <TextView
-                        android:layout_width="115dp"
+                        android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="Assigned To"
                         android:textSize="14sp" />
@@ -164,7 +164,7 @@
                     android:visibility="visible">
 
                     <TextView
-                        android:layout_width="115dp"
+                        android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="Assigned Date"
                         android:textSize="14sp" />
@@ -203,7 +203,7 @@
                     android:visibility="visible">
 
                     <TextView
-                        android:layout_width="115dp"
+                        android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="Created By"
                         android:textSize="14sp" />
@@ -243,7 +243,7 @@
 
                     <TextView
                         android:id="@+id/statusLabel"
-                        android:layout_width="115dp"
+                        android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:text="Status"
                         android:textSize="14sp" />
@@ -373,7 +373,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:orientation="horizontal"
-                >
+                android:visibility="gone">
                 <ImageView
                     android:id="@+id/deleteBtn"
                     android:layout_width="30dp"

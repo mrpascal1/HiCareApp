@@ -2,7 +2,7 @@ package com.ab.hicarerun.network.models.inventorymodel.inventorylistmodel
 
 import com.google.gson.annotations.SerializedName
 
-data class Data (
+data class InventoryListData (
 	@SerializedName("Id") val id : Int?,
 	@SerializedName("Inventory_Code") val inventory_Code : String?,
 	@SerializedName("Item_Code") val item_Code : String?,

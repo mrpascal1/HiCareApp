@@ -18,14 +18,25 @@
             android:src="@drawable/ic_arrow_back_white"
             android:padding="12dp"/>
         <TextView
+            android:id="@+id/titleTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Roach"
+            android:text="Roach Station"
             android:textSize="18sp"
             android:textColor="@color/white"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"/>
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/errorTv"
+        android:layout_below="@id/headerLayout"
+        android:layout_above="@id/buttonsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="No data found!"
+        android:gravity="center"
+        android:visibility="gone"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/roachRecyclerView"

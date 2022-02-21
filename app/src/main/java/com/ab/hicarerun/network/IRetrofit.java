@@ -92,6 +92,8 @@ import com.ab.hicarerun.network.models.referralmodel.ReferralSRResponse;
 import com.ab.hicarerun.network.models.rewardsmodel.RewardsResponse;
 import com.ab.hicarerun.network.models.rewardsmodel.SaveRedeemRequest;
 import com.ab.hicarerun.network.models.rewardsmodel.SaveRedeemResponse;
+import com.ab.hicarerun.network.models.roachmodel.roachlistmodel.RoachBase;
+import com.ab.hicarerun.network.models.roachmodel.saveroachmodel.RoachSaveBase;
 import com.ab.hicarerun.network.models.routinemodel.RoutineResponse;
 import com.ab.hicarerun.network.models.routinemodel.SaveRoutineResponse;
 import com.ab.hicarerun.network.models.routinemodel.TechRoutineData;
@@ -148,6 +150,7 @@ public interface IRetrofit {
     String UAT = "http://api.hicare.in/Mobile/api/";
     String B2B_URL = "http://connect.hicare.in/b2bwowuat/api/"; //b2bwow(production) & b2bwowuat(uat)
     String INVENTORY_URL = "http://connect.hicare.in/inventory_api/api/";
+    String IOT_URL = "http://connect.hicare.in/iotapi/api/";
 
     /*[Verify User]*/
     @GET("userverification/VerifyUser")
@@ -638,4 +641,16 @@ public interface IRetrofit {
 
     @POST("B2BInspection/UpdateB2BInspection")
     Call<BaseResponse> updateB2BInspection(@Body List<PulseData> data);
+
+    @POST("DeviceRegistration/SaveDeviceRegistrationForApp")
+    Call<RoachSaveBase> saveDeviceRegistrationForApp(@Body HashMap<String, Object> data);
+
+    @GET("Device/GetAllDeviceByAccount")
+    Call<RoachBase> getAllDeviceByAccount(@Query("AccountNo") String accountNo);
+
+    @POST("DeviceRegistration/DeleteDevice")
+    Call<BaseResponse> deleteDevice(@Body HashMap<String, Object> data);
+
+    @POST("IOTImage/UpdateImageForApp")
+    Call<BaseResponse> updateImageForApp(@Body HashMap<String, Object> data);
 }

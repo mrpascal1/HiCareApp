@@ -4,7 +4,97 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.core.widget.NestedScrollView
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/shape_more_rounded_corner">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/cancelBtn"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="13dp"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/ic_completion_cancel" />
+
+            <TextView
+                android:id="@+id/txtTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="13dp"
+                android:gravity="center"
+                android:text="Inventory History"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp" />
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/txtTitle"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="13dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/tab_textColor" />
+
+
+            <RelativeLayout
+                android:layout_below="@id/view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_margin="12dp">
+
+
+                <TextView
+                    android:id="@+id/txtPart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="CONSULTATION"
+                    android:textColor="@color/lightRed"
+                    android:textSize="13sp"
+                    android:visibility="gone"/>
+
+
+
+                <LinearLayout
+                    android:id="@+id/lnrData"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/txtPart"
+                    android:orientation="vertical">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/historyRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:listitem="@layout/item_inventory_history"/>
+
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <!--<androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -25,41 +115,48 @@
 
 
                     <TextView
-                        android:id="@+id/barcodeTypeTv"
+                        android:id="@+id/historyTitleTv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_marginLeft="15dp"
                         android:layout_marginTop="15dp"
                         android:layout_marginRight="15dp"
-                        android:text="Equipment Type"
+                        android:text="Inventory History"
                         android:textColor="@color/colorPrimary"
                         android:textSize="20sp" />
+                    <ImageView
+                        android:id="@+id/closeIv"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/ic_close"
+                        android:layout_alignParentEnd="true"
+                        android:layout_margin="8dp"/>
                     <View
                         android:id="@+id/view"
                         android:layout_width="match_parent"
                         android:layout_height="1.5dp"
-                        android:layout_below="@id/barcodeTypeTv"
+                        android:layout_below="@id/historyTitleTv"
                         android:layout_marginLeft="15dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginRight="15dp"
                         android:background="@drawable/dotted_line" />
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/pestRecyclerView"
+                        android:id="@+id/historyRecyclerView"
                         android:layout_below="@id/view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:scrollbars="vertical"
                         android:visibility="visible"
                         android:layout_marginTop="4dp"
-                        tools:listitem="@layout/row_barcode_pest_type" />
+                        tools:listitem="@layout/item_inventory_history" />
 
                 </RelativeLayout>
 
             </RelativeLayout>
 
         </RelativeLayout>
-    </androidx.core.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>-->
 
 </FrameLayout>

@@ -1,33 +1,36 @@
 package com.ab.hicarerun.activities.inventory
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.BaseActivity
 import com.ab.hicarerun.R
 import com.ab.hicarerun.activities.NewBarcodeActivity
 import com.ab.hicarerun.adapter.inventory.InventoryAdapter
+import com.ab.hicarerun.adapter.inventory.InventoryHistoryAdapter
 import com.ab.hicarerun.databinding.ActivityInventoryBinding
+import com.ab.hicarerun.databinding.LayoutInventoryHistoryBinding
 import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
 import com.ab.hicarerun.network.models.inventorymodel.ActionList
 import com.ab.hicarerun.network.models.inventorymodel.AddInventoryResult
 import com.ab.hicarerun.network.models.inventorymodel.inventorylistmodel.InventoryListResult
 import com.ab.hicarerun.network.models.inventorymodel.TechnicianList
+import com.ab.hicarerun.network.models.inventorymodel.historymodel.InventoryHistoryBase
+import com.ab.hicarerun.network.models.inventorymodel.historymodel.InventoryHistoryData
 import com.ab.hicarerun.network.models.tsscannermodel.BaseResponse
 import com.ab.hicarerun.utils.AppUtils
 import com.karumi.dexter.Dexter
@@ -49,10 +52,13 @@ class InventoryActivity : BaseActivity() {
     var referenceId = ""
     val la = ArrayList<String>()
     val lt = ArrayList<String>()
+    val historyData = ArrayList<InventoryHistoryData>()
     lateinit var binding: ActivityInventoryBinding
     lateinit var actionList: ArrayList<ActionList>
     lateinit var technicianList: ArrayList<TechnicianList>
     lateinit var inventoryAdapter: InventoryAdapter
+    lateinit var historyAdapter: InventoryHistoryAdapter
+    lateinit var historyView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,15 +69,16 @@ class InventoryActivity : BaseActivity() {
         actionList = ArrayList()
         technicianList = ArrayList()
         inventoryAdapter = InventoryAdapter(this)
+        historyAdapter = InventoryHistoryAdapter(this)
 
         val inventoryLayoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         inventoryLayoutManager.stackFromEnd = false
         inventoryLayoutManager.reverseLayout = false
 
-        binding.inventoryRecyclerView.layoutManager = inventoryLayoutManager
-        binding.inventoryRecyclerView.setHasFixedSize(true)
-        binding.inventoryRecyclerView.isNestedScrollingEnabled = false
-        binding.inventoryRecyclerView.adapter = inventoryAdapter
+        binding.inventoryRecyclerView.configure(this).apply {
+            adapter = inventoryAdapter
+        }
+        //binding.inventoryRecyclerView.adapter = inventoryAdapter
 
         binding.addBtn.setOnClickListener {
             val intent = Intent(this, NewBarcodeActivity::class.java)
@@ -90,6 +97,11 @@ class InventoryActivity : BaseActivity() {
         binding.swipeRefreshLayout.setOnRefreshListener {
             getInventoryList()
             binding.swipeRefreshLayout.isRefreshing = false
+        }
+
+        inventoryAdapter.historyClickListener = InventoryAdapter.HistoryClickListener {
+            Log.d("TAG", it)
+            getInventoryHistory(it)
         }
 
         getInventoryList()
@@ -327,7 +339,56 @@ class InventoryActivity : BaseActivity() {
     }
 
     private fun showInventoryHistoryDialog(){
+        val li = LayoutInflater.from(this)
+        historyView = li.inflate(R.layout.layout_inventory_history, null)
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        alertDialogBuilder.setView(historyView)
+        val alertDialog = alertDialogBuilder.create()
+        //val nestedScrollView = historyView.findViewById<NestedScrollView>(R.id.nestedScrollView)
+        val closeIv = historyView.findViewById<ImageView>(R.id.closeIv)
+        val historyRecyclerView = historyView.findViewById<RecyclerView>(R.id.historyRecyclerView)
+        val txtTitle = historyView.findViewById<TextView>(R.id.txtTitle)
+        historyAdapter.addData(historyData)
+        historyRecyclerView.configure(this).apply {
+            adapter = historyAdapter
+        }
+        /*nestedScrollView.post {
+            nestedScrollView.scrollTo(0,0)
+        }*/
+        txtTitle.setOnClickListener {
+            alertDialog.dismiss()
+        }
+        alertDialog.show()
+        alertDialog.setCancelable(false)
+        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alertDialog.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
+        alertDialog.setCanceledOnTouchOutside(false)
+    }
 
+    private fun getInventoryHistory(itemCode: String){
+        showProgressDialog()
+        val controller = NetworkCallController()
+        controller.setListner(object : NetworkResponseListner<InventoryHistoryBase>{
+            override fun onResponse(requestCode: Int, response: InventoryHistoryBase?) {
+                if (response != null && response.isSuccess == true){
+                    if (!response.data.isNullOrEmpty()){
+                        historyData.addAll(response.data)
+                        showInventoryHistoryDialog()
+                    }else{
+                        Toasty.error(applicationContext, "No history found").show()
+                    }
+                }else{
+                    Toasty.error(applicationContext, "No history found").show()
+                }
+                dismissProgressDialog()
+            }
+
+            override fun onFailure(requestCode: Int) {
+                dismissProgressDialog()
+                Log.d("TAG", "Inventory history Failed")
+            }
+        })
+        controller.getInventoryHistory(20222, itemCode)
     }
 
     private fun addInventory(userId: String, itemSerialNo: String, date: String, barcodeData: String){
@@ -467,5 +528,12 @@ class InventoryActivity : BaseActivity() {
                 }
             }
         }
+    }
+
+    fun RecyclerView.configure(context: Context, reverseLayout: Boolean = false): RecyclerView{
+        layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, reverseLayout)
+        isNestedScrollingEnabled = false
+        setHasFixedSize(true)
+        return this
     }
 }

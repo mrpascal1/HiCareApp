@@ -504,6 +504,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             if (response.getData().getInspectionInfestationLevel() != null) {
                                 AppUtils.infestationLevel = response.getData().getInspectionInfestationLevel();
                             }
+                            AppUtils.accountId = response.getData().getAccountId();
+                            Log.d("AccountId", AppUtils.accountId);
                             isIncentiveEnable = response.getData().getIncentiveEnable();
                             isConsultationRequired = response.getData().getConsultationInspectionRequired();
                             Incentive = Integer.parseInt(response.getData().getIncentivePoint());
@@ -2459,6 +2461,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         AppUtils.taskId = "";
         AppUtils.status = "";
         AppUtils.isPulseSubmitted = false;
+        AppUtils.accountId = "";
         AppUtils.checkItems.clear();
         ChemicalRecycleAdapter.items = null;
         ChemicalRecycleAdapter.indexToDisable = null;
