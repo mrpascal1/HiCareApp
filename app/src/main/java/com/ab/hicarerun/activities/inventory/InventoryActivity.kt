@@ -372,6 +372,7 @@ class InventoryActivity : BaseActivity() {
             override fun onResponse(requestCode: Int, response: InventoryHistoryBase?) {
                 if (response != null && response.isSuccess == true){
                     if (!response.data.isNullOrEmpty()){
+                        historyData.clear()
                         historyData.addAll(response.data)
                         showInventoryHistoryDialog()
                     }else{

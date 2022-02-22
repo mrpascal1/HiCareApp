@@ -396,6 +396,14 @@ public class GeneralData implements RealmModel {
     @Expose
     private boolean IsTMS;
 
+    @SerializedName("IsPulseRecorded")
+    @Expose
+    private boolean IsPulseRecorded;
+
+    @SerializedName("ShowRoachInspectionButton")
+    @Expose
+    private boolean ShowRoachInspectionButton;
+
     public GeneralData() {
         SchedulingStatus = "NA";
         PaymentMode = "NA";
@@ -467,6 +475,8 @@ public class GeneralData implements RealmModel {
         ShowOnsiteOTP = false;
         ShowCompletionOTP = false;
         IsTMS = false;
+        IsPulseRecorded = false;
+        ShowRoachInspectionButton = false;
     }
 
     public String getOrderNumber() {
@@ -1254,5 +1264,21 @@ public class GeneralData implements RealmModel {
 
     public void setTMS(boolean TMS) {
         IsTMS = TMS;
+    }
+
+    public boolean isPulseRecorded() {
+        return IsPulseRecorded;
+    }
+
+    public void setPulseRecorded(boolean pulseRecorded) {
+        IsPulseRecorded = pulseRecorded;
+    }
+
+    public boolean isShowRoachInspectionButton() {
+        return ShowRoachInspectionButton;
+    }
+
+    public void setShowRoachInspectionButton(boolean showRoachInspectionButton) {
+        ShowRoachInspectionButton = showRoachInspectionButton;
     }
 }

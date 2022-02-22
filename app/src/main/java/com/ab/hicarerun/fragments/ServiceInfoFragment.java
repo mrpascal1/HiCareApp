@@ -1231,7 +1231,11 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                     AppUtils.isServiceDeliveryFilled = true;
                                 }
                                 //mListCallback.onPostJobButtonClicked();
-                                mListCallback.onTmsPostJobButtonClicked();
+                                if (AppUtils.isInspectionDone) {
+                                    mListCallback.onTmsPostJobButtonClicked();
+                                }else {
+                                    Toasty.error(requireContext(), "Please complete consultation & Inspection first").show();
+                                }
                             }else {
                                 isPostJobCompletionDone = true;
                                 mListCallback.onPostJobButtonClicked();

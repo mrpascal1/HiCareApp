@@ -107,6 +107,8 @@ public class AppUtils {
     public static boolean isTmsInspectionDone = false;
     public static boolean isServiceDeliveryFilled = false;
     public static boolean isPulseSubmitted = false;
+    public static boolean showRoachInspectionButton = false;
+    public static boolean isB2BJob = false;
     public static String sequenceNo = "";
     public static String resourceId = "";
     public static String appointmentDate = "";

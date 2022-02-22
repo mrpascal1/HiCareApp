@@ -500,7 +500,10 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             referralQuestion = response.getData().getRefferalQuestion();
                             referralChecked = response.getData().getCustomerInterestedToGiveRefferals();
                             referralInstructions = response.getData().getCustomerRefferalAlert();
+                            AppUtils.showRoachInspectionButton = response.getData().isShowRoachInspectionButton();
+                            AppUtils.isPulseSubmitted = response.getData().isPulseRecorded();
                             AppUtils.isInspectionDone = response.getData().getConsultationInspectionDone();
+                            AppUtils.isB2BJob = response.getData().isB2BJob();
                             if (response.getData().getInspectionInfestationLevel() != null) {
                                 AppUtils.infestationLevel = response.getData().getInspectionInfestationLevel();
                             }
@@ -1279,6 +1282,10 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 progress.dismiss();
                 isFinalSave = true;
                 showCompletionDialog();
+            } else if (Status.equals("Completed") && AppUtils.isB2BJob && !AppUtils.isPulseSubmitted) {
+                mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
+                progress.dismiss();
+                Toasty.error(this, "Please complete B2B pulse", Toast.LENGTH_SHORT, true).show();
             }
             /* else if(Status.equals("Completed") && isIncentiveEnable) {
                 if (isTechnicianFeedbackEnable && Rate == 0 && Status.equals("Completed")) {
@@ -2461,6 +2468,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         AppUtils.taskId = "";
         AppUtils.status = "";
         AppUtils.isPulseSubmitted = false;
+        AppUtils.showRoachInspectionButton = false;
         AppUtils.accountId = "";
         AppUtils.checkItems.clear();
         ChemicalRecycleAdapter.items = null;

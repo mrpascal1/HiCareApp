@@ -646,11 +646,11 @@ public interface IRetrofit {
     Call<RoachSaveBase> saveDeviceRegistrationForApp(@Body HashMap<String, Object> data);
 
     @GET("Device/GetAllDeviceByAccount")
-    Call<RoachBase> getAllDeviceByAccount(@Query("AccountNo") String accountNo);
+    Call<RoachBase> getAllDeviceByAccount(@Query("AccountNo") String accountNo, @Query("taskId") String taskId);
 
     @POST("DeviceRegistration/DeleteDevice")
-    Call<BaseResponse> deleteDevice(@Body HashMap<String, Object> data);
+    Call<RoachSaveBase> deleteDevice(@Query("deviceId") int deviceId);
 
     @POST("IOTImage/UpdateImageForApp")
-    Call<BaseResponse> updateImageForApp(@Body HashMap<String, Object> data);
+    Call<RoachSaveBase> updateImageForApp(@Body HashMap<String, Object> data);
 }

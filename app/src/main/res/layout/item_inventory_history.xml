@@ -36,7 +36,8 @@
                     android:textColor="@color/black"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_bold"
-                    android:layout_marginStart="4dp"/>
+                    android:layout_marginStart="4dp"
+                    android:visibility="gone"/>
 
                 <LinearLayout
                     android:id="@+id/itemCodeLayout"
@@ -88,7 +89,7 @@
                     <TextView
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
-                        android:text="Assign Type"
+                        android:text="Assigned Type"
                         android:textSize="14sp" />
 
                     <TextView

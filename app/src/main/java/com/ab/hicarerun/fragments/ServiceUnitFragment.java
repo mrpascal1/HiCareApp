@@ -150,6 +150,11 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
             mFragmentServiceUnitBinding.btnRodentScanner.setVisibility(View.GONE);
             AppUtils.IS_QRCODE_THERE = false;
         }
+        if (AppUtils.showRoachInspectionButton){
+            mFragmentServiceUnitBinding.btnRoach.setVisibility(View.VISIBLE);
+        }else {
+            mFragmentServiceUnitBinding.btnRoach.setVisibility(View.GONE);
+        }
 
         mFragmentServiceUnitBinding.recycleTower.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());

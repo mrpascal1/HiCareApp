@@ -5523,9 +5523,9 @@ public class NetworkCallController {
                 });
     }
 
-    public void getAllDeviceByAccount(int requestCode, String accountNo) {
+    public void getAllDeviceByAccount(int requestCode, String accountNo, String taskId) {
         BaseApplication.getIotApi()
-                .getAllDeviceByAccount(accountNo)
+                .getAllDeviceByAccount(accountNo, taskId)
                 .enqueue(new Callback<RoachBase>(){
                     @Override
                     public void onResponse(Call<RoachBase> call, Response<RoachBase> response) {
@@ -5533,6 +5533,36 @@ public class NetworkCallController {
                     }
                     @Override
                     public void onFailure(Call<RoachBase> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void updateImageForApp(int requestCode, HashMap<String, Object> data) {
+        BaseApplication.getIotApi()
+                .updateImageForApp(data)
+                .enqueue(new Callback<RoachSaveBase>(){
+                    @Override
+                    public void onResponse(Call<RoachSaveBase> call, Response<RoachSaveBase> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+                    @Override
+                    public void onFailure(Call<RoachSaveBase> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void deleteDevice(int requestCode, int deviceId) {
+        BaseApplication.getIotApi()
+                .deleteDevice(deviceId)
+                .enqueue(new Callback<RoachSaveBase>(){
+                    @Override
+                    public void onResponse(Call<RoachSaveBase> call, Response<RoachSaveBase> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+                    @Override
+                    public void onFailure(Call<RoachSaveBase> call, Throwable t) {
                         mListner.onFailure(requestCode);
                     }
                 });
