@@ -101,7 +101,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:text="Very Bad"/>
+                android:text="Very Sad"/>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/badLayout"
@@ -119,7 +119,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:text="Bad"/>
+                android:text="Sad"/>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/averageLayout"
@@ -137,7 +137,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:text="Average"/>
+                android:text="Numb"/>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/goodLayout"
@@ -155,7 +155,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:text="Good"/>
+                android:text="Happy"/>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/veryGoodLayout"
@@ -173,7 +173,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:text="Very Good"/>
+                android:text="Very Happy"/>
         </LinearLayout>
     </LinearLayout>
     <LinearLayout

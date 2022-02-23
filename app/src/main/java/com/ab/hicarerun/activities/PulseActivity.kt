@@ -204,7 +204,7 @@ class PulseActivity : BaseActivity() {
                 if (response != null){
                     if (response.isSuccess == true){
                         AppUtils.isPulseSubmitted = true;
-                        Toasty.success(applicationContext, "Updated successfully").show()
+                        Toasty.success(applicationContext, "Survey submitted successfully").show()
                         finish()
                     }else{
                         Toasty.error(applicationContext, "Error").show()

@@ -42,7 +42,13 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
         // chip unchecked color
         Color.parseColor("#E0E0E0")
     )
+    val strokeColors = intArrayOf(
+        Color.parseColor("#2BB77A"),
+        // chip unchecked color
+        Color.parseColor("#000000")
+    )
     val colorList = ColorStateList(states, colors)
+    val strokeColorList = ColorStateList(states, strokeColors)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
         val view = LayoutPulseChildBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -109,6 +115,8 @@ class PulseAnswerChildAdapter(val context: Context) : RecyclerView.Adapter<Pulse
                 chip.isCheckable = true
                 chip.isCheckedIconVisible = false
                 chip.chipBackgroundColor = colorList
+                chip.chipStrokeWidth = 1f
+                chip.chipStrokeColor = strokeColorList
                 if (answer.contains(it)){
                     chip.isChecked = true
                 }

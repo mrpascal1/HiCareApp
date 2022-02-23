@@ -151,9 +151,9 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
             AppUtils.IS_QRCODE_THERE = false;
         }
         if (AppUtils.showRoachInspectionButton){
-            mFragmentServiceUnitBinding.btnRoach.setVisibility(View.VISIBLE);
+            mFragmentServiceUnitBinding.cmtCard.setVisibility(View.VISIBLE);
         }else {
-            mFragmentServiceUnitBinding.btnRoach.setVisibility(View.GONE);
+            mFragmentServiceUnitBinding.cmtCard.setVisibility(View.GONE);
         }
 
         mFragmentServiceUnitBinding.recycleTower.setHasFixedSize(true);
@@ -193,7 +193,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                 Log.d("isCombine", String.valueOf(isCombineTask));
             }
         });
-        mFragmentServiceUnitBinding.btnRoach.setOnClickListener(v -> {
+        mFragmentServiceUnitBinding.cmtCard.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), RoachActivity.class);
             startActivity(intent);
         });

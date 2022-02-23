@@ -1285,7 +1285,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             } else if (Status.equals("Completed") && AppUtils.isB2BJob && !AppUtils.isPulseSubmitted) {
                 mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
                 progress.dismiss();
-                Toasty.error(this, "Please complete B2B pulse", Toast.LENGTH_SHORT, true).show();
+                Toasty.error(this, "Please complete B2B Pulse survey", Toast.LENGTH_SHORT, true).show();
             }
             /* else if(Status.equals("Completed") && isIncentiveEnable) {
                 if (isTechnicianFeedbackEnable && Rate == 0 && Status.equals("Completed")) {

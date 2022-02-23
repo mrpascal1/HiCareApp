@@ -167,13 +167,7 @@ class RoachActivity : BaseActivity() {
             override fun onResponse(requestCode: Int, response: RoachSaveBase?) {
                 if (response != null && response.isSuccess == true){
                     Toasty.success(applicationContext, "Device deleted successfully").show()
-                    roachList.forEach {
-                        if (it.id == dId.toString()){
-                            roachList.remove(it)
-                            return@forEach
-                        }
-                    }
-                    roachAdapter.notifyItemRemoved(p)
+                    getRoachList()
                 }else{
                     Toasty.success(applicationContext, "Update error").show()
                 }

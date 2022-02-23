@@ -329,6 +329,11 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
         }else {
             mFragmentServiceInfoBinding.lnrInventory.setVisibility(GONE);
         }
+        if (AppUtils.isB2BJob){
+            mFragmentServiceInfoBinding.lnrPulse.setVisibility(View.VISIBLE);
+        }else {
+            mFragmentServiceInfoBinding.lnrPulse.setVisibility(GONE);
+        }
         mCameraManager = (CameraManager) getActivity().getSystemService(Context.CAMERA_SERVICE);
         try {
             mCameraId = mCameraManager.getCameraIdList()[0];

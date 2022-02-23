@@ -15,6 +15,7 @@ import com.ab.hicarerun.network.models.pulsemodel.QuestionList
 import com.ab.hicarerun.network.models.pulsemodel.SubQuestionList
 import com.ab.hicarerun.utils.AppUtils
 import com.ab.hicarerun.utils.AppUtils.checkItems
+import com.ab.hicarerun.utils.ImageOverlayStfalcon
 import com.squareup.picasso.Picasso
 
 class PulseQuestionAdapter(val context: Context): RecyclerView.Adapter<PulseQuestionAdapter.MyHolder>(){
@@ -352,6 +353,26 @@ class PulseQuestionAdapter(val context: Context): RecyclerView.Adapter<PulseQues
             holder.binding.recycleSubChild.visibility = View.VISIBLE
         }else{
             holder.binding.recycleSubChild.visibility = View.GONE
+        }
+
+        holder.binding.imgUploadedCheque.setOnClickListener {
+            val arrayList = arrayOf(items[position].pictureURL!![0])
+            ImageOverlayStfalcon(context, arrayList)
+        }
+
+        holder.binding.imgUploadedCheque2.setOnClickListener {
+            val arrayList = arrayOf(items[position].pictureURL!![1])
+            ImageOverlayStfalcon(context, arrayList)
+        }
+
+        holder.binding.imgUploadedCheque3.setOnClickListener {
+            val arrayList = arrayOf(items[position].pictureURL!![2])
+            ImageOverlayStfalcon(context, arrayList)
+        }
+
+        holder.binding.imgUploadedCheque4.setOnClickListener {
+            val arrayList = arrayOf(items[position].pictureURL!![3])
+            ImageOverlayStfalcon(context, arrayList)
         }
     }
 
