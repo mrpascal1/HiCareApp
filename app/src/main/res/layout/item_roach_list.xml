@@ -20,16 +20,28 @@
             android:layout_height="wrap_content"
             android:padding="8dp">
             <ImageView
+                android:id="@+id/uploadedIv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="2dp"
+                android:visibility="gone"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_check_circle_green" />
+            <ImageView
                 android:id="@+id/locationIv"
                 android:layout_width="65dp"
                 android:layout_height="65dp"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"/>
             <LinearLayout
                 android:id="@+id/detailsLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:layout_toLeftOf="@id/uploadedIv"
+                android:layout_toStartOf="@id/uploadedIv"
                 android:layout_toRightOf="@id/locationIv"
+                android:layout_toEndOf="@id/locationIv"
                 android:layout_marginRight="10dp"
                 android:layout_marginLeft="5dp">
 
@@ -153,48 +165,36 @@
                             android:textSize="14sp" />
                     </RelativeLayout>
                 </LinearLayout>
-                <Button
-                    android:id="@+id/naBtn"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="6dp"
-                    android:text="Mark as not accessible"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:backgroundTint="@color/red"
-                    android:visibility="gone"/>
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/buttonLayout"
                 android:layout_below="@id/detailsLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:orientation="horizontal">
                 <Button
-                    android:id="@+id/uploadBtn"
+                    android:id="@+id/performBtn"
                     android:layout_weight="1"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_height="32dp"
+                    android:layout_marginRight="12dp"
                     android:visibility="visible"
-                    android:text="Upload"
+                    android:text="Perform"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
                     android:background="@drawable/button_bg"
                     android:src="@drawable/ic_upload_2" />
-                <ImageView
-                    android:id="@+id/uploadedIv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:visibility="gone"
-                    android:src="@drawable/ic_check_circle_green" />
                 <Button
                     android:layout_weight="1"
                     android:id="@+id/deleteBtn"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="32dp"
                     android:text="Remove"
-                    android:background="@drawable/button_bg"
+                    android:layout_marginStart="12dp"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    android:background="@color/md_red_400"
                     android:src="@drawable/ic_trash_round_red" />
 
             </LinearLayout>

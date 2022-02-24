@@ -5568,6 +5568,36 @@ public class NetworkCallController {
                 });
     }
 
+    public void updateDeviceLocationForApp(int requestCode, HashMap<String, Object> data) {
+        BaseApplication.getIotApi()
+                .updateDeviceLocationForApp(data)
+                .enqueue(new Callback<RoachSaveBase>(){
+                    @Override
+                    public void onResponse(Call<RoachSaveBase> call, Response<RoachSaveBase> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+                    @Override
+                    public void onFailure(Call<RoachSaveBase> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void replaceDeviceForApp(int requestCode, HashMap<String, Object> data) {
+        BaseApplication.getIotApi()
+                .replaceDeviceForApp(data)
+                .enqueue(new Callback<RoachSaveBase>(){
+                    @Override
+                    public void onResponse(Call<RoachSaveBase> call, Response<RoachSaveBase> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+                    @Override
+                    public void onFailure(Call<RoachSaveBase> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
 
     public String getRefreshToken() {
         String refreshToken = null;

@@ -13,5 +13,6 @@ data class RoachList (
 	@SerializedName("createdOnDisplay") val createdOnDisplay : String?,
 	@SerializedName("accountNo") val accountNo : String?,
 	@SerializedName("isActive") val isActive : Boolean?,
-	@SerializedName("isDeviceUpdateDone") var isDeviceUpdateDone : Boolean?
+	@SerializedName("isDeviceUpdateDone") var isDeviceUpdateDone : Boolean?,
+	@SerializedName("deviceLocationImageUrl") var deviceLocationImageUrl : String?,
 )

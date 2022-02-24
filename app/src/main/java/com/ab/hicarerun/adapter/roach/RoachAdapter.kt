@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.databinding.ItemRoachListBinding
 import com.ab.hicarerun.network.models.roachmodel.roachlistmodel.RoachList
+import com.squareup.picasso.Picasso
 
 class RoachAdapter(val context: Context): RecyclerView.Adapter<RoachAdapter.MyHolder>() {
 
@@ -20,8 +21,8 @@ class RoachAdapter(val context: Context): RecyclerView.Adapter<RoachAdapter.MyHo
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         holder.bindItems(items[position])
-        holder.binding.uploadBtn.setOnClickListener {
-            roachClickListener?.uploadClick(position, items[position].deviceName.toString(), items[position].accountNo.toString())
+        holder.binding.performBtn.setOnClickListener {
+            roachClickListener?.uploadClick(position, items[position].id.toString().toInt(), items[position].deviceName.toString(), items[position].accountNo.toString(), items[position].deviceDisplayName.toString(), items[position].deviceLocationImageUrl.toString())
         }
         holder.binding.deleteBtn.setOnClickListener {
             roachClickListener?.deleteClick(position, items[position].id.toString().toInt())
@@ -49,11 +50,19 @@ class RoachAdapter(val context: Context): RecyclerView.Adapter<RoachAdapter.MyHo
             binding.nameTv.text = data.deviceDisplayName
             binding.locationTv.text = data.deployedLocation
             binding.createdOnTv.text = data.createdOnDisplay
+            if (data.deviceLocationImageUrl != null && data.deviceLocationImageUrl != ""){
+                binding.locationIv.visibility = View.VISIBLE
+                Picasso.get().load(data.deviceLocationImageUrl).fit().into(binding.locationIv)
+            }else{
+                binding.locationIv.visibility = View.GONE
+            }
             if (data.isDeviceUpdateDone == true){
-                binding.uploadBtn.visibility = View.GONE
+                binding.performBtn.alpha = 0.6f
+                binding.performBtn.isEnabled = false
                 binding.uploadedIv.visibility = View.VISIBLE
             }else{
-                binding.uploadBtn.visibility = View.VISIBLE
+                binding.performBtn.alpha = 1f
+                binding.performBtn.isEnabled = true
                 binding.uploadedIv.visibility = View.GONE
             }
         }
@@ -64,7 +73,7 @@ class RoachAdapter(val context: Context): RecyclerView.Adapter<RoachAdapter.MyHo
     }
 
     interface RoachClickListener {
-        fun uploadClick(position: Int, deviceName: String, accountNo: String)
+        fun uploadClick(position: Int, deviceId: Int, deviceName: String, accountNo: String, deviceDisplay: String, url: String)
         fun deleteClick(position: Int, deviceId: Int)
     }
 }

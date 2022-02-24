@@ -70,6 +70,7 @@ class RoachActivity : BaseActivity() {
     private var mPhotoFile: File? = null
     private var bitmap: Bitmap? = null
     var imageUpdateListener: ImageUpdateListener? = null
+    var imageUploadListener: ImageUploadListener? = null
 
     var mPermissions = false
     val CAMERA_REQUEST = 1
@@ -78,7 +79,11 @@ class RoachActivity : BaseActivity() {
     var aNo = ""
     var p = -1
     var imageCountMap = HashMap<String, Any>()
+    var replaceMap = HashMap<String, Any>()
     var isImageUploaded = false
+    var fromUpload = false
+    var isLocationChange = false
+    var locationChanged = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,15 +106,24 @@ class RoachActivity : BaseActivity() {
             onBackPressed()
         }
         roachAdapter.roachClickListener = object : RoachAdapter.RoachClickListener{
-            override fun uploadClick(position: Int, deviceName: String, accountNo: String) {
+            override fun uploadClick(position: Int, deviceId: Int, deviceName: String, accountNo: String, deviceDisplay: String, url: String) {
                 dName = deviceName
                 aNo = accountNo
                 p = position
+                replaceMap.clear()
                 imageCountMap.clear()
                 imageCountMap["TaskId"] = AppUtils.taskId
                 imageCountMap["AccountNo"] = accountNo
                 imageCountMap["DeviceName"] = deviceName
-                showUpdateDialog()
+                val deviceDetails = HashMap<String, Any>()
+                deviceDetails.clear()
+                deviceDetails["AccountId"] = accountNo
+                deviceDetails["Id"] = deviceId
+                deviceDetails["DeviceName"] = deviceName
+                replaceMap["AccountId"] = accountNo
+                replaceMap["Id"] = deviceId
+                replaceMap["DeviceName"] = deviceName
+                showUpdateDialog(deviceDetails, deviceDisplay, url)
                 //roachAdapter.notifyItemChanged(position)
             }
             override fun deleteClick(position: Int, deviceId: Int) {
@@ -181,6 +195,27 @@ class RoachActivity : BaseActivity() {
         controller.deleteDevice(20222, deviceId)
     }
 
+    private fun updateDeviceLocationForApp(deviceDetails: HashMap<String, Any>, changeSaveBtn: Button){
+        val controller = NetworkCallController()
+        controller.setListner(object : NetworkResponseListner<RoachSaveBase>{
+            override fun onResponse(requestCode: Int, response: RoachSaveBase?) {
+                if (response != null && response.isSuccess == true){
+                    Toasty.success(applicationContext, "Location updated successfully").show()
+                    locationChanged = false
+                    changeSaveBtn.alpha = 0.6f
+                    changeSaveBtn.isEnabled = false
+                }else{
+                    Toasty.error(applicationContext, "Update failed").show()
+                }
+            }
+
+            override fun onFailure(requestCode: Int) {
+                Log.d("TAG", "Update roach location failed.")
+            }
+        })
+        controller.updateDeviceLocationForApp(202111, deviceDetails)
+    }
+
     private fun addNewRoach(deviceDetails: HashMap<String, Any>){
         showProgressDialog()
         val controller = NetworkCallController()
@@ -222,9 +257,12 @@ class RoachActivity : BaseActivity() {
                 controller.setListner(object : NetworkResponseListner<UploadCheckListData> {
                     override fun onResponse(requestCode: Int, response: UploadCheckListData?) {
                         dismissProgressDialog()
-                        imageCountMap["ImgUrl"] = response?.fileUrl.toString()
+                        if (fromUpload){
+                            imageUploadListener?.onImageUpload(response?.fileUrl.toString())
+                        }else{
+                            imageUpdateListener?.onUpdateImage(response?.fileUrl.toString())
+                        }
                         isImageUploaded = true
-                        imageUpdateListener?.onUpdateImage(response?.fileUrl.toString())
                         Log.d("TAG", "Image uploaded")
                     }
 
@@ -241,7 +279,7 @@ class RoachActivity : BaseActivity() {
         }
     }
 
-    private fun updateImageAndCount(){
+    private fun updateImageAndCount(replaceBtn: Button){
         showProgressDialog()
         val controller = NetworkCallController()
         controller.setListner(object : NetworkResponseListner<RoachSaveBase>{
@@ -256,6 +294,8 @@ class RoachActivity : BaseActivity() {
                     }
                     roachAdapter.notifyItemChanged(p)
                     imageCountMap.clear()
+                    replaceBtn.alpha = 1f
+                    replaceBtn.isEnabled = true
                     //getRoachList()
                 }else{
                     Toasty.error(applicationContext, "Update error").show()
@@ -270,13 +310,30 @@ class RoachActivity : BaseActivity() {
         controller.updateImageForApp(20221, imageCountMap)
     }
 
-    private fun showUpdateDialog(){
+    private fun replaceDeviceForApp(){
+        val controller = NetworkCallController()
+        controller.setListner(object : NetworkResponseListner<RoachSaveBase>{
+            override fun onResponse(requestCode: Int, response: RoachSaveBase?) {
+                if (response != null && response.isSuccess == true){
+                    Toasty.success(applicationContext, "Replaced successfully").show()
+                }else{
+                    Toasty.success(applicationContext, "Update failed").show()
+                }
+            }
+
+            override fun onFailure(requestCode: Int) {
+                Log.d("TAG", "Replace API failed")
+            }
+        })
+        controller.replaceDeviceForApp(202111, replaceMap)
+    }
+
+    private fun showUpdateDialog(deviceDetails: HashMap<String, Any>, deviceDisplay: String, url: String){
         showProgressDialog()
         isImageUploaded = false
-        /*val li = LayoutInflater.from(this)
-        updateDialogView = li.inflate(R.layout.update_roach_dialog, null)
-        val alertDialogBuilder = AlertDialog.Builder(this)
-        alertDialogBuilder.setView(updateDialogView)*/
+        fromUpload = false
+        isLocationChange = false
+        locationChanged = false
         val alertDialog = Dialog(this).apply {
             setCancelable(false)
             requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -285,44 +342,97 @@ class RoachActivity : BaseActivity() {
             setCanceledOnTouchOutside(false)
             setContentView(R.layout.update_roach_dialog)
         }
+        val popupTitleTv = alertDialog.findViewById<TextView>(R.id.popupTitleTv)
+        val changeSaveBtn = alertDialog.findViewById<Button>(R.id.changeSaveBtn)
+        val replaceBtn = alertDialog.findViewById<Button>(R.id.replaceBtn)
+        val changeBtn = alertDialog.findViewById<Button>(R.id.changeBtn)
         val countEt = alertDialog.findViewById<EditText>(R.id.countEt)
-        val cancelBtn = alertDialog.findViewById<AppCompatButton>(R.id.btnCancel)
-        val okBtn = alertDialog.findViewById<AppCompatButton>(R.id.okBtn)
+        val lizardCountEt = alertDialog.findViewById<EditText>(R.id.lizardCountEt)
+        val otherEt = alertDialog.findViewById<EditText>(R.id.otherEt)
+        val closeBtn = alertDialog.findViewById<Button>(R.id.closeBtn)
+        val okBtn = alertDialog.findViewById<Button>(R.id.saveBtn)
         val imgCapture = alertDialog.findViewById<ImageView>(R.id.imgCapture)
         val imgCaptured = alertDialog.findViewById<ImageView>(R.id.imgCaptured)
         val imgCancel = alertDialog.findViewById<RelativeLayout>(R.id.cancelLayout)
 
-        imgCapture.setOnClickListener {
+        val imgCapture2 = alertDialog.findViewById<ImageView>(R.id.imgCapture2)
+        val imgCaptured2 = alertDialog.findViewById<ImageView>(R.id.imgCaptured2)
+        val imgCancel2 = alertDialog.findViewById<RelativeLayout>(R.id.cancelLayout2)
+
+        popupTitleTv.text = deviceDisplay
+
+        replaceBtn.alpha = 0.6f
+        replaceBtn.isEnabled = false
+        changeSaveBtn.alpha = 0.6f
+        changeSaveBtn.isEnabled = false
+
+        if (url != "" && url != "null"){
+            Picasso.get().load(url).fit().into(imgCaptured)
+            imgCapture.visibility = View.GONE
+            imgCaptured.visibility = View.VISIBLE
+            imgCancel.visibility = View.GONE
+        }
+
+        changeBtn.setOnClickListener {
+            isLocationChange = true
+            requestStoragePermission(true)
+        }
+
+        changeSaveBtn.setOnClickListener {
+            //API call remaining
+            updateDeviceLocationForApp(deviceDetails, changeSaveBtn)
+        }
+
+        imgCapture2.setOnClickListener {
             requestStoragePermission(true)
         }
         setOnImageUpdateListener {
-            Picasso.get().load(it).fit().into(imgCaptured)
-            imgCapture.visibility = View.GONE
-            imgCaptured.visibility = View.VISIBLE
-            imgCancel.visibility = View.VISIBLE
+            if (!isLocationChange) {
+                Picasso.get().load(it).fit().into(imgCaptured2)
+                imageCountMap["ImgUrl"] = it
+                imgCapture2.visibility = View.GONE
+                imgCaptured2.visibility = View.VISIBLE
+                imgCancel2.visibility = View.VISIBLE
+            }else{
+                Picasso.get().load(it).fit().into(imgCaptured)
+                deviceDetails["LocationImageUrl"] = it
+                imgCapture.visibility = View.GONE
+                imgCaptured.visibility = View.VISIBLE
+                imgCancel.visibility = View.GONE
+                isLocationChange = false
+                locationChanged = true
+                changeSaveBtn.alpha = 1f
+                changeSaveBtn.isEnabled = true
+            }
             Log.d("TAG", "Image Loaded")
-            //dismissProgressDialog()
         }
-        imgCancel.setOnClickListener {
-            imgCapture.visibility = View.VISIBLE
-            imgCaptured.visibility = View.GONE
-            imgCancel.visibility = View.GONE
+        imgCancel2.setOnClickListener {
+            imgCapture2.visibility = View.VISIBLE
+            imgCaptured2.visibility = View.GONE
+            imgCancel2.visibility = View.GONE
         }
         okBtn.setOnClickListener {
             if (isImageUploaded){
                 val insectCount = countEt.text.toString().trim()
-                if (insectCount != ""){
-                    imageCountMap["InsectCount"] = insectCount.toInt()
-                    updateImageAndCount()
-                    alertDialog.dismiss()
+                val lizardCount = lizardCountEt.text.toString().trim()
+                val otherCount = otherEt.text.toString().trim()
+                if (insectCount != "" && lizardCount != "" && otherCount != ""){
+                    imageCountMap["RoachCount"] = insectCount.toInt()
+                    imageCountMap["LizardCount"] = lizardCount.toInt()
+                    imageCountMap["OtherInsectsCount"] = otherCount.toInt()
+                    updateImageAndCount(replaceBtn)
                 }else{
-                    Toasty.error(this, "Please enter count").show()
+                    Toasty.error(this, "All fields are mandatory").show()
                 }
             }else{
                 Toasty.error(this, "Please upload image").show()
             }
         }
-        cancelBtn.setOnClickListener {
+        replaceBtn.setOnClickListener {
+            replaceDeviceForApp()
+            alertDialog.dismiss()
+        }
+        closeBtn.setOnClickListener {
             alertDialog.dismiss()
         }
         alertDialog.show()
@@ -330,6 +440,10 @@ class RoachActivity : BaseActivity() {
     }
 
     private fun showAddDialog(){
+        val deviceDetails = HashMap<String, Any>()
+        fromUpload = true
+        isImageUploaded = false
+        isLocationChange = false
         var selectedLocation = ""
         val dialogView = Dialog(this).apply {
             requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -342,6 +456,9 @@ class RoachActivity : BaseActivity() {
         val spnLocation = dialogView.findViewById<AppCompatSpinner>(R.id.spnLocation)
         val okBtn = dialogView.findViewById(R.id.okBtn) as AppCompatButton
         val cancelBtn = dialogView.findViewById(R.id.btnCancel) as AppCompatButton
+        val imgCapture = dialogView.findViewById<ImageView>(R.id.imgCapture)
+        val imgCaptured = dialogView.findViewById<ImageView>(R.id.imgCaptured)
+        val imgCancel = dialogView.findViewById<RelativeLayout>(R.id.cancelLayout)
         okBtn.isEnabled = false
         okBtn.alpha = 0.6f
         val arrayAdapter = object : ArrayAdapter<String>(this, R.layout.spinner_layout_new, locationList){
@@ -375,12 +492,32 @@ class RoachActivity : BaseActivity() {
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }
         }
+        imgCapture.setOnClickListener {
+            requestStoragePermission(true)
+        }
+        setOnImageUploadListener {
+            Picasso.get().load(it).fit().into(imgCaptured)
+            deviceDetails["LocationImageUrl"] = it
+            imgCapture.visibility = View.GONE
+            imgCaptured.visibility = View.VISIBLE
+            imgCancel.visibility = View.VISIBLE
+            Log.d("TAG", "Image Loaded")
+            //dismissProgressDialog()
+        }
+        imgCancel.setOnClickListener {
+            imgCapture.visibility = View.VISIBLE
+            imgCaptured.visibility = View.GONE
+            imgCancel.visibility = View.GONE
+        }
         okBtn.setOnClickListener {
-            val deviceDetails = HashMap<String, Any>()
-            deviceDetails["AccountNo"] = AppUtils.accountId
-            deviceDetails["DeployedLocation"] = selectedLocation
-            addNewRoach(deviceDetails)
-            dialogView.dismiss()
+            if (isImageUploaded) {
+                deviceDetails["AccountNo"] = AppUtils.accountId
+                deviceDetails["DeployedLocation"] = selectedLocation
+                addNewRoach(deviceDetails)
+                dialogView.dismiss()
+            }else{
+                Toasty.error(this, "Picture required").show()
+            }
         }
         cancelBtn.setOnClickListener {
             dialogView.dismiss()
@@ -458,7 +595,7 @@ class RoachActivity : BaseActivity() {
     }
     private fun showSettingsDialog() {
         try {
-            val builder = androidx.appcompat.app.AlertDialog.Builder(this)
+            val builder = AlertDialog.Builder(this)
             builder.setTitle("Need Permissions")
             builder.setMessage(
                 "This app needs permission to use this feature. You can grant them in app settings."
@@ -523,7 +660,14 @@ class RoachActivity : BaseActivity() {
         this.imageUpdateListener = imageUpdateListener
     }
 
+    fun setOnImageUploadListener(imageUploadListener: ImageUploadListener){
+        this.imageUploadListener = imageUploadListener
+    }
+
     fun interface ImageUpdateListener{
         fun onUpdateImage(url: String)
+    }
+    fun interface ImageUploadListener{
+        fun onImageUpload(url: String)
     }
 }
