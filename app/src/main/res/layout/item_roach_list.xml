@@ -173,7 +173,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal">
-                <Button
+                <LinearLayout
                     android:id="@+id/performBtn"
                     android:layout_weight="1"
                     android:layout_width="match_parent"
@@ -182,10 +182,22 @@
                     android:visibility="visible"
                     android:text="Perform"
                     android:textColor="@color/white"
-                    android:textSize="13sp"
-                    android:background="@drawable/button_bg"
-                    android:src="@drawable/ic_upload_2" />
-                <Button
+                    android:gravity="center"
+                    android:background="@drawable/bg_outlined_green">
+                    <ImageView
+                        android:id="@+id/performIv"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_check_list" />
+                    <TextView
+                        android:id="@+id/performTv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Perform"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:layout_marginStart="4dp"/>
+                </LinearLayout>
+                <LinearLayout
                     android:layout_weight="1"
                     android:id="@+id/deleteBtn"
                     android:layout_width="match_parent"
@@ -194,8 +206,20 @@
                     android:layout_marginStart="12dp"
                     android:textColor="@color/white"
                     android:textSize="13sp"
-                    android:background="@color/md_red_400"
-                    android:src="@drawable/ic_trash_round_red" />
+                    android:gravity="center"
+                    android:background="@drawable/bg_outlined_red">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_bin"/>
+                    <TextView
+                        android:id="@+id/removeTv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Remove"
+                        android:textColor="@color/md_red_400"
+                        android:layout_marginStart="4dp"/>
+                </LinearLayout>
 
             </LinearLayout>
 

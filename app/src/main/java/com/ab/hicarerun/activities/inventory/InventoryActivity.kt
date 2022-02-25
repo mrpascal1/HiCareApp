@@ -1,6 +1,7 @@
 package com.ab.hicarerun.activities.inventory
 
 import android.Manifest
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -58,7 +59,6 @@ class InventoryActivity : BaseActivity() {
     lateinit var technicianList: ArrayList<TechnicianList>
     lateinit var inventoryAdapter: InventoryAdapter
     lateinit var historyAdapter: InventoryHistoryAdapter
-    lateinit var historyView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -145,11 +145,14 @@ class InventoryActivity : BaseActivity() {
         selectedTechnician = ""
         bucketId = 0
         reasons = ""
-        val li = LayoutInflater.from(this)
-        val promptsView = li.inflate(R.layout.add_inventory_action_dialog, null)
-        val alertDialogBuilder = AlertDialog.Builder(this)
-        alertDialogBuilder.setView(promptsView)
-        val alertDialog = alertDialogBuilder.create()
+        val promptsView = Dialog(this).apply {
+            setCancelable(false)
+            requestWindowFeature(Window.FEATURE_NO_TITLE)
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
+            setCanceledOnTouchOutside(false)
+            setContentView(R.layout.add_inventory_action_dialog)
+        }
         val technicianLayout = promptsView.findViewById(R.id.technicianLayout) as ConstraintLayout
         val spnAction = promptsView.findViewById(R.id.spnAction) as AppCompatSpinner
         val spnTechnician = promptsView.findViewById(R.id.spnTechnician) as AppCompatSpinner
@@ -292,19 +295,17 @@ class InventoryActivity : BaseActivity() {
         spnTechnician.adapter = technicianAdapter
 
         okBtn.setOnClickListener {
-            updateInventory(alertDialog)
+            updateInventory()
+            promptsView.cancel()
         }
 
         cancelBtn.setOnClickListener {
-            dismissProgressDialog()
-            alertDialog.cancel()
+            promptsView.cancel()
         }
-        alertDialog.setCanceledOnTouchOutside(false)
-        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        alertDialog.show()
+        promptsView.show()
     }
 
-    private fun updateInventory(alertDialog: AlertDialog){
+    private fun updateInventory(){
         showProgressDialog()
         val hashMap = HashMap<String, Any>()
         hashMap["Reasons"] = reasons
@@ -319,15 +320,14 @@ class InventoryActivity : BaseActivity() {
                 if (response != null){
                     if (response.isSuccess == true){
                         Toasty.success(applicationContext, "Inventory updated successfully").show()
-                        dismissProgressDialog()
-                        alertDialog.cancel()
                         getInventoryList()
                     }else{
-                        dismissProgressDialog()
+                        Toasty.error(applicationContext, "Unable to update").show()
                     }
                 }else{
-                    dismissProgressDialog()
+                    Toasty.error(applicationContext, "Unable to update").show()
                 }
+                dismissProgressDialog()
             }
 
             override fun onFailure(requestCode: Int) {
@@ -339,11 +339,14 @@ class InventoryActivity : BaseActivity() {
     }
 
     private fun showInventoryHistoryDialog(){
-        val li = LayoutInflater.from(this)
-        historyView = li.inflate(R.layout.layout_inventory_history, null)
-        val alertDialogBuilder = AlertDialog.Builder(this)
-        alertDialogBuilder.setView(historyView)
-        val alertDialog = alertDialogBuilder.create()
+        val historyView = Dialog(this).apply {
+            setCancelable(false)
+            requestWindowFeature(Window.FEATURE_NO_TITLE)
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
+            setCanceledOnTouchOutside(false)
+            setContentView(R.layout.layout_inventory_history)
+        }
         //val nestedScrollView = historyView.findViewById<NestedScrollView>(R.id.nestedScrollView)
         val closeIv = historyView.findViewById<ImageView>(R.id.closeIv)
         val historyRecyclerView = historyView.findViewById<RecyclerView>(R.id.historyRecyclerView)
@@ -356,13 +359,9 @@ class InventoryActivity : BaseActivity() {
             nestedScrollView.scrollTo(0,0)
         }*/
         txtTitle.setOnClickListener {
-            alertDialog.dismiss()
+            historyView.dismiss()
         }
-        alertDialog.show()
-        alertDialog.setCancelable(false)
-        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        alertDialog.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
-        alertDialog.setCanceledOnTouchOutside(false)
+        historyView.show()
     }
 
     private fun getInventoryHistory(itemCode: String){
@@ -427,11 +426,12 @@ class InventoryActivity : BaseActivity() {
                             }
                         }
                     }else{
-                        dismissProgressDialog()
+                        Toasty.error(applicationContext, "Error").show()
                     }
                 }else{
-                    dismissProgressDialog()
+                    Toasty.error(applicationContext, "Error").show()
                 }
+                dismissProgressDialog()
             }
 
             override fun onFailure(requestCode: Int) {

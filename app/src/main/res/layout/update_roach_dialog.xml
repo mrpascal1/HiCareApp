@@ -72,6 +72,14 @@
                                     android:layout_height="wrap_content"
                                     android:orientation="vertical">
 
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="4dp"
+                                        android:layout_marginEnd="4dp"
+                                        android:text="Note: If you want to change device location. (Optional)"
+                                        android:textColor="@color/red"/>
+
                                     <LinearLayout
                                         android:orientation="vertical"
                                         android:layout_width="match_parent"

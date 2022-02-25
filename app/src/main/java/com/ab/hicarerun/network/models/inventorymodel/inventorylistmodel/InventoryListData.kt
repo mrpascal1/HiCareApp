@@ -25,5 +25,6 @@ data class InventoryListData (
 	@SerializedName("Created_On") val created_On : String?,
 	@SerializedName("Created_By") val created_By : String?,
 	@SerializedName("Updated_On") val updated_On : String?,
-	@SerializedName("Updated_By") val updated_By : String?
+	@SerializedName("Updated_By") val updated_By : String?,
+	@SerializedName("Scanned") val scanned : Boolean?
 )

@@ -4,7 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.ab.hicarerun.R
 import com.ab.hicarerun.databinding.ItemRoachListBinding
 import com.ab.hicarerun.network.models.roachmodel.roachlistmodel.RoachList
 import com.squareup.picasso.Picasso
@@ -20,7 +22,7 @@ class RoachAdapter(val context: Context): RecyclerView.Adapter<RoachAdapter.MyHo
     }
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
-        holder.bindItems(items[position])
+        holder.bindItems(context, items[position])
         holder.binding.performBtn.setOnClickListener {
             roachClickListener?.uploadClick(position, items[position].id.toString().toInt(), items[position].deviceName.toString(), items[position].accountNo.toString(), items[position].deviceDisplayName.toString(), items[position].deviceLocationImageUrl.toString())
         }
@@ -46,7 +48,7 @@ class RoachAdapter(val context: Context): RecyclerView.Adapter<RoachAdapter.MyHo
     }
 
     class MyHolder(val binding: ItemRoachListBinding): RecyclerView.ViewHolder(binding.root){
-        fun bindItems(data: RoachList){
+        fun bindItems(context: Context, data: RoachList){
             binding.nameTv.text = data.deviceDisplayName
             binding.locationTv.text = data.deployedLocation
             binding.createdOnTv.text = data.createdOnDisplay
@@ -59,11 +61,15 @@ class RoachAdapter(val context: Context): RecyclerView.Adapter<RoachAdapter.MyHo
             if (data.isDeviceUpdateDone == true){
                 binding.performBtn.alpha = 0.6f
                 binding.performBtn.isEnabled = false
-                binding.uploadedIv.visibility = View.VISIBLE
+                binding.performTv.text = "Performed"
+                binding.performIv.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_circle_green))
+                //binding.uploadedIv.visibility = View.VISIBLE
             }else{
                 binding.performBtn.alpha = 1f
                 binding.performBtn.isEnabled = true
-                binding.uploadedIv.visibility = View.GONE
+                binding.performTv.text = "Perform"
+                binding.performIv.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_list))
+                //binding.uploadedIv.visibility = View.GONE
             }
         }
     }

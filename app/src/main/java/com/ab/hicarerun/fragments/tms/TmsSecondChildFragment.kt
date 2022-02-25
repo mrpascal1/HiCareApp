@@ -78,6 +78,7 @@ class TmsSecondChildFragment : Fragment() {
     var isLast = false
     val CAMERA_REQUEST = 1
     val REQUEST_GALLERY_PHOTO = 2
+    var imageError = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -397,6 +398,7 @@ class TmsSecondChildFragment : Fragment() {
                 } else {
                     binding.btnSave.isEnabled = true
                     binding.btnSave.alpha = 0.6f
+                    imageError = true
                     return tabName
                 }
             } else {

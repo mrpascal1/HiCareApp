@@ -324,16 +324,6 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (AppUtils.taskTypeName.contains("MMS")){
-            mFragmentServiceInfoBinding.lnrInventory.setVisibility(View.VISIBLE);
-        }else {
-            mFragmentServiceInfoBinding.lnrInventory.setVisibility(GONE);
-        }
-        if (AppUtils.isB2BJob){
-            mFragmentServiceInfoBinding.lnrPulse.setVisibility(View.VISIBLE);
-        }else {
-            mFragmentServiceInfoBinding.lnrPulse.setVisibility(GONE);
-        }
         mCameraManager = (CameraManager) getActivity().getSystemService(Context.CAMERA_SERVICE);
         try {
             mCameraId = mCameraManager.getCameraIdList()[0];
@@ -488,6 +478,16 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             Intent intent = new Intent(requireContext(), PulseActivity.class);
             startActivity(intent);
         });
+        if (status.equals("On-Site") && AppUtils.taskTypeName.contains("MMS")){
+            mFragmentServiceInfoBinding.lnrInventory.setVisibility(View.VISIBLE);
+        }else {
+            mFragmentServiceInfoBinding.lnrInventory.setVisibility(GONE);
+        }
+        if (status.equals("On-Site") && AppUtils.isB2BJob){
+            mFragmentServiceInfoBinding.lnrPulse.setVisibility(View.VISIBLE);
+        }else {
+            mFragmentServiceInfoBinding.lnrPulse.setVisibility(GONE);
+        }
     }
 
     private void showInstructionDialog(String customerInstruction) {
