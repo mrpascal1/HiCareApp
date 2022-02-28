@@ -94,7 +94,7 @@
                                         android:textColor="@color/red"
                                         android:layout_marginStart="4dp"
                                         android:layout_marginEnd="4dp"
-                                        android:text="Note: Please take wide angle photo"/>
+                                        android:text="Note: Please click a wide-angle photo"/>
 
                                     <LinearLayout
                                         android:id="@+id/imageLinearLayout"

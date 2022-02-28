@@ -150,7 +150,18 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
             mFragmentServiceUnitBinding.btnRodentScanner.setVisibility(View.GONE);
             AppUtils.IS_QRCODE_THERE = false;
         }
+
         if (AppUtils.showRoachInspectionButton){
+            mFragmentServiceUnitBinding.txtActivity.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+            if (AppUtils.status.equals("Completed")){
+                mFragmentServiceUnitBinding.performTv.setText("Performed");
+                mFragmentServiceUnitBinding.performTv.setAlpha(0.6f);
+                mFragmentServiceUnitBinding.cmtCard.setEnabled(false);
+            }else {
+                mFragmentServiceUnitBinding.performTv.setText("Perform");
+                mFragmentServiceUnitBinding.performTv.setAlpha(1f);
+                mFragmentServiceUnitBinding.cmtCard.setEnabled(true);
+            }
             mFragmentServiceUnitBinding.cmtCard.setVisibility(View.VISIBLE);
         }else {
             mFragmentServiceUnitBinding.cmtCard.setVisibility(View.GONE);

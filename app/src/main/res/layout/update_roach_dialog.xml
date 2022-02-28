@@ -164,7 +164,7 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="1dp"
                                         android:layout_marginTop="12dp"
-                                        android:layout_marginBottom="6dp"
+                                        android:layout_marginBottom="4dp"
                                         android:background="@color/grey"/>
 
                                     <LinearLayout
@@ -175,7 +175,8 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginStart="4dp"
-                                            android:text="Perform Roach Activity"/>
+                                            android:text="Perform Monitoring Activity"
+                                            android:textColor="@color/black"/>
                                         <LinearLayout
                                             android:id="@+id/imageLinearLayout2"
                                             android:layout_width="80dp"
@@ -241,8 +242,7 @@
                                                     android:layout_height="wrap_content"
                                                     android:layout_marginLeft="7dp"
                                                     android:text="No. of Roaches"
-                                                    android:textColor="@color/colorAccentDrawerPrimaryLight"
-                                                    android:textSize="17sp"
+                                                    android:textSize="16sp"
                                                     android:textStyle="bold" />
                                             </LinearLayout>
 
@@ -263,7 +263,7 @@
                                                     android:id="@+id/countEt"
                                                     android:layout_width="match_parent"
                                                     android:layout_height="wrap_content"
-                                                    android:textSize="20sp"
+                                                    android:textSize="18sp"
                                                     android:padding="4dp"
                                                     android:maxLength="3"
                                                     android:inputType="number"
@@ -295,8 +295,7 @@
                                                     android:layout_height="wrap_content"
                                                     android:layout_marginLeft="7dp"
                                                     android:text="No. of Lizards"
-                                                    android:textColor="@color/colorAccentDrawerPrimaryLight"
-                                                    android:textSize="17sp"
+                                                    android:textSize="16sp"
                                                     android:textStyle="bold" />
                                             </LinearLayout>
 
@@ -316,7 +315,7 @@
                                                     android:id="@+id/lizardCountEt"
                                                     android:layout_width="match_parent"
                                                     android:layout_height="wrap_content"
-                                                    android:textSize="20sp"
+                                                    android:textSize="18sp"
                                                     android:padding="4dp"
                                                     android:maxLength="3"
                                                     android:inputType="number"
@@ -348,8 +347,7 @@
                                                     android:layout_height="wrap_content"
                                                     android:layout_marginLeft="7dp"
                                                     android:text="Others"
-                                                    android:textColor="@color/colorAccentDrawerPrimaryLight"
-                                                    android:textSize="17sp"
+                                                    android:textSize="16sp"
                                                     android:textStyle="bold" />
                                             </LinearLayout>
 
@@ -369,7 +367,7 @@
                                                     android:id="@+id/otherEt"
                                                     android:layout_width="match_parent"
                                                     android:layout_height="match_parent"
-                                                    android:textSize="20sp"
+                                                    android:textSize="18sp"
                                                     android:padding="4dp"
                                                     android:maxLength="3"
                                                     android:inputType="number"
@@ -399,7 +397,7 @@
                                                 android:layout_margin="8dp"
                                                 android:background="@drawable/button_bg"
                                                 android:gravity="center"
-                                                android:text="Save Changes"
+                                                android:text="Save Activity"
                                                 android:textColor="@color/white" />
                                         </LinearLayout>
                                     </LinearLayout>
@@ -420,7 +418,7 @@
                                             android:layout_marginStart="4dp"
                                             android:layout_marginEnd="4dp"
                                             android:textColor="@color/red"
-                                            android:text="If you are changing the trap please click replace button below"/>
+                                            android:text="Note: If you are changing the trap, please click on the Replace button given below."/>
                                         <LinearLayout
                                             android:orientation="horizontal"
                                             android:layout_width="match_parent"

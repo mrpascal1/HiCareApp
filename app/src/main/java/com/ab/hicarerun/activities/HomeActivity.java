@@ -171,7 +171,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
-        Log.d("TAG", new OneSIgnalHelper(this).getmStrUserID());
+        Log.d("TAG", new OneSIgnalHelper(this).getmStrUserID()+"");
         AppUtils.IS_FLASH_ON = true;
         mActivityHomeBinding.toolbar.imgFlash.setImageResource(R.drawable.flash_off);
         mActivityHomeBinding.toolbar.lnrDrawer.setOnClickListener(view -> mActivityHomeBinding.drawer.openDrawer(GravityCompat.START));

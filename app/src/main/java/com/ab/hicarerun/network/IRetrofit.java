@@ -657,6 +657,6 @@ public interface IRetrofit {
     @POST("DeviceRegistration/UpdateDeviceLocationForApp")
     Call<RoachSaveBase> updateDeviceLocationForApp(@Body HashMap<String, Object> data);
 
-    @POST("IOTImage/ReplaceDeviceForApp")
+    @POST("DeviceRegistration/ReplaceDeviceForApp")
     Call<RoachSaveBase> replaceDeviceForApp(@Body HashMap<String, Object> data);
 }

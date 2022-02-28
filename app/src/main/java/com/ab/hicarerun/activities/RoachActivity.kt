@@ -180,7 +180,7 @@ class RoachActivity : BaseActivity() {
         controller.setListner(object : NetworkResponseListner<RoachSaveBase>{
             override fun onResponse(requestCode: Int, response: RoachSaveBase?) {
                 if (response != null && response.isSuccess == true){
-                    Toasty.success(applicationContext, "Device deleted successfully").show()
+                    Toasty.success(applicationContext, "CMT deleted successfully").show()
                     getRoachList()
                 }else{
                     Toasty.success(applicationContext, "Update error").show()
@@ -204,6 +204,7 @@ class RoachActivity : BaseActivity() {
                     locationChanged = false
                     changeSaveBtn.alpha = 0.6f
                     changeSaveBtn.isEnabled = false
+                    getRoachList()
                 }else{
                     Toasty.error(applicationContext, "Update failed").show()
                 }
@@ -224,7 +225,7 @@ class RoachActivity : BaseActivity() {
                 dismissProgressDialog()
                 if (response != null){
                     if (response.isSuccess == true){
-                        Toasty.success(applicationContext, "Successfully added").show()
+                        Toasty.success(applicationContext, "CMT added successfully").show()
                         getRoachList()
                     }else{
                         Toasty.error(applicationContext, "Invalid error").show()
@@ -279,13 +280,13 @@ class RoachActivity : BaseActivity() {
         }
     }
 
-    private fun updateImageAndCount(replaceBtn: Button){
+    private fun updateImageAndCount(replaceBtn: Button, saveBtn: Button, e1: EditText, e2: EditText, e3: EditText, imCancel: RelativeLayout){
         showProgressDialog()
         val controller = NetworkCallController()
         controller.setListner(object : NetworkResponseListner<RoachSaveBase>{
             override fun onResponse(requestCode: Int, response: RoachSaveBase?) {
                 if (response != null && response.isSuccess == true){
-                    Toasty.success(applicationContext, "Updated successfully").show()
+                    Toasty.success(applicationContext, "CMT updated successfully").show()
                     roachList.forEach {
                         if (it.deviceName == dName){
                             it.isDeviceUpdateDone = true
@@ -296,6 +297,12 @@ class RoachActivity : BaseActivity() {
                     imageCountMap.clear()
                     replaceBtn.alpha = 1f
                     replaceBtn.isEnabled = true
+                    saveBtn.alpha = 0.6f
+                    saveBtn.isEnabled = false
+                    e1.isEnabled = false
+                    e2.isEnabled = false
+                    e3.isEnabled = false
+                    imCancel.visibility = View.GONE
                     //getRoachList()
                 }else{
                     Toasty.error(applicationContext, "Update error").show()
@@ -315,9 +322,9 @@ class RoachActivity : BaseActivity() {
         controller.setListner(object : NetworkResponseListner<RoachSaveBase>{
             override fun onResponse(requestCode: Int, response: RoachSaveBase?) {
                 if (response != null && response.isSuccess == true){
-                    Toasty.success(applicationContext, "Replaced successfully").show()
+                    Toasty.success(applicationContext, "CMT replaced successfully").show()
                 }else{
-                    Toasty.success(applicationContext, "Update failed").show()
+                    Toasty.error(applicationContext, "Update failed").show()
                 }
             }
 
@@ -410,6 +417,7 @@ class RoachActivity : BaseActivity() {
             imgCapture2.visibility = View.VISIBLE
             imgCaptured2.visibility = View.GONE
             imgCancel2.visibility = View.GONE
+            isImageUploaded = false
         }
         okBtn.setOnClickListener {
             if (isImageUploaded){
@@ -420,7 +428,7 @@ class RoachActivity : BaseActivity() {
                     imageCountMap["RoachCount"] = insectCount.toInt()
                     imageCountMap["LizardCount"] = lizardCount.toInt()
                     imageCountMap["OtherInsectsCount"] = otherCount.toInt()
-                    updateImageAndCount(replaceBtn)
+                    updateImageAndCount(replaceBtn, okBtn, countEt, lizardCountEt, otherEt, imgCancel2)
                 }else{
                     Toasty.error(this, "All fields are mandatory").show()
                 }
@@ -516,7 +524,7 @@ class RoachActivity : BaseActivity() {
                 addNewRoach(deviceDetails)
                 dialogView.dismiss()
             }else{
-                Toasty.error(this, "Picture required").show()
+                Toasty.error(this, "Location Image required").show()
             }
         }
         cancelBtn.setOnClickListener {
