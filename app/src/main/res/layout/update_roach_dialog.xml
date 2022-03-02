@@ -242,7 +242,6 @@
                                                     android:layout_height="wrap_content"
                                                     android:layout_marginLeft="7dp"
                                                     android:text="No. of Roaches"
-                                                    android:textSize="16sp"
                                                     android:textStyle="bold" />
                                             </LinearLayout>
 
@@ -263,7 +262,7 @@
                                                     android:id="@+id/countEt"
                                                     android:layout_width="match_parent"
                                                     android:layout_height="wrap_content"
-                                                    android:textSize="18sp"
+                                                    android:textSize="16sp"
                                                     android:padding="4dp"
                                                     android:maxLength="3"
                                                     android:inputType="number"
@@ -295,7 +294,6 @@
                                                     android:layout_height="wrap_content"
                                                     android:layout_marginLeft="7dp"
                                                     android:text="No. of Lizards"
-                                                    android:textSize="16sp"
                                                     android:textStyle="bold" />
                                             </LinearLayout>
 
@@ -315,7 +313,7 @@
                                                     android:id="@+id/lizardCountEt"
                                                     android:layout_width="match_parent"
                                                     android:layout_height="wrap_content"
-                                                    android:textSize="18sp"
+                                                    android:textSize="16sp"
                                                     android:padding="4dp"
                                                     android:maxLength="3"
                                                     android:inputType="number"
@@ -347,7 +345,6 @@
                                                     android:layout_height="wrap_content"
                                                     android:layout_marginLeft="7dp"
                                                     android:text="Others"
-                                                    android:textSize="16sp"
                                                     android:textStyle="bold" />
                                             </LinearLayout>
 
@@ -367,7 +364,7 @@
                                                     android:id="@+id/otherEt"
                                                     android:layout_width="match_parent"
                                                     android:layout_height="match_parent"
-                                                    android:textSize="18sp"
+                                                    android:textSize="16sp"
                                                     android:padding="4dp"
                                                     android:maxLength="3"
                                                     android:inputType="number"

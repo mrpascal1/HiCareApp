@@ -43,6 +43,7 @@ import com.ab.hicarerun.network.models.roachmodel.roachlistmodel.RoachBase
 import com.ab.hicarerun.network.models.roachmodel.roachlistmodel.RoachList
 import com.ab.hicarerun.network.models.roachmodel.saveroachmodel.RoachSaveBase
 import com.ab.hicarerun.utils.AppUtils
+import com.ab.hicarerun.utils.ImageOverlayStfalcon
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -84,6 +85,8 @@ class RoachActivity : BaseActivity() {
     var fromUpload = false
     var isLocationChange = false
     var locationChanged = false
+    var imageUrl1 = ""
+    var imageUrl2 = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,10 +120,10 @@ class RoachActivity : BaseActivity() {
                 imageCountMap["DeviceName"] = deviceName
                 val deviceDetails = HashMap<String, Any>()
                 deviceDetails.clear()
-                deviceDetails["AccountId"] = accountNo
+                deviceDetails["AccountNo"] = accountNo
                 deviceDetails["Id"] = deviceId
                 deviceDetails["DeviceName"] = deviceName
-                replaceMap["AccountId"] = accountNo
+                replaceMap["AccountNo"] = accountNo
                 replaceMap["Id"] = deviceId
                 replaceMap["DeviceName"] = deviceName
                 showUpdateDialog(deviceDetails, deviceDisplay, url)
@@ -214,6 +217,7 @@ class RoachActivity : BaseActivity() {
                 Log.d("TAG", "Update roach location failed.")
             }
         })
+        Log.d("TAG", "$deviceDetails")
         controller.updateDeviceLocationForApp(202111, deviceDetails)
     }
 
@@ -341,6 +345,8 @@ class RoachActivity : BaseActivity() {
         fromUpload = false
         isLocationChange = false
         locationChanged = false
+        imageUrl1 = ""
+        imageUrl2 = ""
         val alertDialog = Dialog(this).apply {
             setCancelable(false)
             requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -374,6 +380,7 @@ class RoachActivity : BaseActivity() {
         changeSaveBtn.isEnabled = false
 
         if (url != "" && url != "null"){
+            imageUrl1 = url
             Picasso.get().load(url).fit().into(imgCaptured)
             imgCapture.visibility = View.GONE
             imgCaptured.visibility = View.VISIBLE
@@ -396,12 +403,14 @@ class RoachActivity : BaseActivity() {
         setOnImageUpdateListener {
             if (!isLocationChange) {
                 Picasso.get().load(it).fit().into(imgCaptured2)
+                imageUrl2 = it
                 imageCountMap["ImgUrl"] = it
                 imgCapture2.visibility = View.GONE
                 imgCaptured2.visibility = View.VISIBLE
                 imgCancel2.visibility = View.VISIBLE
             }else{
                 Picasso.get().load(it).fit().into(imgCaptured)
+                imageUrl1 = it
                 deviceDetails["LocationImageUrl"] = it
                 imgCapture.visibility = View.GONE
                 imgCaptured.visibility = View.VISIBLE
@@ -418,6 +427,12 @@ class RoachActivity : BaseActivity() {
             imgCaptured2.visibility = View.GONE
             imgCancel2.visibility = View.GONE
             isImageUploaded = false
+        }
+        imgCaptured.setOnClickListener {
+            ImageOverlayStfalcon(this, arrayOf(imageUrl1))
+        }
+        imgCaptured2.setOnClickListener {
+            ImageOverlayStfalcon(this, arrayOf(imageUrl2))
         }
         okBtn.setOnClickListener {
             if (isImageUploaded){
@@ -448,6 +463,7 @@ class RoachActivity : BaseActivity() {
     }
 
     private fun showAddDialog(){
+        var img = ""
         val deviceDetails = HashMap<String, Any>()
         fromUpload = true
         isImageUploaded = false
@@ -505,6 +521,7 @@ class RoachActivity : BaseActivity() {
         }
         setOnImageUploadListener {
             Picasso.get().load(it).fit().into(imgCaptured)
+            img = it
             deviceDetails["LocationImageUrl"] = it
             imgCapture.visibility = View.GONE
             imgCaptured.visibility = View.VISIBLE
@@ -516,6 +533,10 @@ class RoachActivity : BaseActivity() {
             imgCapture.visibility = View.VISIBLE
             imgCaptured.visibility = View.GONE
             imgCancel.visibility = View.GONE
+            isImageUploaded = false
+        }
+        imgCaptured.setOnClickListener {
+            ImageOverlayStfalcon(this, arrayOf(img))
         }
         okBtn.setOnClickListener {
             if (isImageUploaded) {
