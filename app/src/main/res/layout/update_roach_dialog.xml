@@ -77,7 +77,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="4dp"
                                         android:layout_marginEnd="4dp"
-                                        android:text="Note: If you want to change device location. (Optional)"
+                                        android:text="Note: Refer this image for trap location"
                                         android:textColor="@color/red"/>
 
                                     <LinearLayout
@@ -175,7 +175,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginStart="4dp"
-                                            android:text="Perform Monitoring Activity"
+                                            android:text="Enter pest count"
                                             android:textColor="@color/black"/>
                                         <LinearLayout
                                             android:id="@+id/imageLinearLayout2"

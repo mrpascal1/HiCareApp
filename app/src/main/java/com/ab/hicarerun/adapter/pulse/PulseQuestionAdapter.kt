@@ -424,7 +424,7 @@ class PulseQuestionAdapter(val context: Context): RecyclerView.Adapter<PulseQues
     class MyHolder(val binding: LayoutPulseParentBinding) : RecyclerView.ViewHolder(binding.root){
         fun bindItems(question: QuestionList){
             binding.txtQuest.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
-            binding.txtQuest.text = "-> ${question.questionDisplayText}"
+            binding.txtQuest.text = "${question.questionDisplayText}"
         }
     }
 

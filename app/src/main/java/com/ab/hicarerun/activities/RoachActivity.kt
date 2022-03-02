@@ -290,7 +290,7 @@ class RoachActivity : BaseActivity() {
         controller.setListner(object : NetworkResponseListner<RoachSaveBase>{
             override fun onResponse(requestCode: Int, response: RoachSaveBase?) {
                 if (response != null && response.isSuccess == true){
-                    Toasty.success(applicationContext, "CMT updated successfully").show()
+                    Toasty.success(applicationContext, "Activity updated successfully").show()
                     roachList.forEach {
                         if (it.deviceName == dName){
                             it.isDeviceUpdateDone = true
