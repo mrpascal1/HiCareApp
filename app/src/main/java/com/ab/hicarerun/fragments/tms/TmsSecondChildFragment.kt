@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ab.hicarerun.BaseApplication
 import com.ab.hicarerun.BuildConfig
+import com.ab.hicarerun.R
 import com.ab.hicarerun.adapter.tms.TmsChipsAdapter
 import com.ab.hicarerun.adapter.tms.TmsQuestionsParentAdapter
 import com.ab.hicarerun.databinding.FragmentTmsSecondChildBinding
@@ -251,7 +252,7 @@ class TmsSecondChildFragment : Fragment() {
                 //listener.onSaveClicked()
                 Log.d("TAG", "save ${AppUtils.tmsInspectionList}")
             }else{
-                Toasty.error(requireContext(), "All questions are mandatory.").show()
+                Toasty.error(requireContext(), getString(R.string.all_questions_are_mandatory)).show()
                 Log.d("TAG", "Missing fields")
             }
         }
@@ -516,7 +517,7 @@ class TmsSecondChildFragment : Fragment() {
                     }
                 })
                 .withErrorListener {
-                    Toast.makeText(requireContext(), "Error occurred! ", Toast.LENGTH_SHORT).show()
+                    Toasty.error(requireContext(), "Error occurred! ").show()
                 }
                 .onSameThread()
                 .check()

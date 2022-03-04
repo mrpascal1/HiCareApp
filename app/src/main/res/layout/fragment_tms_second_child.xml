@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="INSPECTION"
+            android:text="@string/inspection"
             android:textColor="@color/lightRed"
             android:textSize="13sp" />
 
@@ -109,7 +109,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
                     android:background="@drawable/bg_round_border_grey_tms"
-                    android:text="Back"
+                    android:text="@string/cn_back"
                     android:textSize="12sp"
                     android:drawableStart="@drawable/ic_round_arrow_back_black"/>
 
@@ -119,7 +119,7 @@
                     android:layout_height="35dp"
                     android:layout_alignParentEnd="true"
                     android:background="@drawable/bg_round_border_grey_tms"
-                    android:text="Next"
+                    android:text="@string/cn_next"
                     android:textSize="12sp"
                     android:drawableEnd="@drawable/ic_round_arrow_forward_black"/>
                 <!--<LinearLayout
@@ -169,7 +169,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/round_border"
-                android:text="BACK TO CONSULTATION"
+                android:text="@string/back_to_consultation"
                 android:textAllCaps="false"
                 android:textColor="@color/colorPrimary"
                 android:textSize="14sp" />
@@ -181,7 +181,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/button_border"
-                android:text="SAVE"
+                android:text="@string/cn_save"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="15sp" />

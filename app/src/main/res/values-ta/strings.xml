@@ -349,4 +349,27 @@
     <string name="there_is_no_history_to_display">காண்பிக்க வரலாறு இல்லை!</string>
     <string name="leader_board">லீடர்போர்டு</string>
     <string name="bazaar_history">Bazaar History</string>
+    <string name="order_renewed">ஆர்டர் புதுப்பிக்கப்பட்டது</string>
+    <string name="inventory">சரக்கு</string>
+    <string name="referral_yes">ஆம்</string>
+    <string name="referral_no">இல்லை</string>
+    <string name="_8226">•</string>
+
+
+    <string name="termite">கரையான்</string>
+
+    <string name="all_questions_are_mandatory">அனைத்து கேள்விகளும் கட்டாயம்</string>
+    <string name="service_delivery_sheet">சேவை விநியோக தாள்</string>
+    <string name="service_delivery_sheet_submitted_successfully">சேவை வழங்கல் தாள் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது</string>
+    <string name="consultation_and_Inspection_submitted_successfully">ஆலோசனை மற்றும் ஆய்வு வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது</string>
+
+    <string name="go_to_inspection">ஆய்வுக்குச் செல்லவும்</string>
+    <string name="back_to_consultation">ஆலோசனைக்குத் திரும்பு</string>
+
+    <string name="cn_next">அடுத்தது</string>
+    <string name="cn_back">மீண்டும்</string>
+    <string name="inspection">ஆய்வு</string>
+    <string name="consultation">ஆலோசனை</string>
+    <string name="cn_save">சேமிக்கவும்</string>
+    <string name="consultation_inspection">ஆலோசனை மற்றும் ஆய்வு</string>
 </resources>

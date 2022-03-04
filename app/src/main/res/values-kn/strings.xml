@@ -344,4 +344,26 @@
     <string name="there_is_no_history_to_display">ಪ್ರದರ್ಶಿಸಲು ಇತಿಹಾಸವಿಲ್ಲ!</string>
     <string name="leader_board">ಲೀಡರ್ ಬೋರ್ಡ್</string>
     <string name="bazaar_history">Bazaar History</string>
+    <string name="order_renewed">ಆರ್ಡರ್ ನವೀಕರಿಸಲಾಗಿದೆ</string>
+    <string name="inventory">ದಾಸ್ತಾನು</string>
+    <string name="referral_yes">ಹೌದು</string>
+    <string name="referral_no">ಸಂ</string>
+    <string name="_8226">•</string>
+
+    <string name="termite">ಗೆದ್ದಲು</string>
+
+    <string name="all_questions_are_mandatory">ಎಲ್ಲಾ ಪ್ರಶ್ನೆಗಳು ಕಡ್ಡಾಯವಾಗಿವೆ</string>
+    <string name="service_delivery_sheet">ಸೇವಾ ವಿತರಣಾ ಹಾಳೆ</string>
+    <string name="service_delivery_sheet_submitted_successfully">ಸೇವೆಯ ವಿತರಣಾ ಹಾಳೆಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಸಲಾಗಿದೆ</string>
+    <string name="consultation_and_Inspection_submitted_successfully">ಸಮಾಲೋಚನೆ ಮತ್ತು ತಪಾಸಣೆಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಸಲಾಗಿದೆ</string>
+
+    <string name="go_to_inspection">ತಪಾಸಣೆಗೆ ಹೋಗಿ</string>
+    <string name="back_to_consultation">ಸಮಾಲೋಚನೆ ಗೆ ಹಿಂತಿರುಗಿ</string>
+
+    <string name="cn_next">ಮುಂದೆ</string>
+    <string name="cn_back">ಹಿಂದೆ</string>
+    <string name="inspection">ತಪಾಸಣೆ</string>
+    <string name="consultation">ಸಮಾಲೋಚನೆ</string>
+    <string name="cn_save">ಉಳಿಸಿ</string>
+    <string name="consultation_inspection">ಸಮಾಲೋಚನೆ ಮತ್ತು ತಪಾಸಣೆ</string>
 </resources>

@@ -1200,17 +1200,17 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     } else {
                         if (status.equals("On-Site")){
                             if (mTaskDetailsData.get(0).isTMS() && mTaskDetailsData.get(0).getConsultationInspectionRequired()){
-                                mFragmentServiceInfoBinding.btnCheckList.setText("Service delivery sheet");
+                                mFragmentServiceInfoBinding.btnCheckList.setText(getString(R.string.service_delivery_sheet));
                                 mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
                             }else {
                                 mFragmentServiceInfoBinding.btnCheckList.setVisibility(GONE);
                             }
                         }
                         /*if (status.equals("On-Site") && mTaskDetailsData.get(0).isTMS() && !mTaskDetailsData.get(0).getPostJob_Checklist_Done()){
-                            mFragmentServiceInfoBinding.btnCheckList.setText("Service delivery sheet");
+                            mFragmentServiceInfoBinding.btnCheckList.setText(getString(R.string.service_delivery_sheet));
                             mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
                         }else if (status.equals("On-Site") && mTaskDetailsData.get(0).isTMS() && mTaskDetailsData.get(0).getPostJob_Checklist_Done()){
-                            mFragmentServiceInfoBinding.btnCheckList.setText("Service delivery sheet");
+                            mFragmentServiceInfoBinding.btnCheckList.setText(getString(R.string.service_delivery_sheet));
                             mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
                         }else {
                             mFragmentServiceInfoBinding.btnCheckList.setVisibility(GONE);
@@ -1218,7 +1218,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     }
                     if (status.equalsIgnoreCase("Completed")){
                         if (mTaskDetailsData.get(0).isTMS() && mTaskDetailsData.get(0).getConsultationInspectionRequired()){
-                            mFragmentServiceInfoBinding.btnCheckList.setText("Service delivery sheet");
+                            mFragmentServiceInfoBinding.btnCheckList.setText(getString(R.string.service_delivery_sheet));
                             mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
                         }else {
                             mFragmentServiceInfoBinding.btnCheckList.setVisibility(GONE);

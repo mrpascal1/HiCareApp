@@ -589,8 +589,30 @@
     <string name="there_is_no_history_to_display">प्रदर्शित करण्यासाठी कोणताही इतिहास नाही!</string>
     <string name="leader_board">लीडर बोर्ड</string>
     <string name="bazaar_history">Bazaar History</string>
+    <string name="order_renewed">ऑर्डरचे नूतनीकरण केले</string>
+    <string name="inventory">इन्व्हेंटरी</string>
+    <string name="_8226">•</string>
 
     <string name="referral_yes">होय</string>
     <string name="referral_no">नाही</string>
+
+
+    <string name="termite">दीमक</string>
+
+    <string name="all_questions_are_mandatory">सर्व प्रश्न अनिवार्य आहेत</string>
+    <string name="service_delivery_sheet">सेवा वितरण पत्रक</string>
+    <string name="service_delivery_sheet_submitted_successfully">सेवा वितरण पत्रक यशस्वीरित्या सबमिट केले</string>
+    <string name="consultation_and_Inspection_submitted_successfully">सल्लामसलत आणि तपासणी यशस्वीरित्या सबमिट केली</string>
+
+    <string name="go_to_inspection">तपासणीवर जा</string>
+    <string name="back_to_consultation">सल्लामसलत वर परत</string>
+
+    <string name="cn_next">पुढे</string>
+    <string name="cn_back">मागे</string>
+    <string name="consultation">तपासणी</string>
+    <string name="inspection">सल्लामसलत</string>
+    <string name="cn_save">जतन करा</string>
+    <string name="consultation_inspection">तपासणी आणि सल्लामसलत</string>
+    <string name="select_count">संख्या निवडा</string>
 
 </resources>

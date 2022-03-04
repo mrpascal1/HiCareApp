@@ -348,4 +348,26 @@
     <string name="there_is_no_history_to_display">ప్రదర్శించడానికి చరిత్ర లేదు!</string>
     <string name="leader_board">లీడర్ బోర్డు</string>
     <string name="bazaar_history">Bazaar History</string>
+    <string name="order_renewed">ఆర్డర్ పునరుద్ధరించబడిన</string>
+    <string name="inventory">ఇన్వెంటరీ</string>
+    <string name="referral_yes">అవును</string>
+    <string name="referral_no">నం</string>
+    <string name="_8226">•</string>
+
+    <string name="termite">చెదపురుగు</string>
+
+    <string name="all_questions_are_mandatory">అన్ని ప్రశ్నలు తప్పనిసరి</string>
+    <string name="service_delivery_sheet">సర్వీస్ డెలివరీ షీట్</string>
+    <string name="service_delivery_sheet_submitted_successfully">సర్వీస్ డెలివరీ షీట్ విజయవంతంగా సమర్పించబడింది</string>
+    <string name="consultation_and_Inspection_submitted_successfully">సంప్రదింపులు మరియు తనిఖీ విజయవంతంగా సమర్పించబడ్డాయి</string>
+
+    <string name="go_to_inspection">తనిఖీకి వెళ్లండి</string>
+    <string name="back_to_consultation">తిరిగి సంప్రదింపులకు</string>
+
+    <string name="cn_next">తరువాత</string>
+    <string name="cn_back">వెనుకకు</string>
+    <string name="inspection">తనిఖీ</string>
+    <string name="consultation">సంప్రదింపులు</string>
+    <string name="cn_save">సేవ్ చేయండి</string>
+    <string name="consultation_inspection">సంప్రదింపులు మరియు తనిఖీ</string>
 </resources>

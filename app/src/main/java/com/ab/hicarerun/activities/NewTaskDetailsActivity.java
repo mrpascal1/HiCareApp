@@ -1652,7 +1652,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                     }
                     alertDialog.dismiss();
                 } else {
-                    Toasty.error(this, "All questions are mandatory.", Toasty.LENGTH_SHORT).show();
+                    Toasty.error(this, getString(R.string.all_questions_are_mandatory), Toasty.LENGTH_SHORT).show();
                     for (int i = 0; i < AppUtils.tmsServiceDeliveryChips.size(); i++) {
                         if (String.valueOf(i).equals(tabName)){
                             if (i > currPos){
@@ -2002,7 +2002,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         isPostJobCompletionDone = true;
                         AppUtils.isServiceDeliveryFilled = true;
                         if (typeName.equals("TMS")) {
-                            Toasty.success(NewTaskDetailsActivity.this, "Service delivery sheet submitted successfully", Toast.LENGTH_SHORT, true).show();
+                            Toasty.success(NewTaskDetailsActivity.this, getString(R.string.service_delivery_sheet_submitted_successfully), Toast.LENGTH_SHORT, true).show();
                         }else {
                             Toasty.success(NewTaskDetailsActivity.this, "Check-list submitted successfully", Toast.LENGTH_SHORT, true).show();
                         }

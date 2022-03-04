@@ -83,9 +83,9 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
         mTaskDetailsData = BaseApplication.getRealm().where(GeneralData::class.java).findAll()
         if (mTaskDetailsData != null && mTaskDetailsData.size > 0) {
             if (mTaskDetailsData[0]?.numberOfBhk == "0") {
-                binding.txtTypeFlat.text = mTaskDetailsData[0]?.serviceType
+                binding.txtTypeFlat.text = getString(R.string.termite)
             }else{
-                binding.txtTypeFlat.text = mTaskDetailsData[0]?.numberOfBhk + " | " + mTaskDetailsData[0]?.serviceType
+                binding.txtTypeFlat.text = mTaskDetailsData[0]?.numberOfBhk + " | " + getString(R.string.termite)
             }
         }
 
@@ -132,10 +132,10 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
                 progressD.dismiss()
                 if (response != null && response.isSuccess == true){
                     AppUtils.isInspectionDone = true
-                    Toasty.success(requireContext(), "Consultation and Inspection submitted successfully.").show()
+                    Toasty.success(requireContext(), getString(R.string.consultation_and_Inspection_submitted_successfully)).show()
                     onConfirmClicked()
                 }else{
-                    Toast.makeText(requireContext(), "Something went wrong.", Toast.LENGTH_SHORT).show()
+                    Toasty.error(requireContext(), "Something went wrong.").show()
                 }
             }
             override fun onFailure(requestCode: Int) {
@@ -154,7 +154,7 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
         controller.setListner(object : NetworkResponseListner<BaseResponse>{
             override fun onResponse(requestCode: Int, response: BaseResponse?) {
                 if (response?.isSuccess == false){
-                    Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT).show()
+                    Toasty.error(requireContext(), "Failed").show()
                 }
             }
             override fun onFailure(requestCode: Int) {
@@ -202,7 +202,7 @@ class TmsConsultationFragment : DialogFragment(), TmsFirstChildFragment.FirstChi
                     getRecommendations()
                 }else{
                     progressD.dismiss()
-                    Toast.makeText(requireContext(), "Something went wrong.", Toast.LENGTH_SHORT).show()
+                    Toasty.error(requireContext(), "Something went wrong.").show()
                 }
             }
             override fun onFailure(requestCode: Int) {

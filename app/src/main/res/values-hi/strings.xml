@@ -1067,6 +1067,7 @@
     <string name="there_is_no_history_to_display">प्रदर्शित करने के लिए कोई इतिहास नहीं है!</string>
     <string name="leader_board">लीडर बोर्ड</string>
     <string name="bazaar_history">Bazaar History</string>
+    <string name="order_renewed">आदेश नवीनीकृत</string>
     <string name="shiksha_instructions">PAATHशाला निर्देश</string>
     <string name="shiksha_instructions_data">1. अंक अर्जित करने के लिए सही उत्तर चुनें।\n
                             2. सभी दी गई श्रेणियों को पूरा करें।\n
@@ -1100,8 +1101,22 @@
     <string name="consultation">कन्सल्टेशन</string>
     <string name="inspection">इन्स्पेक्शन</string>
     <string name="cn_save">संचय</string>
+    <string name="inventory">सूची</string>
+    <string name="_8226">•</string>
 
     <string name="referral_yes">हां</string>
     <string name="referral_no">नहीं</string>
+
+    <string name="termite">दीमक</string>
+
+    <string name="all_questions_are_mandatory">सभी प्रश्न अनिवार्य हैं</string>
+    <string name="service_delivery_sheet">सेवा वितरण पत्रक</string>
+    <string name="service_delivery_sheet_submitted_successfully">सेवा वितरण पत्रक सफलतापूर्वक सबमिट किया गया</string>
+    <string name="consultation_and_Inspection_submitted_successfully">कन्सल्टेशन और इन्स्पेक्शन सफलतापूर्वक प्रस्तुत किया गया</string>
+
+    <string name="go_to_inspection">इन्स्पेक्शन पर जाएं</string>
+    <string name="back_to_consultation">कन्सल्टेशन पर वापस जाएं</string>
+    <string name="select_count">गिनती चुनें</string>
+
 
 </resources>

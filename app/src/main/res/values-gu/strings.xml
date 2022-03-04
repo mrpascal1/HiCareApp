@@ -345,8 +345,30 @@
     <string name="there_is_no_history_to_display">પ્રદર્શિત કરવા માટે કોઈ ઇતિહાસ નથી!</string>
     <string name="leader_board">લીડર બોર્ડ</string>
     <string name="bazaar_history">Bazaar History</string>
+    <string name="order_renewed">ઓર્ડર રિન્યૂ કર્યો</string>
+    <string name="inventory">ઇન્વેન્ટરી</string>
+    <string name="_8226">•</string>
 
     <string name="referral_yes">હા</string>
     <string name="referral_no">ના</string>
+
+    <string name="termite">ઉધઈ</string>
+
+    <string name="all_questions_are_mandatory">બધા પ્રશ્નો ફરજિયાત છે</string>
+    <string name="service_delivery_sheet">સેવા વિતરણ શીટ</string>
+    <string name="service_delivery_sheet_submitted_successfully">સેવા વિતરણ શીટ સફળતાપૂર્વક સબમિટ થઈ</string>
+    <string name="consultation_and_Inspection_submitted_successfully">પરામર્શ અને નિરીક્ષણ સફળતાપૂર્વક સબમિટ</string>
+
+    <string name="go_to_inspection">નિરીક્ષણ પર જાઓ</string>
+    <string name="back_to_consultation">આનંદ પર જાઓ</string>
+
+    <string name="cn_next">આગળ</string>
+    <string name="cn_back">પાછળ</string>
+    <string name="inspection">નિરીક્ષણ</string>
+    <string name="consultation">પરામર્શ</string>
+    <string name="cn_save">સાચવો</string>
+    <string name="consultation_inspection">પરામર્શ અને નિરીક્ષણ</string>
+    <string name="select_count">કાઉન્ટ પસંદ કરો</string>
+
 
 </resources>
