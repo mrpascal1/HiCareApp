@@ -478,11 +478,11 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             Intent intent = new Intent(requireContext(), PulseActivity.class);
             startActivity(intent);
         });
-        if (status.equals("On-Site") && AppUtils.taskTypeName.contains("MMS")){
+        /*if (status.equals("On-Site") && AppUtils.taskTypeName.contains("MMS")){
             mFragmentServiceInfoBinding.lnrInventory.setVisibility(View.VISIBLE);
         }else {
             mFragmentServiceInfoBinding.lnrInventory.setVisibility(GONE);
-        }
+        }*/
         if (status.equals("On-Site") && AppUtils.isB2BJob){
             mFragmentServiceInfoBinding.lnrPulse.setVisibility(View.VISIBLE);
         }else {
@@ -1205,6 +1205,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                             }else {
                                 mFragmentServiceInfoBinding.btnCheckList.setVisibility(GONE);
                             }
+                        }else {
+                            mFragmentServiceInfoBinding.btnCheckList.setVisibility(GONE);
                         }
                         /*if (status.equals("On-Site") && mTaskDetailsData.get(0).isTMS() && !mTaskDetailsData.get(0).getPostJob_Checklist_Done()){
                             mFragmentServiceInfoBinding.btnCheckList.setText(getString(R.string.service_delivery_sheet));
