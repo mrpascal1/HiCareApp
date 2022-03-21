@@ -59,6 +59,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".activities.PulseActivity"
+            android:exported="true"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
         <activity
             android:name=".activities.RoachActivity"
@@ -448,14 +449,18 @@
             </intent-filter>
         </provider>
         -->
-        <service
+        <!--<service
+            android:exported="true"
             android:name=".utils.notifications.OneSignalSilentNotificationHandlerService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE">
             <intent-filter>
                 <action android:name="com.onesignal.NotificationExtender" />
             </intent-filter>
-        </service>
+        </service>-->
+
+        <meta-data android:name="com.onesignal.NotificationServiceExtension"
+            android:value="com.ab.hicarerun.utils.notifications.OneSignalSilentNotificationHandlerService" />
 
         <meta-data
             android:name="com.onesignal.NotificationOpened.DEFAULT"
