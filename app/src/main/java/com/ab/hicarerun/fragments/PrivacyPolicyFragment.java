@@ -58,7 +58,7 @@ public class PrivacyPolicyFragment extends BaseFragment {
         });
         try {
             mFragmentPrivacyPolicyBinding.webView.getSettings().setJavaScriptEnabled(true);
-            mFragmentPrivacyPolicyBinding.webView.loadUrl("http://connect.hicare.in/privacy-policy.html");
+            mFragmentPrivacyPolicyBinding.webView.loadUrl("http://connect.hicare.in/privacy_policy.html");
         }catch (Exception e){
             e.printStackTrace();
         }
