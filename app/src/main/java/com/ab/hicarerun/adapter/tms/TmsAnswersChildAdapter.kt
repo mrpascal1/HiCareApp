@@ -160,7 +160,7 @@ class TmsAnswersChildAdapter(val context: Context, private val isServiceDelivery
         holder.binding.spnType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 val selected = holder.binding.spnType.selectedItem.toString()
-                if (selected != "Select Count"){
+                if (selected != context.getString(R.string.select_count)){
                     selectedPos = position
                     items[position]?.isSelected = true
                     for (i in 0 until items.size){
@@ -244,7 +244,7 @@ class TmsAnswersChildAdapter(val context: Context, private val isServiceDelivery
         dropdownArr.clear()
         items.clear()
         items.add(null)
-        dropdownArr.add(0, "Select Count")
+        dropdownArr.add(0, context.getString(R.string.select_count))
         answer?.forEach {
             dropdownArr.add(it)
         }

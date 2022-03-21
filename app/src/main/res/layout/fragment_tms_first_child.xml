@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="CONSULTATION"
+            android:text="@string/consultation"
             android:textColor="@color/lightRed"
             android:textSize="13sp" />
 
@@ -109,7 +109,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="35dp"
                             android:background="@drawable/bg_round_border_grey_tms"
-                            android:text="Back"
+                            android:text="@string/cn_back"
                             android:textSize="12sp"
                             android:drawableStart="@drawable/ic_round_arrow_back_black"/>
 
@@ -119,7 +119,7 @@
                             android:layout_height="35dp"
                             android:layout_alignParentEnd="true"
                             android:background="@drawable/bg_round_border_grey_tms"
-                            android:text="Next"
+                            android:text="@string/cn_next"
                             android:textSize="12sp"
                             android:drawableEnd="@drawable/ic_round_arrow_forward_black"/>
                         <!--<LinearLayout
@@ -186,7 +186,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_border"
                 android:gravity="center"
-                android:text="GO TO INSPECTION"
+                android:text="@string/go_to_inspection"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="15sp" />

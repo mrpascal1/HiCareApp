@@ -90,6 +90,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import io.realm.RealmResults;
@@ -171,7 +172,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
-        Log.d("TAG", new OneSIgnalHelper(this).getmStrUserID());
+        Log.d("TAG", new OneSIgnalHelper(this).getmStrUserID()+"");
         AppUtils.IS_FLASH_ON = true;
         mActivityHomeBinding.toolbar.imgFlash.setImageResource(R.drawable.flash_off);
         mActivityHomeBinding.toolbar.lnrDrawer.setOnClickListener(view -> mActivityHomeBinding.drawer.openDrawer(GravityCompat.START));
@@ -258,6 +259,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
 
         handleIntent(getIntent());
         getResourcesKarma();
+        Log.d("Language", ""+ Locale.getDefault());
     }
 
     private void getResourcesKarma() {

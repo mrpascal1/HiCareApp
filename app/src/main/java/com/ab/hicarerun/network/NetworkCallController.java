@@ -49,7 +49,8 @@ import com.ab.hicarerun.network.models.handshakemodel.ContinueHandShakeResponse;
 import com.ab.hicarerun.network.models.handshakemodel.HandShakeResponse;
 import com.ab.hicarerun.network.models.incentivemodel.IncentiveResponse;
 import com.ab.hicarerun.network.models.inventorymodel.AddInventoryResult;
-import com.ab.hicarerun.network.models.inventorymodel.InventoryListModel.InventoryListResult;
+import com.ab.hicarerun.network.models.inventorymodel.historymodel.InventoryHistoryBase;
+import com.ab.hicarerun.network.models.inventorymodel.inventorylistmodel.InventoryListResult;
 import com.ab.hicarerun.network.models.jeopardymodel.CWFJeopardyRequest;
 import com.ab.hicarerun.network.models.jeopardymodel.CWFJeopardyResponse;
 import com.ab.hicarerun.network.models.jeopardymodel.JeopardyReasonModel;
@@ -66,6 +67,8 @@ import com.ab.hicarerun.network.models.loggermodel.ErrorLoggerModel;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
 import com.ab.hicarerun.network.models.menumodel.MenuResponse;
+import com.ab.hicarerun.network.models.pulsemodel.PulseData;
+import com.ab.hicarerun.network.models.pulsemodel.PulseResponse;
 import com.ab.hicarerun.network.models.qrcodemodel.CheckCodeResponse;
 import com.ab.hicarerun.network.models.qrcodemodel.CheckPhonePeResponse;
 import com.ab.hicarerun.network.models.qrcodemodel.PhonePeQRCodeResponse;
@@ -101,6 +104,8 @@ import com.ab.hicarerun.network.models.referralmodel.ReferralSRResponse;
 import com.ab.hicarerun.network.models.rewardsmodel.RewardsResponse;
 import com.ab.hicarerun.network.models.rewardsmodel.SaveRedeemRequest;
 import com.ab.hicarerun.network.models.rewardsmodel.SaveRedeemResponse;
+import com.ab.hicarerun.network.models.roachmodel.roachlistmodel.RoachBase;
+import com.ab.hicarerun.network.models.roachmodel.saveroachmodel.RoachSaveBase;
 import com.ab.hicarerun.network.models.routinemodel.RoutineResponse;
 import com.ab.hicarerun.network.models.routinemodel.SaveRoutineResponse;
 import com.ab.hicarerun.network.models.routinemodel.TechRoutineData;
@@ -5450,6 +5455,144 @@ public class NetworkCallController {
 
                     @Override
                     public void onFailure(Call<InventoryListResult> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void getInventoryHistory(int requestCode, String itemCode) {
+        BaseApplication.getInventoryApi()
+                .getInventoryHistory(itemCode)
+                .enqueue(new Callback<InventoryHistoryBase>(){
+                    @Override
+                    public void onResponse(Call<InventoryHistoryBase> call, Response<InventoryHistoryBase> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<InventoryHistoryBase> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void getPulseB2bInspectionQuestions(int requestCode, String taskId, String resourceId, String lan) {
+        BaseApplication.getRetrofitAPI(false)
+                .getPulseB2bInspectionQuestions(taskId, resourceId, lan)
+                .enqueue(new Callback<PulseResponse>(){
+                    @Override
+                    public void onResponse(Call<PulseResponse> call, Response<PulseResponse> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<PulseResponse> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void updateB2BInspection(int requestCode, List<PulseData> data) {
+        BaseApplication.getRetrofitAPI(false)
+                .updateB2BInspection(data)
+                .enqueue(new Callback<BaseResponse>(){
+                    @Override
+                    public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void saveDeviceRegistrationForApp(int requestCode, HashMap<String, Object> data) {
+        BaseApplication.getIotApi()
+                .saveDeviceRegistrationForApp(data)
+                .enqueue(new Callback<RoachSaveBase>(){
+                    @Override
+                    public void onResponse(Call<RoachSaveBase> call, Response<RoachSaveBase> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+                    @Override
+                    public void onFailure(Call<RoachSaveBase> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void getAllDeviceByAccount(int requestCode, String accountNo, String taskId) {
+        BaseApplication.getIotApi()
+                .getAllDeviceByAccount(accountNo, taskId)
+                .enqueue(new Callback<RoachBase>(){
+                    @Override
+                    public void onResponse(Call<RoachBase> call, Response<RoachBase> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+                    @Override
+                    public void onFailure(Call<RoachBase> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void updateImageForApp(int requestCode, HashMap<String, Object> data) {
+        BaseApplication.getIotApi()
+                .updateImageForApp(data)
+                .enqueue(new Callback<RoachSaveBase>(){
+                    @Override
+                    public void onResponse(Call<RoachSaveBase> call, Response<RoachSaveBase> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+                    @Override
+                    public void onFailure(Call<RoachSaveBase> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void deleteDevice(int requestCode, int deviceId) {
+        BaseApplication.getIotApi()
+                .deleteDevice(deviceId)
+                .enqueue(new Callback<RoachSaveBase>(){
+                    @Override
+                    public void onResponse(Call<RoachSaveBase> call, Response<RoachSaveBase> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+                    @Override
+                    public void onFailure(Call<RoachSaveBase> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void updateDeviceLocationForApp(int requestCode, HashMap<String, Object> data) {
+        BaseApplication.getIotApi()
+                .updateDeviceLocationForApp(data)
+                .enqueue(new Callback<RoachSaveBase>(){
+                    @Override
+                    public void onResponse(Call<RoachSaveBase> call, Response<RoachSaveBase> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+                    @Override
+                    public void onFailure(Call<RoachSaveBase> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void replaceDeviceForApp(int requestCode, HashMap<String, Object> data) {
+        BaseApplication.getIotApi()
+                .replaceDeviceForApp(data)
+                .enqueue(new Callback<RoachSaveBase>(){
+                    @Override
+                    public void onResponse(Call<RoachSaveBase> call, Response<RoachSaveBase> response) {
+                        mListner.onResponse(requestCode, response.body());
+                    }
+                    @Override
+                    public void onFailure(Call<RoachSaveBase> call, Throwable t) {
                         mListner.onFailure(requestCode);
                     }
                 });

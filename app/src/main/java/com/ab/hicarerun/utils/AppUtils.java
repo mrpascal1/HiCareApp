@@ -106,6 +106,9 @@ public class AppUtils {
     public static boolean isInspectionDone = false;
     public static boolean isTmsInspectionDone = false;
     public static boolean isServiceDeliveryFilled = false;
+    public static boolean isPulseSubmitted = false;
+    public static boolean showRoachInspectionButton = false;
+    public static boolean isB2BJob = false;
     public static String sequenceNo = "";
     public static String resourceId = "";
     public static String appointmentDate = "";
@@ -114,13 +117,16 @@ public class AppUtils {
     public static String appointmentEndTime = "";
     public static String CAMERA_ORIENTATION = "CAMERA_ORIENTATION";
     public static String CAMERA_SCREEN = "";
+    public static String taskId = "";
+    public static String status = "";
+    public static String accountId = "";
     public static boolean NOT_RENEWAL_DONE = false;
     public static boolean IS_ACTIVITY_THERE = false;
     public static boolean IS_QRCODE_THERE = true;
     public static boolean IS_FLASH_ON= true;
     public static boolean CHEMICAL_CHANGED = false;
     public static boolean IS_COMBINED_TASK = false;
-    public static HashMap<String, String> floorDrawn = new HashMap<>();
+    public static HashMap<Integer, String> checkItems = new HashMap<>();
 
     public static Bitmap createCustomMarker(Context context, Bitmap resource, String accountName, String _name) {
 

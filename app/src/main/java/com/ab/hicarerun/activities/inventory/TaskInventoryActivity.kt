@@ -1,16 +1,14 @@
 package com.ab.hicarerun.activities.inventory
 
 import android.Manifest
+import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
@@ -30,8 +28,9 @@ import com.ab.hicarerun.network.NetworkCallController
 import com.ab.hicarerun.network.NetworkResponseListner
 import com.ab.hicarerun.network.models.inventorymodel.ActionList
 import com.ab.hicarerun.network.models.inventorymodel.AddInventoryResult
-import com.ab.hicarerun.network.models.inventorymodel.InventoryListModel.InventoryListResult
+import com.ab.hicarerun.network.models.inventorymodel.inventorylistmodel.InventoryListResult
 import com.ab.hicarerun.network.models.inventorymodel.TechnicianList
+import com.ab.hicarerun.network.models.inventorymodel.inventorylistmodel.InventoryListData
 import com.ab.hicarerun.network.models.tsscannermodel.BaseResponse
 import com.ab.hicarerun.utils.AppUtils
 import com.karumi.dexter.Dexter
@@ -59,6 +58,7 @@ class TaskInventoryActivity : BaseActivity() {
     lateinit var actionList: ArrayList<ActionList>
     lateinit var technicianList: ArrayList<TechnicianList>
     lateinit var inventoryAdapter: InventoryAdapter
+    val inventoryList = ArrayList<InventoryListData>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +68,11 @@ class TaskInventoryActivity : BaseActivity() {
 
         binding.titleTv.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
         binding.scanBtn.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
+        if (AppUtils.status == "Completed"){
+            binding.scanBtn.visibility = View.GONE
+        }else{
+            binding.scanBtn.visibility = View.VISIBLE
+        }
 
         val intent = intent
         orderNo = intent.getStringExtra("orderNo").toString()
@@ -95,6 +100,11 @@ class TaskInventoryActivity : BaseActivity() {
             finish()
         }
 
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            getInventoryListByOrderNo(orderNo)
+            binding.swipeRefreshLayout.isRefreshing = false
+        }
+
         getInventoryListByOrderNo(orderNo)
     }
 
@@ -105,8 +115,17 @@ class TaskInventoryActivity : BaseActivity() {
             override fun onResponse(requestCode: Int, response: InventoryListResult?) {
                 if (response != null && response.isSuccess == true){
                     if (response.data != null && response.data.isNotEmpty()) {
-                        inventoryAdapter.addData(response.data, true)
+                        inventoryList.addAll(response.data)
+                        inventoryAdapter.addData(inventoryList, true)
+                        binding.errorTv.visibility = View.GONE
+                        binding.inventoryRecyclerView.visibility = View.VISIBLE
+                    }else{
+                        binding.inventoryRecyclerView.visibility = View.GONE
+                        binding.errorTv.visibility = View.VISIBLE
                     }
+                }else{
+                    binding.inventoryRecyclerView.visibility = View.GONE
+                    binding.errorTv.visibility = View.VISIBLE
                 }
                 inventoryAdapter.notifyDataSetChanged()
                 dismissProgressDialog()
@@ -122,19 +141,24 @@ class TaskInventoryActivity : BaseActivity() {
     }
 
     private fun getDate(str: String): String{
-        val date = str.substring(0, 6)
-        var formatted = ""
-        var count = 0
-        for (i in 0 until date.length){
-            if (count == 2){
-                formatted += "-"
-                count = 0
+        try {
+            val date = str.substring(0, 6)
+            var formatted = ""
+            var count = 0
+            for (i in 0 until date.length) {
+                if (count == 2) {
+                    formatted += "-"
+                    count = 0
+                }
+                formatted += date[i]
+                count++
             }
-            formatted += date[i]
-            count++
+            formatted = AppUtils.getFormatted(formatted, "dd-MM-yyyy", "dd-MM-yy")
+            return formatted
+        }catch (e: Exception) {
+            Toasty.error(this, "Invalid QR code").show()
         }
-        formatted = AppUtils.getFormatted(formatted, "dd-MM-yyyy", "dd-MM-yy")
-        return formatted
+        return ""
     }
 
     private fun getItemSerialNo(str: String): String{
@@ -179,11 +203,14 @@ class TaskInventoryActivity : BaseActivity() {
         selectedTechnician = ""
         bucketId = 0
         reasons = ""
-        val li = LayoutInflater.from(this)
-        val promptsView = li.inflate(R.layout.add_inventory_action_dialog, null)
-        val alertDialogBuilder = AlertDialog.Builder(this)
-        alertDialogBuilder.setView(promptsView)
-        val alertDialog = alertDialogBuilder.create()
+        val promptsView = Dialog(this).apply {
+            setCancelable(false)
+            requestWindowFeature(Window.FEATURE_NO_TITLE)
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
+            setCanceledOnTouchOutside(false)
+            setContentView(R.layout.add_inventory_action_dialog)
+        }
         val technicianLayout = promptsView.findViewById(R.id.technicianLayout) as ConstraintLayout
         val spnAction = promptsView.findViewById(R.id.spnAction) as AppCompatSpinner
         val spnTechnician = promptsView.findViewById(R.id.spnTechnician) as AppCompatSpinner
@@ -244,11 +271,13 @@ class TaskInventoryActivity : BaseActivity() {
                                     referenceId = it.technicianId.toString()
                                 }
                             }
+                        }else{
+                            referenceId = AppUtils.resourceId
                         }
                     }else if (bucketId == 1){
                         referenceId = AppUtils.resourceId
-                    }else{
-                        referenceId = ""
+                    }else if (bucketId == 3){
+                        referenceId = AppUtils.taskId
                     }
                 }else{
                     technicianLayout.visibility = View.GONE
@@ -275,15 +304,17 @@ class TaskInventoryActivity : BaseActivity() {
                                         referenceId = it.technicianId.toString()
                                     }
                                 }
+                            }else{
+                                referenceId = AppUtils.resourceId
                             }
                         }else if(bucketId == 1){
                             referenceId = AppUtils.resourceId
-                        }else{
-                            referenceId = ""
+                        }else if (bucketId == 3){
+                            referenceId = AppUtils.taskId
                         }
                     }else{
                         if (bucketId == 3){
-                            referenceId = ""
+                            referenceId = AppUtils.taskId
                         }else if(bucketId == 1){
                             referenceId = AppUtils.resourceId
                         }
@@ -322,19 +353,17 @@ class TaskInventoryActivity : BaseActivity() {
         spnTechnician.adapter = technicianAdapter
 
         okBtn.setOnClickListener {
-            updateInventory(alertDialog)
+            updateInventory()
+            promptsView.dismiss()
         }
 
         cancelBtn.setOnClickListener {
-            dismissProgressDialog()
-            alertDialog.cancel()
+            promptsView.cancel()
         }
-        alertDialog.setCanceledOnTouchOutside(false)
-        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        alertDialog.show()
+        promptsView.show()
     }
 
-    private fun updateInventory(alertDialog: AlertDialog){
+    private fun updateInventory(){
         showProgressDialog()
         val hashMap = HashMap<String, Any>()
         hashMap["Reasons"] = reasons
@@ -349,15 +378,14 @@ class TaskInventoryActivity : BaseActivity() {
                 if (response != null){
                     if (response.isSuccess == true){
                         Toasty.success(applicationContext, "Inventory updated successfully").show()
-                        dismissProgressDialog()
-                        alertDialog.cancel()
                         getInventoryListByOrderNo(orderNo)
-                    }else{
-                        dismissProgressDialog()
+                    } else{
+                        Toasty.error(applicationContext, "Unable to update").show()
                     }
                 }else{
-                    dismissProgressDialog()
+                    Toasty.error(applicationContext, "Unable to update").show()
                 }
+                dismissProgressDialog()
             }
 
             override fun onFailure(requestCode: Int) {
@@ -403,11 +431,12 @@ class TaskInventoryActivity : BaseActivity() {
                             }
                         }
                     }else{
-                        dismissProgressDialog()
+                        Toasty.error(applicationContext, "Error").show()
                     }
                 }else{
-                    dismissProgressDialog()
+                    Toasty.error(applicationContext, "Error").show()
                 }
+                dismissProgressDialog()
             }
 
             override fun onFailure(requestCode: Int) {
@@ -427,8 +456,19 @@ class TaskInventoryActivity : BaseActivity() {
                     Toasty.error(this, "Invalid QR code").show()
                     return
                 }
+
                 itemSerialNo = getItemSerialNo(barcode)
-                addInventory(AppUtils.resourceId, itemSerialNo, getDate(barcode), barcode)
+                val date = getDate(barcode)
+                if (date != "") {
+                    addInventory(AppUtils.resourceId, itemSerialNo, date, barcode)
+                    inventoryList.forEach {
+                        Log.d("TAG", "$it")
+                        if (it.barcode_Data == barcode && it.scanned == true){
+                            Toasty.normal(this, "Already scanned item").show()
+                            return@forEach
+                        }
+                    }
+                }
             }
         }
     }

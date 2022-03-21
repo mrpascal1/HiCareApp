@@ -69,6 +69,7 @@ import com.ab.hicarerun.BuildConfig;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.Camera2Activity;
 import com.ab.hicarerun.activities.NewTaskDetailsActivity;
+import com.ab.hicarerun.activities.PulseActivity;
 import com.ab.hicarerun.activities.inventory.TaskInventoryActivity;
 import com.ab.hicarerun.adapter.BankSearchAdapter;
 import com.ab.hicarerun.adapter.ChemicalDialogAdapter;
@@ -323,11 +324,6 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (AppUtils.taskTypeName.contains("MMS")){
-            mFragmentServiceInfoBinding.lnrInventory.setVisibility(View.VISIBLE);
-        }else {
-            mFragmentServiceInfoBinding.lnrInventory.setVisibility(GONE);
-        }
         mCameraManager = (CameraManager) getActivity().getSystemService(Context.CAMERA_SERVICE);
         try {
             mCameraId = mCameraManager.getCameraIdList()[0];
@@ -477,6 +473,21 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             intent.putExtra("orderNo", isCombinedTask ? combiedTaskOrders : oId);
             startActivity(intent);
         });
+
+        mFragmentServiceInfoBinding.pulsePerformBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), PulseActivity.class);
+            startActivity(intent);
+        });
+        /*if (status.equals("On-Site") && AppUtils.taskTypeName.contains("MMS")){
+            mFragmentServiceInfoBinding.lnrInventory.setVisibility(View.VISIBLE);
+        }else {
+            mFragmentServiceInfoBinding.lnrInventory.setVisibility(GONE);
+        }*/
+        if (status.equals("On-Site") && AppUtils.isB2BJob){
+            mFragmentServiceInfoBinding.lnrPulse.setVisibility(View.VISIBLE);
+        }else {
+            mFragmentServiceInfoBinding.lnrPulse.setVisibility(GONE);
+        }
     }
 
     private void showInstructionDialog(String customerInstruction) {
@@ -1183,25 +1194,33 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     mFragmentServiceInfoBinding.txtConsIns.setTypeface(mFragmentServiceInfoBinding.txtConsIns.getTypeface(), Typeface.BOLD);
                     mFragmentServiceInfoBinding.txtView.setTypeface(mFragmentServiceInfoBinding.txtView.getTypeface(), Typeface.BOLD);
 
+                    //
                     if (status.equals("On-Site") && !mTaskDetailsData.get(0).getPostJob_Checklist_Done() && mTaskDetailsData.get(0).getTaskCheckList() != null && mTaskDetailsData.get(0).getTaskCheckList().size() > 0) {
-                        if (mTaskDetailsData.get(0).isTMS()){
-                            mFragmentServiceInfoBinding.btnCheckList.setText("Service delivery sheet");
-                        }
                         mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
                     } else {
-                        if (status.equals("On-Site") && mTaskDetailsData.get(0).isTMS() && !mTaskDetailsData.get(0).getPostJob_Checklist_Done()){
-                            mFragmentServiceInfoBinding.btnCheckList.setText("Service delivery sheet");
-                            mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
-                        }else if (status.equals("On-Site") && mTaskDetailsData.get(0).isTMS() && mTaskDetailsData.get(0).getPostJob_Checklist_Done()){
-                            mFragmentServiceInfoBinding.btnCheckList.setText("Service delivery sheet");
-                            mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
+                        if (status.equals("On-Site")){
+                            if (mTaskDetailsData.get(0).isTMS() && mTaskDetailsData.get(0).getConsultationInspectionRequired()){
+                                mFragmentServiceInfoBinding.btnCheckList.setText(getString(R.string.service_delivery_sheet));
+                                mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
+                            }else {
+                                mFragmentServiceInfoBinding.btnCheckList.setVisibility(GONE);
+                            }
                         }else {
                             mFragmentServiceInfoBinding.btnCheckList.setVisibility(GONE);
                         }
+                        /*if (status.equals("On-Site") && mTaskDetailsData.get(0).isTMS() && !mTaskDetailsData.get(0).getPostJob_Checklist_Done()){
+                            mFragmentServiceInfoBinding.btnCheckList.setText(getString(R.string.service_delivery_sheet));
+                            mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
+                        }else if (status.equals("On-Site") && mTaskDetailsData.get(0).isTMS() && mTaskDetailsData.get(0).getPostJob_Checklist_Done()){
+                            mFragmentServiceInfoBinding.btnCheckList.setText(getString(R.string.service_delivery_sheet));
+                            mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
+                        }else {
+                            mFragmentServiceInfoBinding.btnCheckList.setVisibility(GONE);
+                        }*/
                     }
                     if (status.equalsIgnoreCase("Completed")){
-                        if (mTaskDetailsData.get(0).isTMS() && mTaskDetailsData.get(0).getPostJob_Checklist_Done()){
-                            mFragmentServiceInfoBinding.btnCheckList.setText("Service delivery sheet");
+                        if (mTaskDetailsData.get(0).isTMS() && mTaskDetailsData.get(0).getConsultationInspectionRequired()){
+                            mFragmentServiceInfoBinding.btnCheckList.setText(getString(R.string.service_delivery_sheet));
                             mFragmentServiceInfoBinding.btnCheckList.setVisibility(View.VISIBLE);
                         }else {
                             mFragmentServiceInfoBinding.btnCheckList.setVisibility(GONE);
@@ -1225,7 +1244,11 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                     AppUtils.isServiceDeliveryFilled = true;
                                 }
                                 //mListCallback.onPostJobButtonClicked();
-                                mListCallback.onTmsPostJobButtonClicked();
+                                if (AppUtils.isInspectionDone) {
+                                    mListCallback.onTmsPostJobButtonClicked();
+                                }else {
+                                    Toasty.error(requireContext(), "Please complete consultation & Inspection first").show();
+                                }
                             }else {
                                 isPostJobCompletionDone = true;
                                 mListCallback.onPostJobButtonClicked();

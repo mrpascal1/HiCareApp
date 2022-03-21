@@ -101,13 +101,15 @@ public class TmsUtils {
         boolean isRequired = true;
         String tabName = "";
         for (QuestionList data : inspectionList) {
-            if (data.isPictureRequired()) {
-                if (data.getPictureURL() != null && !data.getPictureURL().isEmpty()) {
-                    isRequired = true;
-                } else {
-                    isRequired = false;
-                    tabName = String.valueOf(data.getTabIndex());
-                    break;
+            if (data.getAnswer() != null && !data.getAnswer().equals("") && !data.getAnswer().equals("0")) {
+                if (data.isPictureRequired()) {
+                    if (data.getPictureURL() != null && !data.getPictureURL().isEmpty()) {
+                        isRequired = true;
+                    } else {
+                        isRequired = false;
+                        tabName = String.valueOf(data.getTabIndex());
+                        break;
+                    }
                 }
             }
         }

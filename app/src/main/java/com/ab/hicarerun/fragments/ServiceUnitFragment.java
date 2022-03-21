@@ -29,6 +29,7 @@ import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.BarcodeVerificatonActivity;
 import com.ab.hicarerun.activities.BrowserActivity;
+import com.ab.hicarerun.activities.RoachActivity;
 import com.ab.hicarerun.adapter.ActivityAreaUnitAdapter;
 import com.ab.hicarerun.adapter.ActivityTowerAdapter;
 import com.ab.hicarerun.adapter.RecycleByActivityAdapter;
@@ -150,6 +151,22 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
             AppUtils.IS_QRCODE_THERE = false;
         }
 
+        if (AppUtils.showRoachInspectionButton){
+            mFragmentServiceUnitBinding.txtActivity.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+            if (AppUtils.status.equals("Completed")){
+                mFragmentServiceUnitBinding.performTv.setText("Performed");
+                mFragmentServiceUnitBinding.performTv.setAlpha(0.6f);
+                mFragmentServiceUnitBinding.cmtCard.setEnabled(false);
+            }else {
+                mFragmentServiceUnitBinding.performTv.setText("Perform");
+                mFragmentServiceUnitBinding.performTv.setAlpha(1f);
+                mFragmentServiceUnitBinding.cmtCard.setEnabled(true);
+            }
+            mFragmentServiceUnitBinding.cmtCard.setVisibility(View.VISIBLE);
+        }else {
+            mFragmentServiceUnitBinding.cmtCard.setVisibility(View.GONE);
+        }
+
         mFragmentServiceUnitBinding.recycleTower.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity());
         mFragmentServiceUnitBinding.recycleTower.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
@@ -186,6 +203,10 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                 Log.d("isCombine", combinedOrderId);
                 Log.d("isCombine", String.valueOf(isCombineTask));
             }
+        });
+        mFragmentServiceUnitBinding.cmtCard.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), RoachActivity.class);
+            startActivity(intent);
         });
         mFragmentServiceUnitBinding.viewFloorTv.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), BrowserActivity.class);

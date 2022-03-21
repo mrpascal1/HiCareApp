@@ -1,8 +1,8 @@
-package com.ab.hicarerun.network.models.inventorymodel.InventoryListModel
+package com.ab.hicarerun.network.models.inventorymodel.inventorylistmodel
 
 import com.google.gson.annotations.SerializedName
 
-data class Data (
+data class InventoryListData (
 	@SerializedName("Id") val id : Int?,
 	@SerializedName("Inventory_Code") val inventory_Code : String?,
 	@SerializedName("Item_Code") val item_Code : String?,
@@ -25,5 +25,6 @@ data class Data (
 	@SerializedName("Created_On") val created_On : String?,
 	@SerializedName("Created_By") val created_By : String?,
 	@SerializedName("Updated_On") val updated_On : String?,
-	@SerializedName("Updated_By") val updated_By : String?
+	@SerializedName("Updated_By") val updated_By : String?,
+	@SerializedName("Scanned") val scanned : Boolean?
 )

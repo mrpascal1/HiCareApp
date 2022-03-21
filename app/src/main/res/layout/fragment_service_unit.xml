@@ -16,231 +16,386 @@
             android:background="@color/smoke_g">
 
             <LinearLayout
-                android:id="@+id/lnrData"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@id/btnRodentScanner"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/viewFloorTv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="4dp"
-                    android:gravity="center_vertical"
-                    android:text="@string/view_floor"
-                    android:textSize="17sp" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycleTower"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
+                android:layout_height="wrap_content">
                 <LinearLayout
+                    android:id="@+id/lnrData"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
+                    android:layout_height="match_parent"
+                    android:layout_above="@id/buttonsLayout"
+                    android:orientation="vertical">
 
-
-                    <LinearLayout
-                        android:id="@+id/lnrArea"
+                    <TextView
+                        android:id="@+id/viewFloorTv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="3">
+                        android:layout_marginTop="8dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="4dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/view_floor"
+                        android:textSize="17sp" />
 
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/cardSheet"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycleTower"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+
+                        <LinearLayout
+                            android:id="@+id/lnrArea"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginEnd="10dp"
-                            android:layout_marginBottom="8dp"
-                            android:orientation="vertical"
-                            app:cardBackgroundColor="@color/white"
-                            app:cardCornerRadius="25dp"
-                            app:cardElevation="4dp"
-                            app:cardMaxElevation="8dp">
+                            android:orientation="horizontal"
+                            android:weightSum="3">
 
-                            <LinearLayout
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/cardSheet"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="vertical">
-
+                                android:layout_marginStart="10dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginEnd="10dp"
+                                android:layout_marginBottom="8dp"
+                                android:orientation="vertical"
+                                app:cardBackgroundColor="@color/white"
+                                app:cardCornerRadius="25dp"
+                                app:cardElevation="4dp"
+                                app:cardMaxElevation="8dp">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
-                                    android:weightSum="2">
+                                    android:orientation="vertical">
+
 
                                     <LinearLayout
-                                        android:id="@+id/cToolbar"
-                                        style="@style/ToolBarStyle.Event"
-                                        android:layout_width="0dp"
-                                        android:layout_height="50dp"
-                                        android:layout_weight="1.8"
-                                        android:orientation="vertical">
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal"
+                                        android:weightSum="2">
 
                                         <LinearLayout
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:gravity="center"
-                                            android:orientation="horizontal">
+                                            android:id="@+id/cToolbar"
+                                            style="@style/ToolBarStyle.Event"
+                                            android:layout_width="0dp"
+                                            android:layout_height="50dp"
+                                            android:layout_weight="1.8"
+                                            android:orientation="vertical">
 
-                                            <androidx.appcompat.widget.AppCompatImageView
-                                                android:layout_width="13dp"
-                                                android:layout_height="13dp"
-                                                android:layout_marginLeft="15dp"
-                                                android:layout_marginTop="3dp"
-                                                app:srcCompat="@drawable/ic_placeholder" />
-
-                                            <TextView
+                                            <LinearLayout
                                                 android:layout_width="match_parent"
                                                 android:layout_height="wrap_content"
-                                                android:layout_marginLeft="5dp"
-                                                android:layout_marginTop="3dp"
-                                                android:text="Floor"
-                                                android:textColor="@color/colorPrimary"
-                                                android:textSize="12sp" />
+                                                android:gravity="center"
+                                                android:orientation="horizontal">
+
+                                                <androidx.appcompat.widget.AppCompatImageView
+                                                    android:layout_width="13dp"
+                                                    android:layout_height="13dp"
+                                                    android:layout_marginLeft="15dp"
+                                                    android:layout_marginTop="3dp"
+                                                    app:srcCompat="@drawable/ic_placeholder" />
+
+                                                <TextView
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="wrap_content"
+                                                    android:layout_marginLeft="5dp"
+                                                    android:layout_marginTop="3dp"
+                                                    android:text="Floor"
+                                                    android:textColor="@color/colorPrimary"
+                                                    android:textSize="12sp" />
+
+                                            </LinearLayout>
+
+                                            <TextView
+                                                android:id="@+id/txtArea"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content"
+                                                android:layout_marginLeft="20dp"
+                                                android:layout_marginTop="5dp"
+                                                android:layout_marginRight="25dp"
+                                                android:ellipsize="end"
+                                                android:maxLines="1"
+                                                android:text="Floor 1"
+                                                android:textColor="@color/black"
+                                                android:textSize="16sp" />
+
 
                                         </LinearLayout>
 
-                                        <TextView
-                                            android:id="@+id/txtArea"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginLeft="20dp"
-                                            android:layout_marginTop="5dp"
-                                            android:layout_marginRight="25dp"
-                                            android:ellipsize="end"
-                                            android:maxLines="1"
-                                            android:text="Floor 1"
-                                            android:textColor="@color/black"
-                                            android:textSize="16sp" />
+                                        <LinearLayout
+                                            android:layout_width="0dp"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="0.2">
+
+                                            <ImageView
+                                                android:layout_width="10dp"
+                                                android:layout_height="10dp"
+                                                android:layout_gravity="center"
+                                                app:srcCompat="@drawable/ic_down_arrow" />
+
+                                        </LinearLayout>
 
 
                                     </LinearLayout>
 
-                                    <LinearLayout
-                                        android:layout_width="0dp"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="0.2">
-
-                                        <ImageView
-                                            android:layout_width="10dp"
-                                            android:layout_height="10dp"
-                                            android:layout_gravity="center"
-                                            app:srcCompat="@drawable/ic_down_arrow" />
-
-                                    </LinearLayout>
-
+                                    <!--<View-->
+                                    <!--android:id="@+id/view"-->
+                                    <!--android:layout_width="match_parent"-->
+                                    <!--android:layout_height="0.5dp"-->
+                                    <!--android:layout_marginLeft="10dp"-->
+                                    <!--android:layout_marginRight="10dp"-->
+                                    <!--android:background="@drawable/gist_bg"-->
+                                    <!--android:layerType="software" />-->
 
                                 </LinearLayout>
 
-                                <!--<View-->
-                                <!--android:id="@+id/view"-->
-                                <!--android:layout_width="match_parent"-->
-                                <!--android:layout_height="0.5dp"-->
-                                <!--android:layout_marginLeft="10dp"-->
-                                <!--android:layout_marginRight="10dp"-->
-                                <!--android:background="@drawable/gist_bg"-->
-                                <!--android:layerType="software" />-->
-
-                            </LinearLayout>
-
-                        </androidx.cardview.widget.CardView>
+                            </androidx.cardview.widget.CardView>
 
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="2.7"
-                            android:gravity="center_vertical"
-                            android:text="Floor 1"
-                            android:textSize="16dp" />
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="2.7"
+                                android:gravity="center_vertical"
+                                android:text="Floor 1"
+                                android:textSize="16dp" />
 
 
-                        <!--<androidx.appcompat.widget.AppCompatSpinner-->
-                        <!--android:id="@+id/spnArea"-->
-                        <!--android:layout_width="0dp"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--android:layout_marginLeft="10sp"-->
-                        <!--android:layout_weight="2.7"-->
-                        <!--android:clickable="true"-->
-                        <!--android:ems="10"-->
-                        <!--android:background="@null"-->
-                        <!--android:popupBackground="@color/white"-->
-                        <!--android:spinnerMode="dialog"-->
-                        <!--android:textSize="20sp"-->
-                        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-                        <!--app:layout_constraintRight_toRightOf="parent"-->
-                        <!--app:layout_constraintTop_toTopOf="parent" />-->
-
-                        <ImageView
-                            android:layout_width="0dp"
-                            android:layout_height="20dp"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="5dp"
-                            android:layout_weight="0.2"
-                            app:srcCompat="@drawable/ic_download" />
-
-                        <LinearLayout
-                            android:id="@+id/lnrFilter"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:layout_marginRight="10sp"
-                            android:layout_weight="0.5"
-                            android:gravity="center"
-                            android:orientation="horizontal"
-                            android:visibility="gone"
-                            android:weightSum="1">
-
-                            <!--<TextView-->
+                            <!--<androidx.appcompat.widget.AppCompatSpinner-->
+                            <!--android:id="@+id/spnArea"-->
                             <!--android:layout_width="0dp"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:layout_gravity="center"-->
-                            <!--android:layout_weight="0"-->
-                            <!--android:visibility="gone"-->
-                            <!--android:textSize="16sp"-->
-                            <!--android:textColor="@android:color/tab_indicator_text"-->
-                            <!--android:text="Area" />-->
+                            <!--android:layout_height="match_parent"-->
+                            <!--android:layout_marginLeft="10sp"-->
+                            <!--android:layout_weight="2.7"-->
+                            <!--android:clickable="true"-->
+                            <!--android:ems="10"-->
+                            <!--android:background="@null"-->
+                            <!--android:popupBackground="@color/white"-->
+                            <!--android:spinnerMode="dialog"-->
+                            <!--android:textSize="20sp"-->
+                            <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                            <!--app:layout_constraintRight_toRightOf="parent"-->
+                            <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+                            <ImageView
+                                android:layout_width="0dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="5dp"
+                                android:layout_weight="0.2"
+                                app:srcCompat="@drawable/ic_download" />
 
                             <LinearLayout
+                                android:id="@+id/lnrFilter"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center"
-                                android:layout_weight="1"
-                                android:gravity="center">
+                                android:layout_marginRight="10sp"
+                                android:layout_weight="0.5"
+                                android:gravity="center"
+                                android:orientation="horizontal"
+                                android:visibility="gone"
+                                android:weightSum="1">
 
-                                <ImageView
-                                    android:layout_width="20dp"
-                                    android:layout_height="20dp"
+                                <!--<TextView-->
+                                <!--android:layout_width="0dp"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:layout_gravity="center"-->
+                                <!--android:layout_weight="0"-->
+                                <!--android:visibility="gone"-->
+                                <!--android:textSize="16sp"-->
+                                <!--android:textColor="@android:color/tab_indicator_text"-->
+                                <!--android:text="Area" />-->
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
                                     android:layout_gravity="center"
-                                    app:srcCompat="@drawable/ic_down" />
+                                    android:layout_weight="1"
+                                    android:gravity="center">
+
+                                    <ImageView
+                                        android:layout_width="20dp"
+                                        android:layout_height="20dp"
+                                        android:layout_gravity="center"
+                                        app:srcCompat="@drawable/ic_down" />
+
+                                </LinearLayout>
+
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycleArea"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"/>
+                </LinearLayout>
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cmtCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="-2dp"
+                    app:cardMaxElevation="5dp"
+                    app:cardUseCompatPadding="true">
+
+                    <LinearLayout
+                        android:id="@+id/swipemain"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="horizontal"
+                        android:weightSum="5">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="3.8"
+                            android:orientation="vertical">
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal"
+                                android:gravity="center"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginLeft="8dp">
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
+                                    <TextView
+                                        android:id="@+id/txtActivity"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="CMT Inspection"
+                                        android:ellipsize="middle"
+                                        android:layout_marginLeft="10dp"
+                                        android:singleLine="true"
+                                        android:textColor="@color/black"
+                                        android:gravity="center_vertical"
+                                        android:textSize="16sp" />
+
+                                </LinearLayout>
+
+
+                            </LinearLayout>
+
+
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/btnFinish"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1.2"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginBottom="15dp"
+                            >
+
+                            <LinearLayout
+                                android:id="@+id/lnrAdd"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                >
+
+                                <LinearLayout
+                                    android:id="@+id/lnrUpdate"
+                                    android:layout_width="82dp"
+                                    android:layout_height="28dp"
+                                    android:layout_gravity="center"
+                                    android:layout_alignParentRight="true"
+                                    android:layout_centerVertical="true"
+                                    android:gravity="center"
+                                    android:background="@drawable/button_border"
+                                    android:orientation="horizontal">
+
+
+
+                                    <TextView
+                                        android:id="@+id/performTv"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:background="?android:attr/selectableItemBackground"
+                                        android:gravity="center"
+                                        android:layout_marginLeft="5dp"
+                                        android:layout_marginRight="5dp"
+                                        android:text="Perform"
+                                        android:textSize="11sp"
+                                        android:textColor="@color/white" />
+
+                                </LinearLayout>
+
+
+
+                            </LinearLayout>
+
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone"
+                                >
+
+                                <LinearLayout
+                                    android:id="@+id/lnrNotAvailable"
+                                    android:layout_width="82dp"
+                                    android:layout_height="28dp"
+                                    android:layout_alignParentRight="true"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="7dp"
+                                    android:layout_marginRight="7dp"
+                                    android:background="@drawable/red_round_border"
+                                    android:gravity="center"
+                                    android:orientation="horizontal">
+
+
+                                    <TextView
+                                        android:id="@+id/txtNA"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center"
+                                        android:layout_marginLeft="5dp"
+                                        android:layout_marginRight="5dp"
+                                        android:background="?android:attr/selectableItemBackground"
+                                        android:gravity="center"
+                                        android:text="Incomplete"
+                                        android:textColor="@color/lightRed"
+                                        android:textSize="11sp" />
+
+                                </LinearLayout>
+
+
 
                             </LinearLayout>
 
 
                         </LinearLayout>
 
+
                     </LinearLayout>
 
-                </LinearLayout>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycleArea"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"/>
-
-
+                </androidx.cardview.widget.CardView>
             </LinearLayout>
 
             <TextView
@@ -252,20 +407,30 @@
                 android:text="No Data Available!"
                 android:visibility="gone" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnRodentScanner"
+
+            <LinearLayout
+                android:id="@+id/buttonsLayout"
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="38dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginLeft="100dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="100dp"
-                android:layout_marginBottom="30dp"
-                android:background="@drawable/button_background"
-                android:clickable="true"
-                android:text="Verify Equipment"
-                android:textAllCaps="false"
-                android:textColor="@color/white" />
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true">
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnRodentScanner"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="30dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/button_bg"
+                    android:clickable="true"
+                    android:text="Verify Equipment"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
 
 
         </RelativeLayout>

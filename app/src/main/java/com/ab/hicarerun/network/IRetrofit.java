@@ -37,7 +37,8 @@ import com.ab.hicarerun.network.models.handshakemodel.ContinueHandShakeResponse;
 import com.ab.hicarerun.network.models.handshakemodel.HandShakeResponse;
 import com.ab.hicarerun.network.models.incentivemodel.IncentiveResponse;
 import com.ab.hicarerun.network.models.inventorymodel.AddInventoryResult;
-import com.ab.hicarerun.network.models.inventorymodel.InventoryListModel.InventoryListResult;
+import com.ab.hicarerun.network.models.inventorymodel.historymodel.InventoryHistoryBase;
+import com.ab.hicarerun.network.models.inventorymodel.inventorylistmodel.InventoryListResult;
 import com.ab.hicarerun.network.models.jeopardymodel.CWFJeopardyRequest;
 import com.ab.hicarerun.network.models.jeopardymodel.CWFJeopardyResponse;
 import com.ab.hicarerun.network.models.jeopardymodel.JeopardyReasonModel;
@@ -54,6 +55,8 @@ import com.ab.hicarerun.network.models.loggermodel.ErrorLoggerModel;
 import com.ab.hicarerun.network.models.LoginResponse;
 import com.ab.hicarerun.network.models.LogoutResponse;
 import com.ab.hicarerun.network.models.menumodel.MenuResponse;
+import com.ab.hicarerun.network.models.pulsemodel.PulseData;
+import com.ab.hicarerun.network.models.pulsemodel.PulseResponse;
 import com.ab.hicarerun.network.models.qrcodemodel.CheckCodeResponse;
 import com.ab.hicarerun.network.models.qrcodemodel.CheckPhonePeResponse;
 import com.ab.hicarerun.network.models.qrcodemodel.PhonePeQRCodeResponse;
@@ -89,6 +92,8 @@ import com.ab.hicarerun.network.models.referralmodel.ReferralSRResponse;
 import com.ab.hicarerun.network.models.rewardsmodel.RewardsResponse;
 import com.ab.hicarerun.network.models.rewardsmodel.SaveRedeemRequest;
 import com.ab.hicarerun.network.models.rewardsmodel.SaveRedeemResponse;
+import com.ab.hicarerun.network.models.roachmodel.roachlistmodel.RoachBase;
+import com.ab.hicarerun.network.models.roachmodel.saveroachmodel.RoachSaveBase;
 import com.ab.hicarerun.network.models.routinemodel.RoutineResponse;
 import com.ab.hicarerun.network.models.routinemodel.SaveRoutineResponse;
 import com.ab.hicarerun.network.models.routinemodel.TechRoutineData;
@@ -145,6 +150,7 @@ public interface IRetrofit {
     String UAT = "http://api.hicare.in/Mobile/api/";
     String B2B_URL = "http://connect.hicare.in/b2bwowuat/api/"; //b2bwow(production) & b2bwowuat(uat)
     String INVENTORY_URL = "http://connect.hicare.in/inventory_api/api/";
+    String IOT_URL = "http://connect.hicare.in/iotapi/api/";
 
     /*[Verify User]*/
     @GET("userverification/VerifyUser")
@@ -626,4 +632,31 @@ public interface IRetrofit {
 
     @GET("Inventory/GetInventoryListByOrderNo")
     Call<InventoryListResult> getInventoryListByOrderNo(@Query("orderno") String orderNo);
+
+    @GET("Inventory/GetInventoryHistory")
+    Call<InventoryHistoryBase> getInventoryHistory(@Query("itemCode") String itemCode);
+
+    @GET("B2BInspection/GetB2bInspectionQuestions")
+    Call<PulseResponse> getPulseB2bInspectionQuestions(@Query("taskId") String taskId, @Query("resourceId") String resourceId, @Query("lan") String lan);
+
+    @POST("B2BInspection/UpdateB2BInspection")
+    Call<BaseResponse> updateB2BInspection(@Body List<PulseData> data);
+
+    @POST("DeviceRegistration/SaveDeviceRegistrationForApp")
+    Call<RoachSaveBase> saveDeviceRegistrationForApp(@Body HashMap<String, Object> data);
+
+    @GET("Device/GetAllDeviceByAccount")
+    Call<RoachBase> getAllDeviceByAccount(@Query("AccountNo") String accountNo, @Query("taskId") String taskId);
+
+    @POST("DeviceRegistration/DeleteDevice")
+    Call<RoachSaveBase> deleteDevice(@Query("deviceId") int deviceId);
+
+    @POST("IOTImage/UpdateImageForApp")
+    Call<RoachSaveBase> updateImageForApp(@Body HashMap<String, Object> data);
+
+    @POST("DeviceRegistration/UpdateDeviceLocationForApp")
+    Call<RoachSaveBase> updateDeviceLocationForApp(@Body HashMap<String, Object> data);
+
+    @POST("DeviceRegistration/ReplaceDeviceForApp")
+    Call<RoachSaveBase> replaceDeviceForApp(@Body HashMap<String, Object> data);
 }

@@ -332,6 +332,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
         progress = new ProgressDialog(this, R.style.TransparentProgressDialog);
         progress.setCancelable(false);
         taskId = getIntent().getStringExtra(ARGS_TASKS);
+        AppUtils.taskId = taskId;
         resourceId = getIntent().getStringExtra(ARGS_RESOURCE);
         AppUtils.getConsAndInsData(taskId/*"a239D000000YajWQAS"*/, resourceId/*"a1r9D000000OUNqQAO"*/, LocaleHelper.getLanguage(NewTaskDetailsActivity.this));
         //AppUtils.getTmsQuestions("23213");
@@ -495,13 +496,19 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             AppUtils.isServiceDeliveryFilled = isPostJobCompletionDone;
                             sta = response.getData().getSchedulingStatus();
                             isCompleted = response.getData().getSchedulingStatus();
+                            AppUtils.status = response.getData().getSchedulingStatus();
                             referralQuestion = response.getData().getRefferalQuestion();
                             referralChecked = response.getData().getCustomerInterestedToGiveRefferals();
                             referralInstructions = response.getData().getCustomerRefferalAlert();
+                            AppUtils.showRoachInspectionButton = response.getData().isShowRoachInspectionButton();
+                            AppUtils.isPulseSubmitted = response.getData().isPulseRecorded();
                             AppUtils.isInspectionDone = response.getData().getConsultationInspectionDone();
+                            AppUtils.isB2BJob = response.getData().isB2BJob();
                             if (response.getData().getInspectionInfestationLevel() != null) {
                                 AppUtils.infestationLevel = response.getData().getInspectionInfestationLevel();
                             }
+                            AppUtils.accountId = response.getData().getAccountId();
+                            Log.d("AccountId", AppUtils.accountId);
                             isIncentiveEnable = response.getData().getIncentiveEnable();
                             isConsultationRequired = response.getData().getConsultationInspectionRequired();
                             Incentive = Integer.parseInt(response.getData().getIncentivePoint());
@@ -1275,6 +1282,10 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 progress.dismiss();
                 isFinalSave = true;
                 showCompletionDialog();
+            } else if (Status.equals("Completed") && AppUtils.isB2BJob && !AppUtils.isPulseSubmitted) {
+                mActivityNewTaskDetailsBinding.pager.setCurrentItem(0);
+                progress.dismiss();
+                Toasty.error(this, "Please complete B2B Pulse survey", Toast.LENGTH_SHORT, true).show();
             }
             /* else if(Status.equals("Completed") && isIncentiveEnable) {
                 if (isTechnicianFeedbackEnable && Rate == 0 && Status.equals("Completed")) {
@@ -1641,7 +1652,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                     }
                     alertDialog.dismiss();
                 } else {
-                    Toasty.error(this, "All questions are mandatory.", Toasty.LENGTH_SHORT).show();
+                    Toasty.error(this, getString(R.string.all_questions_are_mandatory), Toasty.LENGTH_SHORT).show();
                     for (int i = 0; i < AppUtils.tmsServiceDeliveryChips.size(); i++) {
                         if (String.valueOf(i).equals(tabName)){
                             if (i > currPos){
@@ -1991,7 +2002,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                         isPostJobCompletionDone = true;
                         AppUtils.isServiceDeliveryFilled = true;
                         if (typeName.equals("TMS")) {
-                            Toasty.success(NewTaskDetailsActivity.this, "Service delivery sheet submitted successfully", Toast.LENGTH_SHORT, true).show();
+                            Toasty.success(NewTaskDetailsActivity.this, getString(R.string.service_delivery_sheet_submitted_successfully), Toast.LENGTH_SHORT, true).show();
                         }else {
                             Toasty.success(NewTaskDetailsActivity.this, "Check-list submitted successfully", Toast.LENGTH_SHORT, true).show();
                         }
@@ -2454,6 +2465,12 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        AppUtils.taskId = "";
+        AppUtils.status = "";
+        AppUtils.isPulseSubmitted = false;
+        AppUtils.showRoachInspectionButton = false;
+        AppUtils.accountId = "";
+        AppUtils.checkItems.clear();
         ChemicalRecycleAdapter.items = null;
         ChemicalRecycleAdapter.indexToDisable = null;
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);

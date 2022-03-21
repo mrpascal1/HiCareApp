@@ -672,6 +672,13 @@
     <string name="qr_serviceUnit">Service Unit<font color='red'> *</font></string>
     <string name="inventory">Inventory</string>
     <string name="view_floor"><font color='blue'><u>View/Update Floor Plan</u></font></string>
-
+    <string name="go_to_inspection">GO TO INSPECTION</string>
+    <string name="back_to_consultation">BACK TO CONSULTATION</string>
+    <string name="termite">TERMITE</string>
+    <string name="all_questions_are_mandatory">All questions are mandatory</string>
+    <string name="service_delivery_sheet">Service delivery sheet</string>
+    <string name="service_delivery_sheet_submitted_successfully">Service delivery sheet submitted successfully</string>
+    <string name="consultation_and_Inspection_submitted_successfully">Consultation and Inspection submitted successfully</string>
+    <string name="select_count">Select Count</string>
 
 </resources>

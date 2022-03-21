@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/txtQuest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="In what age range did you write?In what age range did you write?"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="12dp"
+            android:textStyle="bold"
+            android:layout_marginEnd="30dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            app:indicatorSize="20dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="2dp"
+            android:layout_alignEnd="@id/txtQuest"
+            android:layout_alignWithParentIfMissing="true"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/speakerIv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="2dp"
+            android:src="@drawable/ic_speaker"
+            android:layout_alignEnd="@id/txtQuest"
+            android:layout_alignWithParentIfMissing="true"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/basePhotoLayout"
+            android:layout_below="@id/txtQuest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RelativeLayout
+                android:id="@+id/relPhoto"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/dotted_box"
+                android:orientation="vertical"
+                android:layout_alignParentEnd="true"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/lnrImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:visibility="gone">
+
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardPhoto"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:elevation="10dp"
+                        app:cardCornerRadius="10dp">
+
+                        <ImageView
+                            android:id="@+id/imgUploadedCheque"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/sample" />
+
+                        <ImageButton
+                            android:id="@+id/imageCancel"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="right"
+                            android:elevation="10dp"
+                            app:srcCompat="@drawable/ic_remove" />
+
+                    </androidx.cardview.widget.CardView>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lnrUpload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        app:srcCompat="@drawable/ic_addimage" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relPhoto2"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/dotted_box"
+                android:orientation="vertical"
+                android:layout_alignParentEnd="true"
+                android:visibility="gone">
+
+
+                <LinearLayout
+                    android:id="@+id/lnrImage2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:visibility="gone">
+
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardPhoto2"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:elevation="10dp"
+                        app:cardCornerRadius="10dp">
+
+                        <ImageView
+                            android:id="@+id/imgUploadedCheque2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/sample" />
+
+                        <ImageButton
+                            android:id="@+id/imageCancel2"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="right"
+                            android:elevation="10dp"
+                            app:srcCompat="@drawable/ic_remove" />
+
+                    </androidx.cardview.widget.CardView>
+
+
+                </LinearLayout>
+
+
+
+                <LinearLayout
+                    android:id="@+id/lnrUpload2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        app:srcCompat="@drawable/ic_addimage" />
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relPhoto3"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/dotted_box"
+                android:orientation="vertical"
+                android:layout_alignParentEnd="true"
+                android:visibility="gone">
+
+
+                <LinearLayout
+                    android:id="@+id/lnrImage3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:visibility="gone">
+
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardPhoto3"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:elevation="10dp"
+                        app:cardCornerRadius="10dp">
+
+                        <ImageView
+                            android:id="@+id/imgUploadedCheque3"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/sample" />
+
+                        <ImageButton
+                            android:id="@+id/imageCancel3"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="right"
+                            android:elevation="10dp"
+                            app:srcCompat="@drawable/ic_remove" />
+
+                    </androidx.cardview.widget.CardView>
+
+
+                </LinearLayout>
+
+
+
+                <LinearLayout
+                    android:id="@+id/lnrUpload3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        app:srcCompat="@drawable/ic_addimage" />
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relPhoto4"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/dotted_box"
+                android:orientation="vertical"
+                android:layout_alignParentEnd="true"
+                android:visibility="gone">
+
+
+                <LinearLayout
+                    android:id="@+id/lnrImage4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:visibility="gone">
+
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardPhoto4"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:elevation="10dp"
+                        app:cardCornerRadius="10dp">
+
+                        <ImageView
+                            android:id="@+id/imgUploadedCheque4"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/sample" />
+
+                        <ImageButton
+                            android:id="@+id/imageCancel4"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="right"
+                            android:elevation="10dp"
+                            app:srcCompat="@drawable/ic_remove" />
+
+                    </androidx.cardview.widget.CardView>
+
+
+                </LinearLayout>
+
+
+
+                <LinearLayout
+                    android:id="@+id/lnrUpload4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        app:srcCompat="@drawable/ic_addimage" />
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_below="@id/basePhotoLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycleChild"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            tools:listitem="@layout/layout_pulse_child"
+            tools:itemCount="1"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycleSubChild"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginStart="10dp"
+            tools:listitem="@layout/layout_sublist_parent"
+            tools:itemCount="1"
+            android:visibility="gone"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>
