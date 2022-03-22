@@ -478,11 +478,11 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             Intent intent = new Intent(requireContext(), PulseActivity.class);
             startActivity(intent);
         });
-        /*if (status.equals("On-Site") && AppUtils.taskTypeName.contains("MMS")){
+        if (status.equals("On-Site") && AppUtils.taskTypeName.contains("MMS")){
             mFragmentServiceInfoBinding.lnrInventory.setVisibility(View.VISIBLE);
         }else {
             mFragmentServiceInfoBinding.lnrInventory.setVisibility(GONE);
-        }*/
+        }
         if (status.equals("On-Site") && AppUtils.isB2BJob){
             mFragmentServiceInfoBinding.lnrPulse.setVisibility(View.VISIBLE);
         }else {

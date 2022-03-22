@@ -59,22 +59,34 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".activities.PulseActivity"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
+            android:exported="true"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".activities.RoachActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".activities.inventory.TaskInventoryActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".activities.BrowserActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".activities.inventory.InventoryActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".activities.NewBarcodeActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.ZoomTransparentPopupActivity"
             android:exported="true"
