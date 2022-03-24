@@ -286,7 +286,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             isCombinedTask = getArguments().getBoolean(ARGS_COMBINED_TASKS);
             oId = getArguments().getString(ARGS_ORDER_ID);
         }
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
+        LocalBroadcastManager.getInstance(requireActivity()).registerReceiver(mMessageReceiver,
                 new IntentFilter("Onsite-Image"));
     }
 
@@ -324,7 +324,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mCameraManager = (CameraManager) getActivity().getSystemService(Context.CAMERA_SERVICE);
+        mCameraManager = (CameraManager) requireActivity().getSystemService(Context.CAMERA_SERVICE);
         try {
             mCameraId = mCameraManager.getCameraIdList()[0];
         } catch (CameraAccessException e) {
@@ -337,7 +337,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
         }
         AppUtils.IS_FLASH_ON = true;
         mFragmentServiceInfoBinding.imgFlash.setImageResource(R.drawable.flash_off);
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(INPUT_METHOD_SERVICE);
         assert imm != null;
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         mFragmentServiceInfoBinding.lnrBook.setTypeface(mFragmentServiceInfoBinding.lnrBook.getTypeface(), Typeface.BOLD);
@@ -441,7 +441,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             @Override
             public void onClick(View v) {
                 Intent videoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-                if (videoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                if (videoIntent.resolveActivity(requireActivity().getPackageManager()) != null) {
                     startActivityForResult(videoIntent, VIDEO_REQUEST);
                 }
             }
@@ -493,11 +493,11 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private void showInstructionDialog(String customerInstruction) {
         try {
 
-            LayoutInflater li = LayoutInflater.from(getActivity());
+            LayoutInflater li = LayoutInflater.from(requireActivity());
 
             View promptsView = li.inflate(R.layout.layout_instruction_info_dialog, null);
 
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(requireActivity());
 
             alertDialogBuilder.setView(promptsView);
             final AlertDialog alertDialog = alertDialogBuilder.create();
@@ -562,13 +562,13 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                         OnSiteOtpResponse response = (OnSiteOtpResponse) data;
                                         if (response.getSuccess()) {
                                             if (mTaskDetailsData.get(0).isB2BJob() && mTaskDetailsData.get(0).isShowCompletionOTP()) {
-                                                Toasty.success(getActivity(), "OTP sent successfully").show();
+                                                Toasty.success(requireActivity(), "OTP sent successfully").show();
                                             }else {
-                                                Toasty.success(getActivity(), getString(R.string.on_site_otp_is_sent_successfully)).show();
+                                                Toasty.success(requireActivity(), getString(R.string.on_site_otp_is_sent_successfully)).show();
                                             }
                                             alertDialog.dismiss();
                                         } else {
-                                            Toasty.error(getActivity(), response.getErrorMessage()).show();
+                                            Toasty.error(requireActivity(), response.getErrorMessage()).show();
                                             alertDialog.dismiss();
                                         }
                                     }
@@ -583,7 +583,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                                     controller.getOnSiteOTP(ONSITE_REQUEST, resourceId, taskId, edtName.getText().toString(), edtmobile.getText().toString());
                                 }
                             }else {
-                                Toasty.error(getActivity(), getString(R.string.mobile_number_is_invalid)).show();
+                                Toasty.error(requireActivity(), getString(R.string.mobile_number_is_invalid)).show();
                             }
                         }
                     });
@@ -667,7 +667,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 }
                 mFragmentServiceInfoBinding.btnPaymentJeopardy.setOnClickListener(view -> {
                     getValidated(AmountToCollect);
-                    new AlertDialog.Builder(getActivity())
+                    new AlertDialog.Builder(requireActivity())
                             .setTitle("Raise Payment Jeopardy")
                             .setMessage("Do you really want to raise payment jeopardy?")
                             .setIcon(R.drawable.ic_caution)
@@ -680,7 +680,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     if (mTaskDetailsData.get(0).getChequeImageUrl() != null && mTaskDetailsData.get(0).getChequeImageUrl().length() != 0) {
                         mFragmentServiceInfoBinding.lnrUpload.setVisibility(View.GONE);
                         mFragmentServiceInfoBinding.cardUpload.setVisibility(View.VISIBLE);
-                        Glide.with(getActivity())
+                        Glide.with(requireActivity())
                                 .load(mTaskDetailsData.get(0).getChequeImageUrl())
                                 .error(android.R.drawable.stat_notify_error)
                                 .into(mFragmentServiceInfoBinding.imgChequeUploaded);
@@ -750,7 +750,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     arrayMode = type.toArray(arrayMode);
                 }
                 try {
-                    ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(getActivity(),
+                    ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(requireActivity(),
                             R.layout.spinner_layout_new, arrayMode);
                     statusAdapter.setDropDownViewResource(R.layout.spinner_popup);
                     mFragmentServiceInfoBinding.spnPaymentMode.setAdapter(statusAdapter);
@@ -1490,7 +1490,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
     private void init() {
         if (mPermissions) {
-            if (checkCameraHardware(getActivity())) {
+            if (checkCameraHardware(requireActivity())) {
 
                 // Open the Camera
                 startCamera2();
@@ -1520,15 +1520,15 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
         String[] permissions = {
                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.CAMERA};
-        if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
+        if (ContextCompat.checkSelfPermission(requireActivity().getApplicationContext(),
                 permissions[0]) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
+                && ContextCompat.checkSelfPermission(requireActivity().getApplicationContext(),
                 permissions[1]) == PackageManager.PERMISSION_GRANTED) {
             mPermissions = true;
             init();
         } else {
             ActivityCompat.requestPermissions(
-                    getActivity(),
+                    requireActivity(),
                     permissions,
                     REQUEST_CODE
             );
@@ -1549,7 +1549,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     }
 
     private void showSnackBar(final String text, final int length) {
-        View view = getActivity().findViewById(android.R.id.content).getRootView();
+        View view = requireActivity().findViewById(android.R.id.content).getRootView();
         Snackbar.make(view, text, length).show();
     }
 
@@ -1649,7 +1649,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
                     } else {
                         mFragmentServiceInfoBinding.imgUser.setVisibility(GONE);
-                        Toasty.error(getActivity(), response.getErrorMessage(), Toasty.LENGTH_SHORT).show();
+                        Toasty.error(requireActivity(), response.getErrorMessage(), Toasty.LENGTH_SHORT).show();
                         captureTechImage();
                     }
                 }
@@ -1668,7 +1668,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         String mFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File mFile = File.createTempFile(mFileName, ".jpg", storageDir);
         return mFile;
     }
@@ -1693,7 +1693,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                 alertDialog.dismiss();
 
             } else if (requestCode == VIDEO_REQUEST && resultCode == RESULT_OK) {
-                AssetFileDescriptor videoAsset = getActivity().getContentResolver().openAssetFileDescriptor(data.getData(), "r");
+                AssetFileDescriptor videoAsset = requireActivity().getContentResolver().openAssetFileDescriptor(data.getData(), "r");
                 FileInputStream fis = videoAsset.createInputStream();
                 File root = new File(Environment.getExternalStorageDirectory(), "/InspectionVideo/");  //you can replace RecordVideo by the specific folder where you want to save the video
                 if (!root.exists()) {
@@ -1723,7 +1723,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
     private void showSettingsDialog() {
         try {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
             builder.setTitle("Need Permissions");
             builder.setMessage(
                     "This app needs permission to use this feature. You can grant them in app settings.");
@@ -1743,7 +1743,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
     private void openSettings() {
         try {
             Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-            Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+            Uri uri = Uri.fromParts("package", requireActivity().getPackageName(), null);
             intent.setData(uri);
             startActivityForResult(intent, 101);
         } catch (Exception e) {
@@ -1754,7 +1754,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
     private void showChemicalsDialog() {
         try {
-            final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+            final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireActivity());
             LayoutInflater inflater = getLayoutInflater();
             final View dialogView = inflater.inflate(R.layout.layout_chemicals_dialog, null);
             dialogBuilder.setView(dialogView);

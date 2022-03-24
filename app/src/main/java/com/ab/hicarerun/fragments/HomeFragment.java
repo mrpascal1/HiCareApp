@@ -173,20 +173,20 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         mFragmentHomeBinding =
                 DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
 //        getActivity().setTitle("Home");
-        navigationView = getActivity().findViewById(R.id.navigation_view);
-        LinearLayout toolbar = getActivity().findViewById(R.id.toolbar);
+        navigationView = requireActivity().findViewById(R.id.navigation_view);
+        LinearLayout toolbar = requireActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
-        LinearLayout tool = getActivity().findViewById(R.id.customToolbar);
-        RelativeLayout relBottom = getActivity().findViewById(R.id.relBottom);
-        RelativeLayout relCoin = getActivity().findViewById(R.id.relCoin);
+        LinearLayout tool = requireActivity().findViewById(R.id.customToolbar);
+        RelativeLayout relBottom = requireActivity().findViewById(R.id.relBottom);
+        RelativeLayout relCoin = requireActivity().findViewById(R.id.relCoin);
         tool.setVisibility(View.GONE);
         relBottom.setVisibility(View.VISIBLE);
         relCoin.setVisibility(View.VISIBLE);
 //        LinearLayout custom_toolbar = getActivity().findViewById(R.id.customToolbar);
 //        custom_toolbar.setVisibility(View.GONE);
-        DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer);
+        DrawerLayout drawerLayout = requireActivity().findViewById(R.id.drawer);
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-        activityName = getActivity().getClass().getSimpleName();
+        activityName = requireActivity().getClass().getSimpleName();
         apply();
         return mFragmentHomeBinding.getRoot();
     }
@@ -197,11 +197,11 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
         super.onResume();
         try {
             AppUtils.IS_ACTIVITY_THERE = false;
-            isBack = SharedPreferencesUtility.getPrefBoolean(getActivity(), SharedPreferencesUtility.PREF_REFRESH);
+            isBack = SharedPreferencesUtility.getPrefBoolean(requireActivity(), SharedPreferencesUtility.PREF_REFRESH);
             if (isBack) {
                 getAllTasks();
                 AppUtils.getDataClean();
-                SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_REFRESH, false);
+                SharedPreferencesUtility.savePrefBoolean(requireActivity(), SharedPreferencesUtility.PREF_REFRESH, false);
             } else {
                 AppUtils.getDataClean();
             }
@@ -216,11 +216,11 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         int[] attrs = new int[]{R.attr.selectableItemBackground};
-        TypedArray typedArray = getActivity().obtainStyledAttributes(attrs);
+        TypedArray typedArray = requireActivity().obtainStyledAttributes(attrs);
         int backgroundResource = typedArray.getResourceId(0, 0);
         view.setBackgroundResource(backgroundResource);
         mFragmentHomeBinding.recycleView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager = new LinearLayoutManager(requireActivity());
         mFragmentHomeBinding.swipeRefreshLayout.setOnRefreshListener(
                 this::getAllTasks);
 
@@ -233,16 +233,16 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 android.R.color.holo_red_dark, android.R.color.holo_red_light);
 
         // specify an adapter (see also next example)
-        mAdapter = new TaskListAdapter(getActivity(), this);
+        mAdapter = new TaskListAdapter(requireActivity(), this);
         mAdapter.setOnCallClickHandler(this);
         mFragmentHomeBinding.recycleView.setAdapter(mAdapter);
 //        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
 //                new IntentFilter(COVID_CHECK));
         getAllTasks();
         launchMarket();
-        isShowNPS = SharedPreferencesUtility.getPrefBoolean(getActivity(), SharedPreferencesUtility.PREF_SHOW_NPS);
+        isShowNPS = SharedPreferencesUtility.getPrefBoolean(requireActivity(), SharedPreferencesUtility.PREF_SHOW_NPS);
 
-        isResourceSaved = SharedPreferencesUtility.getPrefBoolean(getActivity(), SharedPreferencesUtility.PREF_RESOURCE_SAVED);
+        isResourceSaved = SharedPreferencesUtility.getPrefBoolean(requireActivity(), SharedPreferencesUtility.PREF_RESOURCE_SAVED);
 
 //        if (isShowNPS)
 //            showNPSDialog();
@@ -256,13 +256,13 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     }
 
     private void launchMarket() {
-        manager = ReviewManagerFactory.create(getActivity());
+        manager = ReviewManagerFactory.create(requireActivity());
 //        manager = new FakeReviewManager(getActivity());
         Task<ReviewInfo> request = manager.requestReviewFlow();
         request.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 reviewInfo = task.getResult();
-                Task<Void> flow = manager.launchReviewFlow(getActivity(), reviewInfo);
+                Task<Void> flow = manager.launchReviewFlow(requireActivity(), reviewInfo);
                 flow.addOnCompleteListener(taskdone -> {
                     // This is the next follow of your app
                 });
@@ -273,7 +273,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     private void showCovidCheckList() {
         try {
             CovidCheckFragment dialog = CovidCheckFragment.newInstance();
-            dialog.show(getActivity().getSupportFragmentManager(), "check_up");
+            dialog.show(requireActivity().getSupportFragmentManager(), "check_up");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -487,10 +487,10 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                         public void onResponse(int requestCode, SelfAssessmentResponse response) {
                                             if (response.getIsSuccess()) {
                                                 alertDialog.dismiss();
-                                                SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_RESOURCE_SAVED, false);
-                                                Toasty.success(getActivity(), response.getData(), Toast.LENGTH_LONG).show();
+                                                SharedPreferencesUtility.savePrefBoolean(requireActivity(), SharedPreferencesUtility.PREF_RESOURCE_SAVED, false);
+                                                Toasty.success(requireActivity(), response.getData(), Toast.LENGTH_LONG).show();
                                             } else {
-                                                Toasty.error(getActivity(), response.getErrorMessage(), Toast.LENGTH_LONG).show();
+                                                Toasty.error(requireActivity(), response.getErrorMessage(), Toast.LENGTH_LONG).show();
                                             }
                                         }
 
@@ -501,13 +501,13 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                     });
                                     controller1.saveSelfAssessment(SAVE_ASSESSMENT, checkList);
                                 } else {
-                                    Toasty.error(getActivity(), "Enter correct temperature in °F", Toasty.LENGTH_LONG).show();
+                                    Toasty.error(requireActivity(), "Enter correct temperature in °F", Toasty.LENGTH_LONG).show();
                                 }
                             } else {
-                                Toasty.error(getActivity(), "Please enter your temperature in °F!", Toasty.LENGTH_SHORT).show();
+                                Toasty.error(requireActivity(), "Please enter your temperature in °F!", Toasty.LENGTH_SHORT).show();
                             }
                         } else {
-                            Toasty.error(getActivity(), "All fields are mandatory.", Toasty.LENGTH_SHORT).show();
+                            Toasty.error(requireActivity(), "All fields are mandatory.", Toasty.LENGTH_SHORT).show();
                         }
                     });
                     dialogBuilder.setCancelable(false);
@@ -536,7 +536,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
     private void getAllTasks() {
         try {
-            SharedPreferencesUtility.savePrefBoolean(Objects.requireNonNull(getActivity()), SharedPreferencesUtility.PREF_REFRESH, false);
+            SharedPreferencesUtility.savePrefBoolean(requireActivity(), SharedPreferencesUtility.PREF_REFRESH, false);
             if (getActivity() != null) {
                 RealmResults<LoginResponse> LoginRealmModels =
                         BaseApplication.getRealm().where(LoginResponse.class).findAll();
@@ -629,7 +629,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                         e.printStackTrace();
                     }
                     try {
-                        Intent intent = new Intent(getActivity(), NewTaskDetailsActivity.class);
+                        Intent intent = new Intent(requireActivity(), NewTaskDetailsActivity.class);
                         intent.putExtra(NewTaskDetailsActivity.ARGS_TASKS, items.get(position).getTaskId());
                         intent.putExtra(NewTaskDetailsActivity.ARGS_RESOURCE, UserId);
                         intent.putExtra(NewTaskDetailsActivity.ARGS_COMBINED_TASKS, items.get(position).getCombinedTask());
@@ -643,7 +643,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                     }
 
                 } else {
-                    Toasty.info(Objects.requireNonNull(getActivity()), getResources().getString(R.string.please_complete_your_previous_job_first), Toasty.LENGTH_SHORT).show();
+                    Toasty.info(requireActivity(), getResources().getString(R.string.please_complete_your_previous_job_first), Toasty.LENGTH_SHORT).show();
                 }
             });
         }
@@ -656,11 +656,11 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 alertDialog.dismiss();
             }
 
-            LayoutInflater li = LayoutInflater.from(getActivity());
+            LayoutInflater li = LayoutInflater.from(requireActivity());
 
             View promptsView = li.inflate(R.layout.dialog_mark_attendance, null);
 
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(requireActivity());
 
             alertDialogBuilder.setView(promptsView);
 
@@ -700,15 +700,15 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                             RealmResults<LoginResponse> LoginRealmModels =
                                     BaseApplication.getRealm().where(LoginResponse.class).findAll();
                             if (LoginRealmModels != null && LoginRealmModels.size() > 0) {
-                                String BatteryStatistics = String.valueOf(AppUtils.getMyBatteryLevel(getActivity()));
-                                AttendanceRequest request = AppUtils.getDeviceInfo(getActivity(), "", BatteryStatistics, true);
+                                String BatteryStatistics = String.valueOf(AppUtils.getMyBatteryLevel(requireActivity()));
+                                AttendanceRequest request = AppUtils.getDeviceInfo(requireActivity(), "", BatteryStatistics, true);
                                 NetworkCallController controller = new NetworkCallController(HomeFragment.this);
                                 controller.setListner(new NetworkResponseListner() {
                                     @Override
                                     public void onResponse(int requestCode, Object data) {
                                         SelfAssessmentResponse response = (SelfAssessmentResponse) data;
                                         if (response.getIsSuccess()) {
-                                            Toasty.success(getActivity(), getResources().getString(R.string.attendance_marked_successfully), Toasty.LENGTH_SHORT).show();
+                                            Toasty.success(requireActivity(), getResources().getString(R.string.attendance_marked_successfully), Toasty.LENGTH_SHORT).show();
                                             alertDialog.dismiss();
                                             getAllTasks();
                                             if (response.getParam1()) {
@@ -719,7 +719,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                                             }
 
                                         } else {
-                                            Toast.makeText(getActivity(), getResources().getString(R.string.attendance_failed_please_try_again), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(requireActivity(), getResources().getString(R.string.attendance_failed_please_try_again), Toast.LENGTH_SHORT).show();
                                             getAllTasks();
                                         }
                                     }
@@ -772,7 +772,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     @Override
     public void onPrimaryMobileClicked(int position) {
         try {
-            if (AppUtils.checkConnection(Objects.requireNonNull(getActivity()))) {
+            if (AppUtils.checkConnection(requireActivity())) {
                 String primaryNumber = mAdapter.getItem(position).getPrimaryMobile();
                 String techNumber = "";
 
@@ -786,9 +786,9 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 }
 
                 if (techNumber == null || techNumber.length() == 0) {
-                    AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.technicain_number_is_unavailable), (dialogInterface, i) -> dialogInterface.cancel());
+                    AppUtils.showOkActionAlertBox(requireActivity(), getResources().getString(R.string.technicain_number_is_unavailable), (dialogInterface, i) -> dialogInterface.cancel());
                 } else if (primaryNumber == null || primaryNumber.trim().length() == 0) {
-                    AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.customer_mobile_number_is_unavailable), (dialogInterface, i) -> dialogInterface.cancel());
+                    AppUtils.showOkActionAlertBox(requireActivity(), getResources().getString(R.string.customer_mobile_number_is_unavailable), (dialogInterface, i) -> dialogInterface.cancel());
                 } else {
                     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
                         getCallTriggered(primaryNumber, techNumber);
@@ -797,7 +797,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                     }
                 }
             } else {
-                AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.no_internet_connection), (dialogInterface, i) -> dialogInterface.dismiss());
+                AppUtils.showOkActionAlertBox(requireActivity(), getResources().getString(R.string.no_internet_connection), (dialogInterface, i) -> dialogInterface.dismiss());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -807,7 +807,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
 
     private void getCallTriggered(String custNo, String techNo) {
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(requireActivity());
         mBuilder.setTitle("Trigger Call");
         mBuilder.setIcon(R.mipmap.logo);
         mBuilder.setMessage("Do you want to trigger call?");
@@ -818,9 +818,9 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 @Override
                 public void onResponse(int requestCode, DialingResponse response) {
                     if (response.getIsSuccess()) {
-                        Toasty.success(getActivity(), response.getData(), Toasty.LENGTH_LONG).show();
+                        Toasty.success(requireActivity(), response.getData(), Toasty.LENGTH_LONG).show();
                     } else {
-                        Toasty.error(getActivity(), response.getData(), Toasty.LENGTH_LONG).show();
+                        Toasty.error(requireActivity(), response.getData(), Toasty.LENGTH_LONG).show();
                     }
                 }
 
@@ -840,7 +840,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     @Override
     public void onAlternateMobileClicked(int position) {
         try {
-            if (AppUtils.checkConnection(Objects.requireNonNull(getActivity()))) {
+            if (AppUtils.checkConnection(requireActivity())) {
                 String secondaryNumber = mAdapter.getItem(position).getAltMobile();
                 String techNumber = "";
 
@@ -854,9 +854,9 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 }
                 if (techNumber == null || techNumber.trim().length() == 0) {
 
-                    AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.technicain_number_is_unavailable), (dialogInterface, i) -> dialogInterface.cancel());
+                    AppUtils.showOkActionAlertBox(requireActivity(), getResources().getString(R.string.technicain_number_is_unavailable), (dialogInterface, i) -> dialogInterface.cancel());
                 } else if (secondaryNumber == null || secondaryNumber.trim().length() == 0) {
-                    AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.customer_alternate_number_is_unavailable), (dialogInterface, i) -> dialogInterface.cancel());
+                    AppUtils.showOkActionAlertBox(requireActivity(), getResources().getString(R.string.customer_alternate_number_is_unavailable), (dialogInterface, i) -> dialogInterface.cancel());
                 } else {
                     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
                         getCallTriggered(secondaryNumber, techNumber);
@@ -865,7 +865,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                     }
                 }
             } else {
-                AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.no_internet_connection), (dialogInterface, i) -> dialogInterface.dismiss());
+                AppUtils.showOkActionAlertBox(requireActivity(), getResources().getString(R.string.no_internet_connection), (dialogInterface, i) -> dialogInterface.dismiss());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -876,7 +876,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     @Override
     public void onTelePhoneClicked(int position) {
         try {
-            if (AppUtils.checkConnection(Objects.requireNonNull(getActivity()))) {
+            if (AppUtils.checkConnection(requireActivity())) {
                 String secondaryNumber = mAdapter.getItem(position).getAltMobile();
                 String techNumber = "";
 
@@ -889,9 +889,9 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                     }
                 }
                 if (techNumber == null || techNumber.trim().length() == 0) {
-                    AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.technicain_number_is_unavailable), (dialogInterface, i) -> dialogInterface.cancel());
+                    AppUtils.showOkActionAlertBox(requireActivity(), getResources().getString(R.string.technicain_number_is_unavailable), (dialogInterface, i) -> dialogInterface.cancel());
                 } else if (secondaryNumber == null || secondaryNumber.trim().length() == 0) {
-                    AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.customer_phone_number_is_unnavailable), (dialogInterface, i) -> dialogInterface.cancel());
+                    AppUtils.showOkActionAlertBox(requireActivity(), getResources().getString(R.string.customer_phone_number_is_unnavailable), (dialogInterface, i) -> dialogInterface.cancel());
                 } else {
                     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
                         getCallTriggered(secondaryNumber, techNumber);
@@ -901,7 +901,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 }
             } else {
 
-                AppUtils.showOkActionAlertBox(getActivity(), getResources().getString(R.string.no_internet_connection), (dialogInterface, i) -> dialogInterface.dismiss());
+                AppUtils.showOkActionAlertBox(requireActivity(), getResources().getString(R.string.no_internet_connection), (dialogInterface, i) -> dialogInterface.dismiss());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -953,15 +953,15 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                             List<JeopardyReasonsList> list = (List<JeopardyReasonsList>) response;
 //                            HashMap<String, String> lanMap = new HashMap<>();
                             dismissProgressDialog();
-                            final AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
-                            LayoutInflater inflater = LayoutInflater.from(getActivity());
+                            final AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+                            LayoutInflater inflater = LayoutInflater.from(requireActivity());
                             final View v = inflater.inflate(R.layout.jeopardy_reasons_layout, null, false);
                             final RadioGroup radioGroup = (RadioGroup) v.findViewById(R.id.radiogrp);
 
                             if (list != null && list.size() > 0) {
                                 for (int i = 0; i < list.size(); i++) {
 //                                    lanMap.put(list.get(i).getResonName(), list.get(position).getDisplayName());
-                                    final RadioButton rbn = new RadioButton(getActivity());
+                                    final RadioButton rbn = new RadioButton(requireActivity());
                                     rbn.setId(i);
                                     rbn.setText(list.get(i).getDisplayName());
                                     rbn.setTextSize(15);
@@ -976,7 +976,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                             builder.setPositiveButton(getResources().getString(R.string.submit_helpline), (dialogInterface, i) -> {
                                 RadioButton radioButton = (RadioButton) v.findViewById(radioGroup.getCheckedRadioButtonId());
                                 if (radioGroup.getCheckedRadioButtonId() == -1) {
-                                    Toast.makeText(getActivity(), getResources().getString(R.string.please_select_atleast_one_reason), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(requireActivity(), getResources().getString(R.string.please_select_atleast_one_reason), Toast.LENGTH_SHORT).show();
                                     builder.setCancelable(false);
                                 } else {
                                     if (items != null) {
@@ -1009,7 +1009,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 });
                 controller.getJeopardyReasons(JEOPARDY_REQUEST, items.get(position).getTaskId(), LocaleHelper.getLanguage(getActivity()));
             } else {
-                Toasty.info(Objects.requireNonNull(getActivity()), getResources().getString(R.string.complete_first_job), Toasty.LENGTH_SHORT).show();
+                Toasty.info(requireActivity(), getResources().getString(R.string.complete_first_job), Toasty.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1031,11 +1031,11 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
     private void showInstructionDialog(int position) {
         try {
 
-            LayoutInflater li = LayoutInflater.from(getActivity());
+            LayoutInflater li = LayoutInflater.from(requireActivity());
 
             View promptsView = li.inflate(R.layout.layout_instruction_info_dialog, null);
 
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(requireActivity());
 
             alertDialogBuilder.setView(promptsView);
             final AlertDialog alertDialog = alertDialogBuilder.create();
@@ -1086,7 +1086,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                     String resourceId = LoginRealmModels.get(0).getUserID();
                     LayoutInflater li = LayoutInflater.from(getActivity());
                     View promptsView = li.inflate(R.layout.layout_nps_dialog, null);
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(requireActivity());
                     alertDialogBuilder.setView(promptsView);
                     final AlertDialog alertDialog = alertDialogBuilder.create();
                     final ImageView imgCancel =
@@ -1112,7 +1112,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                         public void onResponse(int requestCode, Object response) {
                             NPSData data = (NPSData) response;
                             Picasso.get().load(data.getTechBadge()).into(imgNps);
-                            SharedPreferencesUtility.savePrefBoolean(getActivity(), SharedPreferencesUtility.PREF_SHOW_NPS, false);
+                            SharedPreferencesUtility.savePrefBoolean(requireActivity(), SharedPreferencesUtility.PREF_SHOW_NPS, false);
                             txtNps.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
                             txtScore.setTypeface(Typeface.MONOSPACE, Typeface.NORMAL);
                             txtNps.setText(data.getMonthlyNPS());
@@ -1138,9 +1138,9 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
 
     private void showPartnerId(Profile response) {
         try {
-            LayoutInflater li = LayoutInflater.from(getActivity());
+            LayoutInflater li = LayoutInflater.from(requireActivity());
             View promptsView = li.inflate(R.layout.layout_partner_dialog, null);
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(requireActivity());
             alertDialogBuilder.setView(promptsView);
             final AlertDialog alertDialog = alertDialogBuilder.create();
             final ImageView imgTech =
@@ -1208,9 +1208,9 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                 public void onResponse(int requestCode, Object data) {
                     CWFJeopardyResponse response = (CWFJeopardyResponse) data;
                     if (response.getSuccess()) {
-                        Toasty.success(Objects.requireNonNull(getActivity()), response.getResponseMessage(), Toasty.LENGTH_LONG).show();
+                        Toasty.success(requireActivity(), response.getResponseMessage(), Toasty.LENGTH_LONG).show();
                     } else {
-                        Toasty.success(Objects.requireNonNull(getActivity()), response.getResponseMessage(), Toasty.LENGTH_LONG).show();
+                        Toasty.success(requireActivity(), response.getResponseMessage(), Toasty.LENGTH_LONG).show();
                     }
                 }
 
@@ -1266,7 +1266,7 @@ public class HomeFragment extends BaseFragment implements NetworkResponseListner
                         }
 
                     } else {
-                        Toast.makeText(getActivity(), "Failed.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(requireActivity(), "Failed.", Toast.LENGTH_LONG).show();
                     }
                 }
 
