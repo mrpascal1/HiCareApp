@@ -7,5 +7,6 @@ data class ActionList (
 	@SerializedName("Bucket_Id") val bucket_Id : Int?,
 	@SerializedName("Reasons") val reasons : String?,
 	@SerializedName("Is_Active") val is_Active : Boolean?,
+	@SerializedName("ShowText") val showText : Boolean?,
 	@SerializedName("Allocate_Bucket_Id") val allocate_Bucket_Id : Int?
 )

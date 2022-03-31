@@ -9,10 +9,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatSpinner
@@ -52,8 +49,10 @@ class TaskInventoryActivity : BaseActivity() {
     var itemSerialNo = ""
     var referenceId = ""
     var orderNo = ""
+    var remarks = ""
     val la = ArrayList<String>()
     val lt = ArrayList<String>()
+    val showTextHash = HashMap<String, Boolean>()
     lateinit var binding: ActivityTaskInventoryBinding
     lateinit var actionList: ArrayList<ActionList>
     lateinit var technicianList: ArrayList<TechnicianList>
@@ -80,6 +79,7 @@ class TaskInventoryActivity : BaseActivity() {
 
         actionList = ArrayList()
         technicianList = ArrayList()
+        showTextHash.clear()
         inventoryAdapter = InventoryAdapter(this)
 
         val inventoryLayoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
@@ -203,6 +203,7 @@ class TaskInventoryActivity : BaseActivity() {
         selectedTechnician = ""
         bucketId = 0
         reasons = ""
+        remarks = ""
         val promptsView = Dialog(this).apply {
             setCancelable(false)
             requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -214,6 +215,8 @@ class TaskInventoryActivity : BaseActivity() {
         val technicianLayout = promptsView.findViewById(R.id.technicianLayout) as ConstraintLayout
         val spnAction = promptsView.findViewById(R.id.spnAction) as AppCompatSpinner
         val spnTechnician = promptsView.findViewById(R.id.spnTechnician) as AppCompatSpinner
+        val remarksLayout = promptsView.findViewById(R.id.remarksLayout) as ConstraintLayout
+        val remarksEt = promptsView.findViewById(R.id.remarksEt) as EditText
         val cancelBtn = promptsView.findViewById(R.id.btnCancel) as AppCompatButton
         val okBtn = promptsView.findViewById(R.id.okBtn) as AppCompatButton
         okBtn.isEnabled = false
@@ -243,6 +246,12 @@ class TaskInventoryActivity : BaseActivity() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 selectedAction = spnAction.selectedItem.toString()
                 if (selectedAction != "Select Action"){
+                    if (showTextHash[selectedAction] == true){
+                        remarksLayout.visibility = View.VISIBLE
+                    }else{
+                        remarksEt.setText("")
+                        remarksLayout.visibility = View.GONE
+                    }
                     if (selectedAction.equals("Assign To Technician", true)){
                         technicianLayout.visibility = View.VISIBLE
                         if (selectedTechnician != "Select Technician"){
@@ -281,6 +290,7 @@ class TaskInventoryActivity : BaseActivity() {
                     }
                 }else{
                     technicianLayout.visibility = View.GONE
+                    remarksLayout.visibility = View.GONE
                     okBtn.isEnabled = false
                     okBtn.alpha = 0.6f
                 }
@@ -353,6 +363,7 @@ class TaskInventoryActivity : BaseActivity() {
         spnTechnician.adapter = technicianAdapter
 
         okBtn.setOnClickListener {
+            remarks = remarksEt.text.toString().trim()
             updateInventory()
             promptsView.dismiss()
         }
@@ -371,6 +382,7 @@ class TaskInventoryActivity : BaseActivity() {
         hashMap["ItemCode"] = itemSerialNo
         hashMap["User_Id"] = AppUtils.resourceId
         hashMap["Reference_Id"] = referenceId
+        hashMap["Remark"] = remarks
 
         val controller = NetworkCallController()
         controller.setListner(object : NetworkResponseListner<BaseResponse>{
@@ -412,6 +424,7 @@ class TaskInventoryActivity : BaseActivity() {
                         if (response.data != null){
                             actionList.clear()
                             technicianList.clear()
+                            showTextHash.clear()
                             if (response.data.actionList != null && response.data.technicianList != null){
                                 actionList.addAll(response.data.actionList)
                                 technicianList.addAll(response.data.technicianList)
@@ -420,6 +433,7 @@ class TaskInventoryActivity : BaseActivity() {
                                 la.add("Select Action")
                                 lt.add("Select Technician")
                                 actionList.forEach {
+                                    showTextHash[it.reasons.toString()] = it.showText == true
                                     if (it.is_Active != null && it.is_Active == true) {
                                         la.add(it.reasons.toString())
                                     }

@@ -51,8 +51,10 @@ class InventoryActivity : BaseActivity() {
     var reasons = ""
     var itemSerialNo = ""
     var referenceId = ""
+    var remarks = ""
     val la = ArrayList<String>()
     val lt = ArrayList<String>()
+    val showTextHash = HashMap<String, Boolean>()
     val historyData = ArrayList<InventoryHistoryData>()
     lateinit var binding: ActivityInventoryBinding
     lateinit var actionList: ArrayList<ActionList>
@@ -66,6 +68,7 @@ class InventoryActivity : BaseActivity() {
         val view = binding.root
         setContentView(view)
 
+        showTextHash.clear()
         actionList = ArrayList()
         technicianList = ArrayList()
         inventoryAdapter = InventoryAdapter(this)
@@ -145,6 +148,7 @@ class InventoryActivity : BaseActivity() {
         selectedTechnician = ""
         bucketId = 0
         reasons = ""
+        remarks = ""
         val promptsView = Dialog(this).apply {
             setCancelable(false)
             requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -154,8 +158,10 @@ class InventoryActivity : BaseActivity() {
             setContentView(R.layout.add_inventory_action_dialog)
         }
         val technicianLayout = promptsView.findViewById(R.id.technicianLayout) as ConstraintLayout
+        val remarksLayout = promptsView.findViewById(R.id.remarksLayout) as ConstraintLayout
         val spnAction = promptsView.findViewById(R.id.spnAction) as AppCompatSpinner
         val spnTechnician = promptsView.findViewById(R.id.spnTechnician) as AppCompatSpinner
+        val remarksEt = promptsView.findViewById(R.id.remarksEt) as EditText
         val cancelBtn = promptsView.findViewById(R.id.btnCancel) as AppCompatButton
         val okBtn = promptsView.findViewById(R.id.okBtn) as AppCompatButton
         okBtn.isEnabled = false
@@ -185,6 +191,12 @@ class InventoryActivity : BaseActivity() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 selectedAction = spnAction.selectedItem.toString()
                 if (selectedAction != "Select Action"){
+                    if (showTextHash[selectedAction] == true){
+                        remarksLayout.visibility = View.VISIBLE
+                    }else{
+                        remarksEt.setText("")
+                        remarksLayout.visibility = View.GONE
+                    }
                     if (selectedAction.equals("Assign To Technician", true)){
                         technicianLayout.visibility = View.VISIBLE
                         if (selectedTechnician != "Select Technician"){
@@ -223,6 +235,7 @@ class InventoryActivity : BaseActivity() {
                     }
                 }else{
                     technicianLayout.visibility = View.GONE
+                    remarksLayout.visibility = View.GONE
                     okBtn.isEnabled = false
                     okBtn.alpha = 0.6f
                 }
@@ -295,6 +308,7 @@ class InventoryActivity : BaseActivity() {
         spnTechnician.adapter = technicianAdapter
 
         okBtn.setOnClickListener {
+            remarks = remarksEt.text.toString().trim()
             updateInventory()
             promptsView.cancel()
         }
@@ -313,6 +327,7 @@ class InventoryActivity : BaseActivity() {
         hashMap["ItemCode"] = itemSerialNo
         hashMap["User_Id"] = AppUtils.resourceId
         hashMap["Reference_Id"] = referenceId
+        hashMap["Remark"] = remarks
 
         val controller = NetworkCallController()
         controller.setListner(object : NetworkResponseListner<BaseResponse>{
@@ -407,6 +422,7 @@ class InventoryActivity : BaseActivity() {
                         if (response.data != null){
                             actionList.clear()
                             technicianList.clear()
+                            showTextHash.clear()
                             if (response.data.actionList != null && response.data.technicianList != null){
                                 actionList.addAll(response.data.actionList)
                                 technicianList.addAll(response.data.technicianList)
@@ -415,6 +431,7 @@ class InventoryActivity : BaseActivity() {
                                 la.add("Select Action")
                                 lt.add("Select Technician")
                                 actionList.forEach {
+                                    showTextHash[it.reasons.toString()] = it.showText == true
                                     if (it.is_Active != null && it.is_Active == true) {
                                         la.add(it.reasons.toString())
                                     }
