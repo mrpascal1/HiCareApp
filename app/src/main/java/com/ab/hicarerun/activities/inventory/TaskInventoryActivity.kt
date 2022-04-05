@@ -115,6 +115,7 @@ class TaskInventoryActivity : BaseActivity() {
             override fun onResponse(requestCode: Int, response: InventoryListResult?) {
                 if (response != null && response.isSuccess == true){
                     if (response.data != null && response.data.isNotEmpty()) {
+                        inventoryList.clear()
                         inventoryList.addAll(response.data)
                         inventoryAdapter.addData(inventoryList, true)
                         binding.errorTv.visibility = View.GONE
