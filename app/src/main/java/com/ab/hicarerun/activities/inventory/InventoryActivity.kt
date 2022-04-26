@@ -534,12 +534,17 @@ class InventoryActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == BARCODE_CAMERA_REQUEST) {
             if (data != null) {
-                val barcode = data.getStringExtra("content").toString()
+                var barcode = data.getStringExtra("content").toString()
                 if (barcode.length < 7) {
                     Toasty.error(this, "Invalid QR code").show()
                     return
                 }
-                itemSerialNo = getItemSerialNo(barcode)
+                if (barcode.length <= 10){
+                    barcode = "0$barcode"
+                }
+
+                //itemSerialNo = getItemSerialNo(barcode)
+                itemSerialNo = barcode
                 val date = getDate(barcode)
                 if (date != "") {
                     addInventory(AppUtils.resourceId, itemSerialNo, date, barcode)

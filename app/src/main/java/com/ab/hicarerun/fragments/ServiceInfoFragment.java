@@ -478,7 +478,8 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
             Intent intent = new Intent(requireContext(), PulseActivity.class);
             startActivity(intent);
         });
-        if (status.equals("On-Site") && AppUtils.taskTypeName.contains("MMS")){
+        if (status.equals("On-Site") && !AppUtils.isB2BJob && (AppUtils.taskTypeName.contains("MMS") ||
+                AppUtils.taskTypeName.contains("MMS Dispenser"))){
             mFragmentServiceInfoBinding.lnrInventory.setVisibility(View.VISIBLE);
         }else {
             mFragmentServiceInfoBinding.lnrInventory.setVisibility(GONE);
@@ -1230,6 +1231,7 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
                     mFragmentServiceInfoBinding.imgUser.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            Log.d("TAG", "onClick: Clicked image and "+status);
                             if (status.equals("On-Site")) {
                                 captureTechImage();
                             }
@@ -1656,7 +1658,13 @@ public class ServiceInfoFragment extends BaseFragment implements UserServiceInfo
 
                 @Override
                 public void onFailure(int requestCode) {
-
+                    for (int i = 0; i < generalTaskRealmModel.size(); i++){
+                        if (selectedStatus.equals(generalTaskRealmModel.get(i).getStatus())){
+                            mFragmentServiceInfoBinding.spnStatus.setSelection(i);
+                            break;
+                        }
+                    }
+                    //captureTechImage();
                 }
             });
             controller.uploadOnsiteImage(UPLOAD_REQ, request);

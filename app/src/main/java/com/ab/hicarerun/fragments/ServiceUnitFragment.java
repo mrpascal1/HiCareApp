@@ -409,11 +409,11 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                     alertDialog.dismiss();
                 }
             });
-            if (mActivityList.size() > 1) {
+            /*if (mActivityList.size() > 1) {
                 btnSkip.setVisibility(View.VISIBLE);
             } else {
                 btnSkip.setVisibility(View.GONE);
-            }
+            }*/
 //            if (mActivityList.size() - 1 == activityPosition) {
 ////                btnSkip.setVisibility(View.GONE);
 //                activityPosition = 0;
@@ -422,11 +422,11 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
 ////                btnSkip.setVisibility(View.VISIBLE);
 //            }
 
-            if (mActivityList.size() - 1 == activityPosition) {
+            /*if (mActivityList.size() - 1 == activityPosition) {
                 btnSkip.setVisibility(View.GONE);
             } else {
                 btnSkip.setVisibility(View.VISIBLE);
-            }
+            }*/
 
             String barcodeType = "";
             for (AreaActivity list: mAreaList){

@@ -3304,6 +3304,7 @@ public class NetworkCallController {
 
                         @Override
                         public void onFailure(Call<CovidResponse> call, Throwable t) {
+                            mListner.onFailure(6211);
                             mContext.dismissProgressDialog();
                             mContext.showServerError(mContext.getString(R.string.something_went_wrong));
                         }
