@@ -1953,13 +1953,13 @@ public class NetworkCallController {
 
     /*[Resource Incentive]*/
 
-    public void getResourceIncentive(final int requestCode, final String userId) {
+    public void getResourceIncentive(final int requestCode, final String userId, final String selectedMonthAndYear) {
         try {
             if (mContext != null)
                 mContext.showProgressDialog();
 
             BaseApplication.getRetrofitAPI(true)
-                    .getResourceIncentive(userId)
+                    .getResourceIncentive(userId, selectedMonthAndYear)
                     .enqueue(new Callback<IncentiveResponse>() {
                         @Override
                         public void onResponse(Call<IncentiveResponse> call,

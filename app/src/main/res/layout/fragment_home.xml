@@ -24,9 +24,10 @@
                 android:layout_above="@+id/progressBar">
 
                 <LinearLayout
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycleView"
                         android:layout_width="match_parent"
@@ -34,17 +35,18 @@
                         android:layout_alignParentStart="true"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentTop="true" />
+
                     <TextView
                         android:id="@+id/moreJobsTv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="View Upcoming Jobs"
                         android:layout_gravity="center"
-                        android:textColor="@color/white"
-                        android:padding="12dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
-                        android:background="@drawable/button_bg"/>
+                        android:background="@drawable/button_bg"
+                        android:padding="12dp"
+                        android:text="View Upcoming Jobs"
+                        android:textColor="@color/white" />
                 </LinearLayout>
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

@@ -36,6 +36,9 @@ public class IncentiveData {
     @SerializedName("IncentiveDetailList")
     @Expose
     private List<IncentiiveDetailList> incentiveDetailList = null;
+    @SerializedName("MonthList")
+    @Expose
+    private List<IncentiveMonthList> incentiveMonthList = null;
 
     public Integer getTotalPoints() {
         return totalPoints;
@@ -107,5 +110,13 @@ public class IncentiveData {
 
     public void setIncentiveDetailList(List<IncentiiveDetailList> incentiveDetailList) {
         this.incentiveDetailList = incentiveDetailList;
+    }
+
+    public List<IncentiveMonthList> getIncentiveMonthList() {
+        return incentiveMonthList;
+    }
+
+    public void setIncentiveMonthList(List<IncentiveMonthList> incentiveMonthList) {
+        this.incentiveMonthList = incentiveMonthList;
     }
 }

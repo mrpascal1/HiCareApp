@@ -3,6 +3,7 @@ package com.ab.hicarerun.fragments;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -21,6 +22,8 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -35,6 +38,7 @@ import com.ab.hicarerun.network.NetworkResponseListner;
 import com.ab.hicarerun.network.models.incentivemodel.IncentiveCriteriaList;
 import com.ab.hicarerun.network.models.incentivemodel.IncentiveData;
 import com.ab.hicarerun.network.models.LoginResponse;
+import com.ab.hicarerun.network.models.incentivemodel.IncentiveMonthList;
 import com.ab.hicarerun.network.models.profilemodel.Profile;
 import com.ab.hicarerun.utils.AppUtils;
 
@@ -92,6 +96,39 @@ public class IncentiveFragment extends BaseFragment {
         return mFragmentIncentiveBinding.getRoot();
     }
 
+    private void setSpinner(List<IncentiveMonthList> monthList){
+        ArrayList<String> modifiedList = new ArrayList<>();
+        for (IncentiveMonthList i : monthList){
+            if (!modifiedList.contains(i.getMonthAndYear())){
+                if (i.getSelected()){
+                    modifiedList.add(0, i.getMonthAndYear());
+                }else {
+                    modifiedList.add(i.getMonthAndYear());
+                }
+            }
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(requireContext(), R.layout.spinner_layout_new, modifiedList){
+            @Override
+            public boolean isEnabled(int position) {
+                return position == 0;
+            }
+
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if (position == 0){
+                    tv.setTextColor(Color.GRAY);
+                }else{
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+        arrayAdapter.setDropDownViewResource(R.layout.spinner_popup);
+        mFragmentIncentiveBinding.spnMonth.setAdapter(arrayAdapter);
+    }
+
     private void showMatrixDialog() {
 
         try {
@@ -147,8 +184,18 @@ public class IncentiveFragment extends BaseFragment {
         mDetailAdapter = new IncentiveDetailsAdapter(getActivity());
         mFragmentIncentiveBinding.recycleView.setAdapter(mDetailAdapter);
         lnrInfo.setOnClickListener(v -> showMatrixDialog());
-        getIncentiveDetails();
+        getIncentiveDetails("");
         getTechDeails();
+        mFragmentIncentiveBinding.spnMonth.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                getIncentiveDetails(mFragmentIncentiveBinding.spnMonth.getSelectedItem().toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     private void getTechDeails() {
@@ -191,7 +238,7 @@ public class IncentiveFragment extends BaseFragment {
         }
     }
 
-    private void getIncentiveDetails() {
+    private void getIncentiveDetails(String selectedMonthAndYear) {
         try {
             if (getActivity() != null) {
                 RealmResults<LoginResponse> LoginRealmModels =
@@ -209,7 +256,7 @@ public class IncentiveFragment extends BaseFragment {
                             mFragmentIncentiveBinding.txtPoints.setText(String.valueOf(response.getTotalPoints()) + " Pts.");
                             mFragmentIncentiveBinding.txtBadgePts.setTypeface(Typeface.DEFAULT_BOLD, Typeface.BOLD);
                             mFragmentIncentiveBinding.txtOutOff.setTypeface(Typeface.DEFAULT_BOLD, Typeface.BOLD);
-                            mFragmentIncentiveBinding.progressBar.setMax(200);
+                            mFragmentIncentiveBinding.progressBar.setMax(130);
                             mFragmentIncentiveBinding.progressBar.setProgress(response.getTotalPoints());
                             mFragmentIncentiveBinding.txtIncentive.setText(String.valueOf(response.getTotalIncentiveAmount() + " Rs."));
                             if (response.getMonth() != null) {
@@ -224,6 +271,7 @@ public class IncentiveFragment extends BaseFragment {
                             }
                             criteriaLists = new ArrayList<>();
                             criteriaLists = response.getIncentiveCriteriaList();
+                            setSpinner(response.getIncentiveMonthList());
                         }
 
                         @Override
@@ -231,7 +279,7 @@ public class IncentiveFragment extends BaseFragment {
 
                         }
                     });
-                    controller.getResourceIncentive(REQ_INCENTIVE, userId);
+                    controller.getResourceIncentive(REQ_INCENTIVE, userId, selectedMonthAndYear);
                 }
             }
         } catch (Exception e) {

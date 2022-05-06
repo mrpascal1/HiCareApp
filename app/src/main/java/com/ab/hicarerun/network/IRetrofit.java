@@ -149,7 +149,7 @@ public interface IRetrofit {
     String SLOT_URL = "http://api.hicare.in/slot/api/";
     String UAT = "http://api.hicare.in/Mobile/api/";
     String B2B_URL = "http://connect.hicare.in/b2bwowuat/api/"; //b2bwow(production) & b2bwowuat(uat)
-    String INVENTORY_URL = "http://connect.hicare.in/inventory_api/api/";
+    String INVENTORY_URL = "http://connect.hicare.in/inventory_apiuat/api/"; //inventory_api(prod) & inventory_apiuat(uat)
     String IOT_URL = "http://connect.hicare.in/iotapi/api/";
 
     /*[Verify User]*/
@@ -310,7 +310,7 @@ public interface IRetrofit {
     /*[GetIncentiveDataForResource]*/
 
     @GET("ResourceActivity/GetIncentiveDataForResource")
-    Call<IncentiveResponse> getResourceIncentive(@Query("resourceId") String customerNo);
+    Call<IncentiveResponse> getResourceIncentive(@Query("resourceId") String customerNo, @Query("selectedMonthAndYear") String selectedMonthAndYear);
 
     /*[getAttendanceDetail]*/
 

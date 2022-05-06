@@ -13,6 +13,40 @@
             android:background="@color/white"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Change Month"
+                    android:textSize="15sp"/>
+                <LinearLayout
+                    android:id="@+id/spinnerLayout"
+                    android:layout_width="140dp"
+                    android:layout_height="26dp"
+                    android:background="@drawable/edit_box_border"
+                    android:gravity="end"
+                    android:layout_marginStart="2dp">
+
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/spnMonth"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:backgroundTint="@color/textColorSecondary"
+                        android:clickable="true"
+                        android:ems="10"
+                        android:popupBackground="@color/colorTextDrawerSecondary"
+                        android:spinnerMode="dialog"
+                        android:textSize="20sp"
+                        android:layout_marginStart="12dp" />
+                </LinearLayout>
+            </LinearLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -64,8 +98,8 @@
                             android:layout_height="11dp"
                             android:layout_centerVertical="true"
                             android:layout_gravity="center"
-                            android:layout_toRightOf="@id/relBadge"
                             android:layout_marginLeft="-6dp"
+                            android:layout_toRightOf="@id/relBadge"
                             android:indeterminate="false"
                             android:progressDrawable="@drawable/custom_progress" />
 
@@ -80,8 +114,8 @@
                                 android:layout_height="33dp"
                                 android:layout_centerVertical="true"
                                 android:elevation="2dp"
-                                android:scaleType="centerInside"
                                 android:rotation="90"
+                                android:scaleType="centerInside"
                                 app:srcCompat="@drawable/ic_hexagon_badge" />
 
                             <TextView
@@ -90,11 +124,10 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
                                 android:elevation="3dp"
-                                android:textSize="11sp"
-                                android:maxLength="4"
                                 android:ellipsize="end"
+                                android:maxLength="4"
                                 android:textColor="@color/black"
-                                />
+                                android:textSize="11sp" />
 
                         </RelativeLayout>
 
@@ -102,11 +135,11 @@
                             android:id="@+id/txtOutOff"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_below="@id/relBadge"
                             android:layout_alignParentRight="true"
                             android:ellipsize="end"
-                            android:textSize="11sp"
                             android:textColor="@color/orange"
-                            android:layout_below="@id/relBadge"/>
+                            android:textSize="11sp" />
 
 
                     </RelativeLayout>
@@ -238,8 +271,8 @@
                                     android:layout_width="32dp"
                                     android:layout_height="32dp"
                                     android:layout_centerVertical="true"
-                                    android:rotation="120"
                                     android:elevation="4dp"
+                                    android:rotation="120"
                                     app:srcCompat="@drawable/ic_cash" />
                             </RelativeLayout>
 

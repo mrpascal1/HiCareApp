@@ -20,6 +20,7 @@ import java.util.List;
 
 /**
  * Created by Arjun Bhatt on 7/10/2020.
+ * Modified by Shahid Raza on 5/5/2022.
  */
 public class IncentiveDetailsAdapter extends RecyclerView.Adapter<IncentiveDetailsAdapter.ViewHolder> {
 

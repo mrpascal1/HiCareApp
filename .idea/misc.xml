@@ -9,6 +9,7 @@
         <entry key="..\:/Users/Arjun/StudioProjects/HiCareApp/app/src/main/res/layout/fragment_home.xml" value="0.1" />
         <entry key="..\:/Users/Arjun/StudioProjects/HiCareApp/app/src/main/res/layout/fragment_voucher.xml" value="0.15307971014492755" />
         <entry key="..\:/Users/Arjun/StudioProjects/HiCareApp/app/src/main/res/layout/layout_recommendations_adapter.xml" value="0.1" />
+        <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/drawable/edit_box_border.xml" value="0.1" />
         <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/activity_assess_chat.xml" value="0.1" />
         <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/activity_attendance.xml" value="0.1" />
         <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/activity_gromming_gallery.xml" value="0.1" />
@@ -18,6 +19,7 @@
         <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/activity_zoom_transparent_popup.xml" value="0.13333333333333333" />
         <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/add_inventory_action_dialog.xml" value="0.12" />
         <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/fragment_home.xml" value="0.16666666666666666" />
+        <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/fragment_incentive.xml" value="0.22" />
         <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/fragment_karma.xml" value="0.1" />
         <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/fragment_quiz.xml" value="0.15462962962962962" />
         <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/fragment_quiz_category.xml" value="0.16666666666666666" />
@@ -32,8 +34,11 @@
         <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/layout_activity_unit_dialog.xml" value="0.15462962962962962" />
         <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/layout_covid_mask_dialog.xml" value="0.1796875" />
         <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/layout_custom_toolbar.xml" value="0.15462962962962962" />
+        <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/layout_incentive_list_adapter.xml" value="0.1425925925925926" />
         <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/layout_payment_modes.xml" value="0.22" />
+        <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/layout_pulse_child.xml" value="0.1425925925925926" />
         <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/layout/pager_service_info.xml" value="0.14666666666666667" />
+        <entry key="..\:/Users/Shahid/AndroidStudioProjects/HiCareApp/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.1425925925925926" />
       </map>
     </option>
   </component>
