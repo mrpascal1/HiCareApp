@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,17 +101,16 @@ public class IncentiveFragment extends BaseFragment {
         ArrayList<String> modifiedList = new ArrayList<>();
         for (IncentiveMonthList i : monthList){
             if (!modifiedList.contains(i.getMonthAndYear())){
+                modifiedList.add(i.getMonthAndYear());
                 if (i.getSelected()){
-                    modifiedList.add(0, i.getMonthAndYear());
-                }else {
-                    modifiedList.add(i.getMonthAndYear());
+                    modifiedList.add(0, "Selected Month-"+i.getMonthAndYear());
                 }
             }
         }
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(requireContext(), R.layout.spinner_layout_new, modifiedList){
             @Override
             public boolean isEnabled(int position) {
-                return position == 0;
+                return position != 0;
             }
 
             @Override
@@ -189,7 +189,9 @@ public class IncentiveFragment extends BaseFragment {
         mFragmentIncentiveBinding.spnMonth.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                getIncentiveDetails(mFragmentIncentiveBinding.spnMonth.getSelectedItem().toString());
+                if (position != 0) {
+                    getIncentiveDetails(mFragmentIncentiveBinding.spnMonth.getSelectedItem().toString());
+                }
             }
 
             @Override
@@ -252,7 +254,7 @@ public class IncentiveFragment extends BaseFragment {
                         public void onResponse(int requestCode, Object data) {
                             IncentiveData response = (IncentiveData) data;
                             mFragmentIncentiveBinding.txtBadgePts.setText(String.valueOf(response.getTotalPoints()));
-                            mFragmentIncentiveBinding.txtOutOff.setText(String.valueOf(response.getTotalPoints() + "/" + "200"));
+                            mFragmentIncentiveBinding.txtOutOff.setText(String.valueOf(response.getTotalPoints() + "/" + "130"));
                             mFragmentIncentiveBinding.txtPoints.setText(String.valueOf(response.getTotalPoints()) + " Pts.");
                             mFragmentIncentiveBinding.txtBadgePts.setTypeface(Typeface.DEFAULT_BOLD, Typeface.BOLD);
                             mFragmentIncentiveBinding.txtOutOff.setTypeface(Typeface.DEFAULT_BOLD, Typeface.BOLD);
