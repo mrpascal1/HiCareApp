@@ -12,7 +12,7 @@ public class SaveServiceActivity {
     private Integer activityId;
     @SerializedName("Service_Activity_Id")
     @Expose
-    private Integer serviceActivityId;
+    private String serviceActivityId;
     @SerializedName("Area_Id")
     @Expose
     private Object areaId;
@@ -46,11 +46,11 @@ public class SaveServiceActivity {
         this.activityId = activityId;
     }
 
-    public Integer getServiceActivityId() {
+    public String getServiceActivityId() {
         return serviceActivityId;
     }
 
-    public void setServiceActivityId(Integer serviceActivityId) {
+    public void setServiceActivityId(String serviceActivityId) {
         this.serviceActivityId = serviceActivityId;
     }
 

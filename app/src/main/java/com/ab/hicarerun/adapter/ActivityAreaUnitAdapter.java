@@ -79,6 +79,7 @@ public class ActivityAreaUnitAdapter extends RecyclerView.Adapter<ActivityAreaUn
             mRadioClickChanged.onClickChanged(position, "No");
         }
         holder.itemChemicalAreaChildAdapterBinding.txtArea.setText(areaList.get(position).getAreaName());
+        holder.itemChemicalAreaChildAdapterBinding.servicesTv.setText(areaList.get(position).getServices());
     }
 
     public void setOnItemClickHandler(OnAddActivityClickHandler onItemClickHandler) {

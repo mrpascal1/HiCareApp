@@ -10,17 +10,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@id/toggle">
             <TextView
                 android:id="@+id/txtArea"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
                 android:text="Area"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@id/toggle"
-                android:layout_marginRight="10dp"
-                android:textSize="15dp"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black"
+                android:textSize="15dp" />
+                <TextView
+                    android:id="@+id/servicesTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="CMS,MMS"
+                    android:textSize="14sp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginStart="2dp"/>
+            </LinearLayout>
 
             <RadioGroup
                 android:id="@+id/toggle"

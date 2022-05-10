@@ -14,7 +14,7 @@ public class AreaActivity {
     private Integer activityId;
     @SerializedName("Service_Activity_Id")
     @Expose
-    private Integer Service_Activity_Id;
+    private String Service_Activity_Id;
     @SerializedName("Area_Id")
     @Expose
     private Integer areaId;
@@ -32,7 +32,7 @@ public class AreaActivity {
     private String chemicalName;
     @SerializedName("ChemicalId")
     @Expose
-    private int ChemicalId = 0;
+    private String ChemicalId = "0";
     @SerializedName("ChemicalCode")
     @Expose
     private String ChemicalCode = "";
@@ -107,19 +107,19 @@ public class AreaActivity {
         this.activity = activity;
     }
 
-    public Integer getService_Activity_Id() {
+    public String getService_Activity_Id() {
         return Service_Activity_Id;
     }
 
-    public void setService_Activity_Id(Integer service_Activity_Id) {
+    public void setService_Activity_Id(String service_Activity_Id) {
         Service_Activity_Id = service_Activity_Id;
     }
 
-    public int getChemicalId() {
+    public String getChemicalId() {
         return ChemicalId;
     }
 
-    public void setChemicalId(int chemicalId) {
+    public void setChemicalId(String chemicalId) {
         ChemicalId = chemicalId;
     }
 
