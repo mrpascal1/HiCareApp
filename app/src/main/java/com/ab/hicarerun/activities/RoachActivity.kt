@@ -87,12 +87,16 @@ class RoachActivity : BaseActivity() {
     var locationChanged = false
     var imageUrl1 = ""
     var imageUrl2 = ""
+    var isFromTask = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRoachBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        val intent = intent
+        isFromTask = intent.getBooleanExtra("isFromTask", true)
+
         //binding.addBtn.isEnabled = false
         binding.titleTv.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
         locationList = ArrayList()
