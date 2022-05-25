@@ -162,6 +162,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
     File mPhotoFile;
     private Bitmap selectedBmp = null;
     String uid = "";
+    String accountNo = "";
 
 //    private Tasks model;
 
@@ -304,7 +305,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
     @Override
     public void onResume() {
         super.onResume();
-        getBarcodeCount(Order_Number, uid);
+        getBarcodeSummaryCountByAccountNo(accountNo, uid);
     }
 
     private void enableSwipeToDeleteAndUndo() {
@@ -379,7 +380,7 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
 
             if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
                 isJobcardEnable = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getJobCardRequired() : false;
-
+                accountNo = mGeneralRealmData.get(0).getAccountId();
                 isFeedBack = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getFeedBack() : false;
                 accountType = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getAccountType() : "NA";
                 status = mGeneralRealmData.get(0) != null ? mGeneralRealmData.get(0).getSchedulingStatus() : "NA";
@@ -652,6 +653,38 @@ public class SignatureInfoFragment extends BaseFragment implements UserSignature
             }
         });
         controller.getBarcodeSummaryCount(202108, orderNo, userId);
+    }
+
+    private void getBarcodeSummaryCountByAccountNo(String accountNo, String userId){
+        Log.d("TAG", "User "+userId+" order "+accountNo);
+        NetworkCallController controller = new NetworkCallController();
+        controller.setListner(new NetworkResponseListner<CountsResponse>() {
+            @Override
+            public void onResponse(int requestCode, CountsResponse response) {
+                if (response != null) {
+                    if (response.isSuccess()) {
+                        if (response.getData() != null) {
+                            if (response.getData().getDeployed() > 0) {
+                                mFragmentSignatureInfoBinding.countTv.setText(response.getData().getTotalScanned() + " / " + response.getData().getDeployed());
+                                mFragmentSignatureInfoBinding.lnrBarcodeCount.setVisibility(View.VISIBLE);
+                            } else {
+                                mFragmentSignatureInfoBinding.lnrBarcodeCount.setVisibility(GONE);
+                            }
+                        }else {
+                            mFragmentSignatureInfoBinding.lnrBarcodeCount.setVisibility(GONE);
+                        }
+                    }
+                }else {
+                    mFragmentSignatureInfoBinding.lnrBarcodeCount.setVisibility(GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(int requestCode) {
+                Log.d("TAG", ""+requestCode);
+            }
+        });
+        controller.getBarcodeSummaryCountByAccountNo(202108, accountNo, userId);
     }
 
     @Override

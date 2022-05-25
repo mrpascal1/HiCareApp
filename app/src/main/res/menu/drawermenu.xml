@@ -57,6 +57,11 @@
             android:title="@string/on_site_tasks" />
 
         <item
+            android:id="@+id/nav_onsite_monitoring"
+            android:icon="@drawable/ic_onsite"
+            android:title="@string/onsite_monitoring" />
+
+        <item
             android:id="@+id/nav_bazaar"
             android:icon="@drawable/ic_bazaar"
             android:title="@string/bazaar" />

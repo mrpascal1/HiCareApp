@@ -707,6 +707,9 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 } else if (item.toString().equalsIgnoreCase("On-Site Tasks")) {
                     mActivityHomeBinding.drawer.closeDrawers();
                     startActivity(new Intent(HomeActivity.this, OnSiteTaskActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
+                } else if (item.toString().equalsIgnoreCase("On-Site Monitoring")) {
+                    mActivityHomeBinding.drawer.closeDrawers();
+                    startActivity(new Intent(HomeActivity.this, OnsiteMonitoringActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
                 } else if (item.toString().equalsIgnoreCase("Bazaar")) {
                     mActivityHomeBinding.drawer.closeDrawers();
                     startActivity(new Intent(HomeActivity.this, BazaarActivity.class).putExtra(HomeActivity.ARG_EVENT, false));
@@ -938,6 +941,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
             MenuItem assignCode = menu.findItem(R.id.nav_tsScanner);
             MenuItem tsVerify = menu.findItem(R.id.nav_tsVerfication);
             MenuItem inventory = menu.findItem(R.id.nav_inventory);
+            MenuItem onsiteMonitoring = menu.findItem(R.id.nav_onsite_monitoring);
             if (isTsEnable.equals("0")) {
                 groom.setVisible(true);
                 jobCount.setVisible(true);
@@ -945,6 +949,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 assignCode.setVisible(true);
                 tsVerify.setVisible(true);
                 inventory.setVisible(true);
+                onsiteMonitoring.setVisible(true);
 
             } else {
                 groom.setVisible(false);
@@ -953,6 +958,7 @@ public class HomeActivity extends BaseActivity implements FragmentManager.OnBack
                 assignCode.setVisible(false);
                 tsVerify.setVisible(false);
                 inventory.setVisible(false);
+                onsiteMonitoring.setVisible(false);
             }
             PackageInfo pInfo = null;
             try {

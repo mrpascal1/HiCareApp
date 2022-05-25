@@ -88,6 +88,7 @@ class RoachActivity : BaseActivity() {
     var imageUrl1 = ""
     var imageUrl2 = ""
     var isFromTask = true
+    var resourceId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,6 +97,9 @@ class RoachActivity : BaseActivity() {
         setContentView(view)
         val intent = intent
         isFromTask = intent.getBooleanExtra("isFromTask", true)
+        if (!isFromTask){
+            resourceId = intent.getStringExtra("resourceId").toString()
+        }
 
         //binding.addBtn.isEnabled = false
         binding.titleTv.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
@@ -120,16 +124,19 @@ class RoachActivity : BaseActivity() {
                 replaceMap.clear()
                 imageCountMap.clear()
                 imageCountMap["TaskId"] = AppUtils.taskId
-                imageCountMap["AccountNo"] = accountNo
+                imageCountMap["AccountNo"] = if (isFromTask) accountNo else ""
                 imageCountMap["DeviceName"] = deviceName
+                imageCountMap["ResourceId"] = resourceId
                 val deviceDetails = HashMap<String, Any>()
                 deviceDetails.clear()
-                deviceDetails["AccountNo"] = accountNo
+                deviceDetails["AccountNo"] = if (isFromTask) accountNo else ""
                 deviceDetails["Id"] = deviceId
                 deviceDetails["DeviceName"] = deviceName
-                replaceMap["AccountNo"] = accountNo
+                deviceDetails["ResourceId"] = resourceId
+                replaceMap["AccountNo"] = if (isFromTask) accountNo else ""
                 replaceMap["Id"] = deviceId
                 replaceMap["DeviceName"] = deviceName
+                replaceMap["ResourceId"] = resourceId
                 showUpdateDialog(deviceDetails, deviceDisplay, url)
                 //roachAdapter.notifyItemChanged(position)
             }
@@ -178,7 +185,7 @@ class RoachActivity : BaseActivity() {
                 Log.d("TAG", "Roach API failed")
             }
         })
-        controller.getAllDeviceByAccount(20222, AppUtils.accountId, AppUtils.taskId)
+        controller.getAllDeviceByAccount(20222, if (isFromTask) AppUtils.accountId else "", AppUtils.taskId, resourceId)
     }
 
     private fun deleteDevice(deviceId: Int){
@@ -544,8 +551,9 @@ class RoachActivity : BaseActivity() {
         }
         okBtn.setOnClickListener {
             if (isImageUploaded) {
-                deviceDetails["AccountNo"] = AppUtils.accountId
+                deviceDetails["AccountNo"] = if (isFromTask) AppUtils.accountId else ""
                 deviceDetails["DeployedLocation"] = selectedLocation
+                deviceDetails["ResourceId"] = resourceId
                 addNewRoach(deviceDetails)
                 dialogView.dismiss()
             }else{

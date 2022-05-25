@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Data (
 	@SerializedName("AccountNo") val accountNo : String?,
-	@SerializedName("OrderNo") val orderNo : Long?,
+	@SerializedName("OrderNo") val orderNo : String?,
 	@SerializedName("AccountName") val accountName : String?,
 	@SerializedName("StartDate") val startDate : String?,
 	@SerializedName("EndDate") val endDate : String?,

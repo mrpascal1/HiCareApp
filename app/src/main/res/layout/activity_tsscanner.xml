@@ -46,8 +46,9 @@
                 android:background="@drawable/bg_edittext"
                 android:drawableStart="@drawable/ic_search_black"
                 android:drawablePadding="4dp"
-                android:hint="Enter Order No"
+                android:hint="Enter Account No"
                 android:layout_gravity=""
+                android:singleLine="true"
                 android:textSize="15sp"
                 android:padding="12dp" />
             <androidx.cardview.widget.CardView

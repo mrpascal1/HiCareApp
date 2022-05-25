@@ -405,7 +405,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                     saveChemicalMap.put("ChemicalQuantity", Double.parseDouble(chemicalValue.getText().toString()));
                 }
                 saveChemicalConsumptionByServiceActivity(chemicalValue);
-                updateActivityStatus(hashActivity, serviceActivityId, chemicalId, chemicalCode, true, "", txtTitle.getText().toString(), txtQty.getText().toString());
+                updateActivityStatus(hashActivity, serviceActivityId, chemicalId, chemicalCode, true, "", txtTitle.getText().toString(), txtQty.getText().toString(), alertDialog);
                 if (mActivityList.size() - 1 == activityPosition) {
                     alertDialog.dismiss();
                 }
@@ -728,6 +728,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                         } else {
                             Toasty.success(requireContext(), "Activity marked incomplete", Toasty.LENGTH_SHORT).show();
                         }
+                        dismissProgressDialog();
                         getServiceByActivity(floor);
                     }else {
                         dismissProgressDialog();
@@ -745,7 +746,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
         }
     }
 
-    public void updateActivityStatus(HashMap<Integer, SaveServiceActivity> activity, String serviceActivityId, String chemicalId, String chemicalCode, boolean isServiceDone, String option, String s, String toString) {
+    public void updateActivityStatus(HashMap<Integer, SaveServiceActivity> activity, String serviceActivityId, String chemicalId, String chemicalCode, boolean isServiceDone, String option, String s, String toString, AlertDialog alertDialog) {
         try {
             showProgressDialog();
             mSaveActivityList = new ArrayList<>(hashActivity.values());
@@ -754,7 +755,15 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                 @Override
                 public void onResponse(int requestCode, BaseResponse response) {
                     if (response.isSuccess()) {
-                        chemicalValue.setText("");
+                        dismissProgressDialog();
+                        alertDialog.dismiss();
+                        if (isServiceDone) {
+                            Toasty.success(requireContext(), "Activity completed successfully", Toasty.LENGTH_SHORT).show();
+                        } else {
+                            Toasty.success(requireContext(), "Activity marked incomplete", Toasty.LENGTH_SHORT).show();
+                        }
+                        getServiceByActivity(floor);
+                        /*chemicalValue.setText("");
                         if (mSaveActivityList != null) {
                             mSaveActivityList.clear();
                             hashActivity.clear();
@@ -807,7 +816,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                         } else {
                             Toasty.success(requireContext(), "Activity marked incomplete", Toasty.LENGTH_SHORT).show();
                         }
-                        getServiceByActivity(floor);
+                        getServiceByActivity(floor);*/
                     }else {
                         dismissProgressDialog();
                     }

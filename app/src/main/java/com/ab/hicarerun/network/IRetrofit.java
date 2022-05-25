@@ -150,7 +150,7 @@ public interface IRetrofit {
     String UAT = "http://api.hicare.in/Mobile/api/";
     String B2B_URL = "http://connect.hicare.in/b2bwowuat/api/"; //b2bwow(production) & b2bwowuat(uat)
     String INVENTORY_URL = "http://connect.hicare.in/inventory_apiuat/api/"; //inventory_api(prod) & inventory_apiuat(uat)
-    String IOT_URL = "http://connect.hicare.in/iotapi/api/";
+    String IOT_URL = "http://connect.hicare.in/iotapiuat/api/"; //iotapi(prod) & iotapiuat(uat)
 
     /*[Verify User]*/
     @GET("userverification/VerifyUser")
@@ -555,6 +555,12 @@ public interface IRetrofit {
     @GET("Barcode/GetBarcodeOrderDetails")
     Call<BarcodeDetailsResponse> getBarcodeOrderDetails(@Query("orderNo") String orderNo, @Query("userId") String userId, @Query("barcodeType") String barcodeType);
 
+    @GET("Barcode/GetBarcodeDetailsByAccountForVerifier")
+    Call<BarcodeDetailsResponse> getBarcodeDetailsByAccountForVerifier(@Query("accountNo") String accountNo, @Query("userId") String userId, @Query("barcodeType") String barcodeType);
+
+    @GET("Barcode/GetBarcodeDetailsByAccount")
+    Call<OrderDetails> getBarcodeDetailsByAccount(@Query("accountNo") String accountNo, @Query("userId") String userId);
+
     @POST("Barcode/SaveBarcodeDetails")
     Call<BaseResponse> saveBarcode(@Body ArrayList<BarcodeList> barcodeList);
 
@@ -566,6 +572,9 @@ public interface IRetrofit {
 
     @GET("Barcode/GetBarcodeOrderSummaryCount")
     Call<CountsResponse> getBarcodeSummaryCount(@Query("orderNo") String orderNo, @Query("userId") String userId);
+
+    @GET("Barcode/GetBarcodeSummaryCountByAccountNo")
+    Call<CountsResponse> getBarcodeSummaryCountByAccountNo(@Query("accountNo") String accountNo, @Query("userId") String userId);
 
     @POST("Barcode/UploadBoxImage")
     Call<BaseResponse> uploadBoxImage(@Body HashMap<String, String> imageDetails);
@@ -646,7 +655,7 @@ public interface IRetrofit {
     Call<RoachSaveBase> saveDeviceRegistrationForApp(@Body HashMap<String, Object> data);
 
     @GET("Device/GetAllDeviceByAccount")
-    Call<RoachBase> getAllDeviceByAccount(@Query("AccountNo") String accountNo, @Query("taskId") String taskId);
+    Call<RoachBase> getAllDeviceByAccount(@Query("AccountNo") String accountNo, @Query("taskId") String taskId, @Query("resourceId") String resourceId);
 
     @POST("DeviceRegistration/DeleteDevice")
     Call<RoachSaveBase> deleteDevice(@Query("deviceId") int deviceId);

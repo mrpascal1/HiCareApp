@@ -4967,9 +4967,51 @@ public class NetworkCallController {
                 });
     }
 
+    public void getBarcodeDetailsByAccount(String accountNo, String userId) {
+        BaseApplication.getRetrofitAPI(false)
+                .getBarcodeDetailsByAccount(accountNo, userId)
+                .enqueue(new Callback<OrderDetails>() {
+                    @Override
+                    public void onResponse(Call<OrderDetails> call, Response<OrderDetails> response) {
+                        if (response.body() != null) {
+                            String responseBody = response.body().toString();
+                            mListner.onResponse(20211, response.body());
+                            //Log.d("TAG-UAT", responseBody);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<OrderDetails> call, Throwable t) {
+                        Log.d("TAG-UAT-Error", t.getMessage());
+                        mListner.onFailure(20211);
+                    }
+                });
+    }
+
     public void getBarcodeOrderDetails(String orderId, String userId, String barcodeType) {
         BaseApplication.getRetrofitAPI(false)
                 .getBarcodeOrderDetails(orderId, userId, barcodeType)
+                .enqueue(new Callback<BarcodeDetailsResponse>() {
+                    @Override
+                    public void onResponse(Call<BarcodeDetailsResponse> call, Response<BarcodeDetailsResponse> response) {
+                        if (response.body() != null) {
+                            String responseBody = response.body().toString();
+                            mListner.onResponse(20211, response.body());
+                            //Log.d("TAG-UAT", responseBody);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BarcodeDetailsResponse> call, Throwable t) {
+                        Log.d("TAG-UAT-Error", t.getMessage());
+                        mListner.onFailure(20211);
+                    }
+                });
+    }
+
+    public void getBarcodeDetailsByAccountForVerifier(String accountNo, String userId, String barcodeType) {
+        BaseApplication.getRetrofitAPI(false)
+                .getBarcodeDetailsByAccountForVerifier(accountNo, userId, barcodeType)
                 .enqueue(new Callback<BarcodeDetailsResponse>() {
                     @Override
                     public void onResponse(Call<BarcodeDetailsResponse> call, Response<BarcodeDetailsResponse> response) {
@@ -5024,7 +5066,6 @@ public class NetworkCallController {
                 });
     }
 
-
     public void deleteBarcodeDetails(int requestCode, HashMap<String, Object> details) {
         BaseApplication.getRetrofitAPI(false)
                 .deleteBarcode(details)
@@ -5046,6 +5087,24 @@ public class NetworkCallController {
     public void getBarcodeSummaryCount(int requestCode, String orderNo, String userId) {
         BaseApplication.getRetrofitAPI(false)
                 .getBarcodeSummaryCount(orderNo, userId)
+                .enqueue(new Callback<CountsResponse>() {
+                    @Override
+                    public void onResponse(Call<CountsResponse> call, Response<CountsResponse> response) {
+                        if (response.body() != null) {
+                            mListner.onResponse(requestCode, response.body());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<CountsResponse> call, Throwable t) {
+                        mListner.onFailure(requestCode);
+                    }
+                });
+    }
+
+    public void getBarcodeSummaryCountByAccountNo(int requestCode, String accountNo, String userId) {
+        BaseApplication.getRetrofitAPI(false)
+                .getBarcodeSummaryCountByAccountNo(accountNo, userId)
                 .enqueue(new Callback<CountsResponse>() {
                     @Override
                     public void onResponse(Call<CountsResponse> call, Response<CountsResponse> response) {
@@ -5524,9 +5583,9 @@ public class NetworkCallController {
                 });
     }
 
-    public void getAllDeviceByAccount(int requestCode, String accountNo, String taskId) {
+    public void getAllDeviceByAccount(int requestCode, String accountNo, String taskId, String resourceId) {
         BaseApplication.getIotApi()
-                .getAllDeviceByAccount(accountNo, taskId)
+                .getAllDeviceByAccount(accountNo, taskId, resourceId)
                 .enqueue(new Callback<RoachBase>(){
                     @Override
                     public void onResponse(Call<RoachBase> call, Response<RoachBase> response) {

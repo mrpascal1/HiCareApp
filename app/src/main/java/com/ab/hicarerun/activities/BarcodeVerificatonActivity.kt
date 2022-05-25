@@ -150,6 +150,10 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
 
         val loginResponse: RealmResults<LoginResponse> = BaseApplication.getRealm().where(
                 LoginResponse::class.java).findAll()
+        val generalData: RealmResults<GeneralData> = BaseApplication.getRealm().where(GeneralData::class.java).findAll()
+
+        account_No = generalData[0]?.accountId
+
         if (loginResponse != null && loginResponse.size > 0) {
             empCode = loginResponse[0]?.id?.toInt()
             resourceId = loginResponse[0]?.userID.toString()
@@ -199,7 +203,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
             }
         })
 
-        getOrderDetails(empCode.toString())
+        getBarcodeDetailsByAccountForVerifier(empCode.toString())
     }
 
     private fun getOrderDetails(uId: String) {
@@ -295,6 +299,98 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         } else {
             controller.getBarcodeOrderDetails(order, uId, barcodeType)
         }
+
+    }
+
+    private fun getBarcodeDetailsByAccountForVerifier(uId: String) {
+        val controller = NetworkCallController()
+        controller.setListner(object : NetworkResponseListner<BarcodeDetailsResponse> {
+            override fun onResponse(requestCode: Int, response: BarcodeDetailsResponse?) {
+                binding.progressBar.visibility = View.GONE
+                val success = response?.isSuccess.toString()
+                if (success == "true") {
+                    isFetched = 1
+                    modelBarcodeList.clear()
+                    modelBarcodeDDPestType.clear()
+                    if (response?.data != null && response.data.isNotEmpty()) {
+                        var itemsCount = 0
+                        for (i in 0 until response.data.size) {
+                            itemsCount++
+                            id = response.data[i].id
+                            account_No = response.data[i].account_No
+                            order_No = response.data[i].order_No
+                            account_Name = response.data[i].account_Name
+                            barcode_Data = response.data[i].barcode_Data
+                            last_Verified_On = response.data[i].last_Verified_On
+                            last_Verified_By = response.data[i].last_Verified_By
+                            created_On = response.data[i].created_On
+                            created_By_Id_User = response.data[i].created_By_Id_User
+                            verified_By = response.data[i].verified_By
+                            created_By = response.data[i].created_By
+                            isVerified = response.data[i].isVerified
+                            barcode_Type = response.data[i].barcode_Type
+                            val pestType = response.data[i].pest_Type
+                            val reasons = response.data[i].not_Accessible_Reasons_List
+                            val su = response.data[i].service_Unit
+                            val additional_Info = response.data[i].additional_Info
+                            val nar = response.data[i].not_Accessible_Reason
+                            if (!reasons.isNullOrEmpty()){
+                                notAccessibleList.addAll(reasons)
+                            }
+                            if (!pestType.isNullOrEmpty()){
+                                for (j in 0 until pestType.size){
+                                    modelBarcodeDDPestType.add(BarcodeDDPestType(
+                                        pestType[j].id,
+                                        pestType[j].barcode_Type,
+                                        pestType[j].sub_Type,
+                                        pestType[j].show_Count,
+                                        pestType[j].capture_Image,
+                                        pestType[j].show_Option,
+                                        pestType[j].option_Value,
+                                        pestType[j].option_List,
+                                        pestType[j].pest_Count,
+                                        pestType[j].image_Url,
+                                        id,
+                                    ))
+                                }
+                            }
+                            //modelBarcodeList.add(BarcodeDetailsData(id, account_No, order_No, account_Name, barcode_Data, last_Verified_On, last_Verified_By, created_On, created_By_Id_User, verified_By, created_By, isVerified, barcode_Type, su, additional_Info, notAccessibleList, nar, modelBarcodeDDPestType))
+                        }
+                        modelBarcodeList.addAll(response.data)
+                        BarcodeDetailsResponse(response.isSuccess, modelBarcodeList, response.errorMessage, response.param1, response.responseMessage)
+                        Log.d("TAG", "Size $modelBarcodeList")
+
+                        if (modelBarcodeList.size > 0) {
+                            binding.barcodeRecycler.visibility = View.VISIBLE
+                            binding.errorTv.visibility = View.GONE
+                            AppUtils.IS_QRCODE_THERE = isVerified(modelBarcodeList)
+
+                        } else {
+                            binding.errorTv.visibility = View.VISIBLE
+                            binding.barcodeRecycler.visibility = View.GONE
+                            AppUtils.IS_QRCODE_THERE = false
+                        }
+                    }else{
+                        binding.errorTv.visibility = View.VISIBLE
+                        binding.barcodeRecycler.visibility = View.GONE
+                        AppUtils.IS_QRCODE_THERE = false
+                    }
+                    barcodeAdapter.notifyDataSetChanged()
+                } else {
+                    modelBarcodeList.clear()
+                    binding.errorTv.visibility = View.VISIBLE
+                    binding.barcodeRecycler.visibility = View.GONE
+                }
+            }
+
+
+            override fun onFailure(requestCode: Int) {
+                modelBarcodeList.clear()
+                binding.progressBar.visibility = View.GONE
+                Log.d("TAG-UAT-Error", requestCode.toString())
+            }
+        })
+        controller.getBarcodeDetailsByAccountForVerifier(account_No, uId, barcodeType)
 
     }
 
@@ -506,7 +602,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                             }else{
                                 Toast.makeText(applicationContext, "Verified successfully", Toast.LENGTH_SHORT).show()
                             }
-                            getOrderDetails(empCode.toString())
+                            getBarcodeDetailsByAccountForVerifier(empCode.toString())
                         }
                     } else {
                         Log.d("TAG-VERIFIER", "Something wrong ${response.data}")

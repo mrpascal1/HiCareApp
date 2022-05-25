@@ -680,5 +680,6 @@
     <string name="service_delivery_sheet_submitted_successfully">Service delivery sheet submitted successfully</string>
     <string name="consultation_and_Inspection_submitted_successfully">Consultation and Inspection submitted successfully</string>
     <string name="select_count">Select Count</string>
+    <string name="onsite_monitoring">Onsite Monitoring</string>
 
 </resources>

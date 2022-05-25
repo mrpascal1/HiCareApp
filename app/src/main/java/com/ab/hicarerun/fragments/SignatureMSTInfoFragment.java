@@ -153,6 +153,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     private NewTaskDetailsActivity mActivity = null;
     String uid = "";
     private String combinedOrderId = "";
+    private String accountNo = "";
 
 
     public SignatureMSTInfoFragment() {
@@ -186,7 +187,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
     public void onResume() {
         super.onResume();
         getValidate();
-        getBarcodeCount(combinedOrderId, uid);
+        getBarcodeSummaryCountByAccountNo(accountNo, uid);
         try {
             AppUtils.statusCheck(getActivity());
         } catch (Exception e) {
@@ -316,6 +317,38 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
         controller.getBarcodeSummaryCount(202108, orderNo, userId);
     }
 
+    private void getBarcodeSummaryCountByAccountNo(String accountNo, String userId){
+        Log.d("TAG", "User "+userId+" account No "+accountNo);
+        NetworkCallController controller = new NetworkCallController();
+        controller.setListner(new NetworkResponseListner<CountsResponse>() {
+            @Override
+            public void onResponse(int requestCode, CountsResponse response) {
+                if (response != null) {
+                    if (response.isSuccess()) {
+                        if (response.getData() != null) {
+                            if (response.getData().getDeployed() > 0) {
+                                mFragmentSignatureInfoBinding.countTv.setText(response.getData().getTotalScanned() + " / " + response.getData().getDeployed());
+                                mFragmentSignatureInfoBinding.lnrBarcodeCount.setVisibility(View.VISIBLE);
+                            } else {
+                                mFragmentSignatureInfoBinding.lnrBarcodeCount.setVisibility(GONE);
+                            }
+                        }else {
+                            mFragmentSignatureInfoBinding.lnrBarcodeCount.setVisibility(GONE);
+                        }
+                    }
+                }else {
+                    mFragmentSignatureInfoBinding.lnrBarcodeCount.setVisibility(GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(int requestCode) {
+                Log.d("TAG", ""+requestCode);
+            }
+        });
+        controller.getBarcodeSummaryCountByAccountNo(202108, accountNo, userId);
+    }
+
     private void getJobCardDeleted(int parent, int child) {
         try {
             AttachmentDeleteRequest request = new AttachmentDeleteRequest();
@@ -365,6 +398,7 @@ public class SignatureMSTInfoFragment extends BaseFragment implements UserSignat
                     getRealm().where(GeneralData.class).findAll();
             if (mGeneralRealmData != null && mGeneralRealmData.size() > 0) {
                 assert mGeneralRealmData.get(0) != null;
+                accountNo = mGeneralRealmData.get(0).getAccountId();
                 status = mGeneralRealmData.get(0).getSchedulingStatus();
                 if (mGeneralRealmData.get(0).getShowSignature()) {
                     mFragmentSignatureInfoBinding.signatureTitle.setVisibility(View.VISIBLE);
