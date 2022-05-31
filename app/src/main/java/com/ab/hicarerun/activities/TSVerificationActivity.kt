@@ -324,7 +324,7 @@ class TSVerificationActivity : BaseActivity(), LocationManagerListner {
         controller.getOrderNoDetails(orderNoInput, empCode.toString())
     }
 
-    private fun verifyBarcode(barcodeId: Int?, activityName: String?, account_No: String?, order_No: String?, barcode_Data: String?,
+        private fun verifyBarcode(barcodeId: Int?, activityName: String?, account_No: String?, order_No: String?, barcode_Data: String?,
                               lat: String?, long: String?, verifiedOn: String?, verifiedBy: Int?){
         val verifyMap = HashMap<String, Any?>()
         verifyMap["BarcodeId"] = barcodeId

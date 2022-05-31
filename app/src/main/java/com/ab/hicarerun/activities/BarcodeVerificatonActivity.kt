@@ -140,19 +140,23 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
         binding.progressBar.visibility = View.VISIBLE
 
         val intent = intent
-        combineOrder = intent.getStringExtra(ARGS_COMBINE_ORDER).toString()
-        order = intent.getStringExtra(ARGS_ORDER).toString()
-        isCombinedTask = intent.getBooleanExtra(ARGS_COMBINED_TASKS, false)
-        barcodeType = intent.getStringExtra("barcodeType").toString()
+        if (!intent.getBooleanExtra("isFromTask", true)){
+            account_No = intent.getStringExtra("accountNo").toString()
+        }else{
+            combineOrder = intent.getStringExtra(ARGS_COMBINE_ORDER).toString()
+            order = intent.getStringExtra(ARGS_ORDER).toString()
+            isCombinedTask = intent.getBooleanExtra(ARGS_COMBINED_TASKS, false)
+            barcodeType = intent.getStringExtra("barcodeType").toString()
+            val generalData: RealmResults<GeneralData> = getRealm().where(GeneralData::class.java).findAll()
+            account_No = generalData[0]?.accountId
+        }
 
         Log.d("isCombine", combineOrder)
         Log.d("isCombine", isCombinedTask.toString())
 
-        val loginResponse: RealmResults<LoginResponse> = BaseApplication.getRealm().where(
-                LoginResponse::class.java).findAll()
-        val generalData: RealmResults<GeneralData> = BaseApplication.getRealm().where(GeneralData::class.java).findAll()
+        val loginResponse: RealmResults<LoginResponse> = getRealm().where(
+            LoginResponse::class.java).findAll()
 
-        account_No = generalData[0]?.accountId
 
         if (loginResponse != null && loginResponse.size > 0) {
             empCode = loginResponse[0]?.id?.toInt()
@@ -193,7 +197,7 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                     Toast.makeText(this, "Equipment not found", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                Toast.makeText(this, "Please Enter Order No", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Invalid Customer ID", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -658,18 +662,18 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
                         barcodeTypeTv.text = it.barcode_Type
                         pestType.add(
                             BarcodeDDPestType(
-                            pest.id,
-                            pest.barcode_Type,
-                            pest.sub_Type,
-                            pest.show_Count,
-                            pest.capture_Image,
-                            pest.show_Option,
-                            pest.option_Value,
-                            pest.option_List,
-                            "",
-                            pest.image_Url,
-                            pest.barcodeId,
-                        ))
+                                pest.id,
+                                pest.barcode_Type,
+                                pest.sub_Type,
+                                pest.show_Count,
+                                pest.capture_Image,
+                                pest.show_Option,
+                                pest.option_Value,
+                                pest.option_List,
+                                "",
+                                pest.image_Url,
+                                pest.barcodeId,
+                            ))
                         pest.option_List?.forEach { options ->
                             optionType.add(options.text.toString())
                         }
@@ -974,59 +978,58 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
 
     private fun getImageDialog(barcodeId: Int?, pestTypeId: Int?) {
         try {
-            val mGeneralRealmData: RealmResults<GeneralData> = getRealm().where<GeneralData>(
-                GeneralData::class.java
-            ).findAll()
-            if (mGeneralRealmData != null && mGeneralRealmData.size > 0) {
-                val li = LayoutInflater.from(this)
-                val promptsView = li.inflate(R.layout.layout_image_pest_dialog, null)
-                val alertDialogBuilder = AlertDialog.Builder(this)
-                alertDialogBuilder.setView(promptsView)
-                val alertDialog = alertDialogBuilder.create()
-                val selectedImg = promptsView.findViewById<ImageView>(R.id.selectedImg)
-                val lnrCamera = promptsView.findViewById<LinearLayout>(R.id.lnrCamera)
-                val lnrGallery = promptsView.findViewById<LinearLayout>(R.id.lnrGallery)
-                val btn_cancel = promptsView.findViewById<TextView>(R.id.btnCancel)
-                val cardSelected = promptsView.findViewById<LinearLayout>(R.id.cardSelected)
-                val attrs = intArrayOf(R.attr.selectableItemBackground)
-                val typedArray: TypedArray = this.obtainStyledAttributes(attrs)
-                val backgroundResource = typedArray.getResourceId(0, 0)
-                lnrCamera.setBackgroundResource(backgroundResource)
-                lnrGallery.setBackgroundResource(backgroundResource)
-                if (bitmap != null) {
-                    cardSelected.visibility = View.VISIBLE
-                    Glide.with(this)
-                        .load(bitmap)
-                        .error(android.R.drawable.stat_notify_error)
-                        .into(selectedImg)
-                } else {
-                    cardSelected.visibility = View.GONE
-                }
-                cardSelected.setOnClickListener { view: View? ->
-                    if (bitmap != null) {
-                        alertDialog.dismiss()
-                        val baos = ByteArrayOutputStream()
-                        bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-                        val b = baos.toByteArray()
-                        val encodedImage =
-                            Base64.encodeToString(b, Base64.DEFAULT)
-                        pestTypeIdFromAdapter = -1
-                        selectOldImage()
-                        //uploadBoxImage(resourceId, taskId, encodedImage)
-                    }
-                }
-                lnrCamera.setOnClickListener { view: View? ->
-                    requestStoragePermission(true, barcodeId, pestTypeId)
-                    alertDialog.dismiss()
-                }
-                lnrGallery.setOnClickListener { view: View? ->
-                    requestStoragePermission(false, barcodeId, pestTypeId)
-                    alertDialog.dismiss()
-                }
-                btn_cancel.setOnClickListener { v: View? -> alertDialog.dismiss() }
-                alertDialog.setCanceledOnTouchOutside(false)
-                alertDialog.show()
+            /* val mGeneralRealmData: RealmResults<GeneralData> = getRealm().where<GeneralData>(
+                 GeneralData::class.java
+             ).findAll()*/
+            val li = LayoutInflater.from(this)
+            val promptsView = li.inflate(R.layout.layout_image_pest_dialog, null)
+            val alertDialogBuilder = AlertDialog.Builder(this)
+            alertDialogBuilder.setView(promptsView)
+            val alertDialog = alertDialogBuilder.create()
+            val selectedImg = promptsView.findViewById<ImageView>(R.id.selectedImg)
+            val lnrCamera = promptsView.findViewById<LinearLayout>(R.id.lnrCamera)
+            val lnrGallery = promptsView.findViewById<LinearLayout>(R.id.lnrGallery)
+            val btn_cancel = promptsView.findViewById<TextView>(R.id.btnCancel)
+            val cardSelected = promptsView.findViewById<LinearLayout>(R.id.cardSelected)
+            val attrs = intArrayOf(R.attr.selectableItemBackground)
+            val typedArray: TypedArray = this.obtainStyledAttributes(attrs)
+            val backgroundResource = typedArray.getResourceId(0, 0)
+            lnrCamera.setBackgroundResource(backgroundResource)
+            lnrGallery.setBackgroundResource(backgroundResource)
+            if (bitmap != null) {
+                cardSelected.visibility = View.VISIBLE
+                Glide.with(this)
+                    .load(bitmap)
+                    .error(android.R.drawable.stat_notify_error)
+                    .into(selectedImg)
+            } else {
+                cardSelected.visibility = View.GONE
             }
+            cardSelected.setOnClickListener { view: View? ->
+                if (bitmap != null) {
+                    alertDialog.dismiss()
+                    val baos = ByteArrayOutputStream()
+                    bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                    val b = baos.toByteArray()
+                    val encodedImage =
+                        Base64.encodeToString(b, Base64.DEFAULT)
+                    pestTypeIdFromAdapter = -1
+                    selectOldImage()
+                    //uploadBoxImage(resourceId, taskId, encodedImage)
+                }
+            }
+            lnrCamera.setOnClickListener { view: View? ->
+                requestStoragePermission(true, barcodeId, pestTypeId)
+                alertDialog.dismiss()
+            }
+            lnrGallery.setOnClickListener { view: View? ->
+                requestStoragePermission(false, barcodeId, pestTypeId)
+                alertDialog.dismiss()
+            }
+            btn_cancel.setOnClickListener { v: View? -> alertDialog.dismiss() }
+            alertDialog.setCanceledOnTouchOutside(false)
+            alertDialog.show()
+
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -1311,10 +1314,10 @@ class BarcodeVerificatonActivity : BaseActivity(), LocationManagerListner {
     }
 
     override fun locationFetched(
-            mLocation: Location?,
-            oldLocation: Location?,
-            time: String?,
-            locationProvider: String?
+        mLocation: Location?,
+        oldLocation: Location?,
+        time: String?,
+        locationProvider: String?
     ) {
         lat = mLocation?.latitude.toString()
         long = mLocation?.longitude.toString()

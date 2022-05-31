@@ -118,7 +118,7 @@ class TSScannerActivity : BaseActivity() {
                 getOrderDetailsByAccountNo(orderNoInput)
             }else{
                 binding.progressBar.visibility = View.GONE
-                Toast.makeText(this, "Please Enter Account No", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please Enter Customer ID", Toast.LENGTH_SHORT).show()
             }
         }
         binding.fab.setOnClickListener {
@@ -130,7 +130,7 @@ class TSScannerActivity : BaseActivity() {
                 integrator.initiateScan()
                 requestFrom = 1
             }else{
-                Toast.makeText(this, "Please Enter Account No", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please Enter Customer ID", Toast.LENGTH_SHORT).show()
             }
         }
         binding.saveBtn.setOnClickListener {
@@ -211,9 +211,12 @@ class TSScannerActivity : BaseActivity() {
     private fun populateViews(accountName: String?, regionName: String?, servicePlan: String?){
         binding.dataCard.visibility = View.VISIBLE
         binding.errorTv.visibility = View.GONE
-        binding.accountNameTv.text = accountName
+        binding.accountNameTv.text = "$accountName - $account_No"
         binding.regionNameTv.text = regionName
         binding.servicePlanTv.text = servicePlan
+        binding.regionNameLayout.visibility = View.GONE
+        binding.servicePlanLayout.visibility = View.GONE
+
         if (accountName == ""){
             binding.accountNameTv.text = "N/A"
         }
@@ -363,7 +366,7 @@ class TSScannerActivity : BaseActivity() {
                     binding.searchBtn.isEnabled = true
                     binding.saveBtn.isEnabled = true
                     binding.progressBar.visibility = View.GONE
-                    binding.errorTv.text = "Please Enter Valid Account Number."
+                    binding.errorTv.text = "Please Enter Valid Customer ID."
                     binding.errorTv.visibility = View.VISIBLE
                     binding.saveBtn.visibility = View.GONE
                     binding.dataCard.visibility = View.GONE

@@ -579,6 +579,9 @@ public interface IRetrofit {
     @POST("Barcode/UploadBoxImage")
     Call<BaseResponse> uploadBoxImage(@Body HashMap<String, String> imageDetails);
 
+    @GET("Barcode/GetAccountNoByResourceIdForOnsite")
+    Call<BaseResponse> getAccountNoByResourceIdForOnsite(@Query("resourceId") String resourceId);
+
     @GET("Integration/GetOrderServiceAreaChemical")
     Call<ServiceAreaChemicalResponse> getServiceAreaChemical(@Query("orderNo") String activityId, @Query("serviceNo") int serviceNo, @Query("serviceType") String seviceType, @Query("showAllService") boolean showAllService);
 
