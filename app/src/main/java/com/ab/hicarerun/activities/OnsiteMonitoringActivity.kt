@@ -30,7 +30,6 @@ class OnsiteMonitoringActivity : BaseActivity() {
         if (loginResponse != null && loginResponse.size > 0) {
             resourceId = loginResponse[0]?.userID.toString()
         }
-        getAccountNoByResourceIdForOnsite(resourceId)
         binding.cmtPerformBtn.setOnClickListener {
             val intent = Intent(this, RoachActivity::class.java)
             intent.putExtra("isFromTask", false)
@@ -39,10 +38,7 @@ class OnsiteMonitoringActivity : BaseActivity() {
         }
 
         binding.verifyEqBtn.setOnClickListener {
-            val intent = Intent(this, BarcodeVerificatonActivity::class.java)
-            intent.putExtra("isFromTask", false)
-            intent.putExtra("accountNo", accountNo)
-            startActivity(intent)
+            getAccountNoByResourceIdForOnsite(resourceId)
         }
     }
 
@@ -56,6 +52,10 @@ class OnsiteMonitoringActivity : BaseActivity() {
                     val data = response.data
                     if (data != ""){
                         accountNo = data.toString()
+                        val intent = Intent(applicationContext, BarcodeVerificatonActivity::class.java)
+                        intent.putExtra("isFromTask", false)
+                        intent.putExtra("accountNo", accountNo)
+                        startActivity(intent)
                     }
                 }
             }
