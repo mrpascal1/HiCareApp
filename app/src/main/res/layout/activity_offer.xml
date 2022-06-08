@@ -86,13 +86,38 @@
 
                 </LinearLayout>
 
+                <!--<RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+
+                    <ImageView
+                        android:id="@+id/backIv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_arrow_back_white" />
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:text="Test"/>
+                </RelativeLayout>-->
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
                     style="@style/ToolBarStyle.Event"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:background="@color/transparent"
-                    app:layout_collapseMode="pin" />
+                    app:layout_collapseMode="pin"
+                    android:visibility="visible">
+                    <Button
+                        android:id="@+id/historyBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:text="Rewards history"
+                        android:backgroundTint="@color/orange"/>
+                </androidx.appcompat.widget.Toolbar>
 
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>

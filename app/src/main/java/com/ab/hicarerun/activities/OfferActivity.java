@@ -97,15 +97,18 @@ public class OfferActivity extends BaseActivity {
                 if (scrollRange + verticalOffset == 0) {
                     mActivityOfferBinding.collapsingToolbar.setTitle(getResources().getString(R.string.rewards_section));
                     mActivityOfferBinding.toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                    showOption(R.id.actionHistory);
+                    //hideOption(R.id.actionHistory);
                     isShow = true;
                 } else if (isShow) {
                     mActivityOfferBinding.toolbar.setBackgroundColor(getResources().getColor(R.color.transparent));
                     mActivityOfferBinding.collapsingToolbar.setTitle(" ");//careful there should a space between double quote otherwise it wont work
-//                    hideOption(R.id.actionHistory);
+                    //hideOption(R.id.actionHistory);
                     isShow = true;
                 }
             }
+        });
+        mActivityOfferBinding.historyBtn.setOnClickListener(v -> {
+            startActivity(new Intent(OfferActivity.this, OffersHistoryActivity.class));
         });
     }
 

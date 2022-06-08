@@ -80,6 +80,8 @@ import com.ab.hicarerun.fragments.SignatureInfoFragment;
 import com.ab.hicarerun.fragments.SignatureMSTInfoFragment;
 import com.ab.hicarerun.fragments.tms.TmsUtils;
 import com.ab.hicarerun.handler.ChemicalVisitListener;
+import com.ab.hicarerun.handler.OnB2BListListener;
+import com.ab.hicarerun.handler.OnB2BListResponse;
 import com.ab.hicarerun.handler.OnSaveEventHandler;
 import com.ab.hicarerun.handler.UserTaskDetailsClickListener;
 import com.ab.hicarerun.network.NetworkCallController;
@@ -148,7 +150,7 @@ import io.realm.RealmResults;
 import static com.ab.hicarerun.BaseApplication.getRealm;
 import static com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState.EXPANDED;
 
-public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, OnMapReadyCallback, UserTaskDetailsClickListener, OnSaveEventHandler {
+public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, OnMapReadyCallback, UserTaskDetailsClickListener, OnSaveEventHandler, OnB2BListResponse {
     ActivityNewTaskDetailsBinding mActivityNewTaskDetailsBinding;
     private OnAboutDataReceivedListener mAboutDataListener;
     private static final int TASK_BY_ID_REQUEST = 1000;
@@ -180,6 +182,11 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private boolean isFinalSave = false;
     private static final int REQUEST_CODE = 1234;
     private boolean mPermissions;
+    OnB2BListListener onB2BListListener = null;
+
+    public void setOnB2BListListener(OnB2BListListener onB2BListListener){
+        this.onB2BListListener = onB2BListListener;
+    }
 
 
     ServiceInfoFragment.ServiceInfoListener mCallback = new ServiceInfoFragment.ServiceInfoListener() {
@@ -1066,6 +1073,28 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
     @Override
     public void onSaveTaskClick(View view) {
+        if (isActivityThere) {
+            onB2BListListener.onCheck();
+        }else {
+            saveWrapper();
+        }
+    }
+
+    @Override
+    public void onListChecked(boolean isChecked) {
+        if (isChecked){
+            saveWrapper();
+        }else {
+            if (isActivityThere){
+                mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
+                Toasty.error(this, "Please completed B2B WoW activities").show();
+            }else {
+                Toasty.error(this, "Unknown error, Please contact developer").show();
+            }
+        }
+    }
+
+    private void saveWrapper(){
         try {
             new GPSUtils(this).turnGPSOn(isGPSEnable -> {
                 // turn on GPS
@@ -1079,7 +1108,6 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             e.printStackTrace();
         }
     }
-
 
     public void refreshMyData() {
         getTaskDetailsById();

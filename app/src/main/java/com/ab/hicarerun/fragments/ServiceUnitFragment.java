@@ -1,5 +1,6 @@
 package com.ab.hicarerun.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -29,12 +30,15 @@ import com.ab.hicarerun.BaseFragment;
 import com.ab.hicarerun.R;
 import com.ab.hicarerun.activities.BarcodeVerificatonActivity;
 import com.ab.hicarerun.activities.BrowserActivity;
+import com.ab.hicarerun.activities.NewTaskDetailsActivity;
 import com.ab.hicarerun.activities.RoachActivity;
 import com.ab.hicarerun.adapter.ActivityAreaUnitAdapter;
 import com.ab.hicarerun.adapter.ActivityTowerAdapter;
 import com.ab.hicarerun.adapter.RecycleByActivityAdapter;
 import com.ab.hicarerun.databinding.FragmentServiceUnitBinding;
 import com.ab.hicarerun.handler.OnAddActivityClickHandler;
+import com.ab.hicarerun.handler.OnB2BListListener;
+import com.ab.hicarerun.handler.OnB2BListResponse;
 import com.ab.hicarerun.handler.OnSelectServiceClickHandler;
 import com.ab.hicarerun.network.NetworkCallController;
 import com.ab.hicarerun.network.NetworkResponseListner;
@@ -62,7 +66,7 @@ import io.realm.RealmResults;
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
  */
-public class ServiceUnitFragment extends BaseFragment implements OnAddActivityClickHandler, FloorBottomSheetFragment.onAreaSelectListener {
+public class ServiceUnitFragment extends BaseFragment implements OnAddActivityClickHandler, FloorBottomSheetFragment.onAreaSelectListener, OnB2BListListener {
     FragmentServiceUnitBinding mFragmentServiceUnitBinding;
     public static final String ARGS_COMBINE_ORDER = "ARGS_COMBINE_ORDER";
     public static final String ARGS_SEQUENCE = "ARGS_SEQUENCE";
@@ -97,7 +101,11 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
     private boolean showBarcode = false;
     private int towerNo = 0;
     EditText chemicalValue;
+    OnB2BListResponse onB2BListResponse;
 
+    public void setOnB2BListResponse(OnB2BListResponse onB2BListResponse){
+        this.onB2BListResponse = onB2BListResponse;
+    }
 
     public ServiceUnitFragment() {
         // Required empty public constructor
@@ -112,6 +120,12 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
         args.putInt(ARGS_SEQUENCE, sequenceNo);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        onB2BListResponse = (OnB2BListResponse) context;
     }
 
     @Override
@@ -130,6 +144,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mFragmentServiceUnitBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_service_unit, container, false);
+        ((NewTaskDetailsActivity) requireActivity()).setOnB2BListListener(this);
         return mFragmentServiceUnitBinding.getRoot();
     }
 
@@ -215,6 +230,27 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
             intent.putExtra("sequenceNo", String.valueOf(sequenceNo));
             startActivity(intent);
         });
+    }
+
+    @Override
+    public void onCheck() {
+        checkIfb2bCompleted();
+    }
+
+    private void checkIfb2bCompleted(){
+        showProgressDialog();
+        boolean isChecked = true;
+        if (!mActivityList.isEmpty()) {
+            for (ServiceActivity serviceActivity : mActivityList) {
+                String status = serviceActivity.getStatus();
+                if (status == null || status.equalsIgnoreCase("Not Done")) {
+                    isChecked = false;
+                    break;
+                }
+            }
+        }
+        dismissProgressDialog();
+        onB2BListResponse.onListChecked(isChecked);
     }
 
     private void getServiceByActivity(String flr) {
