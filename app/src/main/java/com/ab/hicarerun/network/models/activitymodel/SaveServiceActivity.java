@@ -18,10 +18,13 @@ public class SaveServiceActivity {
     private Object areaId;
     @SerializedName("Service_No")
     @Expose
-    private Integer serviceNo;
+    private String serviceNo;
     @SerializedName("Service_Type")
     @Expose
     private String serviceType;
+    @SerializedName("CombinedServiceType")
+    @Expose
+    private String combinedServiceType;
     @SerializedName("Status")
     @Expose
     private String status;
@@ -62,12 +65,20 @@ public class SaveServiceActivity {
         this.areaId = areaId;
     }
 
-    public Integer getServiceNo() {
+    public String getServiceNo() {
         return serviceNo;
     }
 
-    public void setServiceNo(Integer serviceNo) {
+    public void setServiceNo(String serviceNo) {
         this.serviceNo = serviceNo;
+    }
+
+    public String getCombinedServiceType() {
+        return combinedServiceType;
+    }
+
+    public void setCombinedServiceType(String combinedServiceType) {
+        this.combinedServiceType = combinedServiceType;
     }
 
     public String getServiceType() {

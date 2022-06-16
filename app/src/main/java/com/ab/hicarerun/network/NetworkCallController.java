@@ -5325,7 +5325,7 @@ public class NetworkCallController {
     }
 
 
-    public void getServiceActivityChemical(String orderId, int sequenceNo, String serviceType, boolean showAllServices) {
+    public void getServiceActivityChemical(String orderId, String sequenceNo, String serviceType, boolean showAllServices) {
         BaseApplication.getB2BWoWApi()
                 .getServiceActivityChemical(orderId, sequenceNo, serviceType, showAllServices)
                 .enqueue(new Callback<ActivityResponse>() {

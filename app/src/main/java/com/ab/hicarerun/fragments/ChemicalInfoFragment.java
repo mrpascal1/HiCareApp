@@ -109,7 +109,7 @@ public class ChemicalInfoFragment extends BaseFragment {
             mFragmentChemicalInfoBinding.viewPager.setOffscreenPageLimit(2);
             mAdapter = new TaskViewPagerAdapter(getChildFragmentManager(), getActivity());
             mAdapter.addFragment(ChemicalStandardFragment.newInstance(taskId, combinedTaskId, isCombinedTask), "STANDARD");
-            mAdapter.addFragment(ChemicalActualFragment.newInstance(taskId, combinedTaskId, isCombinedTask, combineOrder, orderId), "ACTUAL");
+            mAdapter.addFragment(ChemicalActualFragment.newInstance(taskId, combinedTaskId, isCombinedTask, combineOrder, orderId, "", ""), "ACTUAL");
             mFragmentChemicalInfoBinding.viewpagertab.setDistributeEvenly(true);
             mFragmentChemicalInfoBinding.viewPager.setAdapter(mAdapter);
             mFragmentChemicalInfoBinding.viewpagertab.setViewPager(mFragmentChemicalInfoBinding.viewPager);

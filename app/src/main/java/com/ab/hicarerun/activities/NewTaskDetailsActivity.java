@@ -175,6 +175,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     public static final String ARGS_COMBINED_TASKS = "ARGS_COMBINED_TASKS";
     public static final String ARGS_COMBINED_TYPE = "ARGS_COMBINED_TYPE";
     public static final String ARGS_COMBINED_ORDER = "ARGS_COMBINED_ORDER";
+    public static final String ARGS_COMBINED_SEQUENCE = "ARGS_COMBINED_SEQUENCE";
     public static final String ARGS_LATITUDE = "ARGS_LATITUDE";
     public static final String ARGS_LONGITUDE = "ARGS_LONGITUDE";
     public static final String ARGS_NAME = "ARGS_NAME";
@@ -288,6 +289,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     private String combinedOrderId = "";
     private String orderId = "";
     private int sequenceNo = 0;
+    private String combinedSequenceNo = "";
     private boolean isActivityThere = false;
     private String combinedTaskTypes = "";
     private String nextTaskId = "";
@@ -319,6 +321,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
     public String typeName = "";
     private ImageUploaded imageUploaded = null;
     public String from = "";
+    private String combinedOrderNoFromTaskDetails = "";
     ChemicalVisitListener chemicalVisitListener;
     //   @Override
     //  protected void attachBaseContext(Context base) {
@@ -529,6 +532,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             mActualAmountToCollect = response.getData().getActualAmountToCollect();
                             AppUtils.sequenceNo = response.getData().getService_Sequence_Number();
                             AppUtils.taskTypeName = response.getData().getTaskTypeName();
+                            AppUtils.combinedServiceType = response.getData().getCombinedServiceType();
+                            AppUtils.serviceType = response.getData().getServiceType();
                             if (response.getData().isTMS()){
                                 typeName = "TMS";
                                 AppUtils.getTmsQuestions(taskId, LocaleHelper.getLanguage(NewTaskDetailsActivity.this), progress);
@@ -539,6 +544,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                             mOnsiteImagePath = response.getData().getOnsite_Image_Path();
                             Renewal_Type = response.getData().getRenewal_Type();
                             sequenceNo = Integer.parseInt(response.getData().getService_Sequence_Number());
+                            combinedSequenceNo = response.getData().getCombinedSequenceNumber();
+                            combinedOrderNoFromTaskDetails = response.getData().getCombinedOrderNumber();
                             orderId = response.getData().getOrderNumber();
                             isActivityThere = response.getData().getServiceActivityRequired();
                             isQRThere = response.getData().getShowBarcode();
@@ -650,9 +657,9 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
                 mActivityNewTaskDetailsBinding.viewpagertab.setDistributeEvenly(false);
             } else {
                 mAdapter.addFragment(ServiceInfoFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedTaskTypes, combinedOrderId, orderId, mCallback), getResources().getString(R.string.service_info));
-                mAdapter.addFragment(ChemicalActualFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedOrderId, orderId), getResources().getString(R.string.chemical_info));
+                mAdapter.addFragment(ChemicalActualFragment.newInstance(taskId, combinedTaskId, isCombinedTasks, combinedOrderNoFromTaskDetails, orderId, String.valueOf(sequenceNo), combinedSequenceNo), getResources().getString(R.string.chemical_info));
                 if (isActivityThere) {
-                    mAdapter.addFragment(ServiceUnitFragment.newInstance(isCombinedTasks, combinedOrderId, sequenceNo, orderId), "Activity");
+                    mAdapter.addFragment(ServiceUnitFragment.newInstance(isCombinedTasks, combinedOrderNoFromTaskDetails, sequenceNo, combinedSequenceNo, orderId), "Activity");
                 }
                 mAdapter.addFragment(ReferralFragment.newInstance(taskId, technicianMobileNo, referralQuestion), getResources().getString(R.string.referral_info));
                 if (isCombinedTasks) {
@@ -1073,7 +1080,7 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
 
     @Override
     public void onSaveTaskClick(View view) {
-        if (isActivityThere) {
+        if (isActivityThere && Status.equalsIgnoreCase("Completed")) {
             onB2BListListener.onCheck();
         }else {
             saveWrapper();
@@ -1086,8 +1093,8 @@ public class NewTaskDetailsActivity extends BaseActivity implements GoogleApiCli
             saveWrapper();
         }else {
             if (isActivityThere){
-                mActivityNewTaskDetailsBinding.pager.setCurrentItem(3);
-                Toasty.error(this, "Please completed B2B WoW activities").show();
+                mActivityNewTaskDetailsBinding.pager.setCurrentItem(2);
+                Toasty.error(this, "Please complete all B2B WoW activities").show();
             }else {
                 Toasty.error(this, "Unknown error, Please contact developer").show();
             }

@@ -96,7 +96,7 @@ public class ChemicalActivityFragment extends BaseFragment {
         try {
 //            mFragmentChemicalInfoBinding.viewPager.setOffscreenPageLimit(1);
             mAdapter = new TaskViewPagerAdapter(getChildFragmentManager(), getActivity());
-            mAdapter.addFragment(ServiceUnitFragment.newInstance(isCombinedTask, combinedOrderId, sequenceNo, orderId), "By Service Activity");
+            mAdapter.addFragment(ServiceUnitFragment.newInstance(isCombinedTask, combinedOrderId, sequenceNo, "", orderId), "By Service Activity");
 //            mAdapter.addFragment(ServiceActivityFragment.newInstance(isCombinedTask, combinedOrderId, sequenceNo, orderId), "By Service Unit");
             mFragmentChemicalInfoBinding.viewpagertab.setDistributeEvenly(true);
             mFragmentChemicalInfoBinding.viewPager.setAdapter(mAdapter);

@@ -78,7 +78,7 @@ public class KarmaFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Objects.requireNonNull(getActivity()).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
         mFragmentKarmaBinding.recycleView.setHasFixedSize(true);
@@ -122,11 +122,11 @@ public class KarmaFragment extends BaseFragment {
                                         mFragmentKarmaBinding.txtHeader.setText(String.valueOf("Karma of life " + item.get(i).getLifeLineIndex()));
                                         mFragmentKarmaBinding.arcProgress.setBottomText(item.get(i).getLivesLeftDisplay());
                                         if (item.get(i).getTotalPointsPending() >= 80) {
-                                            mFragmentKarmaBinding.arcProgress.setFinishedStrokeColor(Objects.requireNonNull(getActivity()).getResources().getColor(R.color.karmaGreen));
+                                            mFragmentKarmaBinding.arcProgress.setFinishedStrokeColor(requireActivity().getResources().getColor(R.color.karmaGreen));
                                         } else if (item.get(i).getTotalPointsPending() >= 50 && item.get(i).getTotalPointsPending() < 79) {
-                                            mFragmentKarmaBinding.arcProgress.setFinishedStrokeColor(Objects.requireNonNull(getActivity()).getResources().getColor(R.color.amber));
+                                            mFragmentKarmaBinding.arcProgress.setFinishedStrokeColor(requireActivity().getResources().getColor(R.color.amber));
                                         } else {
-                                            mFragmentKarmaBinding.arcProgress.setFinishedStrokeColor(Objects.requireNonNull(getActivity()).getResources().getColor(R.color.red));
+                                            mFragmentKarmaBinding.arcProgress.setFinishedStrokeColor(requireActivity().getResources().getColor(R.color.red));
                                         }
                                     }
                                 }
@@ -149,6 +149,7 @@ public class KarmaFragment extends BaseFragment {
                                     if (item.get(position).getKarmaDetailList() != null && item.get(position).getKarmaDetailList().size() > 0) {
                                         mAdapter.addData(item.get(position).getKarmaDetailList());
                                         mFragmentKarmaBinding.txtHeader.setText("Karma of life " + String.valueOf(item.get(position).getLifeLineIndex()));
+                                        mFragmentKarmaBinding.recycleView.scrollToPosition(0);
                                         mAdapter.notifyDataSetChanged();
                                     }
                                 });

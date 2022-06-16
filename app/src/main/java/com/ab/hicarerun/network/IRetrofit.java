@@ -589,7 +589,7 @@ public interface IRetrofit {
     Call<BaseResponse> updateActivityStatus(@Body List<SaveActivityRequest> requests);
 
     @GET("Integration/GetOrderActivityChemical")
-    Call<ActivityResponse> getServiceActivityChemical(@Query("orderNo") String activityId, @Query("serviceNo") int serviceNo, @Query("serviceType") String seviceType, @Query("showAllService") boolean showAllService);
+    Call<ActivityResponse> getServiceActivityChemical(@Query("orderNo") String activityId, @Query("serviceNo") String serviceNo, @Query("serviceType") String seviceType, @Query("showAllService") boolean showAllService);
 
     @POST("Integration/SaveChemicalConsumptionByServiceActivity")
     Call<BaseResponse> saveChemicalConsumptionByServiceActivity(@Body List<HashMap<Object, Object>> body);

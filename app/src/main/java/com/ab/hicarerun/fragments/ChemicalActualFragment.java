@@ -49,6 +49,8 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
     public static final String ARGS_COMBINED_ID = "ARGS_COMBINED_ID";
     public static final String ARGS_COMBINE_ORDER = "ARGS_COMBINE_ORDER";
     public static final String ARGS_ORDER = "ARGS_ORDER";
+    public static final String ARGS_SEQUENCE = "ARGS_SEQUENCE";
+    public static final String ARGS_COMBINED_SEQUENCE = "ARGS_COMBINED_SEQUENCE";
     private static final int CHEMICAL_REQ = 1000;
     private Boolean isVerified = false;
     RecyclerView.LayoutManager layoutManager;
@@ -71,6 +73,8 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
     private boolean isActivityThere = false;
     private String combineOrder = "";
     private String orderId = "";
+    private String sequenceNo = "";
+    private String combinedSequenceNo = "";
 
     public ChemicalActualFragment() {
         // Required empty public constructor
@@ -82,13 +86,15 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
         oldInstanceState.clear();
     }
 
-    public static ChemicalActualFragment newInstance(String taskId, String combinedTaskId, boolean isCombinedTasks, String combineOrder, String orderId) {
+    public static ChemicalActualFragment newInstance(String taskId, String combinedTaskId, boolean isCombinedTasks, String combineOrder, String orderId, String sequenceNo, String combinedSequenceNo) {
         Bundle args = new Bundle();
         args.putString(ARGS_TASKS, taskId);
         args.putString(ARGS_COMBINED_ID, combinedTaskId);
         args.putString(ARGS_COMBINE_ORDER, combineOrder);
         args.putString(ARGS_ORDER, orderId);
         args.putBoolean(ARGS_COMBINED_TASKS, isCombinedTasks);
+        args.putString(ARGS_SEQUENCE, sequenceNo);
+        args.putString(ARGS_COMBINED_SEQUENCE, combinedSequenceNo);
         ChemicalActualFragment fragment = new ChemicalActualFragment();
         fragment.setArguments(args);
         return fragment;
@@ -103,6 +109,8 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
             combineOrder = getArguments().getString(ARGS_COMBINE_ORDER);
             orderId = getArguments().getString(ARGS_ORDER);
             isCombinedTask = getArguments().getBoolean(ARGS_COMBINED_TASKS);
+            sequenceNo = getArguments().getString(ARGS_SEQUENCE);
+            combinedSequenceNo = getArguments().getString(ARGS_COMBINED_SEQUENCE);
         }
     }
 
@@ -280,9 +288,9 @@ public class ChemicalActualFragment extends BaseFragment implements NetworkRespo
                     mAdapter.notifyDataSetChanged();
                     Log.d("TAG", "Called only this");
                     if (isCombinedTask){
-                        getChemicalConsumptionForAllServiceActivity(combineOrder, AppUtils.sequenceNo, items);
+                        getChemicalConsumptionForAllServiceActivity(combineOrder, combinedSequenceNo, items);
                     }else {
-                        getChemicalConsumptionForAllServiceActivity(orderId, AppUtils.sequenceNo, items);
+                        getChemicalConsumptionForAllServiceActivity(orderId, sequenceNo, items);
                     }
                 } else if (items.size() > 0) {
                     mAdapter.addData(items);

@@ -26,6 +26,8 @@ public class KarmaAdapter extends RecyclerView.Adapter<KarmaAdapter.ViewHolder> 
     private OnListItemClickHandler onItemClickHandler;
     private final Context mContext;
     private List<KarmaHistoryDetails> items = null;
+    private List<String> shownDates = new ArrayList<>();
+
 
     public KarmaAdapter(Context context) {
         if (items == null) {
@@ -47,6 +49,13 @@ public class KarmaAdapter extends RecyclerView.Adapter<KarmaAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NotNull KarmaAdapter.ViewHolder holder, final int position) {
         try {
+            if (!shownDates.contains(items.get(position).getCreatedOnDateDisplay())){
+                shownDates.add(items.get(position).getCreatedOnDateDisplay());
+                holder.mLayoutKarmaAdapterBinding.dateTv.setText(items.get(position).getCreatedOnDateDisplay());
+                holder.mLayoutKarmaAdapterBinding.dateTv.setVisibility(View.VISIBLE);
+            }else{
+                holder.mLayoutKarmaAdapterBinding.dateTv.setVisibility(View.GONE);
+            }
             holder.mLayoutKarmaAdapterBinding.txtPoints.setText(String.valueOf(items.get(position).getPointsDeducted()));
             holder.mLayoutKarmaAdapterBinding.txtDescription.setText(items.get(position).getScoreDescription());
             holder.mLayoutKarmaAdapterBinding.txtTitle.setText(items.get(position).getScoreName());
@@ -90,12 +99,14 @@ public class KarmaAdapter extends RecyclerView.Adapter<KarmaAdapter.ViewHolder> 
 
     public void setData(List<KarmaHistoryDetails> data) {
         items.clear();
+        shownDates.clear();
         items.addAll(data);
     }
 
     //
     public void addData(List<KarmaHistoryDetails> data) {
         items.clear();
+        shownDates.clear();
         items.addAll(data);
     }
 

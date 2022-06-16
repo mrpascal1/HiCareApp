@@ -1,5 +1,8 @@
 package com.ab.hicarerun.fragments;
 
+import static com.ab.hicarerun.utils.AppUtils.combinedServiceType;
+import static com.ab.hicarerun.utils.AppUtils.serviceType;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -70,6 +73,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
     FragmentServiceUnitBinding mFragmentServiceUnitBinding;
     public static final String ARGS_COMBINE_ORDER = "ARGS_COMBINE_ORDER";
     public static final String ARGS_SEQUENCE = "ARGS_SEQUENCE";
+    public static final String ARGS_COMBINED_SEQUENCE = "ARGS_COMBINED_SEQUENCE";
     public static final String ARGS_ORDER = "ARGS_ORDER";
     public static final String ARGS_IS_COMBINE = "ARGS_IS_COMBINE";
     private static final int REASONS_REQ = 3000;
@@ -82,6 +86,8 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
     private TextView txtQty;
     private String combinedOrderId = "";
     private int sequenceNo = 0;
+    private  String sequenceNoString = "";
+    private String combinedSequenceNo = "";
     private boolean isCombineTask = false;
     private String orderId = "";
     private String floor = "";
@@ -111,13 +117,14 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
         // Required empty public constructor
     }
 
-    public static ServiceUnitFragment newInstance(boolean isCombinedTask, String combinedOrderId, int sequenceNo, String orderId) {
+    public static ServiceUnitFragment newInstance(boolean isCombinedTask, String combinedOrderId, int sequenceNo, String combinedSequenceNo, String orderId) {
         ServiceUnitFragment fragment = new ServiceUnitFragment();
         Bundle args = new Bundle();
         args.putString(ARGS_COMBINE_ORDER, combinedOrderId);
         args.putString(ARGS_ORDER, orderId);
         args.putBoolean(ARGS_IS_COMBINE, isCombinedTask);
         args.putInt(ARGS_SEQUENCE, sequenceNo);
+        args.putString(ARGS_COMBINED_SEQUENCE, combinedSequenceNo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -136,6 +143,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
             orderId = getArguments().getString(ARGS_ORDER);
             combinedOrderId = getArguments().getString(ARGS_COMBINE_ORDER);
             sequenceNo = getArguments().getInt(ARGS_SEQUENCE, 0);
+            combinedSequenceNo = getArguments().getString(ARGS_COMBINED_SEQUENCE);
         }
     }
 
@@ -151,6 +159,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        sequenceNoString = String.valueOf(sequenceNo);
         subActivityList = new ArrayList<>();
         mGeneralRealmData =
                 getRealm().where(GeneralData.class).findAll();
@@ -240,7 +249,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
     private void checkIfb2bCompleted(){
         showProgressDialog();
         boolean isChecked = true;
-        if (!mActivityList.isEmpty()) {
+        if (mActivityList != null && !mActivityList.isEmpty()) {
             for (ServiceActivity serviceActivity : mActivityList) {
                 String status = serviceActivity.getStatus();
                 if (status == null || status.equalsIgnoreCase("Not Done")) {
@@ -309,10 +318,10 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                 }
             });
             if (isCombineTask) {
-                controller.getServiceActivityChemical(combinedOrderId, sequenceNo, "", true);
+                controller.getServiceActivityChemical(combinedOrderId, combinedSequenceNo, "", true);
                 //controller.getServiceActivityChemical("22011568660", 1, "", true);
             } else {
-                controller.getServiceActivityChemical(orderId, sequenceNo, "", true);
+                controller.getServiceActivityChemical(orderId, sequenceNoString, "", true);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -409,7 +418,8 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                 activityDetail.setActivityId(mUnitAdapter.getItem(position).getActivityId());
                 activityDetail.setServiceActivityId(mUnitAdapter.getItem(position).getService_Activity_Id());
                 activityDetail.setAreaId(mUnitAdapter.getItem(position).getAreaId());
-                activityDetail.setServiceNo(sequenceNo);
+                activityDetail.setServiceNo(isCombineTask ? combinedSequenceNo : sequenceNoString);
+                activityDetail.setCombinedServiceType(isCombineTask ? combinedServiceType : serviceType);
                 activityDetail.setCompletionDateTime(String.valueOf(AppUtils.currentDateTimeWithTimeZone()));
                 activityDetail.setServiceType(mUnitAdapter.getItem(position).getServices());
                 activityDetail.setStatus(value);
@@ -424,7 +434,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                     saveChemicalMap.put("ChemicalId", chemicalId);
                     saveChemicalMap.put("ChemicalCode", chemicalCode);
                     saveChemicalMap.put("OrderNo", isCombineTask ? combinedOrderId : orderId);
-                    saveChemicalMap.put("ServiceSequenceNo", sequenceNo);
+                    saveChemicalMap.put("ServiceSequenceNo", isCombineTask ? combinedSequenceNo : sequenceNoString);
                     saveChemicalMap.put("TowerNo", towerNo);
                     saveChemicalMap.put("FloorNo", mUnitAdapter.getItem(position).getFloorNo());
                 }
@@ -511,7 +521,8 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                     activityDetail.setActivityId(mUnitAdapter.getItem(position).getActivityId());
                     activityDetail.setServiceActivityId(mUnitAdapter.getItem(position).getService_Activity_Id());
                     activityDetail.setAreaId(mUnitAdapter.getItem(position).getAreaId());
-                    activityDetail.setServiceNo(sequenceNo);
+                    activityDetail.setServiceNo(isCombineTask ? combinedSequenceNo : sequenceNoString);
+                    activityDetail.setCombinedServiceType(isCombineTask ? combinedServiceType : serviceType);
                     activityDetail.setCompletionDateTime(String.valueOf(AppUtils.currentDateTimeWithTimeZone()));
                     activityDetail.setServiceType(mUnitAdapter.getItem(position).getServices());
                     activityDetail.setStatus(value);
@@ -526,7 +537,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                         saveChemicalMap.put("ChemicalId", chemicalId);
                         saveChemicalMap.put("ChemicalCode", chemicalCode);
                         saveChemicalMap.put("OrderNo", isCombineTask ? combinedOrderId : orderId);
-                        saveChemicalMap.put("ServiceSequenceNo", sequenceNo);
+                        saveChemicalMap.put("ServiceSequenceNo", isCombineTask ? combinedSequenceNo : sequenceNoString);
                         saveChemicalMap.put("TowerNo", towerNo);
                         saveChemicalMap.put("FloorNo", mUnitAdapter.getItem(position).getFloorNo());
                     }
@@ -549,6 +560,8 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                     activityDetail.setServiceType(mUnitAdapter.getItem(position).getServices());
                     activityDetail.setStatus("Yes");
                     activityDetail.setAreaType(areaType);
+                    activityDetail.setServiceNo(isCombineTask ? combinedSequenceNo : sequenceNoString);
+                    activityDetail.setCombinedServiceType(isCombineTask ? combinedServiceType : serviceType);
                     activityDetail.setFloorNo(mUnitAdapter.getItem(position).getFloorNo());
                     activityDetail.setTowerNo(towerNo);
                     hashActivity.put(mUnitAdapter.getItem(position).getAreaId(), activityDetail);
@@ -559,7 +572,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                         saveChemicalMap.put("ChemicalId", chemicalId);
                         saveChemicalMap.put("ChemicalCode", chemicalCode);
                         saveChemicalMap.put("OrderNo", isCombineTask ? combinedOrderId : orderId);
-                        saveChemicalMap.put("ServiceSequenceNo", sequenceNo);
+                        saveChemicalMap.put("ServiceSequenceNo", isCombineTask ? combinedSequenceNo : sequenceNoString);
                         saveChemicalMap.put("TowerNo", towerNo);
                         saveChemicalMap.put("FloorNo", mUnitAdapter.getItem(position).getFloorNo());
                     }
@@ -575,6 +588,8 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                     activityDetail.setServiceType(mUnitAdapter.getItem(position).getServices());
                     activityDetail.setStatus("No");
                     activityDetail.setAreaType(areaType);
+                    activityDetail.setServiceNo(isCombineTask ? combinedSequenceNo : sequenceNoString);
+                    activityDetail.setCombinedServiceType(isCombineTask ? combinedServiceType : serviceType);
                     activityDetail.setFloorNo(mUnitAdapter.getItem(position).getFloorNo());
                     activityDetail.setTowerNo(towerNo);
                     hashActivity.put(mUnitAdapter.getItem(position).getAreaId(), activityDetail);
@@ -585,7 +600,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                         saveChemicalMap.put("ChemicalId", chemicalId);
                         saveChemicalMap.put("ChemicalCode", chemicalCode);
                         saveChemicalMap.put("OrderNo", isCombineTask ? combinedOrderId : orderId);
-                        saveChemicalMap.put("ServiceSequenceNo", sequenceNo);
+                        saveChemicalMap.put("ServiceSequenceNo", isCombineTask ? combinedSequenceNo : sequenceNoString);
                         saveChemicalMap.put("TowerNo", towerNo);
                         saveChemicalMap.put("FloorNo", mUnitAdapter.getItem(position).getFloorNo());
                     }
@@ -654,7 +669,8 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                                 data.setActivityId(mActivityList.get(position).getActivityId());
                                 data.setServiceActivityId(mActivityList.get(position).getServiceActivityId());
                                 data.setAreaId(mActivityList.get(position).getAreaIds());
-                                data.setServiceNo(sequenceNo);
+                                data.setServiceNo(isCombineTask ? combinedSequenceNo : sequenceNoString);
+                                data.setCombinedServiceType(isCombineTask ? combinedServiceType : serviceType);
                                 data.setCompletionDateTime(String.valueOf(AppUtils.currentDateTimeWithTimeZone()));
                                 data.setStatus(radioButton.getText().toString());
                                 data.setServiceType("");
@@ -737,7 +753,8 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                             activityDetail.setActivityId(mUnitAdapter.getItem(position).getActivityId());
                             activityDetail.setServiceActivityId(mUnitAdapter.getItem(position).getService_Activity_Id());
                             activityDetail.setAreaId(mUnitAdapter.getItem(position).getAreaId());
-                            activityDetail.setServiceNo(sequenceNo);
+                            activityDetail.setServiceNo(isCombineTask ? combinedSequenceNo : sequenceNoString);
+                            activityDetail.setCombinedServiceType(isCombineTask ? combinedServiceType : serviceType);
                             activityDetail.setCompletionDateTime(String.valueOf(AppUtils.currentDateTimeWithTimeZone()));
                             activityDetail.setServiceType(mUnitAdapter.getItem(position).getServices());
                             activityDetail.setStatus(value);
@@ -752,7 +769,7 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                                 saveChemicalMap.put("ChemicalId", mUnitAdapter.getItem(position).getChemicalId());
                                 saveChemicalMap.put("ChemicalCode", mUnitAdapter.getItem(position).getChemicalCode());
                                 saveChemicalMap.put("OrderNo", isCombineTask ? combinedOrderId : orderId);
-                                saveChemicalMap.put("ServiceSequenceNo", sequenceNo);
+                                saveChemicalMap.put("ServiceSequenceNo", isCombineTask ? combinedSequenceNo : sequenceNoString);
                                 saveChemicalMap.put("TowerNo", towerNo);
                                 saveChemicalMap.put("FloorNo", mUnitAdapter.getItem(position).getFloorNo());
                             }
@@ -825,7 +842,8 @@ public class ServiceUnitFragment extends BaseFragment implements OnAddActivityCl
                             activityDetail.setActivityId(mUnitAdapter.getItem(position).getActivityId());
                             activityDetail.setServiceActivityId(mUnitAdapter.getItem(position).getService_Activity_Id());
                             activityDetail.setAreaId(mUnitAdapter.getItem(position).getAreaId());
-                            activityDetail.setServiceNo(sequenceNo);
+                            activityDetail.setServiceNo(isCombineTask ? combinedSequenceNo : sequenceNoString);
+                            activityDetail.setCombinedServiceType(isCombineTask ? combinedServiceType : serviceType);
                             activityDetail.setCompletionDateTime(String.valueOf(AppUtils.currentDateTimeWithTimeZone()));
                             activityDetail.setServiceType(mUnitAdapter.getItem(position).getServices());
                             activityDetail.setStatus(value);

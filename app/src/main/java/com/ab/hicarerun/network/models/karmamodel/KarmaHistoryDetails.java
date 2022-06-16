@@ -31,6 +31,12 @@ public class KarmaHistoryDetails {
     @SerializedName("VideoURL")
     @Expose
     private String videoURL;
+    @SerializedName("CreatedOnDate")
+    @Expose
+    private String createdOnDate;
+    @SerializedName("CreatedOnDateDisplay")
+    @Expose
+    private String createdOnDateDisplay;
 
     public String getEventName() {
         return eventName;
@@ -96,4 +102,19 @@ public class KarmaHistoryDetails {
         this.videoURL = videoURL;
     }
 
+    public String getCreatedOnDate() {
+        return createdOnDate;
+    }
+
+    public void setCreatedOnDate(String createdOnDate) {
+        this.createdOnDate = createdOnDate;
+    }
+
+    public String getCreatedOnDateDisplay() {
+        return createdOnDateDisplay;
+    }
+
+    public void setCreatedOnDateDisplay(String createdOnDateDisplay) {
+        this.createdOnDateDisplay = createdOnDateDisplay;
+    }
 }

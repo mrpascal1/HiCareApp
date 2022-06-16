@@ -36,6 +36,18 @@ public class GeneralData implements RealmModel {
     @Expose
     private String Service_Sequence_Number;
 
+    @SerializedName("CombinedSequenceNumber")
+    @Expose
+    private String CombinedSequenceNumber;
+
+    @SerializedName("CombinedServiceType")
+    @Expose
+    private String CombinedServiceType;
+
+    @SerializedName("CombinedOrderNumber")
+    @Expose
+    private String CombinedOrderNumber;
+
     @SerializedName("ServiceActivityRequired")
     @Expose
     private boolean ServiceActivityRequired;
@@ -1184,6 +1196,30 @@ public class GeneralData implements RealmModel {
 
     public void setService_Sequence_Number(String service_Sequence_Number) {
         Service_Sequence_Number = service_Sequence_Number;
+    }
+
+    public String getCombinedSequenceNumber() {
+        return CombinedSequenceNumber;
+    }
+
+    public void setCombinedSequenceNumber(String combinedSequenceNumber) {
+        CombinedSequenceNumber = combinedSequenceNumber;
+    }
+
+    public String getCombinedServiceType() {
+        return CombinedServiceType;
+    }
+
+    public void setCombinedServiceType(String combinedServiceType) {
+        CombinedServiceType = combinedServiceType;
+    }
+
+    public String getCombinedOrderNumber() {
+        return CombinedOrderNumber;
+    }
+
+    public void setCombinedOrderNumber(String combinedOrderNumber) {
+        CombinedOrderNumber = combinedOrderNumber;
     }
 
     public boolean getServiceActivityRequired() {
