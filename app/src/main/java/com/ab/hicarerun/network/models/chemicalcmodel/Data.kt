@@ -11,7 +11,7 @@ data class Data (
 	@SerializedName("ChemicalCode") val chemicalCode : String?,
 	@SerializedName("ChemicalQuantity") val chemicalQuantity : Double?,
 	@SerializedName("OrderNo") val orderNo : String?,
-	@SerializedName("ServiceSequenceNo") val serviceSequenceNo : Int?,
+	@SerializedName("ServiceSequenceNo") val serviceSequenceNo : String?,
 	@SerializedName("AreaType") val areaType : String?,
 	@SerializedName("FloorNo") val floorNo : String?
 )

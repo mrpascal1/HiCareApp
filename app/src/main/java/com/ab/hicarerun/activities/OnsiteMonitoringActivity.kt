@@ -40,6 +40,10 @@ class OnsiteMonitoringActivity : BaseActivity() {
         binding.verifyEqBtn.setOnClickListener {
             getAccountNoByResourceIdForOnsite(resourceId)
         }
+
+        binding.backIv.setOnClickListener {
+            finish()
+        }
     }
 
     private fun getAccountNoByResourceIdForOnsite(resourceId: String){

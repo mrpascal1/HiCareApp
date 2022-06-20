@@ -21,8 +21,8 @@ android {
         applicationId "com.ab.hicarerun"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 72
-        versionName "8.5"
+        versionCode 73
+        versionName "8.6"
         multiDexEnabled true
         //dynamicFeatures = [":ondemand"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
